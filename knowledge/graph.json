@@ -339,10 +339,10 @@
       "file": "rule/investigation/an-answer-arrives-within-a-declared-deadline.md",
       "context": "investigation",
       "title": "An answer arrives within a declared deadline",
-      "summary": "The attendant waits on the line, so the total is declared and shorter than the caller's timeout.",
+      "summary": "The attendant waits on the line, so the answer is produced within twenty seconds and inside the caller's timeout.",
       "ddd": "invariant",
       "gaps": [
-        "expression"
+        "expression.caller_timeout"
       ]
     },
     {
