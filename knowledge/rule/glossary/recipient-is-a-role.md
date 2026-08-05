@@ -5,6 +5,7 @@ ddd: invariant
 statement: A recipient MUST name an operational role, never a person.
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-seis-perguntas-2026-08-05.md
 constrains:
   - definition/glossary/recipient
 examples:
@@ -15,6 +16,8 @@ examples:
 
 The recipient vocabulary is the most stable of the four because it names queues rather than people.
 Naming a person would make a referral expire whenever somebody changed job.
+This holds over the glossary's own entries and not over a case, so every recipient the glossary publishes is already a role and a check over a case tests only that the recipient exists.
+Nothing verifies that a registered recipient names a role rather than a person; whoever registers it asserts it, and this rule is the assertion they are held to.
 
 ## Rules
 

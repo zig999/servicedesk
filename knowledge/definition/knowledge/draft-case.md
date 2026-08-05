@@ -9,6 +9,7 @@ rationale: The material names two models of the same term, one for authoring and
 sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/perguntas-2026-08-05.md
+  - intake/decisoes-seis-perguntas-2026-08-05.md
 attributes:
   - name: slug
     type: string
@@ -30,7 +31,12 @@ attributes:
     binding: embedded
     min_items: 1
     required: true
-  - name: no_hypothesis_confirmed
+  - name: no_data_fallback
+    type: ref
+    target: definition/knowledge/resolution
+    binding: embedded
+    required: true
+  - name: hypotheses_exhausted_fallback
     type: ref
     target: definition/knowledge/resolution
     binding: embedded
@@ -51,3 +57,4 @@ What publication adds is the version and the content hash that identify the publ
 
 A case under edit becomes a published case only through publication.
 A case under edit is what a publication check refuses, because a published case is one that already holds.
+It declares both fallbacks for none confirming, and publication adds the version and the hash that identify the value it becomes.

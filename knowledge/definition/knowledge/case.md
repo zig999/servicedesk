@@ -11,6 +11,7 @@ aliases:
 sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/perguntas-2026-08-05.md
+  - intake/decisoes-seis-perguntas-2026-08-05.md
 attributes:
   - name: slug
     type: string
@@ -32,7 +33,12 @@ attributes:
     binding: embedded
     min_items: 1
     required: true
-  - name: no_hypothesis_confirmed
+  - name: no_data_fallback
+    type: ref
+    target: definition/knowledge/resolution
+    binding: embedded
+    required: true
+  - name: hypotheses_exhausted_fallback
     type: ref
     target: definition/knowledge/resolution
     binding: embedded
@@ -49,10 +55,6 @@ attributes:
 gaps:
   - field: attributes.version.derivation
     why: The material states a case is one markdown file versioned in git and that the published case is identified by slug, version and hash, and does not say what sets the version — whether it is the git reference, a number the curator raises, or something publication counts.
-  - field: attributes.content_hash.derivation
-    why: The material states the published case is identified by its content and that an investigation replays against exactly what it read, and does not say what the hash is computed over — the whole file, the structured part alone, or the structured part with the curator prose excluded.
-  - field: attributes.no_hypothesis_confirmed.selection
-    why: The material requires both outcomes of non-conclusion to exist before the first case, because an investigation confirming nothing still has to say which kind of nothing it reached, while giving the case exactly one fallback resolution and forbidding any outcome produced outside the case — so nothing states which of the two a case's fallback carries, nor what would select between them.
 ---
 
 ## What it is
@@ -64,6 +66,7 @@ It never marks a hypothesis as superseded, because two hypotheses confirming oft
 
 ## Rules
 
-A case declares at least one hypothesis, and the fallback for none confirming is written out rather than implied.
+A case declares at least one hypothesis, and it declares two fallbacks for none confirming — one for having reached no data, one for having exhausted its hypotheses — each written out rather than implied.
+The content hash covers the whole file, the curator prose included, so correcting a sentence of prose publishes a new case and an investigation that pinned the old one keeps pointing at the old one.
 The curator notes are for whoever edits the case and never reach any prompt.
 Nothing in the notes may change what is collected, and anything that does belongs in the structured part.

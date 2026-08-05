@@ -80,6 +80,15 @@
       ]
     },
     {
+      "id": "definition/glossary/observation-field",
+      "kind": "definition",
+      "file": "definition/glossary/observation-field.md",
+      "context": "glossary",
+      "title": "Observation Field",
+      "summary": "One named part of what the answer to a concept carries, and what a citation points at.",
+      "ddd": "value-object"
+    },
+    {
       "id": "definition/glossary/outcome",
       "kind": "definition",
       "file": "definition/glossary/outcome.md",
@@ -124,7 +133,6 @@
       "summary": "What answers one concept — read-only, versioned, with a declared output schema and a deadline.",
       "ddd": "value-object",
       "gaps": [
-        "attributes.output_schema",
         "attributes.timeout.unit"
       ]
     },
@@ -202,8 +210,6 @@
       "summary": "A published diagnostic procedure — its hypotheses in order of precedence, and what to do when none of them confirms.",
       "ddd": "value-object",
       "gaps": [
-        "attributes.content_hash.derivation",
-        "attributes.no_hypothesis_confirmed.selection",
         "attributes.version.derivation"
       ]
     },
@@ -332,7 +338,7 @@
       "file": "rule/investigation/a-decided-evaluation-cites-evidence.md",
       "context": "investigation",
       "title": "A decided evaluation cites evidence",
-      "summary": "A verdict that confirms or refutes points at the field it rested on, and the field must exist.",
+      "summary": "A verdict that confirms or refutes points at the concept and field it rested on, and the field must be one that concept declares.",
       "ddd": "invariant"
     },
     {
@@ -441,6 +447,15 @@
       "ddd": "policy"
     },
     {
+      "id": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "rule",
+      "file": "rule/knowledge/a-validation-answers-with-every-refusal.md",
+      "context": "knowledge",
+      "title": "A validation answers with every refusal",
+      "summary": "A validation of a case runs every check it carries whatever an earlier one decided, and answers with all of them.",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/knowledge/case-has-at-least-one-hypothesis",
       "kind": "rule",
       "file": "rule/knowledge/case-has-at-least-one-hypothesis.md",
@@ -541,6 +556,24 @@
       "summary": "Anything that changes what an investigation collects belongs in the structured part of the case.",
       "aggregate": "cases",
       "ddd": "policy"
+    },
+    {
+      "id": "rule/knowledge/the-content-hash-covers-the-whole-file",
+      "kind": "rule",
+      "file": "rule/knowledge/the-content-hash-covers-the-whole-file.md",
+      "context": "knowledge",
+      "title": "The content hash covers the whole file",
+      "summary": "A published case's hash is computed over its whole file, the curator prose included.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "kind": "rule",
+      "file": "rule/knowledge/the-fallback-follows-what-the-collection-returned.md",
+      "context": "knowledge",
+      "title": "The fallback follows what the collection returned",
+      "summary": "When nothing confirms, the case answers with the no-data fallback where any evidence fell short, and with the exhausted fallback where every evidence answered.",
+      "ddd": "invariant"
     }
   ],
   "edges": [
@@ -633,6 +666,12 @@
       "to": "definition/glossary/subject-type",
       "kind": "attribute.of",
       "at": "attributes[accepts].of"
+    },
+    {
+      "from": "definition/glossary/concept",
+      "to": "definition/glossary/observation-field",
+      "kind": "attribute.of",
+      "at": "attributes[observation_fields].of"
     },
     {
       "from": "definition/integration/capability",
@@ -728,7 +767,13 @@
       "from": "definition/knowledge/case",
       "to": "definition/knowledge/resolution",
       "kind": "attribute.ref",
-      "at": "attributes[no_hypothesis_confirmed].target"
+      "at": "attributes[hypotheses_exhausted_fallback].target"
+    },
+    {
+      "from": "definition/knowledge/case",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[no_data_fallback].target"
     },
     {
       "from": "definition/knowledge/case",
@@ -752,7 +797,13 @@
       "from": "definition/knowledge/draft-case",
       "to": "definition/knowledge/resolution",
       "kind": "attribute.ref",
-      "at": "attributes[no_hypothesis_confirmed].target"
+      "at": "attributes[hypotheses_exhausted_fallback].target"
+    },
+    {
+      "from": "definition/knowledge/draft-case",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[no_data_fallback].target"
     },
     {
       "from": "definition/knowledge/draft-case",
@@ -888,7 +939,7 @@
     },
     {
       "from": "rule/investigation/a-decided-evaluation-cites-evidence",
-      "to": "definition/integration/capability",
+      "to": "definition/glossary/concept",
       "kind": "constrains",
       "at": "constrains[1]"
     },
@@ -985,6 +1036,12 @@
     {
       "from": "rule/investigation/the-writing-input-is-narrowed",
       "to": "definition/investigation/assessment",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "to": "definition/knowledge/draft-case",
       "kind": "constrains",
       "at": "constrains[0]"
     },
@@ -1113,6 +1170,24 @@
       "to": "definition/knowledge/case",
       "kind": "constrains",
       "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-content-hash-covers-the-whole-file",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "to": "definition/investigation/evidence",
+      "kind": "constrains",
+      "at": "constrains[1]"
     }
   ]
 }

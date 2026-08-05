@@ -8,6 +8,7 @@ identity:
 sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/perguntas-2026-08-05.md
+  - intake/decisoes-seis-perguntas-2026-08-05.md
 attributes:
   - name: name
     type: string
@@ -29,8 +30,6 @@ attributes:
     type: integer
     required: true
 gaps:
-  - field: attributes.output_schema
-    why: The material states that a citation names a field and that the field must exist in what the capability returns, and never says which fields the answer to a given concept holds — which is the fact a citation is checked against, and the one only whoever knows each corporate system's answer can settle. The format such a declaration is written in is implementation and is not what this gap names.
   - field: attributes.timeout.unit
     why: The third decision is open — the material states every capability declares a timeout and gives neither its unit nor any value.
 ---
@@ -39,7 +38,7 @@ gaps:
 
 One concept is answered by one capability until a second source for the same concept appears, and no plan with fallbacks exists until then.
 A capability resolves internally whatever it must derive from the subject it was given, so the case never carries the derivation.
-Its output schema is what makes a citation checkable, because a cited field either exists in it or does not.
+The schema it declares is the adapter's contract with the system it reads, and it is not what a citation is checked against — that is the field list the concept declares, so the authority stays in the glossary.
 
 ## Rules
 
