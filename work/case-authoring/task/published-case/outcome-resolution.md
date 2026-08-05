@@ -22,7 +22,6 @@ depends_on:
   - task/published-case/evaluation-record
   - task/published-case/assessment-record
 nodes:
-  - aggregate/knowledge/cases
   - definition/knowledge/case
   - definition/knowledge/hypothesis
   - definition/knowledge/resolution
@@ -30,24 +29,33 @@ nodes:
   - definition/investigation/evaluation
   - definition/investigation/assessment
   - definition/glossary/outcome
-  - process/investigation/diagnose
+  - definition/glossary/action
+  - definition/glossary/recipient
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/investigation/the-outcome-comes-from-the-case
   - rule/investigation/one-evaluation-per-hypothesis
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+  - process/investigation/diagnose
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 unresolved:
-  - question: "The base requires both inconclusive-no-data and inconclusive-hypotheses-exhausted to exist in the outcome vocabulary, while a case declares exactly one fallback resolution. No node says which of the two a case's fallback carries, nor whether the situation reached selects between them, so criteria 5 and 7 cannot both be demonstrated until the base decides this."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
 waived:
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "This task reads a case already published and identified; nothing on its path derives or writes a version, and no criterion reaches the case's identity."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "Producing the answer never computes or verifies the hash \u2014 pinning the case by content happens before this station in the flow, and no criterion reaches it."
   - gap: definition/investigation/assessment#attributes.text.audience
-    why: "The gap asks what an assessment's text may expose to the end customer; this task decides which resolution the assessment carries and which hypothesis it names as determining, and no criterion concerns the text or its reader."
+    why: "No criterion reaches the assessment's text; this task carries the case's resolution and the determining hypothesis, and what the text may expose is settled where the text is written. The required text itself is the blocking note below, not this waiver."
   - gap: definition/glossary/outcome#attributes.name.values.[]
-    why: "The gap is the outcomes each confirmable hypothesis will contribute; the answer carries the outcome of the resolution the case already declared, unchanged and without inspecting the vocabulary. The two non-conclusion outcomes are a separate matter and are unresolved above."
+    why: "The remaining outcomes are contributed by each case's confirmable hypotheses; this task carries whichever outcome the case declared and compares outcomes by name identity, never selecting one from the enumeration."
+  - gap: definition/glossary/action#attributes.name.values
+    why: "Criterion 8 compares referrals by their action and recipient identity; the task carries the action the case declared and never picks one from the vocabulary."
+  - gap: definition/glossary/recipient#attributes.name.values
+    why: "Same as the action \u2014 the recipient is carried from the case's declared referral and compared by name."
   - gap: rule/knowledge/hypotheses-are-ordered-by-precedence#examples
-    why: "The gap is which real cause dominates which, a fact only the specialists affirm; criterion 2 reads whatever order the case declares and is demonstrable without any illustrative order being settled."
+    why: "Criterion 2 uses the order the case declares, whatever it is; which cause actually dominates is curation's fact, unverifiable by any validator per the node itself."
 ---
 
 ## What it is
-
 The third of the three behaviours the scope named, turning the verdicts on a case's hypotheses into what the investigation concluded and what somebody should do.
 The precedence reading, in which the confirmed hypothesis the case lists earliest is the one that determines the resolution.
 The fallback the case itself declares for the situation in which nothing confirms.
@@ -57,6 +65,7 @@ The leaving alone of every evaluation, so two hypotheses confirming stays visibl
 
 The two provenance criteria tie what the assessment carries to the one resolution the case resolved, which the construct itself cannot state because it never reads the case.
 The last two criteria close the path on which an implementation could drop or overwrite the later confirmed evaluation and still satisfy everything else this task states.
-BLOCKING, from the binding — the assessment requires a text and states what the writing receives in each branch, and no criterion here reaches the text at all, so either a criterion covers what text this answer supplies or the seam with the writing task is stated explicitly.
-From the binding — the clause binding whether the declared order is the right order is curation-time human review and reaches no criterion here.
-From the binding — every criterion assumes a complete set of evaluations as input, and none exercises what the answer does when that set is incomplete.
+BLOCKING, from the binding — the assessment this task produces requires a text, and the assessment's rules on the narrowed writing input govern it; both sit on this task's own path and no criterion reaches them, so either the writing is a separate task this one depends on or a criterion is missing.
+BLOCKING, from the binding — criterion 5 speaks of the resolution the case declares for that situation as one resolution, while the base requires both non-conclusion outcomes to exist against a single fallback slot; the criterion cannot distinguish the two kinds of non-conclusion until the cited gap is settled.
+From the binding — the candidates governing collection and judging rather than answering are left unbound, and the epic must declare them uncovered or another task binds them.
+From the binding — the completeness of the evaluation set this task reads is established outside its binding, since the rule requiring it constrains a construct not among the candidates.

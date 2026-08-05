@@ -23,7 +23,7 @@ nodes:
   - definition/glossary/concept
   - definition/integration/capability
   - rule/investigation/a-decided-evaluation-cites-evidence
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 unresolved:
   - gap: definition/integration/capability#attributes.output_schema
   - question: "No node states how a citation is tied to the capability or the evidence that produced the fact it cites, so the capability that produced that evidence cannot be resolved when a citation is validated."
@@ -48,3 +48,4 @@ Nothing here decides what a fact was, or calls anything to obtain one; the citat
 BLOCKING, from the binding — the rule's second clause, that every cited field must exist in the output schema of the capability that produced that evidence, reaches no criterion, and the schema itself is an open gap recorded above as unresolved.
 BLOCKING, from the binding — the base states only in prose that citations are by name and never by identifier, no node states the refusal, and the cited field is a plain string with no stated form distinguishing an identifier from a name, so the field half of criterion 6 cannot be demonstrated without deciding that form here.
 From the binding — the invariant governing an inconclusive evaluation's reason sits outside this claim, so criterion 4 covers only that such an evaluation is not refused for lacking a citation.
+The pin was restated deliberately rather than re-bound: the base moved by three nodes and this task binds none of them — the case under edit closed its own gap, the published case gained three, and the capability's output-schema gap kept its field name and changed only its why. The validator's totality check over every bound node's open gaps is what holds that judgment, and it refuses this task if the reading is wrong.

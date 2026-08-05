@@ -16,31 +16,39 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - rule/knowledge/every-collected-concept-has-a-read-only-capability
-  - definition/integration/capability
-  - definition/glossary/concept
+  - aggregate/knowledge/cases
+  - definition/knowledge/draft-case
   - definition/knowledge/case
   - definition/knowledge/hypothesis
-  - aggregate/knowledge/cases
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+  - definition/glossary/concept
+  - definition/integration/capability
+  - rule/knowledge/every-collected-concept-has-a-read-only-capability
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 unresolved:
   - gap: definition/integration/capability#attributes.output_schema
-  - question: "No node describes the construct this check reads. The rule predicates on a capability being registered and the capability node states the registry refuses one whose nature is not read-only, but nothing says how registry membership for a concept is consulted at case validation, which is exactly what criterion 4 requires be done without invoking a capability."
+  - question: "The rule turns on a capability being registered, and no candidate node states what makes a capability registered \u2014 whether registration is a state a capability carries beyond being declared, and what a case's validation consults to find the capability answering a concept."
 waived:
   - gap: definition/integration/capability#attributes.timeout.unit
-    why: "The check decides whether a capability declares a timeout, which is a required attribute; the unit is never compared or elapsed, because nothing here calls a capability."
+    why: "The rule's clause is that a timeout is declared; this check reads the presence of the declaration and never a duration."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check reads only which capability answers a collected concept, and the concept's ttl is the subject of a separate check with its own task."
+    why: "This check matches a collected concept to a capability and its nature; staleness tolerance is a different check's."
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "Version is assigned by publication after this check decides; nothing in the decision reads it."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "The hash identifies the published value publication emits; this check decides over what the case collects, before either exists."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
+    why: "The fallback resolution collects no concept, so which non-conclusion outcome it holds cannot change this check's result."
 ---
 
 ## What it is
-
 The check that holds the contract between curated knowledge and integration at the moment a case is validated.
 A refusal decided from what is recorded about a capability, never from calling one.
 
 ## Notes
 
 The last criterion is what the base's statement that the contract is checked when publishing and not when running amounts to as an observable property of this check.
-BLOCKING, from the binding — the rule refuses a case whose concept has no registered read-only capability declaring an output schema and a timeout, and criterion 3 does not reach either clause, so a case whose answering capability declares no output schema is refused by the base and not refused by the criterion.
-From the binding — the capability's nature is an enum whose only value is read-only and the registry refuses anything else, so demonstrating criterion 2 requires a state the base cannot represent, and the node that decides that refusal is outside this task's binding.
-From the binding — the refusal this check names is a publication-time refusal, and the publish act itself lives in the publication lifecycle, outside this epic's claim.
+BLOCKING, from the binding — criterion 3 is weaker than the rule, which refuses a case unless the answering capability is read-only and declares an output schema and a timeout; the last two clauses reach no criterion at all.
+BLOCKING, from the binding — criterion 2 asserts a state no bound node admits, since the capability's nature has a single value and the node that refuses any other is outside the candidates.
+BLOCKING, from the binding — the base decides which case this check is decided over, and no criterion names that input; every criterion says a case for both models.
+From the binding — the publication act this check gates sits outside this epic's claim, and its two open gaps are therefore beyond this triage.
+From the binding — that the collected concept exists in the glossary at all is a neighbouring check, deliberately unbound here.

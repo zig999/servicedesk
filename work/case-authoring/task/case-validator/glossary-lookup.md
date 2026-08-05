@@ -19,7 +19,7 @@ nodes:
   - definition/glossary/action
   - definition/glossary/recipient
   - rule/knowledge/case-terms-exist-in-the-glossary
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
     why: "The lookup yields the concept as the glossary records it and never interprets the ttl, so the integer is carried through whatever its unit means."
@@ -46,3 +46,4 @@ No criterion here enumerates a member of any vocabulary, because the members are
 BLOCKING, from the binding — the objective ranges over every kind a term may be looked up as, but only the concept kind reaches a positive criterion, so a lookup answering not-published for every subject type, outcome, action and recipient the glossary does publish satisfies all five criteria as written.
 From the binding — this task answers only the per-term existence question, and the clauses about walking a case and refusing on absence belong to the sibling checks.
 From the binding — no bound node gives a glossary entry a publication state of its own, so publishes must be read as holds an entry for; any draft-versus-published distinction over glossary terms would be a fact no node holds.
+The pin was restated deliberately rather than re-bound: the base moved by three nodes and this task binds none of them — the case under edit closed its own gap, the published case gained three, and the capability's output-schema gap kept its field name and changed only its why. The validator's totality check over every bound node's open gaps is what holds that judgment, and it refuses this task if the reading is wrong.

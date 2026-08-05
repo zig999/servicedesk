@@ -14,26 +14,21 @@ depends_on:
   - task/case-validator/validation-run
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
-  - definition/knowledge/case
-  - definition/knowledge/hypothesis
-  - definition/glossary/concept
   - rule/knowledge/hypothesis-collects-at-least-one-concept
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
-unresolved:
-  - question: "The base does not state whether a case under edit carries its hypotheses, and their collects lists, in the same shape as a published case, yet this check decides a case before it is published, so what the check walks is described nowhere."
-waived:
-  - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check counts the entries of a hypothesis's collects list and never reads a concept's staleness tolerance; the unit bears on the separate ttl check with its own task."
+  - definition/knowledge/hypothesis
+  - definition/knowledge/draft-case
+  - aggregate/knowledge/cases
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 ---
 
 ## What it is
-
 The structural check standing behind the base's statement that a hypothesis collecting nothing could never cite anything.
 A refusal decided per hypothesis, over every hypothesis of the case.
 
 ## Notes
 
 The third criterion fixes that the check reads every hypothesis rather than the one it reaches soonest.
-BLOCKING, from the binding — the construct a pre-publication check reads is the case under edit, which this epic does not claim and whose shape beyond its slug the base declares absent, so the thing this check refuses is described by no node the task may bind.
-From the binding — the order in which a case lists its hypotheses is enough to walk every element, but what that order means is stated by a rule outside this claim, so no criterion should be read as asserting the earliest-listed hypothesis is the dominant cause.
+From the binding — the construct this check refuses is now described by a bound node, and the predecessor's blocking note does not stand against the base as it is.
+From the binding — the published case is left unbound, because it is the value publication emits and never exists for a case this check refuses.
+From the binding — the aggregate's clause that a case is published whole or not at all reaches no criterion; it belongs to the publication act rather than to this single check.
+From the binding — criterion 3 needs only the list order the case under edit declares, not the rule about what that order means.

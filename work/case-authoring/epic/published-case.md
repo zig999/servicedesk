@@ -5,6 +5,8 @@ rationale: The scope named the three behaviours and the validating rules as two 
 sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
+  - intake/escopo-revinculacao.md
+  - intake/escopo-revinculacao-adendo.md
 covers:
   - aggregate/knowledge/cases
   - definition/knowledge/case
@@ -29,6 +31,7 @@ covers:
   - rule/investigation/the-outcome-comes-from-the-case
   - rule/investigation/one-evaluation-per-hypothesis
   - rule/investigation/a-decided-evaluation-cites-evidence
+  - rule/investigation/an-inconclusive-evaluation-declares-its-reason
 uncovered:
   - node: definition/knowledge/draft-case
     why: The scope excluded the publication cycle from this invocation, so nothing here authors or holds a case before it is published, and the three behaviours read a case that is already published.

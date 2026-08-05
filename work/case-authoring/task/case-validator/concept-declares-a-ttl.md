@@ -16,25 +16,25 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - aggregate/knowledge/cases
-  - definition/knowledge/case
+  - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
   - definition/glossary/concept
   - rule/knowledge/every-collected-concept-declares-a-ttl
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
-unresolved:
-  - question: "The rule's statement ends in the glossary, but no bound node states how a concept a case names is resolved to its glossary entry: a hypothesis binds what it collects by identity, so the case carries names and not entries, and what the check reads the declared ttl from is unstated."
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check decides only on the presence of the concept's declared ttl and compares no ttl against another, and the rule's body states the declared ttl is already the strictest tolerance among the cases that use the concept, so no duration is interpreted, converted or ordered here."
+    why: "Criterion 3 confines the check to the presence of a declared ttl and forbids comparing one ttl against another, so no reading of the value \u2014 and therefore no unit \u2014 is on this task's path."
 ---
 
 ## What it is
-
 The vocabulary check standing behind the base's statement that how stale a fact may be is stated by the concept.
 A refusal decided by the presence of the concept's declaration, read through the shared glossary lookup.
 
 ## Notes
 
 The third criterion bounds the check to presence, so nothing here interprets or converts a declared duration.
-BLOCKING, from the binding — the construct a pre-publication check reads is the case under edit, which this epic does not claim and whose shape beyond its slug the base declares absent, so the thing this check refuses is described by no node the task may bind.
-From the binding — the concept declares its ttl as required, while criterion 1 needs an input concept declaring none, so the executor must model the check's input as unvalidated glossary data rather than from the definition's required attribute, which would make the check a no-op.
+BLOCKING, from the binding — the base now distinguishes the case under edit from the published case and states the first is what a publication check refuses, while criteria 1 and 2 say only a case, so an implementer may write the check over the published value the base says already holds.
+From the binding — the published case is left unbound and its three open gaps do not reach this objective.
+From the binding — a concept resolves to its glossary entry by identity, which the base does hold; a named concept with no entry at all is refused by a neighbouring check this task does not bind.
+From the binding — the capability is left unbound, because its timeout is the capability's deadline and not the concept's ttl.
+From the binding — this rule declares neither an aggregate nor a consistency, unlike its sibling publication invariants, while its own example locates the refusal at publication; that asymmetry is the base's to keep or correct.

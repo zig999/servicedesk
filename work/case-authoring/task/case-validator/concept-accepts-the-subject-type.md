@@ -15,27 +15,35 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - rule/knowledge/concept-accepts-the-declared-subject-type
+  - aggregate/knowledge/cases
+  - definition/knowledge/draft-case
   - definition/knowledge/case
   - definition/knowledge/hypothesis
   - definition/glossary/concept
   - definition/glossary/subject-type
-  - aggregate/knowledge/cases
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+  - rule/knowledge/concept-accepts-the-declared-subject-type
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 waived:
-  - gap: definition/glossary/subject-type#attributes.name.values
-    why: "This check compares the subject type the case declares against the entries of the collected concept's accepts list, and subject type identity is its name, so the decision is the same whatever names the vocabulary eventually holds."
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "This check reads the declared subject type and the concepts the case's hypotheses collect; what sets the version is not on that path."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "What the hash is computed over does not enter the acceptance comparison; the check refuses or passes the same case content either way."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
+    why: "The fallback resolution carries an outcome and a referral, not collected concepts, so which resolution it holds is outside what this check reads."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check reads only the concept's accepts list, and the ttl obligation is a separate check with its own task."
+    why: "This check reads a concept's accepts list only; the ttl is the subject of a different check."
+  - gap: definition/glossary/subject-type#attributes.name.values
+    why: "Acceptance is decided by comparing the declared subject type with the concept's accepts entries by identity, so the check is indifferent to which names the closed vocabulary holds."
 ---
 
 ## What it is
-
 The vocabulary check standing behind the base's statement that a case cannot ask for a fact that does not apply to what it investigates.
 A refusal decided by pairing each collected concept with the one subject type the case declares.
 
 ## Notes
 
 The check reads what the glossary records for a concept through the shared lookup rather than restating it.
-BLOCKING, from the binding — the base decides that acceptance is a direct match against the concept's declared accepts entries with no derivation between subject types, and all three criteria are satisfiable by an implementation that accepts a concept whose accepts merely holds a type the declared one could be derived from.
-From the binding — the refusal this check names is a publication-time refusal, and the publish act itself lives in the publication lifecycle, outside this epic's claim.
+BLOCKING, from the binding — the base decides acceptance is a direct match against the concept's declared accepts entries, since deriving one subject from another is the anticorruption layer's work and never the case's; no criterion refuses a case whose collected concept accepts only a type derivable from the declared one, so a derivational implementation passes all three.
+BLOCKING, from the binding — the contract checks run over the whole case and concepts are collected per hypothesis, yet no criterion places the non-accepting concept in a hypothesis other than the first, so a check reading only the first hypothesis satisfies all three.
+From the binding — the case under edit is what this check reads, so the executor reads the curator-written shape and not the version or hash publication assigns.
+From the binding — that the named terms exist in the glossary at all is a neighbouring check, deliberately unbound here.

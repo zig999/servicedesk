@@ -15,21 +15,28 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - rule/knowledge/case-has-at-least-one-hypothesis
+  - definition/knowledge/draft-case
   - definition/knowledge/case
   - definition/knowledge/hypothesis
   - aggregate/knowledge/cases
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
-unresolved:
-  - question: "No node states what a case declaring no hypothesis looks like as the input this check reads: the base distinguishes the case under edit from the published case, and the shape of the one under edit is itself declared absent."
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+waived:
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "Publication assigns the version; this check counts the hypothesis list of the case under edit, which carries no version at all, and decides without reading one."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "The hash is likewise assigned at publication and is not an input to counting hypotheses; what it is computed over cannot change this check's decision."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
+    why: "This check reads only the hypothesis list. Which of the two non-conclusion resolutions the fallback carries changes neither the refusal of an empty list nor the acceptance of one or several hypotheses."
 ---
 
 ## What it is
-
 The structural check standing behind the base's statement that a case with no hypothesis investigates nothing.
 A refusal decided from the case's own declarations, reading nothing outside the case.
 
 ## Notes
 
 The two passing criteria assert only that this check does not refuse, since another check may still refuse the same case for its own reason.
-BLOCKING, from the binding — the published case declares a minimum of one hypothesis, so no value of it can hold none; the construct that can is the case under edit, which this epic does not claim.
-BLOCKING, from the binding — both bound nodes decide when and over what this check fires, and the criteria speak only of this check, so a check that never runs at publication or runs over something narrower than the whole case would satisfy all three.
+From the binding — the rule constrains the published value while the case under edit is what a publication check refuses, so the base names the checked construct in two places and the executor reads the draft as the one the check reads.
+From the binding — the case under edit declares a minimum of one hypothesis, restating this rule inside the shape, so the base does not say whether an empty list is refused by the shape or by this named check.
+From the binding — the publication act that runs this check, and its open gap over what a publish refusal is, sit outside this epic's claim.
+From the binding — a fixture for criteria 2 and 3 embeds constructs whose own checks belong to other tasks, so it is valid only against this check.

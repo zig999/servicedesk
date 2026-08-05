@@ -1,10 +1,12 @@
 ---
 title: Case validator
 summary: The validation of one case against the structural rules of a case and against the glossary's published vocabularies, refusing a case that does not hold together.
-rationale: The scope named the validating rules as one half but left the cut inside it open, and this epic is drawn around what runs over one case and refuses it, claiming the glossary and integration definitions its checks read while leaving the investigation's own constructs out; the amendment's five nodes are not claimed here because no check reads a plan of collection, a citation or an assessment.
+rationale: The scope named the validating rules as one half but left the cut inside it open, and this epic is drawn around what runs over one case and refuses it, claiming the glossary and integration definitions its checks read while leaving the investigation's own constructs out; the amendment's five nodes are not claimed here because no check reads a plan of collection, a citation or an assessment; the claim grew later by the case under edit, because five binders found that the construct every check refuses is that one and not the published case, and the base has since stated its shape.
 sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
+  - intake/escopo-revinculacao.md
+  - intake/escopo-revinculacao-adendo.md
 covers:
   - aggregate/knowledge/cases
   - definition/knowledge/case
@@ -18,6 +20,8 @@ covers:
   - definition/glossary/recipient
   - definition/integration/capability
   - definition/investigation/subject
+  - definition/knowledge/draft-case
+  - lifecycle/knowledge/case-publication
   - rule/knowledge/case-has-at-least-one-hypothesis
   - rule/knowledge/hypothesis-name-is-unique-in-its-case
   - rule/knowledge/hypothesis-collects-at-least-one-concept
@@ -28,6 +32,8 @@ covers:
   - rule/knowledge/one-falsifiable-claim-per-criterion
   - rule/glossary/recipient-is-a-role
 uncovered:
+  - node: lifecycle/knowledge/case-publication
+    why: The scope excluded the publication cycle from this invocation and no task of this epic transitions a case into or out of publication; the checks refuse a case being published without owning the act that publishes it, and the node's own open gaps over who approves a publication and how a further version begins are nobody's to triage here.
   - node: definition/investigation/subject
     why: A subject is the one thing an investigation is about, named by type and identifier, and this plan runs no investigation; the case and every check over it speak only of the subject type the case declares, so nothing here names a subject instance.
   - node: rule/knowledge/one-falsifiable-claim-per-criterion

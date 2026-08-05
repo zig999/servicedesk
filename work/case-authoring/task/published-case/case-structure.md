@@ -35,24 +35,29 @@ nodes:
   - definition/glossary/recipient
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/knowledge/the-body-does-not-change-what-is-collected
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
-unresolved:
-  - gap: definition/glossary/outcome#attributes.name.values.[]
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 waived:
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "Criterion 4 is a round-trip over a required attribute of the published value \u2014 the case is constructed with a version and reads it back. What sets the version is publication's fact, and nothing on this task's path computes or interprets it."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "Criterion 5 is the same round-trip: the case is constructed with a content hash and reads it back. What the hash is computed over is needed by whatever publishes and by whatever compares two published cases, neither of which this task builds."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
+    why: "Criterion 13 reads back the single fallback resolution the case declares. Which of the two non-conclusion outcomes it carries is a value this task neither selects nor validates; it bears on resolving an investigation, not on constructing and reading back the declaration."
   - gap: definition/glossary/subject-type#attributes.name.values
-    why: "The case carries its subject type by name and the attribute's form is a string; criterion 7 reads that name back and never tests membership in the vocabulary, so which names the vocabulary registers is not exercised here."
-  - gap: definition/glossary/action#attributes.name.values
-    why: "A referral carries its action by name and the attribute's form is a string; criterion 15 reads the name back and does not check the action exists, so the unlisted vocabulary does not bear on construction."
-  - gap: definition/glossary/recipient#attributes.name.values
-    why: "A referral carries its recipient by name and the attribute's form is a string; criterion 15 reads the name back and does not check the recipient exists, so the unlisted vocabulary does not bear on construction."
+    why: "Criterion 7 reads back the subject type a case declares, referenced by identity; the membership of the closed vocabulary is needed by whatever validates a declaration against it, which is not on this path."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "A hypothesis collects concepts by identity \u2014 the name alone \u2014 so a constructed case never carries a concept's ttl, and criterion 11 reads back only the names collected."
+    why: "Criterion 11 reads back the concepts a hypothesis collects, by name; nothing here reads, compares or expires against a ttl."
+  - gap: definition/glossary/outcome#attributes.name.values.[]
+    why: "Criteria 12 and 14 read back the outcome a resolution was declared with; the base states outcomes are contributed and registered, so the unlisted members are needed by the membership check rather than by this read-back."
+  - gap: definition/glossary/action#attributes.name.values
+    why: "Criterion 15 reads back the action a referral was declared with, by identity; the named members bear on the membership check this task does not perform."
+  - gap: definition/glossary/recipient#attributes.name.values
+    why: "Criterion 15 reads back the recipient a referral was declared with, by identity; as with the action, the members bear on the membership check."
   - gap: rule/knowledge/hypotheses-are-ordered-by-precedence#examples
-    why: "Criterion 8 preserves the order the case was constructed with and never decides which order is right; the node itself states no validator can check the precedence, so an example order would not change what this task builds."
+    why: "Criterion 8 preserves and reads back the order the case was constructed with; which cause dominates which is a specialist affirmation the node itself says no validator can check."
 ---
 
 ## What it is
-
 The published case as a constructed value in the target source, holding exactly what the case declares and nothing derived.
 The case's identity and publication metadata alongside its investigative content, since the node declares both and neither is derived from the other.
 The hypothesis as the case's part, carrying its name, its criterion, what it collects and what follows when it holds.
@@ -63,7 +68,7 @@ The resolution and the referral as the case declares them, each readable back fr
 The order in which hypotheses are listed is load-bearing here rather than incidental, because the base states that the listed order is the order in which their causes dominate one another.
 This task states nothing about a case whose hypotheses share a name, because the uniqueness of the name is decided where publication is validated and the published value this task builds is one that already holds.
 No criterion here states what the structure is written in or where it sits, because no language, toolchain or module layout has been chosen for this project.
-BLOCKING, from the binding — the case declares hypotheses with a minimum of one and a hypothesis declares collects with a minimum of one, and no criterion reaches either, so a case constructed with no hypothesis or a hypothesis collecting nothing satisfies every criterion as written; the rules stating both sit outside this epic's claim.
-BLOCKING, from the binding — the case is a value object identified by slug, version and content hash together, and while criteria 4 and 5 read those fields back individually, nothing states that two cases agreeing on the triple are the same case, so the equality the base decided reaches no criterion.
-From the binding — the clause that the declared order is the precedence the specialists affirm reaches no criterion, and the node itself states no validator can check it.
-From the binding — the curator prose rule is answered here only by the notes being carried as inert prose that nothing in the constructed case consults.
+From the binding — version and content hash are assigned by publication, both outside the candidates, so criteria 4 and 5 are read-back of values this task receives and never computes; the executor must not derive either.
+From the binding — the case's own resolving behaviour reaches no criterion of this task, and the investigation-side candidates stay unbound here; they need their own task or an uncovered entry.
+From the binding — criterion 6 only round-trips the curator notes, so no criterion demonstrates that the prose changes nothing collected, and the rule's second clause is an authoring constraint on the case under edit, which this epic leaves uncovered.
+From the binding — no criterion covers refusing a case constructed with no hypothesis, and the rule stating that minimum is outside the candidates.

@@ -15,17 +15,15 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - aggregate/knowledge/cases
-  - definition/knowledge/case
+  - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
   - rule/knowledge/hypothesis-name-is-unique-in-its-case
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 unresolved:
-  - question: "The construct this check reads before publication is the case under edit, which sits outside this epic's claim and whose attributes beyond its slug the base declares absent; no bound node states that a case under edit holds a list of hypotheses for this check to compare."
-  - question: "No node states how two hypothesis names are compared for sameness \u2014 exact equality, or normalised for letter case or surrounding whitespace \u2014 so criterion 1's same name and criterion 2's distinct names have no stated boundary between them."
+  - question: "No node states how two hypothesis names are compared for sameness \u2014 whether letter case, surrounding whitespace or any normalisation is significant. The hypothesis types its name as a plain string and the rule states only that two hypotheses of one case must not share one, so the boundary between criterion 1 and criterion 2 is undecided in the base."
 ---
 
 ## What it is
-
 The structural check that keeps a hypothesis name usable as the index an evaluation is filed under.
 A refusal decided over the hypotheses offered for one case, before any published case exists.
 A uniqueness decided within one case, never across cases.
@@ -34,4 +32,6 @@ A uniqueness decided within one case, never across cases.
 
 The check reads hypotheses and the names they carry, and a hypothesis bearing any name is a valid hypothesis on its own, so nothing has to hold an invalid published case for this check to have something to refuse.
 The third criterion is what makes the scope of the uniqueness falsifiable, since a check that refused across cases would pass the other two.
-BLOCKING, from the binding — the construct a pre-publication check reads is the case under edit, which this epic does not claim and whose shape beyond its slug the base declares absent, so the thing this check refuses is described by no node the task may bind.
+From the binding — the published case is left unbound, because the case under edit now states what a publication check refuses, so the published value and its three open gaps are off this check's path.
+From the binding — the publish trigger sits outside this epic's claim; the case under edit carries the fact that the check refuses it, so the criteria stand without the act.
+From the binding — a fixture of two same-named hypotheses still has to be well-formed under the hypothesis's required parts, which is construction and not this check's judgment.

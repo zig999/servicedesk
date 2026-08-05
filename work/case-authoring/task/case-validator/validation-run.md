@@ -14,15 +14,14 @@ criteria:
   - "A run reports no refusal that no registered check produced."
 nodes:
   - aggregate/knowledge/cases
-  - definition/knowledge/case
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+  - definition/knowledge/draft-case
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 unresolved:
-  - question: "No node states whether a validation that refuses a case reports every refusal it collected or stops at the first. The rule nodes' examples say only that publication is refused, and the aggregate backs running the checks over the whole case without saying what the refusal answers with. Criterion 4 turns on this."
-  - question: "No node describes a per-run registry of checks. The aggregate states the contract checks run over the whole case and never that the set is configurable or may be empty, so the base does not say whether a run with no check registered is a legitimate state. Criteria 1 and 5 turn on it."
+  - question: "No node states whether a validation over a case reports every refusal it collected or stops at the first one \u2014 the base states only that each check refuses publication, never how a run carrying several of them answers."
+  - question: "No node states that the checks over a case are registered per run rather than fixed as the base's publication invariants; the only registry the base holds is the capability registry. So nothing says whether no check registered or one check registered is a state the base admits, nor what a case is answered in it."
 ---
 
 ## What it is
-
 The one entry point through which a case is validated as one thing, alongside the hypotheses that belong to it.
 The composition rule, in which a single refusal is enough to refuse the case and no refusal is lost behind another.
 The seam every check in this epic is written against.
@@ -30,6 +29,7 @@ The seam every check in this epic is written against.
 ## Notes
 
 The criteria are demonstrable with checks written for the demonstration, so nothing here waits on any particular rule's check being delivered.
-BLOCKING, from the binding — criterion 4 asserts what the system answers, and no bound node states that every refusal is reported rather than the first; that is a fact the base must hold before the criterion is demonstrated.
-From the binding — the aggregate's clause that a case is published whole or not at all reaches no criterion, because this task runs the checks and refuses but never publishes.
-From the binding — the refusal this check names is a publication-time refusal, and the publish act itself lives in the publication lifecycle, outside this epic's claim. If this run is the publish gate, that node's open gap over who approves a publication reaches this task.
+BLOCKING, from the binding — criterion 4 and the summary assert what the system answers over several refusals, and no bound node, and no node in the base, states that every refusal is reported rather than the first.
+From the binding — the case under edit is what every publication check reads, so this task binds the draft; the published value and its three open gaps belong to the publication act rather than to this run.
+From the binding — the seven publication-check rules are left unbound, because this task builds the run and encodes no individual check, and a record answering it could not answer them.
+From the binding — two clauses of the bound nodes reach no criterion, both belonging to the publication act: that a case is published whole or not at all, and that a case under edit becomes published only through publication.

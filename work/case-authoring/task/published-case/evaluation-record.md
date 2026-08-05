@@ -19,15 +19,18 @@ nodes:
   - definition/investigation/evaluation
   - definition/knowledge/hypothesis
   - definition/knowledge/case
-  - rule/knowledge/hypotheses-are-ordered-by-precedence
-base: sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af
+  - rule/investigation/an-inconclusive-evaluation-declares-its-reason
+base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
 waived:
-  - gap: rule/knowledge/hypotheses-are-ordered-by-precedence#examples
-    why: "The gap is that no example order can be given because which cause dominates which is a fact only specialists affirm; this task needs only that a case lists its hypotheses in a declared order and that an earlier confirmation never supersedes a later evaluation, so the absent example order does not reach the objective or any criterion."
+  - gap: definition/knowledge/case#attributes.version.derivation
+    why: "This task records the verdict on one hypothesis and never publishes or identifies a case; nothing on its path reads or sets the case version."
+  - gap: definition/knowledge/case#attributes.content_hash.derivation
+    why: "The evaluation references its hypothesis by name; pinning the case by content belongs to the investigation that replays it, not to recording one verdict."
+  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
+    why: "The fallback resolution applies when no hypothesis confirmed; this task resolves no outcome, and criterion 6 turns on an earlier confirmation rather than on none confirming."
 ---
 
 ## What it is
-
 The record a resolution reads, holding one verdict against one hypothesis of a published case.
 The identification of the hypothesis by the name that is unique within its case, which is what evaluations are indexed by.
 The verdict as a part the record always carries, with the inconclusive verdict as the base's own way of saying that nothing was decided.
@@ -37,6 +40,7 @@ The retention of a verdict once received, so a verdict is not suppressed by anot
 
 The criteria say nothing about citations, so the obligation to cite is stated once, in the task cut out for it.
 The retention criterion is what keeps a verdict from being made suppressible without failing anything the task states.
-BLOCKING, from the binding — the invariant that makes an inconclusive verdict declare its reason sits outside this epic's claim, so criterion 5 rests on a fact the bound definition carries in prose while the rule that makes it mandatory is unbindable here.
-BLOCKING, from the binding — the bound evaluation definition states that a confirming or refuting evaluation cites at least one concept and field, and no criterion here answers it, so criteria 3, 4 and 6 can be demonstrated over a decided evaluation carrying no citation, which the base refuses.
-From the binding — the clause that a case's declared order is the affirmed precedence is case-authoring scope and reaches no criterion here.
+BLOCKING, from the binding — the bound invariant makes the reason mandatory for an inconclusive verdict while the evaluation holds its reason as not required, and criterion 5 only reads a reason back, so no criterion refuses an inconclusive evaluation carrying none and the rule's obligation reaches nothing on this task's own construction path.
+From the binding — the one-evaluation-per-hypothesis rule is left unbound, because its statement quantifies over an investigation that no criterion here can satisfy or violate; the epic needs an investigation-level task binding it or an uncovered entry.
+From the binding — the precedence rule is left unbound, because criterion 6's content is stated outright on the evaluation and the case, and the rule's own statement is not falsifiable in this task.
+From the binding — name-as-identity here rests only on the hypothesis's own identity, since the rule scoping name uniqueness to a case sits outside the candidates.

@@ -16,11 +16,11 @@
       "summary": "The published case as it stands in source, together with the three answers it owns — what its hypotheses collect, which hypotheses require an evaluation, and which resolution follows from the evaluations."
     },
     {
-      "id": "inventory/src-greenfield",
+      "id": "inventory/src-tree",
       "kind": "inventory",
-      "file": "inventory/src-greenfield.md",
-      "title": "Greenfield source root",
-      "summary": "The area the published-case scope lands in is empty — `src/` does not exist on disk and the repository holds no source tree, toolchain manifest or test harness of its own."
+      "file": "inventory/src-tree.md",
+      "title": "Source tree after the assessment delivery",
+      "summary": "The area the case-authoring scope lands in — eight TypeScript files under `src/`, written by the single delivered task, in three directories named for the base's contexts plus a mirrored unit-test subtree, with no package manifest, compiler configuration, dependency lock or test runner anywhere in the repository."
     },
     {
       "id": "task/case-validator/at-least-one-hypothesis",
@@ -29,8 +29,7 @@
       "title": "A case declares at least one hypothesis",
       "summary": "The check that refuses a case declaring no hypothesis at all.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "questions": 1
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/concept-accepts-the-subject-type",
@@ -39,7 +38,7 @@
       "title": "A collected concept applies to the declared subject type",
       "summary": "The check that refuses a case collecting a fact that does not apply to the kind of thing the case investigates.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/concept-declares-a-ttl",
@@ -48,8 +47,7 @@
       "title": "Every collected concept declares a ttl",
       "summary": "The check that refuses a case collecting a concept that does not state how stale the fact may be.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "questions": 1
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/glossary-lookup",
@@ -58,7 +56,7 @@
       "title": "Reading the published glossary",
       "summary": "One reading of the published glossary that answers whether a term is published under the kind it is looked up as, and yields the published concept when it is one.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/hypothesis-collects-a-concept",
@@ -67,8 +65,7 @@
       "title": "A hypothesis collects at least one concept",
       "summary": "The check that refuses a case holding a hypothesis that collects nothing.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "questions": 1
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/read-only-capability",
@@ -77,7 +74,7 @@
       "title": "Every collected concept has a read-only capability",
       "summary": "The check that refuses a case collecting a concept no read-only capability answers, decided where the case is validated and without calling anything.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
       "unresolved": [
         "definition/integration/capability#attributes.output_schema"
       ],
@@ -90,7 +87,7 @@
       "title": "A referral goes to a published role",
       "summary": "The check that refuses a case whose referral names a recipient the glossary does not publish as an operational role.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
       "questions": 1
     },
     {
@@ -100,7 +97,7 @@
       "title": "A case names only published terms",
       "summary": "The check that refuses a case naming a term the glossary does not publish under the kind the case uses it as.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/case-validator/unique-hypothesis-names",
@@ -109,8 +106,8 @@
       "title": "Hypothesis names are unique within a case",
       "summary": "The check that refuses the publication of a case whose declared hypotheses include two carrying the same name.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "questions": 2
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
+      "questions": 1
     },
     {
       "id": "task/case-validator/validation-run",
@@ -119,7 +116,7 @@
       "title": "Running the checks over one case",
       "summary": "One validation over one case that runs every check registered for it, refuses the case when any check refuses, and reports every refusal it collected.",
       "epic": "case-validator",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
       "questions": 2
     },
     {
@@ -129,7 +126,7 @@
       "title": "The assessment that carries a resolution",
       "summary": "The assessment as the construct that names the determining hypothesis, carries the resolution reached and reads back the text it was written with.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/published-case/case-structure",
@@ -138,10 +135,7 @@
       "title": "The published case as one constructed thing",
       "summary": "The case with its identity and publication metadata, its declared subject type, its hypotheses in the order it declares them, and the resolutions and referrals it declares, constructed as one thing and readable back exactly as declared.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "unresolved": [
-        "definition/glossary/outcome#attributes.name.values.[]"
-      ]
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/published-case/collection-plan",
@@ -150,7 +144,10 @@
       "title": "What a published case collects",
       "summary": "The union of the concepts the case's hypotheses collect, each concept once, answered from the case's structured declarations alone.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
+      "unresolved": [
+        "definition/knowledge/case#attributes.content_hash.derivation"
+      ]
     },
     {
       "id": "task/published-case/evaluation-citations",
@@ -159,7 +156,7 @@
       "title": "What a decided evaluation cites",
       "summary": "The citations a confirming or refuting evaluation rests on, each naming a concept its hypothesis collects and a field within it.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
       "unresolved": [
         "definition/integration/capability#attributes.output_schema"
       ],
@@ -172,7 +169,7 @@
       "title": "The evaluation of one hypothesis",
       "summary": "The verdict on one named hypothesis, carrying why it could not decide when the verdict is inconclusive, and keeping the verdict it received whatever an earlier hypothesis did.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     },
     {
       "id": "task/published-case/outcome-resolution",
@@ -181,8 +178,10 @@
       "title": "The resolution a published case answers with",
       "summary": "The assessment a published case answers with, carrying the resolution the case resolved by the precedence it declared, naming the hypothesis that determined it, and leaving every evaluation standing.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af",
-      "questions": 1
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092",
+      "unresolved": [
+        "definition/knowledge/case#attributes.no_hypothesis_confirmed.selection"
+      ]
     },
     {
       "id": "task/published-case/required-evaluations",
@@ -191,7 +190,7 @@
       "title": "Which hypotheses require an evaluation",
       "summary": "The hypotheses of a published case that require a verdict, in the order the case declares them, each named by the name that identifies it within its case.",
       "epic": "published-case",
-      "base": "sha256:3d7bf173f490f874dc387c6acbeaad9dd61bc643027fe81035bded739b3586af"
+      "base": "sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092"
     }
   ],
   "edges": [
@@ -215,49 +214,49 @@
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "to": "definition/knowledge/draft-case",
       "kind": "covers",
       "at": "covers[12]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "to": "lifecycle/knowledge/case-publication",
       "kind": "covers",
       "at": "covers[13]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "to": "rule/knowledge/case-has-at-least-one-hypothesis",
       "kind": "covers",
       "at": "covers[14]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "to": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
       "kind": "covers",
       "at": "covers[15]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
       "kind": "covers",
       "at": "covers[16]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
       "kind": "covers",
       "at": "covers[17]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/every-collected-concept-declares-a-ttl",
+      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
       "kind": "covers",
       "at": "covers[18]"
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
       "kind": "covers",
       "at": "covers[19]"
     },
@@ -269,9 +268,21 @@
     },
     {
       "from": "epic/case-validator",
-      "to": "rule/glossary/recipient-is-a-role",
+      "to": "rule/knowledge/every-collected-concept-declares-a-ttl",
       "kind": "covers",
       "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-validator",
+      "to": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-validator",
+      "to": "rule/glossary/recipient-is-a-role",
+      "kind": "covers",
+      "at": "covers[22]"
     },
     {
       "from": "epic/case-validator",
@@ -413,6 +424,12 @@
     },
     {
       "from": "epic/published-case",
+      "to": "rule/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/published-case",
       "to": "definition/knowledge/hypothesis",
       "kind": "covers",
       "at": "covers[2]"
@@ -479,75 +496,87 @@
     },
     {
       "from": "task/case-validator/at-least-one-hypothesis",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[1]"
     },
     {
       "from": "task/case-validator/at-least-one-hypothesis",
-      "to": "definition/knowledge/hypothesis",
+      "to": "definition/knowledge/case",
       "kind": "binds",
       "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validator/at-least-one-hypothesis",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
     },
     {
       "from": "task/case-validator/at-least-one-hypothesis",
       "to": "aggregate/knowledge/cases",
-      "kind": "binds",
-      "at": "nodes[3]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "task/case-validator/validation-run",
-      "kind": "depends_on",
-      "at": "depends_on[0]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "task/case-validator/glossary-lookup",
-      "kind": "depends_on",
-      "at": "depends_on[1]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "task/published-case/case-structure",
-      "kind": "depends_on",
-      "at": "depends_on[2]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
-      "kind": "binds",
-      "at": "nodes[0]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "definition/knowledge/case",
-      "kind": "binds",
-      "at": "nodes[1]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "definition/knowledge/hypothesis",
-      "kind": "binds",
-      "at": "nodes[2]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "definition/glossary/concept",
-      "kind": "binds",
-      "at": "nodes[3]"
-    },
-    {
-      "from": "task/case-validator/concept-accepts-the-subject-type",
-      "to": "definition/glossary/subject-type",
       "kind": "binds",
       "at": "nodes[4]"
     },
     {
       "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "task/case-validator/validation-run",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "task/case-validator/glossary-lookup",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "task/published-case/case-structure",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
       "to": "aggregate/knowledge/cases",
       "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "definition/glossary/subject-type",
+      "kind": "binds",
       "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validator/concept-accepts-the-subject-type",
+      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "kind": "binds",
+      "at": "nodes[6]"
     },
     {
       "from": "task/case-validator/concept-declares-a-ttl",
@@ -575,7 +604,7 @@
     },
     {
       "from": "task/case-validator/concept-declares-a-ttl",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[1]"
     },
@@ -647,33 +676,27 @@
     },
     {
       "from": "task/case-validator/hypothesis-collects-a-concept",
-      "to": "aggregate/knowledge/cases",
+      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
       "kind": "binds",
       "at": "nodes[0]"
     },
     {
       "from": "task/case-validator/hypothesis-collects-a-concept",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/hypothesis",
       "kind": "binds",
       "at": "nodes[1]"
     },
     {
       "from": "task/case-validator/hypothesis-collects-a-concept",
-      "to": "definition/knowledge/hypothesis",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[2]"
     },
     {
       "from": "task/case-validator/hypothesis-collects-a-concept",
-      "to": "definition/glossary/concept",
+      "to": "aggregate/knowledge/cases",
       "kind": "binds",
       "at": "nodes[3]"
-    },
-    {
-      "from": "task/case-validator/hypothesis-collects-a-concept",
-      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
-      "kind": "binds",
-      "at": "nodes[4]"
     },
     {
       "from": "task/case-validator/read-only-capability",
@@ -695,105 +718,117 @@
     },
     {
       "from": "task/case-validator/read-only-capability",
-      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "to": "aggregate/knowledge/cases",
       "kind": "binds",
       "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validator/read-only-capability",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validator/read-only-capability",
+      "to": "definition/knowledge/case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validator/read-only-capability",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validator/read-only-capability",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[4]"
     },
     {
       "from": "task/case-validator/read-only-capability",
       "to": "definition/integration/capability",
       "kind": "binds",
-      "at": "nodes[1]"
-    },
-    {
-      "from": "task/case-validator/read-only-capability",
-      "to": "definition/glossary/concept",
-      "kind": "binds",
-      "at": "nodes[2]"
-    },
-    {
-      "from": "task/case-validator/read-only-capability",
-      "to": "definition/knowledge/case",
-      "kind": "binds",
-      "at": "nodes[3]"
-    },
-    {
-      "from": "task/case-validator/read-only-capability",
-      "to": "definition/knowledge/hypothesis",
-      "kind": "binds",
-      "at": "nodes[4]"
-    },
-    {
-      "from": "task/case-validator/read-only-capability",
-      "to": "aggregate/knowledge/cases",
-      "kind": "binds",
       "at": "nodes[5]"
     },
     {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "task/case-validator/validation-run",
-      "kind": "depends_on",
-      "at": "depends_on[0]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "task/case-validator/glossary-lookup",
-      "kind": "depends_on",
-      "at": "depends_on[1]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "task/published-case/case-structure",
-      "kind": "depends_on",
-      "at": "depends_on[2]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "aggregate/knowledge/cases",
-      "kind": "binds",
-      "at": "nodes[0]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "definition/knowledge/case",
-      "kind": "binds",
-      "at": "nodes[1]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "definition/knowledge/hypothesis",
-      "kind": "binds",
-      "at": "nodes[2]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "definition/knowledge/resolution",
-      "kind": "binds",
-      "at": "nodes[3]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "definition/knowledge/referral",
-      "kind": "binds",
-      "at": "nodes[4]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "definition/glossary/recipient",
-      "kind": "binds",
-      "at": "nodes[5]"
-    },
-    {
-      "from": "task/case-validator/recipient-is-a-role",
-      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "from": "task/case-validator/read-only-capability",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
       "kind": "binds",
       "at": "nodes[6]"
     },
     {
       "from": "task/case-validator/recipient-is-a-role",
-      "to": "rule/glossary/recipient-is-a-role",
+      "to": "task/case-validator/validation-run",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "task/case-validator/glossary-lookup",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "task/published-case/case-structure",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "aggregate/knowledge/cases",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "definition/glossary/recipient",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
       "kind": "binds",
       "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-validator/recipient-is-a-role",
+      "to": "rule/glossary/recipient-is-a-role",
+      "kind": "binds",
+      "at": "nodes[8]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
@@ -821,37 +856,43 @@
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "to": "definition/glossary/recipient",
       "kind": "binds",
       "at": "nodes[10]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/knowledge/case",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "binds",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "task/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[1]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/knowledge/hypothesis",
+      "to": "definition/knowledge/case",
       "kind": "binds",
       "at": "nodes[2]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/knowledge/resolution",
+      "to": "definition/knowledge/hypothesis",
       "kind": "binds",
       "at": "nodes[3]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/knowledge/referral",
+      "to": "definition/knowledge/resolution",
       "kind": "binds",
       "at": "nodes[4]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/glossary/concept",
+      "to": "definition/knowledge/referral",
       "kind": "binds",
       "at": "nodes[5]"
     },
@@ -863,19 +904,19 @@
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/glossary/outcome",
+      "to": "definition/glossary/concept",
       "kind": "binds",
       "at": "nodes[7]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/glossary/action",
+      "to": "definition/glossary/outcome",
       "kind": "binds",
       "at": "nodes[8]"
     },
     {
       "from": "task/case-validator/terms-exist-in-the-glossary",
-      "to": "definition/glossary/recipient",
+      "to": "definition/glossary/action",
       "kind": "binds",
       "at": "nodes[9]"
     },
@@ -899,7 +940,7 @@
     },
     {
       "from": "task/case-validator/unique-hypothesis-names",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[1]"
     },
@@ -923,7 +964,7 @@
     },
     {
       "from": "task/case-validator/validation-run",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/draft-case",
       "kind": "binds",
       "at": "nodes[1]"
     },
@@ -1049,25 +1090,25 @@
     },
     {
       "from": "task/published-case/collection-plan",
-      "to": "aggregate/knowledge/cases",
+      "to": "definition/knowledge/case",
       "kind": "binds",
       "at": "nodes[0]"
     },
     {
       "from": "task/published-case/collection-plan",
-      "to": "definition/knowledge/case",
+      "to": "definition/knowledge/hypothesis",
       "kind": "binds",
       "at": "nodes[1]"
     },
     {
       "from": "task/published-case/collection-plan",
-      "to": "definition/knowledge/hypothesis",
+      "to": "definition/glossary/concept",
       "kind": "binds",
       "at": "nodes[2]"
     },
     {
       "from": "task/published-case/collection-plan",
-      "to": "definition/glossary/concept",
+      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
       "kind": "binds",
       "at": "nodes[3]"
     },
@@ -1076,12 +1117,6 @@
       "to": "process/investigation/diagnose",
       "kind": "binds",
       "at": "nodes[4]"
-    },
-    {
-      "from": "task/published-case/collection-plan",
-      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
-      "kind": "binds",
-      "at": "nodes[5]"
     },
     {
       "from": "task/published-case/evaluation-citations",
@@ -1151,7 +1186,7 @@
     },
     {
       "from": "task/published-case/evaluation-record",
-      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "to": "rule/investigation/an-inconclusive-evaluation-declares-its-reason",
       "kind": "binds",
       "at": "nodes[3]"
     },
@@ -1175,7 +1210,7 @@
     },
     {
       "from": "task/published-case/outcome-resolution",
-      "to": "aggregate/knowledge/cases",
+      "to": "definition/knowledge/case",
       "kind": "binds",
       "at": "nodes[0]"
     },
@@ -1193,49 +1228,55 @@
     },
     {
       "from": "task/published-case/outcome-resolution",
-      "to": "definition/knowledge/case",
+      "to": "process/investigation/diagnose",
       "kind": "binds",
-      "at": "nodes[1]"
+      "at": "nodes[12]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/knowledge/hypothesis",
       "kind": "binds",
-      "at": "nodes[2]"
+      "at": "nodes[1]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/knowledge/resolution",
       "kind": "binds",
-      "at": "nodes[3]"
+      "at": "nodes[2]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/knowledge/referral",
       "kind": "binds",
-      "at": "nodes[4]"
+      "at": "nodes[3]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/investigation/evaluation",
       "kind": "binds",
-      "at": "nodes[5]"
+      "at": "nodes[4]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/investigation/assessment",
       "kind": "binds",
-      "at": "nodes[6]"
+      "at": "nodes[5]"
     },
     {
       "from": "task/published-case/outcome-resolution",
       "to": "definition/glossary/outcome",
       "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/published-case/outcome-resolution",
+      "to": "definition/glossary/action",
+      "kind": "binds",
       "at": "nodes[7]"
     },
     {
       "from": "task/published-case/outcome-resolution",
-      "to": "process/investigation/diagnose",
+      "to": "definition/glossary/recipient",
       "kind": "binds",
       "at": "nodes[8]"
     },
@@ -1283,9 +1324,15 @@
     },
     {
       "from": "task/published-case/required-evaluations",
-      "to": "rule/investigation/one-evaluation-per-hypothesis",
+      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
       "kind": "binds",
       "at": "nodes[5]"
+    },
+    {
+      "from": "task/published-case/required-evaluations",
+      "to": "rule/investigation/one-evaluation-per-hypothesis",
+      "kind": "binds",
+      "at": "nodes[6]"
     }
   ]
 }
