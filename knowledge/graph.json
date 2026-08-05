@@ -1,0 +1,1098 @@
+{
+  "contract_version": "siegard/1",
+  "nodes": [
+    {
+      "id": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "file": "aggregate/knowledge/cases.md",
+      "context": "knowledge",
+      "title": "Cases",
+      "summary": "A case and its hypotheses are written, validated and published as one thing."
+    },
+    {
+      "id": "context/corporate-systems",
+      "kind": "context",
+      "file": "context/corporate-systems.md",
+      "context": "corporate-systems",
+      "title": "Corporate Systems",
+      "summary": "The systems of record every capability ultimately reads from, upstream of the normaliser.",
+      "gaps": [
+        "strategic"
+      ]
+    },
+    {
+      "id": "context/glossary",
+      "kind": "context",
+      "file": "context/glossary.md",
+      "context": "glossary",
+      "title": "Glossary",
+      "summary": "The closed vocabularies and the registry of concepts that every other context speaks.",
+      "gaps": [
+        "strategic"
+      ]
+    },
+    {
+      "id": "context/integration",
+      "kind": "context",
+      "file": "context/integration.md",
+      "context": "integration",
+      "title": "Integration",
+      "summary": "The read-only capabilities that answer a concept, and the normalisation that keeps a corporate system's vocabulary out of the domain."
+    },
+    {
+      "id": "context/investigation",
+      "kind": "context",
+      "file": "context/investigation.md",
+      "context": "investigation",
+      "title": "Investigation",
+      "summary": "One run of a case against one subject — collect, judge each hypothesis, resolve the outcome the case declares, and record what happened."
+    },
+    {
+      "id": "context/knowledge",
+      "kind": "context",
+      "file": "context/knowledge.md",
+      "context": "knowledge",
+      "title": "Curated Knowledge",
+      "summary": "The cases a specialist writes — which hypotheses a reported problem has, what confirms each one, and which one dominates which."
+    },
+    {
+      "id": "definition/glossary/action",
+      "kind": "definition",
+      "file": "definition/glossary/action.md",
+      "context": "glossary",
+      "title": "Action",
+      "summary": "What the recipient of a referral does, drawn from a global vocabulary.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.name.values"
+      ]
+    },
+    {
+      "id": "definition/glossary/concept",
+      "kind": "definition",
+      "file": "definition/glossary/concept.md",
+      "context": "glossary",
+      "title": "Concept",
+      "summary": "A fact an investigation can collect, named once for the whole system and answered by exactly one capability.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.ttl.unit"
+      ]
+    },
+    {
+      "id": "definition/glossary/outcome",
+      "kind": "definition",
+      "file": "definition/glossary/outcome.md",
+      "context": "glossary",
+      "title": "Outcome",
+      "summary": "What an investigation concluded, contributed by each confirmable hypothesis and registered globally.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.name.values.[]"
+      ]
+    },
+    {
+      "id": "definition/glossary/recipient",
+      "kind": "definition",
+      "file": "definition/glossary/recipient.md",
+      "context": "glossary",
+      "title": "Recipient",
+      "summary": "Who a referral goes to, named as an operational role.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.name.values"
+      ]
+    },
+    {
+      "id": "definition/glossary/subject-type",
+      "kind": "definition",
+      "file": "definition/glossary/subject-type.md",
+      "context": "glossary",
+      "title": "Subject Type",
+      "summary": "The kind of thing a case investigates, drawn from a closed vocabulary.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.name.values"
+      ]
+    },
+    {
+      "id": "definition/integration/capability",
+      "kind": "definition",
+      "file": "definition/integration/capability.md",
+      "context": "integration",
+      "title": "Capability",
+      "summary": "What answers one concept — read-only, versioned, with a declared output schema and a deadline.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.output_schema",
+        "attributes.timeout.unit"
+      ]
+    },
+    {
+      "id": "definition/investigation/assessment",
+      "kind": "definition",
+      "file": "definition/investigation/assessment.md",
+      "context": "investigation",
+      "title": "Assessment",
+      "summary": "What the investigation concluded, what to do about it, which hypothesis decided it, and the text written for the recipient.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.text.audience"
+      ]
+    },
+    {
+      "id": "definition/investigation/citation",
+      "kind": "definition",
+      "file": "definition/investigation/citation.md",
+      "context": "investigation",
+      "title": "Citation",
+      "summary": "The concept and the field an evaluation rested on.",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/investigation/evaluation",
+      "kind": "definition",
+      "file": "definition/investigation/evaluation.md",
+      "context": "investigation",
+      "title": "Evaluation",
+      "summary": "The verdict on one hypothesis, with what it rested on or why it could not decide.",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/investigation/evidence",
+      "kind": "definition",
+      "file": "definition/investigation/evidence.md",
+      "context": "investigation",
+      "title": "Evidence",
+      "summary": "What one capability answered about one concept, or the recorded fact that it did not answer.",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.inputs",
+        "attributes.observation",
+        "attributes.retention"
+      ]
+    },
+    {
+      "id": "definition/investigation/investigation",
+      "kind": "definition",
+      "file": "definition/investigation/investigation.md",
+      "context": "investigation",
+      "title": "Investigation",
+      "summary": "One run of one case against one subject, written once and never changed.",
+      "ddd": "entity",
+      "gaps": [
+        "attributes.ticket_ref.required"
+      ]
+    },
+    {
+      "id": "definition/investigation/subject",
+      "kind": "definition",
+      "file": "definition/investigation/subject.md",
+      "context": "investigation",
+      "title": "Subject",
+      "summary": "The one thing an investigation is about, named by its type and its identifier.",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/case",
+      "kind": "definition",
+      "file": "definition/knowledge/case.md",
+      "context": "knowledge",
+      "title": "Case",
+      "summary": "A published diagnostic procedure — its hypotheses in order of precedence, and what to do when none of them confirms.",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/draft-case",
+      "kind": "definition",
+      "file": "definition/knowledge/draft-case.md",
+      "context": "knowledge",
+      "title": "Case Under Edit",
+      "summary": "The same case while a curator is still writing it, before publication turns it into a value identified by its content.",
+      "aggregate": "cases",
+      "ddd": "aggregate-root",
+      "gaps": [
+        "attributes.[]"
+      ]
+    },
+    {
+      "id": "definition/knowledge/hypothesis",
+      "kind": "definition",
+      "file": "definition/knowledge/hypothesis.md",
+      "context": "knowledge",
+      "title": "Hypothesis",
+      "summary": "One falsifiable claim about what is wrong, with what must be collected to decide it and what follows if it holds.",
+      "aggregate": "cases",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/referral",
+      "kind": "definition",
+      "file": "definition/knowledge/referral.md",
+      "context": "knowledge",
+      "title": "Referral",
+      "summary": "The action somebody takes and the role that takes it.",
+      "aggregate": "cases",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/resolution",
+      "kind": "definition",
+      "file": "definition/knowledge/resolution.md",
+      "context": "knowledge",
+      "title": "Resolution",
+      "summary": "What an investigation concluded and what somebody should do about it, taken together.",
+      "aggregate": "cases",
+      "ddd": "value-object"
+    },
+    {
+      "id": "interface/integration/capability-query",
+      "kind": "interface",
+      "file": "interface/integration/capability-query.md",
+      "context": "integration",
+      "title": "Capability query",
+      "summary": "What the investigation context calls to have one concept answered about one subject.",
+      "ddd": "api"
+    },
+    {
+      "id": "interface/investigation/assessment-reviewed",
+      "kind": "interface",
+      "file": "interface/investigation/assessment-reviewed.md",
+      "context": "investigation",
+      "title": "Assessment reviewed",
+      "summary": "An operator's judgement of an assessment, arriving later and from outside.",
+      "ddd": "domain-event",
+      "gaps": [
+        "payload",
+        "upstream"
+      ]
+    },
+    {
+      "id": "interface/investigation/investigation-completed",
+      "kind": "interface",
+      "file": "interface/investigation/investigation-completed.md",
+      "context": "investigation",
+      "title": "Investigation completed",
+      "summary": "The fact that one investigation finished, carrying what it concluded and what it saw.",
+      "ddd": "domain-event"
+    },
+    {
+      "id": "lifecycle/knowledge/case-publication",
+      "kind": "lifecycle",
+      "file": "lifecycle/knowledge/case-publication.md",
+      "context": "knowledge",
+      "title": "Case publication",
+      "summary": "A case moves from being edited to being published, and publication is where its contract with the integration context is verified.",
+      "gaps": [
+        "rejections",
+        "transitions.published.publish"
+      ]
+    },
+    {
+      "id": "process/investigation/diagnose",
+      "kind": "process",
+      "file": "process/investigation/diagnose.md",
+      "context": "investigation",
+      "title": "Diagnose",
+      "summary": "One case run against one subject, from the attendant's choice to the written record and the response.",
+      "ddd": "use-case"
+    },
+    {
+      "id": "rule/glossary/recipient-is-a-role",
+      "kind": "rule",
+      "file": "rule/glossary/recipient-is-a-role.md",
+      "context": "glossary",
+      "title": "A recipient is a role",
+      "summary": "A referral goes to an operational role and never to a named person.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/integration/a-capability-is-read-only",
+      "kind": "rule",
+      "file": "rule/integration/a-capability-is-read-only.md",
+      "context": "integration",
+      "title": "A capability is read-only",
+      "summary": "The system diagnoses and refers, and never acts.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "rule",
+      "file": "rule/integration/evidence-arrives-in-the-glossary-vocabulary.md",
+      "context": "integration",
+      "title": "Evidence arrives in the glossary's vocabulary",
+      "summary": "A corporate system's language stops at the normaliser.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "rule",
+      "file": "rule/investigation/a-decided-evaluation-cites-evidence.md",
+      "context": "investigation",
+      "title": "A decided evaluation cites evidence",
+      "summary": "A verdict that confirms or refutes points at the field it rested on, and the field must exist.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/an-answer-arrives-within-a-declared-deadline",
+      "kind": "rule",
+      "file": "rule/investigation/an-answer-arrives-within-a-declared-deadline.md",
+      "context": "investigation",
+      "title": "An answer arrives within a declared deadline",
+      "summary": "The attendant waits on the line, so the total is declared and shorter than the caller's timeout.",
+      "ddd": "invariant",
+      "gaps": [
+        "expression"
+      ]
+    },
+    {
+      "id": "rule/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "rule",
+      "file": "rule/investigation/an-inconclusive-evaluation-declares-its-reason.md",
+      "context": "investigation",
+      "title": "An inconclusive evaluation declares its reason",
+      "summary": "An absent fact, a failed judgement and an exhausted deadline are three different things and never one.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "rule",
+      "file": "rule/investigation/an-investigation-is-idempotent-within-a-window.md",
+      "context": "investigation",
+      "title": "An investigation is idempotent within a window",
+      "summary": "The same question asked twice inside the window is one investigation, not two.",
+      "ddd": "invariant",
+      "gaps": [
+        "expression"
+      ]
+    },
+    {
+      "id": "rule/investigation/an-investigation-is-written-once",
+      "kind": "rule",
+      "file": "rule/investigation/an-investigation-is-written-once.md",
+      "context": "investigation",
+      "title": "An investigation is written once",
+      "summary": "No intermediate state of the domain ever persists.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/collection-runs-in-the-requester-scope",
+      "kind": "rule",
+      "file": "rule/investigation/collection-runs-in-the-requester-scope.md",
+      "context": "investigation",
+      "title": "Collection runs in the requester's scope",
+      "summary": "What an investigation may see is bounded by what whoever asked for it may see.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/judgment-does-not-infer",
+      "kind": "rule",
+      "file": "rule/investigation/judgment-does-not-infer.md",
+      "context": "investigation",
+      "title": "A judgement never infers",
+      "summary": "What the evidence does not give is inconclusive rather than filled in.",
+      "ddd": "policy"
+    },
+    {
+      "id": "rule/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "rule",
+      "file": "rule/investigation/no-stage-aborts-on-its-deadline.md",
+      "context": "investigation",
+      "title": "No stage aborts on its deadline",
+      "summary": "Exhausting a deadline produces a recorded result and the investigation continues.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/one-evaluation-per-hypothesis",
+      "kind": "rule",
+      "file": "rule/investigation/one-evaluation-per-hypothesis.md",
+      "context": "investigation",
+      "title": "One evaluation per hypothesis",
+      "summary": "Every hypothesis the case declares gets a verdict, and silence is not one.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/the-outcome-comes-from-the-case",
+      "kind": "rule",
+      "file": "rule/investigation/the-outcome-comes-from-the-case.md",
+      "context": "investigation",
+      "title": "The outcome comes from the case",
+      "summary": "Nothing produces an outcome or a referral except the case that declared them.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/the-response-follows-the-record",
+      "kind": "rule",
+      "file": "rule/investigation/the-response-follows-the-record.md",
+      "context": "investigation",
+      "title": "The response follows the record",
+      "summary": "Nobody acts on an assessment that has no record, so the whole response waits for the write.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/the-writing-input-is-narrowed",
+      "kind": "rule",
+      "file": "rule/investigation/the-writing-input-is-narrowed.md",
+      "context": "investigation",
+      "title": "The writing input is narrowed",
+      "summary": "A text cannot contradict the outcome if it never receives the material to.",
+      "ddd": "policy"
+    },
+    {
+      "id": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "kind": "rule",
+      "file": "rule/knowledge/case-has-at-least-one-hypothesis.md",
+      "context": "knowledge",
+      "title": "A case has at least one hypothesis",
+      "summary": "A case with no hypothesis investigates nothing.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "rule",
+      "file": "rule/knowledge/case-terms-exist-in-the-glossary.md",
+      "context": "knowledge",
+      "title": "Every term a case names exists in the glossary",
+      "summary": "A case speaks only the published language, so nothing it names is invented in place.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "kind": "rule",
+      "file": "rule/knowledge/concept-accepts-the-declared-subject-type.md",
+      "context": "knowledge",
+      "title": "A collected concept accepts the case's subject type",
+      "summary": "A case cannot ask for a fact that does not apply to the kind of thing it investigates.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/every-collected-concept-declares-a-ttl",
+      "kind": "rule",
+      "file": "rule/knowledge/every-collected-concept-declares-a-ttl.md",
+      "context": "knowledge",
+      "title": "Every collected concept declares a ttl",
+      "summary": "How stale a fact may be is stated by the concept, not assumed by whoever reads it.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "rule",
+      "file": "rule/knowledge/every-collected-concept-has-a-read-only-capability.md",
+      "context": "knowledge",
+      "title": "Every collected concept has a read-only capability",
+      "summary": "The contract between curated knowledge and integration is checked when publishing, not when running.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "rule",
+      "file": "rule/knowledge/hypotheses-are-ordered-by-precedence.md",
+      "context": "knowledge",
+      "title": "Hypotheses are ordered by precedence",
+      "summary": "The order in which a case lists its hypotheses is the order in which their causes dominate one another.",
+      "aggregate": "cases",
+      "ddd": "policy",
+      "gaps": [
+        "examples"
+      ]
+    },
+    {
+      "id": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "kind": "rule",
+      "file": "rule/knowledge/hypothesis-collects-at-least-one-concept.md",
+      "context": "knowledge",
+      "title": "A hypothesis collects at least one concept",
+      "summary": "A hypothesis that collects nothing could never cite anything.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "kind": "rule",
+      "file": "rule/knowledge/hypothesis-name-is-unique-in-its-case.md",
+      "context": "knowledge",
+      "title": "A hypothesis name is unique in its case",
+      "summary": "Two hypotheses of the same case never share a name, because evaluations are indexed by it.",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "rule",
+      "file": "rule/knowledge/one-falsifiable-claim-per-criterion.md",
+      "context": "knowledge",
+      "title": "One falsifiable claim per criterion",
+      "summary": "A criterion that holds for either of two reasons is two hypotheses.",
+      "aggregate": "cases",
+      "ddd": "policy"
+    },
+    {
+      "id": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "kind": "rule",
+      "file": "rule/knowledge/the-body-does-not-change-what-is-collected.md",
+      "context": "knowledge",
+      "title": "The curator prose never changes what is collected",
+      "summary": "Anything that changes what an investigation collects belongs in the structured part of the case.",
+      "aggregate": "cases",
+      "ddd": "policy"
+    }
+  ],
+  "edges": [
+    {
+      "from": "context/corporate-systems",
+      "to": "context/integration",
+      "kind": "relationship",
+      "at": "relationships[0].with"
+    },
+    {
+      "from": "context/glossary",
+      "to": "context/knowledge",
+      "kind": "relationship",
+      "at": "relationships[0].with"
+    },
+    {
+      "from": "context/glossary",
+      "to": "context/investigation",
+      "kind": "relationship",
+      "at": "relationships[1].with"
+    },
+    {
+      "from": "context/glossary",
+      "to": "context/integration",
+      "kind": "relationship",
+      "at": "relationships[2].with"
+    },
+    {
+      "from": "context/integration",
+      "to": "context/investigation",
+      "kind": "relationship",
+      "at": "relationships[0].with"
+    },
+    {
+      "from": "context/integration",
+      "to": "context/knowledge",
+      "kind": "relationship",
+      "at": "relationships[1].with"
+    },
+    {
+      "from": "context/integration",
+      "to": "context/corporate-systems",
+      "kind": "relationship",
+      "at": "relationships[2].with"
+    },
+    {
+      "from": "context/integration",
+      "to": "context/glossary",
+      "kind": "relationship",
+      "at": "relationships[3].with"
+    },
+    {
+      "from": "context/investigation",
+      "to": "context/knowledge",
+      "kind": "relationship",
+      "at": "relationships[0].with"
+    },
+    {
+      "from": "context/investigation",
+      "to": "context/integration",
+      "kind": "relationship",
+      "at": "relationships[1].with"
+    },
+    {
+      "from": "context/investigation",
+      "to": "context/glossary",
+      "kind": "relationship",
+      "at": "relationships[2].with"
+    },
+    {
+      "from": "context/knowledge",
+      "to": "context/investigation",
+      "kind": "relationship",
+      "at": "relationships[0].with"
+    },
+    {
+      "from": "context/knowledge",
+      "to": "context/glossary",
+      "kind": "relationship",
+      "at": "relationships[1].with"
+    },
+    {
+      "from": "context/knowledge",
+      "to": "context/integration",
+      "kind": "relationship",
+      "at": "relationships[2].with"
+    },
+    {
+      "from": "definition/glossary/concept",
+      "to": "definition/glossary/subject-type",
+      "kind": "attribute.of",
+      "at": "attributes[accepts].of"
+    },
+    {
+      "from": "definition/integration/capability",
+      "to": "definition/glossary/concept",
+      "kind": "attribute.ref",
+      "at": "attributes[concept].target"
+    },
+    {
+      "from": "definition/investigation/assessment",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "attribute.ref",
+      "at": "attributes[determining_hypothesis].target"
+    },
+    {
+      "from": "definition/investigation/assessment",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[resolution].target"
+    },
+    {
+      "from": "definition/investigation/citation",
+      "to": "definition/glossary/concept",
+      "kind": "attribute.ref",
+      "at": "attributes[concept].target"
+    },
+    {
+      "from": "definition/investigation/evaluation",
+      "to": "definition/investigation/citation",
+      "kind": "attribute.of",
+      "at": "attributes[citations].of"
+    },
+    {
+      "from": "definition/investigation/evaluation",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "attribute.ref",
+      "at": "attributes[hypothesis].target"
+    },
+    {
+      "from": "definition/investigation/evidence",
+      "to": "definition/integration/capability",
+      "kind": "attribute.ref",
+      "at": "attributes[capability].target"
+    },
+    {
+      "from": "definition/investigation/evidence",
+      "to": "definition/glossary/concept",
+      "kind": "attribute.ref",
+      "at": "attributes[concept].target"
+    },
+    {
+      "from": "definition/investigation/investigation",
+      "to": "definition/investigation/assessment",
+      "kind": "attribute.ref",
+      "at": "attributes[assessment].target"
+    },
+    {
+      "from": "definition/investigation/investigation",
+      "to": "definition/knowledge/case",
+      "kind": "attribute.ref",
+      "at": "attributes[case_ref].target"
+    },
+    {
+      "from": "definition/investigation/investigation",
+      "to": "definition/investigation/evaluation",
+      "kind": "attribute.of",
+      "at": "attributes[evaluations].of"
+    },
+    {
+      "from": "definition/investigation/investigation",
+      "to": "definition/investigation/evidence",
+      "kind": "attribute.of",
+      "at": "attributes[evidences].of"
+    },
+    {
+      "from": "definition/investigation/investigation",
+      "to": "definition/investigation/subject",
+      "kind": "attribute.ref",
+      "at": "attributes[subject].target"
+    },
+    {
+      "from": "definition/investigation/subject",
+      "to": "definition/glossary/subject-type",
+      "kind": "attribute.ref",
+      "at": "attributes[type].target"
+    },
+    {
+      "from": "definition/knowledge/case",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "attribute.of",
+      "at": "attributes[hypotheses].of"
+    },
+    {
+      "from": "definition/knowledge/case",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[no_hypothesis_confirmed].target"
+    },
+    {
+      "from": "definition/knowledge/case",
+      "to": "definition/glossary/subject-type",
+      "kind": "attribute.ref",
+      "at": "attributes[subject_type].target"
+    },
+    {
+      "from": "definition/knowledge/draft-case",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "definition/knowledge/hypothesis",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "definition/knowledge/hypothesis",
+      "to": "definition/glossary/concept",
+      "kind": "attribute.of",
+      "at": "attributes[collects].of"
+    },
+    {
+      "from": "definition/knowledge/hypothesis",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[resolution].target"
+    },
+    {
+      "from": "definition/knowledge/referral",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "definition/knowledge/referral",
+      "to": "definition/glossary/action",
+      "kind": "attribute.ref",
+      "at": "attributes[action].target"
+    },
+    {
+      "from": "definition/knowledge/referral",
+      "to": "definition/glossary/recipient",
+      "kind": "attribute.ref",
+      "at": "attributes[recipient].target"
+    },
+    {
+      "from": "definition/knowledge/resolution",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "definition/knowledge/resolution",
+      "to": "definition/glossary/outcome",
+      "kind": "attribute.ref",
+      "at": "attributes[outcome].target"
+    },
+    {
+      "from": "definition/knowledge/resolution",
+      "to": "definition/knowledge/referral",
+      "kind": "attribute.ref",
+      "at": "attributes[referral].target"
+    },
+    {
+      "from": "interface/investigation/investigation-completed",
+      "to": "definition/investigation/investigation",
+      "kind": "payload",
+      "at": "payload"
+    },
+    {
+      "from": "lifecycle/knowledge/case-publication",
+      "to": "definition/knowledge/draft-case",
+      "kind": "subject",
+      "at": "subject"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "definition/knowledge/case",
+      "kind": "step",
+      "at": "steps[0].node"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "definition/investigation/evidence",
+      "kind": "step",
+      "at": "steps[1].node"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "definition/investigation/evaluation",
+      "kind": "step",
+      "at": "steps[2].node"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "definition/investigation/assessment",
+      "kind": "step",
+      "at": "steps[3].node"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "definition/investigation/investigation",
+      "kind": "step",
+      "at": "steps[4].node"
+    },
+    {
+      "from": "process/investigation/diagnose",
+      "to": "interface/investigation/investigation-completed",
+      "kind": "step",
+      "at": "steps[5].node"
+    },
+    {
+      "from": "rule/glossary/recipient-is-a-role",
+      "to": "definition/glossary/recipient",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/integration/a-capability-is-read-only",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "to": "definition/investigation/evidence",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/a-decided-evaluation-cites-evidence",
+      "to": "definition/investigation/evaluation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/a-decided-evaluation-cites-evidence",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/an-answer-arrives-within-a-declared-deadline",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "to": "definition/investigation/evaluation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/an-investigation-is-idempotent-within-a-window",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/an-investigation-is-written-once",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/collection-runs-in-the-requester-scope",
+      "to": "definition/investigation/evidence",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/collection-runs-in-the-requester-scope",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/judgment-does-not-infer",
+      "to": "definition/investigation/evaluation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/no-stage-aborts-on-its-deadline",
+      "to": "definition/investigation/evidence",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/no-stage-aborts-on-its-deadline",
+      "to": "definition/investigation/evaluation",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/one-evaluation-per-hypothesis",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/one-evaluation-per-hypothesis",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/the-outcome-comes-from-the-case",
+      "to": "definition/investigation/assessment",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/the-outcome-comes-from-the-case",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/the-response-follows-the-record",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/the-response-follows-the-record",
+      "to": "definition/investigation/assessment",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/the-writing-input-is-narrowed",
+      "to": "definition/investigation/assessment",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "to": "definition/glossary/concept",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/every-collected-concept-declares-a-ttl",
+      "to": "definition/glossary/concept",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    }
+  ]
+}
