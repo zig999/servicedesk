@@ -200,7 +200,12 @@
       "context": "knowledge",
       "title": "Case",
       "summary": "A published diagnostic procedure — its hypotheses in order of precedence, and what to do when none of them confirms.",
-      "ddd": "value-object"
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.content_hash.derivation",
+        "attributes.no_hypothesis_confirmed.selection",
+        "attributes.version.derivation"
+      ]
     },
     {
       "id": "definition/knowledge/draft-case",
@@ -208,12 +213,9 @@
       "file": "definition/knowledge/draft-case.md",
       "context": "knowledge",
       "title": "Case Under Edit",
-      "summary": "The same case while a curator is still writing it, before publication turns it into a value identified by its content.",
+      "summary": "The same case while a curator is still writing it, holding everything the case declares and not yet the version and hash publication assigns.",
       "aggregate": "cases",
-      "ddd": "aggregate-root",
-      "gaps": [
-        "attributes.[]"
-      ]
+      "ddd": "aggregate-root"
     },
     {
       "id": "definition/knowledge/hypothesis",
@@ -739,6 +741,24 @@
       "to": "aggregate/knowledge/cases",
       "kind": "aggregate",
       "at": "aggregate"
+    },
+    {
+      "from": "definition/knowledge/draft-case",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "attribute.of",
+      "at": "attributes[hypotheses].of"
+    },
+    {
+      "from": "definition/knowledge/draft-case",
+      "to": "definition/knowledge/resolution",
+      "kind": "attribute.ref",
+      "at": "attributes[no_hypothesis_confirmed].target"
+    },
+    {
+      "from": "definition/knowledge/draft-case",
+      "to": "definition/glossary/subject-type",
+      "kind": "attribute.ref",
+      "at": "attributes[subject_type].target"
     },
     {
       "from": "definition/knowledge/hypothesis",

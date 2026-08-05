@@ -10,6 +10,7 @@ aliases:
   - procedure
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/perguntas-2026-08-05.md
 attributes:
   - name: slug
     type: string
@@ -45,6 +46,13 @@ attributes:
   - name: content_hash
     type: string
     required: true
+gaps:
+  - field: attributes.version.derivation
+    why: The material states a case is one markdown file versioned in git and that the published case is identified by slug, version and hash, and does not say what sets the version — whether it is the git reference, a number the curator raises, or something publication counts.
+  - field: attributes.content_hash.derivation
+    why: The material states the published case is identified by its content and that an investigation replays against exactly what it read, and does not say what the hash is computed over — the whole file, the structured part alone, or the structured part with the curator prose excluded.
+  - field: attributes.no_hypothesis_confirmed.selection
+    why: The material requires both outcomes of non-conclusion to exist before the first case, because an investigation confirming nothing still has to say which kind of nothing it reached, while giving the case exactly one fallback resolution and forbidding any outcome produced outside the case — so nothing states which of the two a case's fallback carries, nor what would select between them.
 ---
 
 ## What it is
