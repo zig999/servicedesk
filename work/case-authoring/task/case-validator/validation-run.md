@@ -15,10 +15,10 @@ criteria:
 nodes:
   - aggregate/knowledge/cases
   - definition/knowledge/draft-case
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 unresolved:
-  - question: "No node states whether a validation over a case reports every refusal it collected or stops at the first one \u2014 the base states only that each check refuses publication, never how a run carrying several of them answers."
-  - question: "No node states that the checks over a case are registered per run rather than fixed as the base's publication invariants; the only registry the base holds is the capability registry. So nothing says whether no check registered or one check registered is a state the base admits, nor what a case is answered in it."
+  - question: "No candidate node states what a refusal carries \u2014 whether it names the check or the rule that produced it, and where in the case \u2014 so the criterion about answering with that refusal, and the one about answering no refusal none of its checks produced, cannot be demonstrated as anything more than the count criterion already states."
 ---
 
 ## What it is
@@ -29,7 +29,7 @@ The seam every check in this epic is written against.
 ## Notes
 
 The criteria are demonstrable with checks written for the demonstration, so nothing here waits on any particular rule's check being delivered.
-BLOCKING, from the binding — criterion 4 and the summary assert what the system answers over several refusals, and no bound node, and no node in the base, states that every refusal is reported rather than the first.
-From the binding — the case under edit is what every publication check reads, so this task binds the draft; the published value and its three open gaps belong to the publication act rather than to this run.
-From the binding — the seven publication-check rules are left unbound, because this task builds the run and encodes no individual check, and a record answering it could not answer them.
-From the binding — two clauses of the bound nodes reach no criterion, both belonging to the publication act: that a case is published whole or not at all, and that a case under edit becomes published only through publication.
+BLOCKING, from the binding — the bound rule decides that a check must be safe over a malformed case, and that is on this task's own path since it runs every later check over a case an earlier one refused; criterion 4 requires only that later checks run, not that they survive.
+From the binding — the seven check rules state their refusals as publication refusals while this task states them over a validation, and no candidate node relates the two acts; the publish trigger sits outside the claim and carries its own open gap.
+From the binding — eighteen candidates are left unbound, each check rule being its own verdict rather than this task's aggregation; and no candidate node states what determines the set of checks a validation carries.
+From the binding — the recipient-is-a-role rule can be bound by no task validating a case, because its own body states it holds over registration and that nothing verifies it; the epic likely needs it uncovered.

@@ -28,33 +28,30 @@ nodes:
   - definition/knowledge/hypothesis
   - definition/knowledge/resolution
   - definition/knowledge/referral
-  - definition/glossary/subject-type
   - definition/glossary/concept
+  - definition/glossary/subject-type
   - definition/glossary/outcome
   - definition/glossary/action
   - definition/glossary/recipient
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/knowledge/the-body-does-not-change-what-is-collected
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/the-content-hash-covers-the-whole-file
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "Criterion 4 is a round-trip over a required attribute of the published value \u2014 the case is constructed with a version and reads it back. What sets the version is publication's fact, and nothing on this task's path computes or interprets it."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "Criterion 5 is the same round-trip: the case is constructed with a content hash and reads it back. What the hash is computed over is needed by whatever publishes and by whatever compares two published cases, neither of which this task builds."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "Criterion 13 reads back the single fallback resolution the case declares. Which of the two non-conclusion outcomes it carries is a value this task neither selects nor validates; it bears on resolving an investigation, not on constructing and reading back the declaration."
-  - gap: definition/glossary/subject-type#attributes.name.values
-    why: "Criterion 7 reads back the subject type a case declares, referenced by identity; the membership of the closed vocabulary is needed by whatever validates a declaration against it, which is not on this path."
+    why: "Criterion 4 carries back the version the case was declared with; nothing on this task's path produces a version, so what sets it bears on publishing a case rather than on constructing one from declared parts."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "Criterion 11 reads back the concepts a hypothesis collects, by name; nothing here reads, compares or expires against a ttl."
+    why: "A hypothesis names the concepts it collects by identity, so this task constructs no concept and no criterion reads a ttl."
+  - gap: definition/glossary/subject-type#attributes.name.values
+    why: "Criterion 7 carries the declared subject type back by identity and checks no vocabulary membership; which types exist is checked at publication by a rule this task does not bind."
   - gap: definition/glossary/outcome#attributes.name.values.[]
-    why: "Criteria 12 and 14 read back the outcome a resolution was declared with; the base states outcomes are contributed and registered, so the unlisted members are needed by the membership check rather than by this read-back."
+    why: "Criterion 16 reads back a declared outcome reference; the outcomes beyond the two of non-conclusion are contributed when a confirmable hypothesis is authored, and this task registers none."
   - gap: definition/glossary/action#attributes.name.values
-    why: "Criterion 15 reads back the action a referral was declared with, by identity; the named members bear on the membership check this task does not perform."
+    why: "Criterion 17 carries the declared action back by identity; no criterion checks an action against the vocabulary."
   - gap: definition/glossary/recipient#attributes.name.values
-    why: "Criterion 15 reads back the recipient a referral was declared with, by identity; as with the action, the members bear on the membership check."
+    why: "Criterion 17 carries the declared recipient back by identity; no criterion checks a recipient against the vocabulary."
   - gap: rule/knowledge/hypotheses-are-ordered-by-precedence#examples
-    why: "Criterion 8 preserves and reads back the order the case was constructed with; which cause dominates which is a specialist affirmation the node itself says no validator can check."
+    why: "Criterion 8 demonstrates that a declared order is preserved; the rule's body states no validator can check which precedence is correct."
 ---
 
 ## What it is
@@ -68,7 +65,9 @@ The resolution and the referral as the case declares them, each readable back fr
 The order in which hypotheses are listed is load-bearing here rather than incidental, because the base states that the listed order is the order in which their causes dominate one another.
 This task states nothing about a case whose hypotheses share a name, because the uniqueness of the name is decided where publication is validated and the published value this task builds is one that already holds.
 No criterion here states what the structure is written in or where it sits, because no language, toolchain or module layout has been chosen for this project.
-From the binding — version and content hash are assigned by publication, both outside the candidates, so criteria 4 and 5 are read-back of values this task receives and never computes; the executor must not derive either.
-From the binding — the case's own resolving behaviour reaches no criterion of this task, and the investigation-side candidates stay unbound here; they need their own task or an uncovered entry.
-From the binding — criterion 6 only round-trips the curator notes, so no criterion demonstrates that the prose changes nothing collected, and the rule's second clause is an authoring constraint on the case under edit, which this epic leaves uncovered.
-From the binding — no criterion covers refusing a case constructed with no hypothesis, and the rule stating that minimum is outside the candidates.
+BLOCKING, from the binding — the content-hash rule requires the hash to be computed over the whole file, and criterion 5 only reads back a hash the case was declared with, so the computation clause reaches no criterion on the very construct this task builds; the act that would compute it is publication, outside this epic's claim.
+BLOCKING, from the binding — the case declares a minimum of one hypothesis and a hypothesis a minimum of one collected concept, and criterion 15 refuses a case missing a fallback while no criterion refuses either empty list on the same construction path.
+From the binding — the case's own resolution behaviour reaches no criterion, and the fallback-selection rule is left unbound for the same reason: choosing between the two declared fallbacks reads evidence results at investigation time, not at construction.
+From the binding — no criterion validates that a declared subject type, outcome, action or recipient exists in the glossary; that check sits outside this epic's claim.
+From the binding — the field node is left unbound, because a hypothesis names concepts by identity and no criterion reaches a concept's declared fields.
+From the binding — the curator prose rule is bound for the notes attribute, but both its clauses reach no criterion, since nothing here collects.
