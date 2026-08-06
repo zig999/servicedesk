@@ -58,6 +58,14 @@
       "task": "task/case-validator/recipient-is-a-role"
     },
     {
+      "id": "implementation/case-validator/terms-exist-in-the-glossary",
+      "kind": "implementation",
+      "file": "implementation/case-validator/terms-exist-in-the-glossary.md",
+      "title": "Every named term a case uses exists in the glossary",
+      "summary": "The publication check that refuses a case under edit naming a subject type, concept, outcome, action or recipient the glossary does not publish under the kind the case uses it as, reading the case's own subject type, every hypothesis's collected concepts, every hypothesis's own resolution and both of the case's fallback resolutions alike.",
+      "task": "task/case-validator/terms-exist-in-the-glossary"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -152,6 +160,14 @@
       "title": "Recipient-is-a-role check, proof",
       "summary": "Tests over createRecipientIsARoleCheck proving both stated criteria, the recipient-clause refusal shape, that both of a case's fallback resolutions are read independently, and that the check stays safe over a case missing hypotheses or either fallback.",
       "task": "task/case-validator/recipient-is-a-role"
+    },
+    {
+      "id": "proof/case-validator/terms-exist-in-the-glossary",
+      "kind": "proof",
+      "file": "proof/case-validator/terms-exist-in-the-glossary.md",
+      "title": "Proof for terms-exist-in-the-glossary",
+      "summary": "Twenty tests over src/knowledge/case-terms-exist-in-the-glossary.ts proving each of the five term kinds (subject type, concept, outcome, action, recipient) is checked independently against the given glossary, that both fallback resolutions are read for outcome/action/recipient, that the check stays safe over an empty hypotheses list, an absent fallback and an absent subject type, and that refusals are answered in the documented order.",
+      "task": "task/case-validator/terms-exist-in-the-glossary"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -413,6 +429,72 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/draft-case",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "definition/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-validator/terms-exist-in-the-glossary",
+      "to": "task/case-validator/terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-validator/validation-run",
       "to": "aggregate/knowledge/cases",
       "kind": "encodes",
@@ -637,6 +719,12 @@
     {
       "from": "proof/case-validator/recipient-is-a-role",
       "to": "implementation/case-validator/recipient-is-a-role",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/terms-exist-in-the-glossary",
+      "to": "implementation/case-validator/terms-exist-in-the-glossary",
       "kind": "proves",
       "at": "the path"
     },
