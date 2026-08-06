@@ -1,0 +1,87 @@
+---
+title: "Proof that an evaluation records a verdict on one hypothesis and keeps it"
+summary: "What proves task/published-case/evaluation-record over the unchanged createEvaluation, in src/__tests__/unit/investigation/evaluation.spec.ts, with the citation obligation the task's UNDERDETERMINED note names left untested because the construct declares no field it could be demonstrated over."
+implementation: sha256:d975fe6d33a645f41129bc0752863914fd85381e7b6d97da6c0da6035ef55655
+tests:
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back the name of the one hypothesis it decided"
+    proves: "An evaluation reads back the name of the one hypothesis it decided."
+    fails_when: "the constructed evaluation's hypothesis differs from the one handed in — dropped, renamed, defaulted, or read back as anything other than the given name"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "carries only one hypothesis name when it is handed a part naming a second one"
+    proves: "An evaluation carries exactly one hypothesis name."
+    fails_when: "a constructed evaluation carries any slot beyond hypothesis, verdict and reason — so a second hypothesis-shaped part handed in reaching the value, or another name-bearing slot joining the single one, breaks it"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "refuses a construction that gives no verdict, naming the verdict as what is absent"
+    proves: "An evaluation constructed without a verdict is refused."
+    fails_when: "a construction giving no verdict is accepted and a value returned, or is refused without naming the verdict in the message"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "refuses a construction whose parsed verdict is null the same way as one giving none"
+    proves: "An evaluation constructed without a verdict is refused — extended to the shape a parsed, unchecked caller actually hands in (verdict: null), which the parameter's static type alone would not catch."
+    fails_when: "a construction whose verdict parsed to null is accepted rather than refused, or refused without naming the verdict"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads each of the three verdicts back as the verdict it was given"
+    proves: "An evaluation reads back the verdict it received."
+    fails_when: "any of confirmed, refuted or inconclusive is not read back as the verdict it was constructed with"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back why it could not decide when the verdict it carries is inconclusive"
+    proves: "An evaluation whose verdict is inconclusive reads back why it could not decide."
+    fails_when: "an inconclusive evaluation's reason is dropped, altered or not read back as the reason it was constructed with"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads each of the three declared reasons back as the reason it was given"
+    proves: "An evaluation whose verdict is inconclusive reads back why it could not decide — over each of the rule's three distinct reasons, so a construction collapsing two of them would be caught."
+    fails_when: "no-data, judgment-failure or deadline-exhausted is not read back distinctly as the reason it was constructed with"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "refuses an inconclusive construction that declares no reason, naming the reason as what is absent"
+    proves: "An evaluation whose verdict is inconclusive reads back why it could not decide — its refusal half — and the implementation's recorded inference that the reason-declaring invariant is enforced at construction, so no inconclusive evaluation value ever exists without a reason."
+    fails_when: "an inconclusive construction giving no reason is accepted and a value returned, or is refused without naming the reason"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back a reason given beside a confirmed verdict rather than refusing it"
+    proves: "the implementation's recorded inference that a confirmed or refuted evaluation constructed with a reason reads it back rather than being refused."
+    fails_when: "a confirmed construction carrying a reason is refused, or the reason is dropped rather than read back"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back no reason when a confirmed construction gave none"
+    proves: "the reason field's declared optionality on a decided verdict — a confirmed construction given no reason reads back none rather than a substituted or sentinel value."
+    fails_when: "a confirmed construction given no reason reads back anything other than undefined for reason"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back the verdict it received when an evaluation of an earlier hypothesis has already confirmed"
+    proves: "An evaluation reads back the verdict it received even when a hypothesis the case lists earlier has already confirmed."
+    fails_when: "constructing a later evaluation after an earlier one confirmed changes either evaluation's own verdict from the one it was constructed with"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "keeps the verdict it received when a later writer attempts to mark it superseded"
+    proves: "the retention half of the same criterion and the bound node's value-object fact — a constructed evaluation is frozen, so nothing can mark it superseded afterwards."
+    fails_when: "an attempt to overwrite the verdict on an already-constructed evaluation succeeds, either silently or by changing the read-back verdict, instead of throwing while the original verdict survives"
+  - file: "src/__tests__/unit/investigation/evaluation.spec.ts"
+    name: "reads back the verdict it was constructed with after the parts handed in are changed"
+    proves: "the file's stated effect that a constructed evaluation shares nothing with the object handed in, so what it reads back stays what it was constructed with."
+    fails_when: "the constructed evaluation shares the parts object it was handed, so a later change to that object changes the verdict the evaluation reads back"
+not_applicable:
+  - edge_case: "constructing with no hypothesis name, or an empty one"
+    why: "the task states exactly one refusal — the verdict's — and the implementation record's own deferred item records that a hypothesis-absence refusal is deliberately not added; the type already requires the name statically and checking its content is the publication checks' act, outside this record. A test asserting refusal here would fail against a construct that deliberately does not refuse it; a test asserting the opposite would pin a non-criterion."
+  - edge_case: "a boundary at each end of a stated range"
+    why: "no bound node states a length, count or range for anything an evaluation carries."
+  - edge_case: "an empty collection where one comes back"
+    why: "an evaluation carries no collection — one hypothesis name, one verdict, one optional reason."
+  - edge_case: "a duplicate where uniqueness is claimed"
+    why: "the only uniqueness claimed is that two hypotheses of one case never share a name, scoped to the case; this construct holds no case reference and one hypothesis name, so no duplicate can be presented to it. Carrying only one hypothesis slot at all is what the second test above proves."
+  - edge_case: "an operation against state that forbids it"
+    why: "construction is a single pure call with no lifecycle of its own; there is no prior state a call could be attempted against. The nearest concern — a later attempt to alter an already-constructed value — is not a forbidden operation on domain state but the freeze, which the superseding test above exercises."
+  - edge_case: "a dependency that fails or answers slowly"
+    why: "the construct calls nothing outside the language runtime — no store, network, filesystem or external service."
+  - edge_case: "two operations against one subject at once"
+    why: "construction returns a new frozen value and mutates nothing shared, so concurrent calls share no subject; the one shared-object risk — a caller reusing and later mutating the parts object across constructions — is what the last test above exercises."
+untested:
+  - "The task's UNDERDETERMINED note: that no criterion reaches the citation obligation a decided evaluation carries, so a constructor accepting a confirmed or refuted verdict with no citations at all passes every stated criterion while the base refuses it. The Evaluation type declares no citations slot whatsoever — not absent-but-checkable, absent from the shape entirely — so there is no field a test could inspect, populate or omit to exclude that construction here. Excluding it would require asserting a citations guarantee this construct makes no claim to, over a slot that does not exist; the note itself places that obligation's demonstration in the citations task this record joins by dependency, and this proof cannot borrow it without stating a fact about citations no bound node here holds."
+  - "That Evaluation's hypothesis is a single required scalar (not a list), that Verdict and InconclusiveReason are closed to exactly three literals each, and that reason is statically optional — these are compile-time facts the type declares, and no compiler runs in this repository against these tests; what the runtime tests above prove is only what a constructed value reads back, not that the type rejects a malformed shape at the boundary the type system itself polices."
+  - "The standard's STK-10 names Vitest through the project's test script; with no package manifest, script or Vitest present in this repository, the file stays on node:test — the same fallback the sibling assessment-record proof recorded — so this suite's execution and the standard's naming of a runner remain unreconciled here."
+---
+
+## What it is
+
+The spec at src/__tests__/unit/investigation/evaluation.spec.ts, holding createEvaluation to the task's six criteria and to the implementation's recorded inferences about refusal, reason optionality and copy-on-construct, with the citation obligation the task's UNDERDETERMINED note names left untested.
+
+## Notes
+
+The citation obligation named in the task's UNDERDETERMINED note cannot be excluded by a test here because the Evaluation type declares no citations slot at all — the obligation's demonstration belongs to the citations task this record joins by dependency, and asserting it here would state a fact about citations no bound node of this task holds.
+Two refusal tests exercise a parsed, unchecked input (JSON.parse) rather than only a type-violating literal, since the static type alone would not catch a caller that skipped its own validation.
+The suite runs under node:test rather than the standard's named Vitest, the same fallback the sibling assessment-record proof recorded, because no package manifest or Vitest exists in this repository.

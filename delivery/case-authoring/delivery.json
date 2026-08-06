@@ -34,6 +34,14 @@
       "task": "task/published-case/case-structure"
     },
     {
+      "id": "implementation/published-case/evaluation-record",
+      "kind": "implementation",
+      "file": "implementation/published-case/evaluation-record.md",
+      "title": "The evaluation of one hypothesis",
+      "summary": "The evaluation value and its constructor: one verdict against one named hypothesis of a case, refused without a verdict, carrying why it could not decide when inconclusive, and frozen so the verdict it received is the verdict it reads back.",
+      "task": "task/published-case/evaluation-record"
+    },
+    {
       "id": "proof/case-validator/glossary-lookup",
       "kind": "proof",
       "file": "proof/case-validator/glossary-lookup.md",
@@ -64,6 +72,14 @@
       "title": "Proof for the published case as one constructed thing",
       "summary": "What proves task/published-case/case-structure over createCase() in src/knowledge/case.ts: read-back of every declared part, the declared orders held against sorting, each fallback held to its own declaration, and the implementation's recorded inferences pinned as stated choices.",
       "task": "task/published-case/case-structure"
+    },
+    {
+      "id": "proof/published-case/evaluation-record",
+      "kind": "proof",
+      "file": "proof/published-case/evaluation-record.md",
+      "title": "Proof that an evaluation records a verdict on one hypothesis and keeps it",
+      "summary": "What proves task/published-case/evaluation-record over the unchanged createEvaluation, in src/__tests__/unit/investigation/evaluation.spec.ts, with the citation obligation the task's UNDERDETERMINED note names left untested because the construct declares no field it could be demonstrated over.",
+      "task": "task/published-case/evaluation-record"
     }
   ],
   "edges": [
@@ -248,6 +264,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/evaluation-record",
+      "to": "definition/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-record",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-record",
+      "to": "rule/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-record",
+      "to": "task/published-case/evaluation-record",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-validator/glossary-lookup",
       "to": "implementation/case-validator/glossary-lookup",
       "kind": "proves",
@@ -268,6 +308,12 @@
     {
       "from": "proof/published-case/case-structure",
       "to": "implementation/published-case/case-structure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/evaluation-record",
+      "to": "implementation/published-case/evaluation-record",
       "kind": "proves",
       "at": "the path"
     }
