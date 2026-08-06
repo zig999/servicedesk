@@ -50,6 +50,14 @@
       "task": "task/case-validator/read-only-capability"
     },
     {
+      "id": "implementation/case-validator/recipient-is-a-role",
+      "kind": "implementation",
+      "file": "implementation/case-validator/recipient-is-a-role.md",
+      "title": "A referral goes to a published role",
+      "summary": "The publication check that refuses a case under edit whose referral names a recipient the glossary does not publish, reading every hypothesis's resolution and both of the case's fallback resolutions alike, and staying safe over an empty hypotheses list or an absent fallback.",
+      "task": "task/case-validator/recipient-is-a-role"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -136,6 +144,14 @@
       "title": "Every collected concept has a read-only capability — proof",
       "summary": "Tests over src/knowledge/every-collected-concept-has-a-read-only-capability.ts proving all four criteria, excluding both UNDERDETERMINED implementations the binding named, and making the no-invocation criterion fail on an actual call rather than on a well-worded assertion.",
       "task": "task/case-validator/read-only-capability"
+    },
+    {
+      "id": "proof/case-validator/recipient-is-a-role",
+      "kind": "proof",
+      "file": "proof/case-validator/recipient-is-a-role.md",
+      "title": "Recipient-is-a-role check, proof",
+      "summary": "Tests over createRecipientIsARoleCheck proving both stated criteria, the recipient-clause refusal shape, that both of a case's fallback resolutions are read independently, and that the check stays safe over a case missing hypotheses or either fallback.",
+      "task": "task/case-validator/recipient-is-a-role"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -361,6 +377,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/draft-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "definition/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-validator/recipient-is-a-role",
+      "to": "task/case-validator/recipient-is-a-role",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-validator/validation-run",
       "to": "aggregate/knowledge/cases",
       "kind": "encodes",
@@ -579,6 +631,12 @@
     {
       "from": "proof/case-validator/read-only-capability",
       "to": "implementation/case-validator/read-only-capability",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/recipient-is-a-role",
+      "to": "implementation/case-validator/recipient-is-a-role",
       "kind": "proves",
       "at": "the path"
     },
