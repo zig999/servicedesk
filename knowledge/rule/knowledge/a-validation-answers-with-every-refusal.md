@@ -6,6 +6,7 @@ statement: A validation of a case MUST run every check it carries, whatever any 
 expression: count(refusals answered) == count(checks that refused)
 sources:
   - intake/decisoes-seis-perguntas-2026-08-05.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 constrains:
   - definition/knowledge/draft-case
 examples:
@@ -22,3 +23,4 @@ A validation that stopped at the first refusal would cost a publish-and-correct 
 
 Every check runs even over a case another check has already refused, which is what makes the whole list reachable.
 A check must therefore be safe over a malformed case: the check that a hypothesis collects a concept walks a case with no hypothesis at all without failing, and simply refuses nothing.
+What each refusal carries is the refusal construct's — the rule that refused, the position in the case, and the text for the curator — and the same rule refusing at two positions produces two refusals.

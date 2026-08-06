@@ -6,6 +6,7 @@ identity:
   - name
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: name
     type: enum
@@ -27,3 +28,4 @@ Two outcomes of non-conclusion exist before any case does, because an investigat
 ## Rules
 
 An outcome a case names must exist in the glossary.
+A term looked up in the glossary is answered as published only where it equals a published name of its kind under exact character comparison.

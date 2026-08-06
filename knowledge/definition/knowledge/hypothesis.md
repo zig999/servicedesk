@@ -7,6 +7,7 @@ identity:
   - name
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: name
     type: string
@@ -31,7 +32,7 @@ attributes:
 
 The investigation of a hypothesis is the pair of what it collects and the criterion that decides it, and both sit inline in the case.
 The criterion is prose because it is the one place a specialist's nuance is the value, and structuring it would hand curation back to a developer.
-What replaces determinism there is traceability that a machine can check — an evaluation must cite a concept and a field, and the field must exist in the capability's output schema.
+What replaces determinism there is traceability that a machine can check — an evaluation must cite a concept and a field, and the field must be one the cited concept declares.
 
 ## Rules
 

@@ -244,6 +244,15 @@
       "ddd": "value-object"
     },
     {
+      "id": "definition/knowledge/refusal",
+      "kind": "definition",
+      "file": "definition/knowledge/refusal.md",
+      "context": "knowledge",
+      "title": "Refusal",
+      "summary": "One reason one case did not pass validation — the rule that refused, where in the case it refused, and the text written for the curator.",
+      "ddd": "value-object"
+    },
+    {
       "id": "definition/knowledge/resolution",
       "kind": "definition",
       "file": "definition/knowledge/resolution.md",
@@ -304,6 +313,15 @@
       "title": "Diagnose",
       "summary": "One case run against one subject, from the attendant's choice to the written record and the response.",
       "ddd": "use-case"
+    },
+    {
+      "id": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "rule",
+      "file": "rule/glossary/a-lookup-matches-a-published-name-exactly.md",
+      "context": "glossary",
+      "title": "A lookup matches a published name exactly",
+      "summary": "A term consulted in the glossary is compared to a published name character for character, the same comparison hypothesis names get.",
+      "ddd": "invariant"
     },
     {
       "id": "rule/glossary/recipient-is-a-role",
@@ -384,6 +402,15 @@
       "ddd": "invariant"
     },
     {
+      "id": "rule/investigation/an-unattempted-concept-records-a-timeout",
+      "kind": "rule",
+      "file": "rule/investigation/an-unattempted-concept-records-a-timeout.md",
+      "context": "investigation",
+      "title": "An unattempted concept records a timeout",
+      "summary": "A concept the collection never reached is an evidence carrying the timeout result, never an absent evidence.",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/investigation/collection-runs-in-the-requester-scope",
       "kind": "rule",
       "file": "rule/investigation/collection-runs-in-the-requester-scope.md",
@@ -417,6 +444,15 @@
       "context": "investigation",
       "title": "One evaluation per hypothesis",
       "summary": "Every hypothesis the case declares gets a verdict, and silence is not one.",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/investigation/one-evidence-per-collected-concept",
+      "kind": "rule",
+      "file": "rule/investigation/one-evidence-per-collected-concept.md",
+      "context": "investigation",
+      "title": "One evidence per collected concept",
+      "summary": "The evidence of an investigation is total over what its case collects — exactly one per concept, whatever happened to the attempt.",
       "ddd": "invariant"
     },
     {
@@ -574,6 +610,15 @@
       "title": "The fallback follows what the collection returned",
       "summary": "When nothing confirms, the case answers with the no-data fallback where any evidence fell short, and with the exhausted fallback where every evidence answered.",
       "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "rule",
+      "file": "rule/knowledge/two-positions-are-two-refusals.md",
+      "context": "knowledge",
+      "title": "Two positions are two refusals",
+      "summary": "The same rule refusing a case at two places produces one refusal per place, never one covering both.",
+      "ddd": "invariant"
     }
   ],
   "edges": [
@@ -678,6 +723,12 @@
       "to": "definition/glossary/concept",
       "kind": "attribute.ref",
       "at": "attributes[concept].target"
+    },
+    {
+      "from": "definition/integration/capability",
+      "to": "definition/glossary/observation-field",
+      "kind": "attribute.of",
+      "at": "attributes[output_schema].of"
     },
     {
       "from": "definition/investigation/assessment",
@@ -914,6 +965,36 @@
       "at": "steps[5].node"
     },
     {
+      "from": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "to": "definition/glossary/concept",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "to": "definition/glossary/subject-type",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "to": "definition/glossary/outcome",
+      "kind": "constrains",
+      "at": "constrains[2]"
+    },
+    {
+      "from": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "to": "definition/glossary/action",
+      "kind": "constrains",
+      "at": "constrains[3]"
+    },
+    {
+      "from": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "to": "definition/glossary/recipient",
+      "kind": "constrains",
+      "at": "constrains[4]"
+    },
+    {
       "from": "rule/glossary/recipient-is-a-role",
       "to": "definition/glossary/recipient",
       "kind": "constrains",
@@ -968,6 +1049,12 @@
       "at": "constrains[0]"
     },
     {
+      "from": "rule/investigation/an-unattempted-concept-records-a-timeout",
+      "to": "definition/investigation/evidence",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
       "from": "rule/investigation/collection-runs-in-the-requester-scope",
       "to": "definition/investigation/evidence",
       "kind": "constrains",
@@ -1006,6 +1093,18 @@
     {
       "from": "rule/investigation/one-evaluation-per-hypothesis",
       "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/investigation/one-evidence-per-collected-concept",
+      "to": "definition/investigation/investigation",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/investigation/one-evidence-per-collected-concept",
+      "to": "definition/investigation/evidence",
       "kind": "constrains",
       "at": "constrains[1]"
     },
@@ -1188,6 +1287,12 @@
       "to": "definition/investigation/evidence",
       "kind": "constrains",
       "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/two-positions-are-two-refusals",
+      "to": "definition/knowledge/refusal",
+      "kind": "constrains",
+      "at": "constrains[0]"
     }
   ]
 }

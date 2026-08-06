@@ -6,6 +6,7 @@ identity:
   - name
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: name
     type: string
@@ -23,3 +24,4 @@ It names a role and never a person, which is what keeps a referral valid when wh
 ## Rules
 
 A recipient a case names must exist in the glossary.
+A term looked up in the glossary is answered as published only where it equals a published name of its kind under exact character comparison.

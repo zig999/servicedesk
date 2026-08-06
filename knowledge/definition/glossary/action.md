@@ -6,6 +6,7 @@ identity:
   - name
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: name
     type: string
@@ -23,3 +24,4 @@ A new term enters this vocabulary when what somebody does changes, and never whe
 ## Rules
 
 An action a case names must exist in the glossary.
+A term looked up in the glossary is answered as published only where it equals a published name of its kind under exact character comparison.

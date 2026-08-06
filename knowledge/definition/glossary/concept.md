@@ -7,6 +7,7 @@ identity:
   - name
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
   - intake/decisoes-seis-perguntas-2026-08-05.md
 attributes:
   - name: name
@@ -42,3 +43,4 @@ Its ttl says how stale the fact behind it may be, and it is the strictest tolera
 
 A concept a case names must exist in the glossary, must declare a ttl, must declare the fields its answer carries, and must accept that case's type of subject.
 A concept named by a case that has no registered read-only capability makes the case unpublishable.
+A term looked up in the glossary is answered as published only where it equals a published name of its kind under exact character comparison.

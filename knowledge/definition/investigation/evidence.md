@@ -6,6 +6,7 @@ identity:
   - concept
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: concept
     type: ref
@@ -56,3 +57,5 @@ That is what lets a stage exhaust its deadline without aborting the investigatio
 
 An evidence reaches the domain in the glossary's vocabulary and never in the vocabulary of the system that produced it.
 An evidence whose result is not ok still counts as the answer for its concept.
+An investigation records exactly one evidence for every concept its case's hypotheses collect.
+A concept the collection never attempted is recorded as an evidence carrying the timeout result, never as an absent evidence.

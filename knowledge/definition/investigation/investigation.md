@@ -7,6 +7,7 @@ identity:
 rationale: The material also records an investigation's cost in calls and tokens and its duration per stage, and the analysis left both out as measurement of the implementation rather than facts the business decided, while keeping the pins that make a replay possible because the material states reproducibility as a guarantee.
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-cinco-perguntas-2026-08-06.md
 attributes:
   - name: id
     type: string
@@ -67,5 +68,6 @@ Two requests sharing subject, case and ticket inside the window get the same inv
 ## Rules
 
 An investigation carries exactly one evaluation for every hypothesis its case declares.
+An investigation records exactly one evidence for every concept its case's hypotheses collect.
 The response to the requester leaves only after the investigation is written.
 The marker for an investigation in progress lives outside the investigation, so being written once stays true.
