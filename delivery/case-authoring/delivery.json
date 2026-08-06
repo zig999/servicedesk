@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/1",
   "nodes": [
     {
+      "id": "implementation/case-validator/at-least-one-hypothesis",
+      "kind": "implementation",
+      "file": "implementation/case-validator/at-least-one-hypothesis.md",
+      "title": "The check that a case declares at least one hypothesis",
+      "summary": "The publication check that refuses a case under edit whose declared hypotheses list is empty, and refuses nothing where it holds one or more.",
+      "task": "task/case-validator/at-least-one-hypothesis"
+    },
+    {
       "id": "implementation/case-validator/glossary-lookup",
       "kind": "implementation",
       "file": "implementation/case-validator/glossary-lookup.md",
@@ -48,6 +56,14 @@
       "title": "Which hypotheses require an evaluation",
       "summary": "requiredEvaluations() in src/knowledge/required-evaluations.ts enumerates a published case's declared hypothesis names, in the case's declared order, without reading any evaluation.",
       "task": "task/published-case/required-evaluations"
+    },
+    {
+      "id": "proof/case-validator/at-least-one-hypothesis",
+      "kind": "proof",
+      "file": "proof/case-validator/at-least-one-hypothesis.md",
+      "title": "Proof for the check that a case declares at least one hypothesis",
+      "summary": "Tests over caseHasAtLeastOneHypothesis proving it refuses an empty hypotheses list, passes one or several hypotheses through unrefused, freezes both answers, and never aborts the validation run it sits inside.",
+      "task": "task/case-validator/at-least-one-hypothesis"
     },
     {
       "id": "proof/case-validator/glossary-lookup",
@@ -112,6 +128,18 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-validator/at-least-one-hypothesis",
+      "to": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-validator/at-least-one-hypothesis",
+      "to": "task/case-validator/at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-validator/glossary-lookup",
       "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
@@ -344,6 +372,12 @@
       "from": "implementation/published-case/required-evaluations",
       "to": "task/published-case/required-evaluations",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/at-least-one-hypothesis",
+      "to": "implementation/case-validator/at-least-one-hypothesis",
+      "kind": "proves",
       "at": "the path"
     },
     {
