@@ -17,7 +17,7 @@ nodes:
   - rule/knowledge/case-has-at-least-one-hypothesis
   - definition/knowledge/case
   - definition/knowledge/draft-case
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check counts the hypotheses a case declares; how publication sets the version reaches neither the count nor the refusal, so nothing this task demonstrates depends on what settles it."
@@ -34,3 +34,4 @@ UNDERDETERMINED, from the binding — an implementation that answers its refusal
 REMAINDER, from the binding — the case node carries clauses this task's criteria never reach, the two written-out fallbacks for none confirming, the content hash covering the whole file and the curator notes never reaching a prompt; they belong to the tasks delivering the published case's structure and its fallback declarations, within the same epic's claim.
 REMAINDER, from the binding — the case under edit carries clauses this task never reaches, that a case becomes published only through publication and that publication adds the version and the hash; they belong to the task that delivers publication itself, which this plan does not hold.
 From the binding — the hypothesis definition was left unbound deliberately, because this check counts entries of the hypotheses list and inspects none of them, so the hypothesis's own structure governs the neighbouring per-hypothesis checks.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

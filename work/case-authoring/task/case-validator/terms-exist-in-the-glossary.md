@@ -31,7 +31,7 @@ nodes:
   - definition/knowledge/draft-case
   - rule/knowledge/case-terms-exist-in-the-glossary
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check reads the terms a case names — subject type, concepts, outcomes, actions, recipients — and the version is what publication adds afterwards; how the version is derived changes nothing about whether a named term is published in the glossary."
@@ -61,3 +61,4 @@ From the binding — the objective's under-the-kind clause is grounded by the ty
 From the binding — per the every-refusal rule's body this check walks a malformed case without failing, refusing nothing for the absent parts, since other checks own those absences.
 From the binding — the recipient-is-a-role rule, a candidate not bound, states that role-versus-person holds over the glossary's own entries and that a check over a case tests only existence, confirming criterion 4's scope.
 From the binding — the named-term positions include both fallbacks, since the case and the case under edit each declare the no-data and the hypotheses-exhausted fallback as embedded resolutions, so criteria 2 to 4 range over every hypothesis's resolution and both fallback resolutions; the case under edit is bound as what a publication check reads and refuses, the published case as what the rule constrains.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

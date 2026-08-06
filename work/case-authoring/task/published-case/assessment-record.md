@@ -17,7 +17,7 @@ nodes:
   - definition/knowledge/resolution
   - definition/knowledge/hypothesis
   - rule/investigation/the-outcome-comes-from-the-case
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/investigation/assessment#attributes.text.audience
     why: "This task constructs the assessment with a text and reads it back unchanged, deciding nothing about the text's content; what an assessment may expose to the end customer bears on the writing that produces the text, not on carrying it."
@@ -37,3 +37,4 @@ UNDERDETERMINED, from the binding — no criterion checks where the resolution c
 UNDERDETERMINED, from the binding — the assessment node says there is a determining hypothesis when one confirmed and none when the fallback applied, and criteria 3 and 4 each test one attribute in isolation; what passes is a constructor accepting a determining hypothesis alongside a fallback resolution or none alongside a hypothesis-borne one, a pairing the base refuses and a resolution carries no marker to check at construction.
 REMAINDER, from the binding — the assessment node's rules on what the writing receives, the report, the confirmed hypothesis and its evidence when one confirmed, every verdict and reason when none did, and never the curator prose, reach no criterion of this task; they belong to the writing of the assessment text, the diagnose step that composes it from a narrowed input, which this plan does not hold.
 From the binding — demonstrating criterion 1 instantiates a resolution whose embedded parts read through to the referral and the outcome, and those candidates are not bound because no criterion examines a resolution's internals; they are governed where the resolution's shape was delivered.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

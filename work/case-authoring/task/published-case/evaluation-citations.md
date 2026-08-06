@@ -6,7 +6,7 @@ sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
   - intake/escopo-recorte-seis-decisoes.md
-  - intake/escopo-retomada-revinculacao.md
+  - intake/escopo-revinculacao-cinco-decisoes.md
 objective: "An evaluation that confirms or refutes its hypothesis carries at least one citation, and every citation names a concept that hypothesis collects together with a field that concept declares."
 criteria:
   - "An evaluation that confirms its hypothesis reads back at least one citation."
@@ -28,10 +28,10 @@ nodes:
   - definition/knowledge/hypothesis
   - definition/glossary/concept
   - definition/glossary/observation-field
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "The ttl governs how stale the fact behind a concept may be, which bears on evidence freshness during collection; this task validates that a citation names a collected concept and a field that concept declares, and no criterion reads or compares a ttl, so its unit cannot change what any criterion demonstrates."
+    why: "The ttl governs how stale the fact behind an evidence may be; no criterion of this task reads freshness — a citation is checked against the concept's declared observation fields and the hypothesis's collects list, and the ttl touches neither."
 ---
 
 ## What it is
@@ -42,8 +42,10 @@ The tie from a citation back to what its hypothesis collects and to the fields t
 
 ## Notes
 The obligation is asymmetric by the base's own division, so the criterion about an inconclusive verdict asserts only that this obligation does not refuse it.
-The field a citation names is checked against the fields the cited concept declares, so the check reads the glossary's record of the concept and nothing outside the glossary.
 Criterion 9 asserts non-refusal by this rule alone, never acceptance of the evaluation, which other rules may still refuse.
 Nothing here decides what a fact was, or calls anything to obtain one; the citation is recorded, not produced.
-UNDERDETERMINED, from the binding — the base disagrees with itself about what a cited field is checked against, the bound rule and its body placing the check on the fields the cited concept declares while the citation node's rules and the hypothesis's body still say the field must exist in the output schema of the capability that produced the evidence, a node outside the candidates and declared untouched by the epic; what passes is an implementation validating each citation's field only against the concept's declared fields, satisfying every criterion as written, while accepting a citation whose field the producing capability's schema does not carry, which the citation node's stale clause refuses; the stale clauses are the base's to correct through /analyse-domain.
-REMAINDER, from the binding — the evaluation node's clause that an inconclusive evaluation says which of the three reasons it has reaches no criterion here, since criterion 4 only exempts an inconclusive evaluation from the citation requirement; it belongs to the task binding the inconclusive-reason rule, the evaluation-record task this one depends on.
+From the binding — criterion 6's refused identifier is any reference that is not the declared name, since concept and observation field each declare identity by name and the citation binds by identity while its body states citations are by name and never by identifier, so by identity and by name coincide in the base; stated so the implementer does not invent a separate id construct to refuse.
+REMAINDER, from the binding — the evaluation node's clause that an inconclusive evaluation says which of the three reasons it has reaches no criterion, criterion 4 only exempting an inconclusive evaluation from the citation requirement; it belongs to the task binding the inconclusive-reason rule, the evaluation-record task this one depends on.
+REMAINDER, from the binding — the evaluation node's clauses that every hypothesis a case declares gets one evaluation and that what cannot be deduced is inconclusive and never inferred reach no criterion, this task judging only what a decided evaluation cites; they belong to the tasks binding the one-evaluation-per-hypothesis rule and the judging act of the diagnose process.
+REMAINDER, from the binding — the hypothesis and concept nodes carry authoring and publication clauses no criterion here reaches, one falsifiable claim per criterion, unique names, glossary existence, subject-type acceptance and the unpublishable-without-a-capability clause; this task binds the hypothesis only for its collects list and the concept only for its declared fields, and those clauses belong to the validating epic's checks.
+From the binding — the rule's body fixes where the field check's authority sits, in what the concept declares and never in a capability's schema, and the capability is declared untouched by the epic; stated so an implementation does not reach for a capability schema as the reference list.

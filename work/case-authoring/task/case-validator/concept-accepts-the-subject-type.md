@@ -22,7 +22,7 @@ nodes:
   - definition/glossary/subject-type
   - rule/knowledge/concept-accepts-the-declared-subject-type
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check reads the declared subject type and the concepts the hypotheses collect; what sets a published case's version bears on publication identity, not on whether a collected concept accepts the subject type."
@@ -42,3 +42,4 @@ The check reads what the glossary records for a concept through the shared looku
 UNDERDETERMINED, from the binding — the every-refusal rule requires every check to be safe over a malformed case, walking it without failing and refusing nothing, and no criterion of this task poses a malformed case; what passes is an implementation that throws or halts when the case under edit declares no hypotheses, a hypothesis with an empty collects list, or no subject type at all, while meeting every stated criterion.
 REMAINDER, from the binding — the every-refusal rule's clauses that a validation runs every check whatever any earlier check decided and answers with every refusal produced reach no criterion of this task; both belong to the validation-run task that composes the checks into one answer.
 From the binding — neither the criteria nor the bound rule determine this check's behaviour over a collected concept the glossary does not publish, since such a concept has no accepts list to consult; the refusal for an absent term is owned by the terms-exist check, the every-refusal rule guarantees that check runs regardless, and an implementation that either refuses or ignores an unpublished concept satisfies every criterion, the base excluding neither.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

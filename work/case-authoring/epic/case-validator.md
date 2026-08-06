@@ -8,6 +8,7 @@ sources:
   - intake/escopo-revinculacao.md
   - intake/escopo-revinculacao-adendo.md
   - intake/escopo-recorte-seis-decisoes.md
+  - intake/escopo-revinculacao-cinco-decisoes.md
 covers:
   - aggregate/knowledge/cases
   - definition/knowledge/case
@@ -34,6 +35,9 @@ covers:
   - rule/knowledge/one-falsifiable-claim-per-criterion
   - rule/knowledge/a-validation-answers-with-every-refusal
   - rule/glossary/recipient-is-a-role
+  - definition/knowledge/refusal
+  - rule/knowledge/two-positions-are-two-refusals
+  - rule/glossary/a-lookup-matches-a-published-name-exactly
 uncovered:
   - node: lifecycle/knowledge/case-publication
     why: The scope excluded the publication cycle from this invocation and no task of this epic transitions a case into or out of publication; the checks refuse a case being published without owning the act that publishes it, and the node's own open gaps over who approves a publication and how a further version begins are nobody's to triage here.
@@ -61,3 +65,5 @@ The epic claims `definition/integration/capability` because the read-only capabi
 The two fallbacks a case now declares reach this epic only as referral positions a check walks, since selecting between them is the answering epic's.
 The claim reaches the fields a concept declares because the reading of the glossary yields a concept as the glossary records it, and a concept now records them — a binder found that yielding it whole could not be demonstrated without the node those fields are instances of.
 No task here selects a language, a toolchain or a test harness, since the scope names none and the survey found an empty target, and each check's criteria are therefore stated as a refusal or a non-refusal observable from outside whatever is written.
+The claim grows by the refusal construct and the two-positions rule, because the run over one case is what answers with refusals and the base now states what one carries.
+The claim grows by the exact-lookup rule, because the reading of the glossary is this epic's task and the base now states the comparison it uses.

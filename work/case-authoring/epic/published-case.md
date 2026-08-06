@@ -8,6 +8,7 @@ sources:
   - intake/escopo-revinculacao.md
   - intake/escopo-revinculacao-adendo.md
   - intake/escopo-recorte-seis-decisoes.md
+  - intake/escopo-revinculacao-cinco-decisoes.md
 covers:
   - aggregate/knowledge/cases
   - definition/knowledge/case
@@ -37,6 +38,8 @@ covers:
   - rule/investigation/one-evaluation-per-hypothesis
   - rule/investigation/a-decided-evaluation-cites-evidence
   - rule/investigation/an-inconclusive-evaluation-declares-its-reason
+  - rule/investigation/one-evidence-per-collected-concept
+  - rule/investigation/an-unattempted-concept-records-a-timeout
 uncovered:
   - node: definition/knowledge/draft-case
     why: The scope excluded the publication cycle from this invocation, so nothing here authors or holds a case before it is published, and the three behaviours read a case that is already published.
@@ -66,3 +69,4 @@ The epic claims `draft-case` and `case-publication` only to record them as delib
 Every construct this epic builds is a valid one, because a case is published whole or not at all and the published value is what the three answers read.
 `definition/investigation/investigation` and `interface/investigation/investigation-completed` remain outside this claim, because nothing here runs an investigation or writes one.
 No task here selects a language, a toolchain or a test harness, since the scope names none and the survey found an empty target, and each task's criteria are therefore stated as behaviour observable from outside whatever is written.
+The claim grows by the two evidence-totality rules, because the fallback selection reads the results the collection returned and the base now states that reading is total — one evidence per collected concept, a never-attempted one recording a timeout.

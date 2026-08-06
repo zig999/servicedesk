@@ -35,7 +35,7 @@ nodes:
   - definition/investigation/assessment
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/investigation/the-outcome-comes-from-the-case
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This task answers from a published case taken as given; producing the assessment reads the case's hypotheses, order and fallbacks and never reads or sets what derives the version, so no criterion changes with the answer."
@@ -61,3 +61,4 @@ UNDERDETERMINED, from the binding — criteria 1 and 2 test exactly one and two 
 REMAINDER, from the binding — the assessment declares a required text and its rules on what the writing receives reach no criterion of this task, which produces the resolution and determining-hypothesis parts and not the text; they belong to the writing station of the diagnose process, governed by the narrowed-input rule outside these candidates, which this plan does not hold.
 From the binding — criteria 5 and 6 take the fallback selection's yield as given, the fallback rule and the evidence definition deliberately left unbound because the choice between the two fallbacks is the sibling task's; the seam this task honours is only that the assessment carries whichever declared fallback that selection yielded, never a composed third.
 From the binding — the objective's input, the evaluations of its hypotheses, is complete only because the one-evaluation-per-hypothesis rule holds upstream on the investigation; that rule is left unbound here because this task consumes evaluations and never builds the investigation the rule constrains.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

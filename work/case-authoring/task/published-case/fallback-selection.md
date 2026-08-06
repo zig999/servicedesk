@@ -6,6 +6,7 @@ sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
   - intake/escopo-recorte-seis-decisoes.md
+  - intake/escopo-revinculacao-cinco-decisoes.md
 objective: "A case in which no hypothesis confirms resolves to the no-data fallback it declares when any evidence of the investigation carries a result other than ok, and to the hypotheses-exhausted fallback it declares when every evidence carries ok."
 criteria:
   - "A case in which no hypothesis confirms and whose every evidence carries ok resolves to the hypotheses-exhausted fallback it declares."
@@ -20,24 +21,24 @@ depends_on:
   - task/published-case/evaluation-record
 nodes:
   - definition/knowledge/case
-  - definition/knowledge/hypothesis
   - definition/knowledge/resolution
-  - definition/investigation/evidence
   - definition/investigation/evaluation
+  - definition/investigation/evidence
   - rule/knowledge/the-fallback-follows-what-the-collection-returned
   - rule/investigation/the-outcome-comes-from-the-case
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
-unresolved:
-  - question: "No candidate node says whether a concept the collection never attempted — a stage whose deadline was exhausted before it got a slot — is recorded as an evidence carrying a result other than ok or as no evidence at all. The selection reads only the evidences the investigation carries, so with none recorded a case that reached no data would satisfy every-evidence-carries-ok and resolve to the exhausted fallback, which is the distinction this task exists to make."
+  - rule/investigation/one-evaluation-per-hypothesis
+  - rule/investigation/one-evidence-per-collected-concept
+  - rule/investigation/an-unattempted-concept-records-a-timeout
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "The selection reads the case's two declared fallbacks and the evidences' results; what sets a case's version never enters the choice, and no criterion names a version."
+    why: "This selection runs inside one already-published case, pinned by content; what sets the version plays no part in reading the collection's results or choosing between the two fallbacks the case declares."
   - gap: definition/investigation/evidence#attributes.observation
-    why: "The selection reads only the evidence's result, never what the observation carries, so the shape of the observed fact cannot change which fallback is chosen."
+    why: "The selection reads only each evidence's result field; the shape of the observation an ok evidence carries never reaches it."
   - gap: definition/investigation/evidence#attributes.inputs
-    why: "What an evidence was produced from is not read by this selection — only its result is — so the absent shape of the inputs bears on no criterion here."
+    why: "The inputs an evidence was produced from are provenance for replay and review; the selection reads only the result and touches no input."
   - gap: definition/investigation/evidence#attributes.retention
-    why: "Retention and masking govern how long an evidence is kept and what may reach a prompt; this task neither stores nor renders an evidence, it compares results already recorded."
+    why: "Retention and masking govern how long an evidence is kept and what reaches a prompt; the selection reads the result at resolution time and neither stores nor prompts."
 ---
 
 ## What it is
@@ -52,7 +53,9 @@ Criterion 5 is what an implementation demanding that every evidence be non-ok fa
 Criterion 6 is what an implementation composing a resolution of its own fails, and it is stated over the two the case declares rather than over any outcome.
 Criterion 7 bounds the selection to the case in which nothing confirms, which is the only situation the base gives it.
 Both fallbacks carry outcomes the base already enumerates, so no criterion here names an outcome a confirmable hypothesis would contribute.
-From the binding — the outcome-comes-from-the-case rule also requires an assessment to carry what the case resolved, and that clause's remainder stays with the assessment task.
-From the binding — the precondition that no hypothesis confirms rests on every declared hypothesis having a verdict, which is held over a construct outside these candidates; this task takes the evaluations as given.
-From the binding — the inconclusive reason no-data is a neighbouring signal the bound rule deliberately does not use, because the selection reads only the results the collection returned.
-From the binding — the selection copies a declared resolution whole rather than composing one, so the vocabularies inside it do not govern it.
+The evidence set this selection reads is now total by the base's own rules — one evidence per collected concept, a never-attempted one recording a timeout — so every-evidence-carries-ok means every fact arrived, and the earlier question over the never-attempted concept is settled in the base.
+REMAINDER, from the binding — the statements of the one-evidence-per-collected-concept and unattempted-records-a-timeout rules are recording obligations on the collection, and this task consumes what they guarantee without demonstrating either recording clause; they belong to the collection station of the diagnose process, which this plan does not hold.
+REMAINDER, from the binding — the one-evaluation-per-hypothesis statement is a recording obligation on the judgment, consumed here as what makes no-hypothesis-confirms decidable; it belongs to the judgment station of the diagnose process, which this plan does not hold.
+REMAINDER, from the binding — the outcome rule's first clause, that an assessment carries what the case resolved, reaches the assessment's construction and no criterion here; its second clause answers criterion 6, and the first belongs to the task that builds the assessment from what the case resolved.
+REMAINDER, from the binding — the case's positive answer when a hypothesis confirms reaches only criterion 7's negative here, and which confirmed hypothesis wins is the precedence rule's, deliberately left unbound; it belongs to the task that resolves the confirmed path.
+From the binding — the referral, action, recipient and outcome nodes define the internals of the resolutions this selection passes through whole and are left unbound; one seam for the reviewer's eye, the outcome node holds the two pre-existing non-conclusion outcomes and no rule ties each declared fallback to its matching outcome, a pairing this selection does not need because it yields whichever resolution the case declared.

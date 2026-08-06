@@ -20,7 +20,7 @@ nodes:
   - definition/investigation/evaluation
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/investigation/one-evaluation-per-hypothesis
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "The answer enumerates the hypotheses of the published case already in hand; nothing in the objective or the criteria derives, compares, or exposes a version, so how the version is set does not bear here."
@@ -40,3 +40,4 @@ Nothing here reads an evaluation; the answer is computed from the case alone.
 REMAINDER, from the binding — the precedence rule's clause that the order must be the precedence the specialists affirm reaches no criterion, since every criterion holds the answer to the declared order and none holds the declared order to the specialists; the node states no validator can check it, and it belongs to the authoring and publishing of a case, where the human review the base names takes place.
 REMAINDER, from the binding — the one-evaluation-per-hypothesis clause is only half-reached here, since this task fixes the enumeration that totality ranges over while the enforcement over an investigation record, refusing one whose evaluations do not match the declared hypotheses one to one, is not demonstrated by any criterion and the rule also constrains the investigation, outside the candidates; it belongs to the building and validating of an investigation record, which this plan does not hold.
 UNDERDETERMINED, from the binding — criterion 6 as written admits an implementation that reorders the hypotheses of an already-published case in place and re-answers, while the base identifies a case by slug, version and content hash and makes any change to the file a different published case; what passes is an implementation mutating a published case's order in place and treating the reordered file as the same case, so the criterion is demonstrated across two published cases whose declared orders differ, never by mutating one.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

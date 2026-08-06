@@ -19,7 +19,7 @@ nodes:
   - definition/knowledge/draft-case
   - rule/knowledge/hypothesis-name-is-unique-in-its-case
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 ---
 
 ## What it is
@@ -35,3 +35,4 @@ UNDERDETERMINED, from the binding — the criteria never state the comparison th
 UNDERDETERMINED, from the binding — the every-refusal rule requires every check to be safe over a malformed case, and no criterion exercises a case whose hypotheses list is absent or whose hypotheses lack names; what passes is a check that assumes a well-formed list and throws on one that is not, while every criterion as written supplies declared hypotheses.
 REMAINDER, from the binding — the every-refusal rule's statement clauses, that a validation runs every check whatever an earlier one decided and answers with every refusal produced, reach no criterion of this task; they belong to the validation-run task that assembles the checks.
 From the binding — no bound node states what a refusal carries, a message, an identifier or which check produced it; the base admits any refusal construct for criterion 1, and the every-refusal rule implies refusals are attributable to checks, so the shared refusal shape is a seam this check must agree on with the validation run.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

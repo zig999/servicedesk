@@ -20,7 +20,7 @@ nodes:
   - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
     why: "This check decides only whether a concept declares a ttl at all — criterion 3 states it never reads or compares the value — so the unit of the ttl, which is what this gap leaves open, is never reached by any of the task's criteria."
@@ -36,3 +36,4 @@ The third criterion bounds the check to presence, so nothing here interprets or 
 REMAINDER, from the binding — the every-refusal rule is bound for its clause that every check must be safe over a malformed case, while its two statement clauses, that a validation runs every check whatever an earlier one decided and answers with every refusal produced, reach no criterion of this task; they belong to the validation-run task that composes the checks.
 UNDERDETERMINED, from the binding — an implementation that fails when handed a malformed case, one declaring no hypothesis or a hypothesis whose collects list is absent, satisfies every criterion as written since all three describe cases that do collect; what passes is a check that walks the hypotheses' collects assuming both exist and errors on a malformed case, while correctly refusing and not-refusing the well-formed cases the criteria name.
 From the binding — the task says a case collecting a concept while the rule says every concept a case names, and in the bound base the only structured place a case under edit names a concept is the collects list of its hypotheses, so the two readings coincide and no second naming site exists to diverge over.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

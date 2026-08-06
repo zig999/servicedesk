@@ -20,7 +20,7 @@ nodes:
   - rule/knowledge/the-body-does-not-change-what-is-collected
   - rule/knowledge/the-content-hash-covers-the-whole-file
   - process/investigation/diagnose
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "The answer this task demonstrates is the set of concepts read from the case's structured hypotheses; how the version value is set does not change which concepts those declarations name, and criterion 5's two-case distinctness rests on the content hash, which the content-hash rule settles without the version."
@@ -40,3 +40,4 @@ REMAINDER, from the binding — the curator prose rule's second clause, that any
 REMAINDER, from the binding — the content-hash rule grounds criterion 5's premise, two files identical in structure and differing in body text being two published cases, but the clause requiring the hash to be computed over the whole file reaches no criterion here; it belongs to the act of publishing and identifying a case, which this plan does not hold.
 REMAINDER, from the binding — the diagnose process holds the exact fact the objective states, the plan of collection as the union of what the hypotheses collect with every concept once, and its other stations reach no criterion of this task; they belong to the investigation-flow tasks outside this plan.
 From the binding — the evidence definition, unbound, independently states exactly one evidence per concept in an investigation, the downstream mirror of this task's each-concept-once answer; the two agree and nothing here depends on the evidence side.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

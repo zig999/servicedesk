@@ -19,7 +19,7 @@ nodes:
   - definition/knowledge/draft-case
   - aggregate/knowledge/cases
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 ---
 
 ## What it is
@@ -33,3 +33,4 @@ UNDERDETERMINED, from the binding — the every-refusal rule names this check by
 REMAINDER, from the binding — the every-refusal rule's statement clauses, that a validation runs every check whatever any earlier one decided and answers with every refusal those checks produced, reach no criterion of this task, which delivers one check and not the run; they belong to the validation-run task under the same epic.
 REMAINDER, from the binding — the aggregate states a case is published whole or not at all, and this check reads the whole case but publishes nothing; the publication-wholeness clause belongs to the publication act, which this plan does not hold.
 From the binding — no bound node states what a refusal of this check carries, whether it names the failing hypothesis or is bare; the criteria are satisfiable either way, and the shape of one refusal is a form decision the base does not constrain.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

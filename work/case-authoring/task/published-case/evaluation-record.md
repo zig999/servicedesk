@@ -19,7 +19,7 @@ nodes:
   - definition/investigation/evaluation
   - definition/knowledge/hypothesis
   - rule/investigation/an-inconclusive-evaluation-declares-its-reason
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 ---
 
 ## What it is
@@ -35,3 +35,4 @@ The retention criterion is what keeps a verdict from being made suppressible wit
 UNDERDETERMINED, from the binding — no criterion reaches the citation obligation on a decided verdict, which the bound evaluation node states and the citations rule carries as an invariant; what passes is a constructor accepting a confirmed or refuted verdict with no citations at all, which the base refuses; the obligation is demonstrated by the citations task this record joins by a dependency.
 REMAINDER, from the binding — the bound evaluation node's clause that what cannot be deduced from the evidence given is inconclusive and never inferred governs how a verdict is produced, not how the record keeps it; it belongs to the judging step of the diagnose process, which this plan does not hold.
 From the binding — criterion 6 is fully backed by the bound evaluation node, whose body states that precedence never marks a hypothesis as superseded; the case and the precedence rule hold the ordering and the resolving of which hypothesis wins, and neither is needed here since the evaluation takes no input about other hypotheses.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

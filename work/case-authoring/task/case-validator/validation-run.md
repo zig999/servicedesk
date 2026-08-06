@@ -5,6 +5,7 @@ rationale: "Every check in this epic is expressed against the same run and the s
 sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
+  - intake/escopo-revinculacao-cinco-decisoes.md
 objective: "A validation over one case runs every check registered for that run and refuses the case exactly when at least one registered check refuses it."
 criteria:
   - "A run with no check registered does not refuse the case it is given."
@@ -15,10 +16,10 @@ criteria:
 nodes:
   - aggregate/knowledge/cases
   - definition/knowledge/draft-case
+  - definition/knowledge/refusal
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
-unresolved:
-  - question: "No candidate node states what a refusal carries \u2014 whether it names the check or the rule that produced it, and where in the case \u2014 so the criterion about answering with that refusal, and the one about answering no refusal none of its checks produced, cannot be demonstrated as anything more than the count criterion already states."
+  - rule/knowledge/two-positions-are-two-refusals
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 ---
 
 ## What it is
@@ -29,7 +30,8 @@ The seam every check in this epic is written against.
 ## Notes
 
 The criteria are demonstrable with checks written for the demonstration, so nothing here waits on any particular rule's check being delivered.
-BLOCKING, from the binding — the bound rule decides that a check must be safe over a malformed case, and that is on this task's own path since it runs every later check over a case an earlier one refused; criterion 4 requires only that later checks run, not that they survive.
-From the binding — the seven check rules state their refusals as publication refusals while this task states them over a validation, and no candidate node relates the two acts; the publish trigger sits outside the claim and carries its own open gap.
-From the binding — eighteen candidates are left unbound, each check rule being its own verdict rather than this task's aggregation; and no candidate node states what determines the set of checks a validation carries.
-From the binding — the recipient-is-a-role rule can be bound by no task validating a case, because its own body states it holds over registration and that nothing verifies it; the epic likely needs it uncovered.
+The counting rule is bound on the binder's own offer — its statement governs what a check produces and it declares no gap, and the run is the one place of this plan where refusals are counted at all, so the epic's claim over it is answered here rather than left to seven checks severally.
+UNDERDETERMINED, from the binding — the criteria exercise at most one refusal per refusing check, while the every-refusal rule requires the answer to carry every refusal produced, including the two a single check produces at two positions, which the two-positions rule makes two and never one; what passes is a run collapsing the two refusals one check produced at two positions into one, which the base refuses.
+UNDERDETERMINED, from the binding — no criterion states what a reported refusal carries, while the bound refusal construct requires the rule's identifier, the position where it sits at one, and the text for the curator; what passes is a run reporting refusals as opaque messages or a bare count, which the refusal definition refuses.
+REMAINDER, from the binding — the every-refusal rule's clause that a check must be safe over a malformed case binds each check's own implementation, this task's checks being parameters of the run; it belongs to the tasks implementing the individual registered checks of this epic.
+REMAINDER, from the binding — the aggregate states a case is published whole or not at all, and this task validates and refuses without publishing anything; the publishing clause belongs to the act that turns a case under edit into a published case, which this plan does not hold.

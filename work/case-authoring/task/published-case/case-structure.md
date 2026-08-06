@@ -39,7 +39,7 @@ nodes:
   - rule/knowledge/hypotheses-are-ordered-by-precedence
   - rule/knowledge/the-body-does-not-change-what-is-collected
   - rule/knowledge/the-content-hash-covers-the-whole-file
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "Every criterion reads the version back as a declared value; what sets it — git reference, curator-raised number, or a publication count — is a fact about the act that produces the value, and no criterion here derives or checks it."
@@ -76,3 +76,4 @@ UNDERDETERMINED, from the binding — the glossary membership and acceptance cla
 REMAINDER, from the binding — the precedence rule's clause that the order must be the precedence the specialists affirm reaches no criterion, the rule's own body stating no validator can check it; it belongs to human review in the case-authoring act, outside any construct this plan builds.
 REMAINDER, from the binding — the case's clause that the curator notes never reach any prompt reaches no criterion of this task, which composes no prompt; it belongs to the investigation act's judging and writing, where the base restates the same fact on the assessment's narrowed input, outside this plan.
 From the binding — the fallback-selection and outcome rules, the investigation constructs and the observation-field node are left unbound as neighbours, each governing which declared resolution answers or an investigation-time act rather than any construction-and-read-back criterion here.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.

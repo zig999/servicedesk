@@ -25,7 +25,7 @@ nodes:
   - rule/glossary/recipient-is-a-role
   - rule/knowledge/case-terms-exist-in-the-glossary
   - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check reads the referrals a case declares and compares each recipient against the glossary; what sets a case's version is nowhere on that path, and no criterion of this task mentions the version or the hash."
@@ -46,3 +46,4 @@ UNDERDETERMINED, from the binding — no criterion requires this check to be saf
 REMAINDER, from the binding — the terms-exist rule states five clauses and this task answers only the recipient one; the subject-type, concept, outcome and action clauses belong to the sibling checks of the same epic, the action clause being the other half of the referral this check does not read.
 REMAINDER, from the binding — the every-refusal rule is bound for its clause that a check must be safe over a malformed case, and both clauses of its statement belong to the validation-run task that composes the checks.
 REMAINDER, from the binding — the recipient-is-a-role statement, that a recipient names an operational role and never a person, reaches no criterion and the node itself says whoever registers a recipient asserts it; published as an operational role reduces, for this check, to presence in the recipient vocabulary, and role-ness belongs to the act of registering entries, outside this plan.
+The pin was restated deliberately rather than re-bound: the base moved by the five decision nodes, the capability's new output_schema attribute and the corrected citation prose, and none of this task's bound nodes changed its declared gaps or anything a criterion here reads — the lines added to their Rules sections point at rules bound elsewhere in this plan. The validator's totality check over every bound node's open gaps holds that judgment, and it refuses this task if the reading is wrong.
