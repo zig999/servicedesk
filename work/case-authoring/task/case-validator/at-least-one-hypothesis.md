@@ -15,18 +15,12 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - rule/knowledge/case-has-at-least-one-hypothesis
-  - definition/knowledge/draft-case
   - definition/knowledge/case
-  - definition/knowledge/hypothesis
-  - aggregate/knowledge/cases
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - definition/knowledge/draft-case
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "Publication assigns the version; this check counts the hypothesis list of the case under edit, which carries no version at all, and decides without reading one."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "The hash is likewise assigned at publication and is not an input to counting hypotheses; what it is computed over cannot change this check's decision."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "This check reads only the hypothesis list. Which of the two non-conclusion resolutions the fallback carries changes neither the refusal of an empty list nor the acceptance of one or several hypotheses."
+    why: "This check counts the hypotheses a case declares; how publication sets the version reaches neither the count nor the refusal, so nothing this task demonstrates depends on what settles it."
 ---
 
 ## What it is
@@ -36,7 +30,7 @@ A refusal decided from the case's own declarations, reading nothing outside the 
 ## Notes
 
 The two passing criteria assert only that this check does not refuse, since another check may still refuse the same case for its own reason.
-From the binding — the rule constrains the published value while the case under edit is what a publication check refuses, so the base names the checked construct in two places and the executor reads the draft as the one the check reads.
-From the binding — the case under edit declares a minimum of one hypothesis, restating this rule inside the shape, so the base does not say whether an empty list is refused by the shape or by this named check.
-From the binding — the publication act that runs this check, and its open gap over what a publish refusal is, sit outside this epic's claim.
-From the binding — a fixture for criteria 2 and 3 embeds constructs whose own checks belong to other tasks, so it is valid only against this check.
+UNDERDETERMINED, from the binding — an implementation that answers its refusal by aborting the validation it runs in satisfies every criterion as written, yet the a-validation-answers-with-every-refusal rule, a candidate this task does not bind, refuses a validation that stops at the first refusal; what passes is a check that raises or exits on the no-hypothesis case, refusing it but preventing every later check from running.
+REMAINDER, from the binding — the case node carries clauses this task's criteria never reach, the two written-out fallbacks for none confirming, the content hash covering the whole file and the curator notes never reaching a prompt; they belong to the tasks delivering the published case's structure and its fallback declarations, within the same epic's claim.
+REMAINDER, from the binding — the case under edit carries clauses this task never reaches, that a case becomes published only through publication and that publication adds the version and the hash; they belong to the task that delivers publication itself, which this plan does not hold.
+From the binding — the hypothesis definition was left unbound deliberately, because this check counts entries of the hypotheses list and inspects none of them, so the hypothesis's own structure governs the neighbouring per-hypothesis checks.

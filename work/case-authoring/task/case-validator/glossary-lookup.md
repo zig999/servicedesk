@@ -14,23 +14,26 @@ criteria:
   - "The lookup answers from the glossary it was given and holds no term of its own."
 nodes:
   - definition/glossary/concept
+  - definition/glossary/observation-field
   - definition/glossary/subject-type
   - definition/glossary/outcome
   - definition/glossary/action
   - definition/glossary/recipient
-  - rule/knowledge/case-terms-exist-in-the-glossary
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/glossary/recipient-is-a-role
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
+unresolved:
+  - question: "How a looked-up term is compared to a published name — the base decided exact character comparison for hypothesis names inside a case, and states nothing for a glossary lookup, so whether a name differing only in letter case from a published entry is answered as published is a fact no node holds."
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "The lookup yields the concept as the glossary records it and never interprets the ttl, so the integer is carried through whatever its unit means."
+    why: "The lookup yields the concept exactly as the glossary records it, ttl value included, and never interprets the ttl; the unit bears on publication checks and staleness judgments, not on whether a term is published or on what is yielded."
   - gap: definition/glossary/subject-type#attributes.name.values
-    why: "The lookup answers from the glossary it was given and holds no term of its own, so which names populate the vocabulary is data supplied to it rather than a fact it encodes."
+    why: "The lookup answers from whatever glossary it is given; which subject-type names the vocabulary will eventually hold changes the glossary's content, never how membership under the kind is answered."
   - gap: definition/glossary/outcome#attributes.name.values.[]
-    why: "Criterion 3 needs an outcome entry to exist in the glossary under test, not the closed enumeration of every outcome the business will contribute."
+    why: "Outcomes beyond the two of non-conclusion are contributed by future cases and arrive in the given glossary; the lookup needs no enumeration of them to answer whether a given term is published as an outcome."
   - gap: definition/glossary/action#attributes.name.values
-    why: "The lookup asks the given glossary whether it holds an action entry for the term, and the members of the vocabulary are never held by the lookup."
+    why: "The first case's actions are content of the glossary the lookup is given, not part of how the lookup answers; membership is answered the same whatever the names turn out to be."
   - gap: definition/glossary/recipient#attributes.name.values
-    why: "Recipient membership is answered from the given glossary, and the names of the real operational queues bear on whoever registers them rather than on the read."
+    why: "The real operational queues are content of the glossary the lookup is given; the lookup answers existence under the kind and needs no enumeration of the queues."
 ---
 
 ## What it is
@@ -43,7 +46,9 @@ The yielding of a published concept as the glossary records it, so a check reads
 
 The last criterion is what keeps the vocabularies out of the source, since a lookup holding terms of its own would state in code what only the glossary decides.
 No criterion here enumerates a member of any vocabulary, because the members are the glossary's to publish and not this plan's to write down.
-BLOCKING, from the binding — the objective ranges over every kind a term may be looked up as, but only the concept kind reaches a positive criterion, so a lookup answering not-published for every subject type, outcome, action and recipient the glossary does publish satisfies all five criteria as written.
-From the binding — this task answers only the per-term existence question, and the clauses about walking a case and refusing on absence belong to the sibling checks.
-From the binding — no bound node gives a glossary entry a publication state of its own, so publishes must be read as holds an entry for; any draft-versus-published distinction over glossary terms would be a fact no node holds.
-The pin was restated deliberately rather than re-bound: the base moved by three nodes and this task binds none of them — the case under edit closed its own gap, the published case gained three, and the capability's output-schema gap kept its field name and changed only its why. The validator's totality check over every bound node's open gaps is what holds that judgment, and it refuses this task if the reading is wrong.
+From the binding — the terms-exist rule is the consumer of this lookup and the one place the base enumerates the five kinds a case names; it constrains the case and is left unbound here, and the validation that enforces it reads through the lookup this task delivers.
+REMAINDER, from the binding — the enforcement clauses of the bound glossary definitions' rules, that a named term must exist, that a concept declares a ttl and its fields and accepts the subject type, and that a concept with no registered read-only capability makes the case unpublishable, constrain a case at publication and not the reading; they belong to the case-validation tasks of this plan.
+REMAINDER, from the binding — the observation-field rule, that a field a citation names must be one the cited concept declares, reaches no criterion here since citation checking happens when an evaluation is judged; the node is bound only because the concept the lookup yields embeds its fields, and the check belongs to the citations task.
+REMAINDER, from the binding — the recipient-is-a-role statement holds over registering glossary entries and the node itself says nothing verifies it; it is bound because it tells the reading that role-ness is already guaranteed and never the lookup's to check, and the assertion belongs to whoever registers entries, outside this plan.
+UNDERDETERMINED, from the binding — no criterion tests whether an observation field's name answers a lookup, and the base states the fields are the concept's own rather than a vocabulary of their own; what passes is a lookup answering a field's name as published under an observation-field kind of its own, which the base refuses.
+UNDERDETERMINED, from the binding — the criteria positively exercise only concept, outcome and action, and criterion 2 is satisfiable without ever consulting subject types or recipients; what passes is a lookup implementing only the kinds the criteria name, leaving a subject-type or recipient lookup unanswerable, which the five published kinds refuse.

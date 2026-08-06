@@ -18,7 +18,8 @@ nodes:
   - definition/knowledge/hypothesis
   - definition/knowledge/draft-case
   - aggregate/knowledge/cases
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 ---
 
 ## What it is
@@ -28,7 +29,7 @@ A refusal decided per hypothesis, over every hypothesis of the case.
 ## Notes
 
 The third criterion fixes that the check reads every hypothesis rather than the one it reaches soonest.
-From the binding — the construct this check refuses is now described by a bound node, and the predecessor's blocking note does not stand against the base as it is.
-From the binding — the published case is left unbound, because it is the value publication emits and never exists for a case this check refuses.
-From the binding — the aggregate's clause that a case is published whole or not at all reaches no criterion; it belongs to the publication act rather than to this single check.
-From the binding — criterion 3 needs only the list order the case under edit declares, not the rule about what that order means.
+UNDERDETERMINED, from the binding — the every-refusal rule names this check by name, saying it walks a case with no hypothesis at all without failing and simply refuses nothing, and no criterion reaches that clause; what passes is a check that satisfies all three criteria as written but raises or aborts when handed a case whose hypothesis list is empty or absent, instead of walking it without failing and refusing nothing.
+REMAINDER, from the binding — the every-refusal rule's statement clauses, that a validation runs every check whatever any earlier one decided and answers with every refusal those checks produced, reach no criterion of this task, which delivers one check and not the run; they belong to the validation-run task under the same epic.
+REMAINDER, from the binding — the aggregate states a case is published whole or not at all, and this check reads the whole case but publishes nothing; the publication-wholeness clause belongs to the publication act, which this plan does not hold.
+From the binding — no bound node states what a refusal of this check carries, whether it names the failing hypothesis or is bare; the criteria are satisfiable either way, and the shape of one refusal is a form decision the base does not constrain.

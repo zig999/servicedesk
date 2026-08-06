@@ -18,16 +18,8 @@ depends_on:
 nodes:
   - definition/investigation/evaluation
   - definition/knowledge/hypothesis
-  - definition/knowledge/case
   - rule/investigation/an-inconclusive-evaluation-declares-its-reason
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
-waived:
-  - gap: definition/knowledge/case#attributes.version.derivation
-    why: "This task records the verdict on one hypothesis and never publishes or identifies a case; nothing on its path reads or sets the case version."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "The evaluation references its hypothesis by name; pinning the case by content belongs to the investigation that replays it, not to recording one verdict."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "The fallback resolution applies when no hypothesis confirmed; this task resolves no outcome, and criterion 6 turns on an earlier confirmation rather than on none confirming."
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 ---
 
 ## What it is
@@ -40,7 +32,6 @@ The retention of a verdict once received, so a verdict is not suppressed by anot
 
 The criteria say nothing about citations, so the obligation to cite is stated once, in the task cut out for it.
 The retention criterion is what keeps a verdict from being made suppressible without failing anything the task states.
-BLOCKING, from the binding — the bound invariant makes the reason mandatory for an inconclusive verdict while the evaluation holds its reason as not required, and criterion 5 only reads a reason back, so no criterion refuses an inconclusive evaluation carrying none and the rule's obligation reaches nothing on this task's own construction path.
-From the binding — the one-evaluation-per-hypothesis rule is left unbound, because its statement quantifies over an investigation that no criterion here can satisfy or violate; the epic needs an investigation-level task binding it or an uncovered entry.
-From the binding — the precedence rule is left unbound, because criterion 6's content is stated outright on the evaluation and the case, and the rule's own statement is not falsifiable in this task.
-From the binding — name-as-identity here rests only on the hypothesis's own identity, since the rule scoping name uniqueness to a case sits outside the candidates.
+UNDERDETERMINED, from the binding — no criterion reaches the citation obligation on a decided verdict, which the bound evaluation node states and the citations rule carries as an invariant; what passes is a constructor accepting a confirmed or refuted verdict with no citations at all, which the base refuses; the obligation is demonstrated by the citations task this record joins by a dependency.
+REMAINDER, from the binding — the bound evaluation node's clause that what cannot be deduced from the evidence given is inconclusive and never inferred governs how a verdict is produced, not how the record keeps it; it belongs to the judging step of the diagnose process, which this plan does not hold.
+From the binding — criterion 6 is fully backed by the bound evaluation node, whose body states that precedence never marks a hypothesis as superseded; the case and the precedence rule hold the ordering and the resolving of which hypothesis wins, and neither is needed here since the evaluation takes no input about other hypotheses.

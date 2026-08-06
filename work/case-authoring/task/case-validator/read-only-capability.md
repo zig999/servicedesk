@@ -17,27 +17,22 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - aggregate/knowledge/cases
-  - definition/knowledge/draft-case
   - definition/knowledge/case
+  - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
   - definition/glossary/concept
   - definition/integration/capability
   - rule/knowledge/every-collected-concept-has-a-read-only-capability
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 unresolved:
-  - gap: definition/integration/capability#attributes.output_schema
-  - question: "The rule turns on a capability being registered, and no candidate node states what makes a capability registered \u2014 whether registration is a state a capability carries beyond being declared, and what a case's validation consults to find the capability answering a concept."
+  - question: "The bound rule's statement requires the answering capability to be one declaring an output schema, but the capability node declares no attribute holding an output schema and no gap naming the absence — where a capability's output schema is declared, so a check can read that it exists, is a fact no node holds."
 waived:
-  - gap: definition/integration/capability#attributes.timeout.unit
-    why: "The rule's clause is that a timeout is declared; this check reads the presence of the declaration and never a duration."
-  - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check matches a collected concept to a capability and its nature; staleness tolerance is a different check's."
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "Version is assigned by publication after this check decides; nothing in the decision reads it."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "The hash identifies the published value publication emits; this check decides over what the case collects, before either exists."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "The fallback resolution collects no concept, so which non-conclusion outcome it holds cannot change this check's result."
+    why: "This check decides capability coverage over what a case collects; how publication derives the version identifies the published value and is never read by this decision."
+  - gap: definition/glossary/concept#attributes.ttl.unit
+    why: "The ttl bears on the check that every collected concept declares a ttl, a separate refusal; deciding whether a read-only capability answers a concept never reads the ttl or its unit."
+  - gap: definition/integration/capability#attributes.timeout.unit
+    why: "This check at most reads that a registered capability declares a timeout, never its magnitude; the unit bears on invoking the capability, and criterion 4 states this check invokes nothing."
 ---
 
 ## What it is
@@ -47,8 +42,6 @@ A refusal decided from what is recorded about a capability, never from calling o
 ## Notes
 
 The last criterion is what the base's statement that the contract is checked when publishing and not when running amounts to as an observable property of this check.
-BLOCKING, from the binding — criterion 3 is weaker than the rule, which refuses a case unless the answering capability is read-only and declares an output schema and a timeout; the last two clauses reach no criterion at all.
-BLOCKING, from the binding — criterion 2 asserts a state no bound node admits, since the capability's nature has a single value and the node that refuses any other is outside the candidates.
-BLOCKING, from the binding — the base decides which case this check is decided over, and no criterion names that input; every criterion says a case for both models.
-From the binding — the publication act this check gates sits outside this epic's claim, and its two open gaps are therefore beyond this triage.
-From the binding — that the collected concept exists in the glossary at all is a neighbouring check, deliberately unbound here.
+UNDERDETERMINED, from the binding — the bound rule requires the registered capability to be read-only and to declare an output schema and a timeout, and no criterion reaches the last two clauses; what passes is a check refusing exactly on absence or non-read-only nature and never testing that the capability declares an output schema and a timeout, which the rule's statement refuses.
+From the binding — criterion 2 tests a state the base's registry never admits, since the capability's nature enum holds only read-only and its rule says the registry refuses any other; a registered non-read-only capability exists to this check only as data presented as the registry boundary describes it, so the nature test is the base's own belt-and-braces, demonstrable against presented records and never observable through a registry the base holds honest.
+From the binding — this check runs inside the validation the every-refusal rule governs, a candidate not bound here; the aggregation and the safety over a malformed case sit with the validation-run task, and this task's implementation meets them as a condition of the seam.

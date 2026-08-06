@@ -19,35 +19,32 @@ depends_on:
   - task/published-case/case-structure
 nodes:
   - aggregate/knowledge/cases
-  - definition/knowledge/draft-case
   - definition/knowledge/case
   - definition/knowledge/hypothesis
   - definition/knowledge/resolution
   - definition/knowledge/referral
-  - definition/glossary/subject-type
   - definition/glossary/concept
+  - definition/glossary/subject-type
   - definition/glossary/outcome
   - definition/glossary/action
   - definition/glossary/recipient
+  - definition/knowledge/draft-case
   - rule/knowledge/case-terms-exist-in-the-glossary
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "This check runs at publication over the case as the curator wrote it, and the base states the version is what publication adds and nothing a curator writes carries it \u2014 no criterion reads or refuses on a version."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "Same path \u2014 the hash is assigned by publication, not written by the curator, and this check reads only the terms the case names."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "This check verifies that whatever outcome the fallback names is published under the outcome vocabulary; it never selects the fallback, and both non-conclusion outcomes are registered, so either satisfies criterion 6."
-  - gap: definition/glossary/subject-type#attributes.name.values
-    why: "The check decides membership by the vocabulary's name identity against the registry, so it needs no enumerated subject type \u2014 a name absent from the vocabulary is refused and a registered one is not, whatever the vocabulary later holds."
+    why: "This check reads the terms a case names — subject type, concepts, outcomes, actions, recipients — and the version is what publication adds afterwards; how the version is derived changes nothing about whether a named term is published in the glossary."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "The ttl's unit bears on the separate check that a named concept declares a ttl, not on whether the concept exists in the glossary."
+    why: "This check tests only that a named concept exists in the glossary; the ttl, its unit and its values belong to the ttl check, not to term existence."
+  - gap: definition/glossary/subject-type#attributes.name.values
+    why: "The check tests membership against whatever the glossary publishes at validation time; the vocabulary being discovered with the first cases changes what populates it, never the membership test this task builds."
   - gap: definition/glossary/outcome#attributes.name.values.[]
-    why: "Membership is by name against the registry, and the vocabulary grows by contribution \u2014 the check does not need it closed, only queried."
+    why: "Outcomes beyond the two non-conclusion entries are contributed by cases, and the check compares a named outcome against the published entries whatever they are; the open enumeration does not bear on the existence test."
   - gap: definition/glossary/action#attributes.name.values
-    why: "The check tests presence of the named action in the action vocabulary, which is decidable without any action the base has yet named."
+    why: "The actions of the first case are unnamed in the base, but the check compares against the glossary's published entries at validation time; which actions those turn out to be does not change the test."
   - gap: definition/glossary/recipient#attributes.name.values
-    why: "The check tests presence of the named recipient and reads nothing about which queues exist."
+    why: "The real operational queues are unnamed in the base, but the check compares a named recipient against the published entries at validation time; which queues those turn out to be does not change the test."
 ---
 
 ## What it is
@@ -58,7 +55,9 @@ One refusal covering every position in which a case names a term, so nothing a c
 
 The criteria enumerate the positions a case names terms in, not the terms themselves, because the members of each vocabulary are the glossary's to publish.
 The check decides against the glossary it is given through the shared lookup and holds no vocabulary of its own.
-From the binding — the rule constrains the published value while the check runs before publication over the case under edit, which the base now states, so the refusal point is reachable from the bound set.
-From the binding — the publish trigger and the states this check refuses at sit outside this epic's claim; no criterion needs the trigger named.
-From the binding — the glossary context node, which states the four vocabularies grow differently and must not be treated alike, is outside the candidates; the five bound glossary definitions each state their own membership requirement, so the criteria stay backed.
-From the binding — seven sibling publication checks and the capability are left unbound, each being a distinct refusal rather than part of this one.
+REMAINDER, from the binding — both statement clauses of the every-refusal rule, that a validation runs every check whatever an earlier one decided and answers with every refusal produced, govern the composition and not this single check; the rule is bound for its per-check obligation of safety over a malformed case, and the composition belongs to the validation-run task.
+REMAINDER, from the binding — the bound structure and glossary definitions carry obligations these criteria do not reach, the minimum of one hypothesis, the content-hash coverage, the ttl declaration, the declared observation fields, the subject-type acceptance and the read-only capability requirement; each is restated by a dedicated rule node this task deliberately does not bind, and each belongs to the sibling task that binds it.
+From the binding — the objective's under-the-kind clause is grounded by the typed references rather than by the rule's sentence, since every position a case names a term from is a by-identity ref with a typed target, so a term published only under another vocabulary does not resolve and a pooled name-lookup across vocabularies would contradict the targets.
+From the binding — per the every-refusal rule's body this check walks a malformed case without failing, refusing nothing for the absent parts, since other checks own those absences.
+From the binding — the recipient-is-a-role rule, a candidate not bound, states that role-versus-person holds over the glossary's own entries and that a check over a case tests only existence, confirming criterion 4's scope.
+From the binding — the named-term positions include both fallbacks, since the case and the case under edit each declare the no-data and the hypotheses-exhausted fallback as embedded resolutions, so criteria 2 to 4 range over every hypothesis's resolution and both fallback resolutions; the case under edit is bound as what a publication check reads and refuses, the published case as what the rule constrains.

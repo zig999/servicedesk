@@ -15,15 +15,15 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
+  - rule/knowledge/every-collected-concept-declares-a-ttl
+  - definition/glossary/concept
   - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
-  - definition/glossary/concept
-  - rule/knowledge/every-collected-concept-declares-a-ttl
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "Criterion 3 confines the check to the presence of a declared ttl and forbids comparing one ttl against another, so no reading of the value \u2014 and therefore no unit \u2014 is on this task's path."
+    why: "This check decides only whether a concept declares a ttl at all — criterion 3 states it never reads or compares the value — so the unit of the ttl, which is what this gap leaves open, is never reached by any of the task's criteria."
 ---
 
 ## What it is
@@ -33,8 +33,6 @@ A refusal decided by the presence of the concept's declaration, read through the
 ## Notes
 
 The third criterion bounds the check to presence, so nothing here interprets or converts a declared duration.
-BLOCKING, from the binding — the base now distinguishes the case under edit from the published case and states the first is what a publication check refuses, while criteria 1 and 2 say only a case, so an implementer may write the check over the published value the base says already holds.
-From the binding — the published case is left unbound and its three open gaps do not reach this objective.
-From the binding — a concept resolves to its glossary entry by identity, which the base does hold; a named concept with no entry at all is refused by a neighbouring check this task does not bind.
-From the binding — the capability is left unbound, because its timeout is the capability's deadline and not the concept's ttl.
-From the binding — this rule declares neither an aggregate nor a consistency, unlike its sibling publication invariants, while its own example locates the refusal at publication; that asymmetry is the base's to keep or correct.
+REMAINDER, from the binding — the every-refusal rule is bound for its clause that every check must be safe over a malformed case, while its two statement clauses, that a validation runs every check whatever an earlier one decided and answers with every refusal produced, reach no criterion of this task; they belong to the validation-run task that composes the checks.
+UNDERDETERMINED, from the binding — an implementation that fails when handed a malformed case, one declaring no hypothesis or a hypothesis whose collects list is absent, satisfies every criterion as written since all three describe cases that do collect; what passes is a check that walks the hypotheses' collects assuming both exist and errors on a malformed case, while correctly refusing and not-refusing the well-formed cases the criteria name.
+From the binding — the task says a case collecting a concept while the rule says every concept a case names, and in the bound base the only structured place a case under edit names a concept is the collects list of its hypotheses, so the two readings coincide and no second naming site exists to diverge over.

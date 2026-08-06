@@ -15,25 +15,21 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
-  - definition/knowledge/draft-case
   - definition/knowledge/case
+  - definition/knowledge/draft-case
   - definition/knowledge/hypothesis
   - definition/glossary/concept
   - definition/glossary/subject-type
   - rule/knowledge/concept-accepts-the-declared-subject-type
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "This check reads the declared subject type and the concepts the case's hypotheses collect; what sets the version is not on that path."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "What the hash is computed over does not enter the acceptance comparison; the check refuses or passes the same case content either way."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "The fallback resolution carries an outcome and a referral, not collected concepts, so which resolution it holds is outside what this check reads."
+    why: "This check reads the declared subject type and the concepts the hypotheses collect; what sets a published case's version bears on publication identity, not on whether a collected concept accepts the subject type."
   - gap: definition/glossary/concept#attributes.ttl.unit
-    why: "This check reads a concept's accepts list only; the ttl is the subject of a different check."
+    why: "The ttl says how stale a concept's answer may be; this check consults only the concept's accepts list, and no criterion of this task touches staleness — the ttl check is a sibling rule with its own task."
   - gap: definition/glossary/subject-type#attributes.name.values
-    why: "Acceptance is decided by comparing the declared subject type with the concept's accepts entries by identity, so the check is indifferent to which names the closed vocabulary holds."
+    why: "The check is a membership comparison by identity between the subject type the case declares and the entries of the concept's accepts list, and it holds unchanged for whatever values the vocabulary comes to hold; which concrete subject types the glossary publishes bears on authoring glossary entries, not on this comparison."
 ---
 
 ## What it is
@@ -43,7 +39,6 @@ A refusal decided by pairing each collected concept with the one subject type th
 ## Notes
 
 The check reads what the glossary records for a concept through the shared lookup rather than restating it.
-BLOCKING, from the binding — the base decides acceptance is a direct match against the concept's declared accepts entries, since deriving one subject from another is the anticorruption layer's work and never the case's; no criterion refuses a case whose collected concept accepts only a type derivable from the declared one, so a derivational implementation passes all three.
-BLOCKING, from the binding — the contract checks run over the whole case and concepts are collected per hypothesis, yet no criterion places the non-accepting concept in a hypothesis other than the first, so a check reading only the first hypothesis satisfies all three.
-From the binding — the case under edit is what this check reads, so the executor reads the curator-written shape and not the version or hash publication assigns.
-From the binding — that the named terms exist in the glossary at all is a neighbouring check, deliberately unbound here.
+UNDERDETERMINED, from the binding — the every-refusal rule requires every check to be safe over a malformed case, walking it without failing and refusing nothing, and no criterion of this task poses a malformed case; what passes is an implementation that throws or halts when the case under edit declares no hypotheses, a hypothesis with an empty collects list, or no subject type at all, while meeting every stated criterion.
+REMAINDER, from the binding — the every-refusal rule's clauses that a validation runs every check whatever any earlier check decided and answers with every refusal produced reach no criterion of this task; both belong to the validation-run task that composes the checks into one answer.
+From the binding — neither the criteria nor the bound rule determine this check's behaviour over a collected concept the glossary does not publish, since such a concept has no accepts list to consult; the refusal for an absent term is owned by the terms-exist check, the every-refusal rule guarantees that check runs regardless, and an implementation that either refuses or ignores an unpublished concept satisfies every criterion, the base excluding neither.

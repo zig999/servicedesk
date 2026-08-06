@@ -15,23 +15,17 @@ criteria:
 depends_on:
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
   - definition/knowledge/case
   - definition/knowledge/hypothesis
   - definition/investigation/evaluation
   - rule/knowledge/hypotheses-are-ordered-by-precedence
-  - rule/knowledge/the-body-does-not-change-what-is-collected
   - rule/investigation/one-evaluation-per-hypothesis
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "This task reads a published case's declared hypotheses and neither sets nor derives its version; no criterion states anything about the case's identity triple."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "The answer is derived from the structured hypotheses attribute alone; nothing on this path computes, checks or reports the hash, and what the hash covers changes no entry, name or order."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "The fallback is a resolution, not a hypothesis, so it is never an entry of this answer and carries no name criterion 2 could admit or exclude; which outcome it holds is settled on the resolving path."
+    why: "The answer enumerates the hypotheses of the published case already in hand; nothing in the objective or the criteria derives, compares, or exposes a version, so how the version is set does not bear here."
   - gap: rule/knowledge/hypotheses-are-ordered-by-precedence#examples
-    why: "Criteria 5 and 6 hold whatever order the case declares; the absent examples are the per-case precedence only specialists affirm, and this task never decides or checks which cause dominates."
+    why: "This task reproduces whatever order the case declares and never judges whether that order is the correct precedence; which concrete orderings the specialists would affirm does not bear on faithful reproduction, and the node itself says no validator can check that fact."
 ---
 
 ## What it is
@@ -43,8 +37,6 @@ The answer in the case's declared order, because the order it is read in is the 
 
 The two order criteria were absent from the first statement of this task, and the base makes the order load-bearing on this path rather than incidental, so a set-shaped answer would satisfy the other criteria and still lose what the order carries.
 Nothing here reads an evaluation; the answer is computed from the case alone.
-BLOCKING, from the binding — the rule requires exactly one evaluation for every hypothesis a case declares, and only criterion 3 reaches cardinality, and only for a case declaring one hypothesis; nothing forbids a repeated entry for the same declared hypothesis when a case declares several, so the rule's exactly-one clause can be contradicted while all six criteria pass.
-From the binding — the prose rule's second clause reaches no criterion here; it is an obligation on the authoring path this epic declares uncovered.
-From the binding — the precedence clause about what the specialists affirm reaches no criterion, and the node itself states no validator can check it.
-From the binding — two facts the skeleton leans on sit outside the candidates, the meaning of published and the at-least-one-hypothesis refusal; the bound case node carries the minimum in its own shape and states it in its body.
-From the binding — a case is identified by its content, so criterion 6's reordered case is a second published case rather than a mutation of one; the criterion is demonstrable, but over two cases.
+REMAINDER, from the binding — the precedence rule's clause that the order must be the precedence the specialists affirm reaches no criterion, since every criterion holds the answer to the declared order and none holds the declared order to the specialists; the node states no validator can check it, and it belongs to the authoring and publishing of a case, where the human review the base names takes place.
+REMAINDER, from the binding — the one-evaluation-per-hypothesis clause is only half-reached here, since this task fixes the enumeration that totality ranges over while the enforcement over an investigation record, refusing one whose evaluations do not match the declared hypotheses one to one, is not demonstrated by any criterion and the rule also constrains the investigation, outside the candidates; it belongs to the building and validating of an investigation record, which this plan does not hold.
+UNDERDETERMINED, from the binding — criterion 6 as written admits an implementation that reorders the hypotheses of an already-published case in place and re-answers, while the base identifies a case by slug, version and content hash and makes any change to the file a different published case; what passes is an implementation mutating a published case's order in place and treating the reordered file as the same case, so the criterion is demonstrated across two published cases whose declared orders differ, never by mutating one.

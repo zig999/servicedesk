@@ -22,30 +22,27 @@ nodes:
   - definition/knowledge/resolution
   - definition/knowledge/referral
   - definition/glossary/recipient
-  - rule/knowledge/case-terms-exist-in-the-glossary
   - rule/glossary/recipient-is-a-role
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
-unresolved:
-  - question: "No node states how a recipient's name is determined to name an operational role rather than a person, so the never-a-person clause reaches no criterion and no construct in the base would let this check decide it \u2014 a recipient carries only a free-string name, and the glossary declares no marker separating a role from any other."
+  - rule/knowledge/case-terms-exist-in-the-glossary
+  - rule/knowledge/a-validation-answers-with-every-refusal
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
-    why: "This check reads the referrals a curator wrote and refuses before publication assigns a version; no criterion turns on what sets it."
-  - gap: definition/knowledge/case#attributes.content_hash.derivation
-    why: "Same path \u2014 the hash is assigned by publication, after this check has decided, and no criterion mentions it."
-  - gap: definition/knowledge/case#attributes.no_hypothesis_confirmed.selection
-    why: "The gap names which of the two non-conclusion outcomes the single fallback holds; criterion 3 turns on the fallback's referral, which every resolution requires whatever its outcome, so the recipient this check reads is present either way."
+    why: "This check reads the referrals a case declares and compares each recipient against the glossary; what sets a case's version is nowhere on that path, and no criterion of this task mentions the version or the hash."
   - gap: definition/glossary/recipient#attributes.name.values
-    why: "A recipient is a value object with a free-string name identified by that name rather than an enum, so the case-side test is a lookup in the glossary; which names it holds does not change whether a named recipient is found or absent."
+    why: "Which real operational queues populate the recipient vocabulary is data the check reads at validation time, never a fact the check encodes — both refusal and non-refusal are demonstrable over any glossary content, so the unnamed values bear on registering recipients, not on this check."
 ---
 
 ## What it is
 The check standing behind the base's statement that a referral goes to an operational role and never to a named person.
-A refusal decided over every referral a case declares, including the one it declares for when nothing confirms.
+A refusal decided over every referral a case declares, including the two it declares for when nothing confirms.
 
 ## Notes
 
 A case can fail this check and the published-terms check at once, and they remain two checks because the base holds two rules that refuse for two reasons.
 The third criterion fixes the reach of the check over all of a case's referrals rather than only those hanging from hypotheses.
-From the binding — the reading that makes criteria 1 and 2 demonstrable: the case-side test the base states is existence in the glossary, and role-ness is an invariant over the glossary entry itself, so every recipient the glossary publishes is an operational role and the two phrasings have the same extension. This check delegates role-ness upstream rather than deciding it, and the reading is recorded so a reviewer can reject it.
-From the binding — the bound terms rule covers five kinds of term and this task's criteria answer the recipient clause only; the other four reach no criterion here.
-From the binding — the thing this check refuses is the case under edit while the rule constrains the published case; both hold the hypotheses and the fallback this check walks, and the task's word case covers both.
+UNDERDETERMINED, from the binding — criterion 3 says fallback resolution in the singular while the case and the case under edit both declare two fallback resolutions, each a required resolution carrying a required referral, and the aggregate states the contract checks run over the whole; what passes is a check reading the referral of exactly one fallback and every hypothesis's resolution, shipping unrefused a bad recipient sitting only in the other fallback, which the base refuses.
+UNDERDETERMINED, from the binding — no criterion requires this check to be safe over a malformed case while the every-refusal rule requires every check to walk a case another check already refused without failing; what passes is a check that indexes into a well-formed shape and throws over a draft with an empty hypothesis list or a missing fallback.
+REMAINDER, from the binding — the terms-exist rule states five clauses and this task answers only the recipient one; the subject-type, concept, outcome and action clauses belong to the sibling checks of the same epic, the action clause being the other half of the referral this check does not read.
+REMAINDER, from the binding — the every-refusal rule is bound for its clause that a check must be safe over a malformed case, and both clauses of its statement belong to the validation-run task that composes the checks.
+REMAINDER, from the binding — the recipient-is-a-role statement, that a recipient names an operational role and never a person, reaches no criterion and the node itself says whoever registers a recipient asserts it; published as an operational role reduces, for this check, to presence in the recipient vocabulary, and role-ness belongs to the act of registering entries, outside this plan.

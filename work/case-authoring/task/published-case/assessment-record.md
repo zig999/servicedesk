@@ -15,21 +15,12 @@ criteria:
 nodes:
   - definition/investigation/assessment
   - definition/knowledge/resolution
-  - definition/knowledge/referral
   - definition/knowledge/hypothesis
-  - definition/glossary/outcome
-  - definition/glossary/action
-  - definition/glossary/recipient
-base: sha256:d70b575981a26bad78e7258ae5219fa37ab23226539ea0652b36aab85e92b092
+  - rule/investigation/the-outcome-comes-from-the-case
+base: sha256:992232efc4c5444049969a8ae991757bdc82865a72e1ba1deb144660cfb7251f
 waived:
   - gap: definition/investigation/assessment#attributes.text.audience
-    why: "The gap asks what an assessment may expose to the end customer; this task constructs the value and reads its text back unchanged, and nothing here presents it to anyone, so the exposure decision lands on the response path."
-  - gap: definition/glossary/outcome#attributes.name.values.[]
-    why: "The resolution binds its outcome by identity, so this task carries the outcome name it was constructed with and never enumerates or validates the vocabulary."
-  - gap: definition/glossary/action#attributes.name.values
-    why: "The referral binds its action by identity, so this task carries the action name it was constructed with and never enumerates or validates the vocabulary."
-  - gap: definition/glossary/recipient#attributes.name.values
-    why: "The referral binds its recipient by identity, so this task carries the recipient name it was constructed with and never enumerates or validates the vocabulary."
+    why: "This task constructs the assessment with a text and reads it back unchanged, deciding nothing about the text's content; what an assessment may expose to the end customer bears on the writing that produces the text, not on carrying it."
 ---
 
 ## What it is
@@ -42,7 +33,7 @@ The two shapes the base allows, one determined by a hypothesis and one not.
 
 This task builds the construct and nothing here chooses what goes in it, which is the behaviour that depends on this one.
 That an assessment's outcome and referral are the ones the case resolved is stated by the behaviour that reads the case and produces the assessment, since this task never sees the case.
-From the binding — neither clause of the rule that an outcome comes from the case is demonstrable by a construct that never sees a case, which is why the sibling that reads the case binds it.
-From the binding — the assessment node also carries the writing-input rules, and no criterion here answers them because the text arrives already written.
-From the binding — the assessment carries no case reference, so within this construct only the hypothesis name is read back and the scope in which that name is unique sits elsewhere.
-The pin was restated deliberately rather than re-bound: the base moved by three nodes and this task binds none of them — the case under edit closed its own gap, the published case gained three, and the capability's output-schema gap kept its field name and changed only its why. The validator's totality check over every bound node's open gaps is what holds that judgment, and it refuses this task if the reading is wrong.
+UNDERDETERMINED, from the binding — no criterion checks where the resolution came from, while the bound nodes state a resolution is declared by the case and never produced during an investigation and the outcome rule requires what the assessment carries to be what the case resolved; what passes is a constructor accepting an outcome-and-referral pair assembled at the call site, never resolved by any case, with every part still reading back unchanged.
+UNDERDETERMINED, from the binding — the assessment node says there is a determining hypothesis when one confirmed and none when the fallback applied, and criteria 3 and 4 each test one attribute in isolation; what passes is a constructor accepting a determining hypothesis alongside a fallback resolution or none alongside a hypothesis-borne one, a pairing the base refuses and a resolution carries no marker to check at construction.
+REMAINDER, from the binding — the assessment node's rules on what the writing receives, the report, the confirmed hypothesis and its evidence when one confirmed, every verdict and reason when none did, and never the curator prose, reach no criterion of this task; they belong to the writing of the assessment text, the diagnose step that composes it from a narrowed input, which this plan does not hold.
+From the binding — demonstrating criterion 1 instantiates a resolution whose embedded parts read through to the referral and the outcome, and those candidates are not bound because no criterion examines a resolution's internals; they are governed where the resolution's shape was delivered.
