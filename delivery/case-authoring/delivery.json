@@ -96,6 +96,19 @@
       "title": "Proof for which hypotheses require an evaluation",
       "summary": "What proves task/published-case/required-evaluations over requiredEvaluations() in src/knowledge/required-evaluations.ts: totality and no-extras over the declared hypotheses, the single-entry and identity shape of each entry, order preserved and reordered across two distinct published cases per the task's own UNDERDETERMINED note, and the frozen-return inference pinned as a stated choice.",
       "task": "task/published-case/required-evaluations"
+    },
+    {
+      "id": "review/primeiras-seis-entregas",
+      "kind": "review",
+      "file": "review/primeiras-seis-entregas.md",
+      "title": "Primeira leva — seis entregas do plano case-authoring",
+      "summary": "Quatro passes sobre as seis primeiras tasks entregues: cobertura total, conformidade com a base sem achados, sete achados de standard, e o passe de falhas sem entrada.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -368,6 +381,42 @@
       "to": "implementation/published-case/required-evaluations",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/published-case/assessment-record",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/published-case/case-structure",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/case-validator/validation-run",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/case-validator/glossary-lookup",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/published-case/evaluation-record",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/primeiras-seis-entregas",
+      "to": "task/published-case/required-evaluations",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }
