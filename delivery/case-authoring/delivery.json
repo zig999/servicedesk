@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/1",
   "nodes": [
     {
+      "id": "implementation/case-validator/validation-run",
+      "kind": "implementation",
+      "file": "implementation/case-validator/validation-run.md",
+      "title": "The validation run over one case under edit",
+      "summary": "The composition seam that hands one case under edit to every registered publication check and answers with every refusal they produced, written for task/case-validator/validation-run.",
+      "task": "task/case-validator/validation-run"
+    },
+    {
       "id": "implementation/published-case/assessment-record",
       "kind": "implementation",
       "file": "implementation/published-case/assessment-record.md",
@@ -16,6 +24,14 @@
       "title": "The published case as one constructed value",
       "summary": "The Case type and its constructor, with the hypothesis's full shape and the two missing glossary identity aliases, so every part a case declares is constructed as one frozen value and reads back exactly as declared.",
       "task": "task/published-case/case-structure"
+    },
+    {
+      "id": "proof/case-validator/validation-run",
+      "kind": "proof",
+      "file": "proof/case-validator/validation-run.md",
+      "title": "Proof for the validation run over one case under edit",
+      "summary": "Thirteen tests holding validate() at src/knowledge/validation.ts to the task's five criteria, the two answers the binding's UNDERDETERMINED notes demanded, and the choices the implementation recorded.",
+      "task": "task/case-validator/validation-run"
     },
     {
       "id": "proof/published-case/assessment-record",
@@ -35,6 +51,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "aggregate/knowledge/cases",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "definition/knowledge/draft-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "definition/knowledge/refusal",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-validator/validation-run",
+      "to": "task/case-validator/validation-run",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/published-case/assessment-record",
       "to": "definition/investigation/assessment",
@@ -129,6 +181,12 @@
       "from": "implementation/published-case/case-structure",
       "to": "task/published-case/case-structure",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/validation-run",
+      "to": "implementation/case-validator/validation-run",
+      "kind": "proves",
       "at": "the path"
     },
     {
