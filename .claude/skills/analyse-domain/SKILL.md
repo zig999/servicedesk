@@ -17,6 +17,16 @@ A missing input is a stop, not a default:
    first run; populated, the invocation is a change to the base it holds. Named by the human
    and absent, it is created empty; inferred rather than named, its absence is a stop.
 
+Naming can go by reference when the reference carries the path: "the base we just validated
+at `knowledge/`" names `knowledge/`, and the handoff a `/plan-work` report or closure ends
+with names roots the same way. A reference without a path resolves only through the
+conversation's memory, which is not state — it is an absent input, and a stop. However named,
+the root is taken as disk holds it — the checks below are that verification — never as the
+conversation remembers it.
+
+Absent inputs stop once, together: one stop naming everything missing, so the human answers
+once — never a question at a time.
+
 ## Before anything: the tree
 
 The review is `git diff` over the knowledge root, and a diff only says what this invocation
@@ -76,6 +86,13 @@ rules bind the analysis:
   material — where a boundary falls, which construct a stated thing is — never a value the
   material is silent on. A plausible value is a gap, not a decision; a lifecycle's initial
   state nobody stated is the canonical case.
+- **An operative claim is recorded where something can hold the base to it.** A sentence that
+  constrains the domain — a MUST, a never, an exactly-one, an at-least — is a rule node's
+  `statement`, a declared constraint on an attribute, or a `gaps` entry, before it is a line
+  of prose. Body and summary prose explains; it is not addressable: no criterion can cite it,
+  no validator holds the base to it, no binding reaches it, so a claim living only in prose
+  is one everything downstream silently drops. Catching yourself writing one into a body or
+  a summary is the signal that you owe a node, a constraint, or a gap.
 
 How to decide, kind by kind. The schema says what each kind may declare; this is the judgment
 that decides what goes in it:
@@ -143,11 +160,22 @@ Write contexts first, then aggregates and definitions, then the rest. The body o
 carries exactly two headings, in order: `## What it is`, then `## Rules`. One sentence per line;
 a section with nothing to say carries the literal line `None.`
 
+`## Rules` points at what governs the node — the rule nodes that constrain it, the declared
+constraints its own attributes carry — and holds no rule of its own. A line there that restates
+no rule node and no declared field is the analysis telling you it still owes one: author the
+rule node, declare the constraint, or record the gap, and then point at it.
+
 While writing, a single file can be checked on its own:
 
 ```
 python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/graph.py --node <file> <knowledge-root>
 ```
+
+The single-file check cannot see across files. The checks that need the whole base — one
+root per aggregate, a rule's `constrains` reaching outside its aggregate without
+`consistency`, transition totality — only fire on a full run, so run the full validation of
+step 4 as each context's nodes close rather than once at the end: an error surfaces at the
+batch that made it, not under everything stacked on top of it.
 
 ### 4. Validate, and derive the graph
 
@@ -183,7 +211,12 @@ Report, in this order:
   reject, and a claim without an identifier cannot be rejected in place;
 - every gap closed, with the material that closed it, and every question the material left
   open with the gap that records it;
-- the validator's final output, verbatim.
+- the validator's final output, verbatim;
+- the handoff: the `/plan-work` invocation ready to paste — this knowledge root named as just
+  validated, one named slot for each input only the human decides — the scope, the work root,
+  the target source root — and the base's open agenda, as `--gaps` prints it, pointed at as
+  candidate scope material. The handoff offers the next step, never takes it: filling the
+  slots and invoking are the human's.
 
 Then stop. `git diff` over the knowledge root is the review, and it belongs to a person.
 

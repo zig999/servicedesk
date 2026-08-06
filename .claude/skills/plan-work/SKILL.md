@@ -24,6 +24,16 @@ A missing input is a stop, not a default:
 4. **the target source root** — where the code lives or will live. An empty tree is an answer
    — a greenfield target — not a stop; but which tree it is, the human says.
 
+Naming can go by reference when the reference carries the path: "the base we just validated
+at `knowledge/`" names `knowledge/`, and the handoff an `/analyse-domain` report ends with
+names roots the same way. A reference without a path resolves only through the conversation's
+memory, which is not state — it is an absent input, and a stop. However named, every root is
+taken as disk holds it — the checks below are that verification — and the report states each
+path as it resolved.
+
+Absent inputs stop once, together: one stop naming everything missing, so the human answers
+once — never a question at a time.
+
 A closing invocation — the human declaring the initiative over — needs two of these: the ask
 with its why, and the work root. The knowledge root and the target source root play no part
 in closing (see "Closing the plan").
@@ -110,6 +120,11 @@ under `intake/` in the work root. Point every `sources` entry at a file under it
 persists the same way — a new file under `intake/`, never an edit to what intake already
 holds.
 
+A scope that points at the base's open agenda as its material is persisted from what disk
+says: run `python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/graph.py --gaps <knowledge-root>` and write
+what it prints into the intake file, citing the command — never the conversation's memory of
+a report.
+
 Every plan node this skill writes — this one and every one after it — carries a body of
 exactly two headings, in order: `## What it is`, then `## Notes`. One sentence per line; a
 section with nothing to say carries the literal line `None.`
@@ -147,9 +162,14 @@ answer; a divergence between the task and the nodes comes back as notes.
 
 Then compose and write each task: the skeleton, plus what its binder returned, plus the pin
 from the base check stamped on `base`. A binder's notes are appended to the task body's
-`## Notes`, one sentence per line, a blocking one saying so — the diff is the review, and a
-divergence only the conversation holds is a divergence the reviewer never sees — and the
-report repeats them by task. Where the binder bound nothing, the task carries `rationale` saying why —
+`## Notes`, one sentence per line — the diff is the review, and a divergence only the
+conversation holds is a divergence the reviewer never sees — and the report repeats them by
+task. A note classed `blocking`, `underdetermined` or `remainder` opens with its class,
+literally — `BLOCKING, from the binding —`, `UNDERDETERMINED, from the binding —`,
+`REMAINDER, from the binding —` — the exact text and not a style, because `/implement-task`
+collects underdetermined entries by that opening and nothing else marks them; an
+underdetermined note carries the implementation the binder named in `passes`, and a
+remainder note the destination it named in `belongs`. Where the binder bound nothing, the task carries `rationale` saying why —
 scaffolding is real work, but ungoverned work is a claim someone reviews. Where a note says
 the task needs what the candidates do not hold, the cut is wrong: grow the epic's `covers`
 or move the task, and re-bind — never widen a binding by hand.
@@ -160,12 +180,22 @@ written, and the skeleton's `rationale` says by whom. Where the blocked statemen
 decomposer's decision — the skeleton carries `rationale` over that cut — the skeleton goes
 back to the decomposer with the note, is re-cut, and re-bound. Where it came from the scope,
 the task is written with the note, and the report names it as a conflict only the human
-settles — through the scope, or through `/analyse-domain`. An `advisory` note stays a note —
-except one naming nodes outside the epic's covers, which never travels alone: the caller's
-decision is recorded beside it in `## Notes` — grow the claim and re-bind, move the task and
-re-bind, or stand with the why. The class is the binder's judgment, not yours to overrule: a
-blocking note you disagree with is still settled as blocking, and the disagreement goes in
-the report.
+settles — through the scope, or through `/analyse-domain`. An `underdetermined` note travels with
+the task and re-cuts nothing: it is what a test must exclude, and `/implement-task` hands it
+to whoever writes the tests. A `remainder` note travels the same way and re-cuts nothing: an
+unreached clause is answered where it belongs — another task's binding, the epic's
+`uncovered`, or scope this plan does not yet hold — and no validator walks clauses, so the
+report is where a reviewer checks that something answers it. An `advisory` note stays a
+note. A note of any class that names base nodes outside the epic's covers never travels
+alone. Two of the caller's three decisions erase the condition rather than record it: grow
+the claim and re-bind, or move the task and re-bind — the replacement binding answers
+inside the new covers. The third persists, and is recorded on its own line immediately
+after the note in `## Notes`: `Decision, beyond the covers — stand: <why>` — the exact
+opening and not a style, because the validator refuses a task whose `## Notes` names a
+base node outside its epic's covers with no such line naming that node, and a refused
+plan derives no plan.json. The class is the binder's
+judgment, not yours to overrule: a blocking note you disagree with is still settled as
+blocking, and the disagreement goes in the report.
 
 Each task file is checked on its own as soon as it is composed — a composition error is
 caught at the file that made it, never discovered at the end:
@@ -204,13 +234,31 @@ Report, in this order:
 - the impact set that was read — in the base and, on evolution, in the plan — so the reviewer
   can judge what the planning looked at, not only what it touched;
 - every unresolved entry, by task identifier — the gaps that block and the questions that
-  outran the base, the latter with the pointer back to `/analyse-domain`;
+  outran the base; after them, their handoff: the `/analyse-domain` invocation ready to
+  paste — this knowledge root named, the open questions listed as the asks the material
+  must answer — because a fact is produced in the base, never in a task;
 - every waiver, by task identifier — these are the claims a reviewer can reject;
 - every note a binder returned, by task identifier — the same divergences written into each
-  task's `## Notes`, repeated here so the reviewer meets them before the diff;
+  task's `## Notes`, repeated here so the reviewer meets them before the diff — an
+  underdetermined one carrying the implementation it names, a remainder one carrying where
+  it belongs;
 - every node carrying `rationale`, by identifier;
 - which steps, if any, ran inline instead of in a subagent, and why;
-- the validator's final output, verbatim.
+- the validator's final output, verbatim;
+- the handoff: the `/implement-task` invocation ready to paste — this work root and this
+  knowledge root named by path as just validated, one named slot for each input only the human
+  decides (the target source root, the delivery root, and the project's standard where there
+  is one), and the task, which is a slot as well and the one that matters: one invocation
+  carries one task, and choosing it is choosing what gets built. What the handoff offers in
+  its place is where the deliverable set is read from, as a command rather than as a list —
+  `deliver.py --outstanding <delivery-root> <work-root> <knowledge-root>` names, per task,
+  what has no record, what the base leaves unresolved and what it waits on; with no delivery
+  root yet, `plan.py --unresolved <work-root> <knowledge-root>` names every task that is not
+  deliverable, and the rest are. A set restated here instead is a set that was true when it
+  was printed. A task whose `## Notes` still holds a `BLOCKING, from the binding —` entry is
+  not among the deliverable while that note stands — `/implement-task` stops on one — and the
+  notes this report already repeated are where those tasks are named. The handoff offers the
+  next step and never takes it: filling the slots and invoking are the human's.
 
 Then stop. `git diff` over the work root is the review, and it belongs to a person.
 
@@ -231,7 +279,12 @@ check, and computes no pin: it never touches the knowledge root.
   refuses a plan whose structure does not hold, and a base that moved since the bindings
   is no obstacle — each pin now stands as history, naming the base its binding read.
 - Report the closure and the legacy the plan carries out — its unresolved gaps, citations
-  and unique, and its open questions: the agenda `/analyse-domain` inherits. Then stop.
+  and unique, and its open questions — in handoff form: the `/analyse-domain` invocation
+  ready to paste, its knowledge root a slot closing cannot fill, the questions listed as
+  the asks the material must answer; and the same agenda named as candidate scope material
+  for the `/plan-work` that opens the successor initiative's new work root, where it
+  arrives as intake the human supplies — never as a reference into this closed plan. Then
+  stop.
 
 ## What you never do
 
