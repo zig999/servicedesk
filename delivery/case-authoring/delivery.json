@@ -42,6 +42,14 @@
       "task": "task/case-validator/hypothesis-collects-a-concept"
     },
     {
+      "id": "implementation/case-validator/read-only-capability",
+      "kind": "implementation",
+      "file": "implementation/case-validator/read-only-capability.md",
+      "title": "Every collected concept has a read-only capability",
+      "summary": "The publication check that refuses a case under edit when any concept it collects has no registered read-only capability declaring an output schema and a timeout, deciding purely from records handed to it.",
+      "task": "task/case-validator/read-only-capability"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -120,6 +128,14 @@
       "title": "Proof for a hypothesis collects at least one concept",
       "summary": "Tests proving hypothesisCollectsAtLeastOneConcept refuses a case with an empty-collects hypothesis, passes a case whose hypotheses all collect at least one concept, and reaches a failing hypothesis wherever it sits, including the malformed no-hypothesis case the binding flagged as UNDERDETERMINED.",
       "task": "task/case-validator/hypothesis-collects-a-concept"
+    },
+    {
+      "id": "proof/case-validator/read-only-capability",
+      "kind": "proof",
+      "file": "proof/case-validator/read-only-capability.md",
+      "title": "Every collected concept has a read-only capability — proof",
+      "summary": "Tests over src/knowledge/every-collected-concept-has-a-read-only-capability.ts proving all four criteria, excluding both UNDERDETERMINED implementations the binding named, and making the no-invocation criterion fail on an actual call rather than on a well-worded assertion.",
+      "task": "task/case-validator/read-only-capability"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -311,6 +327,36 @@
     {
       "from": "implementation/case-validator/hypothesis-collects-a-concept",
       "to": "task/case-validator/hypothesis-collects-a-concept",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-validator/read-only-capability",
+      "to": "definition/knowledge/draft-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-validator/read-only-capability",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/read-only-capability",
+      "to": "definition/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-validator/read-only-capability",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-validator/read-only-capability",
+      "to": "task/case-validator/read-only-capability",
       "kind": "implements",
       "at": "the path"
     },
@@ -527,6 +573,12 @@
     {
       "from": "proof/case-validator/hypothesis-collects-a-concept",
       "to": "implementation/case-validator/hypothesis-collects-a-concept",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/read-only-capability",
+      "to": "implementation/case-validator/read-only-capability",
       "kind": "proves",
       "at": "the path"
     },
