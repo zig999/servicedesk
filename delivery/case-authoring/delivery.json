@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/1",
   "nodes": [
     {
+      "id": "implementation/case-validator/glossary-lookup",
+      "kind": "implementation",
+      "file": "implementation/case-validator/glossary-lookup.md",
+      "title": "The published-glossary lookup",
+      "summary": "The one reading of the published glossary the validator's checks consume: an exact-comparison answer per term and kind, and the yielding of a published concept as the glossary records it.",
+      "task": "task/case-validator/glossary-lookup"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -24,6 +32,14 @@
       "title": "The published case as one constructed value",
       "summary": "The Case type and its constructor, with the hypothesis's full shape and the two missing glossary identity aliases, so every part a case declares is constructed as one frozen value and reads back exactly as declared.",
       "task": "task/published-case/case-structure"
+    },
+    {
+      "id": "proof/case-validator/glossary-lookup",
+      "kind": "proof",
+      "file": "proof/case-validator/glossary-lookup.md",
+      "title": "Proof for the published-glossary lookup",
+      "summary": "What proves task/case-validator/glossary-lookup, written against its implementation record over src/glossary/lookup.ts — every criterion, every recorded inference, and each named accident excluded over arranged glossaries holding only placeholder names.",
+      "task": "task/case-validator/glossary-lookup"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -51,6 +67,54 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/observation-field",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "definition/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-validator/glossary-lookup",
+      "to": "task/case-validator/glossary-lookup",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-validator/validation-run",
       "to": "aggregate/knowledge/cases",
@@ -181,6 +245,12 @@
       "from": "implementation/published-case/case-structure",
       "to": "task/published-case/case-structure",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/glossary-lookup",
+      "to": "implementation/case-validator/glossary-lookup",
+      "kind": "proves",
       "at": "the path"
     },
     {
