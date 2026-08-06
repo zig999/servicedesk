@@ -34,6 +34,14 @@
       "task": "task/case-validator/glossary-lookup"
     },
     {
+      "id": "implementation/case-validator/hypothesis-collects-a-concept",
+      "kind": "implementation",
+      "file": "implementation/case-validator/hypothesis-collects-a-concept.md",
+      "title": "The check that a hypothesis collects at least one concept",
+      "summary": "The publication check that refuses a case under edit once for every hypothesis whose declared collects list is empty, and refuses nothing where every hypothesis collects at least one concept.",
+      "task": "task/case-validator/hypothesis-collects-a-concept"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -104,6 +112,14 @@
       "title": "Proof for the published-glossary lookup",
       "summary": "What proves task/case-validator/glossary-lookup, written against its implementation record over src/glossary/lookup.ts — every criterion, every recorded inference, and each named accident excluded over arranged glossaries holding only placeholder names.",
       "task": "task/case-validator/glossary-lookup"
+    },
+    {
+      "id": "proof/case-validator/hypothesis-collects-a-concept",
+      "kind": "proof",
+      "file": "proof/case-validator/hypothesis-collects-a-concept.md",
+      "title": "Proof for a hypothesis collects at least one concept",
+      "summary": "Tests proving hypothesisCollectsAtLeastOneConcept refuses a case with an empty-collects hypothesis, passes a case whose hypotheses all collect at least one concept, and reaches a failing hypothesis wherever it sits, including the malformed no-hypothesis case the binding flagged as UNDERDETERMINED.",
+      "task": "task/case-validator/hypothesis-collects-a-concept"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -283,6 +299,18 @@
     {
       "from": "implementation/case-validator/glossary-lookup",
       "to": "task/case-validator/glossary-lookup",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-validator/hypothesis-collects-a-concept",
+      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-validator/hypothesis-collects-a-concept",
+      "to": "task/case-validator/hypothesis-collects-a-concept",
       "kind": "implements",
       "at": "the path"
     },
@@ -493,6 +521,12 @@
     {
       "from": "proof/case-validator/glossary-lookup",
       "to": "implementation/case-validator/glossary-lookup",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/hypothesis-collects-a-concept",
+      "to": "implementation/case-validator/hypothesis-collects-a-concept",
       "kind": "proves",
       "at": "the path"
     },
