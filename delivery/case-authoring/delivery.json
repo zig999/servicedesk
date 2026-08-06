@@ -10,12 +10,28 @@
       "task": "task/published-case/assessment-record"
     },
     {
+      "id": "implementation/published-case/case-structure",
+      "kind": "implementation",
+      "file": "implementation/published-case/case-structure.md",
+      "title": "The published case as one constructed value",
+      "summary": "The Case type and its constructor, with the hypothesis's full shape and the two missing glossary identity aliases, so every part a case declares is constructed as one frozen value and reads back exactly as declared.",
+      "task": "task/published-case/case-structure"
+    },
+    {
       "id": "proof/published-case/assessment-record",
       "kind": "proof",
       "file": "proof/published-case/assessment-record.md",
       "title": "Proof that an assessment carries a resolution and reads its parts back, re-delivered",
       "summary": "What proves task/published-case/assessment-record over the unchanged createAssessment — ten tests covering each criterion and each of the implementation's three recorded inferences, with what neither note's named accident lets a test exclude stated as untested.",
       "task": "task/published-case/assessment-record"
+    },
+    {
+      "id": "proof/published-case/case-structure",
+      "kind": "proof",
+      "file": "proof/published-case/case-structure.md",
+      "title": "Proof for the published case as one constructed thing",
+      "summary": "What proves task/published-case/case-structure over createCase() in src/knowledge/case.ts: read-back of every declared part, the declared orders held against sorting, each fallback held to its own declaration, and the implementation's recorded inferences pinned as stated choices.",
+      "task": "task/published-case/case-structure"
     }
   ],
   "edges": [
@@ -44,8 +60,86 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/case-structure",
+      "to": "aggregate/knowledge/cases",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "definition/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/published-case/case-structure",
+      "to": "task/published-case/case-structure",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/published-case/assessment-record",
       "to": "implementation/published-case/assessment-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/case-structure",
+      "to": "implementation/published-case/case-structure",
       "kind": "proves",
       "at": "the path"
     }
