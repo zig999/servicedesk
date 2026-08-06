@@ -42,6 +42,14 @@
       "task": "task/published-case/evaluation-record"
     },
     {
+      "id": "implementation/published-case/required-evaluations",
+      "kind": "implementation",
+      "file": "implementation/published-case/required-evaluations.md",
+      "title": "Which hypotheses require an evaluation",
+      "summary": "requiredEvaluations() in src/knowledge/required-evaluations.ts enumerates a published case's declared hypothesis names, in the case's declared order, without reading any evaluation.",
+      "task": "task/published-case/required-evaluations"
+    },
+    {
       "id": "proof/case-validator/glossary-lookup",
       "kind": "proof",
       "file": "proof/case-validator/glossary-lookup.md",
@@ -80,6 +88,14 @@
       "title": "Proof that an evaluation records a verdict on one hypothesis and keeps it",
       "summary": "What proves task/published-case/evaluation-record over the unchanged createEvaluation, in src/__tests__/unit/investigation/evaluation.spec.ts, with the citation obligation the task's UNDERDETERMINED note names left untested because the construct declares no field it could be demonstrated over.",
       "task": "task/published-case/evaluation-record"
+    },
+    {
+      "id": "proof/published-case/required-evaluations",
+      "kind": "proof",
+      "file": "proof/published-case/required-evaluations.md",
+      "title": "Proof for which hypotheses require an evaluation",
+      "summary": "What proves task/published-case/required-evaluations over requiredEvaluations() in src/knowledge/required-evaluations.ts: totality and no-extras over the declared hypotheses, the single-entry and identity shape of each entry, order preserved and reordered across two distinct published cases per the task's own UNDERDETERMINED note, and the frozen-return inference pinned as a stated choice.",
+      "task": "task/published-case/required-evaluations"
     }
   ],
   "edges": [
@@ -288,6 +304,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/required-evaluations",
+      "to": "definition/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/required-evaluations",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/required-evaluations",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-case/required-evaluations",
+      "to": "rule/investigation/one-evaluation-per-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/published-case/required-evaluations",
+      "to": "task/published-case/required-evaluations",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-validator/glossary-lookup",
       "to": "implementation/case-validator/glossary-lookup",
       "kind": "proves",
@@ -314,6 +360,12 @@
     {
       "from": "proof/published-case/evaluation-record",
       "to": "implementation/published-case/evaluation-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/required-evaluations",
+      "to": "implementation/published-case/required-evaluations",
       "kind": "proves",
       "at": "the path"
     }
