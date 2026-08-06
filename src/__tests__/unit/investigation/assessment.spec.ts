@@ -133,6 +133,32 @@ describe('createAssessment', () => {
     assert.equal(assessment.determiningHypothesis, undefined);
   });
 
+  it('accepts a determining hypothesis and its absence alike beside one and the same resolution', () => {
+    // arrange
+    //
+    // Pins the implementation's recorded inference that no pairing between the
+    // hypothesis and the resolution beside it is checked at construction. A
+    // resolution carries no marker saying whether the fallback produced it, so
+    // the base-refused pairing itself cannot be presented here; what is
+    // observable is that one resolution constructs under both shapes.
+    const resolution = {
+      outcome: CARRIED_OUTCOME,
+      referral: { action: CARRIED_ACTION, recipient: CARRIED_RECIPIENT },
+    };
+
+    // act
+    const withHypothesis = createAssessment({
+      resolution,
+      determiningHypothesis: CARRIED_HYPOTHESIS,
+      text: CARRIED_TEXT,
+    });
+    const withoutHypothesis = createAssessment({ resolution, text: CARRIED_TEXT });
+
+    // assert
+    assert.equal(withHypothesis.determiningHypothesis, CARRIED_HYPOTHESIS);
+    assert.equal(withoutHypothesis.determiningHypothesis, undefined);
+  });
+
   it('reads back the text it was constructed with, character for character', () => {
     // arrange
     const resolution = {

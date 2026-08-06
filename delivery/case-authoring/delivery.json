@@ -5,16 +5,16 @@
       "id": "implementation/published-case/assessment-record",
       "kind": "implementation",
       "file": "implementation/published-case/assessment-record.md",
-      "title": "The assessment construct that carries a resolution",
-      "summary": "The Assessment value and its constructor, together with the resolution, referral and glossary-name shapes it embeds or binds by identity, written as the first source in an empty src/.",
+      "title": "The assessment that carries a resolution, re-delivered against the re-bound task",
+      "summary": "Confirms the existing assessment constructor and the shapes it reads back answer the task's unchanged criteria and its four re-bound nodes, with no source modified.",
       "task": "task/published-case/assessment-record"
     },
     {
       "id": "proof/published-case/assessment-record",
       "kind": "proof",
       "file": "proof/published-case/assessment-record.md",
-      "title": "Proof that an assessment carries a resolution and reads its parts back",
-      "summary": "What proves task/published-case/assessment-record — nine tests over createAssessment, covering each criterion, the copy-on-construct and absent-value inferences, and the edge cases the construct does not raise.",
+      "title": "Proof that an assessment carries a resolution and reads its parts back, re-delivered",
+      "summary": "What proves task/published-case/assessment-record over the unchanged createAssessment — ten tests covering each criterion and each of the implementation's three recorded inferences, with what neither note's named accident lets a test exclude stated as untested.",
       "task": "task/published-case/assessment-record"
     }
   ],
@@ -33,33 +33,9 @@
     },
     {
       "from": "implementation/published-case/assessment-record",
-      "to": "definition/knowledge/referral",
-      "kind": "encodes",
-      "at": "nodes[2]"
-    },
-    {
-      "from": "implementation/published-case/assessment-record",
       "to": "definition/knowledge/hypothesis",
       "kind": "encodes",
-      "at": "nodes[3]"
-    },
-    {
-      "from": "implementation/published-case/assessment-record",
-      "to": "definition/glossary/outcome",
-      "kind": "encodes",
-      "at": "nodes[4]"
-    },
-    {
-      "from": "implementation/published-case/assessment-record",
-      "to": "definition/glossary/action",
-      "kind": "encodes",
-      "at": "nodes[5]"
-    },
-    {
-      "from": "implementation/published-case/assessment-record",
-      "to": "definition/glossary/recipient",
-      "kind": "encodes",
-      "at": "nodes[6]"
+      "at": "nodes[2]"
     },
     {
       "from": "implementation/published-case/assessment-record",
