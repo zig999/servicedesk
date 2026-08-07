@@ -7,7 +7,8 @@
       "file": "aggregate/knowledge/cases.md",
       "context": "knowledge",
       "title": "Cases",
-      "summary": "A case and its hypotheses are written, validated and published as one thing."
+      "summary": "A case and its hypotheses are written, validated and published as one thing.",
+      "digest": "sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8"
     },
     {
       "id": "context/corporate-systems",
@@ -16,6 +17,7 @@
       "context": "corporate-systems",
       "title": "Corporate Systems",
       "summary": "The systems of record every capability ultimately reads from, upstream of the normaliser.",
+      "digest": "sha256:dc00e4a11f45b60b2eb5093893a1b5aebe8b34678c8ab7e2698eee8026d61363",
       "gaps": [
         "strategic"
       ]
@@ -27,6 +29,7 @@
       "context": "glossary",
       "title": "Glossary",
       "summary": "The closed vocabularies and the registry of concepts that every other context speaks.",
+      "digest": "sha256:589b61d969b2a6eacefcef2a43b5ecb4e9f38e7558522f76c9b77a86943a38d0",
       "gaps": [
         "strategic"
       ]
@@ -37,7 +40,8 @@
       "file": "context/integration.md",
       "context": "integration",
       "title": "Integration",
-      "summary": "The read-only capabilities that answer a concept, and the normalisation that keeps a corporate system's vocabulary out of the domain."
+      "summary": "The read-only capabilities that answer a concept, and the normalisation that keeps a corporate system's vocabulary out of the domain.",
+      "digest": "sha256:25ed4daf2dbc481af88c5a5d10bcfddc54da78188b6b7a564aefdaa1dfe82021"
     },
     {
       "id": "context/investigation",
@@ -45,7 +49,8 @@
       "file": "context/investigation.md",
       "context": "investigation",
       "title": "Investigation",
-      "summary": "One run of a case against one subject — collect, judge each hypothesis, resolve the outcome the case declares, and record what happened."
+      "summary": "One run of a case against one subject — collect, judge each hypothesis, resolve the outcome the case declares, and record what happened.",
+      "digest": "sha256:928ca70547a25373e70e1300d246eee045da1d2051987c1096892846834e31c4"
     },
     {
       "id": "context/knowledge",
@@ -53,7 +58,8 @@
       "file": "context/knowledge.md",
       "context": "knowledge",
       "title": "Curated Knowledge",
-      "summary": "The cases a specialist writes — which hypotheses a reported problem has, what confirms each one, and which one dominates which."
+      "summary": "The cases a specialist writes — which hypotheses a reported problem has, what confirms each one, and which one dominates which.",
+      "digest": "sha256:58667e68e3c2c8d2702a225c28fe5342ca40fd5afe01abce4d0359fc194c6efd"
     },
     {
       "id": "definition/glossary/action",
@@ -62,6 +68,7 @@
       "context": "glossary",
       "title": "Action",
       "summary": "What the recipient of a referral does, drawn from a global vocabulary.",
+      "digest": "sha256:f77670004b9b0aa3d01b7010e239c57c98609cb837b6f7fb64a11d51b85b43cb",
       "ddd": "value-object",
       "gaps": [
         "attributes.name.values"
@@ -74,6 +81,7 @@
       "context": "glossary",
       "title": "Concept",
       "summary": "A fact an investigation can collect, named once for the whole system and answered by exactly one capability.",
+      "digest": "sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7",
       "ddd": "value-object",
       "gaps": [
         "attributes.ttl.unit"
@@ -86,6 +94,7 @@
       "context": "glossary",
       "title": "Observation Field",
       "summary": "One named part of what the answer to a concept carries, and what a citation points at.",
+      "digest": "sha256:1b428e198555ff415ae67598961e884fcd34c7d2f97d5cac7ec3a93678dd7015",
       "ddd": "value-object"
     },
     {
@@ -95,6 +104,7 @@
       "context": "glossary",
       "title": "Outcome",
       "summary": "What an investigation concluded, contributed by each confirmable hypothesis and registered globally.",
+      "digest": "sha256:40fad9d974f611796cc3974eeb6b311ac0ef6c6de39c5615f3eba4681eedaf2d",
       "ddd": "value-object",
       "gaps": [
         "attributes.name.values.[]"
@@ -107,6 +117,7 @@
       "context": "glossary",
       "title": "Recipient",
       "summary": "Who a referral goes to, named as an operational role.",
+      "digest": "sha256:a5bc8e2e81ed13dfdf8b8ceabffab526153b6380b623c1cec46bc50d5e3e1654",
       "ddd": "value-object",
       "gaps": [
         "attributes.name.values"
@@ -119,6 +130,7 @@
       "context": "glossary",
       "title": "Subject Type",
       "summary": "The kind of thing a case investigates, drawn from a closed vocabulary.",
+      "digest": "sha256:a2b480065c98dc6b15f228f1e05fb84e2729cd075f9c14579970db5efe45bb89",
       "ddd": "value-object",
       "gaps": [
         "attributes.name.values"
@@ -131,6 +143,7 @@
       "context": "integration",
       "title": "Capability",
       "summary": "What answers one concept — read-only, versioned, with a declared output schema and a deadline.",
+      "digest": "sha256:80676c92ef8286fcfba04996c1672bef02ef9ec1426f7baa9ec4b2a79ed95a3b",
       "ddd": "value-object",
       "gaps": [
         "attributes.timeout.unit"
@@ -143,6 +156,7 @@
       "context": "investigation",
       "title": "Assessment",
       "summary": "What the investigation concluded, what to do about it, which hypothesis decided it, and the text written for the recipient.",
+      "digest": "sha256:fe01c229097bb5a9b23e1f75b8bbbe60108838df39b8068129c5d7adaa2b69ac",
       "ddd": "value-object",
       "gaps": [
         "attributes.text.audience"
@@ -155,6 +169,7 @@
       "context": "investigation",
       "title": "Citation",
       "summary": "The concept and the field an evaluation rested on.",
+      "digest": "sha256:05e3a6d095fea69a23ab66ea91863ae8913c8096fb3838f5dfb5e69b880576bf",
       "ddd": "value-object"
     },
     {
@@ -164,6 +179,7 @@
       "context": "investigation",
       "title": "Evaluation",
       "summary": "The verdict on one hypothesis, with what it rested on or why it could not decide.",
+      "digest": "sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de",
       "ddd": "value-object"
     },
     {
@@ -173,6 +189,7 @@
       "context": "investigation",
       "title": "Evidence",
       "summary": "What one capability answered about one concept, or the recorded fact that it did not answer.",
+      "digest": "sha256:d424dcd74f287e99bebfb33c433785b58066b7dbc4f83ef8be02d6d6ddbc8875",
       "ddd": "value-object",
       "gaps": [
         "attributes.inputs",
@@ -187,6 +204,7 @@
       "context": "investigation",
       "title": "Investigation",
       "summary": "One run of one case against one subject, written once and never changed.",
+      "digest": "sha256:bfc4bda45e14e54b1f5def40d20fd9adef4237be74ed05cf0e3bd7d00bc9509b",
       "ddd": "entity",
       "gaps": [
         "attributes.ticket_ref.required"
@@ -199,6 +217,7 @@
       "context": "investigation",
       "title": "Subject",
       "summary": "The one thing an investigation is about, named by its type and its identifier.",
+      "digest": "sha256:5d9e051c1dc90e3084daf4f34eb2b8a6c1388bfe5f5078a140f034d0b4afea98",
       "ddd": "value-object"
     },
     {
@@ -208,6 +227,7 @@
       "context": "knowledge",
       "title": "Case",
       "summary": "A published diagnostic procedure — its hypotheses in order of precedence, and what to do when none of them confirms.",
+      "digest": "sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c",
       "ddd": "value-object",
       "gaps": [
         "attributes.version.derivation"
@@ -220,6 +240,7 @@
       "context": "knowledge",
       "title": "Case Under Edit",
       "summary": "The same case while a curator is still writing it, holding everything the case declares and not yet the version and hash publication assigns.",
+      "digest": "sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced",
       "aggregate": "cases",
       "ddd": "aggregate-root"
     },
@@ -230,6 +251,7 @@
       "context": "knowledge",
       "title": "Hypothesis",
       "summary": "One falsifiable claim about what is wrong, with what must be collected to decide it and what follows if it holds.",
+      "digest": "sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34",
       "aggregate": "cases",
       "ddd": "value-object"
     },
@@ -240,6 +262,7 @@
       "context": "knowledge",
       "title": "Referral",
       "summary": "The action somebody takes and the role that takes it.",
+      "digest": "sha256:7d74b30fc7b7813597b165588a4f8f5b7652235ebac9e320fa49a573f7eb9261",
       "aggregate": "cases",
       "ddd": "value-object"
     },
@@ -250,6 +273,7 @@
       "context": "knowledge",
       "title": "Refusal",
       "summary": "One reason one case did not pass validation — the rule that refused, where in the case it refused, and the text written for the curator.",
+      "digest": "sha256:d0458e6eb99c1d11d6255524ceb9ca0f756d02c24001130643a58a71f16ac2d2",
       "ddd": "value-object"
     },
     {
@@ -259,6 +283,7 @@
       "context": "knowledge",
       "title": "Resolution",
       "summary": "What an investigation concluded and what somebody should do about it, taken together.",
+      "digest": "sha256:ce017e6342d08120ef1290be156eff861490e031d0e210d96cae2f5bc9f4f1bb",
       "aggregate": "cases",
       "ddd": "value-object"
     },
@@ -269,6 +294,7 @@
       "context": "integration",
       "title": "Capability query",
       "summary": "What the investigation context calls to have one concept answered about one subject.",
+      "digest": "sha256:c404db828aaa08dce9e1f17d1617f39673af4b1b9bb0180e20735cdd35a562b3",
       "ddd": "api"
     },
     {
@@ -278,6 +304,7 @@
       "context": "investigation",
       "title": "Assessment reviewed",
       "summary": "An operator's judgement of an assessment, arriving later and from outside.",
+      "digest": "sha256:bff011e63fca2cb4d8503869fbaf56596f59a5ae70dc1ea69741311fe0c3599a",
       "ddd": "domain-event",
       "gaps": [
         "payload",
@@ -291,6 +318,7 @@
       "context": "investigation",
       "title": "Investigation completed",
       "summary": "The fact that one investigation finished, carrying what it concluded and what it saw.",
+      "digest": "sha256:6065fd9c35e024fb3f566db31b4395e9df2dce615504af110814f0bd47d367df",
       "ddd": "domain-event"
     },
     {
@@ -300,6 +328,7 @@
       "context": "knowledge",
       "title": "Case publication",
       "summary": "A case moves from being edited to being published, and publication is where its contract with the integration context is verified.",
+      "digest": "sha256:ac7d1d514b2cff06e1d519e80a06a27feb30d6ea5276630afb98e958123813fa",
       "gaps": [
         "rejections",
         "transitions.published.publish"
@@ -312,6 +341,7 @@
       "context": "investigation",
       "title": "Diagnose",
       "summary": "One case run against one subject, from the attendant's choice to the written record and the response.",
+      "digest": "sha256:25781babbd7341fb729a47fbe394207b61a38b62b92ac9800bd2633cfd3a09a3",
       "ddd": "use-case"
     },
     {
@@ -321,6 +351,7 @@
       "context": "glossary",
       "title": "A lookup matches a published name exactly",
       "summary": "A term consulted in the glossary is compared to a published name character for character, the same comparison hypothesis names get.",
+      "digest": "sha256:2ea8ba89149becd1179fe9623d09227d5dafbcdb1534a29a57f1f9951b2dbbc5",
       "ddd": "invariant"
     },
     {
@@ -330,6 +361,7 @@
       "context": "glossary",
       "title": "A recipient is a role",
       "summary": "A referral goes to an operational role and never to a named person.",
+      "digest": "sha256:f1fb3daab70d9f8582b4e5c1c29ecfb5771b82c915f335f919412f3c0785993d",
       "ddd": "invariant"
     },
     {
@@ -339,6 +371,7 @@
       "context": "integration",
       "title": "A capability is read-only",
       "summary": "The system diagnoses and refers, and never acts.",
+      "digest": "sha256:6f1b47c0c28b725ee3e78d38e96521c2be925bb60ab09c06340f944a6f269dfa",
       "ddd": "invariant"
     },
     {
@@ -348,6 +381,7 @@
       "context": "integration",
       "title": "Evidence arrives in the glossary's vocabulary",
       "summary": "A corporate system's language stops at the normaliser.",
+      "digest": "sha256:5e115f031974d81fff9d18c585cb47e2a5c2e2cf37fe042821a0e682889ef55f",
       "ddd": "invariant"
     },
     {
@@ -357,6 +391,7 @@
       "context": "investigation",
       "title": "A decided evaluation cites evidence",
       "summary": "A verdict that confirms or refutes points at the concept and field it rested on, and the field must be one that concept declares.",
+      "digest": "sha256:5eb850974bbb427434c776e45d807cb2c306bd55aa5e04021c1cfe390acb495f",
       "ddd": "invariant"
     },
     {
@@ -366,6 +401,7 @@
       "context": "investigation",
       "title": "An answer arrives within a declared deadline",
       "summary": "The attendant waits on the line, so the answer is produced within twenty seconds and inside the caller's timeout.",
+      "digest": "sha256:b72c7961756050ea6416223381b5273a36c92cf1559239faced1d204ac6fca5d",
       "ddd": "invariant",
       "gaps": [
         "expression.caller_timeout"
@@ -378,6 +414,7 @@
       "context": "investigation",
       "title": "An inconclusive evaluation declares its reason",
       "summary": "An absent fact, a failed judgement and an exhausted deadline are three different things and never one.",
+      "digest": "sha256:0d3d7d6bcdbe0cdec75c271dd561669fbbcc73e3ca8f97b338ce3b689a52993d",
       "ddd": "invariant"
     },
     {
@@ -387,6 +424,7 @@
       "context": "investigation",
       "title": "An investigation is idempotent within a window",
       "summary": "The same question asked twice inside the window is one investigation, not two.",
+      "digest": "sha256:3206fcadb151ec192b06bdd8da6fa4582ab0801f3276947c847f697f27d323bf",
       "ddd": "invariant",
       "gaps": [
         "expression"
@@ -399,6 +437,7 @@
       "context": "investigation",
       "title": "An investigation is written once",
       "summary": "No intermediate state of the domain ever persists.",
+      "digest": "sha256:c46dd4ac305e571d687238b7d5dbac1634b8e5ba068243fd628ebb738d01d8c8",
       "ddd": "invariant"
     },
     {
@@ -408,6 +447,7 @@
       "context": "investigation",
       "title": "An unattempted concept records a timeout",
       "summary": "A concept the collection never reached is an evidence carrying the timeout result, never an absent evidence.",
+      "digest": "sha256:dcae4fb3aeed9dc969decb61d23d8198ebf7fc836b0eb2109edb504a06c933b2",
       "ddd": "invariant"
     },
     {
@@ -417,6 +457,7 @@
       "context": "investigation",
       "title": "Collection runs in the requester's scope",
       "summary": "What an investigation may see is bounded by what whoever asked for it may see.",
+      "digest": "sha256:ac74e4bd69025af2162546070c8b5fde3e59dee5f741a17612ce90586c59b85f",
       "ddd": "invariant"
     },
     {
@@ -426,6 +467,7 @@
       "context": "investigation",
       "title": "A judgement never infers",
       "summary": "What the evidence does not give is inconclusive rather than filled in.",
+      "digest": "sha256:a83b9f7c9631214ada461d116d1da48f77572c1da4a01bb5968fc26150074b27",
       "ddd": "policy"
     },
     {
@@ -435,6 +477,7 @@
       "context": "investigation",
       "title": "No stage aborts on its deadline",
       "summary": "Exhausting a deadline produces a recorded result and the investigation continues.",
+      "digest": "sha256:79b47c5e0b54d13c7b52373f9cfaa0567764b06453f7e8653b444fd473fe6f52",
       "ddd": "invariant"
     },
     {
@@ -444,6 +487,7 @@
       "context": "investigation",
       "title": "One evaluation per hypothesis",
       "summary": "Every hypothesis the case declares gets a verdict, and silence is not one.",
+      "digest": "sha256:5c6cbf502b861b306a3ead92129e8d260e06b13dea90a924c54b5a92a6a2d825",
       "ddd": "invariant"
     },
     {
@@ -453,6 +497,7 @@
       "context": "investigation",
       "title": "One evidence per collected concept",
       "summary": "The evidence of an investigation is total over what its case collects — exactly one per concept, whatever happened to the attempt.",
+      "digest": "sha256:d49ec2f8f15ec3ae1c9bcc0bb531910511ad1bb2f3681d5647c24dbe0dfac4d0",
       "ddd": "invariant"
     },
     {
@@ -462,6 +507,7 @@
       "context": "investigation",
       "title": "The outcome comes from the case",
       "summary": "Nothing produces an outcome or a referral except the case that declared them.",
+      "digest": "sha256:fe6d313568bdc7eb9aaae70da1220bba3faddc2cf58285d0d9486a598d4ce12b",
       "ddd": "invariant"
     },
     {
@@ -471,6 +517,7 @@
       "context": "investigation",
       "title": "The response follows the record",
       "summary": "Nobody acts on an assessment that has no record, so the whole response waits for the write.",
+      "digest": "sha256:0d1dff3c02f0cbacfbd43903f8e4c2cb02ca378cf7226b154d711eb028cfd888",
       "ddd": "invariant"
     },
     {
@@ -480,6 +527,7 @@
       "context": "investigation",
       "title": "The writing input is narrowed",
       "summary": "A text cannot contradict the outcome if it never receives the material to.",
+      "digest": "sha256:1f796617a3461fafa0f5329c1d4419a7c5373bfb96232de74c9b39876fba40c5",
       "ddd": "policy"
     },
     {
@@ -489,6 +537,7 @@
       "context": "knowledge",
       "title": "A validation answers with every refusal",
       "summary": "A validation of a case runs every check it carries whatever an earlier one decided, and answers with all of them.",
+      "digest": "sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa",
       "ddd": "invariant"
     },
     {
@@ -498,6 +547,7 @@
       "context": "knowledge",
       "title": "A case has at least one hypothesis",
       "summary": "A case with no hypothesis investigates nothing.",
+      "digest": "sha256:ff3df5176e34b2bfdfd59d9a8231b195cc843ffc5d71fa23976715accbb63838",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -508,6 +558,7 @@
       "context": "knowledge",
       "title": "Every term a case names exists in the glossary",
       "summary": "A case speaks only the published language, so nothing it names is invented in place.",
+      "digest": "sha256:4f3ff8e59ed4e0d1bc5808b7cc98a98d065e094650e493032a8aa309cdc376a1",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -518,6 +569,7 @@
       "context": "knowledge",
       "title": "A collected concept accepts the case's subject type",
       "summary": "A case cannot ask for a fact that does not apply to the kind of thing it investigates.",
+      "digest": "sha256:b34df55dd4731914fe21cc0b8be6110b85b53548258aab68f080ba7da0b29e81",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -528,6 +580,7 @@
       "context": "knowledge",
       "title": "Every collected concept declares a ttl",
       "summary": "How stale a fact may be is stated by the concept, not assumed by whoever reads it.",
+      "digest": "sha256:31b0203249035edc85ea0986a0544ca512bc7aa238d2732bdc567f85a6795e44",
       "ddd": "invariant"
     },
     {
@@ -537,6 +590,7 @@
       "context": "knowledge",
       "title": "Every collected concept has a read-only capability",
       "summary": "The contract between curated knowledge and integration is checked when publishing, not when running.",
+      "digest": "sha256:a675657d26c23639438a7eb06b4d1204c4ba9898042bd05974251f622f1e4b80",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -547,6 +601,7 @@
       "context": "knowledge",
       "title": "Hypotheses are ordered by precedence",
       "summary": "The order in which a case lists its hypotheses is the order in which their causes dominate one another.",
+      "digest": "sha256:c5c1b66cff9265e8aa17c2be46f42bd4377e73801e215d95379cae6d60458fcb",
       "aggregate": "cases",
       "ddd": "policy",
       "gaps": [
@@ -560,6 +615,7 @@
       "context": "knowledge",
       "title": "A hypothesis collects at least one concept",
       "summary": "A hypothesis that collects nothing could never cite anything.",
+      "digest": "sha256:abd47448fabd44ecaa627082d5e4a7d8cb8db6a3968c051bd1a1c32588de5b25",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -570,6 +626,7 @@
       "context": "knowledge",
       "title": "A hypothesis name is unique in its case",
       "summary": "Two hypotheses of the same case never share a name, because evaluations are indexed by it.",
+      "digest": "sha256:289d09e2bdc85e8277a0ebbfe746ac7205cd6419249425b8802f74436c085230",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -580,6 +637,7 @@
       "context": "knowledge",
       "title": "One falsifiable claim per criterion",
       "summary": "A criterion that holds for either of two reasons is two hypotheses.",
+      "digest": "sha256:88677a423865297eaf909e2284ff03abd9a4e95b8a71c2d2cae2c7b1e1631835",
       "aggregate": "cases",
       "ddd": "policy"
     },
@@ -590,6 +648,7 @@
       "context": "knowledge",
       "title": "The curator prose never changes what is collected",
       "summary": "Anything that changes what an investigation collects belongs in the structured part of the case.",
+      "digest": "sha256:484135503755b64ba08db05907a618f768d07c641ae04e73486ce9bb668d1586",
       "aggregate": "cases",
       "ddd": "policy"
     },
@@ -600,6 +659,7 @@
       "context": "knowledge",
       "title": "The content hash covers the whole file",
       "summary": "A published case's hash is computed over its whole file, the curator prose included.",
+      "digest": "sha256:4874d358e10ea040974b075a80a5ef12ff4e9c77dae165ac048df88aa5ae7728",
       "ddd": "invariant"
     },
     {
@@ -609,6 +669,7 @@
       "context": "knowledge",
       "title": "The fallback follows what the collection returned",
       "summary": "When nothing confirms, the case answers with the no-data fallback where any evidence fell short, and with the exhausted fallback where every evidence answered.",
+      "digest": "sha256:82526f2f2b1f34a5335cf16b85806777f8c196e7e86e834837b4eba6196d3412",
       "ddd": "invariant"
     },
     {
@@ -618,6 +679,7 @@
       "context": "knowledge",
       "title": "Two positions are two refusals",
       "summary": "The same rule refusing a case at two places produces one refusal per place, never one covering both.",
+      "digest": "sha256:8b64fd982e3ecc3ff92302f478f813f6215204358fc9947fc720f499819b15d3",
       "ddd": "invariant"
     }
   ],
