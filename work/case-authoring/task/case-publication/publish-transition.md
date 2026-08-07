@@ -1,88 +1,107 @@
 ---
 title: A case moves from being edited to being published
-summary: The transition that validates a case under edit and, where nothing refuses, produces the published case carrying its version and its hash.
-rationale: The decomposition cut the transition as its own task because the base registers a case and its hypotheses as written, validated and published as one thing, and the transition is the one place the three meet.
+summary: The transition that validates a case under edit and, where nothing refuses and the contract check decided, produces the published case carrying its counted version and its hash.
+objective: A case under edit that no check refuses and whose contract check was decided becomes a published case carrying its counted version and its hash, and one that a check refuses or whose contract check could not be decided does not.
+rationale: The decomposition cut the transition as its own task because the base registers a case and its hypotheses as written, validated and published as one thing, and the transition is the one place the three meet. Criteria three through five were added after commit a50f278 closed the open gap over how a version is derived by stating that publication counts it per slug; criteria nine, eleven, twelve and thirteen were added from the same commit, which states that every refusal is answered, what an unconsultable registry answers with, and that nobody approves the act.
 sources:
-  - intake/scope.md
-objective: A case under edit that no check refuses becomes a published case carrying its version and its hash, and one that a check refuses does not.
+- intake/scope.md
+- intake/scope-2026-08-07.md
 criteria:
-  - Publishing a case under edit that no check refuses yields a published case.
-  - The published case carries a version.
-  - The published case carries the hash of the file it was published from.
-  - The published case holds its hypotheses in the order the case under edit declared them.
-  - The published case holds everything the case under edit declared.
-  - Publishing a case under edit that a check refuses yields the refusals and no published case.
-  - Publishing a case whose collected concept has no registered read-only capability yields that refusal and no published case.
+- Publishing a case under edit that no check refuses yields a published case.
+- The published case carries the hash of the file it was published from.
+- The published case's version is 1 where no version of its slug has been published.
+- The published case's version is one greater than the greatest version already published for its slug.
+- The published case carries no version a curator wrote.
+- The published case holds its hypotheses in the order the case under edit declared them.
+- The published case holds everything the case under edit declared.
+- Publishing a case under edit that a check refuses yields the refusals and no published case.
+- Publishing a case under edit that two checks refuse yields both refusals.
+- Publishing a case whose collected concept has no registered read-only capability yields that refusal and no published case.
+- Publishing a case while the capability registry cannot be consulted yields no published case.
+- Publishing a case while the capability registry cannot be consulted yields the unavailable contract check and no refusal.
+- Publishing a case that no check refuses takes no approval as an input and records no approver.
 depends_on:
-  - task/case-publication/capability-contract-check
-  - task/case-publication/content-hash
-  - task/case-validation/refusal-and-accumulation
+- task/case-publication/capability-contract-check
+- task/case-publication/content-hash
+- task/case-publication/unavailable-contract-check
+- task/case-validation/refusal-and-accumulation
 nodes:
-  - node: aggregate/knowledge/cases
-    digest: sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8
-  - node: definition/integration/capability
-    digest: sha256:80676c92ef8286fcfba04996c1672bef02ef9ec1426f7baa9ec4b2a79ed95a3b
-  - node: definition/knowledge/case
-    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
-  - node: definition/knowledge/draft-case
-    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
-  - node: definition/knowledge/hypothesis
-    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
-  - node: definition/knowledge/refusal
-    digest: sha256:d0458e6eb99c1d11d6255524ceb9ca0f756d02c24001130643a58a71f16ac2d2
-  - node: lifecycle/knowledge/case-publication
-    digest: sha256:ac7d1d514b2cff06e1d519e80a06a27feb30d6ea5276630afb98e958123813fa
-  - node: rule/integration/a-capability-is-read-only
-    digest: sha256:6f1b47c0c28b725ee3e78d38e96521c2be925bb60ab09c06340f944a6f269dfa
-  - node: rule/knowledge/a-validation-answers-with-every-refusal
-    digest: sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa
-  - node: rule/knowledge/every-collected-concept-has-a-read-only-capability
-    digest: sha256:a675657d26c23639438a7eb06b4d1204c4ba9898042bd05974251f622f1e4b80
-  - node: rule/knowledge/the-content-hash-covers-the-whole-file
-    digest: sha256:4874d358e10ea040974b075a80a5ef12ff4e9c77dae165ac048df88aa5ae7728
-  - node: rule/knowledge/two-positions-are-two-refusals
-    digest: sha256:8b64fd982e3ecc3ff92302f478f813f6215204358fc9947fc720f499819b15d3
+- node: aggregate/knowledge/cases
+  digest: sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8
+- node: definition/integration/capability
+  digest: sha256:d1cab846d7f441726474619d6dc845204f1da20b84a23db0ad3dcf22fd9cbab3
+- node: definition/knowledge/case
+  digest: sha256:d512d19003a13abdf718191e259fb2a9d22a8389ad46c5461aa43bdd6eebe32f
+- node: definition/knowledge/check-unavailable
+  digest: sha256:8937564a636f64d5fa9feafcb4edd35d9a644a7c7baac01e8e2b4e203f53a7b7
+- node: definition/knowledge/draft-case
+  digest: sha256:9c3360b04b1eb11db3c2d54299b2909173b3ec7bfdfb6a4e5d47e69acbc668e9
+- node: definition/knowledge/hypothesis
+  digest: sha256:690eee99a05f5f75e890b6f1f06c278656b0fabd56ab9f6aac158dfdce3b065d
+- node: definition/knowledge/refusal
+  digest: sha256:309393768aaec5c1fa69a62da0f18443ca25d3f2bb49ed1da901c923e3132270
+- node: lifecycle/knowledge/case-publication
+  digest: sha256:998c9ad8d2139b3c357f97fd9a3d1e89af282d2e38c17b82816e0ef9bbc12d2a
+- node: rule/knowledge/a-case-does-not-publish-without-the-contract-check
+  digest: sha256:151147ca40e48632470001b72e226644fd43d6c42579b30472a5277f4a04625a
+- node: rule/knowledge/a-case-is-one-file
+  digest: sha256:58b96adc27a29ee585501b48210ed953e0575736fe400d200014277e8a4e6593
+- node: rule/knowledge/a-validation-answers-with-every-refusal
+  digest: sha256:b467b515e8551ff4f6f914376608842fce28cf02545031f8c2aab4b369898886
+- node: rule/knowledge/an-unavailable-check-is-not-a-refusal
+  digest: sha256:f0a5343dc726fd7dcb01783be015487fac991f48a309c662804f0edf92656010
+- node: rule/knowledge/every-collected-concept-has-a-read-only-capability
+  digest: sha256:2e41ebeb0d6e56b56aab0a2b44d1ccf640b05c7b5df02bc2b123c3539df622f9
+- node: rule/knowledge/nothing-approves-a-publication
+  digest: sha256:56ccb01efb2936b5bf85116df359809e5c2911e0172ef42a60a131c30eb27e96
+- node: rule/knowledge/publication-counts-the-version
+  digest: sha256:c9477424e89cfcc4c217faf73f166b9cbc7afc57adc563b417dcaaa77f29a6e6
+- node: rule/knowledge/the-content-hash-covers-the-whole-file
+  digest: sha256:ff34ab8bff09ffeb96aff532289e784ed6087dbdb6b3b8d820a82cb1a47885ea
+- node: rule/knowledge/the-content-hash-is-a-named-sha-256
+  digest: sha256:6397fe1f41e13c6ba22d6784d73e51e2a1ec987c1054994380d8199431317286
+- node: rule/knowledge/the-contract-check-reads-the-current-registration
+  digest: sha256:242b37f434d0fa118452db112597df140bf8a8889b0b58222ef1a6c011162d52
+- node: rule/knowledge/two-positions-are-two-refusals
+  digest: sha256:430c295bf94b5e207717a04222a0cf91c54397a1701adc77d674e36d0546833a
+- node: rule/knowledge/what-the-curator-reads-is-written-in-portuguese
+  digest: sha256:46716746cab8ff38b085f7267455aa6ea6b4ec1fa354479227cff3f2ec68cae9
 unresolved:
-  - gap: definition/knowledge/case#attributes.version.derivation
-  - gap: lifecycle/knowledge/case-publication#rejections
-  - question: No node states what publication does when the capability registry cannot be consulted at all. Integration is a separate context that knowledge consumes as a customer, criterion seven turns on whether a concept has a registered read-only capability, and the objective is total — refused, or published. Whether an unreachable registry refuses the publication, and with what refusal, is a fact the base does not hold.
+- gap: lifecycle/knowledge/case-publication#transitions.published.publish
+- gap: definition/knowledge/refusal#attributes.rule.structural-checks
+- question: The base does not say what publication answers when the capability registry cannot be consulted and some other check of the same case has refused. rule/knowledge/an-unavailable-check-is-not-a-refusal requires that publication answer the unavailable contract check and no refusal; rule/knowledge/a-validation-answers-with-every-refusal requires that the validation answer with every refusal its checks produced. Criterion 12 restates the first flatly, and the two cannot both hold over one case that is both wrong and unchecked.
 waived:
-  - gap: definition/integration/capability#attributes.timeout.unit
-    why: The publication check reads that the timeout declaration is present and invokes nothing, which definition/integration/capability states in its own body, so no path of this transition compares a timeout to a duration. The unit is needed where a capability is actually called, which this task never does.
-  - gap: lifecycle/knowledge/case-publication#transitions.published.publish
-    why: This task performs only the draft-to-published transition the lifecycle declares, and no criterion begins from a published case. The version fact the two share is carried separately as unresolved on definition/knowledge/case#attributes.version.derivation, so waiving here does not hide it.
+- gap: definition/integration/capability#attributes.timeout.unit
+  why: The publication check reads that a timeout declaration is present and never a duration. No criterion of this task compares, elapses or displays a timeout, so what unit the number is in changes nothing this transition decides. The unit bears on whoever runs a capability against a deadline, which is the investigation context and not this act.
 ---
 ## What it is
 
-The one move from the case under edit to the published case.
-It runs the validation, and where nothing refuses it produces the published case with the version and the hash it did not previously carry.
+The one act where the validation, the contract check, the hash and the version meet, and where a case under edit becomes a published value or does not.
 
 ## Notes
 
-The refusal path and the publishing path are both criteria here, because the transition is the one place either can be observed.
-UNDERDETERMINED, from the binding — the clause of `rule/knowledge/a-validation-answers-with-every-refusal` requiring every check to run whatever an earlier one decided reaches no criterion, since criterion six says only that a refused case yields the refusals and no published case, which any non-empty answer satisfies.
-UNDERDETERMINED passes — a publication that stops at the first refusing check and answers that one refusal, leaving the curator to publish and correct once per mistake.
-UNDERDETERMINED, from the binding — the statement of `rule/knowledge/two-positions-are-two-refusals` reaches no criterion, and no criterion states what a refusal carries.
-UNDERDETERMINED passes — a publication whose refusals are bare message strings naming neither the rule nor the position, answering one refusal for a rule that refused at two positions of the same case.
-UNDERDETERMINED, from the binding — the clause of `rule/knowledge/every-collected-concept-has-a-read-only-capability` requiring the capability to declare an output schema and a timeout reaches no criterion, since criterion seven stops at the capability being registered and read-only.
-UNDERDETERMINED passes — a publication that accepts the mere presence of a registered capability without reading that it declares an output schema and a timeout.
-UNDERDETERMINED, from the binding — the clause of `rule/knowledge/the-content-hash-covers-the-whole-file` requiring the hash to cover the curator's prose reaches no criterion, since criterion three says only that the published case carries the hash of the file it was published from.
-UNDERDETERMINED passes — a publication computing the hash over the case's structured fields, or over a canonical re-serialisation of them, so that correcting a sentence of curator prose republishes the same hash instead of a different published case.
-UNDERDETERMINED, from the binding — the base states six further publication checks in rule nodes this binding cannot reach, and only criterion seven names a check at all.
-UNDERDETERMINED passes — a publication whose validation carries exactly one check, the registered read-only capability, and therefore publishes a case with no hypothesis, with two hypotheses sharing a name, or naming a term the glossary does not publish.
-Decision, beyond the covers — stand: `rule/knowledge/case-has-at-least-one-hypothesis`, `rule/knowledge/hypothesis-collects-at-least-one-concept`, `rule/knowledge/hypothesis-name-is-unique-in-its-case`, `rule/knowledge/case-terms-exist-in-the-glossary`, `rule/knowledge/every-collected-concept-declares-a-ttl` and `rule/knowledge/concept-accepts-the-declared-subject-type` are `epic/case-validation`'s claim, each delivered by a task of that epic and assembled by `task/case-validation/refusal-and-accumulation`, which this task depends on; claiming them here would put one check under two epics that each answer for it.
-UNDERDETERMINED, from the binding — criterion seven matches a case's collected concepts against registered capabilities, and how that match is decided is not bindable here.
-UNDERDETERMINED passes — a publication matching a collected concept to a capability's concept case-insensitively or after normalisation, so a case naming ONU-Offline publishes against a capability registered for onu-offline.
-Decision, beyond the covers — stand: `definition/glossary/concept` and `rule/glossary/a-lookup-matches-a-published-name-exactly` are claimed by `epic/published-language-ports` and `epic/case-validation`, where the lookup and its exactness are delivered.
-UNDERDETERMINED, from the binding — what the published case must hold for criterion five is stated in nodes this task may not bind.
-UNDERDETERMINED passes — a published case carrying its two fallbacks and each hypothesis's resolution as opaque text rather than the outcome-and-referral pair the base declares.
-Decision, beyond the covers — stand: `definition/knowledge/resolution`, `definition/knowledge/referral` and `definition/glossary/subject-type` are claimed by `epic/case-shape` and `epic/case-validation`, where those shapes are declared and their terms checked.
-REMAINDER, from the binding — the statement of `rule/integration/a-capability-is-read-only` reaches no criterion, because nothing here registers a capability; it is bound because it is what guarantees criterion seven's predicate.
-REMAINDER belongs — the act that registers a capability in the integration context, which this plan does not build.
-REMAINDER, from the binding — the clause of `lifecycle/knowledge/case-publication` that a published version is identified by its content and that the index keeps all of them reaches no criterion, since criteria one through seven stop at producing the published case.
-REMAINDER belongs — a task that persists published cases and keeps every published version reachable, which this plan does not hold.
-REMAINDER, from the binding — clauses of three bound nodes describe running a case rather than publishing one, and publication invokes nothing.
-REMAINDER belongs — the investigation act, at `interface/integration/capability-query` and `rule/investigation/collection-runs-in-the-requester-scope`.
-Decision, beyond the covers — stand: `interface/integration/capability-query` and `rule/investigation/collection-runs-in-the-requester-scope` belong to contexts this plan does not build.
-From the binding — `rule/knowledge/hypotheses-are-ordered-by-precedence` states why criterion four's order matters and says no validator can check the precedence, so criterion four can only ever hold order-preservation and never the precedence itself.
-Decision, beyond the covers — stand: `rule/knowledge/hypotheses-are-ordered-by-precedence` is `epic/case-shape`'s claim, bound by `task/case-shape/draft-case-shape`, where the order a curator declares is preserved.
+The refusal path, the undecided path and the publishing path are all criteria here, because the transition is the one place any of the three can be observed.
+Criteria three through five are new and are what the plan previously carried as an unresolved gap over the version's derivation, now stated in the base.
+Criterion nine states the totality the plan left to any non-empty answer, which the base decides per position.
+Criterion thirteen is the complement of a prohibition and asserts only that this rule does not refuse the act.
+The form of the hash is the hash task's, and this transition carries only that the published case holds the one taken from the file it was published from.
+UNDERDETERMINED, from the binding — no criterion reaches the read-failure path, which two bound nodes state, and the nodes holding the construct are outside this epic's candidates.
+UNDERDETERMINED passes — a publish that answers an unparseable case file with a refusal, or with the unavailable contract check, or with the refusals of checks it ran over a half-parsed file.
+UNDERDETERMINED, from the binding — criteria 11 and 12 describe the unconsultable registry as an outcome and never as a point in a sequence, so nothing holds the transition to running the rest of the validation first.
+UNDERDETERMINED passes — a publish that consults the registry first, finds it unreachable, stops, and answers only the unavailable contract check, running none of the case's other checks.
+UNDERDETERMINED, from the binding — criterion 10 stops at a concept having no registered read-only capability, while the bound rule conditions on one declaring an output schema and a timeout.
+UNDERDETERMINED passes — a contract check that refuses only where the registry answers nothing for the concept, never reading whether the capability it did get back declares an output schema and a timeout.
+UNDERDETERMINED, from the binding — neither clause of `rule/knowledge/the-contract-check-reads-the-current-registration` reaches a criterion, since criterion 10 states the outcome of the lookup and not its moment or its subject.
+UNDERDETERMINED passes — a contract check reading a registry snapshot cached before the publish was requested, or one falling back to the last capability registered for the concept.
+UNDERDETERMINED, from the binding — criterion 2 requires only that the published case carry the hash of the file, and says nothing of its form, while `definition/knowledge/case` carries `content_hash` as a bare string.
+UNDERDETERMINED passes — a published case whose content hash is a bare sixty-four-character digest with no algorithm prefix, or one written in uppercase hexadecimal.
+UNDERDETERMINED, from the binding — criteria 8, 9 and 10 say refusals are yielded and never say what one carries, while the base makes rule, position and text all required.
+UNDERDETERMINED passes — a publish answering refusals carrying sentences the implementation composed itself, in English, with no position, and an unavailable check whose text is in English.
+UNDERDETERMINED, from the binding — criterion 9 counts checks, not positions, so nothing reaches the per-position count the base requires; the contract check is the likeliest one to refuse a case at two positions.
+UNDERDETERMINED passes — a publish that answers one refusal naming the contract rule and listing both concepts it refused.
+UNDERDETERMINED, from the binding — the kept-under-version-control clause of `rule/knowledge/a-case-is-one-file` reaches no criterion.
+UNDERDETERMINED passes — a publish that takes its case from any readable source, hashes those bytes and publishes.
+Decision, beyond the covers — stand: `definition/knowledge/read-failure` and `rule/knowledge/an-unreadable-case-is-not-validated` are `epic/case-shape`'s claim, bound by `task/case-shape/case-file-reader`; `rule/knowledge/the-refusal-text-comes-from-the-rule`, `rule/knowledge/a-position-indexes-a-hypothesis-by-name` and the six validation check rules are `epic/case-validation`'s, bound by the tasks this one depends on — so what a refusal carries and what an unreadable file answers are each delivered once where they are owned.
+From the binding — criterion 9 requires two checks to refuse one case while exactly one check in this epic's covers produces a refusal, so it is demonstrable only through the dependency on `task/case-validation/refusal-and-accumulation`, which owns the other checks.
+From the binding — criterion 7 requires the published case to hold everything the case under edit declared, and three of those declarations are values whose shape lives outside this epic's candidates, so what everything contains stops at a reference under this binding.
+From the binding — `rule/integration/a-capability-is-read-only` is a candidate left unbound, because its obligation falls on the registry at the moment a capability is registered and this task never registers one; `task/case-publication/capability-contract-check` binds it.
