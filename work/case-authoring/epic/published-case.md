@@ -1,7 +1,7 @@
 ---
 title: Published case
 summary: The published case as it stands in source, together with the three answers it owns — what its hypotheses collect, which hypotheses require an evaluation, and which resolution follows from the evaluations.
-rationale: The scope named the three behaviours and the validating rules as two halves, and this epic takes the half that answers; the amendment grew its claim to the five nodes holding the semantics of those answers, and the claim reaches the constructs the answers produce — the evaluation, its citations and the assessment — because a behaviour whose product no claimed node describes cannot be shown to answer anything; the claim grows here to the fields a concept declares, to the evidence a fallback selection reads, to the invariant selecting between the two fallbacks and to the invariant fixing what the content hash covers, because the base moved the citation check's authority into the glossary, made the choice between the two fallbacks turn on what the collection returned, and decided that prose is inside the hash; `definition/integration/capability` stays claimed and is declared untouched, because the base now states its schema is not what a citation is checked against, so no answer of this epic reads it.
+rationale: The scope named the three behaviours and the validating rules as two halves, and this epic takes the half that answers; the amendment grew its claim to the five nodes holding the semantics of those answers, and the claim reaches the constructs the answers produce — the evaluation, its citations and the assessment — because a behaviour whose product no claimed node describes cannot be shown to answer anything; the claim grows here to the fields a concept declares, to the evidence a fallback selection reads, to the invariant selecting between the two fallbacks and to the invariant fixing what the content hash covers, because the base moved the citation check's authority into the glossary, made the choice between the two fallbacks turn on what the collection returned, and decided that prose is inside the hash; `definition/integration/capability` stays claimed and is declared untouched, because the base now states its schema is not what a citation is checked against, so no answer of this epic reads it; the claim does not grow at all for the substrate, and what this epic gains instead is one task that claims nothing — the manifest and the compiler configuration the project's standard registry presupposes answer to no base node, and they sit under this epic because every task sits under exactly one epic, because no epic can be cut for work no base node covers, and because this is the epic whose tasks put source into the target root that configuration scopes itself to.
 sources:
   - intake/escopo.md
   - intake/escopo-emenda-alcance.md
@@ -9,6 +9,7 @@ sources:
   - intake/escopo-revinculacao-adendo.md
   - intake/escopo-recorte-seis-decisoes.md
   - intake/escopo-revinculacao-cinco-decisoes.md
+  - intake/escopo-substrato.md
 covers:
   - aggregate/knowledge/cases
   - definition/knowledge/case
@@ -57,6 +58,7 @@ The half of the scope that answers rather than refuses, drawn around the publish
 The published case's own constructs — the case, its identity and publication metadata, its hypotheses in declared precedence order, the resolutions it declares for its hypotheses and the two it declares for none confirming — as they stand in the target source.
 The three answers the published case owns, each computed from what the case itself declares.
 The constructs those answers read and produce — the evaluation of one hypothesis, the citations a decided evaluation rests on, the results the collection returned, and the assessment that carries a resolution.
+The manifest and the compiler configuration the project's standard registry presupposes, without which no source of either epic answers to that registry at all.
 
 ## Notes
 
@@ -68,5 +70,7 @@ The epic claims the five glossary definitions because a case's resolutions, refe
 The epic claims `draft-case` and `case-publication` only to record them as deliberately untouched, because the phrase published case abuts a publication cycle the scope removed for a reason it stated.
 Every construct this epic builds is a valid one, because a case is published whole or not at all and the published value is what the three answers read.
 `definition/investigation/investigation` and `interface/investigation/investigation-completed` remain outside this claim, because nothing here runs an investigation or writes one.
-No task here selects a language, a toolchain or a test harness, since the scope names none and the survey found an empty target, and each task's criteria are therefore stated as behaviour observable from outside whatever is written.
+One task here writes the manifest and the compiler configuration, and it is the only task of this plan that names a language, a toolchain or a test harness — the registry this project's source answers to names npm, TypeScript, vitest, eslint and secretlint, and that task is where they are declared.
+Every other task's criteria are stated as behaviour observable from outside whatever is written, since nothing else here turns on which library is used.
+The substrate task claims no base node and grows this epic's `covers` by nothing, so the reconciliation between what this epic claims and what its tasks bind is exactly what it was.
 The claim grows by the two evidence-totality rules, because the fallback selection reads the results the collection returned and the base now states that reading is total — one evidence per collected concept, a never-attempted one recording a timeout.

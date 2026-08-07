@@ -16,11 +16,11 @@
       "summary": "The published case as it stands in source, together with the three answers it owns — what its hypotheses collect, which hypotheses require an evaluation, and which resolution follows from the evaluations."
     },
     {
-      "id": "inventory/src-tree",
+      "id": "inventory/repository-root",
       "kind": "inventory",
-      "file": "inventory/src-tree.md",
-      "title": "Source tree after the assessment delivery",
-      "summary": "The area the case-authoring scope lands in — eight TypeScript files under `src/`, written by the single delivered task, in three directories named for the base's contexts plus a mirrored unit-test subtree, with no package manifest, compiler configuration, dependency lock or test runner anywhere in the repository."
+      "file": "inventory/repository-root.md",
+      "title": "Repository root, empty of project source",
+      "summary": "The area this scope lands in: a repository root that holds the framework, the base, the plan, the delivery records and the standard registry, and no project source at all — no `src/`, no `.ts` file, no `package.json`, no `tsconfig.json`, no lockfile anywhere outside `.git/`."
     },
     {
       "id": "task/case-validator/at-least-one-hypothesis",
@@ -156,6 +156,14 @@
       "file": "task/published-case/outcome-resolution.md",
       "title": "The resolution a published case answers with",
       "summary": "The assessment a published case answers with, carrying the resolution the case resolved — by the precedence it declared, or by the fallback its selection yielded where nothing confirmed — naming the hypothesis that determined it where one did, and leaving every evaluation standing.",
+      "epic": "published-case"
+    },
+    {
+      "id": "task/published-case/project-substrate",
+      "kind": "task",
+      "file": "task/published-case/project-substrate.md",
+      "title": "The manifest and the compiler configuration the standard presupposes",
+      "summary": "The two artifacts the project's standard registry presupposes and the target source root does not hold — `package.json` and `tsconfig.json` — written with the declarations the registry says its rules read from them.",
       "epic": "published-case"
     },
     {
