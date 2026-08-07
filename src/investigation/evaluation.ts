@@ -1,4 +1,5 @@
 import type { HypothesisName } from '../knowledge/hypothesis';
+import type { Citation } from './citation';
 
 /**
  * Encodes the verdict vocabulary of `definition/investigation/evaluation`.
@@ -36,6 +37,18 @@ export type InconclusiveReason = 'no-data' | 'judgment-failure' | 'deadline-exha
  * is no channel by which another hypothesis's confirmation could reach this
  * record.
  *
+ * The citations are what a confirmed or refuted verdict rested on, each
+ * naming a concept and a field by name
+ * (definition/investigation/citation) — embedded, because they belong to
+ * this evaluation and nowhere else. The obligation that a decided evaluation
+ * carries at least one, and that every citation names a concept the
+ * hypothesis collects and a field that concept declares, is
+ * rule/investigation/a-decided-evaluation-cites-evidence, checked by
+ * src/investigation/a-decided-evaluation-cites-evidence.ts rather than by
+ * this constructor: that check needs the hypothesis this evaluation decided
+ * and the published glossary, neither of which a value carrying only its
+ * hypothesis's name and its own parts ever holds.
+ *
  * An evaluation is a value object, so every field is read-only and a
  * constructed evaluation is frozen.
  */
@@ -43,6 +56,7 @@ export type Evaluation = {
   readonly hypothesis: HypothesisName;
   readonly verdict: Verdict;
   readonly reason?: InconclusiveReason | undefined;
+  readonly citations?: readonly Citation[] | undefined;
 };
 
 /**
@@ -58,11 +72,41 @@ export type Evaluation = {
  * way, because an inconclusive evaluation declares why it could not decide
  * (rule/investigation/an-inconclusive-evaluation-declares-its-reason).
  *
- * Every part is a scalar, so each field is copied into the frozen value and
- * nothing is shared with the object handed in: what the evaluation reads
- * back stays what it was constructed with even if that object is changed
- * afterwards.
+ * Every scalar part — the hypothesis name, the verdict, the reason — is
+ * copied into the frozen value as given, so what the evaluation reads back
+ * stays what it was constructed with even if that object is changed
+ * afterwards. The citations list, where one is given, is copied one level
+ * deeper: the list itself and every citation it holds are each frozen
+ * afresh, the same way src/knowledge/case.ts copies a hypothesis's own
+ * nested parts, so an evaluation's citations read back unchanged even if the
+ * array handed in, or one of the citations it held, is mutated afterwards.
+ *
+ * A construction giving no citations reads none back, and the property is
+ * left off the frozen value entirely rather than set to the absent value:
+ * this keeps the exact shape createEvaluation already produced before
+ * citations existed for every construction that still gives none, so a
+ * caller inspecting an evaluation's own keys sees no new key where none was
+ * asked for.
+ *
+ * Whether a confirmed or refuted evaluation must carry a citation at all,
+ * and whether each one names a concept the hypothesis collects and a field
+ * that concept declares, is not decided here — that is
+ * rule/investigation/a-decided-evaluation-cites-evidence, checked by
+ * src/investigation/a-decided-evaluation-cites-evidence.ts, which this
+ * constructor takes no part of: it needs the hypothesis and the glossary,
+ * and this constructor is given neither.
  */
+function copyCitation(citation: Citation): Citation {
+  return Object.freeze({
+    concept: citation.concept,
+    field: citation.field,
+  });
+}
+
+function copyCitations(citations: readonly Citation[]): readonly Citation[] {
+  return Object.freeze(citations.map(copyCitation));
+}
+
 export function createEvaluation(parts: Evaluation): Evaluation {
   const verdict: Verdict | undefined | null = parts.verdict;
   if (verdict === undefined || verdict === null) {
@@ -80,5 +124,6 @@ export function createEvaluation(parts: Evaluation): Evaluation {
     hypothesis: parts.hypothesis,
     verdict: parts.verdict,
     reason: parts.reason,
+    ...(parts.citations === undefined ? {} : { citations: copyCitations(parts.citations) }),
   });
 }

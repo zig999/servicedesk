@@ -106,6 +106,14 @@
       "task": "task/published-case/collection-plan"
     },
     {
+      "id": "implementation/published-case/evaluation-citations",
+      "kind": "implementation",
+      "file": "implementation/published-case/evaluation-citations.md",
+      "title": "A decided evaluation's citations",
+      "summary": "The Citation shape and the standalone check that a confirmed or refuted evaluation cites at least one concept and field, each by name, naming only a concept its hypothesis collects and a field that concept declares.",
+      "task": "task/published-case/evaluation-citations"
+    },
+    {
       "id": "implementation/published-case/evaluation-record",
       "kind": "implementation",
       "file": "implementation/published-case/evaluation-record.md",
@@ -224,6 +232,14 @@
       "title": "Proof for a published case's plan of collection",
       "summary": "Tests over collectionPlan() proving the union-of-concepts, each-once answer and its independence from the case's body text.",
       "task": "task/published-case/collection-plan"
+    },
+    {
+      "id": "proof/published-case/evaluation-citations",
+      "kind": "proof",
+      "file": "proof/published-case/evaluation-citations.md",
+      "title": "A decided evaluation's citations, proved",
+      "summary": "Tests over Evaluation.citations (src/investigation/evaluation.ts) and isRefusedForItsCitations (src/investigation/a-decided-evaluation-cites-evidence.ts), covering every criterion of task/published-case/evaluation-citations, every inference the implementation record states, and the binding's asymmetry and identity notes; plus a check that the pre-existing key-enumeration assertion in evaluation.spec.ts still holds unchanged.",
+      "task": "task/published-case/evaluation-citations"
     },
     {
       "id": "proof/published-case/evaluation-record",
@@ -707,6 +723,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/evaluation-citations",
+      "to": "rule/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-citations",
+      "to": "definition/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-citations",
+      "to": "definition/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-case/evaluation-citations",
+      "to": "task/published-case/evaluation-citations",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-case/evaluation-record",
       "to": "definition/investigation/evaluation",
       "kind": "encodes",
@@ -835,6 +875,12 @@
     {
       "from": "proof/published-case/collection-plan",
       "to": "implementation/published-case/collection-plan",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/evaluation-citations",
+      "to": "implementation/published-case/evaluation-citations",
       "kind": "proves",
       "at": "the path"
     },

@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
+import type { Citation } from '../../../investigation/citation';
 import type { Evaluation, InconclusiveReason, Verdict } from '../../../investigation/evaluation';
 import { createEvaluation } from '../../../investigation/evaluation';
 
 /**
  * Proves `task/published-case/evaluation-record` over
- * `src/investigation/evaluation.ts`.
+ * `src/investigation/evaluation.ts`, together with the citation round-trip
+ * `task/published-case/evaluation-citations` adds to the same constructor.
  *
  * The hypothesis names below are placeholders, chosen only to be
  * distinguishable from one another: an evaluation binds its hypothesis by
@@ -16,14 +18,30 @@ import { createEvaluation } from '../../../investigation/evaluation';
  * the exported type it belongs to, so a vocabulary the implementation moved
  * fails to compile here rather than passing against a copy of it.
  *
- * Nothing below says anything about citations: the evaluation type declares
- * no citations slot by the task's own cut, and the obligation that a decided
- * evaluation cites is demonstrated in the citations task this proof's task
- * joins by dependency.
+ * The citation concept and field names below are placeholders too: this
+ * constructor never checks a citation against a hypothesis's collects list
+ * or a concept's declared fields — that obligation is
+ * rule/investigation/a-decided-evaluation-cites-evidence, checked by
+ * src/investigation/a-decided-evaluation-cites-evidence.ts and proved in its
+ * own spec file — so nothing here asserts which concepts or fields exist.
  */
 const DECIDED_HYPOTHESIS = 'hypothesis-placeholder-a';
 const EARLIER_CONFIRMED_HYPOTHESIS = 'hypothesis-placeholder-b';
 const SECOND_NAMED_HYPOTHESIS = 'hypothesis-placeholder-second';
+
+const CITED_CONCEPT_NAME = 'concept-placeholder-cited';
+const OTHER_CITED_CONCEPT_NAME = 'concept-placeholder-cited-other';
+const CITED_FIELD_NAME = 'field-placeholder-cited';
+const OTHER_CITED_FIELD_NAME = 'field-placeholder-cited-other';
+
+/**
+ * A fresh citation per call, so no test's fixture shares an object identity
+ * with another's — mutation-resistance tests below need to mutate one
+ * instance without disturbing what a different call built.
+ */
+function citation(concept: string, field: string): Citation {
+  return { concept, field };
+}
 
 const CONFIRMED_VERDICT: Verdict = 'confirmed';
 const REFUTED_VERDICT: Verdict = 'refuted';
@@ -258,5 +276,183 @@ describe('createEvaluation', () => {
 
     // assert
     assert.equal(evaluation.verdict, CONFIRMED_VERDICT);
+  });
+
+  it('reads back at least one citation given to a confirmed evaluation', () => {
+    // arrange
+    const parts = {
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)],
+    };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.deepEqual(evaluation.citations, [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)]);
+  });
+
+  it('reads back at least one citation given to a refuted evaluation', () => {
+    // arrange
+    const parts = {
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: REFUTED_VERDICT,
+      citations: [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)],
+    };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.deepEqual(evaluation.citations, [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)]);
+  });
+
+  it('reads back the concept and the field of a citation, each by the exact name given', () => {
+    // arrange
+    const parts = {
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)],
+    };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.deepEqual(evaluation.citations![0], {
+      concept: CITED_CONCEPT_NAME,
+      field: CITED_FIELD_NAME,
+    });
+  });
+
+  it('reads back every citation given, in the order given', () => {
+    // arrange
+    const first = citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME);
+    const second = citation(OTHER_CITED_CONCEPT_NAME, OTHER_CITED_FIELD_NAME);
+    const parts = {
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [first, second],
+    };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.deepEqual(evaluation.citations, [first, second]);
+  });
+
+  it('reads back an empty list of citations when a construction gives one, refusing nothing for it', () => {
+    // arrange
+    //
+    // Pins the implementation's own inference: the obligation to carry at
+    // least one citation, and every cross-referencing check, is enforced
+    // entirely by the standalone rule/investigation/a-decided-evaluation-cites-evidence
+    // check rather than here, so this constructor accepts an empty citations
+    // list exactly as given rather than refusing it.
+    const parts = { hypothesis: DECIDED_HYPOTHESIS, verdict: CONFIRMED_VERDICT, citations: [] };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.deepEqual(evaluation.citations, []);
+  });
+
+  it('constructs a confirmed evaluation giving no citations without refusing it', () => {
+    // arrange
+    //
+    // Pins the same inference from the other side: a construction giving no
+    // citations at all is not refused either, because the citation
+    // obligation is not this constructor's to enforce.
+    const constructing = (): Evaluation =>
+      createEvaluation({ hypothesis: DECIDED_HYPOTHESIS, verdict: CONFIRMED_VERDICT });
+
+    // act & assert
+    assert.doesNotThrow(constructing);
+  });
+
+  it('omits the citations key entirely when a construction gives none', () => {
+    // arrange
+    const parts = { hypothesis: DECIDED_HYPOTHESIS, verdict: CONFIRMED_VERDICT };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    //
+    // Pins the implementation's own inference: the already-delivered
+    // key-enumeration assertion elsewhere in this file
+    // (`Object.keys(evaluation).filter(...)` equalling `['hypothesis']`)
+    // keeps holding only because no citations key is added when none is
+    // given.
+    assert.equal('citations' in evaluation, false);
+  });
+
+  it('reads back the citations key when a construction gives citations', () => {
+    // arrange
+    const parts = {
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)],
+    };
+
+    // act
+    const evaluation = createEvaluation(parts);
+
+    // assert
+    assert.equal('citations' in evaluation, true);
+  });
+
+  it('reads back its citations unchanged after the array handed in for them is mutated', () => {
+    // arrange
+    const handedInCitations = [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)];
+    const evaluation = createEvaluation({
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: handedInCitations,
+    });
+
+    // act
+    handedInCitations.push(citation(OTHER_CITED_CONCEPT_NAME, OTHER_CITED_FIELD_NAME));
+
+    // assert
+    assert.deepEqual(evaluation.citations, [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)]);
+  });
+
+  it('reads back a citation unchanged after the object handed in for it is mutated', () => {
+    // arrange
+    const handedInCitation = { concept: CITED_CONCEPT_NAME, field: CITED_FIELD_NAME };
+    const evaluation = createEvaluation({
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [handedInCitation],
+    });
+
+    // act
+    handedInCitation.concept = OTHER_CITED_CONCEPT_NAME;
+
+    // assert
+    assert.deepEqual(evaluation.citations, [
+      { concept: CITED_CONCEPT_NAME, field: CITED_FIELD_NAME },
+    ]);
+  });
+
+  it('refuses a mutation attempt on a citation read back, keeping the value it was constructed with', () => {
+    // arrange
+    const evaluation = createEvaluation({
+      hypothesis: DECIDED_HYPOTHESIS,
+      verdict: CONFIRMED_VERDICT,
+      citations: [citation(CITED_CONCEPT_NAME, CITED_FIELD_NAME)],
+    });
+
+    // act
+    const mutating = (): Citation =>
+      Object.assign(evaluation.citations![0], { concept: OTHER_CITED_CONCEPT_NAME });
+
+    // assert
+    assert.throws(mutating, TypeError);
+    assert.equal(evaluation.citations![0].concept, CITED_CONCEPT_NAME);
   });
 });
