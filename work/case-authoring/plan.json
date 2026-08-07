@@ -1,0 +1,1251 @@
+{
+  "contract_version": "siegard-plan/2",
+  "nodes": [
+    {
+      "id": "epic/case-publication",
+      "kind": "epic",
+      "file": "epic/case-publication.md",
+      "title": "Publishing a case",
+      "summary": "The move from a case under edit to a published case — the contract with integration verified, the hash taken over the whole file, and the version assigned."
+    },
+    {
+      "id": "epic/case-shape",
+      "kind": "epic",
+      "file": "epic/case-shape.md",
+      "title": "The shape of a case",
+      "summary": "What a curator writes — a case, its hypotheses in the order it declares them, the resolution and referral each one states, and the two fallbacks — read out of a case file."
+    },
+    {
+      "id": "epic/case-validation",
+      "kind": "epic",
+      "file": "epic/case-validation.md",
+      "title": "Validating a case",
+      "summary": "What one refusal carries, how a validation answers with every one of them, and the checks over a case's own content and its terms."
+    },
+    {
+      "id": "epic/published-language-ports",
+      "kind": "epic",
+      "file": "epic/published-language-ports.md",
+      "title": "The ports into the published language and the capability registry",
+      "summary": "The read-only interfaces through which the authoring context asks the glossary what a term is and the integration registry what answers a concept."
+    },
+    {
+      "id": "inventory/backend",
+      "kind": "inventory",
+      "file": "inventory/backend.md",
+      "title": "Backend service root",
+      "summary": "The area the case-authoring scope lands in: backend/, which exists as an empty tree holding no source, no manifest and no configuration."
+    },
+    {
+      "id": "task/case-publication/capability-contract-check",
+      "kind": "task",
+      "file": "task/case-publication/capability-contract-check.md",
+      "title": "Every collected concept has a read-only capability",
+      "summary": "The contract between curated knowledge and integration, checked when a case is published.",
+      "epic": "case-publication",
+      "questions": 1
+    },
+    {
+      "id": "task/case-publication/content-hash",
+      "kind": "task",
+      "file": "task/case-publication/content-hash.md",
+      "title": "The published case's hash over the whole file",
+      "summary": "The content hash a published case carries, computed over the whole of its file, curator prose included.",
+      "epic": "case-publication",
+      "questions": 1
+    },
+    {
+      "id": "task/case-publication/publish-transition",
+      "kind": "task",
+      "file": "task/case-publication/publish-transition.md",
+      "title": "A case moves from being edited to being published",
+      "summary": "The transition that validates a case under edit and, where nothing refuses, produces the published case carrying its version and its hash.",
+      "epic": "case-publication",
+      "unresolved": [
+        "definition/knowledge/case#attributes.version.derivation",
+        "lifecycle/knowledge/case-publication#rejections"
+      ],
+      "questions": 1
+    },
+    {
+      "id": "task/case-shape/case-file-reader",
+      "kind": "task",
+      "file": "task/case-shape/case-file-reader.md",
+      "title": "Reading a case file",
+      "summary": "A case file read into a case under edit, with the structured part deciding what is collected and the curator prose kept out of it.",
+      "epic": "case-shape",
+      "questions": 2
+    },
+    {
+      "id": "task/case-shape/draft-case-shape",
+      "kind": "task",
+      "file": "task/case-shape/draft-case-shape.md",
+      "title": "The shape of a case under edit",
+      "summary": "A case while a curator is still writing it — everything the case declares, its hypotheses in declaration order, both fallbacks, and neither a version nor a hash.",
+      "epic": "case-shape"
+    },
+    {
+      "id": "task/case-shape/hypothesis-shape",
+      "kind": "task",
+      "file": "task/case-shape/hypothesis-shape.md",
+      "title": "The shape of a hypothesis",
+      "summary": "One falsifiable claim as a case declares it — its name, what it collects, what confirms it, and what follows when it holds.",
+      "epic": "case-shape"
+    },
+    {
+      "id": "task/case-shape/project-substrate",
+      "kind": "task",
+      "file": "task/case-shape/project-substrate.md",
+      "title": "The buildable project under backend",
+      "summary": "The manifest, the compiler configuration and the lint configuration the project's registry presupposes and the target tree does not hold.",
+      "epic": "case-shape"
+    },
+    {
+      "id": "task/case-shape/resolution-and-referral",
+      "kind": "task",
+      "file": "task/case-shape/resolution-and-referral.md",
+      "title": "The resolution and the referral it carries",
+      "summary": "What an investigation concluded and what somebody should do about it, declared once as one shape.",
+      "epic": "case-shape"
+    },
+    {
+      "id": "task/case-validation/at-least-one-hypothesis",
+      "kind": "task",
+      "file": "task/case-validation/at-least-one-hypothesis.md",
+      "title": "A case with no hypothesis is refused",
+      "summary": "The check that a case declares at least one hypothesis, and the refusal it produces with nothing to point at.",
+      "epic": "case-validation",
+      "questions": 2
+    },
+    {
+      "id": "task/case-validation/concept-accepts-the-subject-type",
+      "kind": "task",
+      "file": "task/case-validation/concept-accepts-the-subject-type.md",
+      "title": "A collected concept accepts the case's subject type",
+      "summary": "The check that each concept a case collects accepts the subject type that case declares.",
+      "epic": "case-validation",
+      "questions": 3
+    },
+    {
+      "id": "task/case-validation/concept-declares-a-ttl",
+      "kind": "task",
+      "file": "task/case-validation/concept-declares-a-ttl.md",
+      "title": "Every collected concept declares a ttl",
+      "summary": "The check that each concept a case collects declares a ttl in the glossary.",
+      "epic": "case-validation"
+    },
+    {
+      "id": "task/case-validation/hypothesis-collects-a-concept",
+      "kind": "task",
+      "file": "task/case-validation/hypothesis-collects-a-concept.md",
+      "title": "A hypothesis that collects nothing is refused",
+      "summary": "The check that every hypothesis of a case collects at least one concept.",
+      "epic": "case-validation"
+    },
+    {
+      "id": "task/case-validation/refusal-and-accumulation",
+      "kind": "task",
+      "file": "task/case-validation/refusal-and-accumulation.md",
+      "title": "A refusal, and a validation that answers with every one",
+      "summary": "What one refusal carries, and a validation that runs every check it holds and answers with all of the refusals.",
+      "epic": "case-validation"
+    },
+    {
+      "id": "task/case-validation/terms-exist-in-the-glossary",
+      "kind": "task",
+      "file": "task/case-validation/terms-exist-in-the-glossary.md",
+      "title": "Every term a case names exists in the glossary",
+      "summary": "The check that every subject type, concept, outcome, action and recipient a case names matches a published name in the glossary exactly.",
+      "epic": "case-validation",
+      "questions": 2
+    },
+    {
+      "id": "task/case-validation/unique-hypothesis-name",
+      "kind": "task",
+      "file": "task/case-validation/unique-hypothesis-name.md",
+      "title": "Two hypotheses of one case never share a name",
+      "summary": "The check that no two hypotheses of a case carry the same name.",
+      "epic": "case-validation"
+    },
+    {
+      "id": "task/published-language-ports/capability-read-port",
+      "kind": "task",
+      "file": "task/published-language-ports/capability-read-port.md",
+      "title": "The capability registry read port",
+      "summary": "The interface through which the authoring context asks which capability answers a concept and what that registered capability declares.",
+      "epic": "published-language-ports"
+    },
+    {
+      "id": "task/published-language-ports/glossary-read-port",
+      "kind": "task",
+      "file": "task/published-language-ports/glossary-read-port.md",
+      "title": "The glossary read port",
+      "summary": "The interface through which the authoring context asks the glossary whether a term is registered and what a concept declares, matching names exactly.",
+      "epic": "published-language-ports"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-publication",
+      "to": "aggregate/knowledge/cases",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "rule/knowledge/the-content-hash-covers-the-whole-file",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "definition/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "definition/knowledge/case",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "definition/knowledge/draft-case",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "definition/knowledge/refusal",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "lifecycle/knowledge/case-publication",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "rule/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-publication",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "context/knowledge",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "definition/knowledge/draft-case",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "definition/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "definition/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-shape",
+      "to": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/glossary/action",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/every-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/knowledge/draft-case",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/knowledge/refusal",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-validation",
+      "to": "definition/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "context/glossary",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "context/integration",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/glossary/action",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/glossary/concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "definition/integration/capability",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/published-language-ports",
+      "to": "rule/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "task/published-language-ports/capability-read-port",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "aggregate/knowledge/cases",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "definition/integration/capability",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "lifecycle/knowledge/case-publication",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "rule/integration/a-capability-is-read-only",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "binds",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "task/case-publication/capability-contract-check",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "task/case-publication/content-hash",
+      "to": "task/case-shape/case-file-reader",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-publication/content-hash",
+      "to": "definition/knowledge/case",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-publication/content-hash",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-publication/content-hash",
+      "to": "rule/knowledge/the-content-hash-covers-the-whole-file",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "task/case-publication/capability-contract-check",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "task/case-publication/content-hash",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "aggregate/knowledge/cases",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "rule/knowledge/the-content-hash-covers-the-whole-file",
+      "kind": "binds",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "definition/integration/capability",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "definition/knowledge/case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "lifecycle/knowledge/case-publication",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "rule/integration/a-capability-is-read-only",
+      "kind": "binds",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "task/case-publication/publish-transition",
+      "to": "rule/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "binds",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "task/case-shape/draft-case-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "context/knowledge",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-shape/case-file-reader",
+      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "task/case-shape/hypothesis-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "context/knowledge",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-shape/draft-case-shape",
+      "to": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-shape/hypothesis-shape",
+      "to": "task/case-shape/resolution-and-referral",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-shape/hypothesis-shape",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-shape/hypothesis-shape",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-shape/hypothesis-shape",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-shape/resolution-and-referral",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-shape/resolution-and-referral",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/at-least-one-hypothesis",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/at-least-one-hypothesis",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/at-least-one-hypothesis",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/at-least-one-hypothesis",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/at-least-one-hypothesis",
+      "to": "rule/knowledge/case-has-at-least-one-hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "task/published-language-ports/glossary-read-port",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "definition/glossary/subject-type",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "rule/knowledge/concept-accepts-the-declared-subject-type",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-validation/concept-accepts-the-subject-type",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "binds",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "task/published-language-ports/glossary-read-port",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "rule/knowledge/every-collected-concept-declares-a-ttl",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-validation/concept-declares-a-ttl",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "rule/knowledge/hypothesis-collects-at-least-one-concept",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validation/hypothesis-collects-a-concept",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-validation/refusal-and-accumulation",
+      "to": "task/case-shape/draft-case-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/refusal-and-accumulation",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/refusal-and-accumulation",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/refusal-and-accumulation",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/refusal-and-accumulation",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "task/published-language-ports/glossary-read-port",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/glossary/subject-type",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "rule/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "binds",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "binds",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/glossary/outcome",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/glossary/action",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/glossary/recipient",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/resolution",
+      "kind": "binds",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/referral",
+      "kind": "binds",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "task/case-validation/terms-exist-in-the-glossary",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "task/case-validation/refusal-and-accumulation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "definition/knowledge/draft-case",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "definition/knowledge/refusal",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "rule/knowledge/a-validation-answers-with-every-refusal",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/case-validation/unique-hypothesis-name",
+      "to": "rule/knowledge/two-positions-are-two-refusals",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/published-language-ports/capability-read-port",
+      "to": "definition/integration/capability",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/published-language-ports/capability-read-port",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/published-language-ports/capability-read-port",
+      "to": "context/integration",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/published-language-ports/capability-read-port",
+      "to": "rule/integration/a-capability-is-read-only",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/published-language-ports/capability-read-port",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "context/glossary",
+      "kind": "binds",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "definition/glossary/subject-type",
+      "kind": "binds",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "definition/glossary/outcome",
+      "kind": "binds",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "definition/glossary/action",
+      "kind": "binds",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "definition/glossary/recipient",
+      "kind": "binds",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "definition/glossary/concept",
+      "kind": "binds",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "task/published-language-ports/glossary-read-port",
+      "to": "rule/glossary/a-lookup-matches-a-published-name-exactly",
+      "kind": "binds",
+      "at": "nodes[6]"
+    }
+  ]
+}
