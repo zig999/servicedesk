@@ -1,5 +1,0 @@
-
-> backend-node-service@0.0.0 typecheck
-> tsc
-
-error TS18003: No inputs were found in config file '/home/siegfriedneto/projects/siegardtest/tsconfig.json'. Specified 'include' paths were '["src"]' and 'exclude' paths were '[]'.
