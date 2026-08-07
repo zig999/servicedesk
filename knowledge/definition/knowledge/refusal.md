@@ -19,6 +19,22 @@ attributes:
 gaps:
   - field: attributes.rule.structural-checks
     why: A refusal names by identifier the rule that refused, and two of the material's thirteen validation checks — that a hypothesis criterion is present, and that an outcome and a referral are present — are held here as required attributes rather than as rule nodes; the material does not say what identifier a refusal names when one of those refuses.
+    proposal:
+      value: A refusal of either check names a rule node by its identifier, exactly as every other refusal does, because the two checks are rules the analysis recorded as constraints instead of as nodes — one saying a hypothesis declares a criterion, and one saying every resolution of a case declares an outcome and a referral. Each is written as a rule node in the knowledge context, each declares the Portuguese text its refusal carries, and the required attributes on definition/knowledge/hypothesis and definition/knowledge/resolution stay exactly as they stand, a declared constraint and a rule node being two records of one decision rather than two alternatives.
+      why: >-
+        The material lists all thirteen checks as the validator's rules and says they are all of
+        them, and these two sit in the same structural block as the four already recorded as rule
+        nodes — the slug, at least one hypothesis, the unique name, at least one collected concept
+        — so nothing distinguishes their species from the ones that already refuse by naming a
+        rule. rule/knowledge/the-refusal-text-comes-from-the-rule then forces the shape: every rule
+        that can refuse declares the text its refusal carries, and this node's text attribute is
+        required, so a refusal whose rule is not a node has no text it may carry. The alternative
+        reading — that an absent criterion or an absent resolution answers with a read failure — is
+        what rule/knowledge/an-unreadable-case-is-not-validated rules out, because that rule turns
+        on the structured part not parsing, while a file omitting one field parses, produces a case
+        under edit to walk, and leaves a position nameable at the very field that is missing. What
+        ratifying this does not settle is the two Portuguese sentences themselves, which the
+        material has never stated for a check outside the eight the current plan builds.
 ---
 
 ## What it is

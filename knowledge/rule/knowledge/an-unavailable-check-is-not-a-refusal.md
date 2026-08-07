@@ -8,6 +8,16 @@ sources:
 constrains:
   - definition/knowledge/check-unavailable
   - definition/knowledge/refusal
+gaps:
+  - field: statement.refusals-other-checks-produced
+    why: >-
+      This statement forbids publication any refusal where the registry cannot be consulted, and
+      rule/knowledge/a-validation-answers-with-every-refusal requires a validation to answer with
+      every refusal its checks produced. Both are stated over the same act, and one case decides
+      them differently: a case that declares no hypothesis, published while the registry cannot be
+      reached. There the check on hypotheses produced a refusal this statement forbids answering
+      with, and the material does not say which of the two holds — whether the unavailable check
+      suppresses refusals other checks produced, or is answered beside them.
 examples:
   - Given a case nothing is wrong with and a registry that cannot be reached, when it is published, then the answer says the check could not be decided and names no rule.
   - Given the same case and a reachable registry, when it is published again, then it publishes, because nothing was ever wrong with it.

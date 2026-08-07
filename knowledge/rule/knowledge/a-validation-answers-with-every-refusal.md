@@ -10,6 +10,15 @@ sources:
   - intake/decisoes-onze-perguntas-2026-08-07.md
 constrains:
   - definition/knowledge/draft-case
+gaps:
+  - field: statement.unavailable-contract-check
+    why: >-
+      This statement requires every refusal the checks produced to be answered, and
+      rule/knowledge/an-unavailable-check-is-not-a-refusal forbids publication any refusal where
+      the capability registry cannot be consulted. Both are stated over the same act, and one case
+      decides them differently: a case that declares no hypothesis, published while the registry
+      cannot be reached. There this statement requires the refusal on hypotheses to be answered and
+      the other forbids answering with it, and the material does not say which of the two holds.
 examples:
   - Given a case that declares no hypothesis and also names a recipient the glossary does not publish, when it is validated, then both refusals are answered.
   - Given a case that two checks refuse, when it is validated, then no refusal is answered that no check produced, and neither is left out.

@@ -290,7 +290,7 @@
       "context": "knowledge",
       "title": "Refusal",
       "summary": "One reason one case did not pass validation — the rule that refused, the position in the case it refused at, and the text written for the curator.",
-      "digest": "sha256:309393768aaec5c1fa69a62da0f18443ca25d3f2bb49ed1da901c923e3132270",
+      "digest": "sha256:6f6ae41f972eeb43efac81f66e55150aef258259f09efee0243d9c73b182b895",
       "ddd": "value-object",
       "gaps": [
         "attributes.rule.structural-checks"
@@ -348,7 +348,7 @@
       "context": "knowledge",
       "title": "Case publication",
       "summary": "A case moves from being edited to being published, and publication is where its contract with the integration context is verified.",
-      "digest": "sha256:998c9ad8d2139b3c357f97fd9a3d1e89af282d2e38c17b82816e0ef9bbc12d2a",
+      "digest": "sha256:60f082270b723bf666046568f6b10d00fe490509a7952fa4f351bd1755c2c95b",
       "gaps": [
         "transitions.published.publish"
       ]
@@ -606,8 +606,11 @@
       "context": "knowledge",
       "title": "A validation answers with every refusal",
       "summary": "A validation of a case runs every check it carries whatever an earlier one decided, and answers with all of them.",
-      "digest": "sha256:b467b515e8551ff4f6f914376608842fce28cf02545031f8c2aab4b369898886",
-      "ddd": "invariant"
+      "digest": "sha256:4b54af0df7b49c688e8af2c0837ec3fe9bc56d6477e71324da4616d6c64bc7c1",
+      "ddd": "invariant",
+      "gaps": [
+        "statement.unavailable-contract-check"
+      ]
     },
     {
       "id": "rule/knowledge/an-unavailable-check-is-not-a-refusal",
@@ -616,8 +619,11 @@
       "context": "knowledge",
       "title": "An unavailable check is not a refusal",
       "summary": "Where the registry cannot be consulted, publication says it could not decide, and never that the case is wrong.",
-      "digest": "sha256:f0a5343dc726fd7dcb01783be015487fac991f48a309c662804f0edf92656010",
-      "ddd": "invariant"
+      "digest": "sha256:a8934f4f6ebbfd2bd59e231275bdee9c5d4e99f2265b5514602f3f458ceccb9d",
+      "ddd": "invariant",
+      "gaps": [
+        "statement.refusals-other-checks-produced"
+      ]
     },
     {
       "id": "rule/knowledge/an-unreadable-case-is-not-validated",
