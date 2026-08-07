@@ -122,6 +122,14 @@
       "task": "task/published-case/evaluation-record"
     },
     {
+      "id": "implementation/published-case/fallback-selection",
+      "kind": "implementation",
+      "file": "implementation/published-case/fallback-selection.md",
+      "title": "Fallback selection between a case's two declared resolutions",
+      "summary": "A pure selection that, given a published case, its evaluations and its investigation's evidence, yields no fallback where a hypothesis confirmed and otherwise the case's own hypotheses-exhausted or no-data resolution, chosen from the evidence results alone.",
+      "task": "task/published-case/fallback-selection"
+    },
+    {
       "id": "implementation/published-case/required-evaluations",
       "kind": "implementation",
       "file": "implementation/published-case/required-evaluations.md",
@@ -248,6 +256,14 @@
       "title": "Proof that an evaluation records a verdict on one hypothesis and keeps it",
       "summary": "What proves task/published-case/evaluation-record over the unchanged createEvaluation, in src/__tests__/unit/investigation/evaluation.spec.ts, with the citation obligation the task's UNDERDETERMINED note names left untested because the construct declares no field it could be demonstrated over.",
       "task": "task/published-case/evaluation-record"
+    },
+    {
+      "id": "proof/published-case/fallback-selection",
+      "kind": "proof",
+      "file": "proof/published-case/fallback-selection.md",
+      "title": "Proof for fallback selection between a case's two declared resolutions",
+      "summary": "Fifteen tests over selectFallback proving the seven stated criteria — the ok/timeout/unavailable/denial/mixed branches, the read-back-unchanged fallback identity, and the no-hypothesis-confirmed exclusion — plus the recorded inference and the two vacuous-collection edge cases.",
+      "task": "task/published-case/fallback-selection"
     },
     {
       "id": "proof/published-case/required-evaluations",
@@ -771,6 +787,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/fallback-selection",
+      "to": "definition/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-case/fallback-selection",
+      "to": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/published-case/fallback-selection",
+      "to": "task/published-case/fallback-selection",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-case/required-evaluations",
       "to": "definition/knowledge/case",
       "kind": "encodes",
@@ -887,6 +921,12 @@
     {
       "from": "proof/published-case/evaluation-record",
       "to": "implementation/published-case/evaluation-record",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/fallback-selection",
+      "to": "implementation/published-case/fallback-selection",
       "kind": "proves",
       "at": "the path"
     },
