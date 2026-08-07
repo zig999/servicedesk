@@ -98,6 +98,14 @@
       "task": "task/published-case/case-structure"
     },
     {
+      "id": "implementation/published-case/collection-plan",
+      "kind": "implementation",
+      "file": "implementation/published-case/collection-plan.md",
+      "title": "A published case's plan of collection",
+      "summary": "collectionPlan() answers the union of concept names a published case's hypotheses collect, each concept once, read exclusively from the case's structured hypotheses.",
+      "task": "task/published-case/collection-plan"
+    },
+    {
       "id": "implementation/published-case/evaluation-record",
       "kind": "implementation",
       "file": "implementation/published-case/evaluation-record.md",
@@ -208,6 +216,14 @@
       "title": "Proof for the published case as one constructed thing",
       "summary": "What proves task/published-case/case-structure over createCase() in src/knowledge/case.ts: read-back of every declared part, the declared orders held against sorting, each fallback held to its own declaration, and the implementation's recorded inferences pinned as stated choices.",
       "task": "task/published-case/case-structure"
+    },
+    {
+      "id": "proof/published-case/collection-plan",
+      "kind": "proof",
+      "file": "proof/published-case/collection-plan.md",
+      "title": "Proof for a published case's plan of collection",
+      "summary": "Tests over collectionPlan() proving the union-of-concepts, each-once answer and its independence from the case's body text.",
+      "task": "task/published-case/collection-plan"
     },
     {
       "id": "proof/published-case/evaluation-record",
@@ -655,6 +671,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/collection-plan",
+      "to": "definition/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/collection-plan",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/collection-plan",
+      "to": "definition/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-case/collection-plan",
+      "to": "rule/knowledge/the-body-does-not-change-what-is-collected",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-case/collection-plan",
+      "to": "process/investigation/diagnose",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/published-case/collection-plan",
+      "to": "task/published-case/collection-plan",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-case/evaluation-record",
       "to": "definition/investigation/evaluation",
       "kind": "encodes",
@@ -777,6 +829,12 @@
     {
       "from": "proof/published-case/case-structure",
       "to": "implementation/published-case/case-structure",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/collection-plan",
+      "to": "implementation/published-case/collection-plan",
       "kind": "proves",
       "at": "the path"
     },
