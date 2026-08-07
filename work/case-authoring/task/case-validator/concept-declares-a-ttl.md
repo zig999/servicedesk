@@ -15,12 +15,16 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - rule/knowledge/every-collected-concept-declares-a-ttl
-  - definition/glossary/concept
-  - definition/knowledge/draft-case
-  - definition/knowledge/hypothesis
-  - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: rule/knowledge/every-collected-concept-declares-a-ttl
+    digest: sha256:31b0203249035edc85ea0986a0544ca512bc7aa238d2732bdc567f85a6795e44
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: rule/knowledge/a-validation-answers-with-every-refusal
+    digest: sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
     why: "This check decides only whether a concept declares a ttl at all — criterion 3 states it never reads or compares the value — so the unit of the ttl, which is what this gap leaves open, is never reached by any of the task's criteria."

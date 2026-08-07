@@ -14,12 +14,16 @@ criteria:
   - "A run with two registered checks that both refuse the given case reports both refusals."
   - "A run reports no refusal that no registered check produced."
 nodes:
-  - aggregate/knowledge/cases
-  - definition/knowledge/draft-case
-  - definition/knowledge/refusal
-  - rule/knowledge/a-validation-answers-with-every-refusal
-  - rule/knowledge/two-positions-are-two-refusals
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: aggregate/knowledge/cases
+    digest: sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
+  - node: definition/knowledge/refusal
+    digest: sha256:d0458e6eb99c1d11d6255524ceb9ca0f756d02c24001130643a58a71f16ac2d2
+  - node: rule/knowledge/a-validation-answers-with-every-refusal
+    digest: sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa
+  - node: rule/knowledge/two-positions-are-two-refusals
+    digest: sha256:8b64fd982e3ecc3ff92302f478f813f6215204358fc9947fc720f499819b15d3
 ---
 
 ## What it is

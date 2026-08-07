@@ -15,14 +15,20 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - definition/knowledge/case
-  - definition/knowledge/draft-case
-  - definition/knowledge/hypothesis
-  - definition/glossary/concept
-  - definition/glossary/subject-type
-  - rule/knowledge/concept-accepts-the-declared-subject-type
-  - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: definition/glossary/subject-type
+    digest: sha256:a2b480065c98dc6b15f228f1e05fb84e2729cd075f9c14579970db5efe45bb89
+  - node: rule/knowledge/concept-accepts-the-declared-subject-type
+    digest: sha256:b34df55dd4731914fe21cc0b8be6110b85b53548258aab68f080ba7da0b29e81
+  - node: rule/knowledge/a-validation-answers-with-every-refusal
+    digest: sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check reads the declared subject type and the concepts the hypotheses collect; what sets a published case's version bears on publication identity, not on whether a collected concept accepts the subject type."

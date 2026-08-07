@@ -15,12 +15,16 @@ criteria:
 depends_on:
   - task/published-case/case-structure
 nodes:
-  - definition/knowledge/case
-  - definition/knowledge/hypothesis
-  - definition/investigation/evaluation
-  - rule/knowledge/hypotheses-are-ordered-by-precedence
-  - rule/investigation/one-evaluation-per-hypothesis
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/investigation/evaluation
+    digest: sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de
+  - node: rule/knowledge/hypotheses-are-ordered-by-precedence
+    digest: sha256:c5c1b66cff9265e8aa17c2be46f42bd4377e73801e215d95379cae6d60458fcb
+  - node: rule/investigation/one-evaluation-per-hypothesis
+    digest: sha256:5c6cbf502b861b306a3ead92129e8d260e06b13dea90a924c54b5a92a6a2d825
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "The answer enumerates the hypotheses of the published case already in hand; nothing in the objective or the criteria derives, compares, or exposes a version, so how the version is set does not bear here."

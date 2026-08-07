@@ -14,10 +14,12 @@ depends_on:
   - task/case-validator/validation-run
   - task/published-case/case-structure
 nodes:
-  - rule/knowledge/case-has-at-least-one-hypothesis
-  - definition/knowledge/case
-  - definition/knowledge/draft-case
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: rule/knowledge/case-has-at-least-one-hypothesis
+    digest: sha256:ff3df5176e34b2bfdfd59d9a8231b195cc843ffc5d71fa23976715accbb63838
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check counts the hypotheses a case declares; how publication sets the version reaches neither the count nor the refusal, so nothing this task demonstrates depends on what settles it."

@@ -26,16 +26,24 @@ depends_on:
   - task/published-case/assessment-record
   - task/published-case/fallback-selection
 nodes:
-  - definition/knowledge/case
-  - definition/knowledge/hypothesis
-  - definition/knowledge/resolution
-  - definition/knowledge/referral
-  - definition/glossary/outcome
-  - definition/investigation/evaluation
-  - definition/investigation/assessment
-  - rule/knowledge/hypotheses-are-ordered-by-precedence
-  - rule/investigation/the-outcome-comes-from-the-case
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/knowledge/resolution
+    digest: sha256:ce017e6342d08120ef1290be156eff861490e031d0e210d96cae2f5bc9f4f1bb
+  - node: definition/knowledge/referral
+    digest: sha256:7d74b30fc7b7813597b165588a4f8f5b7652235ebac9e320fa49a573f7eb9261
+  - node: definition/glossary/outcome
+    digest: sha256:40fad9d974f611796cc3974eeb6b311ac0ef6c6de39c5615f3eba4681eedaf2d
+  - node: definition/investigation/evaluation
+    digest: sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de
+  - node: definition/investigation/assessment
+    digest: sha256:fe01c229097bb5a9b23e1f75b8bbbe60108838df39b8068129c5d7adaa2b69ac
+  - node: rule/knowledge/hypotheses-are-ordered-by-precedence
+    digest: sha256:c5c1b66cff9265e8aa17c2be46f42bd4377e73801e215d95379cae6d60458fcb
+  - node: rule/investigation/the-outcome-comes-from-the-case
+    digest: sha256:fe6d313568bdc7eb9aaae70da1220bba3faddc2cf58285d0d9486a598d4ce12b
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This task answers from a published case taken as given; producing the assessment reads the case's hypotheses, order and fallbacks and never reads or sets what derives the version, so no criterion changes with the answer."

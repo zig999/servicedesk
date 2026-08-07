@@ -1,5 +1,5 @@
 {
-  "contract_version": "siegard-plan/1",
+  "contract_version": "siegard-plan/2",
   "nodes": [
     {
       "id": "epic/case-validator",
@@ -28,8 +28,7 @@
       "file": "task/case-validator/at-least-one-hypothesis.md",
       "title": "A case declares at least one hypothesis",
       "summary": "The check that refuses a case declaring no hypothesis at all.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/concept-accepts-the-subject-type",
@@ -37,8 +36,7 @@
       "file": "task/case-validator/concept-accepts-the-subject-type.md",
       "title": "A collected concept applies to the declared subject type",
       "summary": "The check that refuses a case collecting a fact that does not apply to the kind of thing the case investigates.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/concept-declares-a-ttl",
@@ -46,8 +44,7 @@
       "file": "task/case-validator/concept-declares-a-ttl.md",
       "title": "Every collected concept declares a ttl",
       "summary": "The check that refuses a case collecting a concept that does not state how stale the fact may be.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/glossary-lookup",
@@ -55,8 +52,7 @@
       "file": "task/case-validator/glossary-lookup.md",
       "title": "Reading the published glossary",
       "summary": "One reading of the published glossary that answers whether a term is published under the kind it is looked up as, and yields the published concept when it is one.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/hypothesis-collects-a-concept",
@@ -64,8 +60,7 @@
       "file": "task/case-validator/hypothesis-collects-a-concept.md",
       "title": "A hypothesis collects at least one concept",
       "summary": "The check that refuses a case holding a hypothesis that collects nothing.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/read-only-capability",
@@ -73,8 +68,7 @@
       "file": "task/case-validator/read-only-capability.md",
       "title": "Every collected concept has a read-only capability",
       "summary": "The check that refuses a case collecting a concept no read-only capability answers, decided where the case is validated and without calling anything.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/recipient-is-a-role",
@@ -82,8 +76,7 @@
       "file": "task/case-validator/recipient-is-a-role.md",
       "title": "A referral goes to a published role",
       "summary": "The check that refuses a case whose referral names a recipient the glossary does not publish as an operational role.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/terms-exist-in-the-glossary",
@@ -91,8 +84,7 @@
       "file": "task/case-validator/terms-exist-in-the-glossary.md",
       "title": "A case names only published terms",
       "summary": "The check that refuses a case naming a term the glossary does not publish under the kind the case uses it as.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/unique-hypothesis-names",
@@ -100,8 +92,7 @@
       "file": "task/case-validator/unique-hypothesis-names.md",
       "title": "Hypothesis names are unique within a case",
       "summary": "The check that refuses the publication of a case whose declared hypotheses include two carrying the same name.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/case-validator/validation-run",
@@ -109,8 +100,7 @@
       "file": "task/case-validator/validation-run.md",
       "title": "Running the checks over one case",
       "summary": "One validation over one case that runs every check registered for it, refuses the case when any check refuses, and reports every refusal it collected.",
-      "epic": "case-validator",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "case-validator"
     },
     {
       "id": "task/published-case/assessment-record",
@@ -118,8 +108,7 @@
       "file": "task/published-case/assessment-record.md",
       "title": "The assessment that carries a resolution",
       "summary": "The assessment as the construct that names the determining hypothesis, carries the resolution reached and reads back the text it was written with.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/case-structure",
@@ -127,8 +116,7 @@
       "file": "task/published-case/case-structure.md",
       "title": "The published case as one constructed thing",
       "summary": "The case with its identity and publication metadata, its declared subject type, its hypotheses in the order it declares them, and the resolutions and referrals it declares — one per hypothesis and the two fallbacks for none confirming — constructed as one thing and readable back exactly as declared.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/collection-plan",
@@ -136,8 +124,7 @@
       "file": "task/published-case/collection-plan.md",
       "title": "What a published case collects",
       "summary": "The union of the concepts the case's hypotheses collect, each concept once, answered from the case's structured declarations alone.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/evaluation-citations",
@@ -145,8 +132,7 @@
       "file": "task/published-case/evaluation-citations.md",
       "title": "What a decided evaluation cites",
       "summary": "The citations a confirming or refuting evaluation rests on, each naming a concept its hypothesis collects and a field that concept declares.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/evaluation-record",
@@ -154,8 +140,7 @@
       "file": "task/published-case/evaluation-record.md",
       "title": "The evaluation of one hypothesis",
       "summary": "The verdict on one named hypothesis, carrying why it could not decide when the verdict is inconclusive, and keeping the verdict it received whatever an earlier hypothesis did.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/fallback-selection",
@@ -163,8 +148,7 @@
       "file": "task/published-case/fallback-selection.md",
       "title": "Which fallback a case resolves when nothing confirms",
       "summary": "The case's choice between the two fallback resolutions it declares, made from the results the collection returned and from nothing else.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/outcome-resolution",
@@ -172,8 +156,7 @@
       "file": "task/published-case/outcome-resolution.md",
       "title": "The resolution a published case answers with",
       "summary": "The assessment a published case answers with, carrying the resolution the case resolved — by the precedence it declared, or by the fallback its selection yielded where nothing confirmed — naming the hypothesis that determined it where one did, and leaving every evaluation standing.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     },
     {
       "id": "task/published-case/required-evaluations",
@@ -181,8 +164,7 @@
       "file": "task/published-case/required-evaluations.md",
       "title": "Which hypotheses require an evaluation",
       "summary": "The hypotheses of a published case that require a verdict, in the order the case declares them, each named by the name that identifies it within its case.",
-      "epic": "published-case",
-      "base": "sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411"
+      "epic": "published-case"
     }
   ],
   "edges": [

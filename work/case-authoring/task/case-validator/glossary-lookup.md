@@ -14,14 +14,20 @@ criteria:
   - "A term the glossary publishes as a concept is yielded as the glossary records it when looked up as a concept."
   - "The lookup answers from the glossary it was given and holds no term of its own."
 nodes:
-  - rule/glossary/a-lookup-matches-a-published-name-exactly
-  - definition/glossary/concept
-  - definition/glossary/subject-type
-  - definition/glossary/outcome
-  - definition/glossary/action
-  - definition/glossary/recipient
-  - definition/glossary/observation-field
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: rule/glossary/a-lookup-matches-a-published-name-exactly
+    digest: sha256:2ea8ba89149becd1179fe9623d09227d5dafbcdb1534a29a57f1f9951b2dbbc5
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: definition/glossary/subject-type
+    digest: sha256:a2b480065c98dc6b15f228f1e05fb84e2729cd075f9c14579970db5efe45bb89
+  - node: definition/glossary/outcome
+    digest: sha256:40fad9d974f611796cc3974eeb6b311ac0ef6c6de39c5615f3eba4681eedaf2d
+  - node: definition/glossary/action
+    digest: sha256:f77670004b9b0aa3d01b7010e239c57c98609cb837b6f7fb64a11d51b85b43cb
+  - node: definition/glossary/recipient
+    digest: sha256:a5bc8e2e81ed13dfdf8b8ceabffab526153b6380b623c1cec46bc50d5e3e1654
+  - node: definition/glossary/observation-field
+    digest: sha256:1b428e198555ff415ae67598961e884fcd34c7d2f97d5cac7ec3a93678dd7015
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
     why: "The lookup yields the concept exactly as the glossary records it and never interprets the ttl value; whether the integer means seconds or minutes changes nothing about whether a term is answered as published or what record is yielded."

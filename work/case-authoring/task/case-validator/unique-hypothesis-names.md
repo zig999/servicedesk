@@ -14,12 +14,16 @@ depends_on:
   - task/case-validator/validation-run
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
-  - definition/knowledge/hypothesis
-  - definition/knowledge/draft-case
-  - rule/knowledge/hypothesis-name-is-unique-in-its-case
-  - rule/knowledge/a-validation-answers-with-every-refusal
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: aggregate/knowledge/cases
+    digest: sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
+  - node: rule/knowledge/hypothesis-name-is-unique-in-its-case
+    digest: sha256:289d09e2bdc85e8277a0ebbfe746ac7205cd6419249425b8802f74436c085230
+  - node: rule/knowledge/a-validation-answers-with-every-refusal
+    digest: sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa
 ---
 
 ## What it is

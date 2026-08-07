@@ -22,13 +22,18 @@ depends_on:
   - task/published-case/evaluation-record
   - task/case-validator/glossary-lookup
 nodes:
-  - rule/investigation/a-decided-evaluation-cites-evidence
-  - definition/investigation/evaluation
-  - definition/investigation/citation
-  - definition/knowledge/hypothesis
-  - definition/glossary/concept
-  - definition/glossary/observation-field
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: rule/investigation/a-decided-evaluation-cites-evidence
+    digest: sha256:5eb850974bbb427434c776e45d807cb2c306bd55aa5e04021c1cfe390acb495f
+  - node: definition/investigation/evaluation
+    digest: sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de
+  - node: definition/investigation/citation
+    digest: sha256:05e3a6d095fea69a23ab66ea91863ae8913c8096fb3838f5dfb5e69b880576bf
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: definition/glossary/observation-field
+    digest: sha256:1b428e198555ff415ae67598961e884fcd34c7d2f97d5cac7ec3a93678dd7015
 waived:
   - gap: definition/glossary/concept#attributes.ttl.unit
     why: "The ttl governs how stale the fact behind an evidence may be; no criterion of this task reads freshness — a citation is checked against the concept's declared observation fields and the hypothesis's collects list, and the ttl touches neither."

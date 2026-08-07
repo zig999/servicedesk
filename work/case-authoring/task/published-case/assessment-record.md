@@ -13,11 +13,14 @@ criteria:
   - "An assessment constructed with no determining hypothesis reads back none and is not refused for carrying none."
   - "An assessment reads back the text it was constructed with."
 nodes:
-  - definition/investigation/assessment
-  - definition/knowledge/resolution
-  - definition/knowledge/hypothesis
-  - rule/investigation/the-outcome-comes-from-the-case
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/investigation/assessment
+    digest: sha256:fe01c229097bb5a9b23e1f75b8bbbe60108838df39b8068129c5d7adaa2b69ac
+  - node: definition/knowledge/resolution
+    digest: sha256:ce017e6342d08120ef1290be156eff861490e031d0e210d96cae2f5bc9f4f1bb
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: rule/investigation/the-outcome-comes-from-the-case
+    digest: sha256:fe6d313568bdc7eb9aaae70da1220bba3faddc2cf58285d0d9486a598d4ce12b
 waived:
   - gap: definition/investigation/assessment#attributes.text.audience
     why: "This task constructs the assessment with a text and reads it back unchanged, deciding nothing about the text's content; what an assessment may expose to the end customer bears on the writing that produces the text, not on carrying it."

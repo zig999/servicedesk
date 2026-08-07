@@ -20,16 +20,24 @@ depends_on:
   - task/published-case/case-structure
   - task/published-case/evaluation-record
 nodes:
-  - definition/knowledge/case
-  - definition/knowledge/resolution
-  - definition/investigation/evaluation
-  - definition/investigation/evidence
-  - rule/knowledge/the-fallback-follows-what-the-collection-returned
-  - rule/investigation/the-outcome-comes-from-the-case
-  - rule/investigation/one-evaluation-per-hypothesis
-  - rule/investigation/one-evidence-per-collected-concept
-  - rule/investigation/an-unattempted-concept-records-a-timeout
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/resolution
+    digest: sha256:ce017e6342d08120ef1290be156eff861490e031d0e210d96cae2f5bc9f4f1bb
+  - node: definition/investigation/evaluation
+    digest: sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de
+  - node: definition/investigation/evidence
+    digest: sha256:d424dcd74f287e99bebfb33c433785b58066b7dbc4f83ef8be02d6d6ddbc8875
+  - node: rule/knowledge/the-fallback-follows-what-the-collection-returned
+    digest: sha256:82526f2f2b1f34a5335cf16b85806777f8c196e7e86e834837b4eba6196d3412
+  - node: rule/investigation/the-outcome-comes-from-the-case
+    digest: sha256:fe6d313568bdc7eb9aaae70da1220bba3faddc2cf58285d0d9486a598d4ce12b
+  - node: rule/investigation/one-evaluation-per-hypothesis
+    digest: sha256:5c6cbf502b861b306a3ead92129e8d260e06b13dea90a924c54b5a92a6a2d825
+  - node: rule/investigation/one-evidence-per-collected-concept
+    digest: sha256:d49ec2f8f15ec3ae1c9bcc0bb531910511ad1bb2f3681d5647c24dbe0dfac4d0
+  - node: rule/investigation/an-unattempted-concept-records-a-timeout
+    digest: sha256:dcae4fb3aeed9dc969decb61d23d8198ebf7fc836b0eb2109edb504a06c933b2
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This selection runs inside one already-published case, pinned by content; what sets the version plays no part in reading the collection's results or choosing between the two fallbacks the case declares."

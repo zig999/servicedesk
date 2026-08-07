@@ -16,10 +16,12 @@ criteria:
 depends_on:
   - task/published-case/case-structure
 nodes:
-  - definition/investigation/evaluation
-  - definition/knowledge/hypothesis
-  - rule/investigation/an-inconclusive-evaluation-declares-its-reason
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/investigation/evaluation
+    digest: sha256:1a83f3e12140dd16aff50c46eb1186d6dcdb9711378d045d971bd6f12d5c91de
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: rule/investigation/an-inconclusive-evaluation-declares-its-reason
+    digest: sha256:0d3d7d6bcdbe0cdec75c271dd561669fbbcc73e3ca8f97b338ce3b689a52993d
 ---
 
 ## What it is

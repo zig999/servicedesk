@@ -17,14 +17,20 @@ depends_on:
   - task/case-validator/glossary-lookup
   - task/published-case/case-structure
 nodes:
-  - aggregate/knowledge/cases
-  - definition/knowledge/case
-  - definition/knowledge/draft-case
-  - definition/knowledge/hypothesis
-  - definition/glossary/concept
-  - definition/integration/capability
-  - rule/knowledge/every-collected-concept-has-a-read-only-capability
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: aggregate/knowledge/cases
+    digest: sha256:cb2f4e40c9d78a66b2b0001e1ba2ed7f45e5bd5f833e89fed97e0ef5dec113c8
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/draft-case
+    digest: sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: definition/integration/capability
+    digest: sha256:80676c92ef8286fcfba04996c1672bef02ef9ec1426f7baa9ec4b2a79ed95a3b
+  - node: rule/knowledge/every-collected-concept-has-a-read-only-capability
+    digest: sha256:a675657d26c23639438a7eb06b4d1204c4ba9898042bd05974251f622f1e4b80
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "This check reads what a case collects and refuses before publication assigns a version; how the version is derived never enters the decision."

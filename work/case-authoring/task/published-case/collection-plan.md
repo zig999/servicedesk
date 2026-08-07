@@ -14,13 +14,18 @@ criteria:
 depends_on:
   - task/published-case/case-structure
 nodes:
-  - definition/knowledge/case
-  - definition/knowledge/hypothesis
-  - definition/glossary/concept
-  - rule/knowledge/the-body-does-not-change-what-is-collected
-  - rule/knowledge/the-content-hash-covers-the-whole-file
-  - process/investigation/diagnose
-base: sha256:d196ce9d9e4ee7f02c9a77beaa94aa21caab7c52084e0cc8cd8179fbb099a411
+  - node: definition/knowledge/case
+    digest: sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c
+  - node: definition/knowledge/hypothesis
+    digest: sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34
+  - node: definition/glossary/concept
+    digest: sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7
+  - node: rule/knowledge/the-body-does-not-change-what-is-collected
+    digest: sha256:484135503755b64ba08db05907a618f768d07c641ae04e73486ce9bb668d1586
+  - node: rule/knowledge/the-content-hash-covers-the-whole-file
+    digest: sha256:4874d358e10ea040974b075a80a5ef12ff4e9c77dae165ac048df88aa5ae7728
+  - node: process/investigation/diagnose
+    digest: sha256:25781babbd7341fb729a47fbe394207b61a38b62b92ac9800bd2633cfd3a09a3
 waived:
   - gap: definition/knowledge/case#attributes.version.derivation
     why: "The answer this task demonstrates is the set of concepts read from the case's structured hypotheses; how the version value is set does not change which concepts those declarations name, and criterion 5's two-case distinctness rests on the content hash, which the content-hash rule settles without the version."
