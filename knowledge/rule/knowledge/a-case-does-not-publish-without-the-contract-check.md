@@ -5,6 +5,7 @@ ddd: invariant
 statement: A case MUST NOT be published while the capability registry cannot be consulted.
 sources:
   - intake/decisoes-onze-perguntas-2026-08-07.md
+  - intake/ratificacao-tres-decisoes-2026-08-07.md
 constrains:
   - definition/knowledge/draft-case
   - definition/knowledge/check-unavailable
@@ -22,4 +23,4 @@ A registry that is out is a reason to try again, never a reason to let the case 
 ## Rules
 
 Every concept a case collects has a registered read-only capability.
-Where the registry cannot be consulted, what publication answers is not a refusal.
+Where the registry cannot be consulted, that unavailability is never expressed as a refusal, and it is answered beside every refusal the other checks produced.

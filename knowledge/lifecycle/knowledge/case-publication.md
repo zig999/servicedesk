@@ -6,6 +6,7 @@ rationale: The material states publication as an act that verifies the contract 
 sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/decisoes-onze-perguntas-2026-08-07.md
+  - intake/ratificacao-tres-decisoes-2026-08-07.md
 states:
   - draft
   - published
@@ -14,24 +15,9 @@ transitions:
   - from: draft
     trigger: publish
     to: published
-gaps:
-  - field: transitions.published.publish
-    why: The material states the index keeps every published version and that publication counts the next version for a slug, and it does not say how a slug already published becomes editable again — whether the published case returns to being edited or a further publication acts on it where it stands.
-    proposal:
-      value: A published case publishes again where it stands — the publish trigger applied to a case already published leads to published, and the version that publication assigns is one greater than the greatest already published for that slug. No trigger returns a published case to being edited, and this lifecycle names none.
-      why: >-
-        rule/knowledge/publication-counts-the-version already states the arithmetic over a slug that
-        has published versions, and its second example — a slug whose greatest published version is
-        2 publishing at 3 — is reachable only if a case already published can be published again, so
-        the material has decided this transition and recorded it somewhere else. The index keeping
-        every published version rather than the last says the same thing from the other side, since
-        a later publication adds a value beside the earlier one instead of replacing it, which is
-        what makes publishing an already published slug the ordinary act. definition/knowledge/draft-case
-        settles why nothing has to be released back to being edited — the version and the hash are
-        what publication assigns and nothing a curator writes carries either, so the one file under
-        version control never stops being the case under edit and is never occupied by the published
-        value. The competing reading needs a trigger that ends a publication, and the material names
-        no such act anywhere.
+  - from: published
+    trigger: publish
+    to: published
 ---
 
 ## What it is
@@ -40,6 +26,7 @@ Publication is the moment the knowledge context and the integration context nego
 Running that check at publication rather than at execution is deliberate, because otherwise a curator's mistake surfaces during a customer call.
 Nobody approves the act: the checks are the whole of what refuses the publish trigger, so this lifecycle records no refusal of it.
 Where the registry cannot be consulted at all, the case does not publish and what answers is an unavailable check rather than a refusal.
+A case already published publishes again where it stands, and nothing returns it to being edited — the version and the hash are what publication assigns, so the one file the curator keeps editing never carries either and never has to be released.
 
 ## Rules
 

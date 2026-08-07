@@ -237,7 +237,7 @@
       "context": "knowledge",
       "title": "Contract check unavailable",
       "summary": "What publication answers with when the capability registry cannot be consulted — that the check could not be decided, never that the case is wrong.",
-      "digest": "sha256:8937564a636f64d5fa9feafcb4edd35d9a644a7c7baac01e8e2b4e203f53a7b7",
+      "digest": "sha256:8964fcb1e146250c1c98560d78b833e9c5087b343be901f827c1150416c41e90",
       "ddd": "domain-error"
     },
     {
@@ -290,11 +290,8 @@
       "context": "knowledge",
       "title": "Refusal",
       "summary": "One reason one case did not pass validation — the rule that refused, the position in the case it refused at, and the text written for the curator.",
-      "digest": "sha256:6f6ae41f972eeb43efac81f66e55150aef258259f09efee0243d9c73b182b895",
-      "ddd": "value-object",
-      "gaps": [
-        "attributes.rule.structural-checks"
-      ]
+      "digest": "sha256:0edb909b22a78460c4d9cf14799596fa255767886cfca62685bbac71ffa9ebc5",
+      "ddd": "value-object"
     },
     {
       "id": "definition/knowledge/resolution",
@@ -348,10 +345,7 @@
       "context": "knowledge",
       "title": "Case publication",
       "summary": "A case moves from being edited to being published, and publication is where its contract with the integration context is verified.",
-      "digest": "sha256:60f082270b723bf666046568f6b10d00fe490509a7952fa4f351bd1755c2c95b",
-      "gaps": [
-        "transitions.published.publish"
-      ]
+      "digest": "sha256:488e3d56fef49641b1e89c7512733985d36b094556c8f192b58293add8ff168a"
     },
     {
       "id": "process/investigation/diagnose",
@@ -576,7 +570,7 @@
       "context": "knowledge",
       "title": "A case does not publish without the contract check",
       "summary": "A capability registry that cannot be consulted is not permission to postpone the check to execution.",
-      "digest": "sha256:151147ca40e48632470001b72e226644fd43d6c42579b30472a5277f4a04625a",
+      "digest": "sha256:e5ac417363182c6ee42629b95be31fbd60b99e21e7ec6c371f0fac3f65e03f7a",
       "ddd": "invariant"
     },
     {
@@ -590,6 +584,17 @@
       "ddd": "invariant"
     },
     {
+      "id": "rule/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "rule",
+      "file": "rule/knowledge/a-hypothesis-declares-a-criterion.md",
+      "context": "knowledge",
+      "title": "A hypothesis declares a criterion",
+      "summary": "A hypothesis with no criterion collects facts that nothing will ever judge.",
+      "digest": "sha256:a7f7935ca80c241141806c12a9496746cc56c5dd7055492500f2e94acd6bab9e",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/knowledge/a-position-indexes-a-hypothesis-by-name",
       "kind": "rule",
       "file": "rule/knowledge/a-position-indexes-a-hypothesis-by-name.md",
@@ -600,17 +605,25 @@
       "ddd": "invariant"
     },
     {
+      "id": "rule/knowledge/a-resolution-declares-an-outcome-and-a-referral",
+      "kind": "rule",
+      "file": "rule/knowledge/a-resolution-declares-an-outcome-and-a-referral.md",
+      "context": "knowledge",
+      "title": "A resolution declares an outcome and a referral",
+      "summary": "A conclusion says what was concluded and who acts on it, in every hypothesis and in both fallbacks.",
+      "digest": "sha256:953bedad78249336f5089e09c1b4a78d9d283b10fc9b93a0bf6ca7ff1e9eccb3",
+      "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/knowledge/a-validation-answers-with-every-refusal",
       "kind": "rule",
       "file": "rule/knowledge/a-validation-answers-with-every-refusal.md",
       "context": "knowledge",
       "title": "A validation answers with every refusal",
       "summary": "A validation of a case runs every check it carries whatever an earlier one decided, and answers with all of them.",
-      "digest": "sha256:4b54af0df7b49c688e8af2c0837ec3fe9bc56d6477e71324da4616d6c64bc7c1",
-      "ddd": "invariant",
-      "gaps": [
-        "statement.unavailable-contract-check"
-      ]
+      "digest": "sha256:7dcdcbb0d93b4bb34a102083d24a2f85d398745649e9ed82d56e416a03d37474",
+      "ddd": "invariant"
     },
     {
       "id": "rule/knowledge/an-unavailable-check-is-not-a-refusal",
@@ -618,12 +631,9 @@
       "file": "rule/knowledge/an-unavailable-check-is-not-a-refusal.md",
       "context": "knowledge",
       "title": "An unavailable check is not a refusal",
-      "summary": "Where the registry cannot be consulted, publication says it could not decide, and never that the case is wrong.",
-      "digest": "sha256:a8934f4f6ebbfd2bd59e231275bdee9c5d4e99f2265b5514602f3f458ceccb9d",
-      "ddd": "invariant",
-      "gaps": [
-        "statement.refusals-other-checks-produced"
-      ]
+      "summary": "Where the registry cannot be consulted, publication says it could not decide, and never says that as though the case were wrong.",
+      "digest": "sha256:a253ea76f304a6aca5403b6c4b8a908f7f5644c2aedf79007e2957b402c87c80",
+      "ddd": "invariant"
     },
     {
       "id": "rule/knowledge/an-unreadable-case-is-not-validated",
@@ -1427,10 +1437,40 @@
       "at": "constrains[1]"
     },
     {
+      "from": "rule/knowledge/a-hypothesis-declares-a-criterion",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/a-hypothesis-declares-a-criterion",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
       "from": "rule/knowledge/a-position-indexes-a-hypothesis-by-name",
       "to": "definition/knowledge/refusal",
       "kind": "constrains",
       "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/a-resolution-declares-an-outcome-and-a-referral",
+      "to": "aggregate/knowledge/cases",
+      "kind": "aggregate",
+      "at": "aggregate"
+    },
+    {
+      "from": "rule/knowledge/a-resolution-declares-an-outcome-and-a-referral",
+      "to": "definition/knowledge/resolution",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/a-resolution-declares-an-outcome-and-a-referral",
+      "to": "definition/knowledge/referral",
+      "kind": "constrains",
+      "at": "constrains[1]"
     },
     {
       "from": "rule/knowledge/a-validation-answers-with-every-refusal",

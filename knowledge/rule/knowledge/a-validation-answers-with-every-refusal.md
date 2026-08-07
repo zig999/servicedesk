@@ -8,21 +8,14 @@ sources:
   - intake/decisoes-seis-perguntas-2026-08-05.md
   - intake/decisoes-cinco-perguntas-2026-08-06.md
   - intake/decisoes-onze-perguntas-2026-08-07.md
+  - intake/ratificacao-tres-decisoes-2026-08-07.md
 constrains:
   - definition/knowledge/draft-case
-gaps:
-  - field: statement.unavailable-contract-check
-    why: >-
-      This statement requires every refusal the checks produced to be answered, and
-      rule/knowledge/an-unavailable-check-is-not-a-refusal forbids publication any refusal where
-      the capability registry cannot be consulted. Both are stated over the same act, and one case
-      decides them differently: a case that declares no hypothesis, published while the registry
-      cannot be reached. There this statement requires the refusal on hypotheses to be answered and
-      the other forbids answering with it, and the material does not say which of the two holds.
 examples:
   - Given a case that declares no hypothesis and also names a recipient the glossary does not publish, when it is validated, then both refusals are answered.
   - Given a case that two checks refuse, when it is validated, then no refusal is answered that no check produced, and neither is left out.
   - Given one check refusing one case at two positions, when it is validated, then two refusals are answered, because the count is over positions and not over checks.
+  - Given a case two checks refused and a capability registry that cannot be consulted, when it is published, then both refusals are answered and the unavailable contract check is answered beside them, suppressing neither.
 ---
 
 ## What it is
@@ -37,3 +30,4 @@ A check must therefore be safe over a malformed case: the check that a hypothesi
 A check leaves what it cannot read to the check that owns it, which is why an unpublished concept is one refusal rather than three at the same position.
 What each refusal carries is the refusal construct's — the rule that refused, the position in the case, and the text for the curator — and the same rule refusing at two positions produces two refusals.
 A case whose structured part does not parse is not validated at all, and answers with a read failure instead.
+An unavailable contract check is answered beside the refusals the other checks produced and never in place of them, because what may not wear a refusal's shape is the unavailability itself.
