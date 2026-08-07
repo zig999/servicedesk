@@ -1,0 +1,20 @@
+===== install :: npm install :: passed =====
+
+added 357 packages, and audited 358 packages in 28s
+
+110 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend-node-service@0.0.0 typecheck
+> tsc
+
+error TS18003: No inputs were found in config file '/home/siegfriedneto/projects/siegardtest/tsconfig.json'. Specified 'include' paths were '["src"]' and 'exclude' paths were '[]'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
