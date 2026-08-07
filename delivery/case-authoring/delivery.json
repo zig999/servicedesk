@@ -1,5 +1,21 @@
 {
   "contract_version": "siegard-delivery/1",
-  "nodes": [],
-  "edges": []
+  "nodes": [
+    {
+      "id": "implementation/published-case/project-substrate",
+      "kind": "implementation",
+      "file": "implementation/published-case/project-substrate.md",
+      "title": "The manifest and the compiler configuration the standard registry presupposes",
+      "summary": "The two artifacts the registry names in its `presupposes` block, written at the target source root — a manifest declaring ESM, the four steps the registry runs as scripts and the eleven dependencies it authorized when this was written, and a compiler configuration turning strict on, fixing Node's own resolution mode and compiling `src`.",
+      "task": "task/published-case/project-substrate"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/published-case/project-substrate",
+      "to": "task/published-case/project-substrate",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
 }
