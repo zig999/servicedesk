@@ -130,6 +130,14 @@
       "task": "task/published-case/fallback-selection"
     },
     {
+      "id": "implementation/published-case/outcome-resolution",
+      "kind": "implementation",
+      "file": "implementation/published-case/outcome-resolution.md",
+      "title": "Outcome resolution from a case's evaluations",
+      "summary": "A pure selection that reads a published case's hypotheses in their declared order, its evaluations and the fallback selection's yield to produce the resolution and determining-hypothesis parts of an assessment, leaving every evaluation and every case hypothesis untouched.",
+      "task": "task/published-case/outcome-resolution"
+    },
+    {
       "id": "implementation/published-case/required-evaluations",
       "kind": "implementation",
       "file": "implementation/published-case/required-evaluations.md",
@@ -264,6 +272,14 @@
       "title": "Proof for fallback selection between a case's two declared resolutions",
       "summary": "Fifteen tests over selectFallback proving the seven stated criteria — the ok/timeout/unavailable/denial/mixed branches, the read-back-unchanged fallback identity, and the no-hypothesis-confirmed exclusion — plus the recorded inference and the two vacuous-collection edge cases.",
       "task": "task/published-case/fallback-selection"
+    },
+    {
+      "id": "proof/published-case/outcome-resolution",
+      "kind": "proof",
+      "file": "proof/published-case/outcome-resolution.md",
+      "title": "Outcome resolution: the assessment a published case answers with",
+      "summary": "Fourteen behavioral tests plus three inference/edge tests over src/knowledge/outcome-resolution.ts, proving each of the task's eleven criteria, the UNDERDETERMINED exclusion the binding named (three-or-more confirmations still select the earliest-listed hypothesis), and the two inferences the implementation record declared.",
+      "task": "task/published-case/outcome-resolution"
     },
     {
       "id": "proof/published-case/required-evaluations",
@@ -805,6 +821,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "definition/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "definition/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "definition/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "rule/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "rule/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/published-case/outcome-resolution",
+      "to": "task/published-case/outcome-resolution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-case/required-evaluations",
       "to": "definition/knowledge/case",
       "kind": "encodes",
@@ -927,6 +985,12 @@
     {
       "from": "proof/published-case/fallback-selection",
       "to": "implementation/published-case/fallback-selection",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-case/outcome-resolution",
+      "to": "implementation/published-case/outcome-resolution",
       "kind": "proves",
       "at": "the path"
     },
