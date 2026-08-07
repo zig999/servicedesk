@@ -1,6 +1,7 @@
 ---
 name: plan-work
 description: Turns a stated development scope plus a validated knowledge base into a development plan — an inventory, epics and tasks recorded as markdown nodes under a work root, each task bound to the base nodes that govern it — validates the plan against the base, and derives plan.json. Also closes a plan when the human declares its initiative over, marking the work root as history. Use when a request asks to plan, decompose, or prepare development work over a domain the base already holds, or to close a finished plan. Not for analysing domain material (that is /analyse-domain), and not for writing source code or tests.
+effort: medium
 ---
 
 You turn a scope into a development plan, and you stop. One invocation, one increment: the
@@ -23,6 +24,15 @@ A missing input is a stop, not a default:
    through the survey, never as a reference into the old plan.
 4. **the target source root** — where the code lives or will live. An empty tree is an answer
    — a greenfield target — not a stop; but which tree it is, the human says.
+
+One optional input: **the project's standard** — the path to the registry of rules the project set
+for itself. It plays one part here and no other. A registry states the artifacts its rules
+presuppose — a manifest, a compiler configuration, whatever a rule names and no rule can ask for —
+and where the target tree does not hold one, building it is work this plan holds or nothing does:
+the base has no node for a manifest and should not, no epic covers one, and `/implement-task`
+refuses to write source while the absence stands. The rules themselves are not a plan's business.
+A plan writes no source, and judging how source is arranged belongs to the two entry points that
+do.
 
 Naming can go by reference when the reference carries the path: "the base we just validated
 at `knowledge/`" names `knowledge/`, and the handoff an `/analyse-domain` report ends with
@@ -51,9 +61,12 @@ problems is fixed through `/analyse-domain`; a stale `graph.json` is rederived b
 the base. Neither repair is this invocation's to make — planning never writes into the
 knowledge root.
 
-The pin every task carries is the SHA-256 of the base's `graph.json` as just checked:
-`sha256:<hexdigest>`, computable as `sha256sum <knowledge-root>/graph.json`. Compute it once,
-after the check passes, and stamp it on every task this invocation binds or re-binds.
+A task pins the base per node, not in one value. Each entry of its binding carries the digest
+of that node as the binding read it — read the value out of the node's entry in the base's
+`graph.json`, which the check above has just made current, rather than hashing anything yourself.
+By hand it is `sha256sum <knowledge-root>/<node>.md`, and a reader who wants to check one can.
+Stamp them as each task is composed, so a task stales when a node it binds moves and stays
+untouched when the base grows elsewhere.
 
 ## Before anything: the tree
 
@@ -112,6 +125,18 @@ Two indexes, one rule: read the index, never the whole tree.
   in both directions, and bindings that reach the base's impact set. Read those files alone.
   Outside the set, standing decisions stand: a task this change does not touch is not
   reworded, however improvable it looks.
+- **The project's standard, when one was named.** Run
+
+  ```
+  python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/deliver.py --standard <the registry> --against <target-source-root>
+  ```
+
+  A registry that does not hold together is a stop, reported verbatim: fixing it belongs to
+  whoever owns it. An artifact it presupposes and the tree does not hold is **not** a stop — it is
+  this bullet's whole product. Keep what the command printed for each: the path, what the registry
+  says that artifact provides, and the rules it named as unanswerable while the artifact is
+  absent. That set goes to the decomposition, and it is gathered here, before any node is written,
+  because it decides whether this plan holds one more task than the scope asked for.
 
 ### 2. Inventory
 
@@ -141,7 +166,10 @@ path its identifier computes to, verbatim.
 Spawn a `backlog-decomposer` subagent — its judgment lives at
 `${CLAUDE_PLUGIN_ROOT}/agents/backlog-decomposer.md` — passing four things: the scope's path, the impact set as you read it from the base's index —
 identifiers, titles, summaries, and each node's open gap fields — the surveyor's inventory,
-and the plan-node contract's path. Its file holds the boundary tests that shape every task;
+and the plan-node contract's path — plus, where a standard was named and the situate step found
+any, the artifacts it presupposes that the tree does not hold, each with what the registry says it
+provides and the rules it carries. Those are the one thing the decomposition may cut a task for
+that the scope never asked about, and the agent's file says how. Its file holds the boundary tests that shape every task;
 what comes back is epics, complete, and task skeletons — objective, criteria, dependencies —
 deliberately without the binding fields, which belong to the next step's judge.
 
@@ -160,8 +188,11 @@ validator refuses — the knowledge root, and the plan-node contract's path. The
 full gap triage — `unresolved` and `waived`, with whys — and the questions the base cannot
 answer; a divergence between the task and the nodes comes back as notes.
 
-Then compose and write each task: the skeleton, plus what its binder returned, plus the pin
-from the base check stamped on `base`. A binder's notes are appended to the task body's
+Then compose and write each task: the skeleton, plus what its binder returned, with each node
+it returned carried as `node` and the digest the index lists for it as `digest`. The binder
+returns identifiers and no digests: which version was read is bookkeeping the caller holds, and
+an agent that stamped its own would be attesting to a file nobody
+watched it open. A binder's notes are appended to the task body's
 `## Notes`, one sentence per line — the diff is the review, and a divergence only the
 conversation holds is a divergence the reviewer never sees — and the report repeats them by
 task. A note classed `blocking`, `underdetermined` or `remainder` opens with its class,
@@ -212,14 +243,26 @@ When every node is written, run:
 python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/plan.py <work-root> <knowledge-root>
 ```
 
+Where a standard was named, name it here too — the two flags travel together, and neither half
+decides anything alone:
+
+```
+python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/plan.py --standard <the registry> --against <target-source-root> <work-root> <knowledge-root>
+```
+
 This validates every plan node against the contract, runs the checks that need the whole plan
 and the base — dependencies resolve without cycles, bindings resolve, every open gap on a
-bound node is triaged, every covered node reaches a task or a stated why, every pin matches
-the base as it stands — and derives `plan.json`. **Never write or edit `plan.json` yourself.**
+bound node is triaged, every covered node reaches a task or a stated why, every bound node's
+digest matches that node as it stands — plus, with a standard named, that every artifact it
+presupposes either stands in the tree or is declared in some task's `produces`, and derives
+`plan.json`. That last check is why the decomposition was handed the absent set rather than
+trusted to remember it: a task nobody cut is invisible in the plan that lacks it, and this is
+the one place the lack is a refusal.
+**Never write or edit `plan.json` yourself.**
 Report the command's output verbatim. If it exits non-zero, the run failed — fix and rerun,
 and never describe the plan as valid while it is not.
 
-**Fixing means form, never knowledge.** A wrong shape — a malformed pin, a bad reference, a
+**Fixing means form, never knowledge.** A wrong shape — a malformed digest, a bad reference, a
 forbidden field — is yours to correct. An untriaged gap is settled by judgment — unresolved
 or waived — never by inventing the fact it names. A question is never answered by the plan. A
 coverage hole is settled by a task or by `uncovered` with a why — whichever the scope actually
@@ -243,6 +286,11 @@ Report, in this order:
   underdetermined one carrying the implementation it names, a remainder one carrying where
   it belongs;
 - every node carrying `rationale`, by identifier;
+- where a standard was named, what it presupposes and where each of those stands: held by the
+  tree already, or produced by a task this plan now holds, named by identifier and by path. Where
+  none was named, say so — a plan cut without one is a plan that cannot know whether the tree it
+  plans over can run anything it delivers, and that is the honestly narrow answer rather than
+  silence;
 - which steps, if any, ran inline instead of in a subagent, and why;
 - the validator's final output, verbatim;
 - the handoff: the `/implement-task` invocation ready to paste — this work root and this
@@ -266,7 +314,7 @@ Then stop. `git diff` over the work root is the review, and it belongs to a pers
 
 A work root serves one initiative, and the human says when it is over — the ask, with its
 why, is the input, and either missing is a stop. Closing spawns no judge, runs no base
-check, and computes no pin: it never touches the knowledge root.
+check, and computes no digest: it never touches the knowledge root.
 
 - The root must be under git and clean, exactly as before any write — the closure diff is
   its own review. A root already holding `closure.md` is already closed: stop.
@@ -277,7 +325,8 @@ check, and computes no pin: it never touches the knowledge root.
 - Run `python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/plan.py <work-root>` — no knowledge root,
   because a closed plan validates without one. The derivation is the seal: it still
   refuses a plan whose structure does not hold, and a base that moved since the bindings
-  is no obstacle — each pin now stands as history, naming the base its binding read.
+  is no obstacle — each digest now stands as history, naming a node the binding read and the
+  version of it that was read.
 - Report the closure and the legacy the plan carries out — its unresolved gaps, citations
   and unique, and its open questions — in handoff form: the `/analyse-domain` invocation
   ready to paste, its knowledge root a slot closing cannot fill, the questions listed as
@@ -306,4 +355,4 @@ check, and computes no pin: it never touches the knowledge root.
   what to do with it is the human's call.
 - Write into a work root that holds `closure.md`, or remove a closure — a closed plan is
   history, and reopening it is the human's git act, after which the live checks and the
-  stale pins force the re-binding themselves.
+  stale digests force the re-binding themselves.

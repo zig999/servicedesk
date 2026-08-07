@@ -60,8 +60,11 @@ Usage:  deliver.py <delivery-root> <work-root> [<knowledge-root>]
                                                         validate one file (cross-node checks,
                                                         plan checks and standard checks do not
                                                         run)
-        deliver.py --standard <file>                    validate one project standard on its own;
-                                                        stands alone, needs no root
+        deliver.py --standard <file> [--against DIR]    validate one project standard on its own;
+                                                        stands alone, needs no root. With a tree
+                                                        named, also say whether it holds what the
+                                                        registry presupposes — exit 1 while any
+                                                        of it is absent
         The knowledge root is required while the plan is live, and ignored once closure.md
         marks it closed — the same rule plan.py applies, because the plan is read through it.
 Exit:   0 sound (and, with --check, current)
@@ -279,7 +282,66 @@ def load_standard(path: Path, validator) -> tuple[dict | None, list[str]]:
             problems.append(f"{rule.get('id')} is decided by reading and names the tool "
                             f"`{rule['tool']}`; a rule is one or the other, and a rule a tool "
                             f"decides is not a review's to read")
+    for field in ("presupposes", "dependencies"):
+        for index, entry in enumerate(listed(data, field)):
+            if not isinstance(entry, dict):
+                continue
+            for cited in listed(entry, "rules"):
+                if isinstance(cited, str) and cited not in ids:
+                    problems.append(f"{field}[{index}] names {cited}, which this registry does "
+                                    f"not declare; naming a rule is how an entry says what it "
+                                    f"costs, and one citing nothing that resolves is a cost "
+                                    f"nobody can weigh")
+    problems += command_problems(data) + package_problems(data)
     return (None if problems else data), problems
+
+
+def command_problems(data: dict) -> list[str]:
+    """One registry's commands, against itself and against the rules that expect them. The join is
+    the step name: a rule says a tool decides it, a command says how that tool is run, and
+    `bin/run.py` records the outcome under the same name. A registry that declares no command at
+    all is held to none of this — it behaves the way every registry did before the field, with
+    nothing running on its own and a review saying which rules went unanswered."""
+    problems: list[str] = []
+    entries = [c for c in listed(data, "commands") if isinstance(c, dict)]
+    if not entries:
+        return problems
+
+    names = [c["step"] for c in entries if isinstance(c.get("step"), str)]
+    for value in sorted({n for n in names if names.count(n) > 1}):
+        problems.append(f"declares the step `{value}` {names.count(value)} times; a run records "
+                        f"one outcome per step, and two commands under one name cannot both be it")
+
+    for role in ("install", "suite"):
+        carrying = [c["step"] for c in entries if c.get("role") == role
+                    and isinstance(c.get("step"), str)]
+        if len(carrying) > 1:
+            problems.append(f"{', '.join(sorted(carrying))} all carry the role `{role}`; a "
+                            f"delivery runs one of them at a named moment, and which one is not "
+                            f"something a caller may pick")
+
+    declared = set(names)
+    for rule in listed(data, "rules"):
+        if not isinstance(rule, dict) or not isinstance(rule.get("tool"), str):
+            continue
+        if rule["tool"] not in declared:
+            problems.append(f"{rule.get('id')} says the step `{rule['tool']}` decides it, and this "
+                            f"registry declares no such command; a rule declared mechanical with "
+                            f"nothing named to decide it is a rule nobody applies, which is worse "
+                            f"than one nobody wrote")
+
+    return problems
+
+
+def package_problems(data: dict) -> list[str]:
+    """One registry's authorized packages, against themselves. Checked whether or not the registry
+    declares a command, because the list is an allowlist first and an install second: a name
+    written twice is a record that resolves against one of two entries with no way to say which."""
+    packages = [d["package"] for d in listed(data, "dependencies")
+                if isinstance(d, dict) and isinstance(d.get("package"), str)]
+    return [f"authorizes `{value}` {packages.count(value)} times; a record naming it resolves "
+            f"against one entry, and two cannot both be the reason it was admitted"
+            for value in sorted({p for p in packages if packages.count(p) > 1})]
 
 
 def pin_of(path: Path) -> str:
@@ -335,16 +397,48 @@ def rules_of(data: dict) -> dict[str, dict]:
             if isinstance(r, dict) and isinstance(r.get("id"), str)}
 
 
-def implementation_standard_problems(nid: str, front: dict, root: Path, validator) -> list[str]:
-    """Every rule an implementation says it departed from, resolved against the standard it pins.
-    Unlike a review's citation this may name a rule a tool decides: a record obeys the whole
-    standard, and departing from a rule the compiler owns is a real departure that the run will
-    show. The validator holds the citation and says nothing about whether departing was right,
-    which is a reader's to judge."""
+def record_run_problems(nid: str, front: dict, root: Path) -> list[str]:
+    """One record that wrote something, against the run it points at. A record and its run are one
+    act: the run is what the delivery saw before it wrote, so a record over a run that did not pass
+    claims what the run denied. It is the exact mirror of `run_problems`, which refuses a review's
+    run that passed — there, a green run is a diagnosis nobody should have asked for; here, a red
+    one is a delivery that should not exist. The failure is not erased by either: the run that
+    failed keeps its directory, and `bin/run.py` refuses to let any later run take its name."""
+    where = front.get("run")
+    if not isinstance(where, str):
+        return []
+    record = root / where / "run.json"
+    if not record.is_file():
+        return [f"{nid}: run names {where}, which holds no run.json; the runner writes one for "
+                f"every run, so a directory without it is not a run this framework captured"]
+    try:
+        captured = json.loads(record.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as broken:
+        return [f"{nid}: {where}/run.json cannot be read: {broken}"]
+    if not isinstance(captured, dict):
+        return [f"{nid}: {where}/run.json is not a mapping"]
+    if captured.get("outcome") != "passed":
+        failed = captured.get("failed_step")
+        return [f"{nid}: {where} ended `{captured.get('outcome')}` at the step `{failed}`, and "
+                f"this record was written anyway; what a record says was delivered is what the "
+                f"run it points at showed, and this one showed the opposite — fix what failed and "
+                f"run again under a name of its own, or leave the record unwritten"]
+    return []
+
+
+def record_standard_problems(nid: str, front: dict, root: Path, validator) -> list[str]:
+    """Every rule a record that wrote something says it departed from — an implementation or a
+    proof alike — resolved against the standard it pins, plus every package it says it installed
+    and whether the run its kind owes was captured at all. Unlike a review's citation a departure
+    may name a rule a tool decides: a record obeys the whole standard, and departing from a rule
+    the compiler owns is a real departure that the run will show. The validator holds the citation
+    and says nothing about whether departing was right, which is a reader's to judge."""
     data, at, problems = standard_of(nid, front, root, validator)
     if data is None:
         return problems
     rules = rules_of(data)
+    problems += installed_problems(nid, front, data, at)
+    problems += owed_run_problems(nid, front, data, at)
 
     for index, entry in enumerate(listed(front, "divergences")):
         if not isinstance(entry, dict) or not isinstance(entry.get("cites"), str):
@@ -358,6 +452,41 @@ def implementation_standard_problems(nid: str, front: dict, root: Path, validato
             problems.append(f"{nid}: divergences[{index}] cites {cited} against {where}, which "
                             f"that rule's scope does not reach")
     return problems
+
+
+def installed_problems(nid: str, front: dict, data: dict, at: str) -> list[str]:
+    """Every package a record says it installed, against the list its standard authorizes. The
+    list is where a human's approval of a package lives — the only place it survives the session it
+    was given in — so a delivery that could install past it would make the approval decorative.
+    The check is over names and never over a manifest: reading one would be reading a stack this
+    framework ships no knowledge of."""
+    authorized = {d["package"] for d in listed(data, "dependencies")
+                  if isinstance(d, dict) and isinstance(d.get("package"), str)}
+    return [f"{nid}: installed names {package}, which {at} does not authorize; a package this "
+            f"registry has not admitted is one nobody approved, and the approval that admits it is "
+            f"the registry gaining an entry — not an answer given while it was being installed"
+            for package in listed(front, "installed")
+            if isinstance(package, str) and package not in authorized]
+
+
+def owed_run_problems(nid: str, front: dict, data: dict, at: str) -> list[str]:
+    """Whether a record captured the run its kind owes. A registry declaring how the project is
+    installed and checked is a registry whose delivery could be run, and a delivery that could be
+    run and was not is the state this whole arrangement exists to end: source handed over having
+    never been executed, with every rule a tool decides unanswered by anything. What each kind owes
+    differs because of when it is written — an implementation is written before any test exists, so
+    it owes the checks that do not need one; a proof is written after, so it owes them all."""
+    if "run" in front or "standard" not in front:
+        return []
+    commands = [c for c in listed(data, "commands") if isinstance(c, dict)]
+    kind = "proof" if "tests" in front else "implementation"
+    owed = commands if kind == "proof" else [c for c in commands if c.get("role") != "suite"]
+    if not owed:
+        return []
+    named = ", ".join(str(c.get("step")) for c in owed)
+    return [f"{nid}: {at} declares the step(s) {named} and this record captured no run; a delivery "
+            f"whose project could be installed and checked and was not is source nobody executed, "
+            f"which is exactly what a record pointing at a green run says did not happen"]
 
 
 def review_standard_problems(nid: str, front: dict, root: Path, validator) -> list[str]:
@@ -391,14 +520,24 @@ def review_standard_problems(nid: str, front: dict, root: Path, validator) -> li
     return problems
 
 
+def wrote(front: dict) -> tuple[set[str], str]:
+    """Every path one record says it wrote, and the field that said so. An implementation writes
+    `files` and a proof writes `tests`; no record carries both, so one expression serves either and
+    a departure is checked against the same rule whichever wrote it."""
+    files = {f["path"] for f in listed(front, "files")
+             if isinstance(f, dict) and isinstance(f.get("path"), str)}
+    tests = {t["file"] for t in listed(front, "tests")
+             if isinstance(t, dict) and isinstance(t.get("file"), str)}
+    return (files | tests), ("files" if "files" in front else "tests")
+
+
 def divergence_problems(front: dict) -> list[str]:
-    """One implementation's disclosed departures, against itself. A departure names exactly one
-    thing it departed from, and where a standard's rule is what it names, it says which file — so
-    the citation can be checked against the scope the rule declares and a reader can open the
-    place. Whether the departure was justified is nobody's here to decide."""
+    """One record's disclosed departures, against itself. A departure names exactly one thing it
+    departed from, and where a standard's rule is what it names, it says which file — so the
+    citation can be checked against the scope the rule declares and a reader can open the place.
+    Whether the departure was justified is nobody's here to decide."""
     problems: list[str] = []
-    written = {f["path"] for f in listed(front, "files")
-               if isinstance(f, dict) and isinstance(f.get("path"), str)}
+    written, field = wrote(front)
     for index, entry in enumerate(listed(front, "divergences")):
         if not isinstance(entry, dict):
             continue  # the schema already reported the shape
@@ -419,7 +558,7 @@ def divergence_problems(front: dict) -> list[str]:
                             f"`file` locates a citation, and a departure described in prose is "
                             f"located in that prose")
         if isinstance(where, str) and where not in written:
-            problems.append(f"divergences[{index}] names {where}, which `files` does not list; a "
+            problems.append(f"divergences[{index}] names {where}, which `{field}` does not list; a "
                             f"departure sits in a file this record says it wrote")
         if cites and "standard" not in front:
             problems.append(f"divergences[{index}] cites {entry['cites']} and this record names no "
@@ -451,8 +590,12 @@ def node_problems(front, kind: str, validator, allowed, names: list[str]) -> lis
 
     if kind == "review":
         problems.extend(review_problems(front, names))
-    if kind == "implementation":
+    if kind in PAIRED:
         problems.extend(divergence_problems(front))
+        if "installed" in front and "standard" not in front:
+            problems.append("`installed` names packages and this record names no standard; what "
+                            "authorizes a package is a registry's own list, and without one the "
+                            "names resolve against nothing")
     return problems
 
 
@@ -516,7 +659,16 @@ def implementation_problems(nid: str, front: dict, task: dict, work: Path,
                             f"not state; the criterion is quoted as the task states it, or it "
                             f"is a criterion nobody wrote")
 
-    bound = [n for n in listed(tfront, "nodes") if isinstance(n, str)]
+    written, _ = wrote(front)
+    for path in listed(tfront, "produces"):
+        if isinstance(path, str) and path not in written:
+            problems.append(f"{nid}: the task says it produces {path}, and `files` does not list "
+                            f"it; what a task produces is what its own standard presupposes — the "
+                            f"artifact no rule can ask for and every rule needs — so a record "
+                            f"claiming the task and not the artifact leaves the next delivery "
+                            f"stopped on an absence this one was cut to end")
+
+    bound = sorted(plan.bound_of(tfront))
     accounted = texts(listed(front, "nodes"), "node")
     for node_ref in bound:
         if node_ref not in accounted:
@@ -637,11 +789,12 @@ def cross_problems(nodes: dict[str, dict], plan_nodes: dict[str, dict], work: Pa
                 problems.append(f"{nid}: answers {task}, which the plan does not hold as a "
                                 f"task; the path is the identity and this one names nothing")
                 continue
+            problems.extend(record_standard_problems(
+                nid, front, root, standard or standard_contract()))
+            problems.extend(record_run_problems(nid, front, root))
             if node["kind"] == "implementation":
                 problems.extend(implementation_problems(nid, front, plan_nodes[task], work,
                                                         delivered))
-                problems.extend(implementation_standard_problems(
-                    nid, front, root, standard or standard_contract()))
             else:
                 pair = f"implementation/{nid.split('/', 1)[1]}"
                 if pair not in nodes:
@@ -705,14 +858,13 @@ def load_plan(work: Path, knowledge: Path | None) -> tuple[dict[str, dict], list
     stale. A closed plan is read the way plan.py reads it: without opening today's base."""
     validator, allowed = plan.contract()
     if (work / plan.CLOSURE_FILE).is_file():
-        base_nodes, pin = None, None
+        base_nodes = None
     else:
         base_nodes, base_problems = plan.load_base(knowledge)
         if base_problems:
             return {}, base_problems
-        pin = plan.base_pin(base_nodes)
     nodes, problems = plan.collect(work, validator, allowed)
-    problems += plan.cross_problems(nodes, base_nodes, pin)
+    problems += plan.cross_problems(nodes, base_nodes)
     return nodes, sorted(set(problems))
 
 
@@ -813,6 +965,23 @@ def check_single(root: Path, named: str, validator, allowed, names: list[str]) -
     return 0
 
 
+def standards_held(nodes: dict[str, dict]) -> list[str]:
+    """The standards this root's records were written against, and how many pin each. It is here
+    because the one thing that silences the whole standard half of this framework is nobody naming
+    a registry, and that is invisible from inside an invocation: a delivery written against no
+    rules and one written against rules nobody handed over produce the same clean output. The root
+    is what remembers. A copy under `standards/` that earlier records pin, beside an invocation
+    naming none, is the regression this line exists to make visible."""
+    pinned: dict[str, int] = {}
+    for node in nodes.values():
+        declared = node["front"].get("standard")
+        if isinstance(declared, dict) and isinstance(declared.get("at"), str):
+            pinned[declared["at"]] = pinned.get(declared["at"], 0) + 1
+    return [f"{at}: pinned by {count} record(s); an invocation naming no standard now writes "
+            f"source these rules will still be read against"
+            for at, count in sorted(pinned.items())]
+
+
 def outstanding_report(nodes: dict[str, dict], plan_nodes: dict[str, dict]) -> str:
     """What the plan still holds and the delivery does not — derived from the records every
     time, which is why no field records it. A task waits on the dependencies it declares and
@@ -839,13 +1008,40 @@ def outstanding_report(nodes: dict[str, dict], plan_nodes: dict[str, dict]) -> s
         if waits:
             said.append(f"waits on {', '.join(sorted(waits))}")
         lines.append(f"{tid}: {'; '.join(said)}")
-    return "\n".join(lines) if lines else "every task has a record, and every record its proof"
+    if not lines:
+        lines = ["every task has a record, and every record its proof"]
+    return "\n".join(lines + standards_held(nodes))
 
 
-def check_standard(named: str) -> int:
+def substrate_report(data: dict, tree: Path) -> tuple[list[str], int]:
+    """Which artifacts this registry presupposes the tree holds, and which it does not. Existence
+    is the whole of the question: whether a manifest declares the right script is decided by
+    running it, and a framework that read one would be reading a stack it ships no knowledge of.
+    The absent ones carry the rules they take with them, because a refusal saying an artifact is
+    missing tells nobody what it costs, and one naming eleven rules that cannot be applied tells
+    them exactly."""
+    lines, absent = [], 0
+    for entry in listed(data, "presupposes"):
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            continue  # the contract already reported the shape
+        where = entry["path"]
+        rules = ", ".join(r for r in listed(entry, "rules") if isinstance(r, str))
+        if (tree / where).exists():
+            lines.append(f"  {where}: stands, and {rules} can be applied")
+            continue
+        absent += 1
+        lines.append(f"  {where}: ABSENT — {entry.get('provides', '')}".rstrip())
+        lines.append(f"      unanswerable while it is: {rules}")
+    return lines, absent
+
+
+def check_standard(named: str, against: str | None = None) -> int:
     """Validate one project standard on its own, so a consumer can hold a registry to its contract
     before any review reads it. Every root this framework validates has a validator; a standard is
-    not a root, and this is the closest thing it gets."""
+    not a root, and this is the closest thing it gets. With a tree named, it also answers whether
+    that tree holds what the registry presupposes — the one question about a standard that cannot
+    be answered from the registry alone, and the one whose wrong answer is discovered a file at a
+    time in a review instead of once, before the first of them."""
     try:
         validator = standard_contract()
     except (FileNotFoundError, json.JSONDecodeError) as broken:
@@ -867,7 +1063,48 @@ def check_standard(named: str) -> int:
     print(f"  pin {pin_of(path)}")
     print(f"  the rules a tool decides run as step(s) named {', '.join(steps) or 'nothing'}; "
           f"a review reads only the {reading} decided by reading")
-    return 0
+
+    commands = [c for c in listed(data, "commands") if isinstance(c, dict)]
+    if commands:
+        roles = {c.get("role"): c.get("step") for c in commands if c.get("role")}
+        print(f"  it declares {len(commands)} command(s): "
+              + ", ".join(f"{c.get('step')} = {c.get('command')}" for c in commands))
+        print(f"    installs with {roles.get('install') or 'nothing'}, "
+              f"proves with {roles.get('suite') or 'nothing'}, "
+              f"and the rest run as checks on both sides of the tests")
+    else:
+        print("  it declares no command: nothing runs on its own, and a review says which rules "
+              "went unanswered")
+
+    packages = [d for d in listed(data, "dependencies") if isinstance(d, dict)]
+    print(f"  it authorizes {len(packages)} direct dependency(ies)"
+          + (": " + ", ".join(str(d.get("package")) for d in packages) if packages else
+             "; a package a delivery needs and this list omits is a stop that names it")
+          + ". What they pull in transitively is nobody's approval and the lockfile's record")
+
+    presupposed = listed(data, "presupposes")
+    if against is None:
+        print(f"  it presupposes {len(presupposed)} artifact(s)"
+              + ("; --against <target-source-root> says whether they stand" if presupposed else
+                 ": every rule is a condition over a file, and none needs one to exist first"))
+        return 0
+
+    tree = Path(against)
+    if not tree.is_dir():
+        print(f"cannot run: {tree} is not a directory", file=sys.stderr)
+        return CANNOT_RUN
+    if not presupposed:
+        print(f"  it presupposes nothing, so {tree} holds everything it needs to")
+        return 0
+    lines, absent = substrate_report(data, tree)
+    print(f"  against {tree}:")
+    print("\n".join(lines))
+    if absent:
+        print(f"\n{absent} presupposed artifact(s) absent. Source written now answers to a "
+              f"registry that cannot be applied to it: the rules above go unanswered, and the "
+              f"absence is found once per file in a review instead of once here. The artifact is "
+              f"built by a task that declares it in `produces`, planned through /plan-work.")
+    return 1 if absent else 0
 
 
 def main() -> int:
@@ -884,6 +1121,14 @@ def main() -> int:
             return CANNOT_RUN
         single = args[at + 1]
         del args[at:at + 2]
+    against = None
+    if "--against" in args:
+        at = args.index("--against")
+        if at + 1 >= len(args):
+            print("cannot run: --against takes a directory", file=sys.stderr)
+            return CANNOT_RUN
+        against = args[at + 1]
+        del args[at:at + 2]
     if "--standard" in args:
         at = args.index("--standard")
         if at + 1 >= len(args):
@@ -892,9 +1137,14 @@ def main() -> int:
         named = args[at + 1]
         del args[at:at + 2]
         if verify or report or single is not None or args:
-            print("cannot run: --standard stands alone", file=sys.stderr)
+            print("cannot run: --standard stands alone, with --against at most",
+                  file=sys.stderr)
             return CANNOT_RUN
-        return check_standard(named)
+        return check_standard(named, against)
+    if against is not None:
+        print("cannot run: --against says which tree a standard is held against, and only "
+              "--standard holds one", file=sys.stderr)
+        return CANNOT_RUN
     if report and (verify or single is not None):
         print("cannot run: --outstanding stands alone", file=sys.stderr)
         return CANNOT_RUN
@@ -987,7 +1237,7 @@ def main() -> int:
     unproven = sum(len(n.get("unproven", [])) for n in delivery["nodes"])
     findings = sum(n.get("findings", 0) for n in delivery["nodes"])
     print(f"derived {target}: {len(delivery['nodes'])} node(s), "
-          f"{len(delivery['edges'])} edge(s), contract siegard-delivery/1")
+          f"{len(delivery['edges'])} edge(s), contract {delivery['contract_version']}")
     print(f"  {', '.join(by_kind) or 'no nodes'}; {done} of {tasks} task(s) hold a record; "
           f"{unmet} criterion(s) recorded unmet; {unproven} recorded unproven; "
           f"{findings} finding(s)"

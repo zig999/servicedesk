@@ -290,6 +290,19 @@
       "task": "task/published-case/required-evaluations"
     },
     {
+      "id": "review/dezoito-entregas",
+      "kind": "review",
+      "file": "review/dezoito-entregas.md",
+      "title": "As dezoito entregas do plano case-authoring",
+      "summary": "Três passes sobre as dezoito tasks entregues até aqui e os 50 arquivos que as respondem: cobertura total sobre 103 critérios, conformidade com a base sem achados, e 22 achados de standard; o passe de falhas não rodou por falta de comandos ou de um run capturado.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "findings": 22
+    },
+    {
       "id": "review/primeiras-seis-entregas",
       "kind": "review",
       "file": "review/primeiras-seis-entregas.md",
@@ -999,6 +1012,114 @@
       "to": "implementation/published-case/required-evaluations",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/at-least-one-hypothesis",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/assessment-record",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/case-structure",
+      "kind": "reviews",
+      "at": "tasks[11]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/collection-plan",
+      "kind": "reviews",
+      "at": "tasks[12]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/evaluation-citations",
+      "kind": "reviews",
+      "at": "tasks[13]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/evaluation-record",
+      "kind": "reviews",
+      "at": "tasks[14]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/fallback-selection",
+      "kind": "reviews",
+      "at": "tasks[15]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/outcome-resolution",
+      "kind": "reviews",
+      "at": "tasks[16]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/published-case/required-evaluations",
+      "kind": "reviews",
+      "at": "tasks[17]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/concept-accepts-the-subject-type",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/concept-declares-a-ttl",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/glossary-lookup",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/hypothesis-collects-a-concept",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/read-only-capability",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/recipient-is-a-role",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/terms-exist-in-the-glossary",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/unique-hypothesis-names",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/dezoito-entregas",
+      "to": "task/case-validator/validation-run",
+      "kind": "reviews",
+      "at": "tasks[9]"
     },
     {
       "from": "review/primeiras-seis-entregas",

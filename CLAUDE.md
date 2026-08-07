@@ -11,8 +11,9 @@ One file per node, in seven kinds — `context`, `aggregate`, `definition`, `rul
 `context/<slug>.md`, everything else at `<kind>/<context>/<slug>.md`. No node carries an id, a
 type or a boundary field, so none of the three can disagree with where the file sits.
 
-Two things share the word: the base itself, this root and its nodes, and a task's `base` field,
-which is not a root but the pin naming the derived index a binding read.
+Each node's entry in the index carries its `digest` — the SHA-256 of that node's file — which is
+what a plan's binding pins. The word `base` names this root and nothing else; the task field that
+used to share it is gone.
 
 What a node may and must declare is stated once, in `schemas/node.json`, with one example per
 kind inside it. A fact the material did not state is declared absent by a `gaps` entry naming the
@@ -39,18 +40,24 @@ belong to shipped subagents (`codebase-surveyor`, `backlog-decomposer`,
 `execution-contract-binder`), each in a clean context: the binder never sees the cut it binds,
 so the base is read for what it says, never to fit a task.
 
-A task binds the base nodes that govern it and pins the base it read. Two checks keep the plan
-honest, and both are the validator's: every open gap on a bound node is `unresolved` on the
-task or waived with a why — never silently ignored — and coverage reconciles in both
+A task binds the base nodes that govern it, carrying with each the digest of that node as the
+binding read it, so a task stales when a node it binds moves and the refusal names which. Two
+checks keep the plan honest, and both are the validator's: every open gap on a bound node is
+`unresolved` on the task or waived with a why — never silently ignored — and coverage reconciles
+in both
 directions: every base node an epic covers is bound by one of its tasks or declared uncovered,
-and a task binding outside its epic's covers is refused. A plan node carries no status,
-estimate, priority or order field: execution state lives in git, and order is derived from
-dependencies by whoever executes.
+and a task binding outside its epic's covers is refused. A task may also declare what its delivery
+must create — `produces` — which is how the artifacts a project's own standard presupposes get
+built: they answer to no base node, because none of them is what the business decided, and a plan
+that leaves them unplanned is a plan whose every task stops before it is written. A plan node
+carries no status, estimate, priority or order field: execution state lives in git, and order is
+derived from dependencies by whoever executes.
 
 A work root serves one initiative. A `closure.md` at its root marks the plan closed: closed,
-it is history — validated without the base, every structural check still held, each pin
-standing as the anchor naming the base its binding read — and it is never evolved again. A
-new initiative names a new work root, and what the closed one delivered returns to the next
+it is history — validated without the base, every structural check still held, each digest
+standing as the anchor naming a node the binding read and the version of it that was read — and
+it is never evolved again. A new initiative names a new work root, and what the closed one
+delivered returns to the next
 plan as inventory, through the survey of the code itself — never as a reference into the old
 plan.
 
@@ -69,8 +76,18 @@ Writing the source and writing what proves it are two judgments, and two shipped
 (`task-implementer`, `test-author`) in separate contexts: an implementation and its tests
 written in one pass agree by construction, including where both are wrong. Reviewing is four
 more (`coverage-auditor`, `base-conformance-reviewer`, `standard-conformance-reviewer`,
-`failure-diagnostician`), and running the suite is none of them — `bin/run.py` executes the
-caller's commands and records what they printed, so nothing that judges a run also performs it.
+`failure-diagnostician`), and running is none of them — **no agent this framework ships holds a
+shell.** `bin/run.py` executes the commands the project's own registry declares and records what
+they printed, so nothing that judges a run also performs it.
+
+The skills do run. `/implement-task` installs what the registry authorizes and runs the steps it
+declares until the project builds and its suite passes, so what it hands over is a project rather
+than source alone — a rule naming a library cannot be followed by a session that never saw that
+library's types. Every execution lands in `run/<slug>/`, and the runner refuses a name that
+already exists: a session that tried four times leaves four logs, the record points at the one
+that passed, and iterating is recorded rather than forbidden. A record over a run that did not
+pass is refused, and a test is never weakened to turn a suite green — two producers exist so that
+one cannot overrule the other.
 
 A record answers every criterion its task states and every base node its task binds, and the
 validator holds both totalities: silence over either is refused the way silence over a gap is
@@ -100,6 +117,14 @@ exact decision, the latter run as steps of the project's own suite through `bin/
 findings arriving through the failures pass with the tool's own message as evidence. A model
 applying a forbidden-construct rule has strictly worse recall than the compiler that owns it.
 
+A rule is a condition over a file that exists, and it can never ask for one: a scope names a
+directory and an ending, so nothing in a rule reaches the manifest whose script it names or the
+compiler configuration whose strictness it requires. **A registry therefore states what it
+presupposes** — each artifact, what its rules get from it, and which rules cannot be applied while
+it is absent. `deliver.py --standard <file> --against <tree>` answers whether the tree holds them,
+and both the plan and the delivery refuse over an absence: work nobody planned is work nothing will
+do, and source written meanwhile answers to a registry that cannot be applied to it.
+
 A project that has authored no standard gets an honestly narrow review — the pass records that it
 did not run, and what was absent — never a clean one.
 
@@ -122,9 +147,10 @@ the sentence above is why nothing has to.
   work root, validates it against the base, derives `plan.json`, and stops the same way. Invoke
   it by name rather than planning ad hoc.
 - **`/implement-task`** — writes the source one planned task requires and the tests that prove
-  it, records both under the delivery root, validates against the plan, derives `delivery.json`,
-  and stops the same way. One invocation, one task. Invoke it by name rather than writing code
-  ad hoc.
+  it, installs what the standard authorizes, runs the steps it declares until the project builds
+  and its suite passes, records both nodes under the delivery root, validates against the plan,
+  derives `delivery.json`, and stops the same way. One invocation, one task. Invoke it by name
+  rather than writing code ad hoc.
 - **`/review-change`** — captures a run of the caller's commands, then reports what four passes
   found over a delivered change — evidence, never a verdict — records it, and stops the same way.
   Invoke it by name rather than reviewing ad hoc.
@@ -184,8 +210,10 @@ slots empty: filling them and running it are yours.
 ## What the three roots hold to each other
 
 Every domain fact the code encodes traces to a base node, every change traces to a task, and
-every task traces to the base it was bound against — each hop pinned by content, so a root that
-moved after the hop was made is visible rather than assumed. A fact no root holds is reported: a
+every task traces to the base nodes it was bound against — each hop pinned by the content of what
+it read, so a node that moved after the hop was made is visible rather than assumed, and named. A
+base that grew elsewhere reaches no binding and says nothing, which is what keeps a real move worth
+reading. A fact no root holds is reported: a
 gap in the base, an unresolved entry on the task, a stop before any source is written. It is
 never supplied in code.
 
