@@ -66,6 +66,14 @@
       "task": "task/case-validator/terms-exist-in-the-glossary"
     },
     {
+      "id": "implementation/case-validator/unique-hypothesis-names",
+      "kind": "implementation",
+      "file": "implementation/case-validator/unique-hypothesis-names.md",
+      "title": "Hypothesis names are unique within a case",
+      "summary": "The publication check that refuses a case under edit once for every hypothesis whose declared name repeats one an earlier hypothesis of the same case already declared, comparing names exactly and never across cases.",
+      "task": "task/case-validator/unique-hypothesis-names"
+    },
+    {
       "id": "implementation/case-validator/validation-run",
       "kind": "implementation",
       "file": "implementation/case-validator/validation-run.md",
@@ -168,6 +176,14 @@
       "title": "Proof for terms-exist-in-the-glossary",
       "summary": "Twenty tests over src/knowledge/case-terms-exist-in-the-glossary.ts proving each of the five term kinds (subject type, concept, outcome, action, recipient) is checked independently against the given glossary, that both fallback resolutions are read for outcome/action/recipient, that the check stays safe over an empty hypotheses list, an absent fallback and an absent subject type, and that refusals are answered in the documented order.",
       "task": "task/case-validator/terms-exist-in-the-glossary"
+    },
+    {
+      "id": "proof/case-validator/unique-hypothesis-names",
+      "kind": "proof",
+      "file": "proof/case-validator/unique-hypothesis-names.md",
+      "title": "Hypothesis names are unique within a case, proof",
+      "summary": "Fourteen tests over hypothesisNameIsUniqueInItsCase proving the three stated criteria, the rule's exact-comparison requirement, and its safety over a case a validation run may still have to walk when malformed.",
+      "task": "task/case-validator/unique-hypothesis-names"
     },
     {
       "id": "proof/case-validator/validation-run",
@@ -495,6 +511,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-validator/unique-hypothesis-names",
+      "to": "rule/knowledge/hypothesis-name-is-unique-in-its-case",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-validator/unique-hypothesis-names",
+      "to": "task/case-validator/unique-hypothesis-names",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-validator/validation-run",
       "to": "aggregate/knowledge/cases",
       "kind": "encodes",
@@ -725,6 +753,12 @@
     {
       "from": "proof/case-validator/terms-exist-in-the-glossary",
       "to": "implementation/case-validator/terms-exist-in-the-glossary",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-validator/unique-hypothesis-names",
+      "to": "implementation/case-validator/unique-hypothesis-names",
       "kind": "proves",
       "at": "the path"
     },
