@@ -81,7 +81,7 @@
       "context": "glossary",
       "title": "Concept",
       "summary": "A fact an investigation can collect, named once for the whole system and answered by exactly one capability.",
-      "digest": "sha256:078ee8a3f41d7cbe9cfc248e92b98a3460df2c3249b2a945466a40ad02cca3b7",
+      "digest": "sha256:f1a19eb16df7d560ae3a7e56ce39d44f83ee650bdde061efd75d566193716567",
       "ddd": "value-object",
       "gaps": [
         "attributes.ttl.unit"
@@ -143,7 +143,7 @@
       "context": "integration",
       "title": "Capability",
       "summary": "What answers one concept — read-only, versioned, with a declared output schema and a deadline.",
-      "digest": "sha256:80676c92ef8286fcfba04996c1672bef02ef9ec1426f7baa9ec4b2a79ed95a3b",
+      "digest": "sha256:d1cab846d7f441726474619d6dc845204f1da20b84a23db0ad3dcf22fd9cbab3",
       "ddd": "value-object",
       "gaps": [
         "attributes.timeout.unit"
@@ -227,11 +227,18 @@
       "context": "knowledge",
       "title": "Case",
       "summary": "A published diagnostic procedure — its hypotheses in order of precedence, and what to do when none of them confirms.",
-      "digest": "sha256:af4dd5b0b02ad4bb87ea9c39ee864a88115d87f2ede68504fa81e858d24ae48c",
-      "ddd": "value-object",
-      "gaps": [
-        "attributes.version.derivation"
-      ]
+      "digest": "sha256:d512d19003a13abdf718191e259fb2a9d22a8389ad46c5461aa43bdd6eebe32f",
+      "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/check-unavailable",
+      "kind": "definition",
+      "file": "definition/knowledge/check-unavailable.md",
+      "context": "knowledge",
+      "title": "Contract check unavailable",
+      "summary": "What publication answers with when the capability registry cannot be consulted — that the check could not be decided, never that the case is wrong.",
+      "digest": "sha256:8937564a636f64d5fa9feafcb4edd35d9a644a7c7baac01e8e2b4e203f53a7b7",
+      "ddd": "domain-error"
     },
     {
       "id": "definition/knowledge/draft-case",
@@ -240,7 +247,7 @@
       "context": "knowledge",
       "title": "Case Under Edit",
       "summary": "The same case while a curator is still writing it, holding everything the case declares and not yet the version and hash publication assigns.",
-      "digest": "sha256:d462aa67ef753d09497e314fa00d0d9b5279bf0c5cea0063c6dd12a2e1bdcced",
+      "digest": "sha256:9c3360b04b1eb11db3c2d54299b2909173b3ec7bfdfb6a4e5d47e69acbc668e9",
       "aggregate": "cases",
       "ddd": "aggregate-root"
     },
@@ -251,9 +258,19 @@
       "context": "knowledge",
       "title": "Hypothesis",
       "summary": "One falsifiable claim about what is wrong, with what must be collected to decide it and what follows if it holds.",
-      "digest": "sha256:9bf1a22e47265a35f85bc3332bfcd216434359f95eb169e0c8e4ef33ce823b34",
+      "digest": "sha256:690eee99a05f5f75e890b6f1f06c278656b0fabd56ab9f6aac158dfdce3b065d",
       "aggregate": "cases",
       "ddd": "value-object"
+    },
+    {
+      "id": "definition/knowledge/read-failure",
+      "kind": "definition",
+      "file": "definition/knowledge/read-failure.md",
+      "context": "knowledge",
+      "title": "Read failure",
+      "summary": "What the reading of a case file answers with when its structured part does not parse — where the parse broke, and the text that says so to the curator.",
+      "digest": "sha256:2acd7a3cac361d7d576b61f8d3cf04601a3aa4bacba5207359496189e3d8a39f",
+      "ddd": "domain-error"
     },
     {
       "id": "definition/knowledge/referral",
@@ -272,9 +289,12 @@
       "file": "definition/knowledge/refusal.md",
       "context": "knowledge",
       "title": "Refusal",
-      "summary": "One reason one case did not pass validation — the rule that refused, where in the case it refused, and the text written for the curator.",
-      "digest": "sha256:d0458e6eb99c1d11d6255524ceb9ca0f756d02c24001130643a58a71f16ac2d2",
-      "ddd": "value-object"
+      "summary": "One reason one case did not pass validation — the rule that refused, the position in the case it refused at, and the text written for the curator.",
+      "digest": "sha256:309393768aaec5c1fa69a62da0f18443ca25d3f2bb49ed1da901c923e3132270",
+      "ddd": "value-object",
+      "gaps": [
+        "attributes.rule.structural-checks"
+      ]
     },
     {
       "id": "definition/knowledge/resolution",
@@ -328,9 +348,8 @@
       "context": "knowledge",
       "title": "Case publication",
       "summary": "A case moves from being edited to being published, and publication is where its contract with the integration context is verified.",
-      "digest": "sha256:ac7d1d514b2cff06e1d519e80a06a27feb30d6ea5276630afb98e958123813fa",
+      "digest": "sha256:998c9ad8d2139b3c357f97fd9a3d1e89af282d2e38c17b82816e0ef9bbc12d2a",
       "gaps": [
-        "rejections",
         "transitions.published.publish"
       ]
     },
@@ -375,6 +394,16 @@
       "ddd": "invariant"
     },
     {
+      "id": "rule/integration/a-registry-lookup-names-a-concept-exactly",
+      "kind": "rule",
+      "file": "rule/integration/a-registry-lookup-names-a-concept-exactly.md",
+      "context": "integration",
+      "title": "A registry lookup names a concept exactly",
+      "summary": "The capability registry is consulted by the name of a concept, compared character for character, the comparison the whole published language already gets.",
+      "digest": "sha256:bbea533af3fba878ef1c5ab2a27dac666f465c3a6e747334cc4bba2f1959a379",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/integration/evidence-arrives-in-the-glossary-vocabulary",
       "kind": "rule",
       "file": "rule/integration/evidence-arrives-in-the-glossary-vocabulary.md",
@@ -382,6 +411,16 @@
       "title": "Evidence arrives in the glossary's vocabulary",
       "summary": "A corporate system's language stops at the normaliser.",
       "digest": "sha256:5e115f031974d81fff9d18c585cb47e2a5c2e2cf37fe042821a0e682889ef55f",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/integration/one-capability-answers-one-concept",
+      "kind": "rule",
+      "file": "rule/integration/one-capability-answers-one-concept.md",
+      "context": "integration",
+      "title": "One capability answers one concept",
+      "summary": "The registry holds at most one capability for a concept, so nothing has to choose between two.",
+      "digest": "sha256:1659cf3eb0efc33de6dce312125e63049789b9a0a2835ef42ed8a69ccab34105",
       "ddd": "invariant"
     },
     {
@@ -531,13 +570,63 @@
       "ddd": "policy"
     },
     {
+      "id": "rule/knowledge/a-case-does-not-publish-without-the-contract-check",
+      "kind": "rule",
+      "file": "rule/knowledge/a-case-does-not-publish-without-the-contract-check.md",
+      "context": "knowledge",
+      "title": "A case does not publish without the contract check",
+      "summary": "A capability registry that cannot be consulted is not permission to postpone the check to execution.",
+      "digest": "sha256:151147ca40e48632470001b72e226644fd43d6c42579b30472a5277f4a04625a",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/a-case-is-one-file",
+      "kind": "rule",
+      "file": "rule/knowledge/a-case-is-one-file.md",
+      "context": "knowledge",
+      "title": "A case is one file",
+      "summary": "A case is held by exactly one markdown file kept under version control, which is what lets a hash over that file identify the case whole.",
+      "digest": "sha256:58b96adc27a29ee585501b48210ed953e0575736fe400d200014277e8a4e6593",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/a-position-indexes-a-hypothesis-by-name",
+      "kind": "rule",
+      "file": "rule/knowledge/a-position-indexes-a-hypothesis-by-name.md",
+      "context": "knowledge",
+      "title": "A position indexes a hypothesis by name",
+      "summary": "A refusal's position reaches a hypothesis by the name the curator gave it, and by its ordinal only where that name does not tell two of them apart.",
+      "digest": "sha256:1a4f8f4ed0c2e4add012cd0f3132a2bb8b4323a4a3b0bf9f082e5c5506ade131",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/knowledge/a-validation-answers-with-every-refusal",
       "kind": "rule",
       "file": "rule/knowledge/a-validation-answers-with-every-refusal.md",
       "context": "knowledge",
       "title": "A validation answers with every refusal",
       "summary": "A validation of a case runs every check it carries whatever an earlier one decided, and answers with all of them.",
-      "digest": "sha256:889848c729ee77b4fd4e51b6a436b0080eeaf208532749a45126011704fe21fa",
+      "digest": "sha256:b467b515e8551ff4f6f914376608842fce28cf02545031f8c2aab4b369898886",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/an-unavailable-check-is-not-a-refusal",
+      "kind": "rule",
+      "file": "rule/knowledge/an-unavailable-check-is-not-a-refusal.md",
+      "context": "knowledge",
+      "title": "An unavailable check is not a refusal",
+      "summary": "Where the registry cannot be consulted, publication says it could not decide, and never that the case is wrong.",
+      "digest": "sha256:f0a5343dc726fd7dcb01783be015487fac991f48a309c662804f0edf92656010",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/an-unreadable-case-is-not-validated",
+      "kind": "rule",
+      "file": "rule/knowledge/an-unreadable-case-is-not-validated.md",
+      "context": "knowledge",
+      "title": "An unreadable case is not validated",
+      "summary": "A file whose structured part does not parse answers with a read failure, and no check of the validation runs over it.",
+      "digest": "sha256:a92f0fac8b5d14e69a456964e92e5a5899a13f8a003b5990581d2e5eeaaea977",
       "ddd": "invariant"
     },
     {
@@ -547,7 +636,7 @@
       "context": "knowledge",
       "title": "A case has at least one hypothesis",
       "summary": "A case with no hypothesis investigates nothing.",
-      "digest": "sha256:ff3df5176e34b2bfdfd59d9a8231b195cc843ffc5d71fa23976715accbb63838",
+      "digest": "sha256:f7befee14a6e210ba336e3361a8be1ee3dfd58e4e8380875e3381752279e04b6",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -558,7 +647,7 @@
       "context": "knowledge",
       "title": "Every term a case names exists in the glossary",
       "summary": "A case speaks only the published language, so nothing it names is invented in place.",
-      "digest": "sha256:4f3ff8e59ed4e0d1bc5808b7cc98a98d065e094650e493032a8aa309cdc376a1",
+      "digest": "sha256:4484608fca5ec597d761e581cc2f78d3c516d0c8f25912ecd408ae7874718958",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -569,7 +658,7 @@
       "context": "knowledge",
       "title": "A collected concept accepts the case's subject type",
       "summary": "A case cannot ask for a fact that does not apply to the kind of thing it investigates.",
-      "digest": "sha256:b34df55dd4731914fe21cc0b8be6110b85b53548258aab68f080ba7da0b29e81",
+      "digest": "sha256:c37dd5b0f5e1af435a7fb3387aa4a89d697759d983cc4697fa0659308b0669ae",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -580,7 +669,7 @@
       "context": "knowledge",
       "title": "Every collected concept declares a ttl",
       "summary": "How stale a fact may be is stated by the concept, not assumed by whoever reads it.",
-      "digest": "sha256:31b0203249035edc85ea0986a0544ca512bc7aa238d2732bdc567f85a6795e44",
+      "digest": "sha256:805427aa4ede6ab9f3707f22bf916249756b87ffcd4de80f85646f6433aa2a51",
       "ddd": "invariant"
     },
     {
@@ -590,7 +679,7 @@
       "context": "knowledge",
       "title": "Every collected concept has a read-only capability",
       "summary": "The contract between curated knowledge and integration is checked when publishing, not when running.",
-      "digest": "sha256:a675657d26c23639438a7eb06b4d1204c4ba9898042bd05974251f622f1e4b80",
+      "digest": "sha256:2e41ebeb0d6e56b56aab0a2b44d1ccf640b05c7b5df02bc2b123c3539df622f9",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -615,7 +704,7 @@
       "context": "knowledge",
       "title": "A hypothesis collects at least one concept",
       "summary": "A hypothesis that collects nothing could never cite anything.",
-      "digest": "sha256:abd47448fabd44ecaa627082d5e4a7d8cb8db6a3968c051bd1a1c32588de5b25",
+      "digest": "sha256:84c1a852159d8ec23ee73787e52737274532ff2a137f31d6e7e9152bcb8f862e",
       "aggregate": "cases",
       "ddd": "invariant"
     },
@@ -626,8 +715,18 @@
       "context": "knowledge",
       "title": "A hypothesis name is unique in its case",
       "summary": "Two hypotheses of the same case never share a name, because evaluations are indexed by it.",
-      "digest": "sha256:289d09e2bdc85e8277a0ebbfe746ac7205cd6419249425b8802f74436c085230",
+      "digest": "sha256:a54c619c909406004ba191479c21c862f5a69f717595f54e42aeec6b67335adb",
       "aggregate": "cases",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/nothing-approves-a-publication",
+      "kind": "rule",
+      "file": "rule/knowledge/nothing-approves-a-publication.md",
+      "context": "knowledge",
+      "title": "Nothing approves a publication",
+      "summary": "Publishing a case is gated by the checks the case must pass and by nothing else — no person and no step approves it.",
+      "digest": "sha256:56ccb01efb2936b5bf85116df359809e5c2911e0172ef42a60a131c30eb27e96",
       "ddd": "invariant"
     },
     {
@@ -642,13 +741,23 @@
       "ddd": "policy"
     },
     {
+      "id": "rule/knowledge/publication-counts-the-version",
+      "kind": "rule",
+      "file": "rule/knowledge/publication-counts-the-version.md",
+      "context": "knowledge",
+      "title": "Publication counts the version",
+      "summary": "A published case's version is a sequential integer per slug that publication assigns, and it does the ordering the hash cannot.",
+      "digest": "sha256:c9477424e89cfcc4c217faf73f166b9cbc7afc57adc563b417dcaaa77f29a6e6",
+      "ddd": "invariant"
+    },
+    {
       "id": "rule/knowledge/the-body-does-not-change-what-is-collected",
       "kind": "rule",
       "file": "rule/knowledge/the-body-does-not-change-what-is-collected.md",
       "context": "knowledge",
       "title": "The curator prose never changes what is collected",
       "summary": "Anything that changes what an investigation collects belongs in the structured part of the case.",
-      "digest": "sha256:484135503755b64ba08db05907a618f768d07c641ae04e73486ce9bb668d1586",
+      "digest": "sha256:42b51e33096a9e14dcac0a41ed89a24dc67624b87c2d6a34b3b191dd0b0fac8d",
       "aggregate": "cases",
       "ddd": "policy"
     },
@@ -658,8 +767,28 @@
       "file": "rule/knowledge/the-content-hash-covers-the-whole-file.md",
       "context": "knowledge",
       "title": "The content hash covers the whole file",
-      "summary": "A published case's hash is computed over its whole file, the curator prose included.",
-      "digest": "sha256:4874d358e10ea040974b075a80a5ef12ff4e9c77dae165ac048df88aa5ae7728",
+      "summary": "A published case's hash is computed over the bytes of its whole file, the curator prose included, and never over a re-serialisation of what parsed.",
+      "digest": "sha256:ff34ab8bff09ffeb96aff532289e784ed6087dbdb6b3b8d820a82cb1a47885ea",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/the-content-hash-is-a-named-sha-256",
+      "kind": "rule",
+      "file": "rule/knowledge/the-content-hash-is-a-named-sha-256.md",
+      "context": "knowledge",
+      "title": "The content hash is a named SHA-256",
+      "summary": "A published case's hash is a SHA-256 digest written with the algorithm's name inside the value, so a later change of algorithm leaves no earlier pin ambiguous.",
+      "digest": "sha256:6397fe1f41e13c6ba22d6784d73e51e2a1ec987c1054994380d8199431317286",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "rule",
+      "file": "rule/knowledge/the-contract-check-reads-the-current-registration.md",
+      "context": "knowledge",
+      "title": "The contract check reads the current registration",
+      "summary": "Publication asks the registry for the capability registered now for a concept, and never searches earlier versions of one.",
+      "digest": "sha256:242b37f434d0fa118452db112597df140bf8a8889b0b58222ef1a6c011162d52",
       "ddd": "invariant"
     },
     {
@@ -673,13 +802,56 @@
       "ddd": "invariant"
     },
     {
+      "id": "rule/knowledge/the-frontmatter-holds-everything-the-case-declares",
+      "kind": "rule",
+      "file": "rule/knowledge/the-frontmatter-holds-everything-the-case-declares.md",
+      "context": "knowledge",
+      "title": "The frontmatter holds everything the case declares",
+      "summary": "The structured part of a case file is its frontmatter and the body below it is prose for the curator, and the frontmatter's delimiters are the boundary between them.",
+      "digest": "sha256:af27062ec0659e5923df7cee3e5e76546189d4f9cd525766a9cdf42588c7bdda",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/the-refusal-text-comes-from-the-rule",
+      "kind": "rule",
+      "file": "rule/knowledge/the-refusal-text-comes-from-the-rule.md",
+      "context": "knowledge",
+      "title": "The text of a refusal comes from its rule",
+      "summary": "The sentence a curator reads is declared by the rule that refused and carried by the refusal instantiated with the position.",
+      "digest": "sha256:15184e294ecccd91ebb234000ad37b37de3ec57bf30afa06e5d842175afbcbdd",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/the-slug-matches-the-file-name",
+      "kind": "rule",
+      "file": "rule/knowledge/the-slug-matches-the-file-name.md",
+      "context": "knowledge",
+      "title": "The slug matches the file name",
+      "summary": "A case's slug and the name of the file that holds it are the same name.",
+      "digest": "sha256:0cb725e9655fa03198fba65cd734a4e12192015f22a178c77f4ab73a95c1492e",
+      "ddd": "invariant",
+      "gaps": [
+        "examples.refusal-text"
+      ]
+    },
+    {
       "id": "rule/knowledge/two-positions-are-two-refusals",
       "kind": "rule",
       "file": "rule/knowledge/two-positions-are-two-refusals.md",
       "context": "knowledge",
       "title": "Two positions are two refusals",
       "summary": "The same rule refusing a case at two places produces one refusal per place, never one covering both.",
-      "digest": "sha256:8b64fd982e3ecc3ff92302f478f813f6215204358fc9947fc720f499819b15d3",
+      "digest": "sha256:430c295bf94b5e207717a04222a0cf91c54397a1701adc77d674e36d0546833a",
+      "ddd": "invariant"
+    },
+    {
+      "id": "rule/knowledge/what-the-curator-reads-is-written-in-portuguese",
+      "kind": "rule",
+      "file": "rule/knowledge/what-the-curator-reads-is-written-in-portuguese.md",
+      "context": "knowledge",
+      "title": "What the curator reads is written in Portuguese",
+      "summary": "Every text a validation or a publication addresses to the curator is written in the language the cases themselves are written in.",
+      "digest": "sha256:46716746cab8ff38b085f7267455aa6ea6b4ec1fa354479227cff3f2ec68cae9",
       "ddd": "invariant"
     }
   ],
@@ -1069,10 +1241,34 @@
       "at": "constrains[0]"
     },
     {
+      "from": "rule/integration/a-registry-lookup-names-a-concept-exactly",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/integration/a-registry-lookup-names-a-concept-exactly",
+      "to": "definition/glossary/concept",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
       "from": "rule/integration/evidence-arrives-in-the-glossary-vocabulary",
       "to": "definition/investigation/evidence",
       "kind": "constrains",
       "at": "constrains[0]"
+    },
+    {
+      "from": "rule/integration/one-capability-answers-one-concept",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/integration/one-capability-answers-one-concept",
+      "to": "definition/glossary/concept",
+      "kind": "constrains",
+      "at": "constrains[1]"
     },
     {
       "from": "rule/investigation/a-decided-evaluation-cites-evidence",
@@ -1201,10 +1397,64 @@
       "at": "constrains[0]"
     },
     {
+      "from": "rule/knowledge/a-case-does-not-publish-without-the-contract-check",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/a-case-does-not-publish-without-the-contract-check",
+      "to": "definition/knowledge/check-unavailable",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/a-case-is-one-file",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/a-case-is-one-file",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/a-position-indexes-a-hypothesis-by-name",
+      "to": "definition/knowledge/refusal",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
       "from": "rule/knowledge/a-validation-answers-with-every-refusal",
       "to": "definition/knowledge/draft-case",
       "kind": "constrains",
       "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/an-unavailable-check-is-not-a-refusal",
+      "to": "definition/knowledge/check-unavailable",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/an-unavailable-check-is-not-a-refusal",
+      "to": "definition/knowledge/refusal",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/an-unreadable-case-is-not-validated",
+      "to": "definition/knowledge/read-failure",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/an-unreadable-case-is-not-validated",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[1]"
     },
     {
       "from": "rule/knowledge/case-has-at-least-one-hypothesis",
@@ -1309,6 +1559,18 @@
       "at": "constrains[0]"
     },
     {
+      "from": "rule/knowledge/nothing-approves-a-publication",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/nothing-approves-a-publication",
+      "to": "lifecycle/knowledge/case-publication",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
       "from": "rule/knowledge/one-falsifiable-claim-per-criterion",
       "to": "aggregate/knowledge/cases",
       "kind": "aggregate",
@@ -1317,6 +1579,12 @@
     {
       "from": "rule/knowledge/one-falsifiable-claim-per-criterion",
       "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/publication-counts-the-version",
+      "to": "definition/knowledge/case",
       "kind": "constrains",
       "at": "constrains[0]"
     },
@@ -1339,6 +1607,24 @@
       "at": "constrains[0]"
     },
     {
+      "from": "rule/knowledge/the-content-hash-is-a-named-sha-256",
+      "to": "definition/knowledge/case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-contract-check-reads-the-current-registration",
+      "to": "definition/integration/capability",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-contract-check-reads-the-current-registration",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
       "from": "rule/knowledge/the-fallback-follows-what-the-collection-returned",
       "to": "definition/knowledge/case",
       "kind": "constrains",
@@ -1351,10 +1637,52 @@
       "at": "constrains[1]"
     },
     {
+      "from": "rule/knowledge/the-frontmatter-holds-everything-the-case-declares",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-frontmatter-holds-everything-the-case-declares",
+      "to": "definition/knowledge/hypothesis",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/the-refusal-text-comes-from-the-rule",
+      "to": "definition/knowledge/refusal",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/the-slug-matches-the-file-name",
+      "to": "definition/knowledge/draft-case",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
       "from": "rule/knowledge/two-positions-are-two-refusals",
       "to": "definition/knowledge/refusal",
       "kind": "constrains",
       "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/what-the-curator-reads-is-written-in-portuguese",
+      "to": "definition/knowledge/refusal",
+      "kind": "constrains",
+      "at": "constrains[0]"
+    },
+    {
+      "from": "rule/knowledge/what-the-curator-reads-is-written-in-portuguese",
+      "to": "definition/knowledge/read-failure",
+      "kind": "constrains",
+      "at": "constrains[1]"
+    },
+    {
+      "from": "rule/knowledge/what-the-curator-reads-is-written-in-portuguese",
+      "to": "definition/knowledge/check-unavailable",
+      "kind": "constrains",
+      "at": "constrains[2]"
     }
   ]
 }

@@ -12,6 +12,7 @@ sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/perguntas-2026-08-05.md
   - intake/decisoes-seis-perguntas-2026-08-05.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 attributes:
   - name: slug
     type: string
@@ -47,19 +48,18 @@ attributes:
     type: string
     required: false
   - name: version
-    type: string
+    type: integer
+    min: 1
     required: true
   - name: content_hash
     type: string
     required: true
-gaps:
-  - field: attributes.version.derivation
-    why: The material states a case is one markdown file versioned in git and that the published case is identified by slug, version and hash, and does not say what sets the version — whether it is the git reference, a number the curator raises, or something publication counts.
 ---
 
 ## What it is
 
 A published case is identified by its content rather than by a name, so an investigation that pinned one can always be replayed against exactly what it read.
+Its version is what orders those publications and is legible to a person, which is the one thing a digest is not.
 It is not a structure something else walks — resolving which hypothesis wins is the case's own behaviour, because the precedence is knowledge the case declares.
 Given the evaluations of its hypotheses it answers with the first confirmed one in its declared order, its outcome, its referral, and that hypothesis as the determining one, and with the fallback when none confirmed.
 It never marks a hypothesis as superseded, because two hypotheses confirming often is the signal that its own order is wrong.
@@ -67,6 +67,8 @@ It never marks a hypothesis as superseded, because two hypotheses confirming oft
 ## Rules
 
 A case declares at least one hypothesis, and it declares two fallbacks for none confirming — one for having reached no data, one for having exhausted its hypotheses — each written out rather than implied.
-The content hash covers the whole file, the curator prose included, so correcting a sentence of prose publishes a new case and an investigation that pinned the old one keeps pointing at the old one.
+The content hash covers the bytes of the whole file, the curator prose included, so correcting a sentence of prose publishes a new case and an investigation that pinned the old one keeps pointing at the old one.
+The content hash is a SHA-256 written with the algorithm's name inside the value.
+Publication counts the version — one greater than the greatest already published for the slug, and 1 where none has been.
 The curator notes are for whoever edits the case and never reach any prompt.
 Nothing in the notes may change what is collected, and anything that does belongs in the structured part.

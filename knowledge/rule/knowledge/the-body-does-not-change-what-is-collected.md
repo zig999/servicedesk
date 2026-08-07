@@ -6,6 +6,7 @@ aggregate: cases
 statement: The prose a curator writes in a case MUST NOT change what is collected, and anything that would MUST be structured instead.
 sources:
   - intake/arquitetura-troubleshooting-v5.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 constrains:
   - definition/knowledge/case
 consistency: immediate
@@ -15,9 +16,9 @@ examples:
 
 ## What it is
 
-A case is read by three audiences — what runs it reads the structured part, what judges a hypothesis reads that hypothesis's criterion, and the curator reads the prose.
-The prose never reaches any prompt, so a fact that only lives there is a fact the system does not have.
+A case is read by three audiences — what runs it reads the structured part, what judges a hypothesis reads that hypothesis's criterion, and the curator reads the prose of the body.
+The prose of the body never reaches any prompt, so a fact that only lives there is a fact the system does not have.
 
 ## Rules
 
-None.
+The frontmatter holds everything the case declares, and the body below it holds nothing the case declares.

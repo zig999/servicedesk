@@ -10,6 +10,7 @@ sources:
   - intake/perguntas-2026-08-05.md
   - intake/decisoes-seis-perguntas-2026-08-05.md
   - intake/decisoes-cinco-perguntas-2026-08-06.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 attributes:
   - name: name
     type: string
@@ -52,3 +53,6 @@ The schema is the adapter's contract with the system it reads, and it is not wha
 
 A capability whose nature is not read-only is refused by the registry.
 A capability runs in the authorization scope of the requester, never that of the service.
+The registry holds at most one registered capability for a concept.
+A lookup in the registry names a concept and matches it character for character.
+The publication check reads the capability registered at the moment of publication, and no earlier version of one.

@@ -9,6 +9,7 @@ sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/decisoes-cinco-perguntas-2026-08-06.md
   - intake/decisoes-seis-perguntas-2026-08-05.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 attributes:
   - name: name
     type: string
@@ -44,3 +45,5 @@ Its ttl says how stale the fact behind it may be, and it is the strictest tolera
 A concept a case names must exist in the glossary, must declare a ttl, must declare the fields its answer carries, and must accept that case's type of subject.
 A concept named by a case that has no registered read-only capability makes the case unpublishable.
 A term looked up in the glossary is answered as published only where it equals a published name of its kind under exact character comparison.
+The capability registry holds at most one registered capability for a concept, and it is looked up by the concept's name under that same comparison.
+A concept the glossary does not publish is refused by the term check alone, and the ttl and subject-type checks refuse nothing over it.

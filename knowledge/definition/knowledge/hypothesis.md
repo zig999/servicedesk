@@ -8,6 +8,7 @@ identity:
 sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/decisoes-cinco-perguntas-2026-08-06.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 attributes:
   - name: name
     type: string
@@ -32,6 +33,7 @@ attributes:
 
 The investigation of a hypothesis is the pair of what it collects and the criterion that decides it, and both sit inline in the case.
 The criterion is prose because it is the one place a specialist's nuance is the value, and structuring it would hand curation back to a developer.
+It is prose the case declares, so it sits in the file's frontmatter and not in the body — prose and body are not the same word here, and a reader who takes them for one loses the criterion.
 What replaces determinism there is traceability that a machine can check — an evaluation must cite a concept and a field, and the field must be one the cited concept declares.
 
 ## Rules
@@ -39,3 +41,4 @@ What replaces determinism there is traceability that a machine can check — an 
 A criterion states exactly one falsifiable claim, so a criterion holding when either of two things is true is two hypotheses.
 A hypothesis collects at least one concept, because a hypothesis that collects nothing can cite nothing.
 Two hypotheses of the same case never share a name.
+The frontmatter holds everything the case declares, the criterion included.

@@ -10,6 +10,7 @@ sources:
   - intake/arquitetura-troubleshooting-v5.md
   - intake/perguntas-2026-08-05.md
   - intake/decisoes-seis-perguntas-2026-08-05.md
+  - intake/decisoes-onze-perguntas-2026-08-07.md
 attributes:
   - name: slug
     type: string
@@ -58,3 +59,6 @@ What publication adds is the version and the content hash that identify the publ
 A case under edit becomes a published case only through publication.
 A case under edit is what a publication check refuses, because a published case is one that already holds.
 It declares both fallbacks for none confirming, and publication adds the version and the hash that identify the value it becomes.
+It is one markdown file whose slug matches that file's name, and everything it declares sits in that file's frontmatter.
+A file whose structured part does not parse is no case under edit at all, and answers with a read failure rather than with any refusal.
+Nothing approves its publication — the checks are the whole of what stands between it and the published value.
