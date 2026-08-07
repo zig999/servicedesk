@@ -51,7 +51,7 @@ same way.
 ## The order
 
 ```
-situate → analyse → write → validate → report → stop
+situate → analyse → write → validate → reconcile → report → stop
 ```
 
 ### 1. Situate
@@ -75,12 +75,17 @@ decision set, and this invocation is a change to it — located, not re-derived:
 ### 2. Analyse
 
 Decide the contexts, the aggregates inside each, the definitions with their typed attributes, the
-rules, the lifecycles, the interfaces between contexts, and the processes that cross them. Two
+rules, the lifecycles, the interfaces between contexts, and the processes that cross them. Three
 rules bind the analysis:
 
 - **A fact the material does not state is not invented.** It is recorded as a `gaps` entry naming
   the absent field, with `why` saying what was missing. An invented value reads exactly like one
-  the business stated, and that is the failure this framework exists to prevent.
+  the business stated, and that is the failure this framework exists to prevent. Where the
+  analysis holds a candidate answer, the gap may carry it as `proposal` — value and why together,
+  as the contract shapes it. A proposal decides nothing: no consumer treats it as the fact, and a
+  gap carrying one is exactly as open as one without. It exists to make the human's decision
+  cheap — ratifying it is material like any other, and closing the gap still takes that material,
+  cited from intake, never the proposal itself.
 - **A fact the analysis decided — rather than read — carries `rationale`.** That is what lets a
   reviewer accept what the material stated and argue with what you concluded. The line between
   the two is what the material gives you to read: `rationale` covers a reading of stated
@@ -134,6 +139,23 @@ that decides what goes in it:
 - **A relationship records power, not plumbing.** It says who owes compatibility to whom. Two
   contexts that do not need each other stay unconnected — going separate ways is a real answer,
   and a map that connects everything says nothing.
+- **A value that points inside a structure is a `locator`.** Where the material describes a
+  position, a cursor, a path — "the position indexes the hypothesis by name" — the attribute's
+  type is `locator` and `into` names the definition its values navigate. How a locator is
+  written — separator, indexing, ordinal base, the vocabulary of its segments — is the node
+  contract's, stated once at `locatorValue`, and never a gap: the questions left for the
+  material are which structure it navigates and which identities it indexes by. That is the
+  notation's boundary — a choice with business meaning never enters it.
+- **A construct that introduces a surface form owes its surface decisions.** Some values are
+  written by one party and read by another, and material never states their form spontaneously —
+  it gets discovered divergently, one implementer at a time, each satisfying every stated
+  criterion differently. Where the material is silent and two readers could write the value
+  two ways, record the owed decisions as dotted-path gaps at authoring: a digest owes exactly
+  which bytes it covers; a version or counter owes what increments it and how a superseded
+  thing re-enters; a quantity owes its unit; a consumed check owes what its unavailability
+  means and what a partial answer decides. A value that references or positions owes nothing
+  here any more — it is a `locator`, and its notation is the contract's. Each of the rest is a
+  gap a task's triage can still waive where it does not bear; none is a value to invent.
 - **What never enters the base:** persistence, UI, stack, performance — implementation knowledge
   is not domain knowledge. And no fact enters because it is plausible. Plausible is the failure
   mode this framework exists to catch.
@@ -156,6 +178,17 @@ wins and the diff shows the cost; closing a gap takes exactly that — material 
 fact, cited from the new intake — and nothing else closes one. Removing a node decides every
 node that references it, in the same invocation: the validator refuses a base with the
 reference left hanging.
+
+One change arrives often enough to deserve its name: **the ratification round.** Material that
+answers standing proposals — a reply to the agenda, wholesale with exceptions, one gap at a
+time — is intake like any other: persisted before anything moves, never read from the
+conversation's memory. A ratified proposal closes its gap — the field gains the proposal's
+value verbatim, the gap entry leaves with its proposal, and the node's `sources` gains the
+intake file the ratification sits in. An answer that differs from the proposal closes the gap
+with what the human said: the proposal was a candidate, never a constraint. A rejection
+without an answer removes the proposal and leaves the gap standing — carrying a new proposal
+only where the rejection's why gives the analysis a better reading. A partial reply is the
+ordinary case, not an error: what it does not name stands untouched, proposals included.
 
 Write contexts first, then aggregates and definitions, then the rest. The body of every file
 carries exactly two headings, in order: `## What it is`, then `## Rules`. One sentence per line;
@@ -200,7 +233,25 @@ nobody stated, an unnamed upstream contract, a consistency nobody decided — is
 never a value you supply. If the validator names a missing field and the material does not answer
 it, the correction is a gap naming that field, not an answer.
 
-### 5. Report, and stop
+### 5. Reconcile: obligations that share a subject
+
+Mechanical validation cannot see a contradiction the schema admits, and an implementer is the
+most expensive place to discover one. After the base validates, take the pairs the impact set
+joins — two rules constraining the same definition, a rule and the lifecycle of its subject,
+two linked nodes whose obligations reach the same case — and ask of each pair one question: is
+there a case both speak to that the two decide differently?
+
+A pair with such a case is the material stating two things that cannot both hold, and which
+one wins is a fact the material does not state — which is a gap. Record it on each node of the
+pair, dotted under the clashing field (`statement.<label>` on a rule), the `why` naming the
+other node by identifier and the case both decide differently. From there the standing
+mechanics carry it: the agenda prints it, a binding triages it, and the answer is produced by
+material like any other fact. A tension without a concrete case both nodes decide differently
+is a finding for the report, never a gap.
+
+Recording any means frontmatter moved: rerun the validation of step 4 before reporting.
+
+### 6. Report, and stop
 
 Report, in this order:
 
@@ -212,12 +263,22 @@ Report, in this order:
   reject, and a claim without an identifier cannot be rejected in place;
 - every gap closed, with the material that closed it, and every question the material left
   open with the gap that records it;
+- every gap carrying a proposal, by node and field with the proposal's value — these are
+  claims a reviewer ratifies or rejects, and the ratification that closes one arrives as
+  material like any other;
+- on a ratification round: every gap closed by ratification, every one closed by a differing
+  answer, and every proposal rejected with its gap left standing — listed apart, so the
+  reviewer sees what was decided and what still waits;
+- every contradiction the reconcile step recorded, by node pair with the case that exposes
+  it — and every tension it reported without recording, with why it lacked a case;
 - the validator's final output, verbatim;
 - the handoff: the `/plan-work` invocation ready to paste — this knowledge root named as just
   validated, one named slot for each input only the human decides — the scope, the work root,
   the target source root — and the base's open agenda, as `--gaps` prints it, pointed at as
-  candidate scope material. The handoff offers the next step, never takes it: filling the
-  slots and invoking are the human's.
+  candidate scope material. Where the agenda carries proposals, say what a reply is worth:
+  answering it — ratifying, rejecting, or answering differently, wholesale or one at a time —
+  is itself the material for the next invocation's ratification round. The handoff offers the
+  next step, never takes it: filling the slots and invoking are the human's.
 
 Then stop. `git diff` over the knowledge root is the review, and it belongs to a person.
 
@@ -225,7 +286,14 @@ Then stop. `git diff` over the knowledge root is the review, and it belongs to a
 
 - Write or edit `graph.json` by hand.
 - Invent a value to make validation pass, or close a gap with a guess.
+- Treat a standing proposal as the fact it proposes, or close a gap by citing its own
+  proposal — ratification is the human's, and it arrives as material under `intake/` like any
+  other. A proposal nobody answered is ratified by nothing: not by time, not by silence, not
+  by an approval given outside the material.
 - Answer an open question the material refused to answer.
+- Record a contradiction gap without the concrete case the two nodes decide differently, or
+  settle one by picking a side — a tension without a case is a finding for the report, and
+  which node wins is the material's to say.
 - Record a status, a maturity level or an approval state — an absent fact is a gap, and nothing
   else says how "done" a node is.
 - Restate the contract's vocabularies from memory instead of reading the schema.
