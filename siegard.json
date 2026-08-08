@@ -1,0 +1,8 @@
+{
+  "delivery_root": "delivery",
+  "specification_root": "knowledge",
+  "targets": {
+    "backend": "src"
+  },
+  "work_root": "work"
+}
