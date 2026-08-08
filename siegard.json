@@ -1,6 +1,7 @@
 {
   "delivery_root": "delivery",
   "specification_root": "knowledge",
+  "standard": "standards/backend-node-service.yaml",
   "targets": {
     "backend": "src"
   },
