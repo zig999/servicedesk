@@ -769,6 +769,13 @@ dependencies:
     why: the `lint` step is it, and twenty of the rules above are decided by that step.
     rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
 
+  - package: typescript-eslint
+    why: >-
+      the `lint` step's flat configuration parses TypeScript through it — eslint's own parser
+      cannot read the files the twenty lint-decided rules scope to, so without this package the
+      step fails on the first type annotation it meets and decides nothing.
+    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
+
   - package: secretlint
     why: the `secret-scan` step is it, and it decides the two rules about credentials in source.
     rules: [SEC-02, SEC-03]
