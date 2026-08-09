@@ -9,6 +9,7 @@ attributes:
     required: true
   - name: ticket_ref
     type: string
+    required: true
   - name: narrative
     type: string
     required: true

@@ -155,4 +155,14 @@ entries:
     unstated: The material does not say what format the case file on disk takes now that its stored form is JSON, while the case element described its file as markdown.
     decided: The stored form is the JSON document; the case element's description drops the format and keeps one file versioned in git.
     why: The authoring format was implementation detail living in prose; the storage bound is the addressable fact, and one statement of the file's form must not disagree with the other.
+  - location: rules/knowledge/a-collected-concept-declares-a-ttl.md
+    field: statement
+    unstated: The material delegates the default ttl to the analysis without naming a value.
+    decided: Sixty seconds.
+    why: The material itself states a short ttl never produces an error, only less cache efficiency, so the safe default is short; one minute keeps any cached observation fresher than the investigation deadline by a factor of three.
+  - location: rules/investigation/the-customer-sees-only-the-text.md
+    field: statement
+    unstated: The material answers that the writing is what the assessment exposes to the end customer, without saying explicitly that nothing else is exposed.
+    decided: The text is the only customer-facing part; outcome, referral, verdicts and evidence stay operational.
+    why: Naming the writing as the answer to what-is-exposed reads as exclusive, and an exclusive bound is the only falsifiable form of it.
 ---
