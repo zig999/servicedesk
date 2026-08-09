@@ -16,8 +16,20 @@
       "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
       "files": [
         {
+          "path": "src/src/persistence/file-capability-store.repository.ts",
+          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
+        },
+        {
+          "path": "src/src/persistence/json-file.ts",
+          "digest": "sha256:0a5e2c548791cd5f121064c87f9f39573f073568fce9421ed7b106beeeebdcb2"
+        },
+        {
           "path": "src/src/persistence/file-glossary-store.repository.ts",
-          "digest": "sha256:dcc155181dacf90980ff7b5096ebf7acd340ddbf983158550a444002c41da2c1"
+          "digest": "sha256:edc1ad410f0751d271d741b5db3429c2563995229b865214bf28c81af86698dd"
+        },
+        {
+          "path": "src/package.json",
+          "digest": "sha256:0547bfbf6a92352fd8a9d9edcec17fa9449df6a8abf275fe80f9b1dbdfc23007"
         }
       ]
     },
@@ -110,6 +122,44 @@
       ]
     },
     {
+      "node": "domain/integration/capability",
+      "digest": "sha256:7359eab4b5cb7fc670e4a09bc80a9e35d770ab9c84d3c0004e439c778bb59d2c",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability.ts",
+          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+        },
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:c432cf2908b7d8eff1652da2dc1469d60c247d11d04f3d4cf8b7e0d16369598c"
+        },
+        {
+          "path": "src/src/persistence/file-capability-store.repository.ts",
+          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/capability-nature",
+      "digest": "sha256:4113448fd9925bba81ed276bdf0c62f905929933d463f5ee40962b8df64dfa9c",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability.ts",
+          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/capability-registry",
+      "digest": "sha256:6cedee97d1503dfb4d338bbf9bab53895d563d095f09b8cde1314468d7d4e5a7",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:c432cf2908b7d8eff1652da2dc1469d60c247d11d04f3d4cf8b7e0d16369598c"
+        }
+      ]
+    },
+    {
       "node": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
       "digest": "sha256:70529f0caed943dc9da4e6cff0179a84d4c4fd69ebc4b39397a8fc102bc0a133",
       "files": [
@@ -120,6 +170,38 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-capability-declares-its-contract",
+      "digest": "sha256:fc9117cf30dd9c75c89972e3505b320e1f1a564e069ffa15c36c90bbf20b9fa5",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:c432cf2908b7d8eff1652da2dc1469d60c247d11d04f3d4cf8b7e0d16369598c"
+        },
+        {
+          "path": "src/src/capability-registry/capability.ts",
+          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+        },
+        {
+          "path": "src/src/errors/incomplete-capability-contract.error.ts",
+          "digest": "sha256:669b4e23f0539519c89c6b361deb5d4d1d9132630e685a3e6ec713d9df4083f6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-capability-is-read-only",
+      "digest": "sha256:cef39a9c1a06f9c705fa0bcb5cf4f36521032e3ff9e2273a9261693bc41b529d",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:c432cf2908b7d8eff1652da2dc1469d60c247d11d04f3d4cf8b7e0d16369598c"
+        },
+        {
+          "path": "src/src/errors/capability-not-read-only.error.ts",
+          "digest": "sha256:c3820ed8117072ccd42447d48ec2a0dc514b88fc47df359495c85085600b139b"
         }
       ]
     },

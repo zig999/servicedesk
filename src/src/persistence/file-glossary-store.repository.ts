@@ -1,9 +1,9 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
 import { GlossaryStoreError } from '../errors/glossary-store.error.js';
 import type { IGlossaryStore } from '../glossary/glossary-store.port.js';
 import type { ConceptRegistration, GlossaryTerm, TermVocabulary } from '../glossary/terms.js';
+import { readJsonFileOrAbsent, writeJsonFile, type JsonFileFailure } from './json-file.js';
 
 /** The records of one term vocabulary, as its file holds them. */
 const termRecordsSchema = z.array(z.object({ name: z.string().min(1) }));
@@ -23,7 +23,11 @@ const conceptRecordsSchema = z.array(
 /** The file the concept registrations persist in, beside the four term vocabulary files. */
 const CONCEPT_FILE = 'concept.json';
 
-const JSON_INDENT = 2;
+/** What each way of failing to read a vocabulary file says, in this store's words. */
+const READ_FAILURE_MESSAGES: Readonly<Record<JsonFileFailure, string>> = {
+  unreadable: 'the vocabulary file could not be read',
+  'not-json': 'the vocabulary file is not valid JSON',
+};
 
 /**
  * The file-backed adapter of the glossary's store port: one plain JSON file
@@ -40,8 +44,7 @@ export class FileGlossaryStore implements IGlossaryStore {
   }
 
   public async writeTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
-    await mkdir(this.directory, { recursive: true });
-    await writeFile(this.fileOf(`${vocabulary}.json`), `${JSON.stringify(terms, null, JSON_INDENT)}\n`, 'utf8');
+    await writeJsonFile(this.fileOf(`${vocabulary}.json`), terms);
   }
 
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
@@ -56,11 +59,14 @@ export class FileGlossaryStore implements IGlossaryStore {
     file: string,
     parse: (data: unknown) => z.ZodSafeParseResult<T[]>,
   ): Promise<readonly T[]> {
-    const text = await readFileOrAbsent(file);
-    if (text === undefined) {
+    const data = await readJsonFileOrAbsent(
+      file,
+      (failure, cause) => new GlossaryStoreError(READ_FAILURE_MESSAGES[failure], { file }, { cause }),
+    );
+    if (data === undefined) {
       return [];
     }
-    const records = parse(jsonOf(file, text));
+    const records = parse(data);
     if (!records.success) {
       throw new GlossaryStoreError('the vocabulary file does not hold the records the store port promises', {
         file,
@@ -69,30 +75,4 @@ export class FileGlossaryStore implements IGlossaryStore {
     }
     return records.data;
   }
-}
-
-/** Reads a file's text, answering undefined where the file does not exist. */
-async function readFileOrAbsent(file: string): Promise<string | undefined> {
-  try {
-    return await readFile(file, 'utf8');
-  } catch (error) {
-    if (isAbsence(error)) {
-      return undefined;
-    }
-    throw new GlossaryStoreError('the vocabulary file could not be read', { file }, { cause: error });
-  }
-}
-
-/** Parses a vocabulary file's text as JSON, refusing anything that is not. */
-function jsonOf(file: string, text: string): unknown {
-  try {
-    return JSON.parse(text) as unknown;
-  } catch (error) {
-    throw new GlossaryStoreError('the vocabulary file is not valid JSON', { file }, { cause: error });
-  }
-}
-
-/** Whether a filesystem error says the file does not exist. */
-function isAbsence(error: unknown): boolean {
-  return error instanceof Error && 'code' in error && error.code === 'ENOENT';
 }

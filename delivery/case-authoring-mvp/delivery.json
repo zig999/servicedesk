@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-registry/capability-registration",
+      "kind": "implementation",
+      "file": "implementation/capability-registry/capability-registration.md",
+      "title": "Capability registration with a held read-only contract over plain JSON files",
+      "summary": "register-capability refuses any registration whose nature is not read-only or whose declared contract is incomplete, defaults an unstated timeout to 60000 milliseconds, and persists every held registration as a plain JSON file behind a store port.",
+      "task": "task/capability-registry/capability-registration"
+    },
+    {
       "id": "implementation/published-language/build-substrate",
       "kind": "implementation",
       "file": "implementation/published-language/build-substrate.md",
@@ -26,6 +34,14 @@
       "task": "task/published-language/glossary-vocabulary"
     },
     {
+      "id": "proof/capability-registry/capability-registration",
+      "kind": "proof",
+      "file": "proof/capability-registry/capability-registration.md",
+      "title": "Proof for capability registration",
+      "summary": "What proves task/capability-registry/capability-registration — the registry's refusals, the sixty-second default held as 60000 milliseconds, the plain-JSON persistence, and the exclusions the task's two UNDERDETERMINED notes require.",
+      "task": "task/capability-registry/capability-registration"
+    },
+    {
       "id": "proof/published-language/glossary-query",
       "kind": "proof",
       "file": "proof/published-language/glossary-query.md",
@@ -43,6 +59,48 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "domain/integration/capability-nature",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-registration",
+      "to": "task/capability-registry/capability-registration",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/published-language/build-substrate",
       "to": "constraints/the-mvp-persists-to-no-database",
@@ -155,6 +213,12 @@
       "from": "implementation/published-language/glossary-vocabulary",
       "to": "task/published-language/glossary-vocabulary",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-registry/capability-registration",
+      "to": "implementation/capability-registry/capability-registration",
+      "kind": "proves",
       "at": "the path"
     },
     {
