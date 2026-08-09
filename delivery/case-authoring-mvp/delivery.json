@@ -42,6 +42,14 @@
       "task": "task/case-model/case-resolution"
     },
     {
+      "id": "implementation/case-store/read-case",
+      "kind": "implementation",
+      "file": "implementation/case-store/read-case.md",
+      "title": "Read case — the knowledge context's published case-query composition",
+      "summary": "Composes the versioned JSON file store, the case document model, and the coherence validator into read-case and replay-case, so a case answers whole and pinned by content only while every validator rule holds now, refusing otherwise with all violations named together.",
+      "task": "task/case-store/read-case"
+    },
+    {
       "id": "implementation/case-store/versioned-file-store",
       "kind": "implementation",
       "file": "implementation/case-store/versioned-file-store.md",
@@ -112,6 +120,14 @@
       "title": "Proof for case resolution",
       "summary": "Holds task/case-model/case-resolution over the specification's worked example — the collection plan deduplicated where the declared order first names each concept, totality demanded as the case declares it, the first confirmed hypothesis in declared order determining while a later confirmation stays unmarked, and the fallback answering whole with no determining name.",
       "task": "task/case-model/case-resolution"
+    },
+    {
+      "id": "proof/case-store/read-case",
+      "kind": "proof",
+      "file": "proof/case-store/read-case.md",
+      "title": "Proof for read-case, the knowledge context's composed publication-gate-free read",
+      "summary": "Unit tests against port fakes for CaseQueryService.readCase and the standalone replayCase, plus integration tests through createCaseQuery over real file-backed stores, proving content-pinned answers, per-half-joint refusal, later-read refusal on dependency drift, revalidation-free replay, and the absence of any publication gate.",
+      "task": "task/case-store/read-case"
     },
     {
       "id": "proof/case-store/versioned-file-store",
@@ -416,6 +432,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-store/read-case",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-store/read-case",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-store/read-case",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-store/read-case",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-store/read-case",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-store/read-case",
+      "to": "task/case-store/read-case",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-store/versioned-file-store",
       "to": "rules/knowledge/every-case-version-remains-readable",
       "kind": "encodes",
@@ -586,6 +638,12 @@
     {
       "from": "proof/case-model/case-resolution",
       "to": "implementation/case-model/case-resolution",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-store/read-case",
+      "to": "implementation/case-store/read-case",
       "kind": "proves",
       "at": "the path"
     },

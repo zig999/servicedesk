@@ -1,0 +1,32 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 5s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/unit/case/case-query.service.spec.ts
+  99:3  error  Method 'seed' has too many parameters (4). Maximum allowed is 3  max-params
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: npm test :: not_run =====
+

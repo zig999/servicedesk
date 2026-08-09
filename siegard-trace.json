@@ -106,12 +106,16 @@
       "digest": "sha256:8e2ff769346c835557890e7ce9dffa91a00d8712b0a40ee4ffc82f8647958719",
       "files": [
         {
-          "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:4d2bded0183172349f7ab1e54391e08ba8bf5127123a7d679c6ee1f823ec864c"
+          "path": "src/src/case/case-query.port.ts",
+          "digest": "sha256:f885725d1eef7531ea21c18facbec4024313d4793b7904c5f481e28046d5046c"
         },
         {
-          "path": "src/src/persistence/file-case-store.repository.ts",
-          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+        },
+        {
+          "path": "src/src/factories/case-query.factory.ts",
+          "digest": "sha256:0667dd2441add666748b909f2ab62cfe37f78c43157533476dfdfcb93bec745b"
         }
       ]
     },
@@ -136,6 +140,18 @@
         {
           "path": "src/src/errors/incoherent-case.error.ts",
           "digest": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+        },
+        {
+          "path": "src/src/errors/case-not-valid.error.ts",
+          "digest": "sha256:178d031c94334854e637f9e70b4189f8fa0714d9afc535455f934658000084d3"
+        },
+        {
+          "path": "src/src/errors/case-not-found.error.ts",
+          "digest": "sha256:92bc1349600bf06963262dedd8358e2b0b364849476761eab4bc186593f08db9"
         }
       ]
     },
@@ -492,6 +508,10 @@
         {
           "path": "src/src/persistence/file-case-store.repository.ts",
           "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
         }
       ]
     },
@@ -540,6 +560,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
         }
       ]
     },
@@ -550,6 +574,16 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/validation-runs-at-every-read",
+      "digest": "sha256:6487bd4578633a79e9ca7b0e62aef2fdc26a3320bb866b8a941a3ba25d5e6c8f",
+      "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
         }
       ]
     },
