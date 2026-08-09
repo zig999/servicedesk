@@ -1,0 +1,18 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/published-language-build-substrate-build",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/src",
+  "timeout_seconds": 600,
+  "outcome": "failed",
+  "failed_step": "install",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "install.log"
+    }
+  ],
+  "combined_output": "run.log"
+}

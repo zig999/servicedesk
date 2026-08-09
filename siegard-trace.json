@@ -1,0 +1,15 @@
+{
+  "specification": "knowledge",
+  "bindings": [
+    {
+      "node": "constraints/the-mvp-persists-to-no-database",
+      "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
+      "files": [
+        {
+          "path": "src/package.json",
+          "digest": "sha256:04ae3afdf931229507d72cfb785587d431c58c2d7d2502dac7678e88c7f6c6df"
+        }
+      ]
+    }
+  ]
+}

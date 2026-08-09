@@ -1,0 +1,27 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/published-language/build-substrate",
+      "kind": "implementation",
+      "file": "implementation/published-language/build-substrate.md",
+      "title": "Build substrate for the backend target",
+      "summary": "The manifest, strict compiler configuration and flat lint configuration the project's standard presupposes, arranged over the greenfield tree so every declared step completes and no database driver is declared.",
+      "task": "task/published-language/build-substrate"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/published-language/build-substrate",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-language/build-substrate",
+      "to": "task/published-language/build-substrate",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}
