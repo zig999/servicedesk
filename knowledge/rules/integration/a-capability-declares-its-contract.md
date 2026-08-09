@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: A registered capability declares its input schema, its output schema and its timeout.
+statement: A registered capability declares its input schema, its output schema and its timeout; a registration that states no timeout takes the default of sixty seconds.
 constrains:
   - domain/integration/capability
 ---

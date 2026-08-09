@@ -18,7 +18,7 @@ attributes:
 ## Description
 
 How long each stage took, in milliseconds, measured from the first delivery.
-It is what says who is exceeding the twenty-second budget, per stage and per capability.
+It is what says who is exceeding the declared total budget, per stage and per capability.
 
 ## Responsibility
 

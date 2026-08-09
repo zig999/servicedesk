@@ -7,4 +7,4 @@ constrains:
 
 ## Description
 
-An attendant who waits twenty seconds clicks twice and refreshes; without the key, each impatience costs a whole investigation.
+An attendant who waits minutes on screen clicks twice and refreshes; without the key, each impatience costs a whole investigation.

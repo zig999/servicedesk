@@ -165,4 +165,9 @@ entries:
     unstated: The material answers that the writing is what the assessment exposes to the end customer, without saying explicitly that nothing else is exposed.
     decided: The text is the only customer-facing part; outcome, referral, verdicts and evidence stay operational.
     why: Naming the writing as the answer to what-is-exposed reads as exclusive, and an exclusive bound is the only falsifiable form of it.
+  - location: rules/integration/a-capability-declares-its-contract.md
+    field: statement
+    unstated: Decision 3 demanded two figures — the per-capability timeout and the collection stage's global deadline — and the material answered with the single figure of sixty seconds.
+    decided: Sixty seconds binds the capability timeout default; no second figure is recorded for the collection stage.
+    why: The collection stage runs its concepts in parallel, so its bound is the slowest capability clamped by the propagated remaining time, and a separate stage figure would add nothing the propagation constraint does not already enforce.
 ---

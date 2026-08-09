@@ -31,4 +31,4 @@ Derived by spec.py from the specification files; never edited.
 - the-judgment-prompt-is-closed (investigation)
 - the-mvp-persists-to-no-database (system)
 
-33 decision(s) disclosed in the decision log.
+34 decision(s) disclosed in the decision log.
