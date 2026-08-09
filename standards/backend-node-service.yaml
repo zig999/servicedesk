@@ -776,6 +776,14 @@ dependencies:
       step fails on the first type annotation it meets and decides nothing.
     rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
 
+  - package: "@types/node"
+    why: >-
+      the `typecheck` step is strict and the persistence this project's constraints demand is
+      plain files reached through Node's own builtins — without these declarations the compiler
+      refuses the first `node:fs` import it meets, so the step could never pass over the very
+      modules the no-database constraint requires.
+    rules: [STK-01, TYP-01]
+
   - package: secretlint
     why: the `secret-scan` step is it, and it decides the two rules about credentials in source.
     rules: [SEC-02, SEC-03]
