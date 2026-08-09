@@ -22,16 +22,34 @@
       ]
     },
     {
+      "node": "contracts/glossary/glossary-query",
+      "digest": "sha256:2c7c3030e0d986ef7fb64e34d190b319de91d40db4d88a7f610d2a505e759095",
+      "files": [
+        {
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/factories/glossary.factory.ts",
+          "digest": "sha256:41a8bf011946141bd81c27408c1e063130137c7676bf5d29423255d062b8ef3a"
+        }
+      ]
+    },
+    {
       "node": "domain/glossary/action",
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -40,12 +58,12 @@
       "digest": "sha256:bacfce81580dad7e4bd19448c8c7e1474f62f07d0bda54065cbc79cda121e37a",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -54,12 +72,12 @@
       "digest": "sha256:ed6df017623951445ffc8259195aa7999eef3c2f5feae133f17e79cc59778290",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -68,12 +86,12 @@
       "digest": "sha256:e214071bc54a45d4e1b7591b418289d88dddb6a003931af68e07b09cf9d07814",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -82,12 +100,12 @@
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/glossary/glossary-query.port.ts",
+          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -101,7 +119,7 @@
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     },
@@ -115,7 +133,7 @@
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:207b1c62c0a414115bd5f1d35a98fee721603e874877bae2d29f24f9fe21d72a"
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
         }
       ]
     }

@@ -1,4 +1,5 @@
 import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
+import type { ConceptResolution, IGlossaryQuery, TermResolution } from './glossary-query.port.js';
 import type { IGlossaryStore } from './glossary-store.port.js';
 import {
   DEFAULT_CONCEPT_TTL_SECONDS,
@@ -11,9 +12,11 @@ import {
 /**
  * The glossary's holding: every term a case may name, each existing exactly
  * once per vocabulary. Persistence reaches it only through the store port,
- * so this module stays importable without any infrastructure.
+ * so this module stays importable without any infrastructure. It provides
+ * the published glossary-query contract, so a consumer holding IGlossaryQuery
+ * reads this holding without depending on this class or its store.
  */
-export class GlossaryService {
+export class GlossaryService implements IGlossaryQuery {
   public constructor(private readonly store: IGlossaryStore) {}
 
   /**
@@ -45,6 +48,30 @@ export class GlossaryService {
       accepts: registration.accepts,
       ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
     }));
+  }
+
+  /**
+   * read-vocabulary-term (contracts/glossary/glossary-query): resolves one
+   * term by name against the vocabulary as the glossary holds it on this
+   * call — read through the store every time, never remembered — answering
+   * the absence as data where no held term carries the name.
+   */
+  public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
+    const held = await this.terms(vocabulary);
+    const term = held.find((candidate) => candidate.name === name);
+    return term === undefined ? { held: false, vocabulary, name } : { held: true, term };
+  }
+
+  /**
+   * read-concept (contracts/glossary/glossary-query): resolves one concept
+   * by name against the concepts as the glossary holds them on this call,
+   * answering its accepted subject types and its ttl in seconds, or the
+   * absence as data where no held concept carries the name.
+   */
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    const held = await this.concepts();
+    const concept = held.find((candidate) => candidate.name === name);
+    return concept === undefined ? { held: false, name } : { held: true, concept };
   }
 
   private async withNonConclusionOutcomes(held: readonly GlossaryTerm[]): Promise<readonly GlossaryTerm[]> {

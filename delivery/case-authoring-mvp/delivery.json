@@ -10,12 +10,28 @@
       "task": "task/published-language/build-substrate"
     },
     {
+      "id": "implementation/published-language/glossary-query",
+      "kind": "implementation",
+      "file": "implementation/published-language/glossary-query.md",
+      "title": "Published glossary-query read",
+      "summary": "The published IGlossaryQuery contract — readVocabularyTerm and readConcept — provided by the existing glossary holding and wired through the module's factory, answering every read from the store's current records and every absence as typed data.",
+      "task": "task/published-language/glossary-query"
+    },
+    {
       "id": "implementation/published-language/glossary-vocabulary",
       "kind": "implementation",
       "file": "implementation/published-language/glossary-vocabulary.md",
       "title": "Glossary vocabulary as data behind a store port",
       "summary": "The four term vocabularies and the concepts as pure domain values whose plain-JSON persistence reaches them only through a domain-declared port, with uniqueness, the sixty-second ttl default and the two non-conclusion outcomes guaranteed by the glossary's holding.",
       "task": "task/published-language/glossary-vocabulary"
+    },
+    {
+      "id": "proof/published-language/glossary-query",
+      "kind": "proof",
+      "file": "proof/published-language/glossary-query.md",
+      "title": "Proof for the glossary query",
+      "summary": "What proves task/published-language/glossary-query, exercising the published IGlossaryQuery contract over a mutable in-memory store for resolution and over the real file store for freshness.",
+      "task": "task/published-language/glossary-query"
     },
     {
       "id": "proof/published-language/glossary-vocabulary",
@@ -36,6 +52,48 @@
     {
       "from": "implementation/published-language/build-substrate",
       "to": "task/published-language/build-substrate",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/published-language/glossary-query",
+      "to": "task/published-language/glossary-query",
       "kind": "implements",
       "at": "the path"
     },
@@ -97,6 +155,12 @@
       "from": "implementation/published-language/glossary-vocabulary",
       "to": "task/published-language/glossary-vocabulary",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-language/glossary-query",
+      "to": "implementation/published-language/glossary-query",
+      "kind": "proves",
       "at": "the path"
     },
     {
