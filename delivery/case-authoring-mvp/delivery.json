@@ -18,6 +18,14 @@
       "task": "task/capability-registry/capability-resolution"
     },
     {
+      "id": "implementation/case-model/case-document-model",
+      "kind": "implementation",
+      "file": "implementation/case-model/case-document-model.md",
+      "title": "Case document model with one-pass structural refusal",
+      "summary": "One case JSON document parses into the whole aggregate — case, hypotheses, resolutions, referrals, in declared order — and any structural violation refuses it once through a typed error naming every violation at the same time.",
+      "task": "task/case-model/case-document-model"
+    },
+    {
       "id": "implementation/published-language/build-substrate",
       "kind": "implementation",
       "file": "implementation/published-language/build-substrate.md",
@@ -56,6 +64,14 @@
       "title": "Proof for capability resolution",
       "summary": "What proves task/capability-registry/capability-resolution — the published read answering each concept's one capability whole and current, the absence as data, and the one-to-one guarded at registration and at read so no priority chain can hide behind the four criteria.",
       "task": "task/capability-registry/capability-resolution"
+    },
+    {
+      "id": "proof/case-model/case-document-model",
+      "kind": "proof",
+      "file": "proof/case-model/case-document-model.md",
+      "title": "Proof for the case document model",
+      "summary": "Holds task/case-model/case-document-model over the specification's worked example — the one document parses whole and in declared order, every structural refusal fires by name, several violations arrive as one refusal, and the model's modules import nothing but one another.",
+      "task": "task/case-model/case-document-model"
     },
     {
       "id": "proof/published-language/glossary-query",
@@ -144,6 +160,84 @@
     {
       "from": "implementation/capability-registry/capability-resolution",
       "to": "task/capability-registry/capability-resolution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-model/case-document-model",
+      "to": "task/case-model/case-document-model",
       "kind": "implements",
       "at": "the path"
     },
@@ -270,6 +364,12 @@
     {
       "from": "proof/capability-registry/capability-resolution",
       "to": "implementation/capability-registry/capability-resolution",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-model/case-document-model",
+      "to": "implementation/case-model/case-document-model",
       "kind": "proves",
       "at": "the path"
     },

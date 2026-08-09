@@ -2,6 +2,20 @@
   "specification": "knowledge",
   "bindings": [
     {
+      "node": "constraints/a-case-is-stored-as-one-json-document",
+      "digest": "sha256:cc7605ecf967979c97918929614141359e60f0feeb66b831a848d529d5f682e2",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-domain-depends-on-no-infrastructure",
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
@@ -186,6 +200,62 @@
       ]
     },
     {
+      "node": "domain/knowledge/case",
+      "digest": "sha256:a436740808670fad13cc7bb4bbb18f34e9051378f8b2527ac4197da254da3ac1",
+      "files": [
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/hypothesis",
+      "digest": "sha256:12c9d5c48baf1be2de70455d7dde76771ac363e9637da4df55110b0faa077667",
+      "files": [
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/referral",
+      "digest": "sha256:8d9fed071eb73f031be1d0062289d0af6fe0668fc4ec5d578fdd9851a5c9ca16",
+      "files": [
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/resolution",
+      "digest": "sha256:6222afea54dfc1b74fb3cd7f9982c2e7035473c41e959edf57933f628d7ecc1b",
+      "files": [
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
       "node": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
       "digest": "sha256:70529f0caed943dc9da4e6cff0179a84d4c4fd69ebc4b39397a8fc102bc0a133",
       "files": [
@@ -250,6 +320,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "digest": "sha256:3408a4f4bc7a74e2d921cd68b43caed6108098230135f9ba5ec010ecf3bd1092",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-collected-concept-declares-a-ttl",
       "digest": "sha256:c8b01ca7fb74365ae942f01f6c1f0cfb5bda7da6f72531f6aba8e870e309350c",
       "files": [
@@ -260,6 +340,70 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "digest": "sha256:b1f67aa7c4c465de5025bd113ad6259ba8688525fc6450223ccd8b06a5232c60",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "digest": "sha256:10b8538d37ea2532bb579264ab9691b777d80b8416af804bb8f6bc731f4534d3",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "digest": "sha256:739b86a88704b9909800a64ea80008b47831c41d88dc25d0e017a3ddfedc5578",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/every-position-declares-a-resolution",
+      "digest": "sha256:67a1a09aba61e65ec1a4917c9dd866f0799bdf96774d8218eecd8ce0452ef1c9",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "digest": "sha256:2cf2eed6e3aa8a3e5c690ac8d1927c735b499edbea01caadff6a97374471d261",
+      "files": [
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/the-slug-matches-the-file-name",
+      "digest": "sha256:f137625ddede3fda5b97af2e7d1ba7ce3a7fe2bab2d1a553d0c7930b54d7248a",
+      "files": [
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         }
       ]
     }
