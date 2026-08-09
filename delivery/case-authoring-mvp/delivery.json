@@ -8,6 +8,22 @@
       "title": "Build substrate for the backend target",
       "summary": "The manifest, strict compiler configuration and flat lint configuration the project's standard presupposes, arranged over the greenfield tree so every declared step completes and no database driver is declared.",
       "task": "task/published-language/build-substrate"
+    },
+    {
+      "id": "implementation/published-language/glossary-vocabulary",
+      "kind": "implementation",
+      "file": "implementation/published-language/glossary-vocabulary.md",
+      "title": "Glossary vocabulary as data behind a store port",
+      "summary": "The four term vocabularies and the concepts as pure domain values whose plain-JSON persistence reaches them only through a domain-declared port, with uniqueness, the sixty-second ttl default and the two non-conclusion outcomes guaranteed by the glossary's holding.",
+      "task": "task/published-language/glossary-vocabulary"
+    },
+    {
+      "id": "proof/published-language/glossary-vocabulary",
+      "kind": "proof",
+      "file": "proof/published-language/glossary-vocabulary.md",
+      "title": "Proof for the glossary vocabulary",
+      "summary": "What proves task/published-language/glossary-vocabulary — the unique-name refusals, the concept shape and its sixty-second default, the seeded non-conclusion outcomes, the plain-JSON persistence, and the two import audits, including the one the UNDERDETERMINED note demands.",
+      "task": "task/published-language/glossary-vocabulary"
     }
   ],
   "edges": [
@@ -21,6 +37,72 @@
       "from": "implementation/published-language/build-substrate",
       "to": "task/published-language/build-substrate",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/published-language/glossary-vocabulary",
+      "to": "task/published-language/glossary-vocabulary",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/published-language/glossary-vocabulary",
+      "to": "implementation/published-language/glossary-vocabulary",
+      "kind": "proves",
       "at": "the path"
     }
   ]

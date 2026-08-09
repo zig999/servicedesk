@@ -1,0 +1,75 @@
+import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
+import type { IGlossaryStore } from './glossary-store.port.js';
+import {
+  DEFAULT_CONCEPT_TTL_SECONDS,
+  NON_CONCLUSION_OUTCOMES,
+  type Concept,
+  type GlossaryTerm,
+  type TermVocabulary,
+} from './terms.js';
+
+/**
+ * The glossary's holding: every term a case may name, each existing exactly
+ * once per vocabulary. Persistence reaches it only through the store port,
+ * so this module stays importable without any infrastructure.
+ */
+export class GlossaryService {
+  public constructor(private readonly store: IGlossaryStore) {}
+
+  /**
+   * Answers one term vocabulary as the glossary holds it: each name exactly
+   * once — and the outcome vocabulary never without the two non-conclusion
+   * outcomes, which are seeded through the port where the records lack them
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
+   */
+  public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
+    const held = await this.store.readTerms(vocabulary);
+    assertUniqueNames(vocabulary, held);
+    if (vocabulary !== 'outcome') {
+      return held;
+    }
+    return this.withNonConclusionOutcomes(held);
+  }
+
+  /**
+   * Answers the concepts as the glossary holds them: each name exactly once,
+   * each declaring its accepted subject types and its ttl in seconds — the
+   * default of sixty where its registration stated none
+   * (rules/knowledge/a-collected-concept-declares-a-ttl).
+   */
+  public async concepts(): Promise<readonly Concept[]> {
+    const registrations = await this.store.readConcepts();
+    assertUniqueNames('concept', registrations);
+    return registrations.map((registration) => ({
+      name: registration.name,
+      accepts: registration.accepts,
+      ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+    }));
+  }
+
+  private async withNonConclusionOutcomes(held: readonly GlossaryTerm[]): Promise<readonly GlossaryTerm[]> {
+    const missing = NON_CONCLUSION_OUTCOMES.filter(
+      (outcome) => !held.some((term) => term.name === outcome.name),
+    );
+    if (missing.length === 0) {
+      return held;
+    }
+    const seeded = [...held, ...missing];
+    await this.store.writeTerms('outcome', seeded);
+    return seeded;
+  }
+}
+
+/**
+ * Refuses records holding one name twice, before anything is answered or
+ * written: no vocabulary the glossary answers holds a duplicate name.
+ */
+function assertUniqueNames(vocabulary: string, records: readonly { readonly name: string }[]): void {
+  const seen = new Set<string>();
+  for (const record of records) {
+    if (seen.has(record.name)) {
+      throw new DuplicateGlossaryNameError(vocabulary, record.name);
+    }
+    seen.add(record.name);
+  }
+}
