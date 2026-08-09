@@ -10,6 +10,14 @@
       "task": "task/capability-registry/capability-registration"
     },
     {
+      "id": "implementation/capability-registry/capability-resolution",
+      "kind": "implementation",
+      "file": "implementation/capability-registry/capability-resolution.md",
+      "title": "Capability resolution as the published one-to-one read over the registry",
+      "summary": "read-capability resolves a concept to the one capability currently answering it, whole and as currently registered, reporting an unanswered concept as data — and the registry now guarantees the one-to-one by refusing, before any write, a registration whose concept a different capability identity already answers.",
+      "task": "task/capability-registry/capability-resolution"
+    },
+    {
       "id": "implementation/published-language/build-substrate",
       "kind": "implementation",
       "file": "implementation/published-language/build-substrate.md",
@@ -40,6 +48,14 @@
       "title": "Proof for capability registration",
       "summary": "What proves task/capability-registry/capability-registration — the registry's refusals, the sixty-second default held as 60000 milliseconds, the plain-JSON persistence, and the exclusions the task's two UNDERDETERMINED notes require.",
       "task": "task/capability-registry/capability-registration"
+    },
+    {
+      "id": "proof/capability-registry/capability-resolution",
+      "kind": "proof",
+      "file": "proof/capability-registry/capability-resolution.md",
+      "title": "Proof for capability resolution",
+      "summary": "What proves task/capability-registry/capability-resolution — the published read answering each concept's one capability whole and current, the absence as data, and the one-to-one guarded at registration and at read so no priority chain can hide behind the four criteria.",
+      "task": "task/capability-registry/capability-resolution"
     },
     {
       "id": "proof/published-language/glossary-query",
@@ -98,6 +114,36 @@
     {
       "from": "implementation/capability-registry/capability-registration",
       "to": "task/capability-registry/capability-registration",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-registry/capability-resolution",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-resolution",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-resolution",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-resolution",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-registry/capability-resolution",
+      "to": "task/capability-registry/capability-resolution",
       "kind": "implements",
       "at": "the path"
     },
@@ -218,6 +264,12 @@
     {
       "from": "proof/capability-registry/capability-registration",
       "to": "implementation/capability-registry/capability-registration",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-registry/capability-resolution",
+      "to": "implementation/capability-registry/capability-resolution",
       "kind": "proves",
       "at": "the path"
     },

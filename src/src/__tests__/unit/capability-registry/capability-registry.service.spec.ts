@@ -250,10 +250,16 @@ it('replaces the held record when a held name and version register again', async
 });
 
 it('holds two versions of one capability name as two registrations', async () => {
+  // Human-settled amendment: the versions answer different concepts, because
+  // rules/integration/one-capability-answers-one-concept refuses one concept
+  // resolving to two capabilities — what this test proves (identity is name
+  // and version together) is untouched by the fixture change.
   const store = new InMemoryCapabilityStore([heldCapability({ version: '1.0.0' })]);
   const registry = new CapabilityRegistryService(store);
 
-  await registry.registerCapability(completeRegistration({ version: '2.0.0' }));
+  await registry.registerCapability(
+    completeRegistration({ version: '2.0.0', concept: 'another-concept' }),
+  );
 
   expect(store.held().map((held) => held.version).sort()).toEqual(['1.0.0', '2.0.0']);
 });

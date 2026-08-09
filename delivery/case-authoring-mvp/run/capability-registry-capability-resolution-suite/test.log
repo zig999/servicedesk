@@ -1,0 +1,62 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 24ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 25ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 16ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 26ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 18ms
+ ❯ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests | 1 failed) 80ms
+   ✓ refuses a registration whose nature is mutating 13ms
+   ✓ refuses a registration whose nature is outside the capability-nature vocabulary 1ms
+   ✓ writes nothing to the store when it refuses a registration 7ms
+   ✓ refuses a registration that declares no input schema, naming the attribute 2ms
+   ✓ refuses a registration that declares no output schema, naming the attribute 1ms
+   ✓ refuses a registration that declares no connector, naming the attribute 1ms
+   ✓ refuses a registration that declares no name 1ms
+   ✓ refuses a registration that declares no version 4ms
+   ✓ refuses a registration that declares no concept 3ms
+   ✓ refuses an empty registration naming every required attribute 1ms
+   ✓ treats an attribute declared as the empty string as undeclared 2ms
+   ✓ holds the default of sixty seconds, as 60000 milliseconds, for a registration that states no timeout 1ms
+   ✓ passes a stated timeout through unchanged 1ms
+   ✓ refuses a stated timeout that is not an integer count of milliseconds 1ms
+   ✓ accepts a complete read-only contract and answers the capability as registered 1ms
+   ✓ persists an accepted registration through the store 1ms
+   ✓ replaces the held record when a held name and version register again 2ms
+   × holds two versions of one capability name as two registrations 33ms
+     → the registry refuses "a-capability" version "2.0.0" for the concept "a-concept": "a-capability" version "1.0.0" already answers it, and each concept resolves to exactly one capability
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 83ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 107ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 126ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 126ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 106ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (1 test) 20ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 53ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/capability-registry/capability-registry.service.spec.ts > holds two versions of one capability name as two registrations
+ConceptAlreadyAnsweredError: the registry refuses "a-capability" version "2.0.0" for the concept "a-concept": "a-capability" version "1.0.0" already answers it, and each concept resolves to exactly one capability
+ ❯ refuseAnsweredConcept src/capability-registry/capability-registry.service.ts:150:11
+    148|   const answering = kept.find((candidate) => candidate.concept === reg…
+    149|   if (answering !== undefined) {
+    150|     throw new ConceptAlreadyAnsweredError(registering.concept, answeri…
+       |           ^
+    151|   }
+    152| }
+ ❯ CapabilityRegistryService.registerCapability src/capability-registry/capability-registry.service.ts:46:5
+ ❯ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts:256:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 12 passed (13)
+      Tests  1 failed | 75 passed (76)
+   Start at  14:14:01
+   Duration  1.95s (transform 1.94s, setup 0ms, collect 4.77s, tests 808ms, environment 7ms, prepare 4.10s)
+

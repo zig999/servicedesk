@@ -149,3 +149,4 @@ Twenty-nine tests over four files: the registry's refusals and defaults as pure 
 ## Notes
 The two UNDERDETERMINED notes are each excluded by a dedicated test: the missing name and version refusals, and the no-network audit.
 The timeout default is asserted as 60000 with the value spelled in the test, so a drifted constant fails; the criterion's sixty seconds is the same duration in the specification's milliseconds.
+The two-versions test's fixture was amended after delivery, settled by the human over the resolution task's contested entry: the versions now answer different concepts, because one concept resolving to two capabilities is what rules/integration/one-capability-answers-one-concept refuses — what the test proves, identity by name and version, is untouched.
