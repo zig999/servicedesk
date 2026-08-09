@@ -34,7 +34,7 @@ operations:
 
 ## Description
 
-One troubleshooting procedure, authored as one markdown file versioned in git and identified by content: slug, version and hash.
+One troubleshooting procedure, authored as one file versioned in git and identified by content: slug, version and hash.
 Always published: no draft exists in the domain — work in progress is a git fact, a branch or a pull request, and there is no publication gate to pass.
 The fallback is a disguised default hypothesis, explicit on purpose: a fallback claims nothing about the world.
 

@@ -145,4 +145,14 @@ entries:
     unstated: A new case introduces its outcome, yet validation refuses a case whose outcome the glossary lacks; the material never says whether contribution registers the term or presupposes it.
     decided: Contribution is a curation act in the same change that introduces the case; validation still refuses a case whose outcome is absent at reading.
     why: Automatic registration would make the outcome-existence refusal unreachable and let a typo mint a vocabulary term; the same-change discipline keeps both rules decidable.
+  - location: constraints/a-case-is-stored-as-one-json-document.md
+    field: statement
+    unstated: The material says the case and all its entities are stored in a single JSON, without saying whether one document holds one case or every case.
+    decided: One JSON document per case, holding the whole aggregate.
+    why: The singular contrasts with decomposition into separate stores, matching the aggregate boundary already declared; one document for every case would break the standing rules that the slug matches the file and that every version stays readable, which the material does not retract.
+  - location: constraints/a-case-is-stored-as-one-json-document.md
+    field: scope
+    unstated: The material does not say what format the case file on disk takes now that its stored form is JSON, while the case element described its file as markdown.
+    decided: The stored form is the JSON document; the case element's description drops the format and keeps one file versioned in git.
+    why: The authoring format was implementation detail living in prose; the storage bound is the addressable fact, and one statement of the file's form must not disagree with the other.
 ---

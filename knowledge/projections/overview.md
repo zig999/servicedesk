@@ -19,6 +19,7 @@ Derived by spec.py from the specification files; never edited.
 
 ## Constraints
 
+- a-case-is-stored-as-one-json-document (knowledge)
 - diagnosis-answers-synchronously (system)
 - evidence-normalization-is-an-anticorruption-layer (integration)
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
@@ -28,5 +29,6 @@ Derived by spec.py from the specification files; never edited.
 - the-domain-depends-on-no-infrastructure (system)
 - the-evidence-cache-admits-only-ok-results (investigation)
 - the-judgment-prompt-is-closed (investigation)
+- the-mvp-persists-to-no-database (system)
 
-29 decision(s) disclosed in the decision log.
+31 decision(s) disclosed in the decision log.
