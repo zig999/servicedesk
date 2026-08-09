@@ -1,0 +1,30 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 17ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 28ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 22ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 20ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 36ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 19ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 23ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 19ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (34 tests) 71ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 87ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 108ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 60ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 42ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 89ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 39ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (1 test) 24ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 30ms
+
+ Test Files  17 passed (17)
+      Tests  142 passed (142)
+   Start at  18:03:44
+   Duration  2.35s (transform 2.04s, setup 0ms, collect 5.11s, tests 735ms, environment 8ms, prepare 4.09s)
+

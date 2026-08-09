@@ -84,6 +84,40 @@
       ]
     },
     {
+      "node": "contracts/knowledge/capability-check",
+      "digest": "sha256:e87c4d2a7660d387eb50f83c1157d3cea0ed22f0d0f47bb5726451525f1cb076",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
+      "node": "contracts/knowledge/vocabulary-terms",
+      "digest": "sha256:ddf4975831200f97b398a606ea080ba865eacc27394bc7c06334c409c87378db",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
+      "node": "contracts/system/case-authoring",
+      "digest": "sha256:28e41ae1aabd7e8eb358a6edb30c077665f7e81ea3025bc7f638d16bc98eaeda",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/errors/incoherent-case.error.ts",
+          "digest": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036"
+        }
+      ]
+    },
+    {
       "node": "domain/glossary/action",
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
@@ -214,6 +248,10 @@
         {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },
@@ -232,6 +270,10 @@
         {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },
@@ -250,6 +292,10 @@
         {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },
@@ -268,6 +314,10 @@
         {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },
@@ -360,6 +410,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "digest": "sha256:ccefa5f4b1b24325e706cdd9c3c57d8988f174ede286b1ff6dccf6eb11e8d7f3",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
       "digest": "sha256:b1f67aa7c4c465de5025bd113ad6259ba8688525fc6450223ccd8b06a5232c60",
       "files": [
@@ -386,6 +446,26 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "digest": "sha256:0c078d79534670360d775fc12edb565b09a4c7d14c7a294030714a031add3bef",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "digest": "sha256:74f8af87d3d0b9945af2289e4930af559cd66603475fd87a70e74ae94ce32bad",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },
@@ -418,12 +498,32 @@
       ]
     },
     {
+      "node": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "digest": "sha256:cd9041ba780b42719bb5a07af942b65e81380813a61a025a749df18bea5d99ac",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/the-slug-matches-the-file-name",
       "digest": "sha256:f137625ddede3fda5b97af2e7d1ba7ce3a7fe2bab2d1a553d0c7930b54d7248a",
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "digest": "sha256:31354b5056568c224fcf633811de627027b820b6b866dd5a61ebe645ec74aa6c",
+      "files": [
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
         }
       ]
     },

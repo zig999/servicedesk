@@ -164,3 +164,5 @@ Thirty-three tests over two files, all pure units: the worked example parsing wh
 ## Notes
 The order test's fixture is deliberately non-alphabetical, so a sorted set masquerading as order-preserving fails it.
 The MNT-03 duplication between the two module audits is disclosed rather than extracted, because a shared helper would rewrite a prior proof's file.
+
+The shared audit's file src/__tests__/unit/case/case-document-modules.spec.ts was later extended by task/case-model/case-coherence-validation to sweep a second error module (incoherent-case.error.ts) alongside this task's invalid-case-document.error.ts — a generalized ERROR_MODULES list replacing the single ERROR_MODULE constant, with this task's own coverage unchanged. Disclosed here because the file is this proof's own record.

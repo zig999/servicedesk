@@ -1,19 +1,22 @@
-// An audit over the case document model's modules — the two under src/case
-// and the typed refusal beside them under src/errors: they import no
+// An audit over the case document model's modules — everything under
+// src/case and the typed refusals beside them under src/errors: they import no
 // framework, no driver and no provider client, and nothing but one another
 // at all, so no second store is reachable from the model and every part of
 // a case can only arrive from the one document
 // (constraints/the-domain-depends-on-no-infrastructure,
 // constraints/a-case-is-stored-as-one-json-document).
 import { readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 
 const CASE_DIRECTORY = fileURLToPath(new URL('../../../case/', import.meta.url));
-const ERROR_MODULE = fileURLToPath(
-  new URL('../../../errors/invalid-case-document.error.ts', import.meta.url),
-);
+
+/** The typed refusals beside the model under src/errors, swept with it. */
+const ERROR_MODULES = [
+  'invalid-case-document.error.ts',
+  'incoherent-case.error.ts',
+].map((file) => fileURLToPath(new URL(`../../../errors/${file}`, import.meta.url)));
 
 /** Frameworks, database drivers and provider clients — what criterion 10 forbids a document-model module to import. */
 const FORBIDDEN_PACKAGES = [
@@ -67,7 +70,10 @@ async function documentModelImports(): Promise<ReadonlyMap<string, readonly stri
     const source = await readFile(join(CASE_DIRECTORY, file), 'utf8');
     imports.set(file, importSpecifiersOf(source));
   }
-  imports.set('invalid-case-document.error.ts', importSpecifiersOf(await readFile(ERROR_MODULE, 'utf8')));
+  for (const errorModule of ERROR_MODULES) {
+    const source = await readFile(errorModule, 'utf8');
+    imports.set(basename(errorModule), importSpecifiersOf(source));
+  }
   return imports;
 }
 
