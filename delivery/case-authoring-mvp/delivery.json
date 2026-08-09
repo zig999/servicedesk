@@ -26,6 +26,14 @@
       "task": "task/case-model/case-document-model"
     },
     {
+      "id": "implementation/case-model/case-resolution",
+      "kind": "implementation",
+      "file": "implementation/case-model/case-resolution.md",
+      "title": "Case resolution operations",
+      "summary": "The case aggregate's three declared operations — collection-plan, requires-evaluation-of and resolve-outcome — as one pure module over the parsed aggregate, answering plain values from verdicts supplied as plain per-name values.",
+      "task": "task/case-model/case-resolution"
+    },
+    {
       "id": "implementation/published-language/build-substrate",
       "kind": "implementation",
       "file": "implementation/published-language/build-substrate.md",
@@ -72,6 +80,14 @@
       "title": "Proof for the case document model",
       "summary": "Holds task/case-model/case-document-model over the specification's worked example — the one document parses whole and in declared order, every structural refusal fires by name, several violations arrive as one refusal, and the model's modules import nothing but one another.",
       "task": "task/case-model/case-document-model"
+    },
+    {
+      "id": "proof/case-model/case-resolution",
+      "kind": "proof",
+      "file": "proof/case-model/case-resolution.md",
+      "title": "Proof for case resolution",
+      "summary": "Holds task/case-model/case-resolution over the specification's worked example — the collection plan deduplicated where the declared order first names each concept, totality demanded as the case declares it, the first confirmed hypothesis in declared order determining while a later confirmation stays unmarked, and the fallback answering whole with no determining name.",
+      "task": "task/case-model/case-resolution"
     },
     {
       "id": "proof/published-language/glossary-query",
@@ -242,6 +258,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-model/case-resolution",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-model/case-resolution",
+      "to": "task/case-model/case-resolution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-language/build-substrate",
       "to": "constraints/the-mvp-persists-to-no-database",
       "kind": "encodes",
@@ -370,6 +434,12 @@
     {
       "from": "proof/case-model/case-document-model",
       "to": "implementation/case-model/case-document-model",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-model/case-resolution",
+      "to": "implementation/case-model/case-resolution",
       "kind": "proves",
       "at": "the path"
     },

@@ -210,6 +210,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     },
@@ -224,6 +228,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     },
@@ -238,6 +246,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     },
@@ -252,6 +264,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     },
@@ -394,6 +410,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     },
@@ -404,6 +424,26 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/no-confirmation-falls-back",
+      "digest": "sha256:6e9eb25b5338b0c442a914374dd7287fc19134b928631d998b6b3b207adf619a",
+      "files": [
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "digest": "sha256:82eefd78d763badd78a4c2eaace5b3409cab6cd94b7ff15d262e9c57edf19832",
+      "files": [
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         }
       ]
     }
