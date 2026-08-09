@@ -1,0 +1,968 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-registry",
+      "kind": "epic",
+      "file": "epic/capability-registry.md",
+      "title": "Capability registry",
+      "summary": "The registry that refuses what departs from a read-only declared contract and resolves each concept to the one capability currently answering it."
+    },
+    {
+      "id": "epic/case-model",
+      "kind": "epic",
+      "file": "epic/case-model.md",
+      "title": "Case model",
+      "summary": "The case aggregate as one JSON document with its structural rules, its cross-context coherence checks, and its own resolution operations."
+    },
+    {
+      "id": "epic/case-store",
+      "kind": "epic",
+      "file": "epic/case-store.md",
+      "title": "Case store and read",
+      "summary": "The database-free persistence of every case version and the published read-case that validates at every reading with all refusals at once."
+    },
+    {
+      "id": "epic/published-language",
+      "kind": "epic",
+      "file": "epic/published-language.md",
+      "title": "Published language",
+      "summary": "The glossary's four vocabularies and its concepts, held as plain data and answered by the published glossary read."
+    },
+    {
+      "id": "inventory/backend-greenfield",
+      "kind": "inventory",
+      "file": "inventory/backend-greenfield.md",
+      "title": "Backend target, greenfield",
+      "summary": "The target source root src is absent from disk, so the case-authoring scope lands on an empty tree with nothing to touch, reuse or break."
+    },
+    {
+      "id": "task/capability-registry/capability-registration",
+      "kind": "task",
+      "file": "task/capability-registry/capability-registration.md",
+      "title": "Capability registration",
+      "summary": "register-capability with the registry's refusals, persisting registrations as plain JSON files.",
+      "epic": "capability-registry"
+    },
+    {
+      "id": "task/capability-registry/capability-resolution",
+      "kind": "task",
+      "file": "task/capability-registry/capability-resolution.md",
+      "title": "Capability resolution",
+      "summary": "The published read-capability that answers the capability currently registered for a concept.",
+      "epic": "capability-registry"
+    },
+    {
+      "id": "task/case-model/case-coherence-validation",
+      "kind": "task",
+      "file": "task/case-model/case-coherence-validation.md",
+      "title": "Case coherence validation",
+      "summary": "The validator rules that read the current glossary and capability registry over a structurally valid case.",
+      "epic": "case-model"
+    },
+    {
+      "id": "task/case-model/case-document-model",
+      "kind": "task",
+      "file": "task/case-model/case-document-model.md",
+      "title": "Case document model",
+      "summary": "The case aggregate as one JSON document — case, hypotheses, resolutions, referrals — with every structural rule refusing in one pass.",
+      "epic": "case-model"
+    },
+    {
+      "id": "task/case-model/case-resolution",
+      "kind": "task",
+      "file": "task/case-model/case-resolution.md",
+      "title": "Case resolution",
+      "summary": "The case's own operations — collection plan, required evaluations, resolve-outcome — as pure domain behavior over the aggregate.",
+      "epic": "case-model"
+    },
+    {
+      "id": "task/case-store/read-case",
+      "kind": "task",
+      "file": "task/case-store/read-case.md",
+      "title": "Read case",
+      "summary": "The published read-case operation that answers a case by slug and version, validated whole at this reading, with all refusals at once.",
+      "epic": "case-store"
+    },
+    {
+      "id": "task/case-store/versioned-file-store",
+      "kind": "task",
+      "file": "task/case-store/versioned-file-store.md",
+      "title": "Versioned case file store",
+      "summary": "The file-backed store that holds every case version as one plain JSON document, pinned by content.",
+      "epic": "case-store"
+    },
+    {
+      "id": "task/published-language/build-substrate",
+      "kind": "task",
+      "file": "task/published-language/build-substrate.md",
+      "title": "Build substrate",
+      "summary": "The manifest, compiler configuration and lint configuration the project's standard presupposes and the empty target tree does not hold.",
+      "epic": "published-language"
+    },
+    {
+      "id": "task/published-language/glossary-query",
+      "kind": "task",
+      "file": "task/published-language/glossary-query.md",
+      "title": "Glossary query",
+      "summary": "The published synchronous read that resolves a vocabulary term or a concept exactly as the glossary currently holds it.",
+      "epic": "published-language"
+    },
+    {
+      "id": "task/published-language/glossary-vocabulary",
+      "kind": "task",
+      "file": "task/published-language/glossary-vocabulary.md",
+      "title": "Glossary vocabulary",
+      "summary": "The four vocabularies and the concepts, held exactly once each as plain JSON data.",
+      "epic": "published-language"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-registry",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-registry",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-model",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-store",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "rules/glossary/a-recipient-is-a-role",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "rules/glossary/an-action-names-what-its-recipient-does",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "rules/glossary/an-outcome-is-contributed-by-a-confirmable-hypothesis",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/published-language",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-registry/capability-registration",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "task/capability-registry/capability-registration",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-registry/capability-resolution",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "task/case-model/case-document-model",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "task/published-language/glossary-query",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "task/capability-registry/capability-resolution",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-model/case-coherence-validation",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-model/case-document-model",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "task/case-model/case-document-model",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-model/case-resolution",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "task/case-store/versioned-file-store",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "task/case-model/case-document-model",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "task/case-model/case-coherence-validation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-store/read-case",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-store/versioned-file-store",
+      "to": "task/case-model/case-document-model",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-store/versioned-file-store",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-store/versioned-file-store",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-store/versioned-file-store",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-store/versioned-file-store",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/published-language/build-substrate",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "task/published-language/glossary-vocabulary",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/published-language/glossary-query",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/published-language/glossary-vocabulary",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[8]"
+    }
+  ]
+}
