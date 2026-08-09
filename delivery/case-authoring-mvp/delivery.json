@@ -152,6 +152,29 @@
       "title": "Proof for the glossary vocabulary",
       "summary": "What proves task/published-language/glossary-vocabulary — the unique-name refusals, the concept shape and its sixty-second default, the seeded non-conclusion outcomes, the plain-JSON persistence, and the two import audits, including the one the UNDERDETERMINED note demands.",
       "task": "task/published-language/glossary-vocabulary"
+    },
+    {
+      "id": "review/case-authoring-mvp",
+      "kind": "review",
+      "file": "review/case-authoring-mvp.md",
+      "title": "Review of case-authoring-mvp",
+      "summary": "Four-pass evidence over all ten delivered tasks of the case-authoring-mvp initiative — coverage, specification conformance, standard conformance, and a captured run that passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "The dependency manifest declares no database driver and the deployment provisions no database service.",
+        "eslint.config.js is a flat config declaring the TypeScript parser and a non-empty rule set, so the lint step decides something rather than nothing.",
+        "npm ci followed by each of the declared typecheck, lint, secret-scan and test steps completes on the tree as produced.",
+        "package.json declares \"type\": \"module\" at its top level.",
+        "package.json declares every dependency the project uses, each drawn from the standard's authorized list.",
+        "package.json declares the secretlint configuration the secret-scan step reads.",
+        "package.json declares the test, lint, typecheck and secret-scan scripts the standard's tool-decided rules run as.",
+        "tsconfig.json declares the strict compiler configuration STK-01 and TYP-01 require and states its module resolution mode."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -664,6 +687,66 @@
       "to": "implementation/published-language/glossary-vocabulary",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/published-language/build-substrate",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/published-language/glossary-vocabulary",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/published-language/glossary-query",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/capability-registry/capability-registration",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/capability-registry/capability-resolution",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/case-model/case-document-model",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/case-model/case-resolution",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/case-model/case-coherence-validation",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/case-store/versioned-file-store",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/case-authoring-mvp",
+      "to": "task/case-store/read-case",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
