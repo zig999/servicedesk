@@ -773,30 +773,6 @@ dependencies:
     why: the `secret-scan` step is it, and it decides the two rules about credentials in source.
     rules: [SEC-02, SEC-03]
 
-  - package: "@types/node"
-    why: >-
-      TypeScript ships no declarations for Node's own globals, so `process`, `Buffer` and every
-      `node:` builtin are unresolved without it and the `typecheck` step fails on the first file
-      that reads the environment — which is `src/config/env.ts`, STK-08's own `seen_at`. It is a
-      declaration package: nothing imports it and nothing it carries reaches the running service.
-    rules: [STK-01, STK-08, TYP-01]
-
-  - package: typescript-eslint
-    why: >-
-      ESLint's own parser is espree, which cannot parse TypeScript, while every rule the `lint`
-      step decides scopes `under: src` with `suffix: .ts`. Without this parser that step fails on
-      the first type annotation any source file carries, so the twenty rules it decides would be
-      decided by nothing — and the only way to keep it green would be to lint no files at all.
-    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
-
-  - package: "@secretlint/secretlint-rule-preset-recommend"
-    why: >-
-      secretlint ships the runner and no rules, so the `secret-scan` step decides nothing until a
-      rule package is present: SEC-02 and SEC-03 would report clean over a file holding a
-      credential. This is the preset secretlint's own documentation names, and it is what makes
-      that step a check rather than a green light.
-    rules: [SEC-02, SEC-03]
-
 commands:
 
   - step: install
