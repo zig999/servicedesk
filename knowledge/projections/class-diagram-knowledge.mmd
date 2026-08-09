@@ -1,0 +1,34 @@
+classDiagram
+    namespace CaseAggregate {
+        class Case {
+            <<AggregateRoot>>
+            +string slug
+            +string title
+            +string whenToUse
+            +integer version
+            +string hash
+            +SubjectType subject
+            +Resolution fallback
+            +collectionPlan()
+            +requiresEvaluationOf()
+            +resolveOutcome()
+        }
+        class Hypothesis {
+            <<Entity>>
+            +string name
+            +string criterion
+            +Concept[] collects
+            +Resolution resolution
+        }
+    }
+    class Referral {
+        <<ValueObject>>
+        +Action action
+        +Recipient recipient
+    }
+    class Resolution {
+        <<ValueObject>>
+        +Outcome outcome
+        +Referral referral
+    }
+    Case "1" *-- "1..*" Hypothesis

@@ -1,0 +1,91 @@
+classDiagram
+    namespace InvestigationAggregate {
+        class Investigation {
+            <<AggregateRoot>>
+            +string id
+            +string requester
+            +string ticketRef
+            +string narrative
+            +Subject subject
+            +string promptVersion
+            +string model
+            +Evidence[] evidence
+            +Evaluation[] evaluations
+            +Assessment assessment
+            +Cost cost
+            +Durations durations
+        }
+    }
+    class Assessment {
+        <<ValueObject>>
+        +Outcome outcome
+        +Referral referral
+        +string determiningHypothesis
+        +string text
+    }
+    class Citation {
+        <<ValueObject>>
+        +Concept concept
+        +string field
+    }
+    class Cost {
+        <<ValueObject>>
+        +integer calls
+        +integer inputTokens
+        +integer outputTokens
+    }
+    class Durations {
+        <<ValueObject>>
+        +integer collection
+        +integer judgment
+        +integer writing
+        +integer total
+    }
+    class Evaluation {
+        <<ValueObject>>
+        +string hypothesis
+        +Verdict verdict
+        +EvaluationReason reason
+        +Citation[] citations
+    }
+    class EvaluationReason {
+        <<Enumeration>>
+        NO_DATA
+        JUDGMENT_FAILURE
+        DEADLINE_EXCEEDED
+    }
+    class Evidence {
+        <<ValueObject>>
+        +Concept concept
+        +string inputs
+        +string observation
+        +datetime observedAt
+        +integer ttl
+        +string origin
+        +EvidenceResult result
+        +string resultDetail
+    }
+    class EvidenceResult {
+        <<Enumeration>>
+        OK
+        UNAVAILABLE
+        DENIED
+        TIMEOUT
+    }
+    class HypothesisEvaluator {
+        <<Service>>
+        +evaluate()
+    }
+    class Subject {
+        <<ValueObject>>
+        +SubjectType type
+        +string id
+    }
+    class Verdict {
+        <<Enumeration>>
+        CONFIRMED
+        REFUTED
+        INCONCLUSIVE
+    }
+    Evidence "0..*" --> "1" Capability
+    Investigation "0..*" --> "1" Case : pinnedCase

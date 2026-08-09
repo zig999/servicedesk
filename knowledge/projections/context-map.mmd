@@ -1,0 +1,12 @@
+flowchart LR
+    glossary["Glossary (supporting)"]
+    integration["Integration (generic)"]
+    investigation["Investigation (supporting)"]
+    knowledge["Knowledge (core)"]
+    glossary -->|glossary-query| integration
+    glossary -->|glossary-query| investigation
+    glossary -->|glossary-query| knowledge
+    integration -->|concept-observation| investigation
+    integration -->|capability-registry| knowledge
+    knowledge -->|case-query| investigation
+    system -->|corporate-records| integration

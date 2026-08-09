@@ -1,0 +1,32 @@
+# Specification overview
+
+Derived by spec.py from the specification files; never edited.
+
+## Contexts
+
+| context | strategic | elements | rules | contracts | scenarios |
+|---|---|---|---|---|---|
+| glossary | supporting | 5 | 4 | 1 | 0 |
+| integration | generic | 3 | 4 | 4 | 0 |
+| investigation | supporting | 12 | 16 | 6 | 5 |
+| knowledge | core | 4 | 15 | 3 | 3 |
+
+## Capabilities
+
+- case-authoring
+- corporate-records
+- guided-diagnosis
+
+## Constraints
+
+- diagnosis-answers-synchronously (system)
+- evidence-normalization-is-an-anticorruption-layer (integration)
+- hypotheses-are-judged-in-isolated-parallel-calls (investigation)
+- in-progress-is-a-lease-not-domain-state (investigation)
+- judgment-runs-behind-a-port (investigation)
+- the-deadline-is-an-absolute-propagated-instant (investigation)
+- the-domain-depends-on-no-infrastructure (system)
+- the-evidence-cache-admits-only-ok-results (investigation)
+- the-judgment-prompt-is-closed (investigation)
+
+29 decision(s) disclosed in the decision log.

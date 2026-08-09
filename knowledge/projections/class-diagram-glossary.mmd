@@ -1,0 +1,23 @@
+classDiagram
+    class Action {
+        <<ValueObject>>
+        +string name
+    }
+    class Concept {
+        <<ValueObject>>
+        +string name
+        +SubjectType[] accepts
+        +integer ttl
+    }
+    class Outcome {
+        <<ValueObject>>
+        +string name
+    }
+    class Recipient {
+        <<ValueObject>>
+        +string name
+    }
+    class SubjectType {
+        <<ValueObject>>
+        +string name
+    }

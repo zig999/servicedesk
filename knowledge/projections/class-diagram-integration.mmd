@@ -1,0 +1,23 @@
+classDiagram
+    namespace CapabilityAggregate {
+        class Capability {
+            <<AggregateRoot>>
+            +string name
+            +string version
+            +CapabilityNature nature
+            +string inputSchema
+            +string outputSchema
+            +integer timeout
+            +string connector
+        }
+    }
+    class CapabilityNature {
+        <<Enumeration>>
+        READ_ONLY
+        MUTATING
+    }
+    class CapabilityRegistry {
+        <<Service>>
+        +registerCapability()
+        +resolveConcept()
+    }
