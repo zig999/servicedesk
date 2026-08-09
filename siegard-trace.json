@@ -6,6 +6,10 @@
       "digest": "sha256:cc7605ecf967979c97918929614141359e60f0feeb66b831a848d529d5f682e2",
       "files": [
         {
+          "path": "src/src/persistence/file-case-store.repository.ts",
+          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         },
@@ -30,12 +34,16 @@
       "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
       "files": [
         {
-          "path": "src/src/persistence/file-capability-store.repository.ts",
-          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
+          "path": "src/src/persistence/file-case-store.repository.ts",
+          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
         },
         {
           "path": "src/src/persistence/json-file.ts",
-          "digest": "sha256:0a5e2c548791cd5f121064c87f9f39573f073568fce9421ed7b106beeeebdcb2"
+          "digest": "sha256:9965eeaed5c49e26a5c576da1558037683a364422978f6413e62011956393b8e"
+        },
+        {
+          "path": "src/src/persistence/file-capability-store.repository.ts",
+          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
         },
         {
           "path": "src/src/persistence/file-glossary-store.repository.ts",
@@ -90,6 +98,20 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
+      "node": "contracts/knowledge/case-query",
+      "digest": "sha256:8e2ff769346c835557890e7ce9dffa91a00d8712b0a40ee4ffc82f8647958719",
+      "files": [
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:4d2bded0183172349f7ab1e54391e08ba8bf5127123a7d679c6ee1f823ec864c"
+        },
+        {
+          "path": "src/src/persistence/file-case-store.repository.ts",
+          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
         }
       ]
     },
@@ -456,6 +478,20 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/every-case-version-remains-readable",
+      "digest": "sha256:03b472df47ef9485d9ad937d38601c46c4b72bb471f8a90c85ff60458b2a0165",
+      "files": [
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:4d2bded0183172349f7ab1e54391e08ba8bf5127123a7d679c6ee1f823ec864c"
+        },
+        {
+          "path": "src/src/persistence/file-case-store.repository.ts",
+          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
         }
       ]
     },

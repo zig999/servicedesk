@@ -4,6 +4,13 @@ import { dirname } from 'node:path';
 /** How reading one plain JSON file can fail, for a store to name in its own words. */
 export type JsonFileFailure = 'unreadable' | 'not-json';
 
+/**
+ * One plain JSON file's content, both parsed and as the exact text it holds
+ * — the text is what a store pins by hashing, so it hashes precisely the
+ * bytes a read found on disk, never a re-serialization of the parsed value.
+ */
+export type JsonFileContent = { readonly text: string; readonly data: unknown };
+
 const JSON_INDENT = 2;
 
 /**
@@ -19,12 +26,28 @@ export async function readJsonFileOrAbsent(
   file: string,
   raise: (failure: JsonFileFailure, cause: unknown) => Error,
 ): Promise<unknown> {
+  const read = await readJsonFileWithTextOrAbsent(file, raise);
+  return read?.data;
+}
+
+/**
+ * Reads one plain JSON file as both its parsed content and its exact text,
+ * answering undefined where the file does not exist — the same absence rule
+ * as readJsonFileOrAbsent, extended with the raw text a store needs to pin
+ * what it read by hashing exactly the bytes on disk
+ * (constraints/a-case-is-stored-as-one-json-document — pinning it is
+ * hashing one file).
+ */
+export async function readJsonFileWithTextOrAbsent(
+  file: string,
+  raise: (failure: JsonFileFailure, cause: unknown) => Error,
+): Promise<JsonFileContent | undefined> {
   const text = await readTextOrAbsent(file, raise);
   if (text === undefined) {
     return undefined;
   }
   try {
-    return JSON.parse(text) as unknown;
+    return { text, data: JSON.parse(text) as unknown };
   } catch (error) {
     throw raise('not-json', error);
   }
@@ -51,7 +74,12 @@ async function readTextOrAbsent(
   }
 }
 
-/** Whether a filesystem error says the file does not exist. */
-function isAbsence(error: unknown): boolean {
+/**
+ * Whether a filesystem error says the path does not exist — a file or a
+ * directory alike, shared by any store that must read an absent path as
+ * data rather than failure (a listing of a case that was never written,
+ * the same way an absent file is answered above).
+ */
+export function isAbsence(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === 'ENOENT';
 }

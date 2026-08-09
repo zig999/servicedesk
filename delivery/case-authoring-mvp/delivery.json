@@ -42,6 +42,14 @@
       "task": "task/case-model/case-resolution"
     },
     {
+      "id": "implementation/case-store/versioned-file-store",
+      "kind": "implementation",
+      "file": "implementation/case-store/versioned-file-store.md",
+      "title": "Versioned file store for case versions",
+      "summary": "A file-backed ICaseStore that persists every version of every case as its own JSON document under <slug>/<version>.json, and answers a read pinned by the sha256 content identity of the exact bytes it just read.",
+      "task": "task/case-store/versioned-file-store"
+    },
+    {
       "id": "implementation/published-language/build-substrate",
       "kind": "implementation",
       "file": "implementation/published-language/build-substrate.md",
@@ -104,6 +112,14 @@
       "title": "Proof for case resolution",
       "summary": "Holds task/case-model/case-resolution over the specification's worked example — the collection plan deduplicated where the declared order first names each concept, totality demanded as the case declares it, the first confirmed hypothesis in declared order determining while a later confirmation stays unmarked, and the fallback answering whole with no determining name.",
       "task": "task/case-model/case-resolution"
+    },
+    {
+      "id": "proof/case-store/versioned-file-store",
+      "kind": "proof",
+      "file": "proof/case-store/versioned-file-store.md",
+      "title": "Proof for the versioned file case store",
+      "summary": "Real-filesystem tests over FileCaseStore proving one JSON document per case version, a growing directory-derived index, content-pinned reads, single-file loads, and the manifest half of the no-database constraint by reuse.",
+      "task": "task/case-store/versioned-file-store"
     },
     {
       "id": "proof/published-language/glossary-query",
@@ -400,6 +416,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-store/versioned-file-store",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-store/versioned-file-store",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-store/versioned-file-store",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-store/versioned-file-store",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-store/versioned-file-store",
+      "to": "task/case-store/versioned-file-store",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/published-language/build-substrate",
       "to": "constraints/the-mvp-persists-to-no-database",
       "kind": "encodes",
@@ -540,6 +586,12 @@
     {
       "from": "proof/case-model/case-resolution",
       "to": "implementation/case-model/case-resolution",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-store/versioned-file-store",
+      "to": "implementation/case-store/versioned-file-store",
       "kind": "proves",
       "at": "the path"
     },
