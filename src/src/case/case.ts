@@ -1,7 +1,13 @@
 // The case aggregate as data (domain/knowledge): pure values with no
 // behavior, each attribute spelled as the specification declares it so the
 // one JSON document and the node read the same
-// (constraints/a-case-is-stored-as-one-json-document).
+// (constraints/a-case-is-stored-as-one-json-document). The one import this
+// module carries is the consolidation-register vocabulary's own plain type
+// (domain/knowledge/consolidation-register), reused here rather than
+// redeclared, and itself free of any import
+// (constraints/the-domain-depends-on-no-infrastructure).
+
+import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 
 /**
  * The forwarding a resolution carries (domain/knowledge/referral): what to
@@ -44,10 +50,11 @@ export type Hypothesis = {
 
 /**
  * One troubleshooting procedure (domain/knowledge/case), whole as its one
- * JSON document states it: every declared attribute required, the fallback
- * a disguised default hypothesis that claims nothing about the world, and
- * the hypotheses held in the document's declared order — the precedence the
- * experts affirm and resolve-outcome consumes
+ * JSON document states it: every declared attribute required except the
+ * optional consolidation register, the fallback a disguised default
+ * hypothesis that claims nothing about the world, and the hypotheses held
+ * in the document's declared order — the precedence the experts affirm and
+ * resolve-outcome consumes
  * (rules/knowledge/hypotheses-are-ordered-by-precedence), so the aggregate
  * never reorders them and never keys them by name.
  */
@@ -63,6 +70,14 @@ export type Case = {
   readonly subject: string;
   /** The resolution that answers when no hypothesis confirms. */
   readonly fallback: Resolution;
+  /**
+   * The register the case's curator asks the consolidation write-up to
+   * keep, formal or plain (domain/knowledge/consolidation-register). The
+   * curator may author it alongside the hypotheses; where the case leaves
+   * it undeclared, the consolidation step keeps whatever register its own
+   * adapter defaults to.
+   */
+  readonly consolidation_register?: ConsolidationRegister;
   /** At least one (rules/knowledge/a-case-has-at-least-one-hypothesis), in declared precedence order. */
   readonly hypotheses: readonly Hypothesis[];
 };

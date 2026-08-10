@@ -362,6 +362,60 @@ it('refuses a document that is a JSON array', () => {
   expect(problems).toEqual([expect.stringContaining('not one JSON object')]);
 });
 
+// ---------------------------------------------------------------- the optional consolidation register
+
+it('parses a document declaring consolidation_register formal into a case carrying it', () => {
+  const document = completeDocument({ consolidation_register: 'formal' });
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect(parsed.consolidation_register).toBe('formal');
+});
+
+it('parses a document declaring consolidation_register plain into a case carrying it', () => {
+  const document = completeDocument({ consolidation_register: 'plain' });
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect(parsed.consolidation_register).toBe('plain');
+});
+
+it('parses a document that omits consolidation_register without refusing it, and leaves the key off the returned case', () => {
+  const document = completeDocument();
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect('consolidation_register' in parsed).toBe(false);
+});
+
+it.each([
+  ['an unrecognized word', 'strict'],
+  ['an empty string', ''],
+  ['the wrong case', 'Formal'],
+  ['a number', 42],
+  ['null', null],
+])('refuses a consolidation_register declared as %s', (_label, value) => {
+  const document = completeDocument({ consolidation_register: value });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual(['consolidation_register is not one of formal, plain']);
+});
+
+it('collects a consolidation_register violation together with another structural violation in one refusal, never throwing on the first found', () => {
+  const document = completeDocument({ title: undefined, consolidation_register: 'strict' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toHaveLength(2);
+  expect(problems).toEqual(
+    expect.arrayContaining([
+      expect.stringContaining('title is undeclared'),
+      'consolidation_register is not one of formal, plain',
+    ]),
+  );
+});
+
 // ---------------------------------------------------------------- several violations, one refusal
 
 it('refuses a document violating several structural rules once, naming every violation', () => {

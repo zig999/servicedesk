@@ -10,6 +10,14 @@
       "task": "task/assessment-consolidation/assessment-consolidator-port-and-fake"
     },
     {
+      "id": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "implementation",
+      "file": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register.md",
+      "title": "Case admits an optional consolidation register",
+      "summary": "The Case aggregate and its parser admit an optional consolidation_register (formal or plain), reusing the vocabulary type already declared for assessment-consolidator rather than redeclaring it.",
+      "task": "task/assessment-consolidation/case-coherence-optional-consolidation-register"
+    },
+    {
       "id": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "kind": "implementation",
       "file": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth.md",
@@ -24,6 +32,14 @@
       "title": "Subject as type plus attribute-value set",
       "summary": "The canonical Subject and SubjectAttributeValue value objects, with a construction-time refusal for an empty attribute-value set, replacing the bare-id Subject and its port-side inline duplicate, plus coordinator-authorized mechanical compile-compat patches to unblock a cross-task build deadlock.",
       "task": "task/subject-identity-rework/subject-value-object"
+    },
+    {
+      "id": "proof/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "proof",
+      "file": "proof/assessment-consolidation/case-coherence-optional-consolidation-register.md",
+      "title": "Case admits an optional consolidation register — proof",
+      "summary": "Tests over parse-case-document.ts proving a case document's optional consolidation_register parses through when formal or plain, parses successfully when absent, is refused together with any other structural violation when declared outside that closed set, and is carried onto the returned Case rather than dropped.",
+      "task": "task/assessment-consolidation/case-coherence-optional-consolidation-register"
     },
     {
       "id": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
@@ -94,6 +110,24 @@
     {
       "from": "implementation/assessment-consolidation/assessment-consolidator-port-and-fake",
       "to": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
       "kind": "implements",
       "at": "the path"
     },
@@ -173,6 +207,12 @@
       "from": "implementation/subject-identity-rework/subject-value-object",
       "to": "task/subject-identity-rework/subject-value-object",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "proves",
       "at": "the path"
     },
     {

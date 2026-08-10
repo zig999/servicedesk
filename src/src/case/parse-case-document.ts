@@ -1,4 +1,8 @@
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
+import {
+  CONSOLIDATION_REGISTERS,
+  type ConsolidationRegister,
+} from '../investigation/consolidation-register.js';
 import { CASE_DOCUMENT_ENDING, type Case, type Hypothesis, type Resolution } from './case.js';
 
 /** The refusal a case declaring no hypothesis is named with (rules/knowledge/a-case-has-at-least-one-hypothesis). */
@@ -15,8 +19,12 @@ const NO_HYPOTHESIS_PROBLEM = 'the case declares no hypothesis';
  * missing part is ever defaulted or coerced. What the structural rules do
  * not decide — a term existing in the glossary, a concept's capability —
  * is no concern of this parse: those checks read other contexts and belong
- * to the coherence validation, which is why this module imports nothing
- * beyond its own types and its typed error
+ * to the coherence validation. The consolidation register is the one
+ * exception to "every declared attribute required": it is optional, and,
+ * where declared, closed to the two values the vocabulary admits rather
+ * than glossary-checked, so this module's only import beyond its own types
+ * and its typed error is that vocabulary's own plain type and value set
+ * (domain/knowledge/consolidation-register), itself free of any import
  * (constraints/the-domain-depends-on-no-infrastructure).
  */
 export function parseCaseDocument(document: unknown, fileName: string): Case {
@@ -50,8 +58,32 @@ function documentProblems(document: unknown, fileName: string): string[] {
     ...stringProblems(document['hash'], 'hash'),
     ...stringProblems(document['subject'], 'subject'),
     ...resolutionProblems(document['fallback'], 'the fallback'),
+    ...consolidationRegisterProblems(document['consolidation_register']),
     ...hypothesesProblems(document['hypotheses']),
   ];
+}
+
+/**
+ * How the case's optional consolidation register departs from its
+ * declaration (domain/knowledge/case): never required, so a document
+ * leaving it undeclared holds no problem here at all — the consolidation
+ * step then keeps whatever register its own adapter defaults to — but a
+ * document that does declare it must name one of the two closed values the
+ * register admits, formal or plain
+ * (domain/knowledge/consolidation-register).
+ */
+function consolidationRegisterProblems(value: unknown): string[] {
+  if (value === undefined) {
+    return [];
+  }
+  return isConsolidationRegister(value)
+    ? []
+    : ['consolidation_register is not one of formal, plain'];
+}
+
+/** Whether the given value is one of the two closed values the register admits. */
+function isConsolidationRegister(value: unknown): value is ConsolidationRegister {
+  return CONSOLIDATION_REGISTERS.some((register) => register === value);
 }
 
 /**
@@ -240,7 +272,11 @@ function referralProblems(value: unknown, subject: string): string[] {
  * document's own order — the precedence the experts affirm, which
  * resolve-outcome will consume
  * (rules/knowledge/hypotheses-are-ordered-by-precedence) — never reordered
- * and never keyed by name.
+ * and never keyed by name. The optional consolidation register travels
+ * through exactly where the document declares it
+ * (domain/knowledge/consolidation-register) and is left off the held case
+ * entirely where the document leaves it undeclared, rather than carried as
+ * an explicit undefined.
  */
 function heldCase(document: Case): Case {
   return {
@@ -251,6 +287,9 @@ function heldCase(document: Case): Case {
     hash: document.hash,
     subject: document.subject,
     fallback: heldResolution(document.fallback),
+    ...(document.consolidation_register !== undefined
+      ? { consolidation_register: document.consolidation_register }
+      : {}),
     hypotheses: document.hypotheses.map(heldHypothesis),
   };
 }
