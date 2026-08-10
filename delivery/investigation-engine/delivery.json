@@ -160,6 +160,24 @@
       "title": "Proof for the write-once investigation store",
       "summary": "Real-filesystem tests over FileInvestigationStore proving one JSON document per investigation id, refusal of an already-stored identity without touching the earlier file, and write's reuse of the shared JSON-file writer, plus the store's error classes exercised through both failure paths.",
       "task": "task/investigation-lifecycle/investigation-store"
+    },
+    {
+      "id": "review/investigation-engine",
+      "kind": "review",
+      "file": "review/investigation-engine.md",
+      "title": "investigation-engine, first review",
+      "summary": "What four passes found over the ten tasks this initiative delivered — coverage, specification conformance, standard conformance, and a failures pass that had nothing to diagnose since the captured run was fully green.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A repeated request whose key matches a completed investigation within the window answers that investigation, never starting a second one.",
+        "A response whose citations fail structural validation triggers one retry when the remaining deadline admits it, and otherwise the evaluation falls back to inconclusive with reason judgment-failure.",
+        "The store's write reuses the shared JSON-file writer rather than a second file-writing routine."
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -720,6 +738,66 @@
       "to": "implementation/investigation-lifecycle/investigation-store",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/evidence-collection/observation-source-port",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/investigation-lifecycle/idempotency-window",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/evidence-collection/evidence-collection-stage",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/hypothesis-judgment/citation-validation",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/hypothesis-judgment/judgment-stage",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/assessment-drafting/resolve-and-narrow-input",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/assessment-drafting/draft-assessment-text",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/investigation-lifecycle/investigation-factory",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/investigation-engine",
+      "to": "task/investigation-lifecycle/investigation-store",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
