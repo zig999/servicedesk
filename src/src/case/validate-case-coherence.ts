@@ -29,6 +29,15 @@ import type { Case, Resolution } from './case.js';
  */
 const VOCABULARY_ROLES: Readonly<Record<TermVocabulary, string>> = {
   'subject-type': 'subject type',
+  // 'subject-attribute' joined TermVocabulary once
+  // task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject
+  // widened it for its own glossary-membership check; namedVocabularyTerms()
+  // below never emits a subject-attribute entry — a case never declares
+  // attribute-values itself (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary's
+  // own description) — so this key exists only to keep this exhaustive map
+  // compiling against the wider TermVocabulary, and this refusal message is
+  // never actually produced.
+  'subject-attribute': 'subject attribute',
   outcome: 'outcome',
   action: 'action',
   recipient: 'recipient',

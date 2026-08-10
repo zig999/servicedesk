@@ -1,24 +1,38 @@
-// Proof for task/investigation-lifecycle/investigation-factory: buildInvestigation()
-// refuses once, naming every totality violation together, where the given
-// evidence does not cover the pinned case's own collection plan exactly once
-// per concept (rules/investigation/one-evidence-per-collected-concept) or the
-// given evaluations do not cover its required hypotheses exactly once each
-// (rules/investigation/one-evaluation-per-required-hypothesis) — the "exactly
-// once" of both rules read as its own two-sided boundary, a name with zero
-// matches and a name with more than one, plus the third, symmetric category
-// the implementation's own inference adds: an entry naming something neither
-// rule declared at all. Otherwise it assembles the whole Investigation,
-// pinning the case by slug, version and hash alone — never the whole case —
-// alongside the model, the prompt version and the evidence
-// (rules/investigation/replay-is-pinned), as one plain literal object with no
-// method on it. Pure and synchronous throughout, so no fake timers or async
-// handling is needed here; whether the factory module itself imports no
-// framework, driver or provider client is proved separately by
-// investigation-factory-modules.spec.ts, a fact about this module's own
-// imports rather than about any input it is given at runtime.
+// Proof for task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject:
+// buildInvestigation() assembles the Subject from the given raw subjectType
+// and subjectAttributes rather than accepting an already-built one, refusing
+// where the attribute-value set is empty
+// (rules/investigation/a-subject-carries-at-least-one-attribute, enforced by
+// subject.ts's own buildSubject and surfaced here as
+// SubjectCarriesNoAttributeError) or where it names an attribute the
+// glossary does not hold
+// (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary,
+// checked through the consumed glossary-source port and surfaced as
+// SubjectAttributeNotInGlossaryError) — and otherwise carries the assembled
+// subject unchanged into the built Investigation. The glossary boundary
+// (contracts/investigation/glossary-source) is stood in for by a small
+// in-memory fake, the same convention validate-case-coherence.spec.ts
+// already keeps for the sibling case-coherence checks, so the policy is
+// proved against the published read alone.
+//
+// This file also carries the pre-existing proof for the totality checks
+// buildInvestigation already performed before this task
+// (task/investigation-lifecycle/investigation-factory,
+// rules/investigation/one-evidence-per-collected-concept,
+// rules/investigation/one-evaluation-per-required-hypothesis) and for its own
+// replay pinning and plain-value shape — unchanged in substance, only made
+// async because the factory itself now is.
 import { expect, it } from 'vitest';
 import type { Case, Hypothesis } from '../../../case/case.js';
 import { InvestigationNotBuildableError } from '../../../errors/investigation-not-buildable.error.js';
+import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
+import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
+import type {
+  ConceptResolution,
+  IGlossaryQuery,
+  TermResolution,
+} from '../../../glossary/glossary-query.port.js';
+import type { TermVocabulary } from '../../../glossary/terms.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { Cost } from '../../../investigation/cost.js';
 import type { Durations } from '../../../investigation/durations.js';
@@ -26,12 +40,48 @@ import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { BuildInvestigationOptions } from '../../../investigation/investigation-factory.js';
 import { buildInvestigation } from '../../../investigation/investigation-factory.js';
-import type { Subject } from '../../../investigation/subject.js';
+import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 
 /** The pinned case's own three identifying attributes — reused by the fixture and by the pin assertions, so a typo in either cannot fake a pass. */
 const CASE_SLUG = 'a-case';
 const CASE_VERSION = 3;
 const CASE_HASH = 'a-hash';
+
+/**
+ * Stands in for the consumed glossary-source port
+ * (contracts/investigation/glossary-source): a holding a test seeds
+ * directly, so an attribute the glossary does not hold is exactly what the
+ * test says it is — never derived from a real store. Only the
+ * subject-attribute vocabulary is ever exercised through this port by
+ * investigation-factory.ts, but the whole interface is implemented so the
+ * fake can stand in for it.
+ */
+class FakeGlossaryQuery implements IGlossaryQuery {
+  private readonly attributes = new Set<string>();
+
+  public holdAttribute(name: string): void {
+    this.attributes.add(name);
+  }
+
+  public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
+    return this.attributes.has(name)
+      ? { held: true, term: { name } }
+      : { held: false, vocabulary, name };
+  }
+
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    return { held: false, name };
+  }
+}
+
+/** A glossary holding exactly the given subject-attribute names, none other. */
+function glossaryHolding(...names: readonly string[]): FakeGlossaryQuery {
+  const glossary = new FakeGlossaryQuery();
+  for (const name of names) {
+    glossary.holdAttribute(name);
+  }
+  return glossary;
+}
 
 /** One hypothesis, defaulted so a test states only its name and what it collects. */
 function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
@@ -105,16 +155,15 @@ function aDurations(overrides: Partial<Durations> = {}): Durations {
   return { collection: 10, judgment: 20, writing: 5, total: 35, ...overrides };
 }
 
-/** A whole Subject, defaulted so a test states only what it departs from. */
-function aSubject(overrides: Partial<Subject> = {}): Subject {
-  return { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-1' }], ...overrides };
-}
+/** The one attribute-value pair the default fixture's subject carries, and the glossary that holds its name. */
+const DEFAULT_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];
 
 /**
- * The whole BuildInvestigationOptions, valid by default — evidence covering
- * aCase()'s own collection plan exactly once per concept, evaluations
- * covering its required hypotheses exactly once each — so a test states only
- * what it departs from.
+ * The whole BuildInvestigationOptions, valid by default — a subject naming
+ * one attribute the default glossary holds, evidence covering aCase()'s own
+ * collection plan exactly once per concept, evaluations covering its
+ * required hypotheses exactly once each — so a test states only what it
+ * departs from.
  */
 function validOptions(overrides: Partial<BuildInvestigationOptions> = {}): BuildInvestigationOptions {
   return {
@@ -122,7 +171,9 @@ function validOptions(overrides: Partial<BuildInvestigationOptions> = {}): Build
     requester: 'requester-1',
     ticket_ref: 'TICKET-1',
     narrative: 'the narrative the requester submitted',
-    subject: aSubject(),
+    subjectType: 'ont',
+    subjectAttributes: DEFAULT_SUBJECT_ATTRIBUTES,
+    glossary: glossaryHolding('id'),
     case: aCase(),
     prompt_version: 'prompt-v1',
     model: 'model-x',
@@ -166,10 +217,10 @@ function extraneousEvaluationViolation(name: string): string {
 }
 
 /** Every violation one build is refused with; fails the test where the build succeeds instead. */
-function violationsOf(options: BuildInvestigationOptions): readonly string[] {
+async function violationsOf(options: BuildInvestigationOptions): Promise<readonly string[]> {
   let refusal: unknown;
   try {
-    buildInvestigation(options);
+    await buildInvestigation(options);
   } catch (error) {
     refusal = error;
   }
@@ -179,110 +230,234 @@ function violationsOf(options: BuildInvestigationOptions): readonly string[] {
   return refusal.context.violations;
 }
 
-// ---------------------------------------------------------------- criterion 1: evidence totality
+// ------------------------------------- criterion 1: a-subject-carries-at-least-one-attribute
 
-it('refuses to build when a collection-plan concept has no matching evidence', () => {
-  // Also exercises the inference that buildInvestigation() takes the whole
+it('refuses to build when the subject carries no attribute-value at all, naming the violated invariant', async () => {
+  const options = validOptions({ subjectType: 'ont', subjectAttributes: [] });
+
+  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+
+  if (!(refusal instanceof SubjectCarriesNoAttributeError)) {
+    throw new Error('expected the subject-carries-no-attribute refusal and the investigation built instead');
+  }
+  expect(refusal.message).toBe('a subject of type "ont" carries no attribute-value; at least one is required');
+  expect(refusal.context).toEqual({ type: 'ont' });
+});
+
+// -------------------------------- criterion 2: a-subject-attribute-is-drawn-from-the-glossary
+
+it('refuses to build when the subject names an attribute the glossary does not hold, naming the violated policy', async () => {
+  const options = validOptions({
+    subjectAttributes: [{ attribute: 'id', value: 'subject-1' }],
+    glossary: glossaryHolding(), // holds no attribute at all
+  });
+
+  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+
+  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
+    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
+  }
+  expect(refusal.message).toBe('a subject of type "ont" names an attribute the glossary does not hold: id');
+  expect(refusal.context).toEqual({ type: 'ont', attributes: ['id'] });
+});
+
+it('names every attribute the glossary does not hold together, in one refusal', async () => {
+  const options = validOptions({
+    subjectAttributes: [
+      { attribute: 'id', value: 'subject-1' },
+      { attribute: 'phone', value: '555-0100' },
+    ],
+    glossary: glossaryHolding(), // holds neither
+  });
+
+  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+
+  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
+    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
+  }
+  expect(refusal.context.attributes).toEqual(['id', 'phone']);
+});
+
+it('names an attribute missing from the glossary once, no matter how many attribute-value pairs of the subject name it', async () => {
+  const options = validOptions({
+    subjectAttributes: [
+      { attribute: 'id', value: 'subject-1' },
+      { attribute: 'id', value: 'subject-2' },
+    ],
+    glossary: glossaryHolding(),
+  });
+
+  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+
+  if (!(refusal instanceof SubjectAttributeNotInGlossaryError)) {
+    throw new Error('expected the subject-attribute-not-in-glossary refusal and the investigation built instead');
+  }
+  expect(refusal.context.attributes).toEqual(['id']);
+});
+
+it('does not refuse a subject whose every named attribute the glossary holds', async () => {
+  const options = validOptions({
+    subjectAttributes: [
+      { attribute: 'id', value: 'subject-1' },
+      { attribute: 'phone', value: '555-0100' },
+    ],
+    glossary: glossaryHolding('id', 'phone'),
+  });
+
+  await expect(buildInvestigation(options)).resolves.toBeDefined();
+});
+
+it('lets a failure from the glossary port reach the caller rather than becoming a subject-attribute-not-in-glossary refusal', async () => {
+  const failure = new Error('glossary temporarily unavailable');
+  const glossary: IGlossaryQuery = {
+    readVocabularyTerm: () => Promise.reject(failure),
+    readConcept: () => Promise.resolve({ held: false, name: 'unused' }),
+  };
+  const options = validOptions({ glossary });
+
+  await expect(buildInvestigation(options)).rejects.toBe(failure);
+});
+
+it('refuses over a subject-attribute-not-in-glossary violation before ever checking evidence or evaluation totality', async () => {
+  // The evidence and evaluations below are both empty, which the totality
+  // checks would also refuse — this asserts that the refusal actually
+  // reaching the caller is the subject-attribute one, not a totality one,
+  // so a subject is fully validated before anything about the case's
+  // completed stages is even looked at.
+  const options = validOptions({
+    subjectAttributes: [{ attribute: 'unknown-attribute', value: 'x' }],
+    glossary: glossaryHolding(),
+    evidence: [],
+    evaluations: [],
+  });
+
+  const refusal = await buildInvestigation(options).catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(SubjectAttributeNotInGlossaryError);
+});
+
+// ------------------------------------------ criterion 3: a valid subject is carried unchanged
+
+it('carries a subject whose type and every attribute-value pair are valid, unchanged, into the built Investigation', async () => {
+  const subjectAttributes: readonly SubjectAttributeValue[] = [
+    { attribute: 'id', value: 'subject-1' },
+    { attribute: 'phone', value: '555-0100' },
+  ];
+  const options = validOptions({
+    subjectType: 'ont',
+    subjectAttributes,
+    glossary: glossaryHolding('id', 'phone'),
+  });
+
+  const investigation = await buildInvestigation(options);
+
+  expect(investigation.subject).toEqual({ type: 'ont', attributes: subjectAttributes });
+});
+
+// ---------------------------------------------------------------- criterion 1 (pre-existing): evidence totality
+
+it('refuses to build when a collection-plan concept has no matching evidence', async () => {
+  // Also exercises the inference that buildInvestigation() reads the whole
   // Case rather than pre-extracted names: collectionPlan(theCase) is what
   // supplies "concept-b" here, from the given case alone.
   const options = validOptions({ evidence: [anEvidence('concept-a')] }); // concept-b missing
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([noEvidenceViolation('concept-b')]);
 });
 
-it('refuses to build when an evidence entry names a concept the collection plan does not hold', () => {
+it('refuses to build when an evidence entry names a concept the collection plan does not hold', async () => {
   const options = validOptions({
     evidence: [anEvidence('concept-a'), anEvidence('concept-b'), anEvidence('concept-x')],
   });
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([extraneousEvidenceViolation('concept-x')]);
 });
 
-it('refuses to build when a collection-plan concept has more than one matching evidence entry', () => {
+it('refuses to build when a collection-plan concept has more than one matching evidence entry', async () => {
   const options = validOptions({
     evidence: [anEvidence('concept-a'), anEvidence('concept-a'), anEvidence('concept-b')],
   });
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([duplicateEvidenceViolation('concept-a', 2)]);
 });
 
-// ---------------------------------------------------------------- criterion 2: evaluation totality
+// ---------------------------------------------------------------- criterion 2 (pre-existing): evaluation totality
 
-it('refuses to build when a required hypothesis has no matching evaluation', () => {
+it('refuses to build when a required hypothesis has no matching evaluation', async () => {
   const options = validOptions({ evaluations: [aConfirmedEvaluation('h1')] }); // h2 missing
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([noEvaluationViolation('h2')]);
 });
 
-it('refuses to build when an evaluation names a hypothesis the case does not require', () => {
+it('refuses to build when an evaluation names a hypothesis the case does not require', async () => {
   const options = validOptions({
     evaluations: [aConfirmedEvaluation('h1'), aConfirmedEvaluation('h2'), aConfirmedEvaluation('h-foreign')],
   });
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([extraneousEvaluationViolation('h-foreign')]);
 });
 
-it('refuses to build when a required hypothesis has more than one matching evaluation', () => {
+it('refuses to build when a required hypothesis has more than one matching evaluation', async () => {
   const options = validOptions({
     evaluations: [aConfirmedEvaluation('h1'), aConfirmedEvaluation('h1'), aConfirmedEvaluation('h2')],
   });
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([duplicateEvaluationViolation('h1', 2)]);
 });
 
 // ------------------------------------------------- edge case: both totalities violated together
 
-it('refuses once, naming every violation from both the evidence and the evaluation totality checks together', () => {
+it('refuses once, naming every violation from both the evidence and the evaluation totality checks together', async () => {
   const options = validOptions({
     evidence: [anEvidence('concept-a')], // concept-b missing
     evaluations: [aConfirmedEvaluation('h1')], // h2 missing
   });
 
-  const violations = violationsOf(options);
+  const violations = await violationsOf(options);
 
   expect(violations).toEqual([noEvidenceViolation('concept-b'), noEvaluationViolation('h2')]);
 });
 
-// ---------------------------------------------------------------- criterion 3: replay pinning
+// ---------------------------------------------------------------- criterion 3 (pre-existing): replay pinning
 
-it('pins the case by exactly slug, version and hash, never the whole case', () => {
+it('pins the case by exactly slug, version and hash, never the whole case', async () => {
   // Also exercises the two inferences behind pinned_case's own shape: a
   // nested { slug, version, hash } value rather than three flat fields, and
   // spelled pinned_case (snake_case) rather than pinnedCase.
-  const investigation = buildInvestigation(validOptions());
+  const investigation = await buildInvestigation(validOptions());
 
   expect(investigation.pinned_case).toEqual({ slug: CASE_SLUG, version: CASE_VERSION, hash: CASE_HASH });
   expect(investigation.pinned_case).not.toHaveProperty('title');
   expect(investigation.pinned_case).not.toHaveProperty('hypotheses');
 });
 
-it('copies model, prompt_version and evidence straight from the given options, unchanged', () => {
+it('copies model, prompt_version and evidence straight from the given options, unchanged', async () => {
   const evidence = [anEvidence('concept-a'), anEvidence('concept-b')];
   const options = validOptions({ model: 'model-y', prompt_version: 'prompt-v2', evidence });
 
-  const investigation = buildInvestigation(options);
+  const investigation = await buildInvestigation(options);
 
   expect(investigation.model).toBe('model-y');
   expect(investigation.prompt_version).toBe('prompt-v2');
   expect(investigation.evidence).toEqual(evidence);
 });
 
-// ---------------------------------------------------------------- criterion 4: a plain value, no method
+// ---------------------------------------------------------------- criterion 4 (pre-existing): a plain value, no method
 
-it('answers a plain data object carrying no method, so nothing on the value itself could mutate it after construction', () => {
-  const investigation = buildInvestigation(validOptions());
+it('answers a plain data object carrying no method, so nothing on the value itself could mutate it after construction', async () => {
+  const investigation = await buildInvestigation(validOptions());
 
   expect(Object.getPrototypeOf(investigation)).toBe(Object.prototype);
   expect(Object.values(investigation).some((value) => typeof value === 'function')).toBe(false);
@@ -290,30 +465,30 @@ it('answers a plain data object carrying no method, so nothing on the value itse
 
 // ---------------------------------------------------- edge case: a valid build does not throw
 
-it('does not throw when the evidence covers the collection plan and the evaluations cover the required hypotheses exactly once each', () => {
+it('does not throw when the subject is valid, the evidence covers the collection plan and the evaluations cover the required hypotheses exactly once each', async () => {
   const options = validOptions();
 
-  expect(() => buildInvestigation(options)).not.toThrow();
+  await expect(buildInvestigation(options)).resolves.toBeDefined();
 });
 
 // ---------------------------------------------------------- edge case: defensive copies
 
-it('copies the given evidence array rather than holding onto it, so mutating the original array afterwards leaves the built value unchanged', () => {
+it('copies the given evidence array rather than holding onto it, so mutating the original array afterwards leaves the built value unchanged', async () => {
   const evidence: Evidence[] = [anEvidence('concept-a'), anEvidence('concept-b')];
   const options = validOptions({ evidence });
 
-  const investigation = buildInvestigation(options);
+  const investigation = await buildInvestigation(options);
   evidence.push(anEvidence('concept-x'));
 
   expect(investigation.evidence).toHaveLength(2);
   expect(investigation.evidence.map((item) => item.concept)).toEqual(['concept-a', 'concept-b']);
 });
 
-it('copies the given evaluations array rather than holding onto it, so mutating the original array afterwards leaves the built value unchanged', () => {
+it('copies the given evaluations array rather than holding onto it, so mutating the original array afterwards leaves the built value unchanged', async () => {
   const evaluations: Evaluation[] = [aConfirmedEvaluation('h1'), aConfirmedEvaluation('h2')];
   const options = validOptions({ evaluations });
 
-  const investigation = buildInvestigation(options);
+  const investigation = await buildInvestigation(options);
   evaluations.push(aConfirmedEvaluation('h-foreign'));
 
   expect(investigation.evaluations).toHaveLength(2);

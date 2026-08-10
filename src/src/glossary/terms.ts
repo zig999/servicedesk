@@ -3,7 +3,7 @@
 
 /**
  * One entry of a term vocabulary: a name, held exactly once per vocabulary.
- * The shape the four term vocabularies of the glossary share.
+ * The shape the five term vocabularies of the glossary share.
  */
 export type GlossaryTerm = {
   readonly name: string;
@@ -11,6 +11,17 @@ export type GlossaryTerm = {
 
 /** A kind of subject an investigation may examine (domain/glossary/subject-type). */
 export type SubjectType = GlossaryTerm;
+
+/**
+ * One identifying attribute a subject instance may carry
+ * (domain/glossary/subject-attribute) — an id, a phone number, a contract
+ * number. A discovered vocabulary, the same bare-name shape as SubjectType,
+ * Outcome, Action and Recipient (domain/glossary/subject-attribute's own
+ * description: "the same shape as concept, subject-type, outcome, action and
+ * recipient"), so it joins them as a fifth entry of TERM_VOCABULARIES rather
+ * than a variant of Concept's own richer shape.
+ */
+export type SubjectAttribute = GlossaryTerm;
 
 /** What a confirmed hypothesis, or the fallback, concludes (domain/glossary/outcome). */
 export type Outcome = GlossaryTerm;
@@ -21,10 +32,15 @@ export type Action = GlossaryTerm;
 /** The operational queue a referral addresses (domain/glossary/recipient). */
 export type Recipient = GlossaryTerm;
 
-/** The four term vocabularies of the glossary; concepts stand beside them with a shape of their own. */
-export const TERM_VOCABULARIES = ['subject-type', 'outcome', 'action', 'recipient'] as const;
+/**
+ * The five term vocabularies of the glossary (domain/glossary's own
+ * description: "the five vocabularies — subject types, subject attributes,
+ * outcomes, actions, recipients"); concepts stand beside them with a shape of
+ * their own.
+ */
+export const TERM_VOCABULARIES = ['subject-type', 'subject-attribute', 'outcome', 'action', 'recipient'] as const;
 
-/** One of the four term vocabularies, by name. */
+/** One of the five term vocabularies, by name. */
 export type TermVocabulary = (typeof TERM_VOCABULARIES)[number];
 
 /**

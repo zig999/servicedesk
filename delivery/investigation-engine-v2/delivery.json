@@ -26,6 +26,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "implementation",
+      "file": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject.md",
+      "title": "investigation-factory assembles and validates the subject",
+      "summary": "investigation-factory now builds the subject from raw entry-point input via subject.ts's buildSubject and refuses through the glossary-source port when an attribute is not a governed glossary term, carrying only a fully valid subject into the built Investigation.",
+      "task": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject"
+    },
+    {
       "id": "implementation/subject-identity-rework/observation-source-subject-shape",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/observation-source-subject-shape.md",
@@ -56,6 +64,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "proof",
+      "file": "proof/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject.md",
+      "title": "investigation-factory assembles and validates the subject — rewritten proof",
+      "summary": "Rewrites investigation-factory.spec.ts whole to prove the new async buildInvestigation, which assembles a Subject from raw subjectType/subjectAttributes and checks it against the glossary before constructing anything, while keeping the pre-existing totality/pinning/plain-value proof intact.",
+      "task": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject"
     },
     {
       "id": "proof/subject-identity-rework/observation-source-subject-shape",
@@ -184,6 +200,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-identity-rework/observation-source-subject-shape",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -258,6 +316,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
       "kind": "proves",
       "at": "the path"
     },

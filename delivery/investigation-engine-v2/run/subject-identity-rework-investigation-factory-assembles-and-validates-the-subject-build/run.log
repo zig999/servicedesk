@@ -1,0 +1,33 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 4s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/investigation/investigation-factory.spec.ts(125,5): error TS2353: Object literal may only specify known properties, and 'subject' does not exist in type 'BuildInvestigationOptions'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(266,24): error TS2339: Property 'pinned_case' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(267,24): error TS2339: Property 'pinned_case' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(268,24): error TS2339: Property 'pinned_case' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(277,24): error TS2339: Property 'model' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(278,24): error TS2339: Property 'prompt_version' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(279,24): error TS2339: Property 'evidence' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(308,24): error TS2339: Property 'evidence' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(309,24): error TS2339: Property 'evidence' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(309,38): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(319,24): error TS2339: Property 'evaluations' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(320,24): error TS2339: Property 'evaluations' does not exist on type 'Promise<Investigation>'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(320,41): error TS7006: Parameter 'item' implicitly has an 'any' type.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

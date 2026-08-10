@@ -1,39 +1,66 @@
 // The one factory that can build a valid Investigation, and the one place
-// that refuses an invalid one (task/investigation-lifecycle/investigation-factory):
-// given every completed stage's own output, checks the given evidence and
-// evaluations against the pinned case's own collection plan and required
-// hypotheses (case-resolution.ts's own collectionPlan/requiresEvaluationOf,
+// that refuses an invalid one (task/investigation-lifecycle/investigation-factory,
+// task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject):
+// given every completed stage's own output, assembles the subject from the
+// raw entry-point input and checks the given evidence and evaluations
+// against the pinned case's own collection plan and required hypotheses
+// (case-resolution.ts's own collectionPlan/requiresEvaluationOf,
 // rules/investigation/one-evidence-per-collected-concept,
-// rules/investigation/one-evaluation-per-required-hypothesis), throwing the
-// one typed InvestigationNotBuildableError, naming every violation
-// together, before constructing anything — the same factory-plus-validator
+// rules/investigation/one-evaluation-per-required-hypothesis), throwing a
+// typed error before constructing anything — the same factory-plus-validator
 // separation case/parse-case-document.ts already establishes for its own
 // context. Every attribute beyond the four replay pins
 // (rules/investigation/replay-is-pinned) is copied straight from the given
 // options; this module computes nothing about the world, resolves no
 // hypothesis and drafts no text — that is explicitly upstream of it (this
-// task's own objective). Pure and synchronous, importing nothing but the
-// case aggregate's own types, its resolution behavior, this context's own
-// sibling plain-data types and the typed error
-// (constraints/the-domain-depends-on-no-infrastructure).
+// task's own objective).
+//
+// Assembling the subject means calling subject.ts's own buildSubject, which
+// is the one place rules/investigation/a-subject-carries-at-least-one-attribute
+// is enforced — reused here rather than re-decided, per that module's own
+// module comment. Whether every named attribute is one the glossary actually
+// holds (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary)
+// is checked here, through the consumed glossary-source port
+// (contracts/investigation/glossary-source) the caller supplies — the one
+// reason this module is no longer pure and synchronous: infrastructure still
+// reaches it only through that port, never a concrete client
+// (constraints/the-domain-depends-on-no-infrastructure), and it imports
+// nothing else beyond the case aggregate's own types, its resolution
+// behavior, this context's own sibling plain-data types and the typed
+// errors.
 
 import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
 import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
+import { SubjectAttributeNotInGlossaryError } from '../errors/subject-attribute-not-in-glossary.error.js';
+import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import type { Cost } from './cost.js';
 import type { Durations } from './durations.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { Investigation, PinnedCase } from './investigation.js';
-import type { Subject } from './subject.js';
+import { buildSubject, type Subject } from './subject.js';
+import type { SubjectAttributeValue } from './subject-attribute-value.js';
 
 export type BuildInvestigationOptions = {
   readonly id: string;
   readonly requester: string;
   readonly ticket_ref: string;
   readonly narrative: string;
-  readonly subject: Subject;
+  /**
+   * The subject's governed type, exactly as the entry point assembled it —
+   * raw, unvalidated input, not an already-built Subject. This call is what
+   * turns it into one, refusing before it does
+   * (task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject).
+   */
+  readonly subjectType: string;
+  /**
+   * The subject's whole attribute-value set, exactly as the entry point
+   * assembled it — raw, unvalidated input, the other half of the subject
+   * this call assembles and validates.
+   */
+  readonly subjectAttributes: readonly SubjectAttributeValue[];
   /**
    * The pinned case, whole — the source of both the collection plan and
    * the required hypotheses this call checks totality against, and of the
@@ -49,31 +76,47 @@ export type BuildInvestigationOptions = {
   readonly assessment: Assessment;
   readonly cost: Cost;
   readonly durations: Durations;
+  /**
+   * The consumed glossary-source port (contracts/investigation/glossary-source),
+   * read once to check that every attribute the subject names is one the
+   * glossary holds (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary).
+   * Bundled into this same options object rather than a second positional
+   * parameter, the same convention CollectEvidenceOptions and
+   * JudgeHypothesesOptions already keep for a stage's own port collaborators.
+   */
+  readonly glossary: IGlossaryQuery;
 };
 
 /**
  * Builds the whole Investigation from every completed stage's own output
- * (task/investigation-lifecycle/investigation-factory): refuses first,
- * throwing the one typed error naming every totality violation together,
- * where the given evidence does not cover the case's collection plan
- * exactly once per concept or the given evaluations do not cover its
- * required hypotheses exactly once each
- * (rules/investigation/one-evidence-per-collected-concept,
+ * (task/investigation-lifecycle/investigation-factory): assembles the
+ * subject from the given raw type and attribute-value set, refusing where it
+ * carries no attribute-value at all
+ * (rules/investigation/a-subject-carries-at-least-one-attribute, enforced by
+ * subject.ts's own buildSubject) or where it names an attribute the glossary
+ * does not hold (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary,
+ * checked through the given glossary-source port); then refuses, throwing
+ * the one typed error naming every totality violation together, where the
+ * given evidence does not cover the case's collection plan exactly once per
+ * concept or the given evaluations do not cover its required hypotheses
+ * exactly once each (rules/investigation/one-evidence-per-collected-concept,
  * rules/investigation/one-evaluation-per-required-hypothesis); otherwise
- * assembles the whole value, pinning the case by slug, version and hash
- * alongside the model, the prompt version and the evidence
- * (rules/investigation/replay-is-pinned), and copying every other
- * attribute from the given options unchanged.
+ * assembles the whole value, carrying the built subject unchanged, pinning
+ * the case by slug, version and hash alongside the model, the prompt version
+ * and the evidence (rules/investigation/replay-is-pinned), and copying every
+ * other attribute from the given options unchanged.
  */
-export function buildInvestigation(options: BuildInvestigationOptions): Investigation {
-  const { case: theCase, evidence, evaluations } = options;
+export async function buildInvestigation(options: BuildInvestigationOptions): Promise<Investigation> {
+  const { case: theCase, evidence, evaluations, subjectType, subjectAttributes, glossary } = options;
+  const subject = buildSubject(subjectType, subjectAttributes);
+  await refuseAttributesNotInGlossary(subject, glossary);
   refuseTotalityViolations(theCase, evidence, evaluations);
   return {
     id: options.id,
     requester: options.requester,
     ticket_ref: options.ticket_ref,
     narrative: options.narrative,
-    subject: options.subject,
+    subject,
     pinned_case: pinnedCaseOf(theCase),
     prompt_version: options.prompt_version,
     model: options.model,
@@ -83,6 +126,30 @@ export function buildInvestigation(options: BuildInvestigationOptions): Investig
     cost: options.cost,
     durations: options.durations,
   };
+}
+
+/**
+ * Refuses a subject naming an attribute the glossary's own subject-attribute
+ * vocabulary does not hold (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary),
+ * checking every distinct attribute name, once each, through the given
+ * glossary-source port — the same distinct-name-then-check shape
+ * validate-case-coherence.ts's own vocabularyViolations already keeps for a
+ * case's own named terms — and throwing once with every offending name
+ * together, the same refuse-once-with-every-violation-named convention
+ * refuseTotalityViolations below already keeps, rather than on the first one
+ * found.
+ */
+async function refuseAttributesNotInGlossary(subject: Subject, glossary: IGlossaryQuery): Promise<void> {
+  const missing: string[] = [];
+  for (const name of new Set(subject.attributes.map((pair) => pair.attribute))) {
+    const resolution = await glossary.readVocabularyTerm('subject-attribute', name);
+    if (!resolution.held) {
+      missing.push(name);
+    }
+  }
+  if (missing.length > 0) {
+    throw new SubjectAttributeNotInGlossaryError(subject.type, missing);
+  }
 }
 
 /** The pinned-case relationship materialized from the given case's own three identifying attributes, never the whole case (domain/investigation/investigation, src/case/case.ts). */

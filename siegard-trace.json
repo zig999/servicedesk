@@ -156,6 +156,16 @@
       ]
     },
     {
+      "node": "contracts/investigation/glossary-source",
+      "digest": "sha256:46e67c0ace6ebc03e8378676bc046ca0ddb245a325b763f328b9d400af941572",
+      "files": [
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        }
+      ]
+    },
+    {
       "node": "contracts/investigation/observation-source",
       "digest": "sha256:0bcb6f1ffa351e6ce8d424911915dab800f5d6d8882057e9349594eda928b802",
       "files": [
@@ -296,6 +306,14 @@
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
           "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
@@ -524,6 +542,10 @@
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
@@ -538,6 +560,10 @@
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
@@ -764,6 +790,24 @@
       ]
     },
     {
+      "node": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "digest": "sha256:25399d172f19ecd02a80a28c96ccc68cd0cab79f53f7edad40ba256c62a3c38a",
+      "files": [
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
+          "digest": "sha256:9653b8c378e12e12060d2bcb07f51595db6615bc9ad0c06ae68746e5fae8e52b"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-subject-carries-at-least-one-attribute",
       "digest": "sha256:ba062f6475b2ed8579bca44a53bcb04dfb39534780bdf58b96860923434e603b",
       "files": [
@@ -774,6 +818,10 @@
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
           "digest": "sha256:b8eafe6b856b35822b5ec23c711a29a6a2203bfe5afffe1a2cab3e79d324e190"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
