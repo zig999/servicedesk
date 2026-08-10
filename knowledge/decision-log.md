@@ -215,4 +215,34 @@ entries:
     unstated: The same substitution the idempotency key needed applies to this cache-key constraint, which the material does not mention directly but which names subject id in the same way.
     decided: The subject's whole set of attribute-values, in place of subject id, consistent with the idempotency key's own substitution.
     why: Both keys identify "this same subject"; a day-two feature should not diverge from the identity the rest of the specification already gives it.
+  - location: domain/investigation/assessment-consolidator.md
+    field: operations
+    unstated: The material asks for a new domain-service and port analogous to hypothesis-evaluator, without naming its own operation.
+    decided: assessment-consolidator, one operation, consolidate.
+    why: Mirrors hypothesis-evaluator/evaluate exactly — a domain-service named for the role, one operation named for the verb the material itself uses ("consolidação").
+  - location: domain/knowledge/consolidation-register.md
+    field: values
+    unstated: The material asks for a closed, structured field guiding the write-up's framing, offering "which aspects to prioritize" and "expected register/tone" only as examples, without deciding which parameters actually exist or their values.
+    decided: One parameter only — register, an enumeration of formal and plain — explicitly excluding any content-priority or emphasis parameter.
+    why: A parameter naming which aspect to prioritize would let a curator's framing steer which findings the text foregrounds, in tension with judgment-does-not-infer and the-outcome-comes-from-the-case, which this whole field exists to stay reconciled with; register is purely cosmetic and carries no such risk, and a closed pair (formal, plain) is the smallest defensible set the material's own example gestures at.
+  - location: domain/knowledge/consolidation-register.md
+    field: type
+    unstated: The material asks the analysis to decide whether this parameter needs a glossary vocabulary of its own (the subject-attribute pattern) or a fixed enumeration suffices.
+    decided: enumeration, not a glossary-discovered vocabulary.
+    why: A register is a closed style choice known ahead of time, unlike concept, outcome or subject-attribute, which grow as new cases or new integrations are authored; nothing about a register grows the same way, so no case-terms-exist-in-the-glossary-style governance rule is needed for it.
+  - location: domain/knowledge/case.md
+    field: attributes.consolidation_register.required
+    unstated: The material says the curator authors this alongside the hypotheses but does not say whether every case must declare one.
+    decided: Not required.
+    why: Forcing every existing case to declare a register retroactively is a burden the material never asks for; an absent register defers to whatever the consolidation adapter's own default carries, the same absence-is-data convention domain/investigation/assessment already uses for determining_hypothesis.
+  - location: rules/investigation/the-writing-input-is-narrowed.md
+    field: statement
+    unstated: The material states explicitly that this rule is replaced, not relaxed — the outcome-based branching disappears — but leaves the exact new statement for the analysis to write.
+    decided: One shape in every outcome — every required hypothesis's evaluation (verdict, reason when present, citations) plus the evidence any citation names; the case's hypotheses, their criteria and the when_to_use still enter no prompt, without exception.
+    why: Directly reflects the material's own description of the unified input, keeping the two absolute exclusions (case body, criteria) the material repeats as never lifted.
+  - location: rules/investigation/an-answer-arrives-within-the-declared-deadline.md
+    field: statement
+    unstated: The material asks the analysis to confirm, as an explicit decision rather than an absence of change, whether the four-second writing slice still holds now that its mechanism moves from a pure function to a single LLM call.
+    decided: The total stays twenty seconds and the writing slice stays four, unchanged, now covering the consolidation call.
+    why: A single, non-parallel LLM call fits a four-second slice at least as comfortably as one individual judgment call already fits inside judgment's own five-second slice across a whole pool; nothing in the material gives evidence the mechanism change demands a larger number.
 ---

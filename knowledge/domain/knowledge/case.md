@@ -22,6 +22,8 @@ attributes:
   - name: fallback
     type: resolution
     required: true
+  - name: consolidation_register
+    type: consolidation-register
 relationships:
   - target: hypothesis
     type: composition
@@ -37,6 +39,7 @@ operations:
 One troubleshooting procedure, authored as one file versioned in git and identified by content: slug, version and hash.
 Always published: no draft exists in the domain — work in progress is a git fact, a branch or a pull request, and there is no publication gate to pass.
 The fallback is a disguised default hypothesis, explicit on purpose: a fallback claims nothing about the world.
+The curator may author a consolidation register alongside the hypotheses; absent, the consolidation step keeps whatever register its own adapter defaults to.
 
 ## Responsibility
 

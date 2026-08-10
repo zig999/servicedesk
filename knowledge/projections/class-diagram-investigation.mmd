@@ -23,6 +23,10 @@ classDiagram
         +string determiningHypothesis
         +string text
     }
+    class AssessmentConsolidator {
+        <<Service>>
+        +consolidate()
+    }
     class Citation {
         <<ValueObject>>
         +Concept concept

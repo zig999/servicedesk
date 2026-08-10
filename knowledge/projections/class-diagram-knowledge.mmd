@@ -9,6 +9,7 @@ classDiagram
             +string hash
             +SubjectType subject
             +Resolution fallback
+            +ConsolidationRegister consolidationRegister
             +collectionPlan()
             +requiresEvaluationOf()
             +resolveOutcome()
@@ -20,6 +21,11 @@ classDiagram
             +Concept[] collects
             +Resolution resolution
         }
+    }
+    class ConsolidationRegister {
+        <<Enumeration>>
+        FORMAL
+        PLAIN
     }
     class Referral {
         <<ValueObject>>
