@@ -90,6 +90,14 @@
       "task": "task/subject-identity-rework/subject-value-object"
     },
     {
+      "id": "proof/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "proof",
+      "file": "proof/assessment-consolidation/assessment-consolidator-port-and-fake.md",
+      "title": "assessment-consolidator port and fake, proven",
+      "summary": "Tests for IAssessmentConsolidator and FakeAssessmentConsolidator proving the port's own input/output shape, the closed consolidation-register vocabulary, exactly-one-implementer, and no-infrastructure import purity; the UNDERDETERMINED default-register finding is documented, disclosed and left as a genuinely open gap rather than fixed or retrofitted as a test in this pass.",
+      "task": "task/assessment-consolidation/assessment-consolidator-port-and-fake"
+    },
+    {
       "id": "proof/assessment-consolidation/case-coherence-optional-consolidation-register",
       "kind": "proof",
       "file": "proof/assessment-consolidation/case-coherence-optional-consolidation-register.md",
@@ -571,6 +579,12 @@
       "from": "implementation/subject-identity-rework/subject-value-object",
       "to": "task/subject-identity-rework/subject-value-object",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "implementation/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "proves",
       "at": "the path"
     },
     {
