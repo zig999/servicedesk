@@ -176,6 +176,29 @@
       "title": "Proof for the canonical Subject value object",
       "summary": "buildSubject() is proved to assemble the governed-type-plus-attribute-set shape, to refuse an empty attribute-value set, to preserve each pair's own attribute and value exactly, and to produce a value that flows unmodified through observation-source.port.ts's own re-exported Subject type.",
       "task": "task/subject-identity-rework/subject-value-object"
+    },
+    {
+      "id": "review/investigation-engine-v2",
+      "kind": "review",
+      "file": "review/investigation-engine-v2.md",
+      "title": "Review of investigation-engine-v2, the whole initiative as one change",
+      "summary": "Four passes over the 11 delivered tasks' own file set: coverage finds 5 of 39 criteria uncovered or partial (mostly fitness-test files the pass was not given, plus two genuine cross-stage/documentation gaps); specification conformance finds 4 places source states or realizes a fact the specification does not quite back; standard conformance finds 4 departures (duplicated test-sweep logic, a hand-assembled schema, filesystem persistence, duplicated key-join logic); failures did not run because the captured run passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A Subject value requires a subject type drawn from domain/glossary/subject-type and a set of subject-attribute-value pairs.",
+        "Exactly one concrete class implements the port, matching the existing hypothesis-evaluator-modules.spec.ts fitness pattern.",
+        "The fake adapter's fixture key is composed from every attribute-value pair, following the existing '::'-joined composite-key convention, rather than from a bare id.",
+        "The inline Subject type previously left duplicated in observation-source.port.ts is replaced by this canonical module rather than kept as a second declaration.",
+        "The key module's own documentation states why the subject's type and attribute-value set now compose the key, replacing the earlier two-flat-strings reasoning.",
+        "The whole run responds within the declared total deadline, with each stage receiving no more than the minimum of its nominal budget and what remains at that point.",
+        "draft-assessment-text imports nothing from the case module, preserving its existing zero-import fitness guarantee.",
+        "draft-assessment-text receives the consolidation register as an explicit input parameter, never reading it from a case import."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -646,6 +669,72 @@
       "to": "implementation/subject-identity-rework/subject-value-object",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/investigation-engine-v2",
+      "to": "task/subject-identity-rework/observation-source-subject-shape",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
