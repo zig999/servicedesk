@@ -18,6 +18,14 @@
       "task": "task/evidence-collection/observation-source-port"
     },
     {
+      "id": "implementation/hypothesis-judgment/citation-validation",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment/citation-validation.md",
+      "title": "Citation structural validation",
+      "summary": "A pure, synchronous check, isCitationValid, acceptedCitations and their helpers, that accepts a proposed citation only when its concept belongs to the judged hypothesis's own collects and its field exists in the output schema of the capability that produced the cited evidence, refusing every other citation without ever throwing.",
+      "task": "task/hypothesis-judgment/citation-validation"
+    },
+    {
       "id": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment/hypothesis-evaluator-port.md",
@@ -48,6 +56,14 @@
       "title": "Proof for the observation-source port and its fake adapter",
       "summary": "Drives FakeObservationSource, the only concrete IObservationSource this task ships, through each of the four evidence-result endings and its one throwing fault, and audits src/investigation's own modules for import purity and for shipping exactly one adapter.",
       "task": "task/evidence-collection/observation-source-port"
+    },
+    {
+      "id": "proof/hypothesis-judgment/citation-validation",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment/citation-validation.md",
+      "title": "Citation structural validation, tested",
+      "summary": "Proves isCitationValid's two AND-combined rules (concept-in-collects, field-declared-in-the-cited-evidence's-own-capability-schema) each refuse and jointly accept as the task's three criteria state, that every defensive path the implementation's inferences name answers false rather than throwing, and that acceptedCitations filters a mixed set while preserving proposed order.",
+      "task": "task/hypothesis-judgment/citation-validation"
     },
     {
       "id": "proof/hypothesis-judgment/hypothesis-evaluator-port",
@@ -182,6 +198,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-judgment/citation-validation",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/citation-validation",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/citation-validation",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/citation-validation",
+      "to": "task/hypothesis-judgment/citation-validation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -274,6 +314,12 @@
     {
       "from": "proof/evidence-collection/observation-source-port",
       "to": "implementation/evidence-collection/observation-source-port",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment/citation-validation",
+      "to": "implementation/hypothesis-judgment/citation-validation",
       "kind": "proves",
       "at": "the path"
     },

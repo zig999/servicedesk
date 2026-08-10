@@ -374,6 +374,10 @@
       "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
       "files": [
         {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+        },
+        {
           "path": "src/src/investigation/citation.ts",
           "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
         },
@@ -612,6 +616,26 @@
         {
           "path": "src/src/errors/duplicate-concept-answer.error.ts",
           "digest": "sha256:e71f9cc61aa1c500c681f8287486f939d0f01becee599930e5d23c8a8ed7c8b3"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "digest": "sha256:7794ecb239edaf48968f14b348ebb640ac477f34ac2e2df0c3ce3da75bdcb346",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "digest": "sha256:8162278081160cac3b7b94f218b4c4b898362991f1b937dd02ed3db704f7f88b",
+      "files": [
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
         }
       ]
     },
