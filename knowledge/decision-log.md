@@ -180,4 +180,39 @@ entries:
     unstated: The specification held a total deadline of three hundred seconds with no decision-log entry disclosing it — an undisclosed decision, and one at odds with Decision 1, closed as synchronous with the attendant waiting on screen, and with the material's own proposed twenty-second synchronous budget, referenced twice more elsewhere in the material as the orçamento the durations record against.
     decided: Twenty seconds — two of overhead and margin, seven of collection, five of judgment, four of writing and two of persistence.
     why: A five-minute wait contradicts the synchronous, on-screen experience Decision 1 closed on; twenty seconds is the only total the material gives, so the undisclosed three-hundred-second figure is corrected to it, pending the operational confirmation the material itself still asks for.
+  - location: domain/glossary/subject-attribute.md
+    field: type
+    unstated: The material asks for a closed vocabulary of attribute names, discovered from the glossary, without naming the value's construct or fixing an initial set.
+    decided: value-object
+    why: Mirrors subject-type, concept, outcome, action and recipient exactly — an open, registered set that grows as a new kind of identifying data enters, never a fixed enumeration.
+  - location: domain/investigation/subject-attribute-value.md
+    field: attributes
+    unstated: The material gives the attribute-value pair only as a worked example (attribute "id", value "12345") without naming the element that holds it or its own two fields.
+    decided: attribute, domain/glossary/subject-attribute, required; value, string, required.
+    why: Mirrors domain/investigation/citation's own pairing of a governed-vocabulary reference with a free string in this same context — one governed name and one free value travel together as one fact rather than two arrays kept in step by convention.
+  - location: domain/investigation/subject.md
+    field: attributes
+    unstated: The material replaces the subject's single id with a described set of attribute-value pairs but does not name the field the set is held in.
+    decided: attributes, subject-attribute-value, many, required — alongside the unchanged type field.
+    why: Matches the material's own top-level word for the set ("conjunto de atributos-valor") and avoids "values", a key the element schema reserves for an enumeration's own closed set.
+  - location: rules/investigation/a-subject-carries-at-least-one-attribute.md
+    field: statement
+    unstated: The material explicitly asks whether the new subject shape needs an invariant analogous to a-hypothesis-collects-at-least-one-concept, without deciding it.
+    decided: A subject carries at least one attribute-value, as its own invariant.
+    why: Mirrors a-hypothesis-collects-at-least-one-concept's own reasoning exactly — a subject with no attribute-value at all identifies nothing, and no capability's connector would have anything to derive its call from.
+  - location: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary.md
+    field: statement
+    unstated: The material asks for machine-checkable governance of attribute names from the glossary, without deciding whether this extends case-terms-exist-in-the-glossary or stands as its own rule.
+    decided: A new, separate policy — every attribute a subject's attribute-values name exists in the glossary.
+    why: case-terms-exist-in-the-glossary's own statement and rationale are specifically about what a case names; a subject's attribute-values are never declared by a case — the entry point resolves and assembles them at request time — so folding this into that rule would state a case-time check that never actually runs for them.
+  - location: rules/investigation/an-investigation-is-idempotent-within-a-window.md
+    field: statement
+    unstated: The material asks explicitly what substitutes subject id in the repeat-request key now that no singular id exists, without deciding it.
+    decided: The subject's whole set of attribute-values, compared as a set, replaces subject id in the key.
+    why: Repeating a request means repeating everything that identifies the subject, not one field of it; the exact comparison mechanism (a canonicalization or a hash) is an implementation choice, not a domain fact, and is left undecided here on purpose.
+  - location: constraints/the-evidence-cache-admits-only-ok-results.md
+    field: statement
+    unstated: The same substitution the idempotency key needed applies to this cache-key constraint, which the material does not mention directly but which names subject id in the same way.
+    decided: The subject's whole set of attribute-values, in place of subject id, consistent with the idempotency key's own substitution.
+    why: Both keys identify "this same subject"; a day-two feature should not diverge from the identity the rest of the specification already gives it.
 ---

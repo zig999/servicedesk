@@ -79,7 +79,12 @@ classDiagram
     class Subject {
         <<ValueObject>>
         +SubjectType type
-        +string id
+        +SubjectAttributeValue[] attributes
+    }
+    class SubjectAttributeValue {
+        <<ValueObject>>
+        +SubjectAttribute attribute
+        +string value
     }
     class Verdict {
         <<Enumeration>>

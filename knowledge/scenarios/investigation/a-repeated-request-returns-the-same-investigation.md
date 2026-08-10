@@ -1,7 +1,7 @@
 ---
 subject: rules/investigation/an-investigation-is-idempotent-within-a-window
 given:
-  - an investigation for the same subject type, subject id, case and ticket reference completed inside the window
+  - an investigation for the same subject type, the same set of subject attribute-values, case and ticket reference completed inside the window
 when:
   - the attendant submits the same request again
 then:

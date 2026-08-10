@@ -4,7 +4,7 @@ strategic: supporting
 
 ## Description
 
-The published language of the whole system: the four vocabularies — subject types, outcomes, actions, recipients — and the concepts a case may collect.
+The published language of the whole system: the five vocabularies — subject types, subject attributes, outcomes, actions, recipients — and the concepts a case may collect.
 Pure data with no behavior; every other context depends on it and translates into it, never around it.
 
 ## Responsibility
