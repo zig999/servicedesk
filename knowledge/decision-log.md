@@ -205,11 +205,6 @@ entries:
     unstated: The material asks for machine-checkable governance of attribute names from the glossary, without deciding whether this extends case-terms-exist-in-the-glossary or stands as its own rule.
     decided: A new, separate policy — every attribute a subject's attribute-values name exists in the glossary.
     why: case-terms-exist-in-the-glossary's own statement and rationale are specifically about what a case names; a subject's attribute-values are never declared by a case — the entry point resolves and assembles them at request time — so folding this into that rule would state a case-time check that never actually runs for them.
-  - location: rules/investigation/an-investigation-is-idempotent-within-a-window.md
-    field: statement
-    unstated: The material asks explicitly what substitutes subject id in the repeat-request key now that no singular id exists, without deciding it.
-    decided: The subject's whole set of attribute-values, compared as a set, replaces subject id in the key.
-    why: Repeating a request means repeating everything that identifies the subject, not one field of it; the exact comparison mechanism (a canonicalization or a hash) is an implementation choice, not a domain fact, and is left undecided here on purpose.
   - location: constraints/the-evidence-cache-admits-only-ok-results.md
     field: statement
     unstated: The same substitution the idempotency key needed applies to this cache-key constraint, which the material does not mention directly but which names subject id in the same way.
@@ -255,9 +250,14 @@ entries:
     unstated: The same BLOCKING left unstated where ticket_ref originates, and whether every diagnose call must carry one.
     decided: Not required — ticket_ref travels in the diagnose call's own payload when given, but not every call carries one.
     why: The human confirmed a ticket reference is optional; nothing forces every request to have a ticket to attach.
-  - location: rules/investigation/an-investigation-is-idempotent-within-a-window.md
+  - location: domain/investigation/investigation.md
+    field: attributes.ticket_ref
+    unstated: Removing the window-deduplication rule deletes the only node that gave ticket_ref an operative role, and the node itself does not say why the attribute survives.
+    decided: ticket_ref stays on the investigation, optional and unchanged — correlation with the ticketing system for traceability and audit, participating in no matching or deduplication logic.
+    why: The product owner confirmed the attribute keeps its correlation value with repetition semantics gone; removing it would cut the audit link between an investigation and the ticket that occasioned it, which nothing in the removal asked for.
+  - location: rules/investigation/the-writing-input-is-narrowed.md
     field: statement
-    unstated: With ticket_ref now optional, the material did not previously say what the repeat-request key does when a call carries none.
-    decided: Idempotency by window applies only when a ticket reference is given; a call with none is never matched against an earlier one by this rule, and always starts its own investigation.
-    why: The human confirmed two ticket-less calls for the same subject and case must not collapse into one another — each is its own request, since nothing but the ticket reference says otherwise.
+    unstated: The material admits the pinned case's title and when_to_use into the judgment prompt without saying what becomes of this rule's unqualified clause that the when_to_use enters no prompt.
+    decided: The exclusion is scoped to consolidation — the case's hypotheses, their criteria and the when_to_use enter no consolidation prompt; what the judgment prompt contains is its own constraint's to state.
+    why: Read unqualified, the clause would contradict the confirmed decision that title and when_to_use now enter the judgment prompt; the rule's own rationale — never give consolidation the case body to reason from — was always about the writing, and the closed consolidation prompt keeps them out of consolidation regardless.
 ---

@@ -6,4 +6,4 @@ fitness: The diagnosis operation returns the assessment in its own response, ver
 
 ## Description
 
-The attendant waits on screen, which is what makes the absolute deadline, the degradation rules and the idempotency window obligatory rather than refinements; a costly hypothesis fits the parallel or does not enter the case, because a second wave does not fit the budget.
+The attendant waits on screen, which is what makes the absolute deadline and the degradation rules obligatory rather than refinements; a costly hypothesis fits the parallel or does not enter the case, because a second wave does not fit the budget.

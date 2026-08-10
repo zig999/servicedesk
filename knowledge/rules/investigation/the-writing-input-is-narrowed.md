@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: Consolidation receives every required hypothesis's evaluation — verdict, reason when present and citations — and the evidence any of those citations name, the same shape in any outcome; the case's hypotheses, their criteria and the when_to_use enter no prompt.
+statement: Consolidation receives every required hypothesis's evaluation — verdict, reason when present and citations — and the evidence any of those citations name, the same shape in any outcome; the case's hypotheses, their criteria and the when_to_use enter no consolidation prompt.
 constrains:
   - domain/investigation/investigation
   - domain/investigation/assessment
