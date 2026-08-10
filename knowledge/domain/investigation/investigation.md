@@ -9,7 +9,6 @@ attributes:
     required: true
   - name: ticket_ref
     type: string
-    required: true
   - name: narrative
     type: string
     required: true
@@ -51,6 +50,7 @@ relationships:
 One diagnosis of one subject under one pinned case, written once and never mutated — an immutable result produced by a factory that cannot build an invalid instance.
 The case reference is pinned by content — slug, version and hash — and, together with model, prompt version and the evidence, forms the replay pins.
 No budget, no steps, no closing state: the end is a verifiable condition, not a state to maintain.
+requester and ticket_ref both arrive in the diagnose call itself; requester is always given, ticket_ref is not — not every diagnose call carries a ticket.
 
 ## Responsibility
 

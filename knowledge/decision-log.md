@@ -245,4 +245,19 @@ entries:
     unstated: The material asks the analysis to confirm, as an explicit decision rather than an absence of change, whether the four-second writing slice still holds now that its mechanism moves from a pure function to a single LLM call.
     decided: The total stays twenty seconds and the writing slice stays four, unchanged, now covering the consolidation call.
     why: A single, non-parallel LLM call fits a four-second slice at least as comfortably as one individual judgment call already fits inside judgment's own five-second slice across a whole pool; nothing in the material gives evidence the mechanism change demands a larger number.
+  - location: domain/investigation/investigation.md
+    field: attributes.requester.type
+    unstated: No node stated where a diagnose call's requester value originates — the standing BLOCKING on task/investigation-lifecycle/diagnose-entry-point.
+    decided: The caller supplies it directly in the diagnose call's own payload; no further resolution or inference happens inside the domain.
+    why: Resolves the standing BLOCKING; the human confirmed the caller supplies it directly, the same way ticket_ref now does.
+  - location: domain/investigation/investigation.md
+    field: attributes.ticket_ref.required
+    unstated: The same BLOCKING left unstated where ticket_ref originates, and whether every diagnose call must carry one.
+    decided: Not required — ticket_ref travels in the diagnose call's own payload when given, but not every call carries one.
+    why: The human confirmed a ticket reference is optional; nothing forces every request to have a ticket to attach.
+  - location: rules/investigation/an-investigation-is-idempotent-within-a-window.md
+    field: statement
+    unstated: With ticket_ref now optional, the material did not previously say what the repeat-request key does when a call carries none.
+    decided: Idempotency by window applies only when a ticket reference is given; a call with none is never matched against an earlier one by this rule, and always starts its own investigation.
+    why: The human confirmed two ticket-less calls for the same subject and case must not collapse into one another — each is its own request, since nothing but the ticket reference says otherwise.
 ---
