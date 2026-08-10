@@ -74,6 +74,14 @@
       "task": "task/investigation-lifecycle/investigation-factory"
     },
     {
+      "id": "implementation/investigation-lifecycle/investigation-store",
+      "kind": "implementation",
+      "file": "implementation/investigation-lifecycle/investigation-store.md",
+      "title": "Write-once investigation store",
+      "summary": "A file-backed IInvestigationStore/FileInvestigationStore pair persists a built Investigation as one JSON file per id, refusing a write over an already-stored identity and reusing the shared JSON-file helpers for both the refusal check and the write itself.",
+      "task": "task/investigation-lifecycle/investigation-store"
+    },
+    {
       "id": "proof/assessment-drafting/draft-assessment-text",
       "kind": "proof",
       "file": "proof/assessment-drafting/draft-assessment-text.md",
@@ -144,6 +152,14 @@
       "title": "The immutable investigation factory, proved",
       "summary": "Fifteen tests over buildInvestigation()'s totality refusals (both directions, both rules), its replay pinning, its plain-value shape, its defensive copies, and the six files it and its sibling types add reaching no infrastructure.",
       "task": "task/investigation-lifecycle/investigation-factory"
+    },
+    {
+      "id": "proof/investigation-lifecycle/investigation-store",
+      "kind": "proof",
+      "file": "proof/investigation-lifecycle/investigation-store.md",
+      "title": "Proof for the write-once investigation store",
+      "summary": "Real-filesystem tests over FileInvestigationStore proving one JSON document per investigation id, refusal of an already-stored identity without touching the earlier file, and write's reuse of the shared JSON-file writer, plus the store's error classes exercised through both failure paths.",
+      "task": "task/investigation-lifecycle/investigation-store"
     }
   ],
   "edges": [
@@ -628,6 +644,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-lifecycle/investigation-store",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-store",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-store",
+      "to": "task/investigation-lifecycle/investigation-store",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/assessment-drafting/draft-assessment-text",
       "to": "implementation/assessment-drafting/draft-assessment-text",
       "kind": "proves",
@@ -678,6 +712,12 @@
     {
       "from": "proof/investigation-lifecycle/investigation-factory",
       "to": "implementation/investigation-lifecycle/investigation-factory",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-lifecycle/investigation-store",
+      "to": "implementation/investigation-lifecycle/investigation-store",
       "kind": "proves",
       "at": "the path"
     }

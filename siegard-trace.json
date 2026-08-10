@@ -166,24 +166,8 @@
       "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
       "files": [
         {
-          "path": "src/src/persistence/file-case-store.repository.ts",
-          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
-        },
-        {
-          "path": "src/src/persistence/json-file.ts",
-          "digest": "sha256:9965eeaed5c49e26a5c576da1558037683a364422978f6413e62011956393b8e"
-        },
-        {
-          "path": "src/src/persistence/file-capability-store.repository.ts",
-          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
-        },
-        {
-          "path": "src/src/persistence/file-glossary-store.repository.ts",
-          "digest": "sha256:edc1ad410f0751d271d741b5db3429c2563995229b865214bf28c81af86698dd"
-        },
-        {
-          "path": "src/package.json",
-          "digest": "sha256:0547bfbf6a92352fd8a9d9edcec17fa9449df6a8abf275fe80f9b1dbdfc23007"
+          "path": "src/src/persistence/file-investigation-store.repository.ts",
+          "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
         }
       ]
     },
@@ -830,6 +814,24 @@
         {
           "path": "src/src/investigation/idempotency-resolution.ts",
           "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-investigation-is-written-once",
+      "digest": "sha256:e6c9cd02cba929a6c624bae4acfe3e2477c70eb3aceed5ae7890f5cae1df299d",
+      "files": [
+        {
+          "path": "src/src/errors/investigation-already-stored.error.ts",
+          "digest": "sha256:623d646aca410331c9b2a3554b6ae28b5b0b5610d1137cee139fc3ccdeed119e"
+        },
+        {
+          "path": "src/src/investigation/investigation-store.port.ts",
+          "digest": "sha256:c67fd8457a40c8c64458200feaac8f7b198665458bc1f5885590dea67d857db5"
+        },
+        {
+          "path": "src/src/persistence/file-investigation-store.repository.ts",
+          "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
         }
       ]
     },
