@@ -34,6 +34,14 @@
       "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
     },
     {
+      "id": "implementation/hypothesis-judgment/judgment-stage",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment/judgment-stage.md",
+      "title": "Isolated, deadline-bounded judgment of every required hypothesis",
+      "summary": "judgeHypotheses assembles Evaluation, one per hypothesis requiresEvaluationOf(theCase) names, in that order, an immediate no-data for a hypothesis whose evidence is not all ok, otherwise one isolated evaluate() call under a caller-configured in-process pool, racing a single shared deadline signal timed once from now/deadline, retrying exactly once on a structurally invalid citation set where that deadline still admits it, and degrading every other path to deadline-exceeded or judgment-failure, never a gap.",
+      "task": "task/hypothesis-judgment/judgment-stage"
+    },
+    {
       "id": "implementation/investigation-lifecycle/idempotency-window",
       "kind": "implementation",
       "file": "implementation/investigation-lifecycle/idempotency-window.md",
@@ -72,6 +80,14 @@
       "title": "Proof for the hypothesis-evaluator port and its fake adapter",
       "summary": "Drives FakeHypothesisEvaluator, the only concrete IHypothesisEvaluator this task ships, through each of the three verdicts and its one throwing fault, exercises the task's own UNDERDETERMINED no-data/empty-citations fixture, and audits this task's own five modules for import purity and for shipping exactly one adapter.",
       "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
+    },
+    {
+      "id": "proof/hypothesis-judgment/judgment-stage",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment/judgment-stage.md",
+      "title": "Judgment stage proof — one evaluation per required hypothesis under a pooled, deadline-bounded retry policy",
+      "summary": "Tests judgeHypotheses against all six task criteria and the requested concurrency/retry/keying/throw edge cases.",
+      "task": "task/hypothesis-judgment/judgment-stage"
     },
     {
       "id": "proof/investigation-lifecycle/idempotency-window",
@@ -282,6 +298,126 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[18]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[19]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/judgment-stage",
+      "to": "task/hypothesis-judgment/judgment-stage",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/investigation-lifecycle/idempotency-window",
       "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
       "kind": "encodes",
@@ -326,6 +462,12 @@
     {
       "from": "proof/hypothesis-judgment/hypothesis-evaluator-port",
       "to": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment/judgment-stage",
+      "to": "implementation/hypothesis-judgment/judgment-stage",
       "kind": "proves",
       "at": "the path"
     },

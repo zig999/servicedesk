@@ -20,6 +20,16 @@
       ]
     },
     {
+      "node": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "digest": "sha256:f33736c815ac4a410d3b668cfa2f5eebe421e4617fe06b7e765dd4e7f4dd8f39",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
       "node": "constraints/in-progress-is-a-lease-not-domain-state",
       "digest": "sha256:547a0255c4237ef920789ba683bea77ccf71ddb22368adc381681b10b30dba35",
       "files": [
@@ -34,12 +44,16 @@
       "digest": "sha256:e335e762101da59fc4c2d13d53a2dc1d789513a8e332d8325b987556d2915dda",
       "files": [
         {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
+        },
+        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
         },
         {
-          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -50,6 +64,10 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -58,8 +76,16 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
-          "path": "src/src/investigation/evidence.ts",
-          "digest": "sha256:27447263417ba463c39c1860cce3035e9332f3eab5197406afdd0df68762490a"
+          "path": "src/src/investigation/citation.ts",
+          "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
+        },
+        {
+          "path": "src/src/investigation/evaluation-reason.ts",
+          "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
+        },
+        {
+          "path": "src/src/investigation/evaluation.ts",
+          "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -70,32 +96,32 @@
           "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
         },
         {
-          "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "path": "src/src/investigation/evidence.ts",
+          "digest": "sha256:27447263417ba463c39c1860cce3035e9332f3eab5197406afdd0df68762490a"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
         },
         {
-          "path": "src/src/investigation/verdict.ts",
-          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
-        },
-        {
-          "path": "src/src/investigation/evaluation-reason.ts",
-          "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
-        },
-        {
-          "path": "src/src/investigation/citation.ts",
-          "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
-        },
-        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
         },
         {
-          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        },
+        {
+          "path": "src/src/investigation/verdict.ts",
+          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
         }
       ]
     },
@@ -148,16 +174,8 @@
       "digest": "sha256:fd4734ffbe8f1b14ac2527875fb20ef6854d71725bf095001f122e9081bfa265",
       "files": [
         {
-          "path": "src/src/capability-registry/capability-query.port.ts",
-          "digest": "sha256:245ee624924c74254b58961dfea8e43c3bb19b87c7a44011e9ad19d4972f7724"
-        },
-        {
-          "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:1e6d8fd6596d83bb21bc15df712a213905dc281e48d216b0fd289c018133e4be"
-        },
-        {
-          "path": "src/src/factories/capability-registry.factory.ts",
-          "digest": "sha256:9a13f14405e107c7d30ad82a22cb39b7b79284e9d9faccf15bbea6d35ed3c82f"
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -384,6 +402,10 @@
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -392,8 +414,16 @@
       "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
       "files": [
         {
+          "path": "src/src/investigation/evaluation.ts",
+          "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
+        },
+        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -404,6 +434,10 @@
         {
           "path": "src/src/investigation/evaluation-reason.ts",
           "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -450,6 +484,10 @@
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -458,12 +496,20 @@
       "digest": "sha256:de42119b8ff628c589d98059c373c87558a72dad9ab2d76e32ea99d303eb6451",
       "files": [
         {
-          "path": "src/src/investigation/verdict.ts",
-          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
+          "path": "src/src/investigation/evaluation.ts",
+          "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/investigation/verdict.ts",
+          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
         }
       ]
     },
@@ -626,6 +672,10 @@
         {
           "path": "src/src/investigation/citation-validation.ts",
           "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -636,6 +686,10 @@
         {
           "path": "src/src/investigation/citation-validation.ts",
           "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -644,8 +698,16 @@
       "digest": "sha256:af9ace81195cb13b0581b0ca0935dd1a5736475f2b0767e2322d70045960b8c3",
       "files": [
         {
+          "path": "src/src/investigation/evaluation.ts",
+          "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
+        },
+        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -656,6 +718,10 @@
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -708,6 +774,20 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "digest": "sha256:141d9e58e957aa3cd50610583a7c4893ba173410f77af9cc4280598e99438872",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
@@ -892,6 +972,30 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-foreign-citation-is-refused",
+      "digest": "sha256:4f7b2683c37de90a3741026a7758a319b65b785e78d0d1b803d21cd91771d449",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+      "digest": "sha256:5208163b32980420b7f357f720d8edc226374509e54bce1020c5d07d0cb4cb02",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
       ]
     },
