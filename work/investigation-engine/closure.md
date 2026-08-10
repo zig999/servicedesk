@@ -1,0 +1,3 @@
+The human declared this initiative over.
+Why: the known pendencies — the standing BLOCKING note on task/investigation-lifecycle/diagnose-entry-point, with no declared origin for requester and ticket_ref, and the trace drift the subject-attribute analysis introduced over task/evidence-collection/observation-source-port, task/evidence-collection/evidence-collection-stage, task/investigation-lifecycle/idempotency-window and task/investigation-lifecycle/investigation-factory — will be handled in a new /plan-work session, under a new initiative, with the code this plan already delivered returning as inventory through the survey, never as a reference into this closed plan.
+Read from: intake/closure-ask.md.
