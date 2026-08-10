@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/evidence-collection/evidence-collection-stage",
+      "kind": "implementation",
+      "file": "implementation/evidence-collection/evidence-collection-stage.md",
+      "title": "The evidence-collection stage — parallel, budgeted, scoped observation over a case's plan",
+      "summary": "Adds Evidence and collectEvidence, the orchestration that turns a pinned case's collection plan into exactly one Evidence per concept, calling observe-concept in parallel in the requester's own scope, each call bounded by the smaller of the capability's own timeout and the collection stage's seven-second ceiling within the propagated deadline.",
+      "task": "task/evidence-collection/evidence-collection-stage"
+    },
+    {
       "id": "implementation/evidence-collection/observation-source-port",
       "kind": "implementation",
       "file": "implementation/evidence-collection/observation-source-port.md",
@@ -24,6 +32,14 @@
       "title": "The idempotency-window lease mechanism",
       "summary": "A subject-type/subject-id/case/ticket-reference key, an in-memory key-and-instant lease store bound to a configured window, and a pure composition that tells a caller which of completed, in-progress or free applies — with no built Investigation and no wiring into a real diagnose entry point.",
       "task": "task/investigation-lifecycle/idempotency-window"
+    },
+    {
+      "id": "proof/evidence-collection/evidence-collection-stage",
+      "kind": "proof",
+      "file": "proof/evidence-collection/evidence-collection-stage.md",
+      "title": "Proof for the evidence-collection stage — parallel, budgeted, scoped observation over a case's plan",
+      "summary": "Tests collectEvidence's five stated criteria plus the boundary, parallelism and rejection-propagation edge cases against a fake capability query, a scripted observation source and a delayed capability query, all under vitest fake timers so the stage's own internal setTimeout race is controlled deterministically.",
+      "task": "task/evidence-collection/evidence-collection-stage"
     },
     {
       "id": "proof/evidence-collection/observation-source-port",
@@ -51,6 +67,78 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/evidence-collection/evidence-collection-stage",
+      "to": "task/evidence-collection/evidence-collection-stage",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/evidence-collection/observation-source-port",
       "to": "domain/investigation/evidence",
@@ -175,6 +263,12 @@
       "from": "implementation/investigation-lifecycle/idempotency-window",
       "to": "task/investigation-lifecycle/idempotency-window",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-collection/evidence-collection-stage",
+      "to": "implementation/evidence-collection/evidence-collection-stage",
+      "kind": "proves",
       "at": "the path"
     },
     {

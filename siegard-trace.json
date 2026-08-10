@@ -44,9 +44,39 @@
       ]
     },
     {
+      "node": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "digest": "sha256:02f4318ed335981f456dfd234a54b94eee5034be44287eb1332a3c9bf3e2ebe7",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-domain-depends-on-no-infrastructure",
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
+        {
+          "path": "src/src/investigation/evidence.ts",
+          "digest": "sha256:27447263417ba463c39c1860cce3035e9332f3eab5197406afdd0df68762490a"
+        },
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/evidence-result.ts",
+          "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
+        },
         {
           "path": "src/src/investigation/verdict.ts",
           "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
@@ -149,6 +179,10 @@
       "node": "contracts/investigation/observation-source",
       "digest": "sha256:0bcb6f1ffa351e6ce8d424911915dab800f5d6d8882057e9349594eda928b802",
       "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
@@ -374,6 +408,14 @@
       "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
       "files": [
         {
+          "path": "src/src/investigation/evidence.ts",
+          "digest": "sha256:27447263417ba463c39c1860cce3035e9332f3eab5197406afdd0df68762490a"
+        },
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
         }
@@ -383,6 +425,10 @@
       "node": "domain/investigation/evidence-result",
       "digest": "sha256:d93207f04278033eb3f001f58838c01322d3fe92cfdf2c2c4c490467f060c3a4",
       "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
         {
           "path": "src/src/investigation/evidence-result.ts",
           "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
@@ -608,12 +654,46 @@
       ]
     },
     {
+      "node": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "digest": "sha256:4f6056b739bc5a67c30b0387f9f2ddc0e917a793d81cfecef49620c0f3e232fa",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/collection-runs-in-the-requester-scope",
       "digest": "sha256:fca9dd22ff0f0b85e3ffff552e0082e893935afecc1bf92374918074e3c28822",
       "files": [
         {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "digest": "sha256:9c00b0ff72e3d3cf826392ada83bf149aa4656ed9b2fe8eb32d0fe8ffba9c7ee",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/one-evidence-per-collected-concept",
+      "digest": "sha256:2e8c8a6b99fe45712f5e920d99d7c42c7e42cc531887d4a3d4747ebe7ddb1b97",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
         }
       ]
     },
@@ -782,12 +862,32 @@
       ]
     },
     {
+      "node": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "digest": "sha256:a9f96a8f0aa1e0dac9ee3ed33f603139d2cd532b8da716addf9c97d83faffbe8",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        }
+      ]
+    },
+    {
       "node": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
       "digest": "sha256:2c1b55e4fbe14a98f3e004a11e1ddd4584beb40d2cd129292de38483bc34a40c",
       "files": [
         {
           "path": "src/src/investigation/idempotency-resolution.ts",
           "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "digest": "sha256:8d5785ed46873a48d07def6f4255586c978d4cd513482e517b425631649e0148",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
         }
       ]
     },
