@@ -26,6 +26,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "implementation",
+      "file": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough.md",
+      "title": "evidence-collection-stage's subject passthrough is already unfiltered",
+      "summary": "Verifies, with no source change, that evidence-collection-stage.ts already dispatches every concept's observe-concept call with the whole canonical Subject by reference, unfiltered, satisfying all three of this task's criteria through the two dependency tasks' already-delivered propagation.",
+      "task": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough"
+    },
+    {
       "id": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/idempotency-key-subject-attributes.md",
@@ -72,6 +80,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "proof",
+      "file": "proof/subject-identity-rework/evidence-collection-stage-subject-passthrough.md",
+      "title": "evidence-collection-stage's whole-subject passthrough, and its import-freedom",
+      "summary": "Adds two tests to the existing, unmodified evidence-collection-stage.spec.ts — a multi-attribute subject reaching every concept's observe-concept call whole and unfiltered, and evidence-collection-stage.ts importing no framework, driver or provider-client package directly — closing the two gaps the existing single-attribute fixture and the task's own UNDERDETERMINED note left open; criterion 3 needed no new test since the pre-existing, unmodified suite already exercises it against the canonical Subject shape.",
+      "task": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough"
     },
     {
       "id": "proof/subject-identity-rework/idempotency-key-subject-attributes",
@@ -216,6 +232,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -356,6 +384,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
       "kind": "proves",
       "at": "the path"
     },

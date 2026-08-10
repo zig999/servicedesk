@@ -11,6 +11,8 @@
 // (idempotency-lease-store.spec.ts and idempotency-resolution.spec.ts already
 // establish the sibling discipline of passing `now` explicitly; this module
 // additionally owns a live timer this proof has to control).
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
@@ -128,6 +130,16 @@ function resolvesAfter(delayMs: number, observation: string): () => Promise<Obse
 /** A ScriptedObservationSource handler that never settles — for a concept a test forces to reach the stage's own race timeout. */
 function neverSettles(): Promise<ObservationOutcome> {
   return new Promise(() => {});
+}
+
+/** Captures the exact subject reference each observe-concept call received, keyed by concept — a stand-in for the observation-source port that answers ok unconditionally, since which ending settles is not what this fake is for; only what reached it. */
+class RecordingObservationSource implements IObservationSource {
+  public readonly subjectReceivedByConcept = new Map<string, Subject>();
+
+  public async observeConcept(concept: string, subject: Subject, _requester: string): Promise<ObservationOutcome> {
+    this.subjectReceivedByConcept.set(concept, subject);
+    return { result: 'ok', observation: `observed-${concept}` };
+  }
 }
 
 /** What every expected Evidence shares except its result: which concept, subject and requester it was called with, and the instant the stage recorded as observed_at. */
@@ -374,6 +386,39 @@ it('carries the requester unmodified into every observe-concept call, never a su
   expect(observationSource.calls.map((call) => call.requester)).toEqual(['requester-alpha', 'requester-alpha']);
 });
 
+it('passes a subject carrying several attribute-value pairs to every concept\'s observe-concept call whole, with no pair selected out', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'concept-one' }));
+  capabilities.hold(aCapability({ concept: 'concept-two' }));
+  const observationSource = new RecordingObservationSource();
+  const multiAttributeSubject: Subject = {
+    type: 'person',
+    attributes: [
+      { attribute: 'id', value: '12345' },
+      { attribute: 'phone', value: '555-0100' },
+      { attribute: 'email', value: 'person@example.com' },
+    ],
+  };
+  const theCase = aCase([{ name: 'h1', collects: ['concept-one', 'concept-two'] }]);
+
+  await collectEvidence({
+    case: theCase,
+    subject: multiAttributeSubject,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(observationSource.subjectReceivedByConcept).toEqual(
+    new Map([
+      ['concept-one', multiAttributeSubject],
+      ['concept-two', multiAttributeSubject],
+    ]),
+  );
+});
+
 it('calls observe-concept exactly once for each concept in the plan, never more', async () => {
   const concepts = ['concept-one', 'concept-two', 'concept-three'];
   const capabilities = new FakeCapabilityQuery();
@@ -482,3 +527,27 @@ it("keeps the effective observation bound at the stage's own fixed seven-second 
     result_detail: `no observation within ${COLLECTION_STAGE_BUDGET_MS}ms`,
   });
 });
+
+// ------------------------------------------------------------- module purity
+
+const MODULE_PATH = fileURLToPath(new URL('../../../investigation/evidence-collection-stage.ts', import.meta.url));
+
+/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
+const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
+
+/** Every module specifier evidence-collection-stage.ts itself imports. */
+async function evidenceCollectionStageImports(): Promise<readonly string[]> {
+  const source = await readFile(MODULE_PATH, 'utf8');
+  return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
+}
+
+it(
+  'imports no framework, driver or provider-client package directly — every import specifier is a relative path, reaching infrastructure only through the observation-source port it is given (constraints/the-domain-depends-on-no-infrastructure)',
+  async () => {
+    const specifiers = await evidenceCollectionStageImports();
+
+    const nonRelativeSpecifiers = specifiers.filter((specifier) => !specifier.startsWith('.'));
+
+    expect(nonRelativeSpecifiers).toEqual([]);
+  },
+);

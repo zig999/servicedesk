@@ -550,6 +550,10 @@
         {
           "path": "src/src/investigation/idempotency-key.ts",
           "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
+        },
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
         }
       ]
     },

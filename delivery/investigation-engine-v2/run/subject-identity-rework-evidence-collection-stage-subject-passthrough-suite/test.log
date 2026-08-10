@@ -1,0 +1,53 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 24ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 14ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 23ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (16 tests) 43ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 61ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (21 tests) 64ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (43 tests) 66ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (19 tests) 46ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 48ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 37ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (8 tests) 27ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 57ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 19ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 17ms
+ ✓ src/__tests__/unit/investigation/idempotency-key.spec.ts (11 tests) 20ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 26ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 31ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 93ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 177ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 190ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 19ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 188ms
+ ✓ src/__tests__/unit/investigation/idempotency-resolution.spec.ts (7 tests) 25ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 258ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 83ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 33ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 39ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 117ms
+ ✓ src/__tests__/unit/investigation/idempotency-lease-store.spec.ts (7 tests) 15ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 18ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 65ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 152ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 93ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 118ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 10ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (1 test) 33ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 120ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 52ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 41ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 34ms
+
+ Test Files  40 passed (40)
+      Tests  363 passed (363)
+   Start at  14:54:00
+   Duration  4.73s (transform 4.62s, setup 0ms, collect 11.99s, tests 2.60s, environment 17ms, prepare 11.41s)
+
