@@ -157,7 +157,9 @@ python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/deliver.py --standard <the project's regist
 A registry that does not hold together is a stop, reported verbatim: a review against one reports a
 conformance nobody has, and fixing it belongs to whoever owns it. The command prints the split —
 how many rules a reading decides, how many a tool does, and the names of the steps those expect —
-which is exactly what the next step needs.
+and every command with its step and its bound, which is everything the capture below composes its
+run from. Do not open the registry's text here: its rules are the standard pass's judge to read,
+that pass is handed the path, and a registry read twice is the same registry at twice the cost.
 
 An artifact the registry presupposes and the tree does not hold is **not** a stop here. A review
 reviews what exists, and refusing to read a change because its project was never set up would
@@ -296,6 +298,11 @@ The body is exactly two headings, in order: `## What it is`, then `## Notes`. On
 line; a section with nothing to say carries the literal line `None.` What the passes looked past,
 and what this framework does not review at all, belongs in `## Notes` — the diff is the review,
 and a limit only the conversation held the next reader never sees.
+
+A finding's own prose meets a colon often enough that a plain scalar breaks the moment one
+appears in it. Emit the frontmatter with `python3 -c` calling `yaml.safe_dump` rather than typing
+it by hand, so a sentence's own colon is never read as a second mapping key; PyYAML is already a
+declared dependency of this framework's own tooling.
 
 Check the file on its own as soon as it is composed:
 
