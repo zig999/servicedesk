@@ -1,112 +1,84 @@
-// The text-production step (task/assessment-drafting/draft-assessment-text):
+// The text-production step
+// (task/assessment-consolidation/draft-assessment-text-consumes-consolidator):
 // assembles the whole Assessment (domain/investigation/assessment) from the
 // resolved outcome and the narrowed input a prior step already produced
-// (task/assessment-consolidation/resolve-and-narrow-input) — copying outcome
-// and referral through unchanged and setting determining_hypothesis present
-// exactly where resolved.determining is defined
-// (rules/investigation/the-outcome-comes-from-the-case), and drafting text,
-// the one field this step decides, deterministically from narrowedInput
-// alone (rules/investigation/the-writing-input-is-narrowed).
-//
-// DISCLOSED DIVERGENCE, disposable scaffolding — not this task's own
-// delivery: resolve-and-narrow-input's confirmed/fallback split
 // (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth)
-// removed ConfirmedNarrowedInput/FallbackNarrowedInput/FallbackEvaluationSummary
-// and narrowedInput.basis, which this module's draftText() branched on; left
-// alone this file would not compile against the new unconditional
-// NarrowedInput. draftText() below is patched, mechanically, to read
-// narrowedInput.evaluations and narrowedInput.evidence together in one
-// unconditional body instead of branching — nothing here decides a domain
-// fact, the exact wording remains this module's own free choice, never a
-// domain fact this module states (this task's own rationale) — so the tree
-// keeps compiling. This module's real rework belongs to
-// task/assessment-consolidation/draft-assessment-text-consumes-consolidator,
-// which replaces this whole template-based approach with a call to the
-// assessment-consolidator port and will rewrite this file's logic again from
-// a clean context; nothing about this patch's specific wording or shape
-// should be read as a decision that task is bound by.
+// — copying outcome and referral through unchanged and setting
+// determining_hypothesis present exactly where resolved.determining is
+// defined and absent otherwise
+// (rules/investigation/the-outcome-comes-from-the-case) — none of the three
+// affected in any way by the call below. text is the one field this step
+// still decides, and it decides nothing itself: it is exactly what the
+// assessment-consolidator port answers for narrowedInput's own evaluations
+// and evidence, together with the given consolidation register
+// (domain/investigation/assessment-consolidator,
+// domain/knowledge/consolidation-register), the same unconditional breadth
+// in every outcome that narrowedInput itself already carries
+// (rules/investigation/the-writing-input-is-narrowed).
 //
-// No domain-model node names a dedicated writing port for this step, unlike
-// hypothesis-evaluator's own port and fake, so this module owns a small
-// template-based generator directly rather than inventing an ungoverned
-// port. Pure and synchronous, importing nothing but the case-resolution
-// module's own ResolvedOutcome and this context's own sibling plain-data
-// types (constraints/the-domain-depends-on-no-infrastructure).
+// This module calls only the published IAssessmentConsolidator interface,
+// never an LLM or provider client directly — which concrete adapter answers
+// consolidate() is this call's caller's own choice, made when it composes
+// this function, not something this module decides
+// (constraints/consolidation-runs-behind-a-port).
+//
+// consolidationRegister reaches this function as an explicit field of its
+// options, read from the pinned case's own consolidation_register
+// (domain/knowledge/case) by whoever calls draftAssessment — never by this
+// module importing the case document module itself. This file therefore
+// still imports nothing at all from the case module, preserving the
+// zero-import guarantee draft-assessment-text-modules.spec.ts already
+// asserts for it.
+//
+// Imports nothing but this context's own sibling plain-data types and the
+// one port interface consolidation runs behind — no framework, driver,
+// provider client or standard-library module
+// (constraints/the-domain-depends-on-no-infrastructure).
 
 import type { ResolvedOutcome } from '../case/case-resolution.js';
 import type { Assessment } from './assessment.js';
-import type { Evaluation } from './evaluation.js';
-import type { Evidence } from './evidence.js';
+import type { IAssessmentConsolidator } from './assessment-consolidator.port.js';
+import type { ConsolidationRegister } from './consolidation-register.js';
 import type { NarrowedInput } from './resolve-and-narrow-input.js';
 
-/** What a summary reads where the narrowed input carried no evidence at all — narrowedInput's own shape admits this, an empty array is not itself invalid. */
-const NO_EVIDENCE_LABEL = 'no evidence';
-
-/** What a summary reads where the narrowed input carried no evaluations at all. */
-const NO_EVALUATIONS_LABEL = 'no evaluations';
-
-/** Joins one summary's own per-item lines into the one sentence fragment draftText embeds. */
-const SUMMARY_SEPARATOR = '; ';
+/**
+ * draftAssessment's own inputs, bundled as one object rather than four
+ * positional parameters (this codebase's own three-positional-parameter
+ * discipline, already kept by resolveAndNarrow's own
+ * ResolveAndNarrowOptions and judgeHypotheses's own JudgeHypothesesOptions):
+ * everything resolveAndNarrow already answered, plus the two inputs the
+ * consolidator call itself needs.
+ */
+export type DraftAssessmentOptions = {
+  /** Criterion 1's own source, unchanged: resolveAndNarrow's own ResolvedOutcome, read here and never recomputed. */
+  readonly resolved: ResolvedOutcome;
+  /** The narrowed input consolidation may see, the same shape in any outcome (rules/investigation/the-writing-input-is-narrowed). */
+  readonly narrowedInput: NarrowedInput;
+  /** The pinned case's own consolidation register, forwarded here by the caller — never read from a Case import in this module. */
+  readonly consolidationRegister: ConsolidationRegister;
+  /** The published assessment-consolidator port this call answers text through; which adapter implements it is this call's caller's own choice. */
+  readonly consolidator: IAssessmentConsolidator;
+};
 
 /**
- * Drafts the whole Assessment from resolved and narrowedInput alone
- * (task/assessment-drafting/draft-assessment-text): outcome and referral
- * are exactly resolved's own values, copied unchanged and never recomputed
- * here; determining_hypothesis is present exactly where resolved.determining
- * is defined and absent otherwise
- * (rules/investigation/the-outcome-comes-from-the-case); text is drafted by
- * draftText from narrowedInput and resolved's own outcome/referral alone,
- * never from the case's own hypotheses or criteria, which narrowedInput
- * structurally cannot carry (rules/investigation/the-writing-input-is-narrowed).
+ * Drafts the whole Assessment from options.resolved and options.narrowedInput
+ * alone, plus the two inputs the consolidator call itself needs
+ * (task/assessment-consolidation/draft-assessment-text-consumes-consolidator):
+ * outcome and referral are exactly resolved's own values, copied unchanged
+ * and never recomputed here; determining_hypothesis is present exactly
+ * where resolved.determining is defined and absent otherwise
+ * (rules/investigation/the-outcome-comes-from-the-case); text is exactly
+ * what consolidator.consolidate() answers for narrowedInput's own
+ * evaluations and evidence together with consolidationRegister, never
+ * assembled by this module itself
+ * (domain/investigation/assessment-consolidator). The Assessment answered
+ * carries only outcome, referral, determining_hypothesis and text — no
+ * verdict and no evidence, so nothing beyond the text is exposed alongside
+ * it (domain/investigation/assessment).
  */
-export function draftAssessment(resolved: ResolvedOutcome, narrowedInput: NarrowedInput): Assessment {
-  const base = { outcome: resolved.outcome, referral: resolved.referral, text: draftText(resolved, narrowedInput) };
+export async function draftAssessment(options: DraftAssessmentOptions): Promise<Assessment> {
+  const { resolved, narrowedInput, consolidationRegister, consolidator } = options;
+  const text = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
+  const base = { outcome: resolved.outcome, referral: resolved.referral, text };
   return resolved.determining === undefined ? base : { ...base, determining_hypothesis: resolved.determining };
-}
-
-/**
- * The text itself: a sentence naming the resolved outcome and referral,
- * followed by one unconditional body built from narrowedInput's own
- * evaluations and evidence together, whether or not a hypothesis confirmed
- * (rules/investigation/the-writing-input-is-narrowed's current
- * unconditional-breadth shape) — noting resolved.determining, already given
- * and never recomputed here, only to say whether one did. Deterministic and
- * template-based; the exact wording is this module's own free choice, not a
- * domain fact, and — per this file's own disclosed divergence above — this
- * particular body shape is disposable scaffolding rather than a decision the
- * consolidator rework is bound by.
- */
-function draftText(resolved: ResolvedOutcome, narrowedInput: NarrowedInput): string {
-  const opening = `The investigation concluded ${resolved.outcome}, referred to ${resolved.referral.recipient} for ${resolved.referral.action}.`;
-  const determination = resolved.determining === undefined ? 'No hypothesis confirmed.' : `Hypothesis ${resolved.determining} confirmed.`;
-  const body = `${determination} Every required hypothesis's own verdict: ${summarizeEvaluations(narrowedInput.evaluations)}. Evidence: ${summarizeEvidence(narrowedInput.evidence)}.`;
-  return `${opening} ${body}`;
-}
-
-/** One line per evidence item, joined deterministically; the empty list reads as NO_EVIDENCE_LABEL rather than an empty fragment. */
-function summarizeEvidence(evidence: readonly Evidence[]): string {
-  if (evidence.length === 0) {
-    return NO_EVIDENCE_LABEL;
-  }
-  return evidence.map(summarizeOneEvidenceItem).join(SUMMARY_SEPARATOR);
-}
-
-/** One evidence item's own contribution: its concept and result always, its observation only where non-empty. */
-function summarizeOneEvidenceItem(item: Evidence): string {
-  return item.observation === '' ? `${item.concept}: ${item.result}` : `${item.concept}: ${item.result} (${item.observation})`;
-}
-
-/** One line per evaluation, joined deterministically; the empty list reads as NO_EVALUATIONS_LABEL rather than an empty fragment. */
-function summarizeEvaluations(evaluations: readonly Evaluation[]): string {
-  if (evaluations.length === 0) {
-    return NO_EVALUATIONS_LABEL;
-  }
-  return evaluations.map(summarizeOneEvaluation).join(SUMMARY_SEPARATOR);
-}
-
-/** One evaluation's own contribution: its hypothesis and verdict always, its reason only where the verdict is inconclusive — citations omitted from this summary line, the same convention this module kept before this patch. */
-function summarizeOneEvaluation(evaluation: Evaluation): string {
-  return evaluation.verdict === 'inconclusive'
-    ? `${evaluation.hypothesis}: ${evaluation.verdict} (${evaluation.reason})`
-    : `${evaluation.hypothesis}: ${evaluation.verdict}`;
 }

@@ -30,6 +30,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         }
       ]
     },
@@ -383,11 +387,11 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:663b643c32ad0c7de99cd89946709c0c903b6047863e3d709d6230f2d238d8a9"
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -402,6 +406,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         }
       ]
     },
@@ -634,6 +642,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         }
       ]
     },
@@ -978,6 +990,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         }
       ]
     },
@@ -992,6 +1008,10 @@
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
         }
       ]
     },

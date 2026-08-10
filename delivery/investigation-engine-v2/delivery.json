@@ -18,6 +18,14 @@
       "task": "task/assessment-consolidation/case-coherence-optional-consolidation-register"
     },
     {
+      "id": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "kind": "implementation",
+      "file": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator.md",
+      "title": "draft-assessment-text consumes the assessment-consolidator port",
+      "summary": "draftAssessment now assembles its Assessment by awaiting the assessment-consolidator port's consolidate() call for its text, keeping outcome/referral/determining_hypothesis a verbatim copy of resolved and receiving the consolidation register as an explicit input rather than through any case import.",
+      "task": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator"
+    },
+    {
       "id": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "kind": "implementation",
       "file": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth.md",
@@ -72,6 +80,14 @@
       "title": "Case admits an optional consolidation register — proof",
       "summary": "Tests over parse-case-document.ts proving a case document's optional consolidation_register parses through when formal or plain, parses successfully when absent, is refused together with any other structural violation when declared outside that closed set, and is carried onto the returned Case rather than dropped.",
       "task": "task/assessment-consolidation/case-coherence-optional-consolidation-register"
+    },
+    {
+      "id": "proof/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "kind": "proof",
+      "file": "proof/assessment-consolidation/draft-assessment-text-consumes-consolidator.md",
+      "title": "draft-assessment-text proves its consolidator-consuming rework",
+      "summary": "Rewrites draft-assessment-text.spec.ts whole against the new async, single-options-object, consolidator-calling draftAssessment, proving the task's five criteria without duplicating draft-assessment-text-modules.spec.ts's own import-fitness job.",
+      "task": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator"
     },
     {
       "id": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
@@ -192,6 +208,48 @@
     {
       "from": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
       "to": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
       "kind": "implements",
       "at": "the path"
     },
@@ -378,6 +436,12 @@
     {
       "from": "proof/assessment-consolidation/case-coherence-optional-consolidation-register",
       "to": "implementation/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "implementation/assessment-consolidation/draft-assessment-text-consumes-consolidator",
       "kind": "proves",
       "at": "the path"
     },

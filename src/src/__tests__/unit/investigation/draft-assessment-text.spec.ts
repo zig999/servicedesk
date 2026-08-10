@@ -1,40 +1,38 @@
-// Proof for task/assessment-drafting/draft-assessment-text: draftAssessment
-// copies outcome, referral and determining hypothesis from the resolved
-// outcome unchanged (rules/investigation/the-outcome-comes-from-the-case),
-// carries determining_hypothesis present exactly where resolved.determining
-// is defined and structurally absent otherwise
-// (scenarios/knowledge/no-confirmation-falls-back), and drafts text from the
-// narrowed input it was given — never a fixed body regardless of it, never
-// an empty fragment where a collection is empty, and never a static
-// constant regardless of resolved's own outcome and referral
-// (rules/investigation/the-writing-input-is-narrowed). Pure and synchronous
-// throughout, so no fake timers or async handling is needed here; whether
-// drafting imports no framework, driver or provider client, and whether it
-// can even reach a hypothesis's own criterion or the case's when_to_use, is
-// proved separately by draft-assessment-text-modules.spec.ts, since both are
-// facts about this module's own imports rather than about any input it is
-// given at runtime.
-// DISCLOSED DIVERGENCE, disposable scaffolding — mechanical fixture patch
-// only, following draft-assessment-text.ts's own header comment: resolve-
-// and-narrow-input's confirmed/fallback split
-// (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth)
-// removed ConfirmedNarrowedInput/FallbackNarrowedInput/FallbackEvaluationSummary,
-// so this file's own fixture helpers of those names are replaced with
-// fixtures built from NarrowedInput's current unconditional
-// { evaluations, evidence } shape. Every criterion this file proves is
-// unchanged; only the fixtures that assemble a NarrowedInput, and the two
-// edge-case tests whose narrowedInput exercised only one of its two fields
-// under the old split, are adjusted so each still isolates the one
-// collection it means to test. This module's real rework belongs to
-// task/assessment-consolidation/draft-assessment-text-consumes-consolidator,
-// which rewrites this file's approach from a clean context; nothing about
-// this patch's specific fixture shape should be read as a decision that
-// task is bound by.
+// Proof for
+// task/assessment-consolidation/draft-assessment-text-consumes-consolidator:
+// draftAssessment is now async, takes one DraftAssessmentOptions object, and
+// answers text exactly as the assessment-consolidator port returns it for
+// narrowedInput's own evaluations and evidence together with the given
+// consolidation register (domain/investigation/assessment-consolidator,
+// domain/knowledge/consolidation-register), never assembling it itself.
+// outcome, referral and determining_hypothesis remain exactly what resolved
+// carries, unaffected by the consolidator call
+// (rules/investigation/the-outcome-comes-from-the-case); the answered
+// Assessment carries only outcome, referral, determining_hypothesis and text
+// — no verdict and no evidence field ever (domain/investigation/assessment).
+// consolidationRegister reaches this module as options' own explicit field —
+// proved here by the register value actually driving which of two seeded
+// texts comes back — never by reading a case import; the zero-import-of-case
+// guarantee itself is draft-assessment-text-modules.spec.ts's own job and is
+// not repeated here.
+//
+// Every test below seeds FakeAssessmentConsolidator — the only concrete
+// IAssessmentConsolidator this codebase ships — with exactly the
+// evaluations/evidence/register triple draftAssessment is expected to
+// forward. The fake matches a call by that triple's own content and throws
+// for anything else, so a draftAssessment that forwarded a narrowed,
+// transformed or substituted evaluations/evidence/register would find no
+// fixture and reject, rather than silently answering the wrong text — this
+// is what makes "the text equals the consolidator's answer for the same
+// narrowed input and register" a claim these tests can actually break.
 import { expect, it } from 'vitest';
 import type { ResolvedOutcome } from '../../../case/case-resolution.js';
-import { draftAssessment } from '../../../investigation/draft-assessment-text.js';
+import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
+import { draftAssessment, type DraftAssessmentOptions } from '../../../investigation/draft-assessment-text.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
+import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
+import type { IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
 import type { NarrowedInput } from '../../../investigation/resolve-and-narrow-input.js';
 
 /** A minimally valid confirmed-path ResolvedOutcome, defaulted so a test states only what it is about. */
@@ -71,113 +69,148 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
   };
 }
 
-/** One required hypothesis's own evaluation, confirmed with one citation — the shape Evaluation's own type requires for a decided verdict — defaulted so a test states only which hypothesis it is about. */
+/** One required hypothesis's own evaluation, confirmed with one citation, defaulted so a test states only which hypothesis it is about. */
 function anEvaluation(hypothesis: string): Evaluation {
   return { hypothesis, verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'a-field' }] };
 }
 
-/** The narrowed input, carrying exactly the shape resolve-and-narrow-input itself now produces — evaluations and evidence together, unconditionally (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth). Defaulted to both empty so a test states only which of the two collections it is about. */
+/** The narrowed input, carrying exactly the shape resolve-and-narrow-input produces — evaluations and evidence together. Defaulted to both empty so a test states only which of the two collections it is about. */
 function aNarrowedInput(overrides: Partial<NarrowedInput> = {}): NarrowedInput {
   return { evaluations: [], evidence: [], ...overrides };
 }
 
+/** A FakeAssessmentConsolidator pre-seeded to answer `text` for exactly this narrowedInput and register, and to reject (naming "no fixture seeded") for any other call. */
+function consolidatorSeededWith(narrowedInput: NarrowedInput, consolidationRegister: ConsolidationRegister, text: string): IAssessmentConsolidator {
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister }, text);
+  return fake;
+}
+
+/** draftAssessment's own options, defaulted so a test states only what it is about. */
+function draftOptions(fields: {
+  readonly resolved: ResolvedOutcome;
+  readonly narrowedInput: NarrowedInput;
+  readonly consolidationRegister: ConsolidationRegister;
+  readonly consolidator: IAssessmentConsolidator;
+}): DraftAssessmentOptions {
+  return { ...fields };
+}
+
 // ------------------------------------------------------------- criterion 1
 
-it("copies outcome, referral and determining hypothesis from the resolved outcome, unchanged", () => {
+it("answers text equal to what the consolidator returns for narrowedInput's own evaluations and evidence together with the given register", async () => {
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [anEvidence({ concept: 'a-concept' })] });
+  const consolidationRegister: ConsolidationRegister = 'formal';
+  const consolidator = consolidatorSeededWith(narrowedInput, consolidationRegister, 'the consolidated write-up');
+
+  const result = await draftAssessment(draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister, consolidator }));
+
+  expect(result.text).toBe('the consolidated write-up');
+});
+
+it('answers the register-specific text seeded for the register actually given, not the text seeded for the other register', async () => {
+  const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'formal' }, 'formal write-up');
+  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'plain' }, 'plain write-up');
+
+  const formalResult = await draftAssessment(
+    draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'formal', consolidator: fake }),
+  );
+  const plainResult = await draftAssessment(
+    draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'plain', consolidator: fake }),
+  );
+
+  expect(formalResult.text).toBe('formal write-up');
+  expect(plainResult.text).toBe('plain write-up');
+});
+
+// ------------------------------------------------------------- criterion 3
+
+it('lets the consolidation register given in options alone decide which seeded text answers, proving it reaches this call as an explicit input rather than a value fixed in advance', async () => {
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'formal' }, 'formal answer');
+  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'plain' }, 'plain answer');
+  const resolved = aFallbackResolvedOutcome();
+
+  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'plain', consolidator: fake }));
+
+  expect(result.text).toBe('plain answer');
+});
+
+// ------------------------------------------------------------- criterion 4
+
+it("carries resolved's own outcome, referral and determining hypothesis through unchanged, regardless of what the consolidator answers", async () => {
   const resolved = aConfirmedResolvedOutcome({
-    outcome: 'an-outcome',
-    referral: { action: 'refer', recipient: 'a-queue' },
-    determining: 'h1',
+    outcome: 'a-specific-outcome',
+    referral: { action: 'escalate', recipient: 'a-specific-queue' },
+    determining: 'a-specific-hypothesis',
   });
   const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
+  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'a text unrelated to any of the above');
 
-  const result = draftAssessment(resolved, narrowedInput);
+  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
-  expect(result.outcome).toBe(resolved.outcome);
-  expect(result.referral).toEqual(resolved.referral);
-  expect(result.determining_hypothesis).toBe(resolved.determining);
+  expect(result.outcome).toBe('a-specific-outcome');
+  expect(result.referral).toEqual({ action: 'escalate', recipient: 'a-specific-queue' });
+  expect(result.determining_hypothesis).toBe('a-specific-hypothesis');
 });
 
-// ------------------------------------------------------------- criterion 2
-
-it('carries the determining hypothesis exactly as resolved named it, when one confirmed', () => {
-  const resolved = aConfirmedResolvedOutcome({ determining: 'the-determining-hypothesis' });
-  const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
-
-  const result = draftAssessment(resolved, narrowedInput);
-
-  expect(result).toHaveProperty('determining_hypothesis', 'the-determining-hypothesis');
-});
-
-it('carries no determining_hypothesis field at all — not even present with an undefined value — when the fallback answered', () => {
+it('carries no determining_hypothesis field at all — not even present with an undefined value — when resolved carries none', async () => {
   const resolved = aFallbackResolvedOutcome();
   const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
+  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'a fallback write-up');
 
-  const result = draftAssessment(resolved, narrowedInput);
+  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
   expect(result).not.toHaveProperty('determining_hypothesis');
 });
 
-// ------------------------------------------------------------- edge cases: empty collections
+// ------------------------------------------------------------- criterion 5
 
-it("drafts text rather than throwing or producing an empty fragment when narrowedInput's own evidence array is empty", () => {
+it('exposes only outcome, referral, determining_hypothesis and text — never a verdict or evidence field — on a confirmed-path answer', async () => {
   const resolved = aConfirmedResolvedOutcome();
-  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [] });
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [anEvidence({ concept: 'a-concept' })] });
+  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'the consolidated write-up');
 
-  const result = draftAssessment(resolved, narrowedInput);
+  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
-  expect(result.text).toContain('no evidence');
+  expect(Object.keys(result).sort()).toEqual(['determining_hypothesis', 'outcome', 'referral', 'text']);
+  expect(result).not.toHaveProperty('verdict');
+  expect(result).not.toHaveProperty('evidence');
 });
 
-it("drafts text rather than throwing or producing an empty fragment when narrowedInput's own evaluations array is empty", () => {
+it('exposes only outcome, referral and text — no determining_hypothesis, verdict or evidence field — on a fallback-path answer', async () => {
   const resolved = aFallbackResolvedOutcome();
-  const narrowedInput = aNarrowedInput({ evaluations: [], evidence: [anEvidence({ concept: 'a-concept' })] });
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
+  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'a fallback write-up');
 
-  const result = draftAssessment(resolved, narrowedInput);
+  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
-  expect(result.text).toContain('no evaluations');
+  expect(Object.keys(result).sort()).toEqual(['outcome', 'referral', 'text']);
 });
 
-// ------------------------------------------------------------- edge case: the two branches are observably distinct
+// ------------------------------------------------------------- edge case: empty collections
 
-it('drafts observably different text for a confirmed-path call than for a fallback-path call, so drafting reads the narrowed input rather than producing one fixed body regardless of it', () => {
-  const confirmedResult = draftAssessment(
-    aConfirmedResolvedOutcome(),
-    aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] }),
-  );
-  const fallbackResult = draftAssessment(
-    aFallbackResolvedOutcome(),
-    aNarrowedInput({ evaluations: [anEvaluation('h1')] }),
+it('forwards empty evaluations and empty evidence to the consolidator rather than special-casing either one', async () => {
+  const narrowedInput = aNarrowedInput();
+  const consolidator = consolidatorSeededWith(narrowedInput, 'plain', 'nothing was required');
+
+  const result = await draftAssessment(
+    draftOptions({ resolved: aFallbackResolvedOutcome(), narrowedInput, consolidationRegister: 'plain', consolidator }),
   );
 
-  expect(confirmedResult.text).not.toBe(fallbackResult.text);
+  expect(result.text).toBe('nothing was required');
 });
 
-// ------------------------------------------------------------- edge case: text draws only from the given inputs
+// ------------------------------------------------------------- edge case: the consolidator fails
 
-it("drafts different text for two calls sharing the very same narrowed input but different resolved outcomes, reflecting resolved's own outcome and referral rather than answering with a text fixed in advance", () => {
+it("propagates the consolidator's rejection rather than swallowing it into a default or empty text", async () => {
   const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
-  const firstResult = draftAssessment(
-    aConfirmedResolvedOutcome({ outcome: 'outcome-one', referral: { action: 'refer', recipient: 'queue-one' } }),
-    narrowedInput,
-  );
-  const secondResult = draftAssessment(
-    aConfirmedResolvedOutcome({ outcome: 'outcome-two', referral: { action: 'escalate', recipient: 'queue-two' } }),
-    narrowedInput,
-  );
+  const consolidator: IAssessmentConsolidator = new FakeAssessmentConsolidator(); // nothing seeded — every call rejects
 
-  expect(firstResult.text).not.toBe(secondResult.text);
-  expect(firstResult.text).toContain('outcome-one');
-  expect(secondResult.text).toContain('outcome-two');
-});
-
-// ------------------------------------------------------------- edge case: never a Promise
-
-it('answers synchronously with the result itself, never a Promise, so nothing here could be awaiting a database driver or a provider client', () => {
-  const result = draftAssessment(
-    aConfirmedResolvedOutcome(),
-    aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] }),
-  );
-
-  expect(result).not.toBeInstanceOf(Promise);
+  await expect(
+    draftAssessment(draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'formal', consolidator })),
+  ).rejects.toThrow(/no fixture seeded/);
 });
