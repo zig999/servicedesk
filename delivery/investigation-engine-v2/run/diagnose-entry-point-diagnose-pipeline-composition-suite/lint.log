@@ -1,0 +1,10 @@
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/unit/investigation/run-diagnosis.spec.ts
+  535:106  error  Async arrow function has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+

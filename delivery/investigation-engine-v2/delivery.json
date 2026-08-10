@@ -34,6 +34,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "implementation",
+      "file": "implementation/diagnose-entry-point/diagnose-pipeline-composition.md",
+      "title": "Diagnose pipeline composition",
+      "summary": "A new composition root, run-diagnosis.ts, wires collection, judgment, resolve-and-narrow, drafting and persistence into one synchronous, deadline-bound run over an already-resolved case/subject/narrative, backed by two new factory files and a new persistence-deadline error.",
+      "task": "task/diagnose-entry-point/diagnose-pipeline-composition"
+    },
+    {
       "id": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough.md",
@@ -96,6 +104,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "proof",
+      "file": "proof/diagnose-entry-point/diagnose-pipeline-composition.md",
+      "title": "Diagnose pipeline composition",
+      "summary": "Proof for run-diagnosis.ts, composing an already-resolved case/subject/narrative through collection, judgment, drafting and persistence, proving the composition's six criteria against fresh fakes for every port it wires — and one documented, non-executable disagreement over a total-deadline requirement the delivered composition does not actually meet.",
+      "task": "task/diagnose-entry-point/diagnose-pipeline-composition"
     },
     {
       "id": "proof/subject-identity-rework/evidence-collection-stage-subject-passthrough",
@@ -290,6 +306,72 @@
       "at": "the path"
     },
     {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "contracts/investigation/case-source",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-identity-rework/evidence-collection-stage-subject-passthrough",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -448,6 +530,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
       "kind": "proves",
       "at": "the path"
     },

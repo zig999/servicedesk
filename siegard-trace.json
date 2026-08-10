@@ -38,6 +38,16 @@
       ]
     },
     {
+      "node": "constraints/diagnosis-answers-synchronously",
+      "digest": "sha256:2932e6f0a79562254488c2cac1310781bde6ffa1a8fce875acab93136f219746",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        }
+      ]
+    },
+    {
       "node": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
       "digest": "sha256:f33736c815ac4a410d3b668cfa2f5eebe421e4617fe06b7e765dd4e7f4dd8f39",
       "files": [
@@ -86,6 +96,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -156,6 +170,26 @@
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
+        }
+      ]
+    },
+    {
+      "node": "contracts/investigation/case-source",
+      "digest": "sha256:96c2aa946e9b76e31761b1966a1c8f0de74dd3790f42ed77bff504074d5bf7e5",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        }
+      ]
+    },
+    {
+      "node": "contracts/investigation/diagnosis",
+      "digest": "sha256:817c87c112cf96a98db9fa78cec7ca797087d0e0d31614bd3492b2dba5ec6893",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -850,6 +884,16 @@
       ]
     },
     {
+      "node": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "digest": "sha256:e5d449f88de41578c5c9559b29d6fd2217236138bc836f66316eee73cc768190",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
       "digest": "sha256:9501a01dae497f735cc78b0a3fea64952e1cf4fb5d0a917fbc4cf89830c1367e",
       "files": [
@@ -896,6 +940,10 @@
         {
           "path": "src/src/persistence/file-investigation-store.repository.ts",
           "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -934,6 +982,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -971,11 +1023,15 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
         {
           "path": "src/src/investigation/investigation.ts",
           "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -994,6 +1050,16 @@
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/the-response-follows-the-record",
+      "digest": "sha256:5ccec1f1ea1d6c94e3050bf1d2952d32f7164085391cd331e17fa60accd69e3d",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -1230,6 +1296,20 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/no-response-without-a-record",
+      "digest": "sha256:5c82d402773b100305b593f1d68206a60f5455347cc92f075e4a2a123ca5cdc4",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        },
+        {
+          "path": "src/src/errors/investigation-write-deadline-exceeded.error.ts",
+          "digest": "sha256:466b080452b2d638bf707c3d9db72dbd789dabd23732e350dfbb1761b5f793a8"
         }
       ]
     },
