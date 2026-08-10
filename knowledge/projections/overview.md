@@ -8,7 +8,7 @@ Derived by spec.py from the specification files; never edited.
 |---|---|---|---|---|---|
 | glossary | supporting | 5 | 4 | 1 | 0 |
 | integration | generic | 3 | 4 | 4 | 0 |
-| investigation | supporting | 12 | 17 | 6 | 5 |
+| investigation | supporting | 12 | 18 | 6 | 6 |
 | knowledge | core | 4 | 15 | 3 | 3 |
 
 ## Capabilities
@@ -31,4 +31,4 @@ Derived by spec.py from the specification files; never edited.
 - the-judgment-prompt-is-closed (investigation)
 - the-mvp-persists-to-no-database (system)
 
-34 decision(s) disclosed in the decision log.
+36 decision(s) disclosed in the decision log.

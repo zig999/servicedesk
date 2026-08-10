@@ -170,4 +170,14 @@ entries:
     unstated: Decision 3 demanded two figures — the per-capability timeout and the collection stage's global deadline — and the material answered with the single figure of sixty seconds.
     decided: Sixty seconds binds the capability timeout default; no second figure is recorded for the collection stage.
     why: The collection stage runs its concepts in parallel, so its bound is the slowest capability clamped by the propagated remaining time, and a separate stage figure would add nothing the propagation constraint does not already enforce.
+  - location: rules/investigation/collection-has-its-own-budget-within-the-total.md
+    field: statement
+    unstated: Decision 3 demanded two figures, and the entry above decided only the capability timeout default, reasoning that the propagation constraint made a second figure redundant — but no nominal per-stage budget is stated anywhere for that constraint to clamp against, so the collection stage's own bound was never actually pinned; the material itself, at Decision 3, says a slow system hangs the investigation without both numbers.
+    decided: Seven seconds, the collection stage's own nominal budget inside the total deadline.
+    why: The material's engineering proposal for the synchronous budget (Decision 1) is the only concrete split it offers, and it allocates seven of the twenty seconds to collection because the stage runs in parallel and is bound by its slowest capability, not by a sum.
+  - location: rules/investigation/an-answer-arrives-within-the-declared-deadline.md
+    field: statement
+    unstated: The specification held a total deadline of three hundred seconds with no decision-log entry disclosing it — an undisclosed decision, and one at odds with Decision 1, closed as synchronous with the attendant waiting on screen, and with the material's own proposed twenty-second synchronous budget, referenced twice more elsewhere in the material as the orçamento the durations record against.
+    decided: Twenty seconds — two of overhead and margin, seven of collection, five of judgment, four of writing and two of persistence.
+    why: A five-minute wait contradicts the synchronous, on-screen experience Decision 1 closed on; twenty seconds is the only total the material gives, so the undisclosed three-hundred-second figure is corrected to it, pending the operational confirmation the material itself still asks for.
 ---
