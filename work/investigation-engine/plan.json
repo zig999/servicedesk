@@ -1,0 +1,1246 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/assessment-drafting",
+      "kind": "epic",
+      "file": "epic/assessment-drafting.md",
+      "title": "Assessment resolution and drafting",
+      "summary": "Resolves the case's outcome over the completed evaluations and drafts the assessment's text from exactly the input that outcome admits."
+    },
+    {
+      "id": "epic/evidence-collection",
+      "kind": "epic",
+      "file": "epic/evidence-collection.md",
+      "title": "Evidence collection",
+      "summary": "Parallel, scoped, budgeted collection of one evidence per concept in the pinned case's plan, behind a new observation-source port and its fake test adapter."
+    },
+    {
+      "id": "epic/hypothesis-judgment",
+      "kind": "epic",
+      "file": "epic/hypothesis-judgment.md",
+      "title": "Hypothesis judgment",
+      "summary": "Isolated, deadline-bounded, cited judgment of every hypothesis a pinned case requires, behind the hypothesis-evaluator port and its fake test adapter."
+    },
+    {
+      "id": "epic/investigation-lifecycle",
+      "kind": "epic",
+      "file": "epic/investigation-lifecycle.md",
+      "title": "Investigation lifecycle",
+      "summary": "Builds the immutable, pinned investigation from every stage's output, writes it once, honors the idempotency window, and wires the whole synchronous diagnose entry point that responds only after the write and publishes InvestigationCompleted only after that."
+    },
+    {
+      "id": "inventory/investigation-engine",
+      "kind": "inventory",
+      "file": "inventory/investigation-engine.md",
+      "title": "Investigation engine's landing area",
+      "summary": "A greenfield module beside case and capability-registry, consuming the published case-query and capability-registry reads without touching the knowledge context."
+    },
+    {
+      "id": "task/assessment-drafting/draft-assessment-text",
+      "kind": "task",
+      "file": "task/assessment-drafting/draft-assessment-text.md",
+      "title": "Draft the assessment's text from the narrowed input",
+      "summary": "Produces the one field drafting is responsible for — the assessment's text — from the narrowed input alone.",
+      "epic": "assessment-drafting"
+    },
+    {
+      "id": "task/assessment-drafting/resolve-and-narrow-input",
+      "kind": "task",
+      "file": "task/assessment-drafting/resolve-and-narrow-input.md",
+      "title": "Resolve the outcome and narrow the writing input",
+      "summary": "Resolves the case's outcome over the completed evaluations and assembles exactly the input the writing step may see.",
+      "epic": "assessment-drafting"
+    },
+    {
+      "id": "task/evidence-collection/evidence-collection-stage",
+      "kind": "task",
+      "file": "task/evidence-collection/evidence-collection-stage.md",
+      "title": "Parallel, budgeted evidence collection over the case's plan",
+      "summary": "Collects one evidence per concept in the pinned case's collection plan, in parallel, within the requester's scope and the collection stage's own budget.",
+      "epic": "evidence-collection"
+    },
+    {
+      "id": "task/evidence-collection/observation-source-port",
+      "kind": "task",
+      "file": "task/evidence-collection/observation-source-port.md",
+      "title": "Observation-source port and its fake adapter",
+      "summary": "The port the collection stage calls to observe one concept for one subject, plus a test adapter that returns controlled results without a real connector.",
+      "epic": "evidence-collection"
+    },
+    {
+      "id": "task/hypothesis-judgment/citation-validation",
+      "kind": "task",
+      "file": "task/hypothesis-judgment/citation-validation.md",
+      "title": "Structural validation of an evaluator's citations",
+      "summary": "A pure check that every citation an evaluator's response names belongs to the judged hypothesis's collects and points at a field the citing evidence's capability actually declares.",
+      "epic": "hypothesis-judgment"
+    },
+    {
+      "id": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "task",
+      "file": "task/hypothesis-judgment/hypothesis-evaluator-port.md",
+      "title": "Hypothesis-evaluator port and its fake adapter",
+      "summary": "The port through which one hypothesis is judged against its own evidence, plus a fake adapter returning controlled verdicts for tests.",
+      "epic": "hypothesis-judgment"
+    },
+    {
+      "id": "task/hypothesis-judgment/judgment-stage",
+      "kind": "task",
+      "file": "task/hypothesis-judgment/judgment-stage.md",
+      "title": "Isolated, deadline-bounded judgment of every required hypothesis",
+      "summary": "Judges every hypothesis the pinned case requires, one isolated parallel call each, retrying once on an invalid citation set when the deadline still allows it and falling back to inconclusive otherwise.",
+      "epic": "hypothesis-judgment"
+    },
+    {
+      "id": "task/investigation-lifecycle/diagnose-entry-point",
+      "kind": "task",
+      "file": "task/investigation-lifecycle/diagnose-entry-point.md",
+      "title": "The synchronous diagnose entry point",
+      "summary": "Wires case pinning, deadline propagation, collection, judgment, resolution and drafting, the investigation factory, its write-once storage and the idempotency window into the one synchronous diagnose operation, publishing InvestigationCompleted only after the write succeeds.",
+      "epic": "investigation-lifecycle"
+    },
+    {
+      "id": "task/investigation-lifecycle/idempotency-window",
+      "kind": "task",
+      "file": "task/investigation-lifecycle/idempotency-window.md",
+      "title": "Idempotency window over subject, case and ticket",
+      "summary": "A lease-backed mechanism that lets a repeated request within the configured window find the investigation already completed or in progress, and starts a new one only when neither exists.",
+      "epic": "investigation-lifecycle"
+    },
+    {
+      "id": "task/investigation-lifecycle/investigation-factory",
+      "kind": "task",
+      "file": "task/investigation-lifecycle/investigation-factory.md",
+      "title": "The immutable investigation factory",
+      "summary": "Builds the whole, pinned, invariant-checked Investigation from a subject, the pinned case's replay data, collected evidence, completed evaluations, the resolved assessment, cost and durations.",
+      "epic": "investigation-lifecycle"
+    },
+    {
+      "id": "task/investigation-lifecycle/investigation-store",
+      "kind": "task",
+      "file": "task/investigation-lifecycle/investigation-store.md",
+      "title": "Write-once investigation storage",
+      "summary": "Persists one investigation as its own file, never overwriting or mutating a record once written, mirroring the case module's file-backed store pattern.",
+      "epic": "investigation-lifecycle"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/assessment-drafting",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "contracts/investigation/assessment-reviewed",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/assessment-drafting",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "contracts/integration/concept-observation",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/evidence-collection",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/hypothesis-judgment",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "contracts/investigation/case-source",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "contracts/investigation/investigation-completed",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/investigation-lifecycle",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/assessment-drafting/draft-assessment-text",
+      "to": "task/assessment-drafting/resolve-and-narrow-input",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/assessment-drafting/draft-assessment-text",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-drafting/draft-assessment-text",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-drafting/draft-assessment-text",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-drafting/draft-assessment-text",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "task/evidence-collection/evidence-collection-stage",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/assessment-drafting/resolve-and-narrow-input",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "task/evidence-collection/observation-source-port",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/evidence-collection/evidence-collection-stage",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "contracts/integration/concept-observation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/evidence-collection/observation-source-port",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-judgment/citation-validation",
+      "to": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment/citation-validation",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment/citation-validation",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment/citation-validation",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "task/hypothesis-judgment/citation-validation",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[19]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/hypothesis-judgment/judgment-stage",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/evidence-collection/evidence-collection-stage",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/hypothesis-judgment/judgment-stage",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/assessment-drafting/draft-assessment-text",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/investigation-lifecycle/investigation-factory",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/investigation-lifecycle/investigation-store",
+      "kind": "depends_on",
+      "at": "depends_on[4]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "task/investigation-lifecycle/idempotency-window",
+      "kind": "depends_on",
+      "at": "depends_on[5]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "contracts/investigation/case-source",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "contracts/investigation/investigation-completed",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/investigation-lifecycle/diagnose-entry-point",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/investigation-lifecycle/idempotency-window",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/idempotency-window",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-lifecycle/idempotency-window",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "task/evidence-collection/evidence-collection-stage",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "task/hypothesis-judgment/judgment-stage",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "task/assessment-drafting/draft-assessment-text",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-factory",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-store",
+      "to": "task/investigation-lifecycle/investigation-factory",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-store",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-lifecycle/investigation-store",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
