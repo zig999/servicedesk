@@ -4,10 +4,20 @@
 // provider client, and nothing of the standard library either, so
 // infrastructure cannot be reached from them directly
 // (constraints/the-domain-depends-on-no-infrastructure) — and the fake is
-// the only concrete adapter this task ships behind the port
+// the only concrete class implementing IObservationSource
 // (task/evidence-collection/observation-source-port, criterion 2). The
 // implementation record names this automated sweep as deferred to this
 // proof rather than silently assumed already covered by inspection alone.
+// The "only concrete adapter" check reads the whole shared investigation
+// directory but scopes by which interface a class implements, not by a
+// raw ".adapter.ts" file count — that directory is shared with
+// task/hypothesis-judgment/hypothesis-evaluator-port's own fake adapter,
+// and a directory-wide file count would answer for both ports at once.
+// (Retroactive correction: this check originally counted every .adapter.ts
+// file in the directory, which held only by accident of there being one
+// task delivered here at the time; it broke the moment a legitimate
+// sibling fake landed beside it, so it is rescoped here to what criterion 2
+// actually requires — a task-scoped fact, not a directory-wide one.)
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -116,10 +126,16 @@ it('the observation-source modules import nothing from the standard library, so 
   expect(offenders).toEqual([]);
 });
 
-it('ships exactly one concrete adapter behind the port', async () => {
+it('ships exactly one concrete class implementing IObservationSource', async () => {
   const files = await investigationFiles();
 
-  const adapters = files.filter((file) => file.endsWith('.adapter.ts'));
+  const implementers: string[] = [];
+  for (const file of files) {
+    const source = await readFile(join(INVESTIGATION_DIRECTORY, file), 'utf8');
+    if (/implements\s+IObservationSource\b/.test(source)) {
+      implementers.push(file);
+    }
+  }
 
-  expect(adapters).toEqual(['fake-observation-source.adapter.ts']);
+  expect(implementers).toEqual(['fake-observation-source.adapter.ts']);
 });

@@ -1,0 +1,37 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 11ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 14ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 20ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 15ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 22ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (34 tests) 30ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 37ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (19 tests) 39ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 281ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 53ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 31ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 265ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 87ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 49ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 30ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 239ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 216ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 90ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 81ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (1 test) 41ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 85ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 67ms
+
+ Test Files  24 passed (24)
+      Tests  200 passed (200)
+   Start at  22:08:02
+   Duration  2.66s (transform 2.03s, setup 0ms, collect 6.23s, tests 1.83s, environment 26ms, prepare 5.50s)
+

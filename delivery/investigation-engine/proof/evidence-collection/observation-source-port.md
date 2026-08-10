@@ -48,9 +48,9 @@ tests:
   proves: the same constraint and criterion, catching a node builtin (including any node network module such as node:http) rather than only a third-party package
   fails_when: 'any file directly under src/investigation imports anything prefixed node: or named among Node''s builtin modules'
 - file: src/__tests__/unit/investigation/observation-source-modules.spec.ts
-  name: ships exactly one concrete adapter behind the port
+  name: ships exactly one concrete class implementing IObservationSource
   proves: criterion 2's "The fake adapter is the only concrete implementation this task ships"
-  fails_when: a second .adapter.ts file appears directly under src/investigation, or fake-observation-source.adapter.ts is renamed or removed without the assertion changing
+  fails_when: a second class implementing IObservationSource appears anywhere directly under src/investigation, or fake-observation-source.adapter.ts is renamed, stops implementing the interface, or is removed without the assertion changing
 not_applicable:
 - edge_case: two operations reaching the fake for one concept-and-subject pair at once
   why: the fake is a synchronous in-memory Map read wrapped in an already-resolved promise; there is no I/O boundary or shared mutable state a second concurrent call could observe mid-write, and no specification node bound to this task describes concurrent-call behavior for this port
@@ -74,4 +74,4 @@ Unit tests proving the observation-source port's three criteria against its fake
 
 ## Notes
 
-None.
+Retroactive correction, made while delivering task/hypothesis-judgment/hypothesis-evaluator-port: the "ships exactly one concrete adapter" test originally counted every `.adapter.ts` file directly under `src/investigation`, which held only because this was the sole task delivered into that directory at the time. It broke the moment that sibling task's own fake adapter legitimately landed beside it. The check is rescoped to what criterion 2 actually requires — that `FakeObservationSource` is the only class implementing `IObservationSource`, a task-scoped fact, not a directory-wide one — mirroring the equivalent, correctly-scoped check the sibling task's own proof already wrote for `IHypothesisEvaluator`. What the test proves is unchanged; only the over-broad mechanism is corrected.

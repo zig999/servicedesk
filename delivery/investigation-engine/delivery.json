@@ -10,12 +10,28 @@
       "task": "task/evidence-collection/observation-source-port"
     },
     {
+      "id": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment/hypothesis-evaluator-port.md",
+      "title": "Hypothesis-evaluator port and its fake adapter",
+      "summary": "The IHypothesisEvaluator port and a fixture-driven FakeHypothesisEvaluator that judges one hypothesis's criterion against its own evidence, plus the verdict, evaluation-reason and citation vocabulary the port's answer is built from.",
+      "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
+    },
+    {
       "id": "proof/evidence-collection/observation-source-port",
       "kind": "proof",
       "file": "proof/evidence-collection/observation-source-port.md",
       "title": "Proof for the observation-source port and its fake adapter",
       "summary": "Drives FakeObservationSource, the only concrete IObservationSource this task ships, through each of the four evidence-result endings and its one throwing fault, and audits src/investigation's own modules for import purity and for shipping exactly one adapter.",
       "task": "task/evidence-collection/observation-source-port"
+    },
+    {
+      "id": "proof/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment/hypothesis-evaluator-port.md",
+      "title": "Proof for the hypothesis-evaluator port and its fake adapter",
+      "summary": "Drives FakeHypothesisEvaluator, the only concrete IHypothesisEvaluator this task ships, through each of the three verdicts and its one throwing fault, exercises the task's own UNDERDETERMINED no-data/empty-citations fixture, and audits this task's own five modules for import purity and for shipping exactly one adapter.",
+      "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
     }
   ],
   "edges": [
@@ -62,8 +78,74 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "task/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/evidence-collection/observation-source-port",
       "to": "implementation/evidence-collection/observation-source-port",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment/hypothesis-evaluator-port",
+      "to": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
       "kind": "proves",
       "at": "the path"
     }

@@ -20,20 +20,42 @@
       ]
     },
     {
+      "node": "constraints/judgment-runs-behind-a-port",
+      "digest": "sha256:e335e762101da59fc4c2d13d53a2dc1d789513a8e332d8325b987556d2915dda",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-domain-depends-on-no-infrastructure",
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
-          "path": "src/src/investigation/evidence-result.ts",
-          "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+          "path": "src/src/investigation/verdict.ts",
+          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
         },
         {
-          "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "path": "src/src/investigation/evaluation-reason.ts",
+          "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
         },
         {
-          "path": "src/src/investigation/fake-observation-source.adapter.ts",
-          "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
+          "path": "src/src/investigation/citation.ts",
+          "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
+        },
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
         }
       ]
     },
@@ -304,6 +326,40 @@
       ]
     },
     {
+      "node": "domain/investigation/citation",
+      "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
+      "files": [
+        {
+          "path": "src/src/investigation/citation.ts",
+          "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
+        },
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/evaluation",
+      "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/evaluation-reason",
+      "digest": "sha256:10e91ea37bff620a565a090515f8ee3f4a6891a58ce6986b38b2715a500cb65f",
+      "files": [
+        {
+          "path": "src/src/investigation/evaluation-reason.ts",
+          "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
+        }
+      ]
+    },
+    {
       "node": "domain/investigation/evidence",
       "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
       "files": [
@@ -324,6 +380,30 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/hypothesis-evaluator",
+      "digest": "sha256:9b2f7b62cdd04fa46fe7cc73b068346136b99527912a865d8830f129a841cb42",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/verdict",
+      "digest": "sha256:de42119b8ff628c589d98059c373c87558a72dad9ab2d76e32ea99d303eb6451",
+      "files": [
+        {
+          "path": "src/src/investigation/verdict.ts",
+          "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
+        },
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
         }
       ]
     },
@@ -476,6 +556,26 @@
         {
           "path": "src/src/errors/duplicate-concept-answer.error.ts",
           "digest": "sha256:e71f9cc61aa1c500c681f8287486f939d0f01becee599930e5d23c8a8ed7c8b3"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "digest": "sha256:af9ace81195cb13b0581b0ca0935dd1a5736475f2b0767e2322d70045960b8c3",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "digest": "sha256:9501a01dae497f735cc78b0a3fea64952e1cf4fb5d0a917fbc4cf89830c1367e",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
         }
       ]
     },
