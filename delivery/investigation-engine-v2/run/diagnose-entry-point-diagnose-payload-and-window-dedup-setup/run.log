@@ -1,0 +1,10 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 12s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+

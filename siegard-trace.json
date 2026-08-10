@@ -64,6 +64,10 @@
         {
           "path": "src/src/investigation/idempotency-lease-store.ts",
           "digest": "sha256:a3c4fa9a9ee6ba6c1fe3a33aad719882966d1392fe2669f93a23d5fb84c85271"
+        },
+        {
+          "path": "src/src/investigation/diagnosis-run-registry.ts",
+          "digest": "sha256:4609bc293c469387516fa095ebcf5cec905a4f95c90aed97fa65c6f426092c1a"
         }
       ]
     },
@@ -190,6 +194,10 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        },
+        {
+          "path": "src/src/investigation/diagnose.ts",
+          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },
@@ -561,15 +569,19 @@
     },
     {
       "node": "domain/investigation/investigation",
-      "digest": "sha256:344a70cb29bea1d7ff1692258c4bc86ac32290235d1f09edb3e8be459f7ba67d",
+      "digest": "sha256:73f1ca5c7904e6ac9b02bd890df438c75464f0ef024300f0f7cdf2c61bc5fb83",
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
         {
           "path": "src/src/investigation/investigation.ts",
           "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+        },
+        {
+          "path": "src/src/investigation/diagnose.ts",
+          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },
@@ -922,6 +934,14 @@
         {
           "path": "src/src/investigation/idempotency-resolution.ts",
           "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
+        },
+        {
+          "path": "src/src/investigation/diagnose.ts",
+          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
+        },
+        {
+          "path": "src/src/investigation/diagnosis-run-registry.ts",
+          "digest": "sha256:4609bc293c469387516fa095ebcf5cec905a4f95c90aed97fa65c6f426092c1a"
         }
       ]
     },
@@ -1281,11 +1301,15 @@
     },
     {
       "node": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
-      "digest": "sha256:2c1b55e4fbe14a98f3e004a11e1ddd4584beb40d2cd129292de38483bc34a40c",
+      "digest": "sha256:9473fa8cfe2e5581f80e49b977ed9852b6ccd97ddf065720ec1c7594c26f1ccb",
       "files": [
         {
           "path": "src/src/investigation/idempotency-resolution.ts",
           "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
+        },
+        {
+          "path": "src/src/investigation/diagnose.ts",
+          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },
@@ -1310,6 +1334,16 @@
         {
           "path": "src/src/errors/investigation-write-deadline-exceeded.error.ts",
           "digest": "sha256:466b080452b2d638bf707c3d9db72dbd789dabd23732e350dfbb1761b5f793a8"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/no-ticket-reference-never-repeats",
+      "digest": "sha256:fd200840dbf1d9d926e3237a74195bb84639403cb823ca38d8b0a695a13c0697",
+      "files": [
+        {
+          "path": "src/src/investigation/diagnose.ts",
+          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },

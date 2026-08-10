@@ -34,6 +34,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "kind": "implementation",
+      "file": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup.md",
+      "title": "Diagnose payload shape and window dedup",
+      "summary": "A new diagnose(payload, dependencies) entry point requires a requester, treats ticket_ref as optional, and applies the idempotency-window dedup (return completed, join in-progress, always fresh with no ticket) only when a ticket reference travels, wrapping the already-delivered run-diagnosis.ts pipeline without modifying it.",
+      "task": "task/diagnose-entry-point/diagnose-payload-and-window-dedup"
+    },
+    {
       "id": "implementation/diagnose-entry-point/diagnose-pipeline-composition",
       "kind": "implementation",
       "file": "implementation/diagnose-entry-point/diagnose-pipeline-composition.md",
@@ -104,6 +112,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "kind": "proof",
+      "file": "proof/diagnose-entry-point/diagnose-payload-and-window-dedup.md",
+      "title": "Diagnose payload shape and window dedup",
+      "summary": "Proves diagnose()'s own five criteria — requester refusal, completed-match reuse, in-progress joining, no-ticket-ref always-fresh, and payload-only sourcing of requester/ticket_ref — over hand-rolled fakes for the injected runFresh pipeline, plus direct unit coverage of the new DiagnosisRunRegistry and a structural/behavioral check against the UNDERDETERMINED note's persisted-status candidate.",
+      "task": "task/diagnose-entry-point/diagnose-payload-and-window-dedup"
     },
     {
       "id": "proof/diagnose-entry-point/diagnose-pipeline-composition",
@@ -302,6 +318,48 @@
     {
       "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "scenarios/investigation/no-ticket-reference-never-repeats",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
       "kind": "implements",
       "at": "the path"
     },
@@ -530,6 +588,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "implementation/diagnose-entry-point/diagnose-payload-and-window-dedup",
       "kind": "proves",
       "at": "the path"
     },

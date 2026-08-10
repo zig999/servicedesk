@@ -1,0 +1,144 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 6s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 16ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 24ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 35ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 49ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (16 tests) 66ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (43 tests) 63ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (21 tests) 31ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 50ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (19 tests) 75ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 294ms
+ ❯ src/__tests__/unit/investigation/diagnose.spec.ts (15 tests | 2 failed) 248ms
+   ✓ refuses a diagnose call with no requester before starting any investigation 57ms
+   ✓ refuses a diagnose call whose requester is an empty string, the same as one that is missing altogether 2ms
+   ✓ returns the existing completed investigation for a repeated ticket_ref within the window, without starting a second run 4ms
+   ✓ starts a fresh run instead of returning the cached one once the window for that key has elapsed 15ms
+   × joins the same in-flight run for a repeated ticket_ref submitted while the first call has not settled yet 130ms
+     → expected [ { id: 'an-id', …(12) }, …(1) ] to have a length of 1 but got 2
+   × lets a joining call inherit the same rejection as the run it joined, rather than hanging or answering something else, when that run later fails 17ms
+     → expected [ { id: 'an-id', …(12) }, …(1) ] to have a length of 1 but got 2
+   ✓ always starts a fresh run when no ticket reference is given, even for two otherwise-identical calls 2ms
+   ✓ treats an empty-string ticket_ref as a given ticket reference rather than as absent, entering the window dedup instead of always running fresh 2ms
+   ✓ passes the payload's own requester and ticket_ref through to the fresh run unchanged 4ms
+   ✓ threads an absent ticket_ref to the fresh run as an empty string, the mandatory field run-diagnosis.ts already declares 1ms
+   ✓ keys the repeat-request dedup on the case slug alone, so two payloads sharing a slug but differing in version and hash still match 5ms
+   ✓ validates nothing about the payload besides requester and ticket_ref at this boundary, letting an otherwise-unusual field travel through unchanged 2ms
+   ✓ threads the payload's own id straight through to the fresh run, never generating one of its own 1ms
+   ✓ propagates a fresh run's own rejection to the caller instead of swallowing it 2ms
+   ✓ lets a later call for the same key start its own fresh run once the first one has failed and settled 2ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 34ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 49ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 43ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 35ms
+ ✓ src/__tests__/unit/investigation/diagnosis-run-registry.spec.ts (9 tests) 63ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 50ms
+ ✓ src/__tests__/unit/investigation/idempotency-key.spec.ts (11 tests) 33ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 16ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 20ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 196ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 130ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 351ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 403ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 311ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 54ms
+ ✓ src/__tests__/unit/investigation/idempotency-resolution.spec.ts (7 tests) 8ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 84ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 109ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 213ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 126ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 21ms
+ ✓ src/__tests__/unit/investigation/idempotency-lease-store.spec.ts (7 tests) 27ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 165ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 119ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 84ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 137ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 10ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 78ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 71ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 55ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (1 test) 24ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/investigation/diagnose.spec.ts > joins the same in-flight run for a repeated ticket_ref submitted while the first call has not settled yet
+AssertionError: expected [ { id: 'an-id', …(12) }, …(1) ] to have a length of 1 but got 2
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 2[39m
+
+ ❯ src/__tests__/unit/investigation/diagnose.spec.ts:231:24
+    229|   expect(first).toBe(joinedAssessment);
+    230|   expect(second).toBe(joinedAssessment);
+    231|   expect(runner.calls).toHaveLength(1);
+       |                        ^
+    232| });
+    233| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/__tests__/unit/investigation/diagnose.spec.ts > lets a joining call inherit the same rejection as the run it joined, rather than hanging or answering something else, when that run later fails
+AssertionError: expected [ { id: 'an-id', …(12) }, …(1) ] to have a length of 1 but got 2
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 2[39m
+
+ ❯ src/__tests__/unit/investigation/diagnose.spec.ts:251:24
+    249|   await expect(firstCall).rejects.toBe(failure);
+    250|   await expect(secondCall).rejects.toBe(failure);
+    251|   expect(runner.calls).toHaveLength(1);
+       |                        ^
+    252| });
+    253| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 42 passed (43)
+      Tests  2 failed | 408 passed (410)
+   Start at  16:53:42
+   Duration  7.60s (transform 8.33s, setup 0ms, collect 18.07s, tests 4.11s, environment 28ms, prepare 19.76s)
+
+
