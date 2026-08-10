@@ -546,6 +546,10 @@
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/investigation/idempotency-key.ts",
+          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
         }
       ]
     },
@@ -564,6 +568,10 @@
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/investigation/idempotency-key.ts",
+          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
         }
       ]
     },
@@ -841,11 +849,11 @@
     },
     {
       "node": "rules/investigation/an-investigation-is-idempotent-within-a-window",
-      "digest": "sha256:e26c6226d6308ffb8cf19a2ecc557f4af8025729b2ed0035d9dffffa78cf15cc",
+      "digest": "sha256:c8fdee107d257ce9bb4c35a238c32178c8ae4b629e030329f61380e1a9509390",
       "files": [
         {
           "path": "src/src/investigation/idempotency-key.ts",
-          "digest": "sha256:7acc685a951eca26cb4a3add396e53edbf024bad979e5f91d41bd96fff6fb7cd"
+          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
         },
         {
           "path": "src/src/investigation/idempotency-lease-store.ts",

@@ -18,8 +18,7 @@ const WINDOW_MS = 1_000;
 
 /** The key every test below resolves. */
 const A_KEY: IdempotencyKey = {
-  subjectType: 'ont',
-  subjectId: 'subject-one',
+  subject: { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-one' }] },
   caseReference: 'case-one',
   ticketRef: 'ticket-one',
 };

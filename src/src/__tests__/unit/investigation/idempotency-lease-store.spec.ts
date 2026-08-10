@@ -17,16 +17,14 @@ const WINDOW_MS = 1_000;
 
 /** The key most tests hold a lease for. */
 const A_KEY: IdempotencyKey = {
-  subjectType: 'ont',
-  subjectId: 'subject-one',
+  subject: { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-one' }] },
   caseReference: 'case-one',
   ticketRef: 'ticket-one',
 };
 
 /** A second key, distinct in every field, for the no-collision test. */
 const ANOTHER_KEY: IdempotencyKey = {
-  subjectType: 'ope',
-  subjectId: 'subject-two',
+  subject: { type: 'ope', attributes: [{ attribute: 'id', value: 'subject-two' }] },
   caseReference: 'case-two',
   ticketRef: 'ticket-two',
 };

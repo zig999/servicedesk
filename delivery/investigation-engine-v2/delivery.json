@@ -26,6 +26,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "implementation",
+      "file": "implementation/subject-identity-rework/idempotency-key-subject-attributes.md",
+      "title": "Idempotency key rebuilt over the subject's whole attribute-value set",
+      "summary": "idempotency-key.ts's composition and documentation are rebuilt to key on the canonical Subject value (type plus whole attribute-value set) alongside case and ticket reference, replacing the earlier bare subjectType/subjectId strings and the now-superseded reasoning that justified them.",
+      "task": "task/subject-identity-rework/idempotency-key-subject-attributes"
+    },
+    {
       "id": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject.md",
@@ -64,6 +72,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "proof",
+      "file": "proof/subject-identity-rework/idempotency-key-subject-attributes.md",
+      "title": "Proof for the idempotency key over the subject's whole attribute-value set",
+      "summary": "idempotencyKeyOf is proved to answer the same string for two keys sharing subject type, the whole attribute-value set, case reference and ticket reference, and a different string when the attribute-value set, the subject type, the case reference, or the ticket reference each vary on their own — rewriting the pre-existing proof whole against the new subject:Subject shape, in place of the retired flat subjectType/subjectId fields.",
+      "task": "task/subject-identity-rework/idempotency-key-subject-attributes"
     },
     {
       "id": "proof/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
@@ -200,6 +216,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -316,6 +356,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "implementation/subject-identity-rework/idempotency-key-subject-attributes",
       "kind": "proves",
       "at": "the path"
     },

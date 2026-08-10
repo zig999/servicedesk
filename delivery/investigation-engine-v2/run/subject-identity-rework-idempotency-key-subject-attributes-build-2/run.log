@@ -1,0 +1,23 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 4s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/investigation/idempotency-key.spec.ts(13,3): error TS2353: Object literal may only specify known properties, and 'subjectType' does not exist in type 'IdempotencyKey'.
+src/__tests__/unit/investigation/idempotency-key.spec.ts(26,46): error TS2353: Object literal may only specify known properties, and 'subjectType' does not exist in type 'IdempotencyKey'.
+src/__tests__/unit/investigation/idempotency-key.spec.ts(32,46): error TS2561: Object literal may only specify known properties, but 'subjectId' does not exist in type 'IdempotencyKey'. Did you mean to write 'subject'?
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
