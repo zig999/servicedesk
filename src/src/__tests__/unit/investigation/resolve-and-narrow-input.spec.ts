@@ -1,22 +1,30 @@
-// Proof for task/assessment-drafting/resolve-and-narrow-input: resolveAndNarrow
-// answers the outcome, referral and determining hypothesis exactly as the
-// case's own resolveOutcome does (rules/investigation/the-outcome-comes-from-the-case),
-// following the case's declared precedence rather than the given evaluations'
-// own array order (scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome),
-// then narrows the writing input to the determining hypothesis's own
-// evidence where one confirmed or to every evaluation's own verdict and
-// reason with no case body where none did
-// (rules/investigation/the-writing-input-is-narrowed), never surfacing a
+// Proof for
+// task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth:
+// resolveAndNarrow still answers the outcome, referral and determining
+// hypothesis exactly as the case's own resolveOutcome does, following the
+// case's declared precedence rather than the given evaluations' own array
+// order (rules/investigation/the-outcome-comes-from-the-case), but the
+// narrowed input it assembles is unconditional now — every required
+// hypothesis's own evaluation and the evidence its citations name, the same
+// shape whether or not a hypothesis confirmed
+// (rules/investigation/the-writing-input-is-narrowed). The confirmed/fallback
+// branch this module once carried is gone: this file supersedes the proof
+// written for that earlier shape rather than extending it. Never surfacing a
 // hypothesis's own criterion or the case's when_to_use text either way
-// (domain/knowledge/hypothesis, domain/knowledge/case). Pure and synchronous
+// (domain/knowledge/hypothesis, domain/knowledge/case), and never carrying a
+// hypothesis the case does not require evaluation of. Pure and synchronous
 // throughout, so no fake timers or async handling is needed here.
+import { readFile } from 'node:fs/promises';
+import { builtinModules } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
+import { resolveOutcome, type Verdicts } from '../../../case/case-resolution.js';
 import type { Case, Hypothesis } from '../../../case/case.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { EvaluationReason } from '../../../investigation/evaluation-reason.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
-import { resolveAndNarrow, type FallbackNarrowedInput } from '../../../investigation/resolve-and-narrow-input.js';
+import { resolveAndNarrow } from '../../../investigation/resolve-and-narrow-input.js';
 
 /** A minimally valid Hypothesis, defaulted so a test states only what distinguishes it. */
 function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string }): Hypothesis {
@@ -43,16 +51,19 @@ function aCase(hypotheses: readonly Hypothesis[], overrides: Partial<Case> = {})
   };
 }
 
-const A_CITATION: Citation = { concept: 'a-concept', field: 'a-field' };
-
-/** A confirmed evaluation for the given hypothesis, carrying the one citation none of these tests are about. */
-function confirmed(hypothesis: string): Evaluation {
-  return { hypothesis, verdict: 'confirmed', citations: [A_CITATION] };
+/** One citation naming the given concept, defaulted to a field none of these tests are about. */
+function citationFor(concept: string, field = 'a-field'): Citation {
+  return { concept, field };
 }
 
-/** A refuted evaluation for the given hypothesis. */
-function refuted(hypothesis: string): Evaluation {
-  return { hypothesis, verdict: 'refuted', citations: [A_CITATION] };
+/** A confirmed evaluation for the given hypothesis, carrying the given citations (at least one, as the type requires). */
+function confirmed(hypothesis: string, citations: readonly [Citation, ...Citation[]] = [citationFor('a-concept')]): Evaluation {
+  return { hypothesis, verdict: 'confirmed', citations };
+}
+
+/** A refuted evaluation for the given hypothesis, carrying the given citations (at least one, as the type requires). */
+function refuted(hypothesis: string, citations: readonly [Citation, ...Citation[]] = [citationFor('a-concept')]): Evaluation {
+  return { hypothesis, verdict: 'refuted', citations };
 }
 
 /** An inconclusive evaluation for the given hypothesis, carrying the given reason and, where given, citations. */
@@ -77,11 +88,138 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
 
 // ------------------------------------------------------------- criterion 1
 
+it("carries every required hypothesis's own evaluation, not only the one that confirmed, when one hypothesis confirms", () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' }), aHypothesis({ name: 'h3' })]);
+  const evaluations: readonly Evaluation[] = [
+    confirmed('h1', [citationFor('c1')]),
+    refuted('h2', [citationFor('c2')]),
+    inconclusive('h3', 'no-data'),
+  ];
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations,
+    evidenceByHypothesis: new Map([
+      ['h1', [anEvidence({ concept: 'c1' })]],
+      ['h2', [anEvidence({ concept: 'c2' })]],
+    ]),
+  });
+
+  expect(result.resolved.determining).toBe('h1');
+  expect(result.narrowedInput.evaluations).toEqual([
+    { hypothesis: 'h1', verdict: 'confirmed', citations: [citationFor('c1')] },
+    { hypothesis: 'h2', verdict: 'refuted', citations: [citationFor('c2')] },
+    { hypothesis: 'h3', verdict: 'inconclusive', reason: 'no-data', citations: [] },
+  ]);
+});
+
+// ------------------------------------------------------------- criterion 2
+
+it("carries every required hypothesis's own evaluation when none confirms", () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' })]);
+  const evaluations: readonly Evaluation[] = [refuted('h1'), inconclusive('h2', 'judgment-failure')];
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations,
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+
+  expect(result.resolved.determining).toBeUndefined();
+  expect(result.narrowedInput.evaluations).toEqual([
+    { hypothesis: 'h1', verdict: 'refuted', citations: [citationFor('a-concept')] },
+    { hypothesis: 'h2', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] },
+  ]);
+});
+
+it('gives the narrowed input the same shape whether or not a hypothesis confirmed, carrying no discriminant field that differs between the two', () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' })]);
+
+  const confirmedResult = resolveAndNarrow({
+    case: theCase,
+    evaluations: [confirmed('h1')],
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+  const fallbackResult = resolveAndNarrow({
+    case: theCase,
+    evaluations: [refuted('h1')],
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+
+  expect(Object.keys(confirmedResult.narrowedInput).sort()).toEqual(['evaluations', 'evidence']);
+  expect(Object.keys(fallbackResult.narrowedInput).sort()).toEqual(['evaluations', 'evidence']);
+});
+
+// ------------------------------------------------------------- criterion 3
+
+it("never carries a hypothesis's own criterion or the case's when_to_use text", () => {
+  const theCase = aCase([aHypothesis({ name: 'h1', criterion: 'UNIQUE_CRITERION_MARKER_ABC123' })], {
+    when_to_use: 'UNIQUE_WHEN_TO_USE_MARKER_XYZ789',
+  });
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations: [confirmed('h1')],
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+
+  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_CRITERION_MARKER_ABC123');
+  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_WHEN_TO_USE_MARKER_XYZ789');
+});
+
+it('excludes an evaluation for a hypothesis the case does not require evaluation of', () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' })]);
+  const evaluations: readonly Evaluation[] = [confirmed('h1'), refuted('an-undeclared-hypothesis')];
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations,
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+
+  expect(result.narrowedInput.evaluations).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [citationFor('a-concept')] }]);
+});
+
+// ------------------------------------------------------------- criterion 4
+
+it('excludes evidence from evidenceByHypothesis that no included citation names', () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' })]);
+  const citedEvidence = anEvidence({ concept: 'a-concept' });
+  const uncitedEvidence = anEvidence({ concept: 'an-uncited-concept' });
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations: [confirmed('h1', [citationFor('a-concept')])],
+    evidenceByHypothesis: new Map([['h1', [citedEvidence, uncitedEvidence]]]),
+  });
+
+  expect(result.narrowedInput.evidence).toEqual([citedEvidence]);
+});
+
+it('carries a concept once, in first-cited order, when more than one required evaluation cites it', () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' })]);
+  const evidenceFromFirst = anEvidence({ concept: 'shared', observation: 'from-h1' });
+  const evidenceFromSecond = anEvidence({ concept: 'shared', observation: 'from-h2' });
+
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations: [confirmed('h1', [citationFor('shared')]), refuted('h2', [citationFor('shared')])],
+    evidenceByHypothesis: new Map([
+      ['h1', [evidenceFromFirst]],
+      ['h2', [evidenceFromSecond]],
+    ]),
+  });
+
+  expect(result.narrowedInput.evidence).toEqual([evidenceFromFirst]);
+});
+
+// ------------------------------------------- resolveOutcome's preserved behavior
+
 it("resolves the outcome, referral and determining hypothesis exactly as the case's own resolve-outcome answers, following the case's declared precedence rather than the evaluations' own order", () => {
   const theCase = aCase([aHypothesis({ name: 'h-first' }), aHypothesis({ name: 'h-second' }), aHypothesis({ name: 'h-third' })]);
   // Deliberately lists the two confirmed evaluations in reverse of the
-  // case's own declared order, so a resolver that follows the evaluations'
-  // own array order instead of the case's declared precedence picks
+  // case's own declared order, so a resolver that followed the evaluations'
+  // own array order instead of the case's declared precedence would pick
   // h-third here, while the case's own resolve-outcome always picks h-second.
   const evaluations: readonly Evaluation[] = [refuted('h-first'), confirmed('h-third'), confirmed('h-second')];
 
@@ -89,6 +227,7 @@ it("resolves the outcome, referral and determining hypothesis exactly as the cas
     case: theCase,
     evaluations,
     evidenceByHypothesis: new Map([
+      ['h-first', [anEvidence({ concept: 'a-concept' })]],
       ['h-second', [anEvidence({ concept: 'a-concept' })]],
       ['h-third', [anEvidence({ concept: 'a-concept' })]],
     ]),
@@ -101,159 +240,151 @@ it("resolves the outcome, referral and determining hypothesis exactly as the cas
   });
 });
 
-// ------------------------------------------------------------- criterion 2
+it("answers `resolved` with exactly what the case's own resolveOutcome returns for these verdicts, computed nowhere else", () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' })]);
+  const evaluations: readonly Evaluation[] = [confirmed('h1'), refuted('h2')];
+  const verdicts: Verdicts = { h1: 'confirmed', h2: 'refuted' };
 
-it("carries only the determining hypothesis's own evidence when one is confirmed, never a second confirmed hypothesis's evidence (scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome)", () => {
-  const theCase = aCase([aHypothesis({ name: 'h-first' }), aHypothesis({ name: 'h-second' })]);
-  const evaluations: readonly Evaluation[] = [confirmed('h-first'), confirmed('h-second')];
-  const firstEvidence = [anEvidence({ concept: 'a-concept', observation: 'first-observation' })];
-  const secondEvidence = [anEvidence({ concept: 'a-concept', observation: 'second-observation' })];
+  const result = resolveAndNarrow({
+    case: theCase,
+    evaluations,
+    evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-concept' })]]]),
+  });
+
+  expect(result.resolved).toEqual(resolveOutcome(theCase, verdicts));
+});
+
+it("keeps the required evaluations in the given evaluations' own order, never reordered to the case's declared precedence", () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' }), aHypothesis({ name: 'h3' })]);
+  const evaluations: readonly Evaluation[] = [refuted('h3'), refuted('h1'), refuted('h2')];
 
   const result = resolveAndNarrow({
     case: theCase,
     evaluations,
     evidenceByHypothesis: new Map([
-      ['h-first', firstEvidence],
-      ['h-second', secondEvidence],
+      ['h1', [anEvidence({ concept: 'a-concept' })]],
+      ['h2', [anEvidence({ concept: 'a-concept' })]],
+      ['h3', [anEvidence({ concept: 'a-concept' })]],
     ]),
   });
 
-  expect(result.resolved.determining).toBe('h-first');
-  expect(result.narrowedInput).toEqual({ basis: 'confirmed', evidence: firstEvidence });
+  expect(result.narrowedInput.evaluations.map((evaluation) => evaluation.hypothesis)).toEqual(['h3', 'h1', 'h2']);
 });
 
-// ------------------------------------------------------------- criterion 3
+// ------------------------------------------------------------- edge cases
 
-it("carries every evaluation's own verdict and reason, and no case body, when no hypothesis confirmed", () => {
-  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' }), aHypothesis({ name: 'h3' })]);
-  const evaluations: readonly Evaluation[] = [
-    refuted('h1'),
-    inconclusive('h2', 'no-data', [A_CITATION]),
-    inconclusive('h3', 'judgment-failure'),
-  ];
-
-  const result = resolveAndNarrow({ case: theCase, evaluations, evidenceByHypothesis: new Map() });
-
-  expect(result.resolved.determining).toBeUndefined();
-  expect(result.narrowedInput).toEqual({
-    basis: 'fallback',
-    evaluations: [
-      { hypothesis: 'h1', verdict: 'refuted' },
-      { hypothesis: 'h2', verdict: 'inconclusive', reason: 'no-data' },
-      { hypothesis: 'h3', verdict: 'inconclusive', reason: 'judgment-failure' },
-    ],
-  });
-});
-
-// ------------------------------------------------------------- criterion 4
-
-it("never carries a hypothesis's own criterion or the case's when_to_use text in the confirmed narrowed input", () => {
-  const determining = aHypothesis({ name: 'h-determining', criterion: 'UNIQUE_CRITERION_MARKER_ABC123' });
-  const theCase = aCase([determining], { when_to_use: 'UNIQUE_WHEN_TO_USE_MARKER_XYZ789' });
-  const evidence = [anEvidence({ concept: 'a-concept' })];
-
-  const result = resolveAndNarrow({
-    case: theCase,
-    evaluations: [confirmed('h-determining')],
-    evidenceByHypothesis: new Map([['h-determining', evidence]]),
-  });
-
-  expect(Object.keys(result.narrowedInput).sort()).toEqual(['basis', 'evidence']);
-  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_CRITERION_MARKER_ABC123');
-  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_WHEN_TO_USE_MARKER_XYZ789');
-});
-
-// ------------------------------------------------------------- edge cases: empty collections
-
-it('answers an empty fallback evaluations list, rather than throwing or defaulting to something else, when given no evaluations at all', () => {
+it('answers empty evaluations and empty evidence, rather than throwing or defaulting to something else, when given no evaluations at all', () => {
   const theCase = aCase([aHypothesis({ name: 'h1' })]);
 
   const result = resolveAndNarrow({ case: theCase, evaluations: [], evidenceByHypothesis: new Map() });
 
   expect(result.resolved.determining).toBeUndefined();
-  expect(result.narrowedInput).toEqual({ basis: 'fallback', evaluations: [] });
+  expect(result.narrowedInput).toEqual({ evaluations: [], evidence: [] });
 });
 
-it("carries an empty evidence array, rather than throwing, when the determining hypothesis's own map entry is present but empty", () => {
+it('requires no evidenceByHypothesis entry for a required hypothesis whose own evaluation cites nothing', () => {
   const theCase = aCase([aHypothesis({ name: 'h1' })]);
 
   const result = resolveAndNarrow({
     case: theCase,
-    evaluations: [confirmed('h1')],
-    evidenceByHypothesis: new Map([['h1', []]]),
+    evaluations: [inconclusive('h1', 'no-data')],
+    evidenceByHypothesis: new Map(),
   });
 
-  expect(result.narrowedInput).toEqual({ basis: 'confirmed', evidence: [] });
+  expect(result.narrowedInput).toEqual({
+    evaluations: [{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [] }],
+    evidence: [],
+  });
 });
 
-// ------------------------------------------------------------- edge cases named by the task
+it('throws naming the hypothesis when evidenceByHypothesis carries no entry for a required hypothesis that cites', () => {
+  const theCase = aCase([aHypothesis({ name: 'h1' })]);
 
-it('throws naming the determining hypothesis when evidenceByHypothesis carries no entry for it', () => {
+  expect(() => resolveAndNarrow({ case: theCase, evaluations: [confirmed('h1')], evidenceByHypothesis: new Map() })).toThrow(/h1/);
+});
+
+it("throws naming the concept when a required hypothesis's own evidence entry does not carry the cited concept", () => {
   const theCase = aCase([aHypothesis({ name: 'h1' })]);
 
   expect(() =>
-    resolveAndNarrow({ case: theCase, evaluations: [confirmed('h1')], evidenceByHypothesis: new Map() }),
-  ).toThrow(/h1/);
+    resolveAndNarrow({
+      case: theCase,
+      evaluations: [confirmed('h1', [citationFor('missing-concept')])],
+      evidenceByHypothesis: new Map([['h1', [anEvidence({ concept: 'a-different-concept' })]]]),
+    }),
+  ).toThrow(/missing-concept/);
 });
 
-it("never surfaces a hypothesis's own criterion or the case's when_to_use in the fallback narrowed input, which never reads theCase itself", () => {
-  const h1 = aHypothesis({ name: 'h1', criterion: 'UNIQUE_CRITERION_MARKER_FALLBACK' });
-  const theCase = aCase([h1], { when_to_use: 'UNIQUE_WHEN_TO_USE_MARKER_FALLBACK' });
+// ------------------------------------------------------------- module purity
 
-  const result = resolveAndNarrow({ case: theCase, evaluations: [refuted('h1')], evidenceByHypothesis: new Map() });
+const MODULE_PATH = fileURLToPath(new URL('../../../investigation/resolve-and-narrow-input.ts', import.meta.url));
 
-  expect(Object.keys(result.narrowedInput).sort()).toEqual(['basis', 'evaluations']);
-  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_CRITERION_MARKER_FALLBACK');
-  expect(JSON.stringify(result.narrowedInput)).not.toContain('UNIQUE_WHEN_TO_USE_MARKER_FALLBACK');
+/** LLM and provider clients, and the frameworks and drivers beside them — what the no-infrastructure constraint forbids this module to import. */
+const FORBIDDEN_PACKAGES = [
+  'fastify',
+  'express',
+  'koa',
+  '@hapi/hapi',
+  '@nestjs/common',
+  '@nestjs/core',
+  'pg',
+  'postgres',
+  'mysql',
+  'mysql2',
+  'sqlite3',
+  'better-sqlite3',
+  'mongodb',
+  'mongoose',
+  'redis',
+  'ioredis',
+  'typeorm',
+  'sequelize',
+  'knex',
+  'prisma',
+  '@prisma/client',
+  'drizzle-orm',
+  '@anthropic-ai/sdk',
+  'openai',
+  'aws-sdk',
+  '@aws-sdk/client-s3',
+  '@google-cloud/storage',
+  '@azure/identity',
+  '@modelcontextprotocol/sdk',
+];
+
+/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
+const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
+
+/** Every module specifier resolve-and-narrow-input.ts itself imports. */
+async function resolveAndNarrowInputImports(): Promise<readonly string[]> {
+  const source = await readFile(MODULE_PATH, 'utf8');
+  return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
+}
+
+/** Whether a specifier names a Node standard-library module, prefixed or bare. */
+function isStandardLibrary(specifier: string): boolean {
+  return specifier.startsWith('node:') || builtinModules.includes(specifier);
+}
+
+/** Whether a specifier names one of the forbidden packages, or a path inside one. */
+function isForbiddenPackage(specifier: string): boolean {
+  return FORBIDDEN_PACKAGES.some((name) => specifier === name || specifier.startsWith(`${name}/`));
+}
+
+it('imports no framework, driver or provider client, so infrastructure cannot be reached from it directly', async () => {
+  const specifiers = await resolveAndNarrowInputImports();
+
+  expect(specifiers.filter(isForbiddenPackage)).toEqual([]);
 });
 
-it('omits the reason field from a fallback evaluation whose own verdict is confirmed or refuted, never just from an inconclusive one', () => {
-  const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' })]);
-  // A confirmed verdict under a name the case does not declare never
-  // determines (case-resolution.spec.ts already proves this of
-  // resolveOutcome itself), so the fallback still answers here, carrying
-  // that confirmed evaluation through unmarked by a reason.
-  const evaluations: readonly Evaluation[] = [
-    refuted('h1'),
-    inconclusive('h2', 'no-data'),
-    confirmed('an-undeclared-hypothesis'),
-  ];
+it('imports nothing from the standard library either, keeping it pure and synchronous', async () => {
+  const specifiers = await resolveAndNarrowInputImports();
 
-  const result = resolveAndNarrow({ case: theCase, evaluations, evidenceByHypothesis: new Map() });
-
-  expect(result.resolved.determining).toBeUndefined();
-  const fallback = result.narrowedInput as FallbackNarrowedInput;
-  expect(fallback.evaluations[0]).not.toHaveProperty('reason');
-  expect(fallback.evaluations[2]).not.toHaveProperty('reason');
-  expect(fallback.evaluations).toEqual([
-    { hypothesis: 'h1', verdict: 'refuted' },
-    { hypothesis: 'h2', verdict: 'inconclusive', reason: 'no-data' },
-    { hypothesis: 'an-undeclared-hypothesis', verdict: 'confirmed' },
-  ]);
+  expect(specifiers.filter(isStandardLibrary)).toEqual([]);
 });
 
-// ------------------------------------------------------------- the implementation's own inferences
+it('imports no port file, since a port models an infrastructure boundary this module never reaches', async () => {
+  const specifiers = await resolveAndNarrowInputImports();
 
-it("carries no hypothesis name of its own in the confirmed narrowed input, since the resolved outcome's own determining field already names it", () => {
-  const theCase = aCase([aHypothesis({ name: 'h1' })]);
-  const evidence = [anEvidence({ concept: 'a-concept' })];
-
-  const result = resolveAndNarrow({
-    case: theCase,
-    evaluations: [confirmed('h1')],
-    evidenceByHypothesis: new Map([['h1', evidence]]),
-  });
-
-  expect(result.narrowedInput).not.toHaveProperty('hypothesis');
-  expect(Object.keys(result.narrowedInput).sort()).toEqual(['basis', 'evidence']);
-});
-
-// ---------------------------------------- the task's own UNDERDETERMINED note
-
-it('answers synchronously with the result itself, never a Promise, so nothing here could be awaiting a database driver or an HTTP client', () => {
-  const theCase = aCase([aHypothesis({ name: 'h1' })]);
-
-  const result = resolveAndNarrow({ case: theCase, evaluations: [refuted('h1')], evidenceByHypothesis: new Map() });
-
-  expect(result).not.toBeInstanceOf(Promise);
+  expect(specifiers.filter((specifier) => specifier.includes('.port.'))).toEqual([]);
 });

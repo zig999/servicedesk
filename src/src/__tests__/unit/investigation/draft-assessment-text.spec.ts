@@ -14,11 +14,28 @@
 // proved separately by draft-assessment-text-modules.spec.ts, since both are
 // facts about this module's own imports rather than about any input it is
 // given at runtime.
+// DISCLOSED DIVERGENCE, disposable scaffolding — mechanical fixture patch
+// only, following draft-assessment-text.ts's own header comment: resolve-
+// and-narrow-input's confirmed/fallback split
+// (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth)
+// removed ConfirmedNarrowedInput/FallbackNarrowedInput/FallbackEvaluationSummary,
+// so this file's own fixture helpers of those names are replaced with
+// fixtures built from NarrowedInput's current unconditional
+// { evaluations, evidence } shape. Every criterion this file proves is
+// unchanged; only the fixtures that assemble a NarrowedInput, and the two
+// edge-case tests whose narrowedInput exercised only one of its two fields
+// under the old split, are adjusted so each still isolates the one
+// collection it means to test. This module's real rework belongs to
+// task/assessment-consolidation/draft-assessment-text-consumes-consolidator,
+// which rewrites this file's approach from a clean context; nothing about
+// this patch's specific fixture shape should be read as a decision that
+// task is bound by.
 import { expect, it } from 'vitest';
 import type { ResolvedOutcome } from '../../../case/case-resolution.js';
 import { draftAssessment } from '../../../investigation/draft-assessment-text.js';
+import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
-import type { ConfirmedNarrowedInput, FallbackEvaluationSummary, FallbackNarrowedInput } from '../../../investigation/resolve-and-narrow-input.js';
+import type { NarrowedInput } from '../../../investigation/resolve-and-narrow-input.js';
 
 /** A minimally valid confirmed-path ResolvedOutcome, defaulted so a test states only what it is about. */
 function aConfirmedResolvedOutcome(overrides: Partial<ResolvedOutcome> = {}): ResolvedOutcome {
@@ -54,21 +71,14 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
   };
 }
 
-/** The confirmed-path narrowed input, carrying exactly the shape resolve-and-narrow-input itself produces. */
-function aConfirmedNarrowedInput(evidence: readonly Evidence[]): ConfirmedNarrowedInput {
-  return { basis: 'confirmed', evidence };
+/** One required hypothesis's own evaluation, confirmed with one citation — the shape Evaluation's own type requires for a decided verdict — defaulted so a test states only which hypothesis it is about. */
+function anEvaluation(hypothesis: string): Evaluation {
+  return { hypothesis, verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'a-field' }] };
 }
 
-/** One fallback evaluation's own contribution, defaulted so a test states only what it is about. */
-function aFallbackEvaluationSummary(
-  overrides: Partial<FallbackEvaluationSummary> & { readonly hypothesis: string },
-): FallbackEvaluationSummary {
-  return { verdict: 'refuted', ...overrides };
-}
-
-/** The fallback-path narrowed input, carrying exactly the shape resolve-and-narrow-input itself produces. */
-function aFallbackNarrowedInput(evaluations: readonly FallbackEvaluationSummary[]): FallbackNarrowedInput {
-  return { basis: 'fallback', evaluations };
+/** The narrowed input, carrying exactly the shape resolve-and-narrow-input itself now produces — evaluations and evidence together, unconditionally (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth). Defaulted to both empty so a test states only which of the two collections it is about. */
+function aNarrowedInput(overrides: Partial<NarrowedInput> = {}): NarrowedInput {
+  return { evaluations: [], evidence: [], ...overrides };
 }
 
 // ------------------------------------------------------------- criterion 1
@@ -79,7 +89,7 @@ it("copies outcome, referral and determining hypothesis from the resolved outcom
     referral: { action: 'refer', recipient: 'a-queue' },
     determining: 'h1',
   });
-  const narrowedInput = aConfirmedNarrowedInput([anEvidence({ concept: 'a-concept' })]);
+  const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
 
   const result = draftAssessment(resolved, narrowedInput);
 
@@ -92,7 +102,7 @@ it("copies outcome, referral and determining hypothesis from the resolved outcom
 
 it('carries the determining hypothesis exactly as resolved named it, when one confirmed', () => {
   const resolved = aConfirmedResolvedOutcome({ determining: 'the-determining-hypothesis' });
-  const narrowedInput = aConfirmedNarrowedInput([anEvidence({ concept: 'a-concept' })]);
+  const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
 
   const result = draftAssessment(resolved, narrowedInput);
 
@@ -101,7 +111,7 @@ it('carries the determining hypothesis exactly as resolved named it, when one co
 
 it('carries no determining_hypothesis field at all — not even present with an undefined value — when the fallback answered', () => {
   const resolved = aFallbackResolvedOutcome();
-  const narrowedInput = aFallbackNarrowedInput([aFallbackEvaluationSummary({ hypothesis: 'h1' })]);
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
 
   const result = draftAssessment(resolved, narrowedInput);
 
@@ -110,18 +120,18 @@ it('carries no determining_hypothesis field at all — not even present with an 
 
 // ------------------------------------------------------------- edge cases: empty collections
 
-it('drafts text rather than throwing or producing an empty fragment when the confirmed evidence array is empty', () => {
+it("drafts text rather than throwing or producing an empty fragment when narrowedInput's own evidence array is empty", () => {
   const resolved = aConfirmedResolvedOutcome();
-  const narrowedInput = aConfirmedNarrowedInput([]);
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [] });
 
   const result = draftAssessment(resolved, narrowedInput);
 
   expect(result.text).toContain('no evidence');
 });
 
-it('drafts text rather than throwing or producing an empty fragment when the fallback evaluations array is empty', () => {
+it("drafts text rather than throwing or producing an empty fragment when narrowedInput's own evaluations array is empty", () => {
   const resolved = aFallbackResolvedOutcome();
-  const narrowedInput = aFallbackNarrowedInput([]);
+  const narrowedInput = aNarrowedInput({ evaluations: [], evidence: [anEvidence({ concept: 'a-concept' })] });
 
   const result = draftAssessment(resolved, narrowedInput);
 
@@ -133,11 +143,11 @@ it('drafts text rather than throwing or producing an empty fragment when the fal
 it('drafts observably different text for a confirmed-path call than for a fallback-path call, so drafting reads the narrowed input rather than producing one fixed body regardless of it', () => {
   const confirmedResult = draftAssessment(
     aConfirmedResolvedOutcome(),
-    aConfirmedNarrowedInput([anEvidence({ concept: 'a-concept' })]),
+    aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] }),
   );
   const fallbackResult = draftAssessment(
     aFallbackResolvedOutcome(),
-    aFallbackNarrowedInput([aFallbackEvaluationSummary({ hypothesis: 'h1' })]),
+    aNarrowedInput({ evaluations: [anEvaluation('h1')] }),
   );
 
   expect(confirmedResult.text).not.toBe(fallbackResult.text);
@@ -146,7 +156,7 @@ it('drafts observably different text for a confirmed-path call than for a fallba
 // ------------------------------------------------------------- edge case: text draws only from the given inputs
 
 it("drafts different text for two calls sharing the very same narrowed input but different resolved outcomes, reflecting resolved's own outcome and referral rather than answering with a text fixed in advance", () => {
-  const narrowedInput = aConfirmedNarrowedInput([anEvidence({ concept: 'a-concept' })]);
+  const narrowedInput = aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] });
   const firstResult = draftAssessment(
     aConfirmedResolvedOutcome({ outcome: 'outcome-one', referral: { action: 'refer', recipient: 'queue-one' } }),
     narrowedInput,
@@ -166,7 +176,7 @@ it("drafts different text for two calls sharing the very same narrowed input but
 it('answers synchronously with the result itself, never a Promise, so nothing here could be awaiting a database driver or a provider client', () => {
   const result = draftAssessment(
     aConfirmedResolvedOutcome(),
-    aConfirmedNarrowedInput([anEvidence({ concept: 'a-concept' })]),
+    aNarrowedInput({ evidence: [anEvidence({ concept: 'a-concept' })] }),
   );
 
   expect(result).not.toBeInstanceOf(Promise);

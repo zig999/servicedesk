@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "implementation",
+      "file": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth.md",
+      "title": "resolve-and-narrow-input drops confirmed/fallback branching for unconditional breadth",
+      "summary": "resolve-and-narrow-input.ts now always narrows every required hypothesis's evaluation and the evidence its citations name, in one shape, regardless of the resolved outcome; draft-assessment-text.ts received one disclosed, out-of-scope compile-compatibility patch so the tree keeps building.",
+      "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
       "id": "implementation/subject-identity-rework/subject-value-object",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/subject-value-object.md",
       "title": "Subject as type plus attribute-value set",
       "summary": "The canonical Subject and SubjectAttributeValue value objects, with a construction-time refusal for an empty attribute-value set, replacing the bare-id Subject and its port-side inline duplicate, plus coordinator-authorized mechanical compile-compat patches to unblock a cross-task build deadlock.",
       "task": "task/subject-identity-rework/subject-value-object"
+    },
+    {
+      "id": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proof",
+      "file": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth.md",
+      "title": "resolve-and-narrow-input's unconditional breadth",
+      "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
+      "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
       "id": "proof/subject-identity-rework/subject-value-object",
@@ -19,6 +35,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/subject-identity-rework/subject-value-object",
       "to": "domain/investigation/subject",
@@ -59,6 +111,12 @@
       "from": "implementation/subject-identity-rework/subject-value-object",
       "to": "task/subject-identity-rework/subject-value-object",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
       "at": "the path"
     },
     {

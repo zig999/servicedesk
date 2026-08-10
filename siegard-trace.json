@@ -432,20 +432,8 @@
       "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
       "files": [
         {
-          "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
-        },
-        {
-          "path": "src/src/investigation/citation.ts",
-          "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
-        },
-        {
-          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
-        },
-        {
-          "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -474,20 +462,8 @@
       "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
       "files": [
         {
-          "path": "src/src/investigation/evaluation.ts",
-          "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
-        },
-        {
-          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
-        },
-        {
-          "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
-        },
-        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -510,16 +486,8 @@
       "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
       "files": [
         {
-          "path": "src/src/investigation/evidence.ts",
-          "digest": "sha256:27447263417ba463c39c1860cce3035e9332f3eab5197406afdd0df68762490a"
-        },
-        {
-          "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
-        },
-        {
-          "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -613,23 +581,11 @@
     },
     {
       "node": "domain/knowledge/case",
-      "digest": "sha256:a436740808670fad13cc7bb4bbb18f34e9051378f8b2527ac4197da254da3ac1",
+      "digest": "sha256:c62e082ba693ba0fbab5f63f739ae4ee816a98673ac71cb8f27d96d47212734c",
       "files": [
         {
-          "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
-        },
-        {
-          "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
-        },
-        {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
-        },
-        {
-          "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -957,15 +913,11 @@
     },
     {
       "node": "rules/investigation/the-writing-input-is-narrowed",
-      "digest": "sha256:8ddc4c32a95fffbec4fcb674227d331aa25318f7a9dea1af54590cea1949739f",
+      "digest": "sha256:d6e57b521c1360294e358a94de72ce9ee5d9ab83683534a8ce7bf35e9b9f6e9c",
       "files": [
         {
-          "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:663b643c32ad0c7de99cd89946709c0c903b6047863e3d709d6230f2d238d8a9"
-        },
-        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },

@@ -1,0 +1,28 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 259 packages, and audited 260 packages in 5s
+
+75 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/investigation/draft-assessment-text.spec.ts(21,15): error TS2305: Module '"../../../investigation/resolve-and-narrow-input.js"' has no exported member 'ConfirmedNarrowedInput'.
+src/__tests__/unit/investigation/draft-assessment-text.spec.ts(21,39): error TS2305: Module '"../../../investigation/resolve-and-narrow-input.js"' has no exported member 'FallbackEvaluationSummary'.
+src/__tests__/unit/investigation/draft-assessment-text.spec.ts(21,66): error TS2305: Module '"../../../investigation/resolve-and-narrow-input.js"' has no exported member 'FallbackNarrowedInput'.
+src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts(19,33): error TS2305: Module '"../../../investigation/resolve-and-narrow-input.js"' has no exported member 'FallbackNarrowedInput'.
+src/investigation/draft-assessment-text.ts(23,3): error TS2305: Module '"./resolve-and-narrow-input.js"' has no exported member 'ConfirmedNarrowedInput'.
+src/investigation/draft-assessment-text.ts(24,3): error TS2305: Module '"./resolve-and-narrow-input.js"' has no exported member 'FallbackEvaluationSummary'.
+src/investigation/draft-assessment-text.ts(25,3): error TS2305: Module '"./resolve-and-narrow-input.js"' has no exported member 'FallbackNarrowedInput'.
+src/investigation/draft-assessment-text.ts(63,30): error TS2339: Property 'basis' does not exist on type 'NarrowedInput'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

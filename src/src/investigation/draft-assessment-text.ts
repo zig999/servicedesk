@@ -1,30 +1,43 @@
 // The text-production step (task/assessment-drafting/draft-assessment-text):
 // assembles the whole Assessment (domain/investigation/assessment) from the
-// resolved outcome and the narrowed writing input a prior step already
-// produced (task/assessment-drafting/resolve-and-narrow-input) — copying
-// outcome and referral through unchanged and setting determining_hypothesis
-// present exactly where resolved.determining is defined
+// resolved outcome and the narrowed input a prior step already produced
+// (task/assessment-consolidation/resolve-and-narrow-input) — copying outcome
+// and referral through unchanged and setting determining_hypothesis present
+// exactly where resolved.determining is defined
 // (rules/investigation/the-outcome-comes-from-the-case), and drafting text,
 // the one field this step decides, deterministically from narrowedInput
-// alone (rules/investigation/the-writing-input-is-narrowed). No
-// domain-model node names a dedicated writing port for this step, unlike
+// alone (rules/investigation/the-writing-input-is-narrowed).
+//
+// DISCLOSED DIVERGENCE, disposable scaffolding — not this task's own
+// delivery: resolve-and-narrow-input's confirmed/fallback split
+// (task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth)
+// removed ConfirmedNarrowedInput/FallbackNarrowedInput/FallbackEvaluationSummary
+// and narrowedInput.basis, which this module's draftText() branched on; left
+// alone this file would not compile against the new unconditional
+// NarrowedInput. draftText() below is patched, mechanically, to read
+// narrowedInput.evaluations and narrowedInput.evidence together in one
+// unconditional body instead of branching — nothing here decides a domain
+// fact, the exact wording remains this module's own free choice, never a
+// domain fact this module states (this task's own rationale) — so the tree
+// keeps compiling. This module's real rework belongs to
+// task/assessment-consolidation/draft-assessment-text-consumes-consolidator,
+// which replaces this whole template-based approach with a call to the
+// assessment-consolidator port and will rewrite this file's logic again from
+// a clean context; nothing about this patch's specific wording or shape
+// should be read as a decision that task is bound by.
+//
+// No domain-model node names a dedicated writing port for this step, unlike
 // hypothesis-evaluator's own port and fake, so this module owns a small
 // template-based generator directly rather than inventing an ungoverned
-// port; the exact wording is an open implementation choice, never a domain
-// fact this module states (this task's own rationale). Pure and
-// synchronous, importing nothing but the case-resolution module's own
-// ResolvedOutcome and this context's own sibling plain-data types
-// (constraints/the-domain-depends-on-no-infrastructure).
+// port. Pure and synchronous, importing nothing but the case-resolution
+// module's own ResolvedOutcome and this context's own sibling plain-data
+// types (constraints/the-domain-depends-on-no-infrastructure).
 
 import type { ResolvedOutcome } from '../case/case-resolution.js';
 import type { Assessment } from './assessment.js';
+import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
-import type {
-  ConfirmedNarrowedInput,
-  FallbackEvaluationSummary,
-  FallbackNarrowedInput,
-  NarrowedInput,
-} from './resolve-and-narrow-input.js';
+import type { NarrowedInput } from './resolve-and-narrow-input.js';
 
 /** What a summary reads where the narrowed input carried no evidence at all — narrowedInput's own shape admits this, an empty array is not itself invalid. */
 const NO_EVIDENCE_LABEL = 'no evidence';
@@ -53,25 +66,21 @@ export function draftAssessment(resolved: ResolvedOutcome, narrowedInput: Narrow
 
 /**
  * The text itself: a sentence naming the resolved outcome and referral,
- * followed by narrowedInput's own basis — the determining hypothesis's own
- * evidence where one confirmed, or every evaluation's verdict and reason
- * where none did. Deterministic and template-based; the exact wording is
- * this module's own free choice, not a domain fact.
+ * followed by one unconditional body built from narrowedInput's own
+ * evaluations and evidence together, whether or not a hypothesis confirmed
+ * (rules/investigation/the-writing-input-is-narrowed's current
+ * unconditional-breadth shape) — noting resolved.determining, already given
+ * and never recomputed here, only to say whether one did. Deterministic and
+ * template-based; the exact wording is this module's own free choice, not a
+ * domain fact, and — per this file's own disclosed divergence above — this
+ * particular body shape is disposable scaffolding rather than a decision the
+ * consolidator rework is bound by.
  */
 function draftText(resolved: ResolvedOutcome, narrowedInput: NarrowedInput): string {
   const opening = `The investigation concluded ${resolved.outcome}, referred to ${resolved.referral.recipient} for ${resolved.referral.action}.`;
-  const body = narrowedInput.basis === 'confirmed' ? confirmedBody(narrowedInput) : fallbackBody(narrowedInput);
+  const determination = resolved.determining === undefined ? 'No hypothesis confirmed.' : `Hypothesis ${resolved.determining} confirmed.`;
+  const body = `${determination} Every required hypothesis's own verdict: ${summarizeEvaluations(narrowedInput.evaluations)}. Evidence: ${summarizeEvidence(narrowedInput.evidence)}.`;
   return `${opening} ${body}`;
-}
-
-/** The confirmed-path body: the determining hypothesis's own evidence, and nothing narrowedInput did not carry. */
-function confirmedBody(confirmed: ConfirmedNarrowedInput): string {
-  return `A hypothesis confirmed it, grounded in: ${summarizeEvidence(confirmed.evidence)}.`;
-}
-
-/** The fallback-path body: every evaluation's own verdict and reason, and nothing narrowedInput did not carry. */
-function fallbackBody(fallback: FallbackNarrowedInput): string {
-  return `No hypothesis confirmed; every hypothesis's own verdict: ${summarizeEvaluations(fallback.evaluations)}.`;
 }
 
 /** One line per evidence item, joined deterministically; the empty list reads as NO_EVIDENCE_LABEL rather than an empty fragment. */
@@ -88,16 +97,16 @@ function summarizeOneEvidenceItem(item: Evidence): string {
 }
 
 /** One line per evaluation, joined deterministically; the empty list reads as NO_EVALUATIONS_LABEL rather than an empty fragment. */
-function summarizeEvaluations(evaluations: readonly FallbackEvaluationSummary[]): string {
+function summarizeEvaluations(evaluations: readonly Evaluation[]): string {
   if (evaluations.length === 0) {
     return NO_EVALUATIONS_LABEL;
   }
   return evaluations.map(summarizeOneEvaluation).join(SUMMARY_SEPARATOR);
 }
 
-/** One evaluation's own contribution: its hypothesis and verdict always, its reason only where the verdict declared one. */
-function summarizeOneEvaluation(evaluation: FallbackEvaluationSummary): string {
-  return evaluation.reason === undefined
-    ? `${evaluation.hypothesis}: ${evaluation.verdict}`
-    : `${evaluation.hypothesis}: ${evaluation.verdict} (${evaluation.reason})`;
+/** One evaluation's own contribution: its hypothesis and verdict always, its reason only where the verdict is inconclusive — citations omitted from this summary line, the same convention this module kept before this patch. */
+function summarizeOneEvaluation(evaluation: Evaluation): string {
+  return evaluation.verdict === 'inconclusive'
+    ? `${evaluation.hypothesis}: ${evaluation.verdict} (${evaluation.reason})`
+    : `${evaluation.hypothesis}: ${evaluation.verdict}`;
 }
