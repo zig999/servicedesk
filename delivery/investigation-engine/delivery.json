@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "kind": "implementation",
+      "file": "implementation/assessment-drafting/resolve-and-narrow-input.md",
+      "title": "Resolve the outcome and narrow the writing input",
+      "summary": "resolveAndNarrow derives Verdicts from the given evaluations, calls the case's own resolveOutcome exactly once and returns its answer verbatim, then assembles a structurally narrowed input, the determining hypothesis's own evidence, or every evaluation's verdict and reason with no case body, for the drafting step that follows.",
+      "task": "task/assessment-drafting/resolve-and-narrow-input"
+    },
+    {
       "id": "implementation/evidence-collection/evidence-collection-stage",
       "kind": "implementation",
       "file": "implementation/evidence-collection/evidence-collection-stage.md",
@@ -48,6 +56,14 @@
       "title": "The idempotency-window lease mechanism",
       "summary": "A subject-type/subject-id/case/ticket-reference key, an in-memory key-and-instant lease store bound to a configured window, and a pure composition that tells a caller which of completed, in-progress or free applies — with no built Investigation and no wiring into a real diagnose entry point.",
       "task": "task/investigation-lifecycle/idempotency-window"
+    },
+    {
+      "id": "proof/assessment-drafting/resolve-and-narrow-input",
+      "kind": "proof",
+      "file": "proof/assessment-drafting/resolve-and-narrow-input.md",
+      "title": "Proof for resolve-and-narrow-input's outcome resolution and writing-input narrowing",
+      "summary": "Pins that resolveAndNarrow forwards the case's own resolve-outcome verbatim by declared precedence, narrows to the determining hypothesis's own evidence or to every evaluation's verdict and reason with no case body, never leaks a hypothesis's criterion or the case's when_to_use, and faults rather than fabricates on a missing evidence entry.",
+      "task": "task/assessment-drafting/resolve-and-narrow-input"
     },
     {
       "id": "proof/evidence-collection/evidence-collection-stage",
@@ -99,6 +115,60 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "to": "task/assessment-drafting/resolve-and-narrow-input",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/evidence-collection/evidence-collection-stage",
       "to": "domain/investigation/evidence",
@@ -439,6 +509,12 @@
       "from": "implementation/investigation-lifecycle/idempotency-window",
       "to": "task/investigation-lifecycle/idempotency-window",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-drafting/resolve-and-narrow-input",
+      "to": "implementation/assessment-drafting/resolve-and-narrow-input",
+      "kind": "proves",
       "at": "the path"
     },
     {

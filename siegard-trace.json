@@ -120,6 +120,10 @@
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
         },
         {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+        },
+        {
           "path": "src/src/investigation/verdict.ts",
           "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
         }
@@ -388,6 +392,16 @@
       ]
     },
     {
+      "node": "domain/investigation/assessment",
+      "digest": "sha256:bd017d335f0ec1429614995bf1df340b94604a29eebc2f6e848836b280a4b6f0",
+      "files": [
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+        }
+      ]
+    },
+    {
       "node": "domain/investigation/citation",
       "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
       "files": [
@@ -424,6 +438,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
         }
       ]
     },
@@ -540,20 +558,8 @@
       "digest": "sha256:12c9d5c48baf1be2de70455d7dde76771ac363e9637da4df55110b0faa077667",
       "files": [
         {
-          "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
-        },
-        {
-          "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
-        },
-        {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
-        },
-        {
-          "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
         }
       ]
     },
@@ -802,6 +808,26 @@
       ]
     },
     {
+      "node": "rules/investigation/the-outcome-comes-from-the-case",
+      "digest": "sha256:2a127cb3e1ac14beb82ae523e087467b7ae957713b315638c700d0309624ecc7",
+      "files": [
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/the-writing-input-is-narrowed",
+      "digest": "sha256:8ddc4c32a95fffbec4fcb674227d331aa25318f7a9dea1af54590cea1949739f",
+      "files": [
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
       "digest": "sha256:3408a4f4bc7a74e2d921cd68b43caed6108098230135f9ba5ec010ecf3bd1092",
       "files": [
@@ -1034,8 +1060,8 @@
       "digest": "sha256:6e9eb25b5338b0c442a914374dd7287fc19134b928631d998b6b3b207adf619a",
       "files": [
         {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
         }
       ]
     },
@@ -1044,8 +1070,8 @@
       "digest": "sha256:82eefd78d763badd78a4c2eaace5b3409cab6cd94b7ff15d262e9c57edf19832",
       "files": [
         {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
         }
       ]
     }
