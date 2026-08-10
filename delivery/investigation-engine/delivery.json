@@ -66,6 +66,14 @@
       "task": "task/investigation-lifecycle/idempotency-window"
     },
     {
+      "id": "implementation/investigation-lifecycle/investigation-factory",
+      "kind": "implementation",
+      "file": "implementation/investigation-lifecycle/investigation-factory.md",
+      "title": "The immutable investigation factory",
+      "summary": "Adds buildInvestigation(), the one place that validates evidence/evaluation totality against the pinned case and assembles the whole, immutable Investigation from already-completed stage outputs, plus the canonical Subject, Cost and Durations value types and the typed totality-refusal error it throws.",
+      "task": "task/investigation-lifecycle/investigation-factory"
+    },
+    {
       "id": "proof/assessment-drafting/draft-assessment-text",
       "kind": "proof",
       "file": "proof/assessment-drafting/draft-assessment-text.md",
@@ -128,6 +136,14 @@
       "title": "Idempotency window proof — key, lease store, and resolution",
       "summary": "Tests idempotencyKeyOf's deterministic and collision-free join, IdempotencyLeaseStore's key-and-instant-only lease and its window-bounded blocking, and resolveIdempotency's three-outcome precedence, including both of the task's UNDERDETERMINED entries as the implementation record resolved them.",
       "task": "task/investigation-lifecycle/idempotency-window"
+    },
+    {
+      "id": "proof/investigation-lifecycle/investigation-factory",
+      "kind": "proof",
+      "file": "proof/investigation-lifecycle/investigation-factory.md",
+      "title": "The immutable investigation factory, proved",
+      "summary": "Fifteen tests over buildInvestigation()'s totality refusals (both directions, both rules), its replay pinning, its plain-value shape, its defensive copies, and the six files it and its sibling types add reaching no infrastructure.",
+      "task": "task/investigation-lifecycle/investigation-factory"
     }
   ],
   "edges": [
@@ -558,6 +574,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/investigation-factory",
+      "to": "task/investigation-lifecycle/investigation-factory",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/assessment-drafting/draft-assessment-text",
       "to": "implementation/assessment-drafting/draft-assessment-text",
       "kind": "proves",
@@ -602,6 +672,12 @@
     {
       "from": "proof/investigation-lifecycle/idempotency-window",
       "to": "implementation/investigation-lifecycle/idempotency-window",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-lifecycle/investigation-factory",
+      "to": "implementation/investigation-lifecycle/investigation-factory",
       "kind": "proves",
       "at": "the path"
     }

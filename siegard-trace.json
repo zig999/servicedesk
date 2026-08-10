@@ -76,6 +76,10 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
+          "path": "src/src/errors/investigation-not-buildable.error.ts",
+          "digest": "sha256:50e9159d1fa53aeef2c3c28fcf8bec2b077e304232fe877de7c3cadfb9e14fa0"
+        },
+        {
           "path": "src/src/investigation/assessment.ts",
           "digest": "sha256:6599d1bf795e1432ca390ad0ea8bdf25088de29962f51544d833206204b83cd1"
         },
@@ -84,8 +88,16 @@
           "digest": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172"
         },
         {
+          "path": "src/src/investigation/cost.ts",
+          "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
+        },
+        {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:663b643c32ad0c7de99cd89946709c0c903b6047863e3d709d6230f2d238d8a9"
+        },
+        {
+          "path": "src/src/investigation/durations.ts",
+          "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
         },
         {
           "path": "src/src/investigation/evaluation-reason.ts",
@@ -120,6 +132,14 @@
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
         },
         {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+        },
+        {
+          "path": "src/src/investigation/investigation.ts",
+          "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+        },
+        {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         },
@@ -130,6 +150,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+        },
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:981756662385d71aca195994570633584024b9627a23fe357761b99101f6c3ce"
         },
         {
           "path": "src/src/investigation/verdict.ts",
@@ -440,6 +464,26 @@
       ]
     },
     {
+      "node": "domain/investigation/cost",
+      "digest": "sha256:0aa57d3c57f3b84240e543a2b3ac4b592fe7d7c17b6d06d9daa7d58d6055a38e",
+      "files": [
+        {
+          "path": "src/src/investigation/cost.ts",
+          "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/durations",
+      "digest": "sha256:42289bd861a9e6c105efad7d504bb9c2f2825b0021ac8ac803d915737da0c39a",
+      "files": [
+        {
+          "path": "src/src/investigation/durations.ts",
+          "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
+        }
+      ]
+    },
+    {
       "node": "domain/investigation/evaluation",
       "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
       "files": [
@@ -522,6 +566,30 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/investigation",
+      "digest": "sha256:344a70cb29bea1d7ff1692258c4bc86ac32290235d1f09edb3e8be459f7ba67d",
+      "files": [
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+        },
+        {
+          "path": "src/src/investigation/investigation.ts",
+          "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/subject",
+      "digest": "sha256:ec56f1d3cbad7beeacae89def64b4e321044a1bf090816d6c019eb81ea57ae0e",
+      "files": [
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:981756662385d71aca195994570633584024b9627a23fe357761b99101f6c3ce"
         }
       ]
     },
@@ -808,6 +876,10 @@
       "digest": "sha256:141d9e58e957aa3cd50610583a7c4893ba173410f77af9cc4280598e99438872",
       "files": [
         {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+        },
+        {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
         }
@@ -820,6 +892,24 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/replay-is-pinned",
+      "digest": "sha256:f1344b925c610e80abd12207f3e6a24c349c1671cfdbd5f1fd9490dfe399f169",
+      "files": [
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+        },
+        {
+          "path": "src/src/investigation/investigation.ts",
+          "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
         }
       ]
     },
