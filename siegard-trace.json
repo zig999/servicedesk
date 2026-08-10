@@ -218,12 +218,8 @@
       "digest": "sha256:0bcb6f1ffa351e6ce8d424911915dab800f5d6d8882057e9349594eda928b802",
       "files": [
         {
-          "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
-        },
-        {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "digest": "sha256:6ad65ba3b56a6e3c73e0b6e794c5eccb22fe7e60440495e350abc9d69ecc6a4a"
         }
       ]
     },
@@ -348,16 +344,22 @@
       ]
     },
     {
+      "node": "domain/glossary/subject-attribute",
+      "digest": "sha256:c2e70117fe4dbf4d9845c00cd659b7e09cd216563b3cfeef87f8858e77dfbc20",
+      "files": [
+        {
+          "path": "src/src/investigation/subject-attribute-value.ts",
+          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
+        }
+      ]
+    },
+    {
       "node": "domain/glossary/subject-type",
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
         {
-          "path": "src/src/glossary/glossary-query.port.ts",
-          "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
-        },
-        {
-          "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
       ]
     },
@@ -569,11 +571,21 @@
     },
     {
       "node": "domain/investigation/subject",
-      "digest": "sha256:ec56f1d3cbad7beeacae89def64b4e321044a1bf090816d6c019eb81ea57ae0e",
+      "digest": "sha256:227b64423f511acc785d02a9f046616eeb0e996cc23ebddd255a0b4e6316be21",
       "files": [
         {
           "path": "src/src/investigation/subject.ts",
-          "digest": "sha256:981756662385d71aca195994570633584024b9627a23fe357761b99101f6c3ce"
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/subject-attribute-value",
+      "digest": "sha256:e2564e4d4df957fc670bbca57995dea304b3c6ea4dfce1357bf574f8b9568a3e",
+      "files": [
+        {
+          "path": "src/src/investigation/subject-attribute-value.ts",
+          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
         }
       ]
     },
@@ -782,6 +794,20 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "digest": "sha256:ba062f6475b2ed8579bca44a53bcb04dfb39534780bdf58b96860923434e603b",
+      "files": [
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        },
+        {
+          "path": "src/src/errors/subject-carries-no-attribute.error.ts",
+          "digest": "sha256:b8eafe6b856b35822b5ec23c711a29a6a2203bfe5afffe1a2cab3e79d324e190"
         }
       ]
     },

@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/subject-identity-rework/subject-value-object",
+      "kind": "implementation",
+      "file": "implementation/subject-identity-rework/subject-value-object.md",
+      "title": "Subject as type plus attribute-value set",
+      "summary": "The canonical Subject and SubjectAttributeValue value objects, with a construction-time refusal for an empty attribute-value set, replacing the bare-id Subject and its port-side inline duplicate, plus coordinator-authorized mechanical compile-compat patches to unblock a cross-task build deadlock.",
+      "task": "task/subject-identity-rework/subject-value-object"
+    },
+    {
+      "id": "proof/subject-identity-rework/subject-value-object",
+      "kind": "proof",
+      "file": "proof/subject-identity-rework/subject-value-object.md",
+      "title": "Proof for the canonical Subject value object",
+      "summary": "buildSubject() is proved to assemble the governed-type-plus-attribute-set shape, to refuse an empty attribute-value set, to preserve each pair's own attribute and value exactly, and to produce a value that flows unmodified through observation-source.port.ts's own re-exported Subject type.",
+      "task": "task/subject-identity-rework/subject-value-object"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/subject-value-object",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-identity-rework/subject-value-object",
+      "to": "implementation/subject-identity-rework/subject-value-object",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

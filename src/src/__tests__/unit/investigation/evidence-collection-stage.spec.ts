@@ -29,7 +29,7 @@ afterEach(() => {
 });
 
 /** The subject and requester most tests reuse; neither is what any test is about. */
-const A_SUBJECT: Subject = { type: 'ont', id: 'a-subject-id' };
+const A_SUBJECT: Subject = { type: 'ont', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
 const A_REQUESTER = 'a-requester';
 
 /** A minimally valid Case whose collection plan is exactly the given hypotheses' collects, deduplicated in declared order — the same rule case-resolution.spec.ts already proves collectionPlan itself follows. */

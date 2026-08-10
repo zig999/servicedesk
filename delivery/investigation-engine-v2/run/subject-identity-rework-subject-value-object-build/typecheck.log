@@ -1,0 +1,10 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts(75,29): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Subject'.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(32,43): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Subject'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(110,25): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Subject'.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(16,56): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Subject'.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(17,56): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'Subject'.
+src/investigation/fake-observation-source.adapter.ts(54,50): error TS2339: Property 'id' does not exist on type 'Subject'.

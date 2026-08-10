@@ -8,19 +8,22 @@
 // testing today, and this epic's declared remainder for the real connector.
 
 import type { EvidenceResult } from './evidence-result.js';
+import type { Subject } from './subject.js';
 
 /**
- * The one thing an observation examines: a subject type from the glossary
- * and the identifier of the instance, exactly the shape
- * domain/investigation/subject already declares. Reused here as what this
- * port's `subject` parameter needs, though that node is not itself among
- * this task's `implements` — it is already fully specified elsewhere, so
- * this reuses that shape rather than deciding one of its own.
+ * The one thing an observation examines: domain/investigation/subject's own
+ * canonical shape (a subject type from the glossary plus its whole
+ * attribute-value set), re-exported here rather than redeclared, so this
+ * port's `subject` parameter and every module already importing `Subject`
+ * from this file resolve to the one governed type
+ * (task/subject-identity-rework/subject-value-object). This port previously
+ * carried a structurally identical inline duplicate, left in place until the
+ * canonical module existed; that duplicate is retired now that it does. Its
+ * whole attribute-value set reaching every observe-concept call unfiltered
+ * is task/subject-identity-rework/observation-source-subject-shape's own
+ * objective, not this re-export's.
  */
-export type Subject = {
-  readonly type: string;
-  readonly id: string;
-};
+export type { Subject };
 
 /**
  * What one observe-concept call answers: the ending it reached

@@ -51,5 +51,6 @@ export class FakeObservationSource implements IObservationSource {
 
 /** The fixture lookup key: concept and subject together, the same pair a real capability call would be scoped by. */
 function fixtureKey(concept: string, subject: Subject): string {
-  return `${concept}::${subject.type}::${subject.id}`;
+  const attributeParts = subject.attributes.flatMap((pair) => [pair.attribute, pair.value]);
+  return [concept, subject.type, ...attributeParts].join('::');
 }

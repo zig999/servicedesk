@@ -13,8 +13,8 @@ import type { IObservationSource, Subject } from '../../../investigation/observa
 const A_REQUESTER = 'a-requester';
 
 /** Two distinct subjects, so a test can prove the fake answers by the pair and not by either half alone. */
-const SUBJECT_ONE: Subject = { type: 'a-subject-type', id: 'a-subject-id' };
-const SUBJECT_TWO: Subject = { type: 'a-subject-type', id: 'another-subject-id' };
+const SUBJECT_ONE: Subject = { type: 'a-subject-type', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
+const SUBJECT_TWO: Subject = { type: 'a-subject-type', attributes: [{ attribute: 'id', value: 'another-subject-id' }] };
 
 /** The subject under test, held as the published contract rather than as the class behind it. */
 function sourceOver(fake: FakeObservationSource): IObservationSource {

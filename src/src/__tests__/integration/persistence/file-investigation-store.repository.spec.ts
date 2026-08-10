@@ -72,7 +72,7 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
     requester: 'requester-1',
     ticket_ref: 'TICKET-1',
     narrative: 'the narrative the requester submitted',
-    subject: { type: 'ont', id: 'subject-1' },
+    subject: { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-1' }] },
     pinned_case: { slug: 'a-case', version: 3, hash: 'a-hash' },
     prompt_version: 'prompt-v1',
     model: 'model-x',

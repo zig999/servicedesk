@@ -107,7 +107,7 @@ function aDurations(overrides: Partial<Durations> = {}): Durations {
 
 /** A whole Subject, defaulted so a test states only what it departs from. */
 function aSubject(overrides: Partial<Subject> = {}): Subject {
-  return { type: 'ont', id: 'subject-1', ...overrides };
+  return { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-1' }], ...overrides };
 }
 
 /**
