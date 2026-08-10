@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/assessment-drafting/draft-assessment-text",
+      "kind": "implementation",
+      "file": "implementation/assessment-drafting/draft-assessment-text.md",
+      "title": "Draft the assessment's text from the narrowed input",
+      "summary": "Adds the Assessment value type and a pure, deterministic, template-based draftAssessment(resolved, narrowedInput) that copies outcome/referral/determining_hypothesis from the resolved outcome unchanged and drafts text from the narrowed input alone.",
+      "task": "task/assessment-drafting/draft-assessment-text"
+    },
+    {
       "id": "implementation/assessment-drafting/resolve-and-narrow-input",
       "kind": "implementation",
       "file": "implementation/assessment-drafting/resolve-and-narrow-input.md",
@@ -56,6 +64,14 @@
       "title": "The idempotency-window lease mechanism",
       "summary": "A subject-type/subject-id/case/ticket-reference key, an in-memory key-and-instant lease store bound to a configured window, and a pure composition that tells a caller which of completed, in-progress or free applies — with no built Investigation and no wiring into a real diagnose entry point.",
       "task": "task/investigation-lifecycle/idempotency-window"
+    },
+    {
+      "id": "proof/assessment-drafting/draft-assessment-text",
+      "kind": "proof",
+      "file": "proof/assessment-drafting/draft-assessment-text.md",
+      "title": "Proof for drafting the assessment's text from the narrowed input",
+      "summary": "Tests that draftAssessment copies resolved's outcome/referral/determining verbatim, sets determining_hypothesis present exactly when a hypothesis confirmed and structurally absent when the fallback answered, can statically reach neither Case nor Hypothesis nor any framework/driver/provider client, and drafts non-empty, input-driven, synchronous text across the confirmed and fallback branches.",
+      "task": "task/assessment-drafting/draft-assessment-text"
     },
     {
       "id": "proof/assessment-drafting/resolve-and-narrow-input",
@@ -115,6 +131,36 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/assessment-drafting/draft-assessment-text",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/assessment-drafting/draft-assessment-text",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/assessment-drafting/draft-assessment-text",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/assessment-drafting/draft-assessment-text",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/assessment-drafting/draft-assessment-text",
+      "to": "task/assessment-drafting/draft-assessment-text",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/assessment-drafting/resolve-and-narrow-input",
       "to": "domain/investigation/assessment",
@@ -509,6 +555,12 @@
       "from": "implementation/investigation-lifecycle/idempotency-window",
       "to": "task/investigation-lifecycle/idempotency-window",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/assessment-drafting/draft-assessment-text",
+      "to": "implementation/assessment-drafting/draft-assessment-text",
+      "kind": "proves",
       "at": "the path"
     },
     {
