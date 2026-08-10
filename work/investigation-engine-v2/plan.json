@@ -1,0 +1,861 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/assessment-consolidation",
+      "kind": "epic",
+      "file": "epic/assessment-consolidation.md",
+      "title": "Assessment consolidation",
+      "summary": "The assessment-consolidator domain service behind its own port, the narrowed writing input it consumes, and the case's optional consolidation register that reaches it."
+    },
+    {
+      "id": "epic/diagnose-entry-point",
+      "kind": "epic",
+      "file": "epic/diagnose-entry-point.md",
+      "title": "Diagnose entry point",
+      "summary": "The synchronous diagnose composition — requester and ticket_ref in its own payload, window dedup only when a ticket reference travels, and one written investigation before any response."
+    },
+    {
+      "id": "epic/subject-identity-rework",
+      "kind": "epic",
+      "file": "epic/subject-identity-rework.md",
+      "title": "Subject identity rework",
+      "summary": "The subject's shape — a governed type plus its whole set of attribute-values — propagated through observation-source, investigation-factory, the idempotency key and evidence-collection-stage."
+    },
+    {
+      "id": "inventory/investigation-subject-consolidation-diagnose",
+      "kind": "inventory",
+      "file": "inventory/investigation-subject-consolidation-diagnose.md",
+      "title": "Investigation, case and diagnose modules the subject/consolidation/diagnose rework lands in",
+      "summary": "The investigation context (subject, observation-source port, factory, idempotency, evidence collection, drafting), the case aggregate and coherence validation, and the still-unbuilt diagnose composition — surveyed against the current, already-drifted specification text rather than the prior plan's record of it."
+    },
+    {
+      "id": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "task",
+      "file": "task/assessment-consolidation/assessment-consolidator-port-and-fake.md",
+      "title": "assessment-consolidator behind its own port",
+      "summary": "The consolidate operation, behind a port with a fake adapter, mirroring hypothesis-evaluator's own port-plus-adapter pattern.",
+      "epic": "assessment-consolidation"
+    },
+    {
+      "id": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "task",
+      "file": "task/assessment-consolidation/case-coherence-optional-consolidation-register.md",
+      "title": "Case admits an optional consolidation register",
+      "summary": "The case aggregate and its coherence validation admit an optional consolidation_register, formal or plain.",
+      "epic": "assessment-consolidation"
+    },
+    {
+      "id": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "kind": "task",
+      "file": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator.md",
+      "title": "draft-assessment-text consumes the consolidator's output",
+      "summary": "draft-assessment-text produces its text by calling the assessment-consolidator instead of assembling it directly from evaluations.",
+      "epic": "assessment-consolidation"
+    },
+    {
+      "id": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "task",
+      "file": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth.md",
+      "title": "resolve-and-narrow-input always produces the full breadth",
+      "summary": "resolve-and-narrow-input drops its confirmed/fallback branching for the rule's current unconditional-breadth shape.",
+      "epic": "assessment-consolidation"
+    },
+    {
+      "id": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "kind": "task",
+      "file": "task/diagnose-entry-point/diagnose-payload-and-window-dedup.md",
+      "title": "diagnose accepts requester and an optional ticket reference",
+      "summary": "The diagnose entry point takes requester (required) and ticket_ref (optional) in its own payload, and dedups within the window only when a ticket reference is given.",
+      "epic": "diagnose-entry-point"
+    },
+    {
+      "id": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "task",
+      "file": "task/diagnose-entry-point/diagnose-pipeline-composition.md",
+      "title": "One investigation runs synchronously end to end",
+      "summary": "The composition that runs one fresh investigation — collection, judgment, consolidation and drafting, persistence — synchronously within the declared deadline.",
+      "epic": "diagnose-entry-point"
+    },
+    {
+      "id": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "task",
+      "file": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough.md",
+      "title": "evidence-collection-stage passes the whole subject through",
+      "summary": "evidence-collection-stage dispatches every concept's observe-concept call with the investigation's whole subject, unfiltered.",
+      "epic": "subject-identity-rework"
+    },
+    {
+      "id": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "task",
+      "file": "task/subject-identity-rework/idempotency-key-subject-attributes.md",
+      "title": "The idempotency key is keyed on the subject's whole attribute-value set",
+      "summary": "The idempotency key is computed over the subject's whole attribute-value set, case and ticket reference, replacing the prior bare subject id.",
+      "epic": "subject-identity-rework"
+    },
+    {
+      "id": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "task",
+      "file": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject.md",
+      "title": "investigation-factory assembles and validates the subject",
+      "summary": "investigation-factory builds an investigation's subject against its governing invariants when it builds an investigation.",
+      "epic": "subject-identity-rework"
+    },
+    {
+      "id": "task/subject-identity-rework/observation-source-subject-shape",
+      "kind": "task",
+      "file": "task/subject-identity-rework/observation-source-subject-shape.md",
+      "title": "observation-source receives the whole attribute-value set",
+      "summary": "The observation-source port and its fake adapter accept a subject's whole attribute-value set on every observe-concept call, unfiltered.",
+      "epic": "subject-identity-rework"
+    },
+    {
+      "id": "task/subject-identity-rework/subject-value-object",
+      "kind": "task",
+      "file": "task/subject-identity-rework/subject-value-object.md",
+      "title": "Subject as type plus attribute-value set",
+      "summary": "The canonical Subject domain type, replacing the bare-id shape wherever it is declared.",
+      "epic": "subject-identity-rework"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/assessment-consolidation",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "contracts/investigation/case-source",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "scenarios/investigation/no-ticket-reference-never-repeats",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/diagnose-entry-point",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "scenarios/investigation/no-ticket-reference-never-repeats",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "contracts/integration/concept-observation",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/subject-identity-rework",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "task/assessment-consolidation/assessment-consolidator-port-and-fake",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-payload-and-window-dedup",
+      "to": "scenarios/investigation/no-ticket-reference-never-repeats",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "task/assessment-consolidation/draft-assessment-text-consumes-consolidator",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "task/assessment-consolidation/case-coherence-optional-consolidation-register",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "contracts/investigation/case-source",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/diagnose-entry-point/diagnose-pipeline-composition",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "task/subject-identity-rework/observation-source-subject-shape",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/evidence-collection-stage-subject-passthrough",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-identity-rework/idempotency-key-subject-attributes",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/subject-identity-rework/investigation-factory-assembles-and-validates-the-subject",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "task/subject-identity-rework/subject-value-object",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "contracts/integration/concept-observation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-identity-rework/observation-source-subject-shape",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-identity-rework/subject-value-object",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[5]"
+    }
+  ]
+}
