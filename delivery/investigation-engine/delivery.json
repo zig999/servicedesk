@@ -18,6 +18,14 @@
       "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
     },
     {
+      "id": "implementation/investigation-lifecycle/idempotency-window",
+      "kind": "implementation",
+      "file": "implementation/investigation-lifecycle/idempotency-window.md",
+      "title": "The idempotency-window lease mechanism",
+      "summary": "A subject-type/subject-id/case/ticket-reference key, an in-memory key-and-instant lease store bound to a configured window, and a pure composition that tells a caller which of completed, in-progress or free applies — with no built Investigation and no wiring into a real diagnose entry point.",
+      "task": "task/investigation-lifecycle/idempotency-window"
+    },
+    {
       "id": "proof/evidence-collection/observation-source-port",
       "kind": "proof",
       "file": "proof/evidence-collection/observation-source-port.md",
@@ -32,6 +40,14 @@
       "title": "Proof for the hypothesis-evaluator port and its fake adapter",
       "summary": "Drives FakeHypothesisEvaluator, the only concrete IHypothesisEvaluator this task ships, through each of the three verdicts and its one throwing fault, exercises the task's own UNDERDETERMINED no-data/empty-citations fixture, and audits this task's own five modules for import purity and for shipping exactly one adapter.",
       "task": "task/hypothesis-judgment/hypothesis-evaluator-port"
+    },
+    {
+      "id": "proof/investigation-lifecycle/idempotency-window",
+      "kind": "proof",
+      "file": "proof/investigation-lifecycle/idempotency-window.md",
+      "title": "Idempotency window proof — key, lease store, and resolution",
+      "summary": "Tests idempotencyKeyOf's deterministic and collision-free join, IdempotencyLeaseStore's key-and-instant-only lease and its window-bounded blocking, and resolveIdempotency's three-outcome precedence, including both of the task's UNDERDETERMINED entries as the implementation record resolved them.",
+      "task": "task/investigation-lifecycle/idempotency-window"
     }
   ],
   "edges": [
@@ -138,6 +154,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-lifecycle/idempotency-window",
+      "to": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/idempotency-window",
+      "to": "constraints/in-progress-is-a-lease-not-domain-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/idempotency-window",
+      "to": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/investigation-lifecycle/idempotency-window",
+      "to": "task/investigation-lifecycle/idempotency-window",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/evidence-collection/observation-source-port",
       "to": "implementation/evidence-collection/observation-source-port",
       "kind": "proves",
@@ -146,6 +186,12 @@
     {
       "from": "proof/hypothesis-judgment/hypothesis-evaluator-port",
       "to": "implementation/hypothesis-judgment/hypothesis-evaluator-port",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-lifecycle/idempotency-window",
+      "to": "implementation/investigation-lifecycle/idempotency-window",
       "kind": "proves",
       "at": "the path"
     }

@@ -20,6 +20,16 @@
       ]
     },
     {
+      "node": "constraints/in-progress-is-a-lease-not-domain-state",
+      "digest": "sha256:547a0255c4237ef920789ba683bea77ccf71ddb22368adc381681b10b30dba35",
+      "files": [
+        {
+          "path": "src/src/investigation/idempotency-lease-store.ts",
+          "digest": "sha256:a3c4fa9a9ee6ba6c1fe3a33aad719882966d1392fe2669f93a23d5fb84c85271"
+        }
+      ]
+    },
+    {
       "node": "constraints/judgment-runs-behind-a-port",
       "digest": "sha256:e335e762101da59fc4c2d13d53a2dc1d789513a8e332d8325b987556d2915dda",
       "files": [
@@ -580,6 +590,24 @@
       ]
     },
     {
+      "node": "rules/investigation/an-investigation-is-idempotent-within-a-window",
+      "digest": "sha256:e26c6226d6308ffb8cf19a2ecc557f4af8025729b2ed0035d9dffffa78cf15cc",
+      "files": [
+        {
+          "path": "src/src/investigation/idempotency-key.ts",
+          "digest": "sha256:7acc685a951eca26cb4a3add396e53edbf024bad979e5f91d41bd96fff6fb7cd"
+        },
+        {
+          "path": "src/src/investigation/idempotency-lease-store.ts",
+          "digest": "sha256:a3c4fa9a9ee6ba6c1fe3a33aad719882966d1392fe2669f93a23d5fb84c85271"
+        },
+        {
+          "path": "src/src/investigation/idempotency-resolution.ts",
+          "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/collection-runs-in-the-requester-scope",
       "digest": "sha256:fca9dd22ff0f0b85e3ffff552e0082e893935afecc1bf92374918074e3c28822",
       "files": [
@@ -750,6 +778,16 @@
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
+      "digest": "sha256:2c1b55e4fbe14a98f3e004a11e1ddd4584beb40d2cd129292de38483bc34a40c",
+      "files": [
+        {
+          "path": "src/src/investigation/idempotency-resolution.ts",
+          "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
         }
       ]
     },
