@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/evidence-collection/observation-source-port",
+      "kind": "implementation",
+      "file": "implementation/evidence-collection/observation-source-port.md",
+      "title": "Observation-source port and its fake adapter",
+      "summary": "IObservationSource, the port the collection stage will call to observe one concept for one subject, and FakeObservationSource, the only concrete implementation this task ships — a fixture-driven double answering all four evidence-result endings with no real connector.",
+      "task": "task/evidence-collection/observation-source-port"
+    },
+    {
+      "id": "proof/evidence-collection/observation-source-port",
+      "kind": "proof",
+      "file": "proof/evidence-collection/observation-source-port.md",
+      "title": "Proof for the observation-source port and its fake adapter",
+      "summary": "Drives FakeObservationSource, the only concrete IObservationSource this task ships, through each of the four evidence-result endings and its one throwing fault, and audits src/investigation's own modules for import purity and for shipping exactly one adapter.",
+      "task": "task/evidence-collection/observation-source-port"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "contracts/integration/concept-observation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/evidence-collection/observation-source-port",
+      "to": "task/evidence-collection/observation-source-port",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-collection/observation-source-port",
+      "to": "implementation/evidence-collection/observation-source-port",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -24,8 +24,16 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
-          "path": "src/src/glossary/glossary-store.port.ts",
-          "digest": "sha256:c3a2ddf7545b4b32afe58637c7faf5d18eb898b42d50da71141e6383dcb3bebe"
+          "path": "src/src/investigation/evidence-result.ts",
+          "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
         }
       ]
     },
@@ -88,6 +96,30 @@
         {
           "path": "src/src/factories/capability-registry.factory.ts",
           "digest": "sha256:9a13f14405e107c7d30ad82a22cb39b7b79284e9d9faccf15bbea6d35ed3c82f"
+        }
+      ]
+    },
+    {
+      "node": "contracts/integration/concept-observation",
+      "digest": "sha256:babc4ff528eaa01ff919b80c372f200a014227176e80fed3aeb63af817669397",
+      "files": [
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
+        }
+      ]
+    },
+    {
+      "node": "contracts/investigation/observation-source",
+      "digest": "sha256:0bcb6f1ffa351e6ce8d424911915dab800f5d6d8882057e9349594eda928b802",
+      "files": [
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
         }
       ]
     },
@@ -272,6 +304,30 @@
       ]
     },
     {
+      "node": "domain/investigation/evidence",
+      "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
+      "files": [
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/evidence-result",
+      "digest": "sha256:d93207f04278033eb3f001f58838c01322d3fe92cfdf2c2c4c490467f060c3a4",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-result.ts",
+          "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        }
+      ]
+    },
+    {
       "node": "domain/knowledge/case",
       "digest": "sha256:a436740808670fad13cc7bb4bbb18f34e9051378f8b2527ac4197da254da3ac1",
       "files": [
@@ -420,6 +476,16 @@
         {
           "path": "src/src/errors/duplicate-concept-answer.error.ts",
           "digest": "sha256:e71f9cc61aa1c500c681f8287486f939d0f01becee599930e5d23c8a8ed7c8b3"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/collection-runs-in-the-requester-scope",
+      "digest": "sha256:fca9dd22ff0f0b85e3ffff552e0082e893935afecc1bf92374918074e3c28822",
+      "files": [
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
         }
       ]
     },
