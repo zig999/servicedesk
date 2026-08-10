@@ -60,7 +60,12 @@ export interface IObservationSource {
    * subject, within the given requester's own scope, answering one of the
    * four evidence-result endings as data — never throwing for a non-ok
    * ending (domain/investigation/evidence,
-   * domain/investigation/evidence-result).
+   * domain/investigation/evidence-result). `subject` carries the whole
+   * attribute-value set the entry point assembled: this signature has no
+   * narrower parameter for a subset of it, so nothing this interface
+   * declares selects or drops a pair before the call reaches an
+   * implementation (task/subject-identity-rework/observation-source-subject-shape's
+   * own criteria 1 and 2).
    */
   observeConcept(concept: string, subject: Subject, requester: string): Promise<ObservationOutcome>;
 }

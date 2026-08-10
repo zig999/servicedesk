@@ -26,6 +26,14 @@
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
     },
     {
+      "id": "implementation/subject-identity-rework/observation-source-subject-shape",
+      "kind": "implementation",
+      "file": "implementation/subject-identity-rework/observation-source-subject-shape.md",
+      "title": "observation-source and its fake receive the subject's whole attribute-value set",
+      "summary": "fixtureKey in the fake adapter is rebuilt (and documented) as this task's own delivery — composed from concept, the subject's governed type and every attribute-value pair — replacing the disclosed compile-compatibility patch left by the dependency task, with the port interface's own doc comment now stating the same unfiltered-passthrough fact explicitly.",
+      "task": "task/subject-identity-rework/observation-source-subject-shape"
+    },
+    {
       "id": "implementation/subject-identity-rework/subject-value-object",
       "kind": "implementation",
       "file": "implementation/subject-identity-rework/subject-value-object.md",
@@ -48,6 +56,14 @@
       "title": "resolve-and-narrow-input's unconditional breadth",
       "summary": "Rewrites resolve-and-narrow-input.spec.ts whole to prove the confirmed/fallback branch is gone — every required hypothesis's evaluation and cited evidence surface the same way regardless of outcome — while holding resolveOutcome's own precedence-following, verbatim-answer behavior and the module's import purity.",
       "task": "task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth"
+    },
+    {
+      "id": "proof/subject-identity-rework/observation-source-subject-shape",
+      "kind": "proof",
+      "file": "proof/subject-identity-rework/observation-source-subject-shape.md",
+      "title": "Observe-concept and the fake's fixture key carry the subject's whole attribute-value set",
+      "summary": "Extends src/__tests__/unit/investigation/observation-source.port.spec.ts, previously carrying only single-attribute fixtures, with tests that make an extra pair, a second pair, an attribute name, a pair's order and the governed type each independently change the fake adapter's composed fixture key, proving the port and its fake pass and key on the subject's whole attribute-value set rather than any subset or a bare id.",
+      "task": "task/subject-identity-rework/observation-source-subject-shape"
     },
     {
       "id": "proof/subject-identity-rework/subject-value-object",
@@ -168,6 +184,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-identity-rework/observation-source-subject-shape",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/observation-source-subject-shape",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/observation-source-subject-shape",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-identity-rework/observation-source-subject-shape",
+      "to": "task/subject-identity-rework/observation-source-subject-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-identity-rework/subject-value-object",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -218,6 +258,12 @@
     {
       "from": "proof/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
       "to": "implementation/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-identity-rework/observation-source-subject-shape",
+      "to": "implementation/subject-identity-rework/observation-source-subject-shape",
       "kind": "proves",
       "at": "the path"
     },

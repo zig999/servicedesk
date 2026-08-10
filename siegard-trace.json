@@ -161,7 +161,11 @@
       "files": [
         {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:6ad65ba3b56a6e3c73e0b6e794c5eccb22fe7e60440495e350abc9d69ecc6a4a"
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         }
       ]
     },
@@ -516,6 +520,10 @@
         {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         }
       ]
     },
@@ -526,6 +534,10 @@
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
           "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         }
       ]
     },

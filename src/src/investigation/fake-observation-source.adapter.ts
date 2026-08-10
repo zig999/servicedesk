@@ -32,7 +32,10 @@ export class FakeObservationSource implements IObservationSource {
    * (rules/investigation/collection-runs-in-the-requester-scope), but this
    * fake computes nothing from it — scoping the call to an actual identity
    * is the real connector's concern, left to this epic's declared
-   * remainder.
+   * remainder. `subject` reaches fixtureKey exactly as given — its whole
+   * attribute-value set, not a bare id — with no pair selected or dropped
+   * along the way (task/subject-identity-rework/observation-source-subject-shape's
+   * own criteria 1 and 2).
    */
   public async observeConcept(
     concept: string,
@@ -49,7 +52,20 @@ export class FakeObservationSource implements IObservationSource {
   }
 }
 
-/** The fixture lookup key: concept and subject together, the same pair a real capability call would be scoped by. */
+/**
+ * The fixture lookup key: concept, the subject's governed type, and every
+ * attribute-value pair in its whole set — none selected or dropped
+ * (task/subject-identity-rework/observation-source-subject-shape's own
+ * criterion 3) — flattened to one attribute-name/value sequence and joined
+ * with '::', this codebase's own established multi-field composite-key
+ * convention (idempotencyKeyOf in src/investigation/idempotency-key.ts,
+ * capabilityOutputSchemaKey in src/investigation/citation-validation.ts),
+ * reused here rather than invented anew. Two subjects of the same type and
+ * the same attribute-value pairs in the same order produce the same key;
+ * the caller — seed() and observeConcept() alike — is what supplies that
+ * order, since neither this function nor domain/investigation/subject
+ * itself states a canonical one to sort by.
+ */
 function fixtureKey(concept: string, subject: Subject): string {
   const attributeParts = subject.attributes.flatMap((pair) => [pair.attribute, pair.value]);
   return [concept, subject.type, ...attributeParts].join('::');
