@@ -1,0 +1,39 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/diagnose-composition-root-remove-withdrawn-dedup-layer-build",
+  "cwd": "/home/siegfriedneto/projects/wt-remove-withdrawn-dedup/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log"
+    }
+  ],
+  "combined_output": "run.log"
+}

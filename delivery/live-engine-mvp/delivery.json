@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "kind": "implementation",
+      "file": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer.md",
+      "title": "Remove the window-based dedup layer the specification withdrew",
+      "summary": "diagnose.ts and its idempotency/lease/registry siblings, and their own five spec files, are deleted; nothing else in the tree references them.",
+      "task": "task/diagnose-composition-root/remove-withdrawn-dedup-layer"
+    },
+    {
       "id": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
@@ -19,6 +27,12 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "to": "task/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
