@@ -1,0 +1,18 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/case-fixture-author-diagnose-fixture-case-setup",
+  "cwd": "/home/siegfriedneto/projects/wt-author-diagnose-fixture/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -6,16 +6,20 @@
       "digest": "sha256:cc7605ecf967979c97918929614141359e60f0feeb66b831a848d529d5f682e2",
       "files": [
         {
-          "path": "src/src/persistence/file-case-store.repository.ts",
-          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         },
         {
-          "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
+          "path": "src/src/persistence/file-case-store.repository.ts",
+          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
         }
       ]
     },
@@ -192,6 +196,16 @@
       ]
     },
     {
+      "node": "contracts/integration/corporate-records-source",
+      "digest": "sha256:c46cdd38f9026cc3fb5ba92f4f970119fd24ea33348187f36287b912ba0f6287",
+      "files": [
+        {
+          "path": "src/src/fixtures/observations.json",
+          "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
+        }
+      ]
+    },
+    {
       "node": "contracts/investigation/case-source",
       "digest": "sha256:96c2aa946e9b76e31761b1966a1c8f0de74dd3790f42ed77bff504074d5bf7e5",
       "files": [
@@ -230,12 +244,16 @@
       "digest": "sha256:0bcb6f1ffa351e6ce8d424911915dab800f5d6d8882057e9349594eda928b802",
       "files": [
         {
-          "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+          "path": "src/src/fixtures/observations.json",
+          "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
         }
       ]
     },
@@ -308,6 +326,10 @@
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
         {
+          "path": "src/src/fixtures/glossary/action.json",
+          "digest": "sha256:e261362c8858759fa7056816828533bfc6a9a28a74459385b2e3bcdd759a11ec"
+        },
+        {
           "path": "src/src/glossary/glossary-query.port.ts",
           "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
@@ -321,6 +343,10 @@
       "node": "domain/glossary/concept",
       "digest": "sha256:bacfce81580dad7e4bd19448c8c7e1474f62f07d0bda54065cbc79cda121e37a",
       "files": [
+        {
+          "path": "src/src/fixtures/glossary/concept.json",
+          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
+        },
         {
           "path": "src/src/glossary/glossary-query.port.ts",
           "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
@@ -336,6 +362,10 @@
       "digest": "sha256:ed6df017623951445ffc8259195aa7999eef3c2f5feae133f17e79cc59778290",
       "files": [
         {
+          "path": "src/src/fixtures/glossary/outcome.json",
+          "digest": "sha256:42a57350103c44958e6efe9f5fb9fd6a4b10974543180564a268829f486a9505"
+        },
+        {
           "path": "src/src/glossary/glossary-query.port.ts",
           "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
@@ -349,6 +379,10 @@
       "node": "domain/glossary/recipient",
       "digest": "sha256:e214071bc54a45d4e1b7591b418289d88dddb6a003931af68e07b09cf9d07814",
       "files": [
+        {
+          "path": "src/src/fixtures/glossary/recipient.json",
+          "digest": "sha256:103537d54e498734089fe10bfef5699bd11a8166dbf81f3d17bcfa56d5eb3eb6"
+        },
         {
           "path": "src/src/glossary/glossary-query.port.ts",
           "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
@@ -382,6 +416,10 @@
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
         {
+          "path": "src/src/fixtures/glossary/subject-type.json",
+          "digest": "sha256:fd71afe5a8b2f349f508407158c90392dade308aa10464d31401b6fdde6207ab"
+        },
+        {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
@@ -392,20 +430,24 @@
       "digest": "sha256:7359eab4b5cb7fc670e4a09bc80a9e35d770ab9c84d3c0004e439c778bb59d2c",
       "files": [
         {
-          "path": "src/src/capability-registry/capability.ts",
-          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+          "path": "src/src/capability-registry/capability-query.port.ts",
+          "digest": "sha256:245ee624924c74254b58961dfea8e43c3bb19b87c7a44011e9ad19d4972f7724"
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:1e6d8fd6596d83bb21bc15df712a213905dc281e48d216b0fd289c018133e4be"
         },
         {
-          "path": "src/src/persistence/file-capability-store.repository.ts",
-          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
+          "path": "src/src/capability-registry/capability.ts",
+          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
         },
         {
-          "path": "src/src/capability-registry/capability-query.port.ts",
-          "digest": "sha256:245ee624924c74254b58961dfea8e43c3bb19b87c7a44011e9ad19d4972f7724"
+          "path": "src/src/fixtures/capability/capability.json",
+          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
+        },
+        {
+          "path": "src/src/persistence/file-capability-store.repository.ts",
+          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
         }
       ]
     },
@@ -416,6 +458,10 @@
         {
           "path": "src/src/capability-registry/capability.ts",
           "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+        },
+        {
+          "path": "src/src/fixtures/capability/capability.json",
+          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
         }
       ]
     },
@@ -554,6 +600,10 @@
       "digest": "sha256:d93207f04278033eb3f001f58838c01322d3fe92cfdf2c2c4c490467f060c3a4",
       "files": [
         {
+          "path": "src/src/fixtures/observations.json",
+          "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
         },
@@ -682,6 +732,10 @@
           "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
@@ -692,16 +746,20 @@
       "digest": "sha256:bade2dbfada1f8f4693d70014d7b6b19cc92d4833ff97df8e1a11aa0f33ca329",
       "files": [
         {
-          "path": "src/src/investigation/consolidation-register.ts",
-          "digest": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82"
-        },
-        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
+          "path": "src/src/investigation/consolidation-register.ts",
+          "digest": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
@@ -714,6 +772,10 @@
       "digest": "sha256:12c9d5c48baf1be2de70455d7dde76771ac363e9637da4df55110b0faa077667",
       "files": [
         {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
         }
@@ -724,6 +786,10 @@
       "digest": "sha256:8d9fed071eb73f031be1d0062289d0af6fe0668fc4ec5d578fdd9851a5c9ca16",
       "files": [
         {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
         },
@@ -732,12 +798,12 @@
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         },
         {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
-        },
-        {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -746,6 +812,10 @@
       "digest": "sha256:6222afea54dfc1b74fb3cd7f9982c2e7035473c41e959edf57933f628d7ecc1b",
       "files": [
         {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
         },
@@ -754,12 +824,12 @@
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         },
         {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
-        },
-        {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -768,12 +838,16 @@
       "digest": "sha256:70529f0caed943dc9da4e6cff0179a84d4c4fd69ebc4b39397a8fc102bc0a133",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/fixtures/glossary/outcome.json",
+          "digest": "sha256:42a57350103c44958e6efe9f5fb9fd6a4b10974543180564a268829f486a9505"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
         }
       ]
     },
@@ -1122,6 +1196,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1130,12 +1208,16 @@
       "digest": "sha256:c8b01ca7fb74365ae942f01f6c1f0cfb5bda7da6f72531f6aba8e870e309350c",
       "files": [
         {
-          "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "path": "src/src/fixtures/glossary/concept.json",
+          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
         }
       ]
     },
@@ -1146,6 +1228,14 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
+          "path": "src/src/fixtures/glossary/concept.json",
+          "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
         }
       ]
     },
@@ -1156,6 +1246,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1166,6 +1260,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1176,6 +1274,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1186,6 +1288,26 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        },
+        {
+          "path": "src/src/fixtures/glossary/action.json",
+          "digest": "sha256:e261362c8858759fa7056816828533bfc6a9a28a74459385b2e3bcdd759a11ec"
+        },
+        {
+          "path": "src/src/fixtures/glossary/outcome.json",
+          "digest": "sha256:42a57350103c44958e6efe9f5fb9fd6a4b10974543180564a268829f486a9505"
+        },
+        {
+          "path": "src/src/fixtures/glossary/recipient.json",
+          "digest": "sha256:103537d54e498734089fe10bfef5699bd11a8166dbf81f3d17bcfa56d5eb3eb6"
+        },
+        {
+          "path": "src/src/fixtures/glossary/subject-type.json",
+          "digest": "sha256:fd71afe5a8b2f349f508407158c90392dade308aa10464d31401b6fdde6207ab"
         }
       ]
     },
@@ -1214,6 +1336,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+        },
+        {
+          "path": "src/src/fixtures/capability/capability.json",
+          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
         }
       ]
     },
@@ -1224,6 +1350,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1231,6 +1361,10 @@
       "node": "rules/knowledge/hypotheses-are-ordered-by-precedence",
       "digest": "sha256:2cf2eed6e3aa8a3e5c690ac8d1927c735b499edbea01caadff6a97374471d261",
       "files": [
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+        },
         {
           "path": "src/src/case/case.ts",
           "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
@@ -1240,8 +1374,18 @@
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
         },
         {
-          "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "digest": "sha256:328efc4bfd12a21032e354fecb725ee8a83e5af4190a106e78b6923364f59262",
+      "files": [
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
@@ -1266,6 +1410,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+        },
+        {
+          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
+          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         }
       ]
     },
