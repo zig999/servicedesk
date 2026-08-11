@@ -136,6 +136,27 @@
       "title": "Proof that judgeHypotheses threads one unchanged CaseContext through every evaluate() call",
       "summary": "Extends judgment-stage.spec.ts's existing ScriptedHypothesisEvaluator to record the caseContext each evaluate() call received, and adds two tests proving the pinned case's own title/when_to_use reach both a hypothesis's first call and its retry unchanged, and reach every hypothesis judged in one call identically.",
       "task": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context"
+    },
+    {
+      "id": "review/live-engine-mvp",
+      "kind": "review",
+      "file": "review/live-engine-mvp.md",
+      "title": "Review of live-engine-mvp: real LLM adapters, fixture, composition and HTTP surface",
+      "summary": "Four passes over the nine tasks and forty-three files delivering the live diagnose engine: coverage, specification conformance, standard conformance, and failures (not run — the captured build/suite passed clean).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "No remaining file imports any of the six removed modules, and the project still type-checks and its existing suite still passes.",
+        "The criterion, the evidence, and the case's title and when_to_use sit inside one delimited data block; no other hypothesis's criterion and no subject attribute-value enters the prompt.",
+        "The factory computes the request's absolute deadline as its own start instant plus the specification's declared total budget, and propagates that same (now, deadline) pair to the wired runner, never leaving a stage to read the system clock itself.",
+        "Their own five spec files (diagnose.spec.ts, idempotency-key.spec.ts, idempotency-resolution.spec.ts, idempotency-lease-store.spec.ts, diagnosis-run-registry.spec.ts) no longer exist.",
+        "diagnose.ts, idempotency-key.ts, idempotency-lease-store.ts, idempotency-resolution.ts, diagnosis-run-registry.ts and diagnose-entry-point.factory.ts no longer exist in the tree.",
+        "npm install succeeds and the existing typecheck, lint and test steps still pass with both declared."
+      ],
+      "findings": 9
     }
   ],
   "edges": [
@@ -534,6 +555,60 @@
       "to": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/case-fixture/author-diagnose-fixture-case",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/http-surface/diagnose-http-endpoint",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/live-engine-mvp",
+      "to": "task/http-surface/end-to-end-diagnose-proof",
+      "kind": "reviews",
+      "at": "tasks[8]"
     }
   ]
 }
