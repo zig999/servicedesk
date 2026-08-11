@@ -7,11 +7,11 @@
       "files": [
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -69,7 +69,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -93,19 +93,19 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
+          "digest": "sha256:1c68950583f01fa4b58d9c8540597766c1815026203edd9c0bc8e34788f43dfd"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -133,7 +133,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -145,6 +145,14 @@
       "node": "constraints/the-domain-depends-on-no-infrastructure",
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
+        {
+          "path": "src/src/errors/investigation-not-buildable.error.ts",
+          "digest": "sha256:50e9159d1fa53aeef2c3c28fcf8bec2b077e304232fe877de7c3cadfb9e14fa0"
+        },
+        {
+          "path": "src/src/glossary/glossary-store.port.ts",
+          "digest": "sha256:c3a2ddf7545b4b32afe58637c7faf5d18eb898b42d50da71141e6383dcb3bebe"
+        },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
           "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
@@ -158,26 +166,66 @@
           "digest": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82"
         },
         {
+          "path": "src/src/investigation/cost.ts",
+          "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
+        },
+        {
+          "path": "src/src/investigation/durations.ts",
+          "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
+        },
+        {
+          "path": "src/src/investigation/evidence-result.ts",
+          "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+        },
+        {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1c68950583f01fa4b58d9c8540597766c1815026203edd9c0bc8e34788f43dfd"
+        },
+        {
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/investigation/investigation.ts",
+          "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
       ]
     },
     {
       "node": "constraints/the-judgment-prompt-is-closed",
-      "digest": "sha256:bf7f6d915d44c6f4fabcd19d5a010ee03bacab8e42050dc85b892a2fa49564aa",
+      "digest": "sha256:cd247efd2e1f5752a4a928273b8f5ec87e693b777dc9880642eaf146d027c793",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:89e7e896a64d6fee8b104b44d075c74b3007b02a531163309614a3a7516df9ec"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -185,6 +233,10 @@
       "node": "constraints/the-mvp-persists-to-no-database",
       "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
       "files": [
+        {
+          "path": "src/src/persistence/file-glossary-store.repository.ts",
+          "digest": "sha256:edc1ad410f0751d271d741b5db3429c2563995229b865214bf28c81af86698dd"
+        },
         {
           "path": "src/src/persistence/file-investigation-store.repository.ts",
           "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
@@ -215,7 +267,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -224,12 +276,12 @@
       "digest": "sha256:babc4ff528eaa01ff919b80c372f200a014227176e80fed3aeb63af817669397",
       "files": [
         {
-          "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "path": "src/src/investigation/fake-observation-source.adapter.ts",
+          "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         },
         {
-          "path": "src/src/investigation/fake-observation-source.adapter.ts",
-          "digest": "sha256:53223e1c26397216f8d40dcd653c126de2efeb85dd618ce97867ccf60673884e"
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
         }
       ]
     },
@@ -274,10 +326,6 @@
           "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
         },
         {
-          "path": "src/src/investigation/diagnose.ts",
-          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
-        },
-        {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
@@ -317,7 +365,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         }
       ]
     },
@@ -345,7 +393,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         }
       ]
     },
@@ -354,24 +402,24 @@
       "digest": "sha256:28e41ae1aabd7e8eb358a6edb30c077665f7e81ea3025bc7f638d16bc98eaeda",
       "files": [
         {
-          "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
-        },
-        {
-          "path": "src/src/errors/incoherent-case.error.ts",
-          "digest": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036"
-        },
-        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
+          "path": "src/src/errors/case-not-found.error.ts",
+          "digest": "sha256:92bc1349600bf06963262dedd8358e2b0b364849476761eab4bc186593f08db9"
         },
         {
           "path": "src/src/errors/case-not-valid.error.ts",
           "digest": "sha256:178d031c94334854e637f9e70b4189f8fa0714d9afc535455f934658000084d3"
         },
         {
-          "path": "src/src/errors/case-not-found.error.ts",
-          "digest": "sha256:92bc1349600bf06963262dedd8358e2b0b364849476761eab4bc186593f08db9"
+          "path": "src/src/errors/incoherent-case.error.ts",
+          "digest": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036"
         }
       ]
     },
@@ -408,6 +456,10 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -426,6 +478,10 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -444,6 +500,10 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -462,6 +522,10 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -470,16 +534,16 @@
       "digest": "sha256:c2e70117fe4dbf4d9845c00cd659b7e09cd216563b3cfeef87f8858e77dfbc20",
       "files": [
         {
-          "path": "src/src/investigation/subject-attribute-value.ts",
-          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
-        },
-        {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/investigation/subject-attribute-value.ts",
+          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
         }
       ]
     },
@@ -490,6 +554,14 @@
         {
           "path": "src/src/fixtures/glossary/subject-type.json",
           "digest": "sha256:fd71afe5a8b2f349f508407158c90392dade308aa10464d31401b6fdde6207ab"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/glossary/terms.ts",
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -515,7 +587,7 @@
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
-          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
+          "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
         },
         {
           "path": "src/src/persistence/file-capability-store.repository.ts",
@@ -533,7 +605,7 @@
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
-          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
+          "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
         }
       ]
     },
@@ -630,16 +702,16 @@
       "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
       "files": [
         {
-          "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
-        },
-        {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -662,16 +734,20 @@
       "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
       "files": [
         {
-          "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
-        },
-        {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -693,7 +769,7 @@
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
         }
       ]
     },
@@ -703,15 +779,15 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -726,10 +802,6 @@
         {
           "path": "src/src/investigation/investigation.ts",
           "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
-        },
-        {
-          "path": "src/src/investigation/diagnose.ts",
-          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },
@@ -738,8 +810,8 @@
       "digest": "sha256:227b64423f511acc785d02a9f046616eeb0e996cc23ebddd255a0b4e6316be21",
       "files": [
         {
-          "path": "src/src/investigation/subject.ts",
-          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -750,12 +822,8 @@
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
         {
-          "path": "src/src/investigation/idempotency-key.ts",
-          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
-        },
-        {
-          "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
       ]
     },
@@ -764,10 +832,6 @@
       "digest": "sha256:e2564e4d4df957fc670bbca57995dea304b3c6ea4dfce1357bf574f8b9568a3e",
       "files": [
         {
-          "path": "src/src/investigation/subject-attribute-value.ts",
-          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
-        },
-        {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         },
@@ -776,8 +840,8 @@
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
         {
-          "path": "src/src/investigation/idempotency-key.ts",
-          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
+          "path": "src/src/investigation/subject-attribute-value.ts",
+          "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
         }
       ]
     },
@@ -791,11 +855,11 @@
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         },
         {
           "path": "src/src/investigation/verdict.ts",
@@ -814,6 +878,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -856,12 +924,24 @@
       "digest": "sha256:12c9d5c48baf1be2de70455d7dde76771ac363e9637da4df55110b0faa077667",
       "files": [
         {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -875,15 +955,15 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -901,15 +981,15 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -931,7 +1011,7 @@
         },
         {
           "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -991,11 +1071,11 @@
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+          "digest": "sha256:73d1e3a9c72e05735fea54226a07b6d2732f1e22aef0ac799344a2fceaa5dedc"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1005,11 +1085,11 @@
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:a623a6957ec9bcf5fff666f1c8d207fb38be8be18f821b679f4edcf110bd6330"
+          "digest": "sha256:73d1e3a9c72e05735fea54226a07b6d2732f1e22aef0ac799344a2fceaa5dedc"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1019,7 +1099,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         },
         {
           "path": "src/src/investigation/evaluation.ts",
@@ -1027,11 +1107,11 @@
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1040,16 +1120,16 @@
       "digest": "sha256:25399d172f19ecd02a80a28c96ccc68cd0cab79f53f7edad40ba256c62a3c38a",
       "files": [
         {
-          "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
+          "digest": "sha256:9653b8c378e12e12060d2bcb07f51595db6615bc9ad0c06ae68746e5fae8e52b"
         },
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
-          "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
-          "digest": "sha256:9653b8c378e12e12060d2bcb07f51595db6615bc9ad0c06ae68746e5fae8e52b"
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
@@ -1058,16 +1138,16 @@
       "digest": "sha256:ba062f6475b2ed8579bca44a53bcb04dfb39534780bdf58b96860923434e603b",
       "files": [
         {
-          "path": "src/src/investigation/subject.ts",
-          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
-        },
-        {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
           "digest": "sha256:b8eafe6b856b35822b5ec23c711a29a6a2203bfe5afffe1a2cab3e79d324e190"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+        },
+        {
+          "path": "src/src/investigation/subject.ts",
+          "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
       ]
     },
@@ -1091,15 +1171,15 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+          "digest": "sha256:002367baa04417e737e34cfc45ed491d237771002b8b480390efd714c93495e1"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1171,7 +1251,7 @@
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
         }
       ]
     },
@@ -1181,7 +1261,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+          "digest": "sha256:16f2949c5aa5fe330dc9d2d146f6feada32549967529830ac840de2eef12deb3"
         }
       ]
     },
@@ -1195,7 +1275,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -1209,11 +1289,11 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1227,7 +1307,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:2191e5aa94e839d652958fcb0a601f397b68a6c161f22c05b3493feefce261b6"
+          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         }
       ]
     },
@@ -1258,12 +1338,16 @@
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
         },
         {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+        },
+        {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
         },
         {
-          "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -1279,12 +1363,8 @@
     },
     {
       "node": "rules/investigation/the-writing-input-is-narrowed",
-      "digest": "sha256:d6e57b521c1360294e358a94de72ce9ee5d9ab83683534a8ce7bf35e9b9f6e9c",
+      "digest": "sha256:0182da81b2cd5467b253636f792aca15cdb1e90867a58b16c8445c22de7caf40",
       "files": [
-        {
-          "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
-        },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
@@ -1292,6 +1372,10 @@
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -1301,7 +1385,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1323,7 +1407,7 @@
         },
         {
           "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:ec1a882349977d8fdea143b71721f0bba6b8defe7212d12bd3c2b4dfd1c6b673"
+          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         }
       ]
     },
@@ -1333,7 +1417,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1351,7 +1435,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1365,7 +1449,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1379,7 +1463,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1393,7 +1477,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1441,11 +1525,11 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
-          "digest": "sha256:7a6a83bbf08bb54978bec90d74b8dea40552ecca6fb4be9ea8e85c03ef4d504e"
+          "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
         }
       ]
     },
@@ -1455,7 +1539,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1473,11 +1557,11 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:9c70cdc893a93613eafb5775fae5f1152f25cbfc475c787bdc68e72d0380dd84"
+          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1500,12 +1584,12 @@
       "digest": "sha256:cd9041ba780b42719bb5a07af942b65e81380813a61a025a749df18bea5d99ac",
       "files": [
         {
-          "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
-        },
-        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+        },
+        {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         }
       ]
     },
@@ -1515,7 +1599,7 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7659b51583145f531a7739a80698b801ce66886edf8aaea3d4b57d24b0949a99"
+          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1543,7 +1627,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1553,7 +1637,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1563,7 +1647,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         }
       ]
     },
@@ -1621,7 +1705,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:5e88ccbbac497f74e837baa54371c94d8a35582ccea5ee0cce1dc9c64f1ae9ef"
+          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
         }
       ]
     },
@@ -1631,7 +1715,7 @@
       "files": [
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     },
@@ -1641,7 +1725,7 @@
       "files": [
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:1ea051496644c9011859445f8ef61ffb6491773d3ee02362de269e66c8490c1d"
+          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
       ]
     }
