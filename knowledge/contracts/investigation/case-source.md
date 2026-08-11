@@ -8,4 +8,4 @@ operations:
 
 ## Description
 
-The customer-supplier edge: the investigation runs exactly the case the knowledge context published, pinned by content at the start of the request.
+The customer-supplier edge: the investigation runs exactly the case the knowledge context published, pinned by slug and version at the start of the request.

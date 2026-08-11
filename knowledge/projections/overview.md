@@ -9,7 +9,7 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 6 | 4 | 1 | 0 |
 | integration | generic | 3 | 4 | 4 | 0 |
 | investigation | supporting | 14 | 19 | 6 | 5 |
-| knowledge | core | 5 | 15 | 3 | 3 |
+| knowledge | core | 5 | 17 | 4 | 3 |
 
 ## Capabilities
 
@@ -19,17 +19,20 @@ Derived by spec.py from the specification files; never edited.
 
 ## Constraints
 
-- a-case-is-stored-as-one-json-document (knowledge)
+- a-case-is-read-whole (knowledge)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
 - evidence-normalization-is-an-anticorruption-layer (integration)
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
 - judgment-runs-behind-a-port (investigation)
 - the-consolidation-prompt-is-closed (investigation)
+- the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
 - the-domain-depends-on-no-infrastructure (system)
 - the-evidence-cache-admits-only-ok-results (investigation)
 - the-judgment-prompt-is-closed (investigation)
-- the-mvp-persists-to-no-database (system)
+- the-schema-replays-from-its-scripts (system)
+- the-stored-schema-mirrors-the-declared-model (system)
+- the-system-persists-to-one-relational-database (system)
 
-53 decision(s) disclosed in the decision log.
+64 decision(s) disclosed in the decision log.

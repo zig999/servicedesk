@@ -9,4 +9,4 @@ The core subdomain — the model lives in the case schema and its validator, not
 
 ## Responsibility
 
-Hold every case as one versioned markdown file, valid only while every rule holds against the current glossary and capability registry.
+Hold every case as a version written once, valid only while every rule holds against the current glossary and capability registry.

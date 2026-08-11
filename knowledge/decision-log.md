@@ -145,16 +145,6 @@ entries:
     unstated: A new case introduces its outcome, yet validation refuses a case whose outcome the glossary lacks; the material never says whether contribution registers the term or presupposes it.
     decided: Contribution is a curation act in the same change that introduces the case; validation still refuses a case whose outcome is absent at reading.
     why: Automatic registration would make the outcome-existence refusal unreachable and let a typo mint a vocabulary term; the same-change discipline keeps both rules decidable.
-  - location: constraints/a-case-is-stored-as-one-json-document.md
-    field: statement
-    unstated: The material says the case and all its entities are stored in a single JSON, without saying whether one document holds one case or every case.
-    decided: One JSON document per case, holding the whole aggregate.
-    why: The singular contrasts with decomposition into separate stores, matching the aggregate boundary already declared; one document for every case would break the standing rules that the slug matches the file and that every version stays readable, which the material does not retract.
-  - location: constraints/a-case-is-stored-as-one-json-document.md
-    field: scope
-    unstated: The material does not say what format the case file on disk takes now that its stored form is JSON, while the case element described its file as markdown.
-    decided: The stored form is the JSON document; the case element's description drops the format and keeps one file versioned in git.
-    why: The authoring format was implementation detail living in prose; the storage bound is the addressable fact, and one statement of the file's form must not disagree with the other.
   - location: rules/knowledge/a-collected-concept-declares-a-ttl.md
     field: statement
     unstated: The material delegates the default ttl to the analysis without naming a value.
@@ -265,4 +255,69 @@ entries:
     unstated: Live testing against the real provider exposed that rules/investigation/a-cited-field-exists-in-the-capability-output-schema cannot be satisfied by a model never shown the output schema it cites against, but the product owner's confirmed decision to widen the closed prompt did not itself fix the exact shape of what enters — the field names alone, the whole schema text, or the schema with its types and descriptions.
     decided: Only the field names — the output schema's own `properties` keys, per evidence item — enter the prompt; the schema's types, descriptions and any other content stay out.
     why: The citation rule only ever holds a citation's field to existing among those keys, so the field names are the whole vocabulary it requires; admitting the schema's other content would let data the rule never asked for start reading as instruction, against this constraint's own data-is-data discipline.
+  - location: constraints/the-system-persists-to-one-relational-database.md
+    field: statement
+    unstated: The material says the application starts persisting to a database without saying which of the four things the system keeps move there — the cases, the published vocabularies, the capability registrations and the investigations each have their own store today.
+    decided: All four, in one store; nothing stays in a file — and the constraint names no engine and no driver, saying only that the store is transactional and relational.
+    why: A record left in a file would keep the constraint this replaces alive for part of the system while the rest denies it, and the two homes would have to be kept in step by hand; the engine is named by the project's standard in STK-12 and its driver in STK-05, so naming it here as well would put one fact in two houses where changing stores means remembering to edit both, and only the property that survives such a change belongs here.
+  - location: constraints/the-database-is-externally-provisioned.md
+    field: statement
+    unstated: The material names the provider that provisions the database; it does not say whether the provider is part of the solution bound or a deployment choice the specification stays out of.
+    decided: A deployment choice — the constraint states external provisioning reached through a connection URL from configuration, and names no provider.
+    why: A provider's name written here would refuse a second environment provisioned differently, and it is not what any check could hold; what a check can hold is that the deployment provisions no database service and hardcodes no endpoint, which is the property the material was actually asserting.
+  - location: constraints/the-schema-replays-from-its-scripts.md
+    field: statement
+    unstated: The material asks for SQL scripts in the style of migrations under migrations/, versioned, without saying which of those facts is a bound on the solution and which is the project's own arrangement — and the project's standard already states the arrangement half, in STK-06 and PRH-04, differently.
+    decided: The constraint states only that the schema replays from the numbered scripts; the directory, the file form and the prohibition on runtime DDL stay with the standard.
+    why: Stated here as well, the directory would put two review passes in contradiction over the same file — one requiring migrations/ while the standard's rule reaches src/migrations and nothing else — and the constraint schema assigns a project's arrangement convention to the standard even where the property is identical; what survives a change of standard is that the scripts are the whole schema and their order suffices, which is what this keeps.
+  - location: constraints/the-stored-schema-mirrors-the-declared-model.md
+    field: fitness
+    unstated: The material requires the tables and attributes to conform to the current entities but names no check that would find a departure.
+    decided: A pairing in both directions — each relation and column against the element and declared attribute it encodes, and each required attribute against the column that holds it.
+    why: Both sides are enumerable, so the pairing is mechanical rather than a reading; and the second direction is the one no schema review would find on its own, because a fact the specification states and the store cannot record is invisible from the schema alone.
+  - location: constraints/a-case-is-read-whole.md
+    field: statement
+    unstated: Retiring the one-JSON-document constraint says the case stops being stored whole; it does not say whether the aggregate may now be read in pieces.
+    decided: A case is read whole, in one transaction, or not at all.
+    why: What kept hypotheses, resolutions and referrals arriving together was the document rather than any decision, so retiring the document silently retires the guarantee; a partially loaded case has a short collection plan and a holed precedence order, and resolve-outcome would answer from it without anything failing.
+  - location: rules/knowledge/a-case-version-is-written-once.md
+    field: statement
+    unstated: Dropping the hash leaves slug and version as the whole of the pin, and the material does not say what makes that pair name one content.
+    decided: A case version is written once and never altered; revising a case writes a new version.
+    why: The pair only identifies content while no version can be rewritten — with the digest gone, nothing else would detect a rewritten version, and every investigation that pinned it would name a procedure other than the one that ran.
+  - location: rules/knowledge/a-slug-identifies-one-case.md
+    field: statement
+    unstated: The rule that a case's slug equals its file name goes with the file, and the material does not say what keeps a slug identifying one case once no file system enforces it.
+    decided: No two cases share a slug, stated as an invariant of its own.
+    why: The uniqueness was real and was being kept by the medium rather than by a decision; leaving it unstated would drop a standing invariant as a side effect of changing the store, and two cases under one slug would leave every pin to that slug ambiguous.
+  - location: rules/knowledge/validation-runs-at-every-read.md
+    field: statement
+    unstated: The case element justified holding no draft by work in progress being a git fact, a branch or a pull request; with curation moving to the database, the material does not say what keeps a draft out of the domain.
+    decided: Validation at every read is the whole of the gate — an unfinished version does not validate, so it is not a case, and no publication state is introduced.
+    why: The alternative is a status on the case, which no class here admits and which the specification deliberately refused; the rule already ran at every read with no intermediate gate, so it covers an unfinished version without any new field to maintain.
+  - location: constraints/the-stored-schema-mirrors-the-declared-model.md
+    field: statement
+    unstated: Stated per relation, this constraint and constraints/the-evidence-cache-admits-only-ok-results decide the evidence cache differently — the cache's key is a concept, a subject type, a subject's whole set of attribute-values and the inputs, declared by different elements and by no element named cache, so a relation-level pairing makes a cache the specification already admits a departure.
+    decided: The pairing is per column, not per relation — every column pairs with one attribute some element declares, and a relation may draw columns from more than one element.
+    why: What this constraint exists to catch is a column no element declares, and that is caught identically per column; the relation-level reading additionally forbade shapes the specification elsewhere requires, and the aggregate boundary it seemed to protect is held by constraints/a-case-is-read-whole rather than by the schema's shape.
+  - location: domain/knowledge/hypothesis.md
+    field: attributes
+    unstated: The precedence rules/knowledge/hypotheses-are-ordered-by-precedence calls the declared order was carried by the order of the hypotheses inside their case's one document, and nothing declared it; decomposed into relations, rows have no order and constraints/the-stored-schema-mirrors-the-declared-model refuses a column no attribute declares.
+    decided: A hypothesis declares position, a required integer.
+    why: The precedence is a domain fact the rule already states experts affirm, so it cannot survive as an arrangement of the storage; declaring it on the hypothesis keeps the rule's statement true word for word and lets resolve-outcome read the order from a fact rather than from however rows came back.
+  - location: rules/knowledge/a-hypothesis-position-is-unique-within-its-case.md
+    field: statement
+    unstated: Moving the order into a position field says nothing about two hypotheses holding the same position, which the document's arrangement made impossible without any rule.
+    decided: No two hypotheses of one case share a position.
+    why: resolve-outcome needs a total order to have a first confirmed hypothesis at all; with positions free to collide, a tie would be settled by whichever row was read first, which is the ambiguity the declared order exists to remove.
+  - location: domain/investigation/investigation.md
+    field: attributes
+    unstated: The material does not say whether an investigation records when it was written; the file's own modification time carried it by accident and a row carries nothing by accident.
+    decided: written_at, a required datetime.
+    why: The record exists to be audited and replayed, and when it was written is the one fact an audit cannot recover from any other attribute; it is not a closing state, because nothing reads it to decide whether the investigation finished and there is no value it moves to next.
+  - location: domain/knowledge/case.md
+    field: attributes
+    unstated: Version history used to be readable from the commits that produced the files; with the file gone, the material does not say whether a case version records when it was authored.
+    decided: authored_at, a required datetime.
+    why: Curation history was a fact of the version control the case no longer lives in, and an audit of which procedure was current when an old investigation ran needs it; the alternative was leaving a column no attribute declares, which constraints/the-stored-schema-mirrors-the-declared-model refuses.
 ---

@@ -8,4 +8,5 @@ constrains:
 ## Description
 
 Which cause dominates which is a domain fact, verified by human review rather than by the validator.
+The declared order is each hypothesis's own position, declared rather than arranged, so nothing about how a case is stored or read back can change what the experts affirmed.
 Two hypotheses confirming frequently in the same investigation is the signal that the declared order is wrong.

@@ -6,7 +6,7 @@ classDiagram
             +string title
             +string whenToUse
             +integer version
-            +string hash
+            +datetime authoredAt
             +SubjectType subject
             +Resolution fallback
             +ConsolidationRegister consolidationRegister
@@ -17,6 +17,7 @@ classDiagram
         class Hypothesis {
             <<Entity>>
             +string name
+            +integer position
             +string criterion
             +Concept[] collects
             +Resolution resolution

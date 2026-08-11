@@ -13,8 +13,8 @@ attributes:
   - name: version
     type: integer
     required: true
-  - name: hash
-    type: string
+  - name: authored_at
+    type: datetime
     required: true
   - name: subject
     type: domain/glossary/subject-type
@@ -36,8 +36,8 @@ operations:
 
 ## Description
 
-One troubleshooting procedure, authored as one file versioned in git and identified by content: slug, version and hash.
-Always published: no draft exists in the domain — work in progress is a git fact, a branch or a pull request, and there is no publication gate to pass.
+One troubleshooting procedure, identified by slug and version, each version written once and never altered, carrying when it was authored.
+Always published: no draft exists in the domain, because a version that does not validate is not a case at all — validation at every read is the whole of the gate, and there is no publication state to set.
 The fallback is a disguised default hypothesis, explicit on purpose: a fallback claims nothing about the world.
 The curator may author a consolidation register alongside the hypotheses; absent, the consolidation step keeps whatever register its own adapter defaults to.
 

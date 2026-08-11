@@ -7,4 +7,4 @@ operations:
 
 ## Description
 
-The synchronous read the knowledge context offers: a case by slug and version, validated at this reading, pinned by content.
+The synchronous read the knowledge context offers: a case by slug and version, validated at this reading, and read whole.

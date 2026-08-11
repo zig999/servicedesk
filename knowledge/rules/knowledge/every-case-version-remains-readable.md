@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: Every version of a case remains readable; the index keeps all versions, not the last.
+statement: Every version of a case remains readable; the store keeps every version, not the last.
 constrains:
   - domain/knowledge/case
 ---

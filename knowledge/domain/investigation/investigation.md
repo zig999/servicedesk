@@ -38,6 +38,9 @@ attributes:
   - name: durations
     type: durations
     required: true
+  - name: written_at
+    type: datetime
+    required: true
 relationships:
   - target: domain/knowledge/case
     type: reference
@@ -48,8 +51,9 @@ relationships:
 ## Description
 
 One diagnosis of one subject under one pinned case, written once and never mutated — an immutable result produced by a factory that cannot build an invalid instance.
-The case reference is pinned by content — slug, version and hash — and, together with model, prompt version and the evidence, forms the replay pins.
+The case reference is pinned by slug and version — a version is written once, so the pair names one content — and, together with model, prompt version and the evidence, forms the replay pins.
 No budget, no steps, no closing state: the end is a verifiable condition, not a state to maintain.
+written_at records when the one write happened and is not such a state — there is nothing it can be set to next, and nothing reads it to decide whether the investigation is finished.
 requester and ticket_ref both arrive in the diagnose call itself; requester is always given, ticket_ref is not — not every diagnose call carries a ticket.
 
 ## Responsibility
