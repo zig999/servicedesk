@@ -41,7 +41,9 @@ function createEvaluator(options?: { readonly maxTokens?: number; readonly model
 }
 
 const A_CRITERION = 'a-criterion';
-const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [{ concept: 'concept-one', result: 'ok', observation: 'an-observed-value' }];
+const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [
+  { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+];
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
 
 const ORIGINAL_ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -61,9 +63,9 @@ afterEach(() => {
 
 it('answers inconclusive with reason no-data, citing exactly the evidence items whose result is not ok', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value' },
-    { concept: 'concept-timeout', result: 'timeout' },
-    { concept: 'concept-denied', result: 'denied' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
+    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
+    { concept: 'concept-denied', result: 'denied', declaredFields: [] },
   ];
   const evaluator = createEvaluator();
 
@@ -81,8 +83,8 @@ it('answers inconclusive with reason no-data, citing exactly the evidence items 
 
 it('never calls the provider when the evidence carries any non-ok result', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value' },
-    { concept: 'concept-timeout', result: 'timeout' },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
+    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
   ];
   const evaluator = createEvaluator();
 
@@ -94,8 +96,12 @@ it('never calls the provider when the evidence carries any non-ok result', async
 it('sends byte-identical prompt content across two calls carrying the same criterion, evidence and case context', async () => {
   createMock.mockResolvedValue(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
-  const evidenceForFirstCall: readonly EvidenceItem[] = [{ concept: 'concept-one', result: 'ok', observation: 'an-observed-value' }];
-  const evidenceForSecondCall: readonly EvidenceItem[] = [{ concept: 'concept-one', result: 'ok', observation: 'an-observed-value' }];
+  const evidenceForFirstCall: readonly EvidenceItem[] = [
+    { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+  ];
+  const evidenceForSecondCall: readonly EvidenceItem[] = [
+    { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+  ];
   const caseContextForFirstCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
   const caseContextForSecondCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
 
@@ -107,10 +113,12 @@ it('sends byte-identical prompt content across two calls carrying the same crite
   expect(firstContent).toBe(secondContent);
 });
 
-it('carries the given criterion, evidence observation, case title and case when_to_use inside one delimited block', async () => {
+it('carries the given criterion, evidence observation, declared fields, case title and case when_to_use inside one delimited block', async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
-  const evidence: readonly EvidenceItem[] = [{ concept: 'the-marker-concept', result: 'ok', observation: 'the-marker-observation' }];
+  const evidence: readonly EvidenceItem[] = [
+    { concept: 'the-marker-concept', result: 'ok', observation: 'the-marker-observation', declaredFields: ['the-marker-field'] },
+  ];
   const caseContext: CaseContext = { title: 'the-marker-title', whenToUse: 'the-marker-when-to-use' };
 
   await evaluator.evaluate('the-marker-criterion', evidence, caseContext);
@@ -119,8 +127,26 @@ it('carries the given criterion, evidence observation, case title and case when_
   expect(content).toContain('<judgment_input>');
   expect(content).toContain('the-marker-criterion');
   expect(content).toContain('the-marker-observation');
+  expect(content).toContain('the-marker-field');
   expect(content).toContain('the-marker-title');
   expect(content).toContain('the-marker-when-to-use');
+});
+
+it("renders each evidence item's own declared fields as its own item's fields attribute, never the schema itself and never another item's fields", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    { concept: 'concept-one', result: 'ok', observation: 'observation-one', declaredFields: ['field-one', 'field-two'] },
+    { concept: 'concept-two', result: 'ok', observation: 'observation-two', declaredFields: [] },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  expect(content).toContain('<item concept="concept-one" fields="field-one field-two">');
+  expect(content).toContain('<item concept="concept-two" fields="">');
+  expect(content).not.toContain('properties');
+  expect(content).not.toContain('type');
 });
 
 it('escapes reserved XML characters in the criterion so the closed data block cannot be broken out of', async () => {
@@ -158,6 +184,30 @@ it('parses a well-formed confirmed answer into the confirmed verdict with its ci
 it('parses a well-formed refuted answer into the refuted verdict with its citations', async () => {
   const citation = { concept: 'concept-two', field: 'field-two' };
   createMock.mockResolvedValueOnce(messageWithText(JSON.stringify({ verdict: 'refuted', citations: [citation] })));
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toEqual({ verdict: 'refuted', citations: [citation] });
+});
+
+it('parses a confirmed answer wrapped in a ```json code fence, despite the system prompt asking for none', async () => {
+  const citation = { concept: 'equipment-status', field: 'status' };
+  createMock.mockResolvedValueOnce(
+    messageWithText('```json\n' + JSON.stringify({ verdict: 'confirmed', citations: [citation] }) + '\n```'),
+  );
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toEqual({ verdict: 'confirmed', citations: [citation] });
+});
+
+it('parses a refuted answer wrapped in an untagged ``` code fence', async () => {
+  const citation = { concept: 'concept-two', field: 'field-two' };
+  createMock.mockResolvedValueOnce(
+    messageWithText('```\n' + JSON.stringify({ verdict: 'refuted', citations: [citation] }) + '\n```'),
+  );
   const evaluator = createEvaluator();
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);

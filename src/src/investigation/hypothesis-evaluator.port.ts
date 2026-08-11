@@ -36,8 +36,15 @@ import type { Verdict } from './verdict.js';
  * that node, and evaluate()
  * takes only what grounds a judgment call, mirroring the concept's own
  * ObservationOutcome rather than inventing a second representation of it.
+ * `declaredFields` is the field-name vocabulary
+ * constraints/the-judgment-prompt-is-closed's own fifth permitted entry
+ * admits: the `properties` keys of this concept's own producing capability's
+ * output schema, resolved by the caller before evaluate() is ever invoked, so
+ * a citation naming one satisfies
+ * rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+ * without the model ever being shown the schema itself.
  */
-export type EvidenceItem = { readonly concept: string } & ObservationOutcome;
+export type EvidenceItem = { readonly concept: string; readonly declaredFields: readonly string[] } & ObservationOutcome;
 
 /**
  * What one evaluate() call answers (domain/investigation/evaluation): the

@@ -120,7 +120,7 @@ function citesADeclaredField(context: HypothesisCitationContext, citation: Citat
  * throwing — a data-quality fact this pure check records as "nothing
  * declared," never as a fault it raises.
  */
-function declaredFieldsOf(outputSchema: string | undefined): readonly string[] {
+export function declaredFieldsOf(outputSchema: string | undefined): readonly string[] {
   if (outputSchema === undefined) {
     return [];
   }

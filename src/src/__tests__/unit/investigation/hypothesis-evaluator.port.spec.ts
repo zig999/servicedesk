@@ -14,7 +14,7 @@ import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from '../../../i
 const A_CRITERION = 'a-criterion';
 
 /** The evidence a call carries — the fake computes nothing from it, so its content is arbitrary. */
-const SOME_EVIDENCE: readonly EvidenceItem[] = [{ concept: 'a-concept', result: 'ok', observation: 'an-observed-value' }];
+const SOME_EVIDENCE: readonly EvidenceItem[] = [{ concept: 'a-concept', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] }];
 
 /** The pinned case's own situational context a call carries — the fake computes nothing from it either, so its content is arbitrary. */
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };

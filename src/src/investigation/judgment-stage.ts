@@ -35,7 +35,7 @@ import type { ICapabilityQuery } from '../capability-registry/capability-query.p
 import { requiresEvaluationOf } from '../case/case-resolution.js';
 import type { Case, Hypothesis } from '../case/case.js';
 import type { Citation } from './citation.js';
-import { acceptedCitations, capabilityOutputSchemaKey, type CapabilityOutputSchemas, type HypothesisCitationContext } from './citation-validation.js';
+import { acceptedCitations, capabilityOutputSchemaKey, declaredFieldsOf, type CapabilityOutputSchemas, type HypothesisCitationContext } from './citation-validation.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
@@ -140,11 +140,18 @@ type RunIsolatedCallOptions = {
  * nothing more for this stage to add to it), and hands a decided answer to
  * citation validation, retrying through retryOrFail on a structurally
  * invalid one. The pinned case's own caseContext rides along unchanged on
- * this first call, the same one retryOrFail passes to a retry.
+ * this first call, the same one retryOrFail passes to a retry. The output
+ * schemas are resolved before this hypothesis's own first call, never after
+ * it: constraints/the-judgment-prompt-is-closed's own fifth permitted entry
+ * puts each evidence item's declared field names inside the very prompt this
+ * call sends, so the resolution that citation validation already needed for
+ * a decided answer now also feeds toEvidenceItems, one resolution serving
+ * both.
  */
 async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluation> {
   const { name, hypothesis, evidence, evaluator, capabilities, deadlineGuard, caseContext } = options;
-  const evidenceItems = toEvidenceItems(evidence);
+  const outputSchemas = await outputSchemasFor(evidence, capabilities);
+  const evidenceItems = toEvidenceItems(evidence, outputSchemas);
   const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
   if (first === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
@@ -152,7 +159,6 @@ async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluat
   if (first.verdict === 'inconclusive') {
     return asEvaluation(name, first);
   }
-  const outputSchemas = await outputSchemasFor(evidence, capabilities);
   const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence, outputSchemas };
   if (isStructurallyValid(context, first.citations)) {
     return asEvaluation(name, first);
@@ -332,9 +338,19 @@ async function outputSchemasFor(evidence: readonly Evidence[], capabilities: ICa
   return schemas;
 }
 
-/** Every item of this hypothesis's own (already all-ok, by this point) evidence, reshaped to the EvidenceItem port signature, never the full Evidence record. */
-function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
-  return evidence.map((item): EvidenceItem => ({ concept: item.concept, result: 'ok', observation: item.observation }));
+/**
+ * Every item of this hypothesis's own (already all-ok, by this point)
+ * evidence, reshaped to the EvidenceItem port signature, never the full
+ * Evidence record — each item's own declaredFields read from outputSchemas
+ * by the same capability-name/version key citation-validation's own
+ * citesADeclaredField uses, so the vocabulary a citation is later checked
+ * against is exactly the vocabulary this call showed the model.
+ */
+function toEvidenceItems(evidence: readonly Evidence[], outputSchemas: CapabilityOutputSchemas): readonly EvidenceItem[] {
+  return evidence.map((item): EvidenceItem => {
+    const key = capabilityOutputSchemaKey(item.capability_name, item.capability_version);
+    return { concept: item.concept, result: 'ok', observation: item.observation, declaredFields: declaredFieldsOf(outputSchemas[key]) };
+  });
 }
 
 /** The hypothesis named within the pinned case — requiresEvaluationOf(theCase) names come from theCase.hypotheses itself, so this always finds one; a miss is a caller-contract fault, not a domain outcome, thrown the same way FakeHypothesisEvaluator throws for a fixture nobody seeded. */

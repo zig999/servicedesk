@@ -229,8 +229,26 @@ it("calls evaluate() with only the judged hypothesis's own criterion and its own
   expect(evaluator.calls).toHaveLength(2);
   const forH1 = evaluator.calls.find((call) => call.criterion === 'h1 criterion');
   const forH2 = evaluator.calls.find((call) => call.criterion === 'h2 criterion');
-  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a' }]);
-  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b' }]);
+  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', declaredFields: [] }]);
+  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', declaredFields: [] }]);
+});
+
+it("passes each evidence item's own declared field names, read from its producing capability's own output schema, to evaluate() — before the first call is ever made, never only after a decided answer", async () => {
+  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a', 'field-b') });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(capA);
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+  ]);
+
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000 });
+
+  expect(evaluator.calls[0]?.evidence).toEqual([
+    { concept: 'concept-a', result: 'ok', observation: 'an-observation', declaredFields: ['field-a', 'field-b'] },
+  ]);
 });
 
 it("passes the same pinned case's own title and when_to_use, grouped as CaseContext, to every hypothesis judged in one judgeHypotheses() call — never a different context per hypothesis", async () => {

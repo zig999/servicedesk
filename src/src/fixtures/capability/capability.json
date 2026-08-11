@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "nature": "read-only",
     "input_schema": "contract-identifier-input",
-    "output_schema": "equipment-status-output",
+    "output_schema": "{\"type\":\"object\",\"properties\":{\"status\":{\"type\":\"string\"}}}",
     "timeout": 5000,
     "connector": "corporate-records-equipment-status-connector",
     "concept": "equipment-status"
@@ -14,7 +14,7 @@
     "version": "1.0.0",
     "nature": "read-only",
     "input_schema": "contract-identifier-input",
-    "output_schema": "network-outage-flag-output",
+    "output_schema": "{\"type\":\"object\",\"properties\":{\"active\":{\"type\":\"boolean\"}}}",
     "timeout": 5000,
     "connector": "corporate-records-network-outage-connector",
     "concept": "network-outage-flag"

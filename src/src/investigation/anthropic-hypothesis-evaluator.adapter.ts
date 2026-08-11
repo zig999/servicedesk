@@ -1,10 +1,11 @@
 // The production IHypothesisEvaluator adapter
 // (task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator): judges one
-// hypothesis's criterion against its own evidence, and the pinned case's own
-// title and when_to_use, by calling the Anthropic API through
+// hypothesis's criterion against its own evidence, the field names each
+// evidence item's own producing capability declares, and the pinned case's
+// own title and when_to_use, by calling the Anthropic API through
 // @anthropic-ai/sdk and no other HTTP client
 // (constraints/judgment-runs-behind-a-port, STK-11). Prompt assembly is a
-// pure function of exactly those four inputs, placed inside one closed,
+// pure function of exactly those five inputs, placed inside one closed,
 // delimited data block, with a fixed system instruction and no tool granted
 // on the request (constraints/the-judgment-prompt-is-closed): the model can
 // never be led to act, only to answer. Evidence whose own result is not ok
@@ -47,15 +48,15 @@ import { VERDICTS, type Verdict } from './verdict.js';
  */
 const SYSTEM_PROMPT = `You judge whether the criterion of one troubleshooting hypothesis is confirmed or refuted, using only the evidence given to you.
 
-Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept and carries the observation collected for it.
+Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, lists the field names its own "fields" attribute declares, and carries the observation collected for it.
 
 Answer with exactly one JSON object and nothing else — no prose before or after it, no markdown code fence — matching exactly one of these three shapes:
 
-{"verdict":"confirmed","citations":[{"concept":"<a concept named in <evidence>>","field":"<a field of that concept's observation>"}]}
-{"verdict":"refuted","citations":[{"concept":"<a concept named in <evidence>>","field":"<a field of that concept's observation>"}]}
+{"verdict":"confirmed","citations":[{"concept":"<a concept named in <evidence>>","field":"<one of that item's own declared fields>"}]}
+{"verdict":"refuted","citations":[{"concept":"<a concept named in <evidence>>","field":"<one of that item's own declared fields>"}]}
 {"verdict":"inconclusive"}
 
-Use "confirmed" or "refuted" only where the evidence's own content grounds that verdict, with at least one citation naming the evidence that grounds it. Use "inconclusive" whenever the evidence does not ground either.`;
+A citation's field must be copied exactly from the fields its own item declares — never invented, never the observation's own text. Use "confirmed" or "refuted" only where the evidence's own content grounds that verdict, with at least one citation naming the evidence that grounds it. Use "inconclusive" whenever the evidence does not ground either, or whenever the item that would ground it declares no fields at all.`;
 
 /** The token ceiling this adapter asks the provider for when a caller configures none — an operational bound no specification node names, never a domain fact. */
 const DEFAULT_MAX_TOKENS = 1024;
@@ -214,11 +215,12 @@ function parseJudgment(text: string): ParsedJudgment | undefined {
 
 /**
  * The whole prompt one evaluate() call sends, a pure function of exactly its
- * own four permitted inputs — this hypothesis's own criterion and evidence,
- * and the pinned case's own title and when_to_use — inside one closed,
- * delimited data block (constraints/the-judgment-prompt-is-closed): the same
- * four inputs always render this same text, and nothing else (another
- * hypothesis's own criterion, a subject's own attribute) ever enters it.
+ * own five permitted inputs — this hypothesis's own criterion and evidence,
+ * each evidence item's own declared field names, and the pinned case's own
+ * title and when_to_use — inside one closed, delimited data block
+ * (constraints/the-judgment-prompt-is-closed): the same five inputs always
+ * render this same text, and nothing else (another hypothesis's own
+ * criterion, a subject's own attribute) ever enters it.
  */
 function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): string {
   return [
@@ -239,10 +241,21 @@ function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], c
   ].join('\n');
 }
 
-/** One <item> per evidence entry, each naming its own concept and carrying its own observation — every entry is 'ok' by the time evaluate() calls this, the non-ok case having already answered no-data without reaching here. */
+/**
+ * One <item> per evidence entry, each naming its own concept, listing its
+ * own declared fields as a space-separated "fields" attribute
+ * (constraints/the-judgment-prompt-is-closed's own fifth permitted entry —
+ * the field-name vocabulary a citation over this item may draw from, never
+ * the schema itself), and carrying its own observation — every entry is
+ * 'ok' by the time evaluate() calls this, the non-ok case having already
+ * answered no-data without reaching here.
+ */
 function evidenceBlock(evidence: readonly EvidenceItem[]): string {
   return evidence
-    .map((item) => `<item concept="${escapeForXmlAttribute(item.concept)}">${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</item>`)
+    .map(
+      (item) =>
+        `<item concept="${escapeForXmlAttribute(item.concept)}" fields="${escapeForXmlAttribute(item.declaredFields.join(' '))}">${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</item>`,
+    )
     .join('\n');
 }
 
@@ -256,13 +269,35 @@ function escapeForXmlAttribute(value: string): string {
   return escapeForXmlText(value).replace(/"/g, '&quot;');
 }
 
-/** Parses text as JSON, answering undefined rather than throwing where it is not valid JSON at all — the same discipline citation-validation.ts's own parseJsonOrUndefined keeps for an opaque schema string. */
+/**
+ * Parses text as JSON, answering undefined rather than throwing where it is
+ * not valid JSON at all — the same discipline citation-validation.ts's own
+ * parseJsonOrUndefined keeps for an opaque schema string. Strips one
+ * wrapping markdown code fence first where the whole answer is one, since a
+ * model can still wrap its JSON in one despite SYSTEM_PROMPT's own explicit
+ * "no markdown code fence" instruction — observed directly against the real
+ * provider (claude-haiku-4-5-20251001 answered
+ * "```json\n{\"verdict\":...}\n```" for an otherwise well-grounded verdict) —
+ * and the closed prompt gives the model no tool to answer through instead,
+ * so tolerating this one common wrapping shape is this adapter's own to do
+ * rather than the model's to be trusted to stop doing.
+ */
 function parseJsonOrUndefined(text: string): unknown {
   try {
-    return JSON.parse(text);
+    return JSON.parse(unwrapCodeFence(text));
   } catch {
     return undefined;
   }
+}
+
+/** A whole-string markdown code fence, optionally tagged with a language, wrapping the text between one pair of matching ``` markers. */
+const CODE_FENCE = /^```(?:[a-zA-Z0-9]*\n)?([\s\S]*?)\n?```$/;
+
+/** Strips one wrapping code fence from the whole trimmed text, answering the text unchanged where it is not wrapped in one at all. */
+function unwrapCodeFence(text: string): string {
+  const trimmed = text.trim();
+  const match = CODE_FENCE.exec(trimmed);
+  return match ? match[1] : trimmed;
 }
 
 /** Whether a parsed JSON value is a non-null, non-array object — the only shape this adapter reads a field from. */
