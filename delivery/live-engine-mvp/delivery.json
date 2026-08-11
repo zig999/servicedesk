@@ -10,12 +10,28 @@
       "task": "task/hypothesis-judgment-adapter/declare-runtime-dependencies"
     },
     {
+      "id": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context.md",
+      "title": "Widen the hypothesis-evaluator port to carry the pinned case's title and when_to_use",
+      "summary": "IHypothesisEvaluator.evaluate() takes a third CaseContext parameter (title, whenToUse), judgment-stage.ts forwards the pinned case's own values unchanged on both the first call and the retry, and the fake adapter plus its direct-call test are updated to keep compiling and passing.",
+      "task": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context"
+    },
+    {
       "id": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "kind": "proof",
       "file": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
       "title": "Proof for declaring @anthropic-ai/sdk and fastify as runtime dependencies",
       "summary": "Six tests, added to the pre-existing manifest-audit spec, prove the two dependencies are declared, pinned as recorded, and are the only additions.",
       "task": "task/hypothesis-judgment-adapter/declare-runtime-dependencies"
+    },
+    {
+      "id": "proof/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context.md",
+      "title": "Proof that judgeHypotheses threads one unchanged CaseContext through every evaluate() call",
+      "summary": "Extends judgment-stage.spec.ts's existing ScriptedHypothesisEvaluator to record the caseContext each evaluate() call received, and adds two tests proving the pinned case's own title/when_to_use reach both a hypothesis's first call and its retry unchanged, and reach every hypothesis judged in one call identically.",
+      "task": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context"
     }
   ],
   "edges": [
@@ -26,8 +42,32 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "to": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
       "kind": "proves",
       "at": "the path"
     }

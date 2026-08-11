@@ -126,6 +126,20 @@
       ]
     },
     {
+      "node": "constraints/the-judgment-prompt-is-closed",
+      "digest": "sha256:bf7f6d915d44c6f4fabcd19d5a010ee03bacab8e42050dc85b892a2fa49564aa",
+      "files": [
+        {
+          "path": "src/src/investigation/hypothesis-evaluator.port.ts",
+          "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:89e7e896a64d6fee8b104b44d075c74b3007b02a531163309614a3a7516df9ec"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-mvp-persists-to-no-database",
       "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
       "files": [
@@ -559,7 +573,7 @@
       "files": [
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
+          "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",

@@ -17,7 +17,7 @@ import type { CapabilityResolution, ICapabilityQuery } from '../../../capability
 import type { Case, Hypothesis } from '../../../case/case.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
-import type { EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
+import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import { judgeHypotheses } from '../../../investigation/judgment-stage.js';
 
 beforeEach(() => {
@@ -131,7 +131,11 @@ class FakeCapabilityQuery implements ICapabilityQuery {
 }
 
 /** One call ScriptedHypothesisEvaluator answered, recorded exactly as evaluate() received it. */
-type RecordedCall = { readonly criterion: string; readonly evidence: readonly EvidenceItem[] };
+type RecordedCall = {
+  readonly criterion: string;
+  readonly evidence: readonly EvidenceItem[];
+  readonly caseContext: CaseContext;
+};
 
 /** One scripted answer for one evaluate() call. */
 type ScriptedAnswer = () => Promise<EvaluationOutcome>;
@@ -154,8 +158,8 @@ class ScriptedHypothesisEvaluator implements IHypothesisEvaluator {
     this.queues.set(criterion, [...answers]);
   }
 
-  public async evaluate(criterion: string, evidence: readonly EvidenceItem[]): Promise<EvaluationOutcome> {
-    this.calls.push({ criterion, evidence });
+  public async evaluate(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): Promise<EvaluationOutcome> {
+    this.calls.push({ criterion, evidence, caseContext });
     const queue = this.queues.get(criterion);
     const answer = queue?.shift();
     if (answer === undefined) {
@@ -229,6 +233,28 @@ it("calls evaluate() with only the judged hypothesis's own criterion and its own
   expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b' }]);
 });
 
+it("passes the same pinned case's own title and when_to_use, grouped as CaseContext, to every hypothesis judged in one judgeHypotheses() call — never a different context per hypothesis", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
+  evaluator.script('h2 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
+  const theCase = aCase([
+    { name: 'h1', collects: ['concept-a'] },
+    { name: 'h2', collects: ['concept-b'] },
+  ]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a' })]],
+    ['h2', [anEvidence({ concept: 'concept-b' })]],
+  ]);
+
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 2, now: 0, deadline: 10_000 });
+
+  expect(evaluator.calls).toHaveLength(2);
+  const expectedContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+  expect(evaluator.calls[0].caseContext).toEqual(expectedContext);
+  expect(evaluator.calls[1].caseContext).toEqual(expectedContext);
+});
+
 it('never starts more evaluate() calls at once than the configured pool size, granting a queued hypothesis its call only once an earlier one frees a slot', async () => {
   const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
@@ -283,6 +309,31 @@ it("retries once on a decided answer whose citations fail structural validation,
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }]);
   expect(evaluator.calls).toHaveLength(2);
+});
+
+it("passes the pinned case's own title and when_to_use, unchanged, to both the first evaluate() call and the retry it forces", async () => {
+  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(capA);
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script(
+    'h1 criterion',
+    immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-foreign', field: 'field-a' }] }), // invalid citation forces a retry
+    immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+  ]);
+
+  await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(evaluator.calls).toHaveLength(2);
+  const expectedContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+  expect(evaluator.calls[0].caseContext).toEqual(expectedContext);
+  expect(evaluator.calls[1].caseContext).toEqual(expectedContext);
 });
 
 it("falls back to inconclusive judgment-failure when the retry's citations are also structurally invalid", async () => {
