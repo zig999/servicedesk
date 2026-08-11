@@ -42,6 +42,14 @@
       "task": "task/http-surface/diagnose-http-endpoint"
     },
     {
+      "id": "implementation/http-surface/end-to-end-diagnose-proof",
+      "kind": "implementation",
+      "file": "implementation/http-surface/end-to-end-diagnose-proof.md",
+      "title": "End-to-end proof of the diagnose flow with faked LLM ports",
+      "summary": "This task's own deliverable is the test itself, not new production wiring: a task-implementer investigated first and found every piece already exported (createDiagnoseRunner already accepts arbitrary evaluator/consolidator instances, buildApp is already agnostic to which pipeline produced runDiagnose), so no new src/ file was needed — the one file this task delivers is the end-to-end test that assembles them.",
+      "task": "task/http-surface/end-to-end-diagnose-proof"
+    },
+    {
       "id": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
@@ -96,6 +104,14 @@
       "title": "HTTP surface for POST /v1/diagnose",
       "summary": "Proves the six criteria of task/http-surface/diagnose-http-endpoint — request/response shape, freshness per call, ticket_ref optionality, header independence, and Fastify-only transport — split between a unit suite driving buildApp() with a stubbed pipeline seam and an integration suite driving the real createDiagnoseHttpServer over the real fixture case with only @anthropic-ai/sdk mocked.",
       "task": "task/http-surface/diagnose-http-endpoint"
+    },
+    {
+      "id": "proof/http-surface/end-to-end-diagnose-proof",
+      "kind": "proof",
+      "file": "proof/http-surface/end-to-end-diagnose-proof.md",
+      "title": "End-to-end proof of the diagnose flow with faked LLM ports — test cases",
+      "summary": "The two test cases inside diagnose-e2e.spec.ts, individually: the ordered write-then-respond assertion, and the static no-Anthropic-import scan paired with the deliberately-unset credential across the whole suite run.",
+      "task": "task/http-surface/end-to-end-diagnose-proof"
     },
     {
       "id": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
@@ -400,6 +416,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/http-surface/end-to-end-diagnose-proof",
+      "to": "task/http-surface/end-to-end-diagnose-proof",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -486,6 +508,12 @@
     {
       "from": "proof/http-surface/diagnose-http-endpoint",
       "to": "implementation/http-surface/diagnose-http-endpoint",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/http-surface/end-to-end-diagnose-proof",
+      "to": "implementation/http-surface/end-to-end-diagnose-proof",
       "kind": "proves",
       "at": "the path"
     },
