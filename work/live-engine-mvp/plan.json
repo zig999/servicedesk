@@ -1,0 +1,901 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/assessment-consolidation-adapter",
+      "kind": "epic",
+      "file": "epic/assessment-consolidation-adapter.md",
+      "title": "Assessment consolidation answers through a real LLM adapter",
+      "summary": "A production Anthropic-backed implementation of the assessment-consolidator port, unchanged in shape from what already exists."
+    },
+    {
+      "id": "epic/case-fixture",
+      "kind": "epic",
+      "file": "epic/case-fixture.md",
+      "title": "A complete, valid fixture case feeds the whole engine",
+      "summary": "A fictitious case, together with the glossary terms, capability registrations and canned observations its own hypotheses need, exists as file-backed JSON documents."
+    },
+    {
+      "id": "epic/diagnose-composition-root",
+      "kind": "epic",
+      "file": "epic/diagnose-composition-root.md",
+      "title": "One composition root runs the real pipeline, fresh, every time",
+      "summary": "A production factory wires the real judgment and consolidation adapters into the existing synchronous pipeline and calls it directly, never through the window-based dedup layer the specification withdrew."
+    },
+    {
+      "id": "epic/http-surface",
+      "kind": "epic",
+      "file": "epic/http-surface.md",
+      "title": "The diagnose operation answers over HTTP, synchronously",
+      "summary": "A Fastify endpoint exposes diagnose end to end, and an automated test proves the whole flow without a live provider credential."
+    },
+    {
+      "id": "epic/hypothesis-judgment-adapter",
+      "kind": "epic",
+      "file": "epic/hypothesis-judgment-adapter.md",
+      "title": "Hypothesis judgment answers through a real LLM adapter",
+      "summary": "A production Anthropic-backed implementation of the hypothesis-evaluator port, widened to carry the case's own situational context, plus the manifest work every LLM adapter in this plan needs."
+    },
+    {
+      "id": "inventory/live-engine-diagnose-surface",
+      "kind": "inventory",
+      "file": "inventory/live-engine-diagnose-surface.md",
+      "title": "Diagnose pipeline, its ports, and the HTTP surface it does not yet have",
+      "summary": "A file-backed investigation service with a complete synchronous pipeline and two unimplemented LLM ports, no HTTP layer, no case fixture, and a dedup layer the specification withdrew today."
+    },
+    {
+      "id": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "kind": "task",
+      "file": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator.md",
+      "title": "Production assessment-consolidator adapter backed by the Anthropic API",
+      "summary": "A new IAssessmentConsolidator implementation calls the Anthropic API through @anthropic-ai/sdk, assembling a closed, delimited prompt from exactly the required evaluations, the evidence they cite, and the case's consolidation register.",
+      "epic": "assessment-consolidation-adapter"
+    },
+    {
+      "id": "task/case-fixture/author-diagnose-fixture-case",
+      "kind": "task",
+      "file": "task/case-fixture/author-diagnose-fixture-case.md",
+      "title": "Author a fictitious case and the vocabulary, capability and observation data it needs",
+      "summary": "A file-backed case document, its glossary terms, its capability registrations and its canned observation outcomes, together sufficient to run one diagnose call end to end.",
+      "epic": "case-fixture"
+    },
+    {
+      "id": "task/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "kind": "task",
+      "file": "task/diagnose-composition-root/remove-withdrawn-dedup-layer.md",
+      "title": "Remove the window-based dedup layer the specification withdrew",
+      "summary": "diagnose.ts and its idempotency/lease/registry siblings, and their own tests, are deleted along with every reference to them.",
+      "epic": "diagnose-composition-root"
+    },
+    {
+      "id": "task/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "task",
+      "file": "task/diagnose-composition-root/wire-diagnose-runner.md",
+      "title": "Compose the production diagnose pipeline from the real adapters",
+      "summary": "One factory function assembles createDiagnoseRunner's own dependencies with the real judgment and consolidation adapters always wired, stamps the request's absolute deadline, and calls the pipeline directly.",
+      "epic": "diagnose-composition-root"
+    },
+    {
+      "id": "task/http-surface/diagnose-http-endpoint",
+      "kind": "task",
+      "file": "task/http-surface/diagnose-http-endpoint.md",
+      "title": "Expose diagnose over HTTP",
+      "summary": "A Fastify server and route accept case, subject, narrative, requester and an optional ticket reference in the request body and answer with the assessment, synchronously, within the declared deadline.",
+      "epic": "http-surface"
+    },
+    {
+      "id": "task/http-surface/end-to-end-diagnose-proof",
+      "kind": "task",
+      "file": "task/http-surface/end-to-end-diagnose-proof.md",
+      "title": "Prove the whole diagnose flow end to end, without a live provider",
+      "summary": "One automated test sends an HTTP request against the fixture case and asserts collection, judgment, consolidation and writing all ran, with the LLM ports replaced by fakes.",
+      "epic": "http-surface"
+    },
+    {
+      "id": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "task",
+      "file": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
+      "title": "Production hypothesis-evaluator adapter backed by the Anthropic API",
+      "summary": "A new IHypothesisEvaluator implementation calls the Anthropic API through @anthropic-ai/sdk, assembling a closed, delimited prompt from exactly the hypothesis's criterion, its own evidence, and the pinned case's title and when_to_use.",
+      "epic": "hypothesis-judgment-adapter"
+    },
+    {
+      "id": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "task",
+      "file": "task/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
+      "title": "Declare the Anthropic SDK and Fastify as project dependencies",
+      "summary": "package.json gains @anthropic-ai/sdk and fastify, the two packages this plan's LLM adapters and HTTP surface need and the standard already authorizes.",
+      "epic": "hypothesis-judgment-adapter"
+    },
+    {
+      "id": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "task",
+      "file": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context.md",
+      "title": "Widen the hypothesis-evaluator port to carry the pinned case's title and when_to_use",
+      "summary": "IHypothesisEvaluator.evaluate() and its one caller, judgment-stage.ts, pass the pinned case's title and when_to_use through, alongside the hypothesis's criterion and evidence.",
+      "epic": "hypothesis-judgment-adapter"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/assessment-consolidation-adapter",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/assessment-consolidation-adapter",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/assessment-consolidation-adapter",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/assessment-consolidation-adapter",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-fixture",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/diagnose-composition-root",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/http-surface",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/hypothesis-judgment-adapter",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[19]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[20]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[21]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[22]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "implements",
+      "at": "implements[23]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[24]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[25]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[26]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[27]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "implements",
+      "at": "implements[28]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[29]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/diagnose-composition-root/remove-withdrawn-dedup-layer",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "task/assessment-consolidation-adapter/anthropic-assessment-consolidator",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/the-mvp-persists-to-no-database",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/diagnose-composition-root/wire-diagnose-runner",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "task/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "task/case-fixture/author-diagnose-fixture-case",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/http-surface/diagnose-http-endpoint",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "task/http-surface/diagnose-http-endpoint",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "task/case-fixture/author-diagnose-fixture-case",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/http-surface/end-to-end-diagnose-proof",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
