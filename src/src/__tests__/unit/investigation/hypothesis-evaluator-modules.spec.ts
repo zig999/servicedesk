@@ -4,13 +4,23 @@
 // fake-hypothesis-evaluator.adapter.ts import no LLM or provider client and
 // nothing of the standard library either, so infrastructure cannot be
 // reached from them directly (constraints/the-domain-depends-on-no-infrastructure,
-// criterion 2's own clause) — and FakeHypothesisEvaluator is the only
-// concrete class among them implementing IHypothesisEvaluator
-// (constraints/judgment-runs-behind-a-port). Scoped to this task's own named
-// files rather than to the whole investigation directory, since that
-// directory is shared with task/evidence-collection/observation-source-port's
-// own fake adapter, and a directory-wide "exactly one .adapter.ts" count
-// would answer for both ports at once.
+// criterion 2's own clause) — and every concrete class implementing
+// IHypothesisEvaluator is one of this port's own adapters
+// (constraints/judgment-runs-behind-a-port), never a class implementing it
+// from anywhere else. That constraint's own fitness names "the LLM as one
+// adapter among interchangeable ones" rather than a single implementer, so
+// task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator's delivery
+// updates the "who implements this port" check below to admit its own
+// production adapter as the second one, rather than leave this file
+// asserting the fake as the sole implementer it can no longer be. Scoped to
+// this task's own named files rather than to the whole investigation
+// directory for the import-purity checks, since that directory is shared
+// with task/evidence-collection/observation-source-port's own fake adapter,
+// and a directory-wide "exactly one .adapter.ts" count would answer for both
+// ports at once — but the "who implements this port" check reads the whole
+// shared directory on purpose, since a class doing so from outside either
+// task's own file list would still be a second implementer this check must
+// catch.
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -119,7 +129,7 @@ it('the hypothesis-evaluator modules import nothing from the standard library, s
   expect(offenders).toEqual([]);
 });
 
-it('ships exactly one concrete class implementing IHypothesisEvaluator', async () => {
+it('IHypothesisEvaluator is implemented only by its own adapters — the fake and the production Anthropic adapter — and nothing else in the shared directory', async () => {
   const files = (await readdir(INVESTIGATION_DIRECTORY)).filter((file) => file.endsWith('.ts'));
 
   const implementers: string[] = [];
@@ -130,5 +140,5 @@ it('ships exactly one concrete class implementing IHypothesisEvaluator', async (
     }
   }
 
-  expect(implementers).toEqual(['fake-hypothesis-evaluator.adapter.ts']);
+  expect(implementers.sort()).toEqual(['anthropic-hypothesis-evaluator.adapter.ts', 'fake-hypothesis-evaluator.adapter.ts']);
 });

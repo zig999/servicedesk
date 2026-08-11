@@ -39,16 +39,19 @@ import { expect, it } from 'vitest';
 const INVESTIGATION_DIRECTORY = fileURLToPath(new URL('../../../investigation/', import.meta.url));
 
 /**
- * A live-model adapter this shared directory now also holds, beside the
+ * Live-model adapters this shared directory now also holds, beside the
  * fakes this file's own header describes —
  * task/assessment-consolidation-adapter/anthropic-assessment-consolidator's
- * own production adapter, which reaches @anthropic-ai/sdk by that task's own
+ * and task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator's own
+ * production adapters, each reaching @anthropic-ai/sdk by its own task's own
  * criteria, never by accident. Excluded from the forbidden-package sweep
- * below so a later task's own legitimate infrastructure adapter does not
- * make this file — whose own criteria never named it — report a false
- * offender.
+ * below so a task's own legitimate infrastructure adapter does not make this
+ * file — whose own criteria never named it — report a false offender.
  */
-const KNOWN_INFRASTRUCTURE_ADAPTERS = ['anthropic-assessment-consolidator.adapter.ts'];
+const KNOWN_INFRASTRUCTURE_ADAPTERS = [
+  'anthropic-assessment-consolidator.adapter.ts',
+  'anthropic-hypothesis-evaluator.adapter.ts',
+];
 
 /** Frameworks, database drivers and provider clients — what criterion 2 forbids the fake adapter to import. */
 const FORBIDDEN_PACKAGES = [

@@ -26,6 +26,14 @@
       "task": "task/diagnose-composition-root/remove-withdrawn-dedup-layer"
     },
     {
+      "id": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
+      "title": "Production hypothesis-evaluator adapter backed by the Anthropic API",
+      "summary": "A new AnthropicHypothesisEvaluator class implements IHypothesisEvaluator over @anthropic-ai/sdk, assembling a closed, delimited prompt from exactly one hypothesis's criterion, its own evidence and the pinned case's title/when_to_use, granting the model no tools, and never throwing across all three verdicts.",
+      "task": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator"
+    },
+    {
       "id": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
@@ -56,6 +64,14 @@
       "title": "Proof for the fictitious diagnose fixture case",
       "summary": "Sixteen tests read the authored case, glossary, capability and observation fixtures through the real parseCaseDocument, case-resolution, file-backed stores and observation-source adapter — never a value re-derived from the fixture's own JSON.parse — and show every one of the task's nine criteria holds over the exact files this task shipped.",
       "task": "task/case-fixture/author-diagnose-fixture-case"
+    },
+    {
+      "id": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
+      "title": "Proof for the production Anthropic hypothesis-evaluator adapter",
+      "summary": "Mocks @anthropic-ai/sdk as a boundary to prove the no-data short-circuit, prompt purity and content, the no-tools request, response parsing across all three verdicts and every failure path, and the apiKey/maxTokens/model inferences the implementation recorded — and updates two sibling module-audit specs (single-implementer count, and the shared forbidden-package sweep) for a second, legitimate infrastructure adapter.",
+      "task": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator"
     },
     {
       "id": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
@@ -292,6 +308,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "kind": "implements",
@@ -324,6 +382,12 @@
     {
       "from": "proof/case-fixture/author-diagnose-fixture-case",
       "to": "implementation/case-fixture/author-diagnose-fixture-case",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
+      "to": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "kind": "proves",
       "at": "the path"
     },

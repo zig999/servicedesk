@@ -1,0 +1,11 @@
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/wt-anthropic-hypothesis-evaluator/src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts
+  25:21  error  Variable name `AnthropicConstructorMock` must match one of the following formats: camelCase, UPPER_CASE  @typescript-eslint/naming-convention
+  27:9   error  Variable name `AnthropicConstructorMock` must match one of the following formats: camelCase, UPPER_CASE  @typescript-eslint/naming-convention
+
+✖ 2 problems (2 errors, 0 warnings)
+

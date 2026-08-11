@@ -84,6 +84,10 @@
       "digest": "sha256:e335e762101da59fc4c2d13d53a2dc1d789513a8e332d8325b987556d2915dda",
       "files": [
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+        },
+        {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:c4b497e348e804f86372ae11da372f0e03dd78f056d5cb2500952b397383b653"
         },
@@ -151,6 +155,10 @@
       "node": "constraints/the-judgment-prompt-is-closed",
       "digest": "sha256:bf7f6d915d44c6f4fabcd19d5a010ee03bacab8e42050dc85b892a2fa49564aa",
       "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+        },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
@@ -644,6 +652,10 @@
       "digest": "sha256:9b2f7b62cdd04fa46fe7cc73b068346136b99527912a865d8830f129a841cb42",
       "files": [
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+        },
+        {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:1696ce73f4a1ca7faf08fbbb7f4cf23c488c0aaba9de7785176c32fd46f15732"
         },
@@ -956,6 +968,10 @@
       "digest": "sha256:af9ace81195cb13b0581b0ca0935dd1a5736475f2b0767e2322d70045960b8c3",
       "files": [
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+        },
+        {
           "path": "src/src/investigation/evaluation.ts",
           "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
         },
@@ -1019,6 +1035,10 @@
       "node": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
       "digest": "sha256:9501a01dae497f735cc78b0a3fea64952e1cf4fb5d0a917fbc4cf89830c1367e",
       "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
+        },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
           "digest": "sha256:75cf48f3cb0448858134f8a38c58f85dbb4b6e68851a41586dcfecd9314c210a"
@@ -1098,6 +1118,16 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:de65befed61739eb1246cc1a70a955a5cd30293cfc7f330c70a6aae76aa155cc"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/judgment-does-not-infer",
+      "digest": "sha256:d71110e870af35c91462c82f0d90030d8d57f645fd6fe7d1e418d65299040a8b",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:1fa04a38d95f0a622192ddecb392b468f67cbe9dc1e483e789b6146ef4f1480e"
         }
       ]
     },
