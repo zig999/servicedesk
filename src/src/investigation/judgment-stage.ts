@@ -13,7 +13,12 @@
 // stage's own absolute deadline, is inconclusive with reason
 // deadline-exceeded, never no-data or judgment-failure
 // (scenarios/investigation/a-queued-judgment-is-deadline-exceeded,
-// rules/investigation/no-stage-aborts-on-its-deadline). `now` and `deadline`
+// rules/investigation/no-stage-aborts-on-its-deadline). The pinned case's
+// own CaseContext — its title and when_to_use — is computed once from the
+// case this call was given and travels unchanged into every evaluate()
+// call and retry this stage makes, the same as any other hypothesis's own
+// criterion and evidence (constraints/the-judgment-prompt-is-closed).
+// `now` and `deadline`
 // arrive as explicit parameters, never a system clock read internally, the
 // same discipline evidence-collection-stage.ts and idempotency-lease-store.ts
 // already established for their own instants
@@ -33,7 +38,7 @@ import type { Citation } from './citation.js';
 import { acceptedCitations, capabilityOutputSchemaKey, type CapabilityOutputSchemas, type HypothesisCitationContext } from './citation-validation.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
-import type { EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
 
 /** Answered by the shared deadline signal once this call's own ceiling elapses — never itself a domain outcome, only this module's internal "time is up" marker. */
 const DEADLINE_ELAPSED = Symbol('judgment-stage-deadline-elapsed');
@@ -66,6 +71,7 @@ export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<
   const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));
   const pool = new CallPool(poolSize);
   const requiredNames = requiresEvaluationOf(theCase);
+  const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
   return Promise.all(
     requiredNames.map((name) =>
       judgeOneHypothesis({
@@ -76,6 +82,7 @@ export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<
         capabilities,
         pool,
         deadlineGuard,
+        caseContext,
       }),
     ),
   );
@@ -89,6 +96,7 @@ type JudgeOneHypothesisOptions = {
   readonly capabilities: ICapabilityQuery;
   readonly pool: CallPool;
   readonly deadlineGuard: DeadlineGuard;
+  readonly caseContext: CaseContext;
 };
 
 /**
@@ -100,7 +108,7 @@ type JudgeOneHypothesisOptions = {
  * hypothesis denied a slot makes no call, so it costs nothing").
  */
 async function judgeOneHypothesis(options: JudgeOneHypothesisOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidence, evaluator, capabilities, pool, deadlineGuard } = options;
+  const { name, hypothesis, evidence, evaluator, capabilities, pool, deadlineGuard, caseContext } = options;
   const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
   if (nonOkEvidence.length > 0) {
     return noDataEvaluation(name, nonOkEvidence);
@@ -109,7 +117,7 @@ async function judgeOneHypothesis(options: JudgeOneHypothesisOptions): Promise<E
     return deadlineExceededEvaluation(name);
   }
   try {
-    return await runIsolatedCall({ name, hypothesis, evidence, evaluator, capabilities, deadlineGuard });
+    return await runIsolatedCall({ name, hypothesis, evidence, evaluator, capabilities, deadlineGuard, caseContext });
   } finally {
     pool.release();
   }
@@ -122,6 +130,7 @@ type RunIsolatedCallOptions = {
   readonly evaluator: IHypothesisEvaluator;
   readonly capabilities: ICapabilityQuery;
   readonly deadlineGuard: DeadlineGuard;
+  readonly caseContext: CaseContext;
 };
 
 /**
@@ -130,12 +139,13 @@ type RunIsolatedCallOptions = {
  * unchanged (rules/investigation/judgment-does-not-infer's own domain has
  * nothing more for this stage to add to it), and hands a decided answer to
  * citation validation, retrying through retryOrFail on a structurally
- * invalid one.
+ * invalid one. The pinned case's own caseContext rides along unchanged on
+ * this first call, the same one retryOrFail passes to a retry.
  */
 async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidence, evaluator, capabilities, deadlineGuard } = options;
+  const { name, hypothesis, evidence, evaluator, capabilities, deadlineGuard, caseContext } = options;
   const evidenceItems = toEvidenceItems(evidence);
-  const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems), deadlineGuard);
+  const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
   if (first === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
   }
@@ -147,7 +157,7 @@ async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluat
   if (isStructurallyValid(context, first.citations)) {
     return asEvaluation(name, first);
   }
-  return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context });
+  return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext });
 }
 
 type RetryOrFailOptions = {
@@ -157,6 +167,7 @@ type RetryOrFailOptions = {
   readonly evaluator: IHypothesisEvaluator;
   readonly deadlineGuard: DeadlineGuard;
   readonly context: HypothesisCitationContext;
+  readonly caseContext: CaseContext;
 };
 
 /**
@@ -167,14 +178,15 @@ type RetryOrFailOptions = {
  * an inconclusive retry answer is passed through unchanged, the same
  * convention as the first call's; and a decided retry answer is judged by
  * the same structural check, falling back to judgment-failure on a second
- * miss.
+ * miss. The retry call carries the same caseContext the first call did,
+ * unchanged.
  */
 async function retryOrFail(options: RetryOrFailOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidenceItems, evaluator, deadlineGuard, context } = options;
+  const { name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext } = options;
   if (deadlineGuard.elapsed()) {
     return judgmentFailureEvaluation(name);
   }
-  const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems), deadlineGuard);
+  const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
   if (retry === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
   }

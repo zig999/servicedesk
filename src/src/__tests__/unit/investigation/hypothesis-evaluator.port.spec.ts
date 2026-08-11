@@ -8,13 +8,16 @@
 import { expect, it } from 'vitest';
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
 import type { Citation } from '../../../investigation/citation.js';
-import type { EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
+import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 
 /** A criterion string, spelled out rather than left implicit. */
 const A_CRITERION = 'a-criterion';
 
 /** The evidence a call carries — the fake computes nothing from it, so its content is arbitrary. */
 const SOME_EVIDENCE: readonly EvidenceItem[] = [{ concept: 'a-concept', result: 'ok', observation: 'an-observed-value' }];
+
+/** The pinned case's own situational context a call carries — the fake computes nothing from it either, so its content is arbitrary. */
+const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
 
 /** The subject under test, held as the published contract rather than as the class behind it. */
 function evaluatorOver(fake: FakeHypothesisEvaluator): IHypothesisEvaluator {
@@ -27,7 +30,7 @@ it('answers the confirmed verdict with exactly the citations seeded for it', asy
   fake.seed(A_CRITERION, { verdict: 'confirmed', citations });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toEqual({ verdict: 'confirmed', citations });
 });
@@ -38,7 +41,7 @@ it('answers the refuted verdict with exactly the citations seeded for it', async
   fake.seed(A_CRITERION, { verdict: 'refuted', citations });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toEqual({ verdict: 'refuted', citations });
 });
@@ -48,7 +51,7 @@ it('answers the inconclusive verdict with exactly the reason seeded for it, judg
   fake.seed(A_CRITERION, { verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
 });
@@ -58,7 +61,7 @@ it('accepts a fixture reasoned no-data with an empty citations list, answering o
   fake.seed(A_CRITERION, { verdict: 'inconclusive', reason: 'no-data', citations: [] });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome.verdict).toBe('inconclusive');
   expect(outcome).toHaveProperty('reason', 'no-data');
@@ -67,7 +70,7 @@ it('accepts a fixture reasoned no-data with an empty citations list, answering o
 it('throws naming the criterion rather than answering a default for a criterion nothing seeded', async () => {
   const evaluator = evaluatorOver(new FakeHypothesisEvaluator());
 
-  await expect(evaluator.evaluate('an-unseeded-criterion', SOME_EVIDENCE)).rejects.toThrow(/an-unseeded-criterion/);
+  await expect(evaluator.evaluate('an-unseeded-criterion', SOME_EVIDENCE, A_CASE_CONTEXT)).rejects.toThrow(/an-unseeded-criterion/);
 });
 
 it('answers by criterion alone, ignoring the evidence a call carries, even when the evidence array is empty', async () => {
@@ -76,7 +79,7 @@ it('answers by criterion alone, ignoring the evidence a call carries, even when 
   fake.seed(A_CRITERION, { verdict: 'confirmed', citations });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, []);
+  const outcome = await evaluator.evaluate(A_CRITERION, [], A_CASE_CONTEXT);
 
   expect(outcome).toEqual({ verdict: 'confirmed', citations });
 });
@@ -93,7 +96,7 @@ it('answers the outcome seeded for this criterion, not the one seeded for a diff
   });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate('criterion-one', SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate('criterion-one', SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toEqual({
     verdict: 'confirmed',
@@ -113,7 +116,7 @@ it('a later seed for the same criterion replaces the earlier one', async () => {
   });
   const evaluator = evaluatorOver(fake);
 
-  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE);
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toEqual({
     verdict: 'confirmed',

@@ -6,6 +6,7 @@
 // adapter this epic leaves as its declared remainder.
 
 import type {
+  CaseContext,
   EvaluationOutcome,
   EvidenceItem,
   IHypothesisEvaluator,
@@ -34,14 +35,16 @@ export class FakeHypothesisEvaluator implements IHypothesisEvaluator {
   /**
    * evaluate: answers the seeded evaluation for this criterion as plain
    * data, one of the three verdicts, never throwing for any of them. The
-   * evidence is accepted, as the port requires on every call, but this fake
-   * computes nothing from it — grounding a verdict in what the evidence
-   * actually says is the real adapter's concern, left to this epic's
-   * declared remainder.
+   * evidence and the pinned case's own caseContext are both accepted, as
+   * the port requires on every call, but this fake computes nothing from
+   * either — grounding a verdict in what the evidence and situational
+   * context actually say is the real adapter's concern, left to this
+   * epic's declared remainder.
    */
   public async evaluate(
     criterion: string,
     _evidence: readonly EvidenceItem[],
+    _caseContext: CaseContext,
   ): Promise<EvaluationOutcome> {
     const outcome = this.fixtures.get(criterion);
     if (outcome === undefined) {
