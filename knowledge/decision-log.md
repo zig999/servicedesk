@@ -260,4 +260,9 @@ entries:
     unstated: The material admits the pinned case's title and when_to_use into the judgment prompt without saying what becomes of this rule's unqualified clause that the when_to_use enters no prompt.
     decided: The exclusion is scoped to consolidation — the case's hypotheses, their criteria and the when_to_use enter no consolidation prompt; what the judgment prompt contains is its own constraint's to state.
     why: Read unqualified, the clause would contradict the confirmed decision that title and when_to_use now enter the judgment prompt; the rule's own rationale — never give consolidation the case body to reason from — was always about the writing, and the closed consolidation prompt keeps them out of consolidation regardless.
+  - location: constraints/the-judgment-prompt-is-closed.md
+    field: statement
+    unstated: Live testing against the real provider exposed that rules/investigation/a-cited-field-exists-in-the-capability-output-schema cannot be satisfied by a model never shown the output schema it cites against, but the product owner's confirmed decision to widen the closed prompt did not itself fix the exact shape of what enters — the field names alone, the whole schema text, or the schema with its types and descriptions.
+    decided: Only the field names — the output schema's own `properties` keys, per evidence item — enter the prompt; the schema's types, descriptions and any other content stay out.
+    why: The citation rule only ever holds a citation's field to existing among those keys, so the field names are the whole vocabulary it requires; admitting the schema's other content would let data the rule never asked for start reading as instruction, against this constraint's own data-is-data discipline.
 ---
