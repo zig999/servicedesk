@@ -26,6 +26,14 @@
       "task": "task/diagnose-composition-root/remove-withdrawn-dedup-layer"
     },
     {
+      "id": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "implementation",
+      "file": "implementation/diagnose-composition-root/wire-diagnose-runner.md",
+      "title": "Wire the production diagnose runner from the real Anthropic adapters",
+      "summary": "One new factory always wires AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator behind createDiagnoseRunner, stamps the twenty-second absolute deadline once per call, and calls the existing pipeline directly with no caching layer of its own.",
+      "task": "task/diagnose-composition-root/wire-diagnose-runner"
+    },
+    {
       "id": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
@@ -64,6 +72,14 @@
       "title": "Proof for the fictitious diagnose fixture case",
       "summary": "Sixteen tests read the authored case, glossary, capability and observation fixtures through the real parseCaseDocument, case-resolution, file-backed stores and observation-source adapter — never a value re-derived from the fixture's own JSON.parse — and show every one of the task's nine criteria holds over the exact files this task shipped.",
       "task": "task/case-fixture/author-diagnose-fixture-case"
+    },
+    {
+      "id": "proof/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "proof",
+      "file": "proof/diagnose-composition-root/wire-diagnose-runner.md",
+      "title": "Wire the production diagnose runner from the real Anthropic adapters — proof",
+      "summary": "Two spec files prove createProductionDiagnoseRunner's own composition — pass-through wiring, the absolute deadline it stamps, requester passthrough, no caching across calls, and that it reaches the real, Anthropic-backed adapters rather than a swappable fake.",
+      "task": "task/diagnose-composition-root/wire-diagnose-runner"
     },
     {
       "id": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
@@ -308,6 +324,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "to": "task/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -382,6 +428,12 @@
     {
       "from": "proof/case-fixture/author-diagnose-fixture-case",
       "to": "implementation/case-fixture/author-diagnose-fixture-case",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-composition-root/wire-diagnose-runner",
+      "to": "implementation/diagnose-composition-root/wire-diagnose-runner",
       "kind": "proves",
       "at": "the path"
     },

@@ -47,8 +47,12 @@
     },
     {
       "node": "constraints/diagnosis-answers-synchronously",
-      "digest": "sha256:2932e6f0a79562254488c2cac1310781bde6ffa1a8fce875acab93136f219746",
+      "digest": "sha256:57ad2c054fa870b7c3b510ea247a8261e2cad1f851b287212bbf83167b0ad012",
       "files": [
+        {
+          "path": "src/src/factories/production-diagnose.factory.ts",
+          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+        },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
@@ -115,6 +119,10 @@
       "node": "constraints/the-deadline-is-an-absolute-propagated-instant",
       "digest": "sha256:02f4318ed335981f456dfd234a54b94eee5034be44287eb1332a3c9bf3e2ebe7",
       "files": [
+        {
+          "path": "src/src/factories/production-diagnose.factory.ts",
+          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+        },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
@@ -243,15 +251,19 @@
     },
     {
       "node": "contracts/investigation/diagnosis",
-      "digest": "sha256:817c87c112cf96a98db9fa78cec7ca797087d0e0d31614bd3492b2dba5ec6893",
+      "digest": "sha256:ff54e5f179f0da47cf2935c5545fd65bd5a08ad516058deacb604fad79cc9556",
       "files": [
         {
-          "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "path": "src/src/factories/production-diagnose.factory.ts",
+          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
         },
         {
           "path": "src/src/investigation/diagnose.ts",
           "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
       ]
     },
@@ -1025,6 +1037,10 @@
       "node": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
       "digest": "sha256:e5d449f88de41578c5c9559b29d6fd2217236138bc836f66316eee73cc768190",
       "files": [
+        {
+          "path": "src/src/factories/production-diagnose.factory.ts",
+          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+        },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"

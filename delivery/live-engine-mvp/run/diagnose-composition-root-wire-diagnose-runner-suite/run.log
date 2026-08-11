@@ -1,0 +1,91 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 345 packages, and audited 346 packages in 6s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: passed =====
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 20ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 33ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 60ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (18 tests) 93ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 54ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (43 tests) 26ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 33ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 44ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (19 tests) 46ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (21 tests) 44ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 105ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (17 tests) 52ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 30ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 36ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 8ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 13ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 17ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 19ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 125ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 190ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 27ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 169ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 12ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 65ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 161ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 54ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 32ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 252ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 28ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 46ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 26ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 16ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 26ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 47ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 29ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (7 tests) 89ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 53ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 108ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 99ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 105ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 6ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 94ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 16ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 57ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 30ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 140ms
+
+ Test Files  47 passed (47)
+      Tests  429 passed (429)
+   Start at  07:49:16
+   Duration  3.97s (transform 3.91s, setup 0ms, collect 10.12s, tests 2.85s, environment 16ms, prepare 9.02s)
+
+
