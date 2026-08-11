@@ -10,3 +10,7 @@ flowchart LR
     integration -->|capability-registry| knowledge
     knowledge -->|case-query| investigation
     system -->|corporate-records| integration
+    outside(["outside"])
+    investigation -.->|assessment-reviewed| outside
+    investigation -.->|diagnosis| outside
+    investigation -.->|investigation-completed| outside

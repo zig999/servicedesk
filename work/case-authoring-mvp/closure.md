@@ -1,0 +1,3 @@
+The human declared this initiative over.
+Why: the plan's 10 tasks are delivered and reviewed, with a clean delivery.json over 20 nodes, zero unmet criteria and the four-pass review recorded at delivery/case-authoring-mvp/review/case-authoring-mvp.md; the one implementation with no proof record, task/published-language/build-substrate, is a permanent state rather than a pendency — its criteria are tree-shape and execution facts the captured build at run/published-language-build-substrate-build-3 already asserts, and its single UNDERDETERMINED note is excluded by src/__tests__/unit/dependency-manifest.spec.ts, declared under proof/published-language/glossary-vocabulary.md.
+Read from: intake/closure-ask.md.

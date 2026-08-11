@@ -37,4 +37,19 @@ classDiagram
         +Outcome outcome
         +Referral referral
     }
+    class Action {
+        <<external: glossary>>
+    }
+    class Concept {
+        <<external: glossary>>
+    }
+    class Outcome {
+        <<external: glossary>>
+    }
+    class Recipient {
+        <<external: glossary>>
+    }
+    class SubjectType {
+        <<external: glossary>>
+    }
     Case "1" *-- "1..*" Hypothesis

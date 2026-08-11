@@ -1,4 +1,7 @@
 flowchart TD
     case_authoring["CaseAuthoring"]
+    %% unmapped: no scenario names case-authoring and no contract consumes it; which contexts realize it is undeclared
     corporate_records["CorporateRecords"]
+    corporate_records -.-> integration
     guided_diagnosis["GuidedDiagnosis"]
+    %% unmapped: no scenario names guided-diagnosis and no contract consumes it; which contexts realize it is undeclared

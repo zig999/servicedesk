@@ -1,0 +1,6 @@
+The human declared this initiative over.
+Why: the plan's 11 tasks are delivered — 11 implementations and 11 proofs — and reviewed, with the four-pass review recorded at delivery/investigation-engine-v2/review/investigation-engine-v2.md.
+The plan no longer validates against the specification, and closing is what settles it: four nodes it names — rules/investigation/an-investigation-is-idempotent-within-a-window, constraints/in-progress-is-a-lease-not-domain-state, scenarios/investigation/a-repeated-request-returns-the-same-investigation and scenarios/investigation/no-ticket-reference-never-repeats — were withdrawn from the specification after this plan was written, by the live-engine-mvp initiative's task/diagnose-composition-root/remove-withdrawn-dedup-layer, and while this root stayed live those references refused every plan.py and deliver.py run against it.
+Closed, the plan validates without the specification and each task's implements stands as the historical record of which nodes the work addressed when it was written, which is what those four references are now.
+The trace drift over the same withdrawn nodes is already documented in live-engine-mvp's closure.
+Read from: intake/closure-ask.md.

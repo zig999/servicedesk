@@ -96,5 +96,26 @@ classDiagram
         REFUTED
         INCONCLUSIVE
     }
+    class Concept {
+        <<external: glossary>>
+    }
+    class Outcome {
+        <<external: glossary>>
+    }
+    class SubjectAttribute {
+        <<external: glossary>>
+    }
+    class SubjectType {
+        <<external: glossary>>
+    }
+    class Capability {
+        <<external: integration>>
+    }
+    class Case {
+        <<external: knowledge>>
+    }
+    class Referral {
+        <<external: knowledge>>
+    }
     Evidence "0..*" --> "1" Capability
     Investigation "0..*" --> "1" Case : pinnedCase

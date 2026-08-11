@@ -13,9 +13,9 @@ Derived by spec.py from the specification files; never edited.
 
 ## Capabilities
 
-- case-authoring
-- corporate-records
-- guided-diagnosis
+- case-authoring — unmapped: no scenario names it and no contract consumes it
+- corporate-records — consumed by integration
+- guided-diagnosis — unmapped: no scenario names it and no contract consumes it
 
 ## Constraints
 
