@@ -4,20 +4,28 @@
 // import no LLM or provider client and nothing of the standard library
 // either, so infrastructure cannot be reached from them directly
 // (constraints/the-domain-depends-on-no-infrastructure, criterion 4's own
-// clause) — and FakeAssessmentConsolidator is the only concrete class in the
-// shared investigation directory implementing IAssessmentConsolidator
-// (constraints/consolidation-runs-behind-a-port, criterion 3). Scoped to
-// this task's own named files for the import-purity checks rather than to
-// the whole investigation directory, since that directory is shared with
-// every other task's own modules and a directory-wide sweep would answer for
-// all of them at once — mirroring hypothesis-evaluator-modules.spec.ts's own
+// clause). FakeAssessmentConsolidator was, at that task's own delivery, the
+// only concrete class in the shared investigation directory implementing
+// IAssessmentConsolidator (constraints/consolidation-runs-behind-a-port,
+// criterion 3);
+// task/assessment-consolidation-adapter/anthropic-assessment-consolidator
+// added a second, live-model implementation beside it — its own intended
+// objective, never a regression — so the single-implementer assertion below
+// is updated here, by this proof's own test-author, since that later task's
+// implementer writes no tests and edits no spec file. Scoped to this task's
+// own named files for the import-purity checks rather than to the whole
+// investigation directory, since that directory is shared with every other
+// task's own modules and a directory-wide sweep would answer for all of them
+// at once — mirroring hypothesis-evaluator-modules.spec.ts's own
 // own-file-list pattern rather than widening observation-source-modules.spec.ts's
 // existing directory-wide sweep, which already covers these same three files
 // for import purity but says nothing about which class implements which
-// port. The "exactly one implementer" check reads the whole shared directory
-// on purpose, the same way hypothesis-evaluator-modules.spec.ts's own does:
-// a class implementing IAssessmentConsolidator from outside this task's own
-// three files would still be a second implementer this check must catch.
+// port. The "exactly two implementers" check reads the whole shared
+// directory on purpose, the same way hypothesis-evaluator-modules.spec.ts's
+// own single-implementer check does: a class implementing
+// IAssessmentConsolidator from outside this task's own three files or the
+// later live adapter would still be an unaccounted-for implementer this
+// check must catch.
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -132,7 +140,7 @@ it("the assessment-consolidator modules import nothing from the case document mo
   expect(caseDocumentImports).toEqual([]);
 });
 
-it('ships exactly one concrete class implementing IAssessmentConsolidator', async () => {
+it('ships exactly two concrete classes implementing IAssessmentConsolidator: the fake and the live Anthropic-backed adapter', async () => {
   const files = (await readdir(INVESTIGATION_DIRECTORY)).filter((file) => file.endsWith('.ts'));
 
   const implementers: string[] = [];
@@ -143,5 +151,5 @@ it('ships exactly one concrete class implementing IAssessmentConsolidator', asyn
     }
   }
 
-  expect(implementers).toEqual(['fake-assessment-consolidator.adapter.ts']);
+  expect(implementers.sort()).toEqual(['anthropic-assessment-consolidator.adapter.ts', 'fake-assessment-consolidator.adapter.ts']);
 });

@@ -18,6 +18,18 @@
 // task delivered here at the time; it broke the moment a legitimate
 // sibling fake landed beside it, so it is rescoped here to what criterion 2
 // actually requires — a task-scoped fact, not a directory-wide one.)
+//
+// (Second retroactive correction, by
+// task/assessment-consolidation-adapter/anthropic-assessment-consolidator's
+// own test-author: the forbidden-package sweep below reads every .ts file
+// in the shared directory, unlike the single-implementer check above, and
+// so it began reporting anthropic-assessment-consolidator.adapter.ts's own,
+// entirely intended, @anthropic-ai/sdk import as an offense the moment that
+// file landed — this proof's own criteria never named that file, so
+// asserting over it was ground this proof never owned. Excluded by name
+// below rather than rescoped to a fixed file list, so every file this sweep
+// already covered — including evaluation.ts and evidence.ts, which own no
+// import-purity audit of their own — stays covered.)
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -25,6 +37,18 @@ import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 
 const INVESTIGATION_DIRECTORY = fileURLToPath(new URL('../../../investigation/', import.meta.url));
+
+/**
+ * A live-model adapter this shared directory now also holds, beside the
+ * fakes this file's own header describes —
+ * task/assessment-consolidation-adapter/anthropic-assessment-consolidator's
+ * own production adapter, which reaches @anthropic-ai/sdk by that task's own
+ * criteria, never by accident. Excluded from the forbidden-package sweep
+ * below so a later task's own legitimate infrastructure adapter does not
+ * make this file — whose own criteria never named it — report a false
+ * offender.
+ */
+const KNOWN_INFRASTRUCTURE_ADAPTERS = ['anthropic-assessment-consolidator.adapter.ts'];
 
 /** Frameworks, database drivers and provider clients — what criterion 2 forbids the fake adapter to import. */
 const FORBIDDEN_PACKAGES = [
@@ -113,7 +137,9 @@ function offendersAmong(
 it('the observation-source modules import no framework, no driver and no provider client', async () => {
   const imports = await investigationImports();
 
-  const offenders = offendersAmong(imports, isForbiddenPackage);
+  const offenders = offendersAmong(imports, isForbiddenPackage).filter(
+    (offender) => !KNOWN_INFRASTRUCTURE_ADAPTERS.some((file) => offender.startsWith(`${file} imports`)),
+  );
 
   expect(offenders).toEqual([]);
 });

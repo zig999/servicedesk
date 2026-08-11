@@ -28,16 +28,20 @@
       "digest": "sha256:b1727aa453816d37d6d55170d28f4daa7e9ea9e7c405515dd17c8ef94be9c5d8",
       "files": [
         {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
+        },
+        {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
         },
         {
-          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
-        },
-        {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+        },
+        {
+          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
+          "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
         }
       ]
     },
@@ -94,6 +98,16 @@
       ]
     },
     {
+      "node": "constraints/the-consolidation-prompt-is-closed",
+      "digest": "sha256:c3ddbcc0cf1d4bbd09456fdfa4627f95f377361dfa1beb0afacb091a18b9ce4b",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-deadline-is-an-absolute-propagated-instant",
       "digest": "sha256:02f4318ed335981f456dfd234a54b94eee5034be44287eb1332a3c9bf3e2ebe7",
       "files": [
@@ -116,12 +130,16 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
-          "path": "src/src/investigation/consolidation-register.ts",
-          "digest": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82"
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
+        },
+        {
+          "path": "src/src/investigation/consolidation-register.ts",
+          "digest": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -502,16 +520,20 @@
       "digest": "sha256:057021c6f59e8f00d38909557be2e977440a32292881b01b30cc698dc2b171fd",
       "files": [
         {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
+        },
+        {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
         },
         {
-          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
-        },
-        {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+        },
+        {
+          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
+          "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
         }
       ]
     },
