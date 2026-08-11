@@ -1,0 +1,65 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 10ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 15ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 22ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (18 tests) 42ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 14ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (21 tests) 33ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (43 tests) 35ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 27ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (19 tests) 20ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 182ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 26ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (17 tests) 40ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 20ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 97ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 18ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 23ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 557ms
+   ✓ answers 200 with the assessment the diagnose call produced, for a request naming an existing case, subject, narrative and requester  434ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 233ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 17ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 31ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 27ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 151ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 42ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 118ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 51ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 139ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 181ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 24ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 18ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 62ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 43ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 17ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 32ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 18ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 25ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (7 tests) 718ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  470ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 32ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 31ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 92ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (7 tests) 71ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 41ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 21ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 66ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 4ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 82ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 53ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 39ms
+ ✓ src/__tests__/unit/config/env.spec.ts (3 tests) 9ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 35ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 67ms
+
+ Test Files  50 passed (50)
+      Tests  452 passed (452)
+   Start at  08:34:11
+   Duration  4.15s (transform 3.53s, setup 0ms, collect 10.54s, tests 3.77s, environment 26ms, prepare 9.27s)
+

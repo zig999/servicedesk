@@ -1,0 +1,49 @@
+// Boundary parsing for this process's own environment (STK-08 — "Boundary
+// input — HTTP bodies, tool arguments and environment — is parsed by a Zod
+// schema"): every value the diagnose HTTP surface needs at startup is read
+// once here, so a missing or malformed value fails loudly before the server
+// ever listens rather than surfacing later as an unexplained crash mid-request.
+// Carries no data-directory default of its own (createCaseStore/createGlossaryQuery/
+// createCapabilityQuery/createInvestigationStore's own shared convention:
+// "the data directory is the caller's to choose, so no data path is written
+// in source"), and no credential of any kind — both Anthropic-backed adapters
+// already resolve ANTHROPIC_API_KEY from the environment on their own
+// (STK-11), and this module introduces no second place that reads it.
+
+import { z } from 'zod';
+import { InvalidEnvironmentError } from '../errors/invalid-environment.error.js';
+import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register.js';
+
+/** Every value this process's own startup needs, read from the environment exactly once. */
+const envSchema = z.object({
+  PORT: z.coerce.number().int().positive().default(3000),
+  CASE_DATA_DIRECTORY: z.string().min(1),
+  GLOSSARY_DATA_DIRECTORY: z.string().min(1),
+  CAPABILITY_DATA_DIRECTORY: z.string().min(1),
+  INVESTIGATION_DATA_DIRECTORY: z.string().min(1),
+  OBSERVATIONS_FIXTURE_FILE: z.string().min(1),
+  EVALUATOR_MODEL: z.string().min(1),
+  EVALUATOR_MAX_TOKENS: z.coerce.number().int().positive().optional(),
+  CONSOLIDATOR_MODEL: z.string().min(1),
+  CONSOLIDATOR_MAX_TOKENS: z.coerce.number().int().positive(),
+  POOL_SIZE: z.coerce.number().int().positive(),
+  DEFAULT_CONSOLIDATION_REGISTER: z.enum(CONSOLIDATION_REGISTERS),
+  PROMPT_VERSION: z.string().min(1),
+});
+
+export type Env = z.infer<typeof envSchema>;
+
+/**
+ * Parses the given environment (process.env by default) against envSchema
+ * once, throwing InvalidEnvironmentError naming every violated field
+ * together where any is missing or malformed, so this process fails at
+ * startup rather than partway through its first request.
+ */
+export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
+  const parsed = envSchema.safeParse(source);
+  if (!parsed.success) {
+    const issues = parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
+    throw new InvalidEnvironmentError(issues);
+  }
+  return parsed.data;
+}

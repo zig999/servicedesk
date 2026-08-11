@@ -34,6 +34,14 @@
       "task": "task/diagnose-composition-root/wire-diagnose-runner"
     },
     {
+      "id": "implementation/http-surface/diagnose-http-endpoint",
+      "kind": "implementation",
+      "file": "implementation/http-surface/diagnose-http-endpoint.md",
+      "title": "Diagnose HTTP endpoint over Fastify",
+      "summary": "A Fastify server exposes POST /v1/diagnose, reading a case by slug/version through createCaseQuery, calling the production diagnose runner with a subject/narrative/requester/optional-ticket_ref from the body, and answering with the assessment, backed by a FakeObservationSource seeded once at startup from the fixture's own observations.json.",
+      "task": "task/http-surface/diagnose-http-endpoint"
+    },
+    {
       "id": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "kind": "implementation",
       "file": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator.md",
@@ -80,6 +88,14 @@
       "title": "Wire the production diagnose runner from the real Anthropic adapters — proof",
       "summary": "Two spec files prove createProductionDiagnoseRunner's own composition — pass-through wiring, the absolute deadline it stamps, requester passthrough, no caching across calls, and that it reaches the real, Anthropic-backed adapters rather than a swappable fake.",
       "task": "task/diagnose-composition-root/wire-diagnose-runner"
+    },
+    {
+      "id": "proof/http-surface/diagnose-http-endpoint",
+      "kind": "proof",
+      "file": "proof/http-surface/diagnose-http-endpoint.md",
+      "title": "HTTP surface for POST /v1/diagnose",
+      "summary": "Proves the six criteria of task/http-surface/diagnose-http-endpoint — request/response shape, freshness per call, ticket_ref optionality, header independence, and Fastify-only transport — split between a unit suite driving buildApp() with a stubbed pipeline seam and an integration suite driving the real createDiagnoseHttpServer over the real fixture case with only @anthropic-ai/sdk mocked.",
+      "task": "task/http-surface/diagnose-http-endpoint"
     },
     {
       "id": "proof/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
@@ -354,6 +370,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/http-surface/diagnose-http-endpoint",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/http-surface/diagnose-http-endpoint",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/http-surface/diagnose-http-endpoint",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/http-surface/diagnose-http-endpoint",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/http-surface/diagnose-http-endpoint",
+      "to": "task/http-surface/diagnose-http-endpoint",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -434,6 +480,12 @@
     {
       "from": "proof/diagnose-composition-root/wire-diagnose-runner",
       "to": "implementation/diagnose-composition-root/wire-diagnose-runner",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/http-surface/diagnose-http-endpoint",
+      "to": "implementation/http-surface/diagnose-http-endpoint",
       "kind": "proves",
       "at": "the path"
     },

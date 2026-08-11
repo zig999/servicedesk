@@ -54,6 +54,10 @@
           "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
         },
         {
+          "path": "src/src/http/diagnose.routes.ts",
+          "digest": "sha256:2f86fa537750c573b726e16c360b632f0e5ef29befdedc9ffe6b38768cf48e47"
+        },
+        {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
         }
@@ -258,6 +262,18 @@
           "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
         },
         {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:55be0b9b95d8026d0408964cfe3fa20cf720364857052a5102bd2083fdd74347"
+        },
+        {
+          "path": "src/src/http/diagnose.routes.ts",
+          "digest": "sha256:2f86fa537750c573b726e16c360b632f0e5ef29befdedc9ffe6b38768cf48e47"
+        },
+        {
+          "path": "src/src/http/dto/diagnose.dto.ts",
+          "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
+        },
+        {
           "path": "src/src/investigation/diagnose.ts",
           "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         },
@@ -356,6 +372,24 @@
         {
           "path": "src/src/errors/case-not-found.error.ts",
           "digest": "sha256:92bc1349600bf06963262dedd8358e2b0b364849476761eab4bc186593f08db9"
+        }
+      ]
+    },
+    {
+      "node": "contracts/system/guided-diagnosis",
+      "digest": "sha256:4a9f9321b68c70f88e8e8d22d42eab65d6d19a41f2aed768d62e80522517a0b2",
+      "files": [
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:55be0b9b95d8026d0408964cfe3fa20cf720364857052a5102bd2083fdd74347"
+        },
+        {
+          "path": "src/src/http/diagnose.routes.ts",
+          "digest": "sha256:2f86fa537750c573b726e16c360b632f0e5ef29befdedc9ffe6b38768cf48e47"
+        },
+        {
+          "path": "src/src/http/dto/diagnose.dto.ts",
+          "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
         }
       ]
     },
@@ -521,6 +555,10 @@
       "node": "domain/investigation/assessment",
       "digest": "sha256:bd017d335f0ec1429614995bf1df340b94604a29eebc2f6e848836b280a4b6f0",
       "files": [
+        {
+          "path": "src/src/http/dto/diagnose.dto.ts",
+          "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
+        },
         {
           "path": "src/src/investigation/assessment.ts",
           "digest": "sha256:6599d1bf795e1432ca390ad0ea8bdf25088de29962f51544d833206204b83cd1"
