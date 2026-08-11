@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
+      "title": "Declare @anthropic-ai/sdk and fastify as runtime dependencies",
+      "summary": "package.json's dependencies gain the two packages the standard already authorizes and this plan's LLM adapter and HTTP-surface work need, with no other file touched.",
+      "task": "task/hypothesis-judgment-adapter/declare-runtime-dependencies"
+    },
+    {
+      "id": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "proof",
+      "file": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
+      "title": "Proof for declaring @anthropic-ai/sdk and fastify as runtime dependencies",
+      "summary": "Six tests, added to the pre-existing manifest-audit spec, prove the two dependencies are declared, pinned as recorded, and are the only additions.",
+      "task": "task/hypothesis-judgment-adapter/declare-runtime-dependencies"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "to": "task/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "to": "implementation/hypothesis-judgment-adapter/declare-runtime-dependencies",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

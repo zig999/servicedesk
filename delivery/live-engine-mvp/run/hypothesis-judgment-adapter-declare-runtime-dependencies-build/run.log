@@ -1,0 +1,117 @@
+===== install :: npm ci :: failed =====
+npm error code EUSAGE
+npm error
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+npm error
+npm error Missing: @anthropic-ai/sdk@0.32.1 from lock file
+npm error Missing: fastify@5.11.3 from lock file
+npm error Missing: @types/node@18.19.130 from lock file
+npm error Missing: @types/node-fetch@2.6.13 from lock file
+npm error Missing: abort-controller@3.0.0 from lock file
+npm error Missing: agentkeepalive@4.6.0 from lock file
+npm error Missing: form-data-encoder@1.7.2 from lock file
+npm error Missing: formdata-node@4.4.1 from lock file
+npm error Missing: node-fetch@2.7.0 from lock file
+npm error Missing: form-data@4.0.6 from lock file
+npm error Missing: event-target-shim@5.0.1 from lock file
+npm error Missing: humanize-ms@1.2.1 from lock file
+npm error Missing: @fastify/ajv-compiler@4.0.6 from lock file
+npm error Missing: @fastify/error@4.2.0 from lock file
+npm error Missing: @fastify/fast-json-stringify-compiler@5.1.0 from lock file
+npm error Missing: @fastify/proxy-addr@5.1.0 from lock file
+npm error Missing: abstract-logging@2.0.1 from lock file
+npm error Missing: avvio@9.3.0 from lock file
+npm error Missing: fast-json-stringify@7.0.1 from lock file
+npm error Missing: find-my-way@9.7.0 from lock file
+npm error Missing: light-my-request@6.6.0 from lock file
+npm error Missing: pino@10.3.1 from lock file
+npm error Missing: process-warning@5.1.0 from lock file
+npm error Missing: rfdc@1.4.1 from lock file
+npm error Missing: secure-json-parse@4.1.0 from lock file
+npm error Missing: toad-cache@3.7.4 from lock file
+npm error Missing: ajv@8.20.0 from lock file
+npm error Missing: ajv-formats@3.0.1 from lock file
+npm error Missing: fast-uri@4.1.2 from lock file
+npm error Missing: @fastify/forwarded@3.0.2 from lock file
+npm error Missing: ipaddr.js@2.5.0 from lock file
+npm error Missing: ajv@8.20.0 from lock file
+npm error Missing: @fastify/merge-json-schemas@0.2.1 from lock file
+npm error Missing: ajv@8.20.0 from lock file
+npm error Missing: fast-uri@4.1.2 from lock file
+npm error Missing: json-schema-ref-resolver@3.0.0 from lock file
+npm error Missing: dequal@2.0.3 from lock file
+npm error Missing: fast-querystring@1.1.2 from lock file
+npm error Missing: safe-regex2@5.1.1 from lock file
+npm error Missing: fast-decode-uri-component@1.0.1 from lock file
+npm error Missing: asynckit@0.4.0 from lock file
+npm error Missing: combined-stream@1.0.8 from lock file
+npm error Missing: es-set-tostringtag@2.1.0 from lock file
+npm error Missing: hasown@2.0.4 from lock file
+npm error Missing: mime-types@2.1.35 from lock file
+npm error Missing: delayed-stream@1.0.0 from lock file
+npm error Missing: es-errors@1.3.0 from lock file
+npm error Missing: get-intrinsic@1.3.0 from lock file
+npm error Missing: has-tostringtag@1.0.2 from lock file
+npm error Missing: node-domexception@1.0.0 from lock file
+npm error Missing: web-streams-polyfill@4.0.0-beta.3 from lock file
+npm error Missing: call-bind-apply-helpers@1.0.2 from lock file
+npm error Missing: es-define-property@1.0.1 from lock file
+npm error Missing: es-object-atoms@1.1.2 from lock file
+npm error Missing: function-bind@1.1.2 from lock file
+npm error Missing: get-proto@1.0.1 from lock file
+npm error Missing: gopd@1.2.0 from lock file
+npm error Missing: has-symbols@1.1.0 from lock file
+npm error Missing: math-intrinsics@1.1.0 from lock file
+npm error Missing: dunder-proto@1.0.1 from lock file
+npm error Missing: cookie@1.1.1 from lock file
+npm error Missing: process-warning@4.0.1 from lock file
+npm error Missing: set-cookie-parser@2.7.2 from lock file
+npm error Missing: mime-db@1.52.0 from lock file
+npm error Missing: whatwg-url@5.0.0 from lock file
+npm error Missing: @pinojs/redact@0.4.0 from lock file
+npm error Missing: atomic-sleep@1.0.0 from lock file
+npm error Missing: on-exit-leak-free@2.1.2 from lock file
+npm error Missing: pino-abstract-transport@3.0.0 from lock file
+npm error Missing: pino-std-serializers@7.1.0 from lock file
+npm error Missing: quick-format-unescaped@4.0.4 from lock file
+npm error Missing: real-require@0.2.0 from lock file
+npm error Missing: safe-stable-stringify@2.5.0 from lock file
+npm error Missing: sonic-boom@4.2.1 from lock file
+npm error Missing: thread-stream@4.2.0 from lock file
+npm error Missing: split2@4.2.0 from lock file
+npm error Missing: ret@0.5.0 from lock file
+npm error Missing: real-require@1.0.0 from lock file
+npm error Missing: tr46@0.0.3 from lock file
+npm error Missing: webidl-conversions@3.0.1 from lock file
+npm error Missing: undici-types@5.26.5 from lock file
+npm error Missing: fast-uri@3.1.5 from lock file
+npm error Missing: json-schema-traverse@1.0.0 from lock file
+npm error Missing: json-schema-traverse@1.0.0 from lock file
+npm error Missing: fast-uri@3.1.5 from lock file
+npm error Missing: json-schema-traverse@1.0.0 from lock file
+npm error
+npm error Clean install a project
+npm error
+npm error Usage:
+npm error npm ci
+npm error
+npm error Options:
+npm error [--install-strategy <hoisted|nested|shallow|linked>] [--legacy-bundling]
+npm error [--global-style] [--omit <dev|optional|peer> [--omit <dev|optional|peer> ...]]
+npm error [--include <prod|dev|optional|peer> [--include <prod|dev|optional|peer> ...]]
+npm error [--strict-peer-deps] [--foreground-scripts] [--ignore-scripts] [--no-audit]
+npm error [--no-bin-links] [--no-fund] [--dry-run]
+npm error [-w|--workspace <workspace-name> [-w|--workspace <workspace-name> ...]]
+npm error [-ws|--workspaces] [--include-workspace-root] [--install-links]
+npm error
+npm error aliases: clean-install, ic, install-clean, isntall-clean
+npm error
+npm error Run "npm help ci" for more info
+npm error A complete log of this run can be found in: /home/siegfriedneto/.npm/_logs/2026-08-11T00_36_27_025Z-debug-0.log
+
+===== typecheck :: npm run typecheck :: not_run =====
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
