@@ -1,0 +1,6 @@
+[
+  { "name": "issue-equipment-fault" },
+  { "name": "issue-area-outage" },
+  { "name": "inconclusive-no-data" },
+  { "name": "inconclusive-hypotheses-exhausted" }
+]

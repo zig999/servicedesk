@@ -1,0 +1,12 @@
+[
+  {
+    "concept": "equipment-status",
+    "result": "ok",
+    "observation": "the registered equipment reports status: fault"
+  },
+  {
+    "concept": "network-outage-flag",
+    "result": "ok",
+    "observation": "no active network outage is registered for this contract's service area"
+  }
+]

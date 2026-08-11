@@ -1,0 +1,4 @@
+[
+  { "name": "equipment-status", "accepts": ["contract"], "ttl": 300 },
+  { "name": "network-outage-flag", "accepts": ["contract"], "ttl": 60 }
+]

@@ -1,0 +1,5 @@
+[
+  { "name": "field-service-queue" },
+  { "name": "customer-communications-queue" },
+  { "name": "tier-two-support-queue" }
+]

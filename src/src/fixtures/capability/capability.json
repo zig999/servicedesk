@@ -1,0 +1,22 @@
+[
+  {
+    "name": "equipment-status-reader",
+    "version": "1.0.0",
+    "nature": "read-only",
+    "input_schema": "contract-identifier-input",
+    "output_schema": "equipment-status-output",
+    "timeout": 5000,
+    "connector": "corporate-records-equipment-status-connector",
+    "concept": "equipment-status"
+  },
+  {
+    "name": "network-outage-flag-reader",
+    "version": "1.0.0",
+    "nature": "read-only",
+    "input_schema": "contract-identifier-input",
+    "output_schema": "network-outage-flag-output",
+    "timeout": 5000,
+    "connector": "corporate-records-network-outage-connector",
+    "concept": "network-outage-flag"
+  }
+]

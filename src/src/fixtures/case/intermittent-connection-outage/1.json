@@ -1,0 +1,42 @@
+{
+  "slug": "intermittent-connection-outage",
+  "title": "Intermittent internet connection outage",
+  "when_to_use": "When an attendant needs to troubleshoot a customer contract reporting an intermittent or unstable internet connection.",
+  "version": 1,
+  "hash": "curated-fixture-hash-v1",
+  "subject": "contract",
+  "consolidation_register": "formal",
+  "fallback": {
+    "outcome": "inconclusive-hypotheses-exhausted",
+    "referral": {
+      "action": "escalate-to-specialist",
+      "recipient": "tier-two-support-queue"
+    }
+  },
+  "hypotheses": [
+    {
+      "name": "customer-equipment-fault",
+      "criterion": "The customer's registered equipment reports a fault status in the corporate systems.",
+      "collects": ["equipment-status"],
+      "resolution": {
+        "outcome": "issue-equipment-fault",
+        "referral": {
+          "action": "schedule-technician-visit",
+          "recipient": "field-service-queue"
+        }
+      }
+    },
+    {
+      "name": "area-network-outage",
+      "criterion": "An active network outage is currently registered for the contract's service area.",
+      "collects": ["network-outage-flag"],
+      "resolution": {
+        "outcome": "issue-area-outage",
+        "referral": {
+          "action": "notify-customer-of-outage",
+          "recipient": "customer-communications-queue"
+        }
+      }
+    }
+  ]
+}

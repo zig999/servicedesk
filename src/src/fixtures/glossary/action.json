@@ -1,0 +1,5 @@
+[
+  { "name": "schedule-technician-visit" },
+  { "name": "notify-customer-of-outage" },
+  { "name": "escalate-to-specialist" }
+]
