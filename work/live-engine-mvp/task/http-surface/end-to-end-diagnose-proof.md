@@ -11,8 +11,6 @@ criteria:
 depends_on:
   - task/http-surface/diagnose-http-endpoint
   - task/case-fixture/author-diagnose-fixture-case
-produces:
-  - src/__tests__/integration/http/diagnose-e2e.spec.ts
 implements:
   - contracts/system/guided-diagnosis
   - contracts/investigation/diagnosis

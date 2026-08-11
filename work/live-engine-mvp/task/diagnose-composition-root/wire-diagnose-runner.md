@@ -12,8 +12,6 @@ criteria:
 depends_on:
   - task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator
   - task/assessment-consolidation-adapter/anthropic-assessment-consolidator
-produces:
-  - src/factories/production-diagnose.factory.ts
 implements:
   - contracts/investigation/diagnosis
   - constraints/diagnosis-answers-synchronously

@@ -12,16 +12,6 @@ criteria:
   - The case declares an explicit consolidation register (formal or plain) rather than leaving it undeclared.
   - The case document is stored as one plain JSON document at <directory>/<slug>/1.json, its slug equal to the file's own name.
   - For every concept the case's hypotheses collect, a canned observation outcome exists, usable to seed a stand-in observation source so the whole pipeline can run against this case without a live corporate-records connection.
-produces:
-  - fixtures/cases/diagnose-smoke-test/1.json
-  - fixtures/glossary/subject-type.json
-  - fixtures/glossary/subject-attribute.json
-  - fixtures/glossary/outcome.json
-  - fixtures/glossary/action.json
-  - fixtures/glossary/recipient.json
-  - fixtures/glossary/concept.json
-  - fixtures/capability-registry/capability.json
-  - fixtures/observations/diagnose-smoke-test.json
 implements:
   - domain/knowledge/case
   - domain/knowledge/hypothesis

@@ -12,8 +12,6 @@ criteria:
 depends_on:
   - task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context
   - task/hypothesis-judgment-adapter/declare-runtime-dependencies
-produces:
-  - src/investigation/anthropic-hypothesis-evaluator.adapter.ts
 implements:
   - domain/investigation/hypothesis-evaluator
   - constraints/judgment-runs-behind-a-port

@@ -14,9 +14,6 @@ depends_on:
   - task/diagnose-composition-root/wire-diagnose-runner
   - task/case-fixture/author-diagnose-fixture-case
   - task/hypothesis-judgment-adapter/declare-runtime-dependencies
-produces:
-  - src/http/server.ts
-  - src/http/diagnose.routes.ts
 implements:
   - contracts/system/guided-diagnosis
   - contracts/investigation/diagnosis

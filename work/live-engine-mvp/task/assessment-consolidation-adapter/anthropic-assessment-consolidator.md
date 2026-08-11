@@ -10,8 +10,6 @@ criteria:
   - The adapter imports @anthropic-ai/sdk for the call and no other HTTP client library.
 depends_on:
   - task/hypothesis-judgment-adapter/declare-runtime-dependencies
-produces:
-  - src/investigation/anthropic-assessment-consolidator.adapter.ts
 implements:
   - domain/investigation/assessment-consolidator
   - constraints/consolidation-runs-behind-a-port
