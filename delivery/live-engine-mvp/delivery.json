@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-fixture/author-diagnose-fixture-case",
+      "kind": "implementation",
+      "file": "implementation/case-fixture/author-diagnose-fixture-case.md",
+      "title": "Fixture case, its glossary, its capabilities and its canned observations",
+      "summary": "One fictitious \"intermittent-connection-outage\" case, valid against every current knowledge rule, ships with the glossary vocabulary, capability registrations and canned per-concept observations its two hypotheses need to run the whole diagnose pipeline without a live corporate-records connection.",
+      "task": "task/case-fixture/author-diagnose-fixture-case"
+    },
+    {
       "id": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer",
       "kind": "implementation",
       "file": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer.md",
@@ -26,6 +34,14 @@
       "task": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context"
     },
     {
+      "id": "proof/case-fixture/author-diagnose-fixture-case",
+      "kind": "proof",
+      "file": "proof/case-fixture/author-diagnose-fixture-case.md",
+      "title": "Proof for the fictitious diagnose fixture case",
+      "summary": "Sixteen tests read the authored case, glossary, capability and observation fixtures through the real parseCaseDocument, case-resolution, file-backed stores and observation-source adapter — never a value re-derived from the fixture's own JSON.parse — and show every one of the task's nine criteria holds over the exact files this task shipped.",
+      "task": "task/case-fixture/author-diagnose-fixture-case"
+    },
+    {
       "id": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies",
       "kind": "proof",
       "file": "proof/hypothesis-judgment-adapter/declare-runtime-dependencies.md",
@@ -43,6 +59,186 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/the-slug-matches-the-file-name",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[18]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[19]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[20]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[21]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[22]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[23]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[24]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/integration/capability-nature",
+      "kind": "encodes",
+      "at": "nodes[26]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[27]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "encodes",
+      "at": "nodes[28]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[29]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "constraints/a-case-is-stored-as-one-json-document",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-fixture/author-diagnose-fixture-case",
+      "to": "task/case-fixture/author-diagnose-fixture-case",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/diagnose-composition-root/remove-withdrawn-dedup-layer",
       "to": "task/diagnose-composition-root/remove-withdrawn-dedup-layer",
@@ -71,6 +267,12 @@
       "from": "implementation/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
       "to": "task/hypothesis-judgment-adapter/widen-evaluator-port-with-case-context",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-fixture/author-diagnose-fixture-case",
+      "to": "implementation/case-fixture/author-diagnose-fixture-case",
+      "kind": "proves",
       "at": "the path"
     },
     {
