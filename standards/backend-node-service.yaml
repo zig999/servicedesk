@@ -631,13 +631,32 @@ rules:
     applies_to:
       - { under: src, suffix: .ts, nested: true }
 
-  - id: PRH-04
+  # ---------------------------------------------------------------- how the schema is changed
+
+  - id: MIG-01
+    statement: A migration's file name begins with a zero-padded sequence number, unique among the
+      scripts beside it.
+    because: The order the scripts are applied in is the only thing that decides what schema they
+      produce, and a directory whose order is the file system's is a directory that replays
+      differently on a machine that sorts differently.
+    decided_by: reading
+    applies_to:
+      - { under: migrations, suffix: .sql }
+
+  - id: MIG-02
+    statement: A script that has been applied is never edited; a correction is the next script.
+    because: An edited script stops describing the sequence that actually produced any environment
+      already running it, so the history reads as one thing and the databases are another.
+    decided_by: reading
+    applies_to:
+      - { under: migrations, suffix: .sql }
+
+  - id: MIG-03
     statement: A migration that destroys or alters data ships with a reverse migration beside it.
     because: A migration you cannot reverse turns a bad deploy into a restore from backup.
-    decided_by: tool
-    tool: lint
+    decided_by: reading
     applies_to:
-      - { under: src/migrations, suffix: .ts, nested: true }
+      - { under: migrations, suffix: .sql }
 
   # ---------------------------------------------------------------- how tests are written here
 
@@ -698,7 +717,7 @@ presupposes:
       by needs no artifact of its own and this one carries it.
     rules: [STK-01, STK-02, STK-03, STK-04, STK-05, STK-07, STK-08, STK-09, STK-10, STK-11, STK-12,
             ARC-02, ARC-03, ARC-05, DTO-02, DTO-03, DTO-04, API-01, API-06, COR-01, SEC-02, SEC-03,
-            TYP-01, TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04,
+            TYP-01, TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03,
             TST-04]
 
   - path: tsconfig.json
@@ -712,11 +731,11 @@ presupposes:
       The flat configuration the `lint` step reads its parser and its rule set from. Absent, eslint
       has not been told how to parse the TypeScript every scope below names, and the step fails on
       the first type annotation it meets; present but naming no rule, it exits 0 having decided
-      none of the twenty below. A `lint` script in the manifest is a step that runs — this is what
+      none of the nineteen below. A `lint` script in the manifest is a step that runs — this is what
       makes it a step that decides.
     rules: [ARC-02, ARC-03, ARC-05, DTO-02, DTO-03, DTO-04, API-01, API-06, COR-01,
             TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03,
-            PRH-04, TST-04]
+            TST-04]
 
 # What a delivery may install, and how this project is installed and checked — the two registries'
 # lists merged the way their rules were. The merge is clean here, and the reason is worth reading
@@ -766,15 +785,15 @@ dependencies:
     rules: [STK-01, TYP-01, TYP-02, TYP-03, TYP-04]
 
   - package: eslint
-    why: the `lint` step is it, and twenty of the rules above are decided by that step.
-    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
+    why: the `lint` step is it, and nineteen of the rules above are decided by that step.
+    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, TST-04]
 
   - package: typescript-eslint
     why: >-
       the `lint` step's flat configuration parses TypeScript through it — eslint's own parser
-      cannot read the files the twenty lint-decided rules scope to, so without this package the
+      cannot read the files the nineteen lint-decided rules scope to, so without this package the
       step fails on the first type annotation it meets and decides nothing.
-    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
+    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, TST-04]
 
   - package: "@types/node"
     why: >-
@@ -897,3 +916,17 @@ elsewhere:
       It is a decision about what the product does, not about which dependency implements it.
       Recorded here it would read as a constraint a later version could lift by adding a library,
       which is exactly the reading the specification refuses.
+
+  - what: That the schema is reconstructible on an empty database by applying the scripts in the
+      order they are numbered, and that everything the system records persists in one transactional
+      relational store rather than in files.
+    lives_in: The specification, as the architecture constraints
+      the-schema-replays-from-its-scripts and the-system-persists-to-one-relational-database.
+    why: >-
+      Both bound the solution as a whole, which this registry excludes by contract, and restating
+      either here would leave one decision in two files with nothing holding them to agree. The
+      division is worth reading in full, because the three rules above look like the same subject:
+      replayability is the property, and MIG-01 is one project's way of achieving it — the numeric
+      prefix is arrangement, and another project ordering by timestamp would satisfy the constraint
+      without satisfying MIG-01. STK-12 and STK-05 stand in the same relation to the store: which
+      engine and which driver are this project's, that the records are not in files is not.
