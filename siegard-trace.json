@@ -2,28 +2,6 @@
   "specification": "knowledge",
   "bindings": [
     {
-      "node": "constraints/a-case-is-stored-as-one-json-document",
-      "digest": "sha256:cc7605ecf967979c97918929614141359e60f0feeb66b831a848d529d5f682e2",
-      "files": [
-        {
-          "path": "src/src/case/case.ts",
-          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
-        },
-        {
-          "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
-        },
-        {
-          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
-        },
-        {
-          "path": "src/src/persistence/file-case-store.repository.ts",
-          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
-        }
-      ]
-    },
-    {
       "node": "constraints/consolidation-runs-behind-a-port",
       "digest": "sha256:b1727aa453816d37d6d55170d28f4daa7e9ea9e7c405515dd17c8ef94be9c5d8",
       "files": [
@@ -70,20 +48,6 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
-        }
-      ]
-    },
-    {
-      "node": "constraints/in-progress-is-a-lease-not-domain-state",
-      "digest": "sha256:547a0255c4237ef920789ba683bea77ccf71ddb22368adc381681b10b30dba35",
-      "files": [
-        {
-          "path": "src/src/investigation/idempotency-lease-store.ts",
-          "digest": "sha256:a3c4fa9a9ee6ba6c1fe3a33aad719882966d1392fe2669f93a23d5fb84c85271"
-        },
-        {
-          "path": "src/src/investigation/diagnosis-run-registry.ts",
-          "digest": "sha256:4609bc293c469387516fa095ebcf5cec905a4f95c90aed97fa65c6f426092c1a"
         }
       ]
     },
@@ -226,20 +190,6 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
-        }
-      ]
-    },
-    {
-      "node": "constraints/the-mvp-persists-to-no-database",
-      "digest": "sha256:4bfbbe5069aa858dcd0207b5a7cca64a60cafeaed9fcbdb0db6ef93ac7ce24b1",
-      "files": [
-        {
-          "path": "src/src/persistence/file-glossary-store.repository.ts",
-          "digest": "sha256:edc1ad410f0751d271d741b5db3429c2563995229b865214bf28c81af86698dd"
-        },
-        {
-          "path": "src/src/persistence/file-investigation-store.repository.ts",
-          "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
         }
       ]
     },
@@ -1184,32 +1134,6 @@
       ]
     },
     {
-      "node": "rules/investigation/an-investigation-is-idempotent-within-a-window",
-      "digest": "sha256:c8fdee107d257ce9bb4c35a238c32178c8ae4b629e030329f61380e1a9509390",
-      "files": [
-        {
-          "path": "src/src/investigation/idempotency-key.ts",
-          "digest": "sha256:c90e60504cce9236c81ebdc22334ed4dc5d92ef977d3ad09ad3d396442556a1f"
-        },
-        {
-          "path": "src/src/investigation/idempotency-lease-store.ts",
-          "digest": "sha256:a3c4fa9a9ee6ba6c1fe3a33aad719882966d1392fe2669f93a23d5fb84c85271"
-        },
-        {
-          "path": "src/src/investigation/idempotency-resolution.ts",
-          "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
-        },
-        {
-          "path": "src/src/investigation/diagnose.ts",
-          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
-        },
-        {
-          "path": "src/src/investigation/diagnosis-run-registry.ts",
-          "digest": "sha256:4609bc293c469387516fa095ebcf5cec905a4f95c90aed97fa65c6f426092c1a"
-        }
-      ]
-    },
-    {
       "node": "rules/investigation/an-investigation-is-written-once",
       "digest": "sha256:e6c9cd02cba929a6c624bae4acfe3e2477c70eb3aceed5ae7890f5cae1df299d",
       "files": [
@@ -1594,20 +1518,6 @@
       ]
     },
     {
-      "node": "rules/knowledge/the-slug-matches-the-file-name",
-      "digest": "sha256:f137625ddede3fda5b97af2e7d1ba7ce3a7fe2bab2d1a553d0c7930b54d7248a",
-      "files": [
-        {
-          "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
-        },
-        {
-          "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
-        }
-      ]
-    },
-    {
       "node": "rules/knowledge/validation-runs-at-every-read",
       "digest": "sha256:6487bd4578633a79e9ca7b0e62aef2fdc26a3320bb866b8a941a3ba25d5e6c8f",
       "files": [
@@ -1652,20 +1562,6 @@
       ]
     },
     {
-      "node": "scenarios/investigation/a-repeated-request-returns-the-same-investigation",
-      "digest": "sha256:9473fa8cfe2e5581f80e49b977ed9852b6ccd97ddf065720ec1c7594c26f1ccb",
-      "files": [
-        {
-          "path": "src/src/investigation/idempotency-resolution.ts",
-          "digest": "sha256:5863b30478f84acfb0c0ef87ca31bc44de47ee05bf5c4bd04b7c5b0c3a187e6f"
-        },
-        {
-          "path": "src/src/investigation/diagnose.ts",
-          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
-        }
-      ]
-    },
-    {
       "node": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
       "digest": "sha256:8d5785ed46873a48d07def6f4255586c978d4cd513482e517b425631649e0148",
       "files": [
@@ -1686,16 +1582,6 @@
         {
           "path": "src/src/errors/investigation-write-deadline-exceeded.error.ts",
           "digest": "sha256:466b080452b2d638bf707c3d9db72dbd789dabd23732e350dfbb1761b5f793a8"
-        }
-      ]
-    },
-    {
-      "node": "scenarios/investigation/no-ticket-reference-never-repeats",
-      "digest": "sha256:fd200840dbf1d9d926e3237a74195bb84639403cb823ca38d8b0a695a13c0697",
-      "files": [
-        {
-          "path": "src/src/investigation/diagnose.ts",
-          "digest": "sha256:f3aabb99c54c9332854bcabd78f9eed1c51648eece1e8284eebf41b617d2f9d0"
         }
       ]
     },
