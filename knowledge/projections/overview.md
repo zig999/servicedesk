@@ -35,4 +35,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-64 decision(s) disclosed in the decision log.
+65 decision(s) disclosed in the decision log.

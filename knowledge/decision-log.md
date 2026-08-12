@@ -320,4 +320,9 @@ entries:
     unstated: Version history used to be readable from the commits that produced the files; with the file gone, the material does not say whether a case version records when it was authored.
     decided: authored_at, a required datetime.
     why: Curation history was a fact of the version control the case no longer lives in, and an audit of which procedure was current when an old investigation ran needs it; the alternative was leaving a column no attribute declares, which constraints/the-stored-schema-mirrors-the-declared-model refuses.
+  - location: domain/integration/capability.md
+    field: attributes
+    unstated: rules/integration/one-capability-answers-one-concept states that each concept resolves to exactly one capability, and domain/integration/capability-registry's own resolve-concept operation looks a capability up by the concept it answers, but no attribute of the capability itself ever named which concept that is — the element's own Description already spoke of "its concept" in prose, an operative fact with nowhere to be held.
+    decided: A capability declares concept, a required reference to domain/glossary/concept.
+    why: The lookup resolve-concept performs and the one-to-one invariant one-capability-answers-one-concept states both presuppose a fact readable off the capability itself; leaving it unstated left a column no attribute would declare, which constraints/the-stored-schema-mirrors-the-declared-model refuses, and left an operative claim living only in the element's own Description, which SPEC-001 R7 refuses. The reference is singular, not many, since the existing resolution reads one capability as answering one concept.
 ---

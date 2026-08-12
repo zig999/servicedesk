@@ -9,6 +9,7 @@ classDiagram
             +string outputSchema
             +integer timeout
             +string connector
+            +Concept concept
         }
     }
     class CapabilityNature {
@@ -20,4 +21,7 @@ classDiagram
         <<Service>>
         +registerCapability()
         +resolveConcept()
+    }
+    class Concept {
+        <<external: glossary>>
     }
