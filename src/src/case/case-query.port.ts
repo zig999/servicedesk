@@ -1,10 +1,13 @@
 import type { Case } from './case.js';
 
 /**
- * What read-case and replay-case both answer: the case whole, pinned by the
- * content identity of the exact document the read found on disk
+ * What read-case answers: the case whole, pinned by the content identity of
+ * the exact document the read found on disk
  * (constraints/a-case-is-stored-as-one-json-document — pinning it is
- * hashing one file).
+ * hashing one file). replay-case answers the case alone, with no such pin:
+ * it resolves without reading any digest over the case's content at all
+ * (rules/investigation/replay-is-pinned), so this shape is read-case's own
+ * rather than one the two share.
  */
 export type ReadCaseResult = {
   readonly case: Case;

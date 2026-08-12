@@ -9,9 +9,13 @@
 // capability registry are never touched directly, and no framework, driver
 // or client is imported here — so it stays testable against port fakes
 // (constraints/the-domain-depends-on-no-infrastructure). replay-case is the
-// declared exception to validation-runs-at-every-read: it answers the
-// pinned version's content without running the coherence checks at all, so
-// an old reading survives the glossary or the registry moving on.
+// declared exception to validation-runs-at-every-read in full: it answers
+// the pinned version's exact stored content without running either the
+// structural parse's own refusal or the coherence checks — reproducibility
+// pins content, not current validity — and it resolves that content
+// without reading any digest over it at all, since slug and version alone
+// name one content (rules/investigation/replay-is-pinned). read-case alone
+// runs that validation, at every one of its own readings.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
@@ -63,26 +67,44 @@ export class CaseQueryService implements ICaseQuery {
 }
 
 /**
- * replay-case: answers the pinned version's content without running the
- * coherence checks against the glossary or the capability registry —
- * reproducibility pins content, not current validity
- * (rules/knowledge/validation-runs-at-every-read) — so an old investigation
- * reads the exact version it pinned even where either upstream has since
- * moved on. Still refuses a version nothing stored, through the same
- * CaseNotFoundError read-case raises; a document whose stored bytes fail to
- * parse is left to InvalidCaseDocumentError rather than joined into
- * CaseNotValidError, since replay makes no promise about current validity
- * for that error to speak to — parsing here reconstructs the pinned
- * content, it does not revalidate it.
+ * replay-case: answers the pinned version's exact stored content as the
+ * case it already was, running neither the structural parse's own refusal
+ * (parse-case-document.ts) nor the coherence checks against the glossary
+ * or the capability registry — reproducibility pins content, not
+ * current validity (rules/knowledge/validation-runs-at-every-read), so an
+ * old investigation reads the exact version it pinned even where the
+ * document would now fail a rule, or where either upstream context has
+ * since moved on. Resolves without reading any digest over the case's
+ * content at all: slug and version alone name one content, because a
+ * version is written once and never altered
+ * (rules/investigation/replay-is-pinned), so the store's own
+ * content-identity hash on the version this call reads is never consulted
+ * — this answers the case alone, never the read-case's own pinned-by-hash
+ * shape. Still refuses a version nothing stored, through the same
+ * CaseNotFoundError read-case raises.
  */
-export async function replayCase(
-  slug: string,
-  version: number,
-  caseStore: ICaseStore,
-): Promise<ReadCaseResult> {
-  const stored = await heldVersion(caseStore, slug, version);
-  const theCase = parseCaseDocument(stored.document, `${slug}${CASE_DOCUMENT_ENDING}`);
-  return { case: theCase, hash: stored.hash };
+export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
+  const { document } = await heldVersion(caseStore, slug, version);
+  return trustedCase(document);
+}
+
+/**
+ * Reads a stored document as the case it already was, trusting its shape
+ * rather than checking it — the one place this module departs from
+ * TYP-02's guard-alongside-every-assertion convention, disclosed in this
+ * task's own delivery record rather than silently. A guard thorough enough
+ * to narrow `unknown` to `Case` here would have to test the same structural
+ * facts parseCaseDocument's own refusal already tests — at least one
+ * hypothesis, a resolution on every position, and the rest — which is
+ * exactly the validation criterion 4 of this file's own task requires
+ * replay to skip, so building one would re-open what this function exists
+ * to close. A version is written once and never altered
+ * (rules/knowledge/every-case-version-remains-readable), so the bytes this
+ * call reads are the exact bytes an investigation once pinned, and trusting
+ * their shape is what "without revalidation" means for replay.
+ */
+function trustedCase(document: unknown): Case {
+  return document as Case;
 }
 
 /** Answers the stored version, refusing an unstored one through the typed not-found error read-case and replay-case share. */
