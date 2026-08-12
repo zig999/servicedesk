@@ -65,7 +65,13 @@ function anAssessment(): Assessment {
   };
 }
 
-/** A whole, structurally valid Investigation, defaulted so a test states only what it departs from. */
+/**
+ * A whole, structurally valid Investigation, defaulted so a test states only
+ * what it departs from. pinned_case carries exactly slug and version, never
+ * a hash (task/case-and-investigation-model/investigation-record-shape), and
+ * written_at is a fixed ISO-8601 instant distinct from every other datetime
+ * this fixture carries, so a test could tell the two apart if it needed to.
+ */
 function anInvestigation(overrides: Partial<Investigation> = {}): Investigation {
   return {
     id: 'investigation-1',
@@ -73,7 +79,7 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
     ticket_ref: 'TICKET-1',
     narrative: 'the narrative the requester submitted',
     subject: { type: 'ont', attributes: [{ attribute: 'id', value: 'subject-1' }] },
-    pinned_case: { slug: 'a-case', version: 3, hash: 'a-hash' },
+    pinned_case: { slug: 'a-case', version: 3 },
     prompt_version: 'prompt-v1',
     model: 'model-x',
     evidence: [anEvidence()],
@@ -81,6 +87,7 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
     assessment: anAssessment(),
     cost: { calls: 3, input_tokens: 100, output_tokens: 50 },
     durations: { collection: 10, judgment: 20, writing: 5, total: 35 },
+    written_at: '2024-02-02T00:00:00.000Z',
     ...overrides,
   };
 }

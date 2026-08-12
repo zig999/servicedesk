@@ -1,0 +1,26 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 8s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts(76,48): error TS2353: Object literal may only specify known properties, and 'hash' does not exist in type 'PinnedCase'.
+src/__tests__/unit/investigation/investigation-factory.spec.ts(169,3): error TS2322: Type '{ id: string; requester: string; ticket_ref: string; narrative: string; subjectType: string; subjectAttributes: readonly SubjectAttributeValue[]; case: Case; prompt_version: string; ... 7 more ...; glossary: IGlossaryQuery; }' is not assignable to type 'BuildInvestigationOptions'.
+  Types of property 'written_at' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-and-investigation-model/investigation-record-shape",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/investigation-record-shape.md",
+      "title": "Investigation carries written_at and pins its case by slug and version alone",
+      "summary": "The investigation aggregate and its one factory now declare a required written_at attribute, enforced at runtime, and materialize the pinned-case relationship as exactly slug and version, reading no digest over the case's content.",
+      "task": "task/case-and-investigation-model/investigation-record-shape"
+    },
+    {
       "id": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "kind": "implementation",
       "file": "implementation/case-and-investigation-model/replay-by-slug-and-version.md",
@@ -24,6 +32,14 @@
       "title": "The schema built by numbered scripts under migrations/",
       "summary": "Six ordered SQL scripts that create every relation this system records into, one column per\n  declared attribute, one key per stated invariant, and one rule enforcing a case version's full\n  immutability once stored.",
       "task": "task/relational-substrate/schema-migrations"
+    },
+    {
+      "id": "proof/case-and-investigation-model/investigation-record-shape",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/investigation-record-shape.md",
+      "title": "Proof for investigation carrying written_at and pinning its case by slug and version",
+      "summary": "Five tests proving the pinned case is narrowed to exactly slug and version with no digest ever read, that a built investigation carries written_at and refuses its absence at runtime, and excluding both UNDERDETERMINED candidates the task's Notes name — plus three pre-existing test files, from now-closed initiatives, brought into agreement with this legitimate shape change.",
+      "task": "task/case-and-investigation-model/investigation-record-shape"
     },
     {
       "id": "proof/case-and-investigation-model/replay-by-slug-and-version",
@@ -51,6 +67,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-and-investigation-model/investigation-record-shape",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/investigation-record-shape",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/investigation-record-shape",
+      "to": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "to": "domain/knowledge/case",
@@ -295,6 +329,12 @@
       "from": "implementation/relational-substrate/schema-migrations",
       "to": "task/relational-substrate/schema-migrations",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/investigation-record-shape",
+      "to": "implementation/case-and-investigation-model/investigation-record-shape",
+      "kind": "proves",
       "at": "the path"
     },
     {

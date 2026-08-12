@@ -46,6 +46,8 @@ import type { SubjectAttributeValue } from '../../../investigation/subject-attri
 const CASE_SLUG = 'a-case';
 const CASE_VERSION = 3;
 const CASE_HASH = 'a-hash';
+/** The built investigation's own written_at, reused by the fixture and by the written_at assertions (task/case-and-investigation-model/investigation-record-shape). */
+const WRITTEN_AT = '2024-06-01T12:00:00.000Z';
 
 /**
  * Stands in for the consumed glossary-source port
@@ -182,8 +184,22 @@ function validOptions(overrides: Partial<BuildInvestigationOptions> = {}): Build
     assessment: anAssessment(),
     cost: aCost(),
     durations: aDurations(),
+    written_at: WRITTEN_AT,
     ...overrides,
   };
+}
+
+/**
+ * validOptions() with the given field removed entirely, bypassing what the
+ * type otherwise guarantees — for a test proving what happens when a caller
+ * omits a required option altogether rather than merely typing it wrong
+ * (task/case-and-investigation-model/investigation-record-shape's own
+ * written_at and ticket_ref criteria).
+ */
+function validOptionsWithout(field: keyof BuildInvestigationOptions): BuildInvestigationOptions {
+  const options: Record<string, unknown> = { ...validOptions() };
+  delete options[field];
+  return options as unknown as BuildInvestigationOptions;
 }
 
 /** How a refusal names a collection-plan concept with no matching evidence, exactly as investigation-factory.ts states it. */
@@ -430,17 +446,83 @@ it('refuses once, naming every violation from both the evidence and the evaluati
   expect(violations).toEqual([noEvidenceViolation('concept-b'), noEvaluationViolation('h2')]);
 });
 
-// ---------------------------------------------------------------- criterion 3 (pre-existing): replay pinning
+// ------------------------------- record-shape criterion 1: the pinned case carries exactly slug and version
 
-it('pins the case by exactly slug, version and hash, never the whole case', async () => {
-  // Also exercises the two inferences behind pinned_case's own shape: a
-  // nested { slug, version, hash } value rather than three flat fields, and
-  // spelled pinned_case (snake_case) rather than pinnedCase.
+it('pins the case by exactly slug and version, never a hash and never the whole case', async () => {
+  // Narrowed from the three-field pin (slug, version, hash) an earlier
+  // delivery carried down to exactly two
+  // (task/case-and-investigation-model/investigation-record-shape): the
+  // pinned case no longer carries the case's own hash at all.
   const investigation = await buildInvestigation(validOptions());
 
-  expect(investigation.pinned_case).toEqual({ slug: CASE_SLUG, version: CASE_VERSION, hash: CASE_HASH });
+  expect(investigation.pinned_case).toEqual({ slug: CASE_SLUG, version: CASE_VERSION });
+  expect(investigation.pinned_case).not.toHaveProperty('hash');
   expect(investigation.pinned_case).not.toHaveProperty('title');
   expect(investigation.pinned_case).not.toHaveProperty('hypotheses');
+});
+
+// ------------------------------------- record-shape criterion 2: no digest read over the case's content
+
+it("pins the same slug and version regardless of what the case's own hash holds, deriving or reading no digest over its content", async () => {
+  const withHashOne = await buildInvestigation(validOptions({ case: aCase({ hash: 'hash-one' }) }));
+  const withHashTwo = await buildInvestigation(validOptions({ case: aCase({ hash: 'hash-two' }) }));
+
+  expect(withHashOne.pinned_case).toEqual({ slug: CASE_SLUG, version: CASE_VERSION });
+  expect(withHashOne.pinned_case).toEqual(withHashTwo.pinned_case);
+});
+
+// --------------------------------------------------------------- record-shape criterion 3: written_at
+
+it('carries written_at from the given options, unchanged', async () => {
+  const options = validOptions({ written_at: '2025-01-02T03:04:05.000Z' });
+
+  const investigation = await buildInvestigation(options);
+
+  expect(investigation.written_at).toBe('2025-01-02T03:04:05.000Z');
+});
+
+// ------------------------------------------------- record-shape criterion 4: refuses without written_at
+
+it('refuses to build when written_at is missing entirely, rather than building a record with no datetime of its own write', async () => {
+  const options = validOptionsWithout('written_at');
+
+  await expect(buildInvestigation(options)).rejects.toThrow();
+});
+
+// ---------- excludes UNDERDETERMINED: refusing to build without ticket_ref, which the specification declares optional
+
+it('does not refuse to build when ticket_ref is absent, since domain/investigation/investigation declares it optional', async () => {
+  const options = validOptionsWithout('ticket_ref');
+
+  await expect(buildInvestigation(options)).resolves.toBeDefined();
+});
+
+// ---- excludes UNDERDETERMINED: a factory storing only written_at, the pinned slug/version, model, prompt_version and evidence
+
+it('carries id, requester, narrative, evaluations, assessment, cost and durations from the given options, unchanged — not only the four replay pins and written_at', async () => {
+  const evaluations = [aConfirmedEvaluation('h1'), aConfirmedEvaluation('h2')];
+  const assessment = anAssessment({ text: 'a distinctive assessment text' });
+  const cost = aCost({ calls: 9 });
+  const durations = aDurations({ total: 99 });
+  const options = validOptions({
+    id: 'investigation-42',
+    requester: 'requester-42',
+    narrative: 'a distinctive narrative',
+    evaluations,
+    assessment,
+    cost,
+    durations,
+  });
+
+  const investigation = await buildInvestigation(options);
+
+  expect(investigation.id).toBe('investigation-42');
+  expect(investigation.requester).toBe('requester-42');
+  expect(investigation.narrative).toBe('a distinctive narrative');
+  expect(investigation.evaluations).toEqual(evaluations);
+  expect(investigation.assessment).toEqual(assessment);
+  expect(investigation.cost).toEqual(cost);
+  expect(investigation.durations).toEqual(durations);
 });
 
 it('copies model, prompt_version and evidence straight from the given options, unchanged', async () => {

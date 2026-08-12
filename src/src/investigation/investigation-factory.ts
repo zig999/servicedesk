@@ -28,11 +28,30 @@
 // nothing else beyond the case aggregate's own types, its resolution
 // behavior, this context's own sibling plain-data types and the typed
 // errors.
+//
+// pinnedCaseOf below materializes the pinned-case relationship by exactly
+// slug and version, and reads nothing else off the given case — in
+// particular it never reads or derives a digest over the case's content
+// (rules/investigation/replay-is-pinned's own "slug and version name one
+// content without a digest over it", narrowed here from the three fields,
+// including a hash, an earlier delivery carried:
+// task/case-and-investigation-model/investigation-record-shape). written_at
+// is likewise never computed here: it arrives as a required option and is
+// copied straight through unchanged, the same as model and prompt_version
+// — this module computes nothing about the world, and a write's own instant
+// is exactly that. Given no written_at at all — a caller not itself
+// type-checked at runtime, or data arriving from an untyped boundary, can
+// still omit it despite the declared type — refuseMissingWrittenAt below
+// throws WrittenAtRequiredError before anything else runs, the same
+// throw-a-typed-error-before-constructing-anything convention
+// refuseAttributesNotInGlossary and refuseTotalityViolations already keep
+// for their own refusals.
 
 import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
 import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
 import { SubjectAttributeNotInGlossaryError } from '../errors/subject-attribute-not-in-glossary.error.js';
+import { WrittenAtRequiredError } from '../errors/written-at-required.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import type { Cost } from './cost.js';
@@ -64,9 +83,10 @@ export type BuildInvestigationOptions = {
   /**
    * The pinned case, whole — the source of both the collection plan and
    * the required hypotheses this call checks totality against, and of the
-   * built value's own pinned_case (slug, version, hash). Never held onto
-   * beyond this call: only these three identifying attributes travel into
-   * the built Investigation.
+   * built value's own pinned_case (slug, version). Never held onto beyond
+   * this call: only these two identifying attributes travel into the built
+   * Investigation, and no digest over the rest of its content is ever read
+   * (rules/investigation/replay-is-pinned).
    */
   readonly case: Case;
   readonly prompt_version: string;
@@ -76,6 +96,16 @@ export type BuildInvestigationOptions = {
   readonly assessment: Assessment;
   readonly cost: Cost;
   readonly durations: Durations;
+  /**
+   * When this investigation's one write happened, as an ISO-8601 instant —
+   * required; refused at runtime where it is absent, by
+   * refuseMissingWrittenAt below, rather than left to the declared type
+   * alone (domain/investigation/investigation's own written_at,
+   * task/case-and-investigation-model/investigation-record-shape). Copied
+   * straight through into the built value unchanged otherwise, never
+   * computed here.
+   */
+  readonly written_at: string;
   /**
    * The consumed glossary-source port (contracts/investigation/glossary-source),
    * read once to check that every attribute the subject names is one the
@@ -89,9 +119,11 @@ export type BuildInvestigationOptions = {
 
 /**
  * Builds the whole Investigation from every completed stage's own output
- * (task/investigation-lifecycle/investigation-factory): assembles the
- * subject from the given raw type and attribute-value set, refusing where it
- * carries no attribute-value at all
+ * (task/investigation-lifecycle/investigation-factory): refuses first,
+ * before anything else runs, where no written_at was given at all
+ * (task/case-and-investigation-model/investigation-record-shape); assembles
+ * the subject from the given raw type and attribute-value set, refusing
+ * where it carries no attribute-value at all
  * (rules/investigation/a-subject-carries-at-least-one-attribute, enforced by
  * subject.ts's own buildSubject) or where it names an attribute the glossary
  * does not hold (rules/investigation/a-subject-attribute-is-drawn-from-the-glossary,
@@ -102,12 +134,13 @@ export type BuildInvestigationOptions = {
  * exactly once each (rules/investigation/one-evidence-per-collected-concept,
  * rules/investigation/one-evaluation-per-required-hypothesis); otherwise
  * assembles the whole value, carrying the built subject unchanged, pinning
- * the case by slug, version and hash alongside the model, the prompt version
+ * the case by slug and version alongside the model, the prompt version
  * and the evidence (rules/investigation/replay-is-pinned), and copying every
- * other attribute from the given options unchanged.
+ * other attribute — including written_at — from the given options unchanged.
  */
 export async function buildInvestigation(options: BuildInvestigationOptions): Promise<Investigation> {
   const { case: theCase, evidence, evaluations, subjectType, subjectAttributes, glossary } = options;
+  refuseMissingWrittenAt(options.written_at);
   const subject = buildSubject(subjectType, subjectAttributes);
   await refuseAttributesNotInGlossary(subject, glossary);
   refuseTotalityViolations(theCase, evidence, evaluations);
@@ -125,6 +158,7 @@ export async function buildInvestigation(options: BuildInvestigationOptions): Pr
     assessment: options.assessment,
     cost: options.cost,
     durations: options.durations,
+    written_at: options.written_at,
   };
 }
 
@@ -152,9 +186,31 @@ async function refuseAttributesNotInGlossary(subject: Subject, glossary: IGlossa
   }
 }
 
-/** The pinned-case relationship materialized from the given case's own three identifying attributes, never the whole case (domain/investigation/investigation, src/case/case.ts). */
+/**
+ * Refuses a build given no written_at at all, before anything else runs —
+ * the TypeScript type alone cannot stop this at runtime, since a caller not
+ * itself type-checked, or data arriving from an untyped boundary, can still
+ * omit it (domain/investigation/investigation's own written_at,
+ * task/case-and-investigation-model/investigation-record-shape) — the same
+ * throw-before-constructing-anything convention refuseAttributesNotInGlossary
+ * above and refuseTotalityViolations below already keep for their own
+ * refusals.
+ */
+function refuseMissingWrittenAt(writtenAt: string | undefined): void {
+  if (writtenAt === undefined) {
+    throw new WrittenAtRequiredError(writtenAt);
+  }
+}
+
+/**
+ * The pinned-case relationship materialized from the given case's own two
+ * identifying attributes, never the whole case and never a digest over its
+ * content (domain/investigation/investigation, src/case/case.ts,
+ * rules/investigation/replay-is-pinned's own "slug and version name one
+ * content without a digest over it").
+ */
 function pinnedCaseOf(theCase: Case): PinnedCase {
-  return { slug: theCase.slug, version: theCase.version, hash: theCase.hash };
+  return { slug: theCase.slug, version: theCase.version };
 }
 
 /**

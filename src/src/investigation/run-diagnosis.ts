@@ -35,6 +35,12 @@
 // second time — and only once that write has concluded
 // (rules/investigation/an-investigation-is-written-once,
 // rules/investigation/replay-is-pinned).
+//
+// The built Investigation's own written_at (buildInvestigationOptions below,
+// task/case-and-investigation-model/investigation-record-shape) is stamped
+// from this same propagated `now` rather than a second clock read, since
+// nothing else instant-shaped reaches this composition and the one write
+// that follows happens shortly after with no further stage in between.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { Case } from '../case/case.js';
@@ -228,7 +234,16 @@ type BuildInvestigationArgs = {
   readonly assessment: Assessment;
 };
 
-/** buildInvestigation's own options, assembled from this call's given options and every completed stage's own output. */
+/**
+ * buildInvestigation's own options, assembled from this call's given options
+ * and every completed stage's own output. written_at is derived from this
+ * whole run's own `now` — the one instant already propagated into this
+ * composition rather than a fresh clock read taken here
+ * (this module's own "never reads the system clock internally"); the built
+ * Investigation is a single immutable value with no later step to stamp a
+ * closer instant onto it, so `now` is the nearest instant to the one write
+ * that follows shortly after (task/case-and-investigation-model/investigation-record-shape).
+ */
 function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestigationOptions {
   const { options, evidence, evaluations, assessment } = args;
   return {
@@ -246,6 +261,7 @@ function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestiga
     assessment,
     cost: options.cost,
     durations: options.durations,
+    written_at: new Date(options.now).toISOString(),
     glossary: options.glossary,
   };
 }

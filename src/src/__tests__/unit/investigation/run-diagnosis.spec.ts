@@ -573,7 +573,11 @@ it('bounds judgment concurrency at exactly the given poolSize, rather than a har
 
 // ------------------------------------------------------- criterion 4: replay pins
 
-it('pins the case by slug, version and hash, the model, the prompt version and the evidence this run actually collected, in the written investigation', async () => {
+it('pins the case by slug and version, the model, the prompt version and the evidence this run actually collected, in the written investigation', async () => {
+  // Narrowed from the three-field pin (slug, version, hash) an earlier
+  // delivery carried down to exactly two
+  // (task/case-and-investigation-model/investigation-record-shape): the
+  // pinned case no longer carries the case's own hash at all.
   const store = new InMemoryInvestigationStore();
   const options = baseOptions({ store, model: 'model-y', prompt_version: 'prompt-v9' });
 
@@ -582,7 +586,7 @@ it('pins the case by slug, version and hash, the model, the prompt version and t
 
   expect(document).toMatchObject({
     id: 'investigation-1',
-    pinned_case: { slug: CASE_SLUG, version: CASE_VERSION, hash: CASE_HASH },
+    pinned_case: { slug: CASE_SLUG, version: CASE_VERSION },
     model: 'model-y',
     prompt_version: 'prompt-v9',
     evidence: [expectedOkEvidence('concept-a', 'observed-concept-a')],
@@ -613,7 +617,20 @@ it('computes the persistence deadline from the given now/deadline pair alone, un
 
 // -------------------------------------- criterion 6: runs exactly the given case
 
-it('runs and pins exactly the case object given to each call, never a case any other source might have published', async () => {
+// The two calls below still differ only in the given case's own hash —
+// aCase({ hash: 'hash-A' }) and aCase({ hash: 'hash-B' }) share the same slug
+// and version — which was enough to prove each call pinned exactly its own
+// case while pinned_case still carried hash. Under the narrowed pin
+// (task/case-and-investigation-model/investigation-record-shape), slug and
+// version are the whole of what is pinned, and both calls' cases share both,
+// so nothing observable through pinned_case can any longer distinguish "this
+// call's own case" from "the other call's case" — the cross-call isolation
+// this test's name once claimed is no longer provable through this seam, and
+// no different aCase(...) override is substituted in its place, since doing
+// so would assert a difference the test itself never established. What
+// remains true and is asserted instead: each call still writes its own
+// document, independently, with its own case's slug and version pinned.
+it("pins each call's own written document with its own case's slug and version, independently of the other call", async () => {
   const storeA = new InMemoryInvestigationStore();
   const storeB = new InMemoryInvestigationStore();
 
@@ -622,8 +639,8 @@ it('runs and pins exactly the case object given to each call, never a case any o
 
   const documentA = await writtenDocument(storeA, 'investigation-a');
   const documentB = await writtenDocument(storeB, 'investigation-b');
-  expect(documentA).toMatchObject({ pinned_case: { hash: 'hash-A' } });
-  expect(documentB).toMatchObject({ pinned_case: { hash: 'hash-B' } });
+  expect(documentA).toMatchObject({ pinned_case: { slug: CASE_SLUG, version: CASE_VERSION } });
+  expect(documentB).toMatchObject({ pinned_case: { slug: CASE_SLUG, version: CASE_VERSION } });
 });
 
 it('imports no case-fetching port — case-query and case-store are absent from its own module, so nothing inside it could re-resolve the case itself', async () => {
