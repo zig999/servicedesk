@@ -320,14 +320,15 @@ function referralProblems(value: unknown, subject: string): string[] {
 /**
  * The aggregate as the document declares it: exactly the declared
  * attributes, so nothing undeclared travels in, and the hypotheses in the
- * document's own order — the precedence the experts affirm, which
- * resolve-outcome will consume
- * (rules/knowledge/hypotheses-are-ordered-by-precedence) — never reordered
- * and never keyed by name. The optional consolidation register travels
- * through exactly where the document declares it
- * (domain/knowledge/consolidation-register) and is left off the held case
- * entirely where the document leaves it undeclared, rather than carried as
- * an explicit undefined.
+ * document's own array order — never reordered and never keyed by name.
+ * The precedence collection-plan and resolve-outcome consult is each
+ * hypothesis's own declared position instead of that array arrangement
+ * (rules/knowledge/hypotheses-are-ordered-by-precedence,
+ * task/case-and-investigation-model/precedence-from-position). The optional
+ * consolidation register travels through exactly where the document
+ * declares it (domain/knowledge/consolidation-register) and is left off the
+ * held case entirely where the document leaves it undeclared, rather than
+ * carried as an explicit undefined.
  */
 function heldCase(document: Case): Case {
   return {

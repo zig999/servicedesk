@@ -14,6 +14,19 @@
 // case-document-modules.spec.ts, which reads every module under src/case
 // from disk and so already sweeps case-resolution.ts; it is reused rather
 // than duplicated.
+//
+// Fix folded in by task/case-and-investigation-model/precedence-from-position
+// (this file's own task, task/case-model/case-resolution, is closed and has
+// no re-delivery route): the test that used to pin "reversing the
+// declaration flips which confirmed hypothesis determines" stated the
+// pre-position behavior this task's own criterion 1 explicitly supersedes.
+// Its fixture already kept each hypothesis's own declared position fixed by
+// name while only varying which array slot it sat in — a meaningful
+// invariant survives under position-based precedence, the opposite of the
+// one it used to state — so it was adjusted in place, kept at the same test
+// name's spot, to assert that instead: reversing the array changes nothing.
+// New tests proving this task's other criteria sit beside the existing ones,
+// in the same file, per TST-04.
 import { expect, it } from 'vitest';
 import type { Case, Hypothesis, Resolution } from '../../../case/case.js';
 import type { Verdicts } from '../../../case/case-resolution.js';
@@ -114,6 +127,48 @@ function workedHypotheses(): readonly Hypothesis[] {
   ];
 }
 
+/**
+ * The worked example's four hypotheses again, with every array slot
+ * deliberately not matching its own declared position — proving
+ * task/case-and-investigation-model/precedence-from-position's own claim
+ * that resolve-outcome and collection-plan read position and never array
+ * arrangement.
+ */
+function scrambledWorkedHypotheses(): readonly Hypothesis[] {
+  return [
+    hypothesisOf(
+      'onu-offline',
+      ['estado-do-equipamento'],
+      resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
+    ),
+    hypothesisOf(
+      'bloqueio-financeiro',
+      ['situacao-financeira'],
+      resolutionOf('bloqueio-financeiro', 'orientar-pagamento', 'atendimento'),
+    ),
+    hypothesisOf(
+      'ordem-em-andamento',
+      ['ordens-em-andamento'],
+      resolutionOf('intervencao-tecnica-em-curso', 'informar-ordem', 'atendimento'),
+    ),
+    hypothesisOf(
+      'incidente-regional',
+      ['incidentes-na-regiao'],
+      resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
+    ),
+  ];
+}
+
+/** The worked example's own verdicts: regional-incident and onu-offline confirmed, the other two refuted. */
+function regionalAndOnuOfflineConfirmedVerdicts(): Verdicts {
+  return {
+    'incidente-regional': 'confirmed',
+    'ordem-em-andamento': 'refuted',
+    'bloqueio-financeiro': 'refuted',
+    'onu-offline': 'confirmed',
+  };
+}
+
 /** A valid aggregate around the given hypotheses — the shape the parser has already admitted. */
 function caseWith(hypotheses: readonly Hypothesis[]): Case {
   return {
@@ -168,6 +223,23 @@ it('answers a concept one hypothesis collects twice exactly once', () => {
   const plan = collectionPlan(repeating);
 
   expect(plan).toEqual(['incidentes-na-regiao']);
+});
+
+it("orders and dedupes the collection plan by each hypothesis's own declared position, never by the array's own arrangement", () => {
+  // Declared positions: incidente-regional 1, ordem-em-andamento 2,
+  // bloqueio-financeiro 3 — the array below places them in a different
+  // order (3, 1, 2), and bloqueio-financeiro repeats incidente-regional's
+  // own concept, so an array-order reader answers a different sequence
+  // than a position reader does.
+  const scrambled = caseWith([
+    collectingHypothesis('bloqueio-financeiro', ['situacao-financeira', 'incidentes-na-regiao']),
+    collectingHypothesis('incidente-regional', ['incidentes-na-regiao']),
+    collectingHypothesis('ordem-em-andamento', ['ordens-em-andamento']),
+  ]);
+
+  const plan = collectionPlan(scrambled);
+
+  expect(plan).toEqual(['incidentes-na-regiao', 'ordens-em-andamento', 'situacao-financeira']);
 });
 
 // ---------------------------------------------------------------- requires-evaluation-of
@@ -228,11 +300,13 @@ it('leaves a hypothesis confirmed after the determining one holding its confirme
   expect(resolved.determining).toBe('incidente-regional');
 });
 
-it('follows the declared order alone, so reversing the declaration flips which confirmed hypothesis determines', () => {
-  // Both confirmed; the verdicts record deliberately lists onu-offline
-  // first and the names' alphabetical order puts incidente-regional first,
-  // so a resolver following either of those orders fails on one of the two
-  // declarations below.
+it("follows each hypothesis's own declared position alone, so reversing the array arrangement changes nothing about which confirmed hypothesis determines", () => {
+  // Fix, task/case-and-investigation-model/precedence-from-position: this
+  // test used to pin the opposite fact — that reversing the array flipped
+  // the answer — which that task's own criterion 1 explicitly supersedes.
+  // incidente-regional's own declared position (1) precedes onu-offline's
+  // (4) regardless of which array slot either object sits in, so reversing
+  // their arrangement must not flip the answer any more.
   const regional = hypothesisOf(
     'incidente-regional',
     ['incidentes-na-regiao'],
@@ -245,11 +319,52 @@ it('follows the declared order alone, so reversing the declaration flips which c
   );
   const bothConfirmed: Verdicts = { 'onu-offline': 'confirmed', 'incidente-regional': 'confirmed' };
 
-  const declaredRegionalFirst = resolveOutcome(caseWith([regional, onu]), bothConfirmed);
-  const declaredOnuFirst = resolveOutcome(caseWith([onu, regional]), bothConfirmed);
+  const regionalDeclaredFirstInArray = resolveOutcome(caseWith([regional, onu]), bothConfirmed);
+  const onuDeclaredFirstInArray = resolveOutcome(caseWith([onu, regional]), bothConfirmed);
 
-  expect(declaredRegionalFirst.determining).toBe('incidente-regional');
-  expect(declaredOnuFirst.determining).toBe('onu-offline');
+  expect(regionalDeclaredFirstInArray.determining).toBe('incidente-regional');
+  expect(onuDeclaredFirstInArray.determining).toBe('incidente-regional');
+});
+
+it('answers with the earlier-position hypothesis of two confirmed ones that are neither the first nor the last declared position', () => {
+  // ordem-em-andamento (position 2) and bloqueio-financeiro (position 3)
+  // are both confirmed; the outer two are refuted, so this isolates the
+  // precedence comparison to a pair that sits in the middle of the range,
+  // over the array whose own arrangement matches none of the positions.
+  const theCase = caseWith(scrambledWorkedHypotheses());
+  const verdicts: Verdicts = {
+    'incidente-regional': 'refuted',
+    'ordem-em-andamento': 'confirmed',
+    'bloqueio-financeiro': 'confirmed',
+    'onu-offline': 'refuted',
+  };
+
+  const resolved = resolveOutcome(theCase, verdicts);
+
+  expect(resolved.determining).toBe('ordem-em-andamento');
+});
+
+it("answers with regional-incident's own outcome, referral and determining role over the scenario's declared precedence even when the hypotheses array does not arrange them that way", () => {
+  const theCase = caseWith(scrambledWorkedHypotheses());
+  const verdicts = regionalAndOnuOfflineConfirmedVerdicts();
+
+  const resolved = resolveOutcome(theCase, verdicts);
+
+  expect(resolved).toEqual({
+    outcome: 'incidente-regional',
+    referral: { action: 'informar-prazo', recipient: 'atendimento' },
+    determining: 'incidente-regional',
+  });
+});
+
+it('keeps onu-offline confirmed and marks it in no way in that same scrambled-array resolution', () => {
+  const theCase = caseWith(scrambledWorkedHypotheses());
+  const verdicts = regionalAndOnuOfflineConfirmedVerdicts();
+
+  const resolved = resolveOutcome(theCase, verdicts);
+
+  expect(verdicts).toEqual(regionalAndOnuOfflineConfirmedVerdicts());
+  expect(resolved.determining).toBe('incidente-regional');
 });
 
 it('never lets a confirmed verdict under a name the case does not declare determine anything', () => {

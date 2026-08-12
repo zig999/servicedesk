@@ -48,10 +48,10 @@ export type Hypothesis = {
    * case's ordering used to carry by arrangement alone
    * (domain/knowledge/hypothesis,
    * rules/knowledge/a-hypothesis-position-is-unique-within-its-case).
-   * resolve-outcome still reads the hypotheses' array order rather than
-   * this field until
-   * task/case-and-investigation-model/precedence-from-position moves it
-   * (rules/knowledge/hypotheses-are-ordered-by-precedence).
+   * collection-plan and resolve-outcome read this field for the precedence
+   * they consult, never the hypotheses array's own arrangement
+   * (rules/knowledge/hypotheses-are-ordered-by-precedence,
+   * task/case-and-investigation-model/precedence-from-position).
    */
   readonly position: number;
   /** The short business prose the judgment applies (rules/knowledge/a-hypothesis-declares-a-criterion). */
@@ -70,13 +70,12 @@ export type Hypothesis = {
  * version alone name one content without one
  * (rules/knowledge/a-case-version-is-written-once,
  * task/case-and-investigation-model/case-aggregate-shape). The hypotheses
- * are held in the document's declared order — the precedence the experts
- * affirm and, once
- * task/case-and-investigation-model/precedence-from-position moves
- * resolve-outcome onto each hypothesis's own declared position, the fact
- * that order records
- * (rules/knowledge/hypotheses-are-ordered-by-precedence) — so the aggregate
- * never reorders them and never keys them by name.
+ * are held in the document's own declared array order, never reordered and
+ * never keyed by name; the precedence collection-plan and resolve-outcome
+ * consult is each hypothesis's own declared position instead of that array
+ * arrangement
+ * (rules/knowledge/hypotheses-are-ordered-by-precedence,
+ * task/case-and-investigation-model/precedence-from-position).
  */
 export type Case = {
   /** The case's identity (rules/knowledge/a-slug-identifies-one-case). */
@@ -99,7 +98,12 @@ export type Case = {
    * adapter defaults to.
    */
   readonly consolidation_register?: ConsolidationRegister;
-  /** At least one (rules/knowledge/a-case-has-at-least-one-hypothesis), in declared precedence order. */
+  /**
+   * At least one (rules/knowledge/a-case-has-at-least-one-hypothesis), in
+   * the document's own declared array order — never the precedence order,
+   * which each hypothesis's own position states instead
+   * (rules/knowledge/hypotheses-are-ordered-by-precedence).
+   */
   readonly hypotheses: readonly Hypothesis[];
 };
 

@@ -18,6 +18,14 @@
       "task": "task/case-and-investigation-model/investigation-record-shape"
     },
     {
+      "id": "implementation/case-and-investigation-model/precedence-from-position",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/precedence-from-position.md",
+      "title": "Resolve-outcome and collection-plan read precedence from position",
+      "summary": "case-resolution.ts's collectionPlan and resolveOutcome now order theCase.hypotheses by each one's own declared position rather than by the array's own arrangement, leaving requiresEvaluationOf and every downstream caller untouched.",
+      "task": "task/case-and-investigation-model/precedence-from-position"
+    },
+    {
       "id": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "kind": "implementation",
       "file": "implementation/case-and-investigation-model/replay-by-slug-and-version.md",
@@ -80,6 +88,14 @@
       "title": "Proof for investigation carrying written_at and pinning its case by slug and version",
       "summary": "Five tests proving the pinned case is narrowed to exactly slug and version with no digest ever read, that a built investigation carries written_at and refuses its absence at runtime, and excluding both UNDERDETERMINED candidates the task's Notes name — plus three pre-existing test files, from now-closed initiatives, brought into agreement with this legitimate shape change.",
       "task": "task/case-and-investigation-model/investigation-record-shape"
+    },
+    {
+      "id": "proof/case-and-investigation-model/precedence-from-position",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/precedence-from-position.md",
+      "title": "Precedence-from-position — proof, and a fix to a superseded pre-existing test",
+      "summary": "New tests proving that resolve-outcome and collection-plan now read each hypothesis's own declared position rather than array arrangement, plus an in-place fix to the one pre-existing test that pinned the opposite, now-superseded behavior.",
+      "task": "task/case-and-investigation-model/precedence-from-position"
     },
     {
       "id": "proof/case-and-investigation-model/replay-by-slug-and-version",
@@ -212,6 +228,42 @@
     {
       "from": "implementation/case-and-investigation-model/investigation-record-shape",
       "to": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/precedence-from-position",
+      "to": "task/case-and-investigation-model/precedence-from-position",
       "kind": "implements",
       "at": "the path"
     },
@@ -500,6 +552,12 @@
     {
       "from": "proof/case-and-investigation-model/investigation-record-shape",
       "to": "implementation/case-and-investigation-model/investigation-record-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/precedence-from-position",
+      "to": "implementation/case-and-investigation-model/precedence-from-position",
       "kind": "proves",
       "at": "the path"
     },
