@@ -1,0 +1,8 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/persistence/migration-runner.ts(59,43): error TS2344: Type 'IFilenameRow' does not satisfy the constraint 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'IFilenameRow'.
+src/persistence/migration-runner.ts(65,43): error TS2344: Type 'IBookkeepingExistsRow' does not satisfy the constraint 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'IBookkeepingExistsRow'.

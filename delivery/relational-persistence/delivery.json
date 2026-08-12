@@ -34,6 +34,14 @@
       "task": "task/relational-substrate/database-connection"
     },
     {
+      "id": "implementation/relational-substrate/migration-step",
+      "kind": "implementation",
+      "file": "implementation/relational-substrate/migration-step.md",
+      "title": "The runnable migration step, its CLI entry, and the suite's own global setup",
+      "summary": "A shared migration runner applied idempotently by a new CLI entry point and by vitest's own global setup, both reading the connection URL from environment configuration alone; its own bookkeeping queries are schema-qualified against Neon's pooler leaking ambient search_path across connections.",
+      "task": "task/relational-substrate/migration-step"
+    },
+    {
       "id": "implementation/relational-substrate/schema-migrations",
       "kind": "implementation",
       "file": "implementation/relational-substrate/schema-migrations.md",
@@ -72,6 +80,14 @@
       "title": "Proof for task/relational-substrate/database-connection",
       "summary": "New tests over env.ts's now-required DATABASE_URL, database-connection.ts's URL-only pg Pool construction, a repo-wide absence of deployment-provisioning artifacts, and a cross-directory import audit of case/glossary/capability-registry/investigation that closes criterion 4 and excludes all three UNDERDETERMINED shapes this task's Notes name; dependency-manifest.spec.ts's own pre-existing admitted/forbidden dependency lists are updated so pg -- newly authorized by this task's criterion 5 -- is admitted rather than forbidden, since its prior assertions were written against constraints/the-mvp-persists-to-no-database, a node the current specification no longer holds (superseded by constraints/the-system-persists-to-one-relational-database and constraints/the-database-is-externally-provisioned); and, per the launcher's explicit, narrowly-scoped human approval for this delivery only, two pre-existing fixtures from the closed live-engine-mvp initiative (env.spec.ts's validEnvSource() helper and diagnose-server.factory.spec.ts's literal Env object) each gain a placeholder DATABASE_URL so they keep typechecking and passing against the now-widened Env, with no assertion in either file changed.",
       "task": "task/relational-substrate/database-connection"
+    },
+    {
+      "id": "proof/relational-substrate/migration-step",
+      "kind": "proof",
+      "file": "proof/relational-substrate/migration-step.md",
+      "title": "Proof for the migration step, its CLI entry, and the suite's own global setup",
+      "summary": "Tests applyPendingMigrations directly (ordering, idempotent re-run, and a script's own failure) against both a mocked filesystem/driver and a real, externally-provisioned PostgreSQL database, prove the manifest exposes the step as npm run migrate, prove vitest's own global setup runs before any test and never substitutes a default connection, and audit the whole test tree for the one behavior criterion 4 forbids outright.",
+      "task": "task/relational-substrate/migration-step"
     },
     {
       "id": "proof/relational-substrate/schema-migrations",
@@ -218,6 +234,24 @@
     {
       "from": "implementation/relational-substrate/database-connection",
       "to": "task/relational-substrate/database-connection",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-substrate/migration-step",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-substrate/migration-step",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/relational-substrate/migration-step",
+      "to": "task/relational-substrate/migration-step",
       "kind": "implements",
       "at": "the path"
     },
@@ -434,6 +468,12 @@
     {
       "from": "proof/relational-substrate/database-connection",
       "to": "implementation/relational-substrate/database-connection",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-substrate/migration-step",
+      "to": "implementation/relational-substrate/migration-step",
       "kind": "proves",
       "at": "the path"
     },

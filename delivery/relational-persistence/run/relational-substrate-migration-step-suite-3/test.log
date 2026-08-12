@@ -1,0 +1,164 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:61373) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61426) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 43ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 45ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 123ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 45ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (50 tests) 87ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 138ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (23 tests) 54ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (25 tests) 54ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 292ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 34ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 49ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 44ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 43ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 84ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 972ms
+   ✓ answers 200 with the assessment the diagnose call produced, for a request naming an existing case, subject, narrative and requester  722ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 52ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 228ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 17ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 33ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 31ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 282ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 168ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 29ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 240ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 120ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 329ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 27ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 136ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (4 tests) 220ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 19ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 853ms
+   ✓ writes an investigation to the file-backed store for the request, readable back through createInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment  824ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 84ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 92ms
+(node:62179) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 248ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 32ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 38ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (7 tests) 1670ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  671ms
+   ✓ answers 200 when the request supplies a ticket_ref  305ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 42ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 69ms
+ ✓ src/__tests__/unit/config/env.spec.ts (7 tests) 22ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 45ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 166ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 44ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 54ms
+(node:62416) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (2 tests) 40ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 38ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 194ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 169ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 116ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 93ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 96ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 20ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 139ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 42ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 6ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 40ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 26ms
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 2740ms
+   ✓ has already recorded every migration file as applied by the time this spec's own first test runs, proving the suite's own setup ran before any test  1427ms
+   ✓ resolves without error when called the same way vitest itself calls it, against the real configured connection  1302ms
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests | 1 failed) 4979ms
+   × leaves an empty database holding the schema the scripts describe, and records every file as applied 1153ms
+     → expected false to be true // Object.is equality
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  1191ms
+   ✓ raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied  932ms
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 28324ms
+   ✓ applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  1871ms
+   ✓ persists and reads back a full case, hypothesis, resolution, referral and its collects  1058ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  1982ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  751ms
+   ✓ holds every domain column NOT NULL except exactly the five columns the model declares optional  514ms
+   ✓ refuses storing a case version whose title is absent  625ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  896ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  1340ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  3292ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1359ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  749ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1206ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  453ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  597ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  596ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  453ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1051ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1050ms
+   ✓ refuses a second case stored under a slug already in use  599ms
+   ✓ refuses storing the same case version a second time under its own slug and version  742ms
+   ✓ refuses a second hypothesis of one case sharing an already-used position  894ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  891ms
+   ✓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them  1042ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > leaves an empty database holding the schema the scripts describe, and records every file as applied
+AssertionError: expected false to be true // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts:78:35
+     76| 
+     77|   const { rows: sentinelRows } = await client.query<{ exists: boolean …
+     78|   expect(sentinelRows[0]?.exists).toBe(true);
+       |                                   ^
+     79| });
+     80| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 59 passed (60)
+      Tests  1 failed | 524 passed (525)
+   Start at  14:40:50
+   Duration  32.20s (transform 6.97s, setup 0ms, collect 22.01s, tests 44.56s, environment 39ms, prepare 19.77s)
+

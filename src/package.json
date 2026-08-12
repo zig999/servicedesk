@@ -9,6 +9,7 @@
     "secret-scan": "secretlint \"**/*\"",
     "test": "vitest run --passWithNoTests",
     "build": "tsc -p tsconfig.build.json",
+    "migrate": "node dist/migrate.js",
     "start": "node dist/index.js"
   },
   "secretlint": {
