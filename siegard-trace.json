@@ -218,6 +218,62 @@
       ]
     },
     {
+      "node": "constraints/the-schema-replays-from-its-scripts",
+      "digest": "sha256:0e4f0f07ed8bc88f4d18b262f07794c34f68cd409d838eb69f37491a448161cc",
+      "files": [
+        {
+          "path": "src/migrations/0001-schema-migrations.sql",
+          "digest": "sha256:1c9829013cfacbfd6e87741e1f5c59b9b77116fa93b4d8d8703adbf082ea121e"
+        },
+        {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
+        {
+          "path": "src/migrations/0003-capability-registry.sql",
+          "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
+        },
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
+          "path": "src/migrations/0006-case-version-immutability.sql",
+          "digest": "sha256:2608f685356bc70060ac5d38e21cafbc013466a1f7bf2ac3f4e479da64522ff9"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "digest": "sha256:45b0cb768f67a9815608b55dc4adb350d1741a49e1782c393c9e6be74293a86a",
+      "files": [
+        {
+          "path": "src/migrations/0001-schema-migrations.sql",
+          "digest": "sha256:1c9829013cfacbfd6e87741e1f5c59b9b77116fa93b4d8d8703adbf082ea121e"
+        },
+        {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
+        {
+          "path": "src/migrations/0003-capability-registry.sql",
+          "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
+        },
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        }
+      ]
+    },
+    {
       "node": "contracts/glossary/glossary-query",
       "digest": "sha256:2c7c3030e0d986ef7fb64e34d190b319de91d40db4d88a7f610d2a505e759095",
       "files": [
@@ -420,6 +476,10 @@
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
         {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
+        {
           "path": "src/src/fixtures/glossary/action.json",
           "digest": "sha256:e261362c8858759fa7056816828533bfc6a9a28a74459385b2e3bcdd759a11ec"
         },
@@ -441,6 +501,10 @@
       "node": "domain/glossary/concept",
       "digest": "sha256:bacfce81580dad7e4bd19448c8c7e1474f62f07d0bda54065cbc79cda121e37a",
       "files": [
+        {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
         {
           "path": "src/src/fixtures/glossary/concept.json",
           "digest": "sha256:ce5d8043d702283b4470dfb9fe5b1fe1680d0936633c393e64dd2519c46eba32"
@@ -464,6 +528,10 @@
       "digest": "sha256:ed6df017623951445ffc8259195aa7999eef3c2f5feae133f17e79cc59778290",
       "files": [
         {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
+        {
           "path": "src/src/fixtures/glossary/outcome.json",
           "digest": "sha256:42a57350103c44958e6efe9f5fb9fd6a4b10974543180564a268829f486a9505"
         },
@@ -485,6 +553,10 @@
       "node": "domain/glossary/recipient",
       "digest": "sha256:e214071bc54a45d4e1b7591b418289d88dddb6a003931af68e07b09cf9d07814",
       "files": [
+        {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
         {
           "path": "src/src/fixtures/glossary/recipient.json",
           "digest": "sha256:103537d54e498734089fe10bfef5699bd11a8166dbf81f3d17bcfa56d5eb3eb6"
@@ -508,6 +580,10 @@
       "digest": "sha256:c2e70117fe4dbf4d9845c00cd659b7e09cd216563b3cfeef87f8858e77dfbc20",
       "files": [
         {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
+        {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
@@ -525,6 +601,10 @@
       "node": "domain/glossary/subject-type",
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
+        {
+          "path": "src/migrations/0002-glossary-vocabulary.sql",
+          "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
+        },
         {
           "path": "src/src/fixtures/glossary/subject-type.json",
           "digest": "sha256:fd71afe5a8b2f349f508407158c90392dade308aa10464d31401b6fdde6207ab"
@@ -547,6 +627,10 @@
       "node": "domain/integration/capability",
       "digest": "sha256:7359eab4b5cb7fc670e4a09bc80a9e35d770ab9c84d3c0004e439c778bb59d2c",
       "files": [
+        {
+          "path": "src/migrations/0003-capability-registry.sql",
+          "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
+        },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:245ee624924c74254b58961dfea8e43c3bb19b87c7a44011e9ad19d4972f7724"
@@ -573,6 +657,10 @@
       "node": "domain/integration/capability-nature",
       "digest": "sha256:4113448fd9925bba81ed276bdf0c62f905929933d463f5ee40962b8df64dfa9c",
       "files": [
+        {
+          "path": "src/migrations/0003-capability-registry.sql",
+          "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
+        },
         {
           "path": "src/src/capability-registry/capability.ts",
           "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
@@ -601,6 +689,10 @@
       "node": "domain/investigation/assessment",
       "digest": "sha256:bd017d335f0ec1429614995bf1df340b94604a29eebc2f6e848836b280a4b6f0",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/http/dto/diagnose.dto.ts",
           "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
@@ -646,6 +738,10 @@
       "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
       "files": [
         {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         }
@@ -655,6 +751,10 @@
       "node": "domain/investigation/cost",
       "digest": "sha256:0aa57d3c57f3b84240e543a2b3ac4b592fe7d7c17b6d06d9daa7d58d6055a38e",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/cost.ts",
           "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
@@ -666,6 +766,10 @@
       "digest": "sha256:42289bd861a9e6c105efad7d504bb9c2f2825b0021ac8ac803d915737da0c39a",
       "files": [
         {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
           "path": "src/src/investigation/durations.ts",
           "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
         }
@@ -675,6 +779,10 @@
       "node": "domain/investigation/evaluation",
       "digest": "sha256:c2c813a610a0b288c4e3d18de078fa6dab11918dbd1463e6e231ccac0b3066aa",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
@@ -694,6 +802,10 @@
       "digest": "sha256:10e91ea37bff620a565a090515f8ee3f4a6891a58ce6986b38b2715a500cb65f",
       "files": [
         {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
           "path": "src/src/investigation/evaluation-reason.ts",
           "digest": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed"
         },
@@ -707,6 +819,10 @@
       "node": "domain/investigation/evidence",
       "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:ed9fdaac8bbffb0e94a6dc9525b4c05f2ab88196358106ccf66bf1290904db7e"
@@ -729,6 +845,10 @@
       "node": "domain/investigation/evidence-result",
       "digest": "sha256:d93207f04278033eb3f001f58838c01322d3fe92cfdf2c2c4c490467f060c3a4",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/fixtures/observations.json",
           "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
@@ -767,8 +887,12 @@
     },
     {
       "node": "domain/investigation/investigation",
-      "digest": "sha256:73f1ca5c7904e6ac9b02bd890df438c75464f0ef024300f0f7cdf2c61bc5fb83",
+      "digest": "sha256:fd3317e2412601d42137b3e6cd99488ec53c5dbce791f4e42efe0666dbdc73ae",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
@@ -783,6 +907,10 @@
       "node": "domain/investigation/subject",
       "digest": "sha256:227b64423f511acc785d02a9f046616eeb0e996cc23ebddd255a0b4e6316be21",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
@@ -806,6 +934,10 @@
       "digest": "sha256:e2564e4d4df957fc670bbca57995dea304b3c6ea4dfce1357bf574f8b9568a3e",
       "files": [
         {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         },
@@ -823,6 +955,10 @@
       "node": "domain/investigation/verdict",
       "digest": "sha256:de42119b8ff628c589d98059c373c87558a72dad9ab2d76e32ea99d303eb6451",
       "files": [
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
         {
           "path": "src/src/investigation/evaluation.ts",
           "digest": "sha256:9d90ab421ba9da025cdbdbe901ae2575854635afb49512512a23dd8ad2e52785"
@@ -845,6 +981,10 @@
       "node": "domain/knowledge/case",
       "digest": "sha256:f1a0498496be04fa717cc0bd17085fe3cacbffbbcf56d30fd64cac765da1dcd1",
       "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
@@ -876,6 +1016,10 @@
       "digest": "sha256:bade2dbfada1f8f4693d70014d7b6b19cc92d4833ff97df8e1a11aa0f33ca329",
       "files": [
         {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
         },
@@ -901,6 +1045,10 @@
       "node": "domain/knowledge/hypothesis",
       "digest": "sha256:15a6d165380b8c82430a9b8c60a4e5b5102561f14120d3ee05bd9916702e8030",
       "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
@@ -932,6 +1080,14 @@
       "digest": "sha256:8d9fed071eb73f031be1d0062289d0af6fe0668fc4ec5d578fdd9851a5c9ca16",
       "files": [
         {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0005-investigation.sql",
+          "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
         },
@@ -957,6 +1113,10 @@
       "node": "domain/knowledge/resolution",
       "digest": "sha256:6222afea54dfc1b74fb3cd7f9982c2e7035473c41e959edf57933f628d7ecc1b",
       "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
         {
           "path": "src/src/case/case-resolution.ts",
           "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
@@ -1354,6 +1514,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-version-is-written-once",
+      "digest": "sha256:22d0578f1c5f08e48c9e0cfd2e72d4cc2eabe3133cf86dff7a4fb907773ac7e8",
+      "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0006-case-version-immutability.sql",
+          "digest": "sha256:2608f685356bc70060ac5d38e21cafbc013466a1f7bf2ac3f4e479da64522ff9"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-collected-concept-declares-a-ttl",
       "digest": "sha256:c8b01ca7fb74365ae942f01f6c1f0cfb5bda7da6f72531f6aba8e870e309350c",
       "files": [
@@ -1422,12 +1596,36 @@
       "digest": "sha256:739b86a88704b9909800a64ea80008b47831c41d88dc25d0e017a3ddfedc5578",
       "files": [
         {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "digest": "sha256:90a4d0c8fb7793c8aa8a423dbbb3a7b22f305358e1bb6638d8a93663bf486d03",
+      "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-slug-identifies-one-case",
+      "digest": "sha256:bc6ffc904481c844734fcfa5b6857576ef885ef4049883f030494ac66762c596",
+      "files": [
+        {
+          "path": "src/migrations/0004-case-and-hypothesis.sql",
+          "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
         }
       ]
     },

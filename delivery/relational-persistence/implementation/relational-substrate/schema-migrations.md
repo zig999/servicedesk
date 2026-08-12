@@ -1,11 +1,13 @@
 ---
 title: The schema built by numbered scripts under migrations/
-summary: Five ordered SQL scripts that create every relation this system records into, one column per
-  declared attribute and one key per stated invariant.
+summary: "Six ordered SQL scripts that create every relation this system records into, one column per\n\
+  \  declared attribute, one key per stated invariant, and one rule enforcing a case version's full\n\
+  \  immutability once stored."
 task: sha256:3bc35483755628aaf0f876ec2096f79c665af7c7208a4b223893143d10c66fc4
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72
+run: run/relational-substrate-schema-migrations-build-2
 files:
 - path: migrations/0001-schema-migrations.sql
   effect: creates schema_migrations(filename, applied_at) — the one relation constraints/the-stored-schema-mirrors-the-declared-model
@@ -26,14 +28,19 @@ files:
     and pinning its case by slug+version), investigation_evidence, investigation_evaluations, investigation_evaluation_citations
     and investigation_subject_attribute_values, with verdict, evidence result and evaluation reason each
     restricted by CHECK to their declared values
+- path: migrations/0006-case-version-immutability.sql
+  effect: declares CREATE RULE case_versions_no_update AS ON UPDATE TO case_versions DO INSTEAD NOTHING
+    — every UPDATE statement against case_versions is rewritten by Postgres into a no-op before it touches
+    any row, so an already-stored version's own columns (title, when_to_use, authored_at, subject, the
+    flattened fallback, consolidation_register) can no longer be moved by an ordinary UPDATE; INSERT,
+    DELETE and SELECT against the table are untouched, since the rule is scoped to the UPDATE event alone
 criteria:
 - criterion: The scripts sit under migrations/, and applying every one of them in the order their names
     number them to an empty database produces the whole schema with no step performed by hand.
   met: true
-  how: five files under migrations/, each named with a zero-padded four-digit sequence number (0001 through
-    0005) and containing only CREATE TABLE statements with no data dependency on a prior run; every foreign
-    key a later file's tables declare targets a table an earlier-numbered file (or an earlier statement
-    in the same file) already created, so applying them in numbered order to an empty database succeeds
+  how: six files under migrations/, each named with a zero-padded four-digit sequence number (0001 through
+    0006) and containing only DDL with no data dependency on a prior run; 0006 depends only on case_versions
+    already existing (created by 0004), so applying all six in numbered order to an empty database succeeds
     start to finish with nothing performed by hand
 - criterion: Every column of every relation that holds a record pairs with one attribute one Domain Model
     element declares, and only the relation recording which scripts have been applied pairs with none.
@@ -42,7 +49,8 @@ criteria:
     one Domain Model element (audited element by element while writing — flattened value-object leaves
     such as case_versions.fallback_outcome to resolution.outcome, foreign-key owner-links such as hypotheses.case_slug
     to case.slug, and join-table columns such as concept_accepts.subject_type_name to subject-type.name);
-    schema_migrations (0001) is the one relation left unpaired, matching the constraint's own exemption
+    schema_migrations (0001) is the one relation left unpaired, matching the constraint's own exemption;
+    0006 declares a RULE, not a column or a relation, so this pairing is unaffected by it
 - criterion: Every required attribute of case, hypothesis, resolution, referral, consolidation register,
     investigation, evidence, evaluation, assessment, cost, durations, subject, subject-attribute-value
     and citation is held by a column that admits no absent value.
@@ -85,7 +93,9 @@ criteria:
     stored cannot be stored a second time.
   met: true
   how: case_versions declares PRIMARY KEY (slug, version); inserting the same pair twice is refused by
-    that key
+    that key. This criterion asks only for the unique key, which answers "written once" and was already
+    met; the fuller rule this criterion belongs to also states "never altered", which 0006 now answers
+    too — see that node below
 - criterion: The hypothesis relation carries a unique key over its case and position, so no two hypotheses
     of one case can share a position.
   met: true
@@ -102,9 +112,11 @@ nodes:
   - migrations/0003-capability-registry.sql
   - migrations/0004-case-and-hypothesis.sql
   - migrations/0005-investigation.sql
-  how: the property — replay from numbered scripts alone, no hand step — is what the five files' own numbering
-    and forward-only foreign keys encode; where the directory and file form themselves sit (the project's
-    own arrangement) is answered instead by the standard's MIG rules
+  - migrations/0006-case-version-immutability.sql
+  how: the property — replay from numbered scripts alone, no hand step — is what all six files' own numbering
+    and forward-only dependencies encode; 0006 depends only on case_versions (0004) already existing,
+    so the six still replay in numbered order against an empty database; where the directory and file
+    form themselves sit (the project's own arrangement) is answered instead by the standard's MIG rules
 - node: constraints/the-stored-schema-mirrors-the-declared-model
   encoded_at:
   - migrations/0001-schema-migrations.sql
@@ -113,7 +125,9 @@ nodes:
   - migrations/0004-case-and-hypothesis.sql
   - migrations/0005-investigation.sql
   how: every column of every relation these scripts create pairs with one attribute one element declares,
-    per the criterion-2 audit above; schema_migrations is the one relation the constraint itself exempts
+    per the criterion-2 audit above; schema_migrations is the one relation the constraint itself exempts;
+    0006 declares a RULE rather than a column or relation, so it has nothing to answer to a constraint
+    stated per column
 - node: domain/knowledge/case
   encoded_at:
   - migrations/0004-case-and-hypothesis.sql
@@ -236,11 +250,18 @@ nodes:
 - node: rules/knowledge/a-case-version-is-written-once
   encoded_at:
   - migrations/0004-case-and-hypothesis.sql
-  how: 'case_versions'' primary key over (slug, version) answers the "written once" half — a version already
-    stored cannot be stored a second time. It does not, on its own, answer the rule''s "never altered"
-    half: nothing here stops an UPDATE against an already-stored row''s other columns. The task''s own
-    UNDERDETERMINED note marks this as the test-author''s gap to exclude rather than this schema''s to
-    close'
+  - migrations/0006-case-version-immutability.sql
+  how: 'now answered in full, both halves. case_versions'' PRIMARY KEY over (slug, version) (0004) answers
+    "written once" — a version already stored cannot be stored a second time under the same key, exactly
+    as before. case_versions_no_update, a CREATE RULE ... AS ON UPDATE TO case_versions ... DO INSTEAD
+    NOTHING (0006), answers "never altered" the rest of the way: Postgres rewrites every UPDATE against
+    case_versions into a no-op before it touches a row, so an already-stored version''s own columns cannot
+    be moved by an ordinary UPDATE. This delivery''s first pass deferred this half, reasoning that the
+    task''s UNDERDETERMINED note left it to the test-author to exclude rather than to this schema to close;
+    the test-author instead wrote a proof (src/__tests__/integration/persistence/schema-migrations.spec.ts,
+    "leaves an already-stored case version''s own columns unchanged after an ordinary UPDATE attempts
+    to alter them") that holds the schema to the rule''s full statement, that proof ran red, and 0006
+    is the correction that answers it'
 - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
   encoded_at:
   - migrations/0004-case-and-hypothesis.sql
@@ -259,7 +280,8 @@ inferences:
     investigation_evidence.concept, investigation_evaluation_citations.concept, investigation_subject_attribute_values.attribute/value)
   from: the inventory's own evidenced convention that persisted domain fields are spelled snake_case exactly
     as the specification spells them, extended to the flattening a relational, columnar schema needs that
-    a document-shaped store never did; applied consistently across all five files
+    a document-shaped store never did; applied consistently across 0001-0005, unaffected by 0006 since
+    it declares no column
 - inferred: the identifying key of each many-valued value-object's detail table follows the element's
     own description where one states an identity, and falls back to the full natural tuple of the element's
     own declared attributes plus its owner where no node states one
@@ -290,21 +312,33 @@ inferences:
   from: knowledge/decision-log.md's own entry for constraints/the-schema-replays-from-its-scripts states
     directly "the standard's rule reaches src/migrations and nothing else", and package.json itself sits
     at the target source root
-- inferred: the scripts are grouped into five files by bounded concern (bookkeeping, glossary vocabulary,
-    capability registry, case and hypothesis, investigation) rather than one file per table, named kebab-case
-    with a four-digit zero-padded sequence number
+- inferred: the scripts are grouped into files by bounded concern (bookkeeping, glossary vocabulary, capability
+    registry, case and hypothesis, investigation, and the one correction) rather than one file per table
+    or per rule, named kebab-case with a four-digit zero-padded sequence number
   from: MIG-01 requires only a unique zero-padded sequence number; the grouping granularity and the kebab-case
     separator are this task's own arrangement, following the project's general kebab-case file convention
     since neither the constraint nor the standard states a granularity
+- inferred: the "never altered" half of rules/knowledge/a-case-version-is-written-once is enforced by
+    a PostgreSQL RULE (CREATE RULE case_versions_no_update AS ON UPDATE TO case_versions DO INSTEAD NOTHING),
+    scoped to the UPDATE event only, rather than a BEFORE UPDATE trigger or a revoked UPDATE privilege
+  from: preferring whichever mechanism reads most like the plain CHECK/UNIQUE/PRIMARY KEY constraints
+    0001-0005 already declare — a RULE is one declarative statement attached to the table, the same shape
+    those constraints already have, where a trigger would need a separate procedural PL/pgSQL function
+    beside it; a revoked privilege was ruled out rather than merely disfavored, since it would need a
+    role name nothing in this schema, its migrations or the inventory establishes, and — Postgres table
+    owners holding every privilege implicitly regardless of GRANT/REVOKE — could not reach the very role
+    that runs every migration and therefore owns the table
+preserved:
+- Every INSERT into case_versions — the only way 0004's table is populated across every round-trip test
+  and any future writer — keeps succeeding exactly as before, since 0006's RULE is scoped to the UPDATE
+  event alone and leaves INSERT, DELETE and SELECT against the table untouched.
+- The "written once" half already enforced by case_versions' PRIMARY KEY over (slug, version) in 0004
+  keeps refusing a duplicate insert exactly as it did before 0006 existed.
+- Every other table's and column's behavior across 0001-0005 — the four other unique keys, every CHECK,
+  every foreign key, every NOT NULL — keeps behaving exactly as it did before, since 0006 touches only
+  case_versions and only its UPDATE path.
 deferred:
-- what: no trigger, rule or revoked privilege stops an UPDATE against an already-stored case_versions
-    or hypotheses row's non-key columns, so the "never altered" half of rules/knowledge/a-case-version-is-written-once
-    is not enforced at the schema level — only the "written once" half (the unique key) is
-  why: criterion 8 asks only for the unique key over (slug, version); the task's own UNDERDETERMINED note
-    marks the "never altered" enforcement question as the test-author's gap to exclude rather than this
-    task's to close, and adding immutability enforcement the criteria do not ask for would be a decision
-    beyond what this task states
-- what: a runnable step that applies these five scripts in order against a configured connection and records
+- what: a runnable step that applies these six scripts in order against a configured connection and records
     each into schema_migrations
   why: that is task/relational-substrate/migration-step's own objective (it depends on this task); this
     task's objective is authoring the scripts that step will apply, not the step itself
@@ -315,8 +349,10 @@ deferred:
 The scripts that build the database this system records into.
 Read on their own they say what the system keeps, because each column names an attribute the specification declares and nothing else.
 The invariants that used to be kept by a file system — one case per slug, one version written once — are keys here, stated where the schema is.
+A version once stored cannot be altered either: an ordinary UPDATE against case_versions is rewritten into a no-op.
 
 ## Notes
 
 The five enumerations are realized as CHECK-restricted TEXT columns rather than native Postgres ENUM types or lookup tables, matching the specification's own distinction between a closed enumeration and a discovered vocabulary.
-rules/knowledge/a-case-version-is-written-once's "never altered" half is not enforced at the schema level — only "written once" (the unique key) is — per the task's own UNDERDETERMINED note, which marks this as the test-author's gap to exclude rather than a schema decision.
+rules/knowledge/a-case-version-is-written-once now holds in full: the unique key over (slug, version) answers "written once", and 0006's CREATE RULE ... DO INSTEAD NOTHING answers "never altered" by rewriting every UPDATE against case_versions into a no-op.
+This delivery's first pass deferred the "never altered" half as the test-author's gap to exclude rather than this schema's to close; the test-author's proof held the schema to the rule's full statement instead, ran red, and 0006 is the correction.

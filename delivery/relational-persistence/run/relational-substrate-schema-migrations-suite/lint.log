@@ -1,0 +1,23 @@
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/persistence/pg-client.d.ts
+  13:20  error  Interface name `QueryResultRow` must have one of the following prefixes: I  @typescript-eslint/naming-convention
+  18:20  error  Interface name `QueryResult` must have one of the following prefixes: I     @typescript-eslint/naming-convention
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/persistence/schema-migrations.spec.ts
+   72:11  error  Interface name `Glossary` must have one of the following prefixes: I                                                        @typescript-eslint/naming-convention
+   81:11  error  Interface name `Capability` must have one of the following prefixes: I                                                      @typescript-eslint/naming-convention
+  112:11  error  Interface name `CaseVersionOptions` must have one of the following prefixes: I                                              @typescript-eslint/naming-convention
+  132:11  error  Interface name `HypothesisOptions` must have one of the following prefixes: I                                               @typescript-eslint/naming-convention
+  152:11  error  Interface name `HypothesisCollectsOptions` must have one of the following prefixes: I                                       @typescript-eslint/naming-convention
+  166:11  error  Interface name `InvestigationOptions` trimmed as `nvestigationOptions` must match one of the following formats: PascalCase  @typescript-eslint/naming-convention
+  190:11  error  Interface name `EvidenceOptions` must have one of the following prefixes: I                                                 @typescript-eslint/naming-convention
+  209:11  error  Interface name `EvaluationOptions` must have one of the following prefixes: I                                               @typescript-eslint/naming-convention
+  225:11  error  Interface name `CitationOptions` must have one of the following prefixes: I                                                 @typescript-eslint/naming-convention
+  240:11  error  Interface name `SubjectAttributeValueOptions` must have one of the following prefixes: I                                    @typescript-eslint/naming-convention
+
+✖ 12 problems (12 errors, 0 warnings)
+

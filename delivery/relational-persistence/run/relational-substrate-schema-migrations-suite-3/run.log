@@ -1,0 +1,151 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 3s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:7852) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 13ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 14ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 27ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 36ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (43 tests) 19ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 22ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (23 tests) 15ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (21 tests) 28ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 82ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 15ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 19ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 19ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 11ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 24ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 360ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 19ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 16ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 105ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 11ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 61ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 19ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 121ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 95ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 76ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 38ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 12ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 251ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (4 tests) 119ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 13ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 35ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 47ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 29ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (7 tests) 433ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 48ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 22ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 7ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 41ms
+ ✓ src/__tests__/unit/config/env.spec.ts (7 tests) 20ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 27ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 33ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 41ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 15ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 65ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 33ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 50ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 130ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 40ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 28ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 43ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 8ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 5ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 23ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 60ms
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests | 1 failed) 28398ms
+   ✓ applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  1601ms
+   ✓ persists and reads back a full case, hypothesis, resolution, referral and its collects  1041ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  1917ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  957ms
+   ✓ holds every domain column NOT NULL except exactly the five columns the model declares optional  481ms
+   ✓ refuses storing a case version whose title is absent  597ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  1198ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  1394ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  3263ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1320ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  733ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1192ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  475ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  588ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  584ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  442ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1026ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1022ms
+   ✓ refuses a second case stored under a slug already in use  589ms
+   ✓ refuses storing the same case version a second time under its own slug and version  734ms
+   ✓ refuses a second hypothesis of one case sharing an already-used position  1053ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  878ms
+   × leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them 1037ms
+     → expected 'A title nothing should have been able…' to be 'The original title' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them
+AssertionError: expected 'A title nothing should have been able…' to be 'The original title' // Object.is equality
+
+Expected: [32m"[7mThe original t[27mit[7ml[27me"[39m
+Received: [31m"[7mA title nothing should have been able to wr[27mite"[39m
+
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:644:26
+    642| 
+    643|   const { rows } = await client.query<{ title: string }>('SELECT title…
+    644|   expect(rows[0]?.title).toBe('The original title');
+       |                          ^
+    645| });
+    646| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 54 passed (55)
+      Tests  1 failed | 502 passed (503)
+   Start at  10:47:04
+   Duration  29.05s (transform 3.16s, setup 0ms, collect 8.87s, tests 31.36s, environment 24ms, prepare 7.23s)
+
+
