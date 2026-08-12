@@ -211,7 +211,7 @@ it(
 
     const replayed = await replayCase(SLUG, VERSION, store);
 
-    expect(replayed).toEqual(read);
+    expect(replayed).toEqual(read.case);
   },
 );
 

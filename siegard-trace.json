@@ -2,6 +2,16 @@
   "specification": "knowledge",
   "bindings": [
     {
+      "node": "constraints/a-case-is-read-whole",
+      "digest": "sha256:02810635e7a8dd09c06913128e5b87a3e0d6669805ce36c62b7ed7f3df224a7d",
+      "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+        }
+      ]
+    },
+    {
       "node": "constraints/consolidation-runs-behind-a-port",
       "digest": "sha256:b1727aa453816d37d6d55170d28f4daa7e9ea9e7c405515dd17c8ef94be9c5d8",
       "files": [
@@ -80,6 +90,20 @@
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
           "digest": "sha256:c30c6f1d98e29e03537cb5f20ed543b520b883848fa46eff1f80ef3ccacc7207"
+        }
+      ]
+    },
+    {
+      "node": "constraints/the-database-is-externally-provisioned",
+      "digest": "sha256:7d31e68de9ab76fbbb2e3d68faa74dda98932e0b488d8cd2c28d6d44ed8ee2ac",
+      "files": [
+        {
+          "path": "src/src/config/env.ts",
+          "digest": "sha256:660915aad31554453ac2d17d57b9a87cbcf3f7639edc2802d426198a5335c45c"
+        },
+        {
+          "path": "src/src/persistence/database-connection.ts",
+          "digest": "sha256:22b311b8b06f1ab8a537f7b85497eea69c44e7fad2bc670b2c1b3ad5bb225062"
         }
       ]
     },
@@ -321,7 +345,7 @@
     },
     {
       "node": "contracts/knowledge/case-query",
-      "digest": "sha256:8e2ff769346c835557890e7ce9dffa91a00d8712b0a40ee4ffc82f8647958719",
+      "digest": "sha256:9aafeee8640ae4c4c5fde074337ee5414bff4c2b36d24e33374bf008a1ed749d",
       "files": [
         {
           "path": "src/src/case/case-query.port.ts",
@@ -329,7 +353,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -819,8 +843,12 @@
     },
     {
       "node": "domain/knowledge/case",
-      "digest": "sha256:c62e082ba693ba0fbab5f63f739ae4ee816a98673ac71cb8f27d96d47212734c",
+      "digest": "sha256:f1a0498496be04fa717cc0bd17085fe3cacbffbbcf56d30fd64cac765da1dcd1",
       "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+        },
         {
           "path": "src/src/case/case.ts",
           "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
@@ -871,8 +899,12 @@
     },
     {
       "node": "domain/knowledge/hypothesis",
-      "digest": "sha256:12c9d5c48baf1be2de70455d7dde76771ac363e9637da4df55110b0faa077667",
+      "digest": "sha256:15a6d165380b8c82430a9b8c60a4e5b5102561f14120d3ee05bd9916702e8030",
       "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+        },
         {
           "path": "src/src/case/case.ts",
           "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
@@ -1237,8 +1269,12 @@
     },
     {
       "node": "rules/investigation/replay-is-pinned",
-      "digest": "sha256:f1344b925c610e80abd12207f3e6a24c349c1671cfdbd5f1fd9490dfe399f169",
+      "digest": "sha256:bd91f5ed7b161f53ad3fe5d61b0e5dcb0a9367ab6fbe4b650384be9600b31baa",
       "files": [
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+        },
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
@@ -1519,11 +1555,11 @@
     },
     {
       "node": "rules/knowledge/validation-runs-at-every-read",
-      "digest": "sha256:6487bd4578633a79e9ca7b0e62aef2fdc26a3320bb866b8a941a3ba25d5e6c8f",
+      "digest": "sha256:39cff144827003ca369789e8567a8c5b586f1f2c65a26f14b72f68bb71e294f5",
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
         }
       ]
     },

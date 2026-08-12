@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/replay-by-slug-and-version.md",
+      "title": "Replay resolves a pinned case by slug and version, without validation or a digest",
+      "summary": "case-query.service.ts's replayCase now answers a bare Case trusted from the exact stored document, running neither the structural nor the coherence validation the ordinary read runs and never reading the store's content-identity digest, while readCase keeps running both on every call.",
+      "task": "task/case-and-investigation-model/replay-by-slug-and-version"
+    },
+    {
       "id": "implementation/relational-substrate/database-connection",
       "kind": "implementation",
       "file": "implementation/relational-substrate/database-connection.md",
       "title": "The database connection module and the connection URL in the environment schema",
       "summary": "A persistence-only module that builds one pg connection pool from a URL the single environment schema now requires, with the driver declared in the manifest and nothing else in the tree touching it.",
       "task": "task/relational-substrate/database-connection"
+    },
+    {
+      "id": "proof/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/replay-by-slug-and-version.md",
+      "title": "Replay by slug and version proves its answer whole, unvalidated and digest-free",
+      "summary": "Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash contract and the structural-failure-through-replay path, and adds new tests proving each of this task's six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.",
+      "task": "task/case-and-investigation-model/replay-by-slug-and-version"
     },
     {
       "id": "proof/relational-substrate/database-connection",
@@ -20,6 +36,48 @@
   ],
   "edges": [
     {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/relational-substrate/database-connection",
       "to": "constraints/the-database-is-externally-provisioned",
       "kind": "encodes",
@@ -29,6 +87,12 @@
       "from": "implementation/relational-substrate/database-connection",
       "to": "task/relational-substrate/database-connection",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proves",
       "at": "the path"
     },
     {

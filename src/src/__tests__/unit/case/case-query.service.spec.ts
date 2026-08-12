@@ -25,7 +25,6 @@ import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
-import { InvalidCaseDocumentError } from '../../../errors/invalid-case-document.error.js';
 import type {
   ConceptResolution,
   IGlossaryQuery,
@@ -413,7 +412,7 @@ it('refuses at a later read a case that validated earlier, once the capability r
 
 // -------------------------------------------------------------------------------- criterion 4
 
-it('answers readCase and replayCase identically, in shape, for the same valid pinned version', async () => {
+it('answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries', async () => {
   const store = new FakeCaseStore();
   store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'pinned-hash-token' });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
@@ -421,7 +420,7 @@ it('answers readCase and replayCase identically, in shape, for the same valid pi
   const read = await service.readCase(SLUG, VERSION);
   const replayed = await replayCase(SLUG, VERSION, store);
 
-  expect(replayed).toEqual(read);
+  expect(replayed).toEqual(read.case);
 });
 
 it('replays a pinned version without running the coherence checks at all, answering the case even though the same content would refuse at read-case', async () => {
@@ -434,8 +433,7 @@ it('replays a pinned version without running the coherence checks at all, answer
 
   const replayed = await replayCase(SLUG, VERSION, store);
 
-  expect(replayed.case.slug).toBe(SLUG);
-  expect(replayed.hash).toBe('pinned-hash-token');
+  expect(replayed.slug).toBe(SLUG);
 });
 
 it('answers a replay from just the case store, with no glossary or capability dependency for it to call at all', async () => {
@@ -444,7 +442,7 @@ it('answers a replay from just the case store, with no glossary or capability de
 
   const replayed = await replayCase(SLUG, VERSION, store);
 
-  expect(replayed.case.slug).toBe(SLUG);
+  expect(replayed.slug).toBe(SLUG);
 });
 
 it('refuses replay with the same CaseNotFoundError as read-case when the pinned version was never stored', async () => {
@@ -453,11 +451,84 @@ it('refuses replay with the same CaseNotFoundError as read-case when the pinned 
   await expect(replayCase('never-authored', 3, store)).rejects.toBeInstanceOf(CaseNotFoundError);
 });
 
-it('lets a structural parse failure inside replay-case propagate as InvalidCaseDocumentError, never joined into CaseNotValidError', async () => {
+it('answers a document that would fail read-case structurally, rather than refusing it, because replay skips the structural refusal too', async () => {
   const store = new FakeCaseStore();
   store.seed(SLUG, VERSION, { document: validCaseDocument({ hypotheses: [] }), hash: 'irrelevant-hash' });
+  const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+  await expect(service.readCase(SLUG, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
 
-  await expect(replayCase(SLUG, VERSION, store)).rejects.toBeInstanceOf(InvalidCaseDocumentError);
+  const replayed = await replayCase(SLUG, VERSION, store);
+
+  expect(replayed.hypotheses).toEqual([]);
+});
+
+// -------------------------------------------------- task/case-and-investigation-model/replay-by-slug-and-version
+
+it('answers the replay whole, matching exactly what the document holds, including its hypotheses and their resolutions and referrals', async () => {
+  const store = new FakeCaseStore();
+  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'irrelevant-hash' });
+
+  const replayed = await replayCase(SLUG, VERSION, store);
+
+  expect(replayed).toEqual({
+    slug: SLUG,
+    title: 'A case',
+    when_to_use: 'when a curator needs a case to test read-case composition over',
+    version: VERSION,
+    hash: 'a-declared-hash',
+    subject: SUBJECT,
+    fallback: {
+      outcome: FALLBACK_OUTCOME,
+      referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT },
+    },
+    hypotheses: [
+      {
+        name: 'h1',
+        criterion: 'prose no check in this composition ever reads',
+        collects: [CONCEPT],
+        resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
+      },
+    ],
+  });
+});
+
+it('answers the version stored under the named slug, never the same version number stored under a different slug', async () => {
+  const store = new FakeCaseStore();
+  const otherSlug = 'another-case';
+  store.seed(SLUG, VERSION, { document: validCaseDocument({ title: 'the named slug is case' }), hash: 'hash-a' });
+  store.seed(otherSlug, VERSION, {
+    document: validCaseDocument({ slug: otherSlug, title: 'the other slug is case' }),
+    hash: 'hash-b',
+  });
+
+  const replayed = await replayCase(SLUG, VERSION, store);
+
+  expect(replayed).toMatchObject({ slug: SLUG, title: 'the named slug is case' });
+});
+
+it('answers the version a replay names, unaffected by a later version stored afterward under the same slug', async () => {
+  const store = new FakeCaseStore();
+  store.seed(SLUG, 1, { document: validCaseDocument({ version: 1, title: 'the first version' }), hash: 'hash-1' });
+  store.seed(SLUG, 2, { document: validCaseDocument({ version: 2, title: 'the second version' }), hash: 'hash-2' });
+
+  const replayed = await replayCase(SLUG, 1, store);
+
+  expect(replayed).toMatchObject({ version: 1, title: 'the first version' });
+});
+
+it("resolves its case without ever reading the store's content-identity digest, even where doing so would throw", async () => {
+  const store = new FakeCaseStore();
+  const poisoned: StoredCaseVersion = {
+    document: validCaseDocument(),
+    get hash(): string {
+      throw new Error('replay must never read the digest over the case content');
+    },
+  };
+  store.seed(SLUG, VERSION, poisoned);
+
+  const replayed = await replayCase(SLUG, VERSION, store);
+
+  expect(replayed.slug).toBe(SLUG);
 });
 
 // -------------------------------------------------------------------------------- criterion 5

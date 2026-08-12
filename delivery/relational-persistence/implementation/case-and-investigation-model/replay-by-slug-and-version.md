@@ -7,6 +7,7 @@ task: sha256:bad790e2152808a7a1225171c3074d0401434529b115ece2949f76fb544f9b09
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72
+run: run/case-and-investigation-model-replay-by-slug-and-version-build-2
 files:
 - path: src/case/case-query.service.ts
   effect: 'replayCase now takes (slug, version, caseStore) and answers Promise<Case> instead of Promise<ReadCaseResult>:
