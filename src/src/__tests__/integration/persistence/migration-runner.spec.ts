@@ -74,6 +74,7 @@ const EXPECTED_MIGRATION_FILENAMES = [
   '0004-case-and-hypothesis.sql',
   '0005-investigation.sql',
   '0006-case-version-immutability.sql',
+  '0007-capability-concept.sql',
 ];
 
 function requireDatabaseUrl(): string {

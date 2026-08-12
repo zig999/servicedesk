@@ -34,6 +34,14 @@
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
     },
     {
+      "id": "implementation/relational-stores/capability-store",
+      "kind": "implementation",
+      "file": "implementation/relational-stores/capability-store.md",
+      "title": "The relational capability store, and the concept column its schema had been missing",
+      "summary": "Adds RelationalCapabilityStore, the database-backed implementation of ICapabilityStore, and the migration that gives capabilities the concept column domain/integration/capability now declares required.",
+      "task": "task/relational-stores/capability-store"
+    },
+    {
       "id": "implementation/relational-stores/database-access-helper",
       "kind": "implementation",
       "file": "implementation/relational-stores/database-access-helper.md",
@@ -104,6 +112,14 @@
       "title": "Replay by slug and version proves its answer whole, unvalidated and digest-free",
       "summary": "Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash contract and the structural-failure-through-replay path, and adds new tests proving each of this task's six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.",
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
+    },
+    {
+      "id": "proof/relational-stores/capability-store",
+      "kind": "proof",
+      "file": "proof/relational-stores/capability-store.md",
+      "title": "Proof for RelationalCapabilityStore, plus the sibling regressions its migration caused",
+      "summary": "Unit tests mocking DatabaseConnection and integration tests against a real database prove RelationalCapabilityStore's read/write mechanics, the criteria this task states, and the UNDERDETERMINED exclusion of an incomplete registration; three sibling proof files broken by migrations/0007-capability-concept.sql's new NOT NULL/count are fixed in this same delivery, disclosed.",
+      "task": "task/relational-stores/capability-store"
     },
     {
       "id": "proof/relational-stores/database-access-helper",
@@ -306,6 +322,42 @@
     {
       "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "domain/integration/capability-nature",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/relational-stores/capability-store",
+      "to": "task/relational-stores/capability-store",
       "kind": "implements",
       "at": "the path"
     },
@@ -564,6 +616,12 @@
     {
       "from": "proof/case-and-investigation-model/replay-by-slug-and-version",
       "to": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-stores/capability-store",
+      "to": "implementation/relational-stores/capability-store",
       "kind": "proves",
       "at": "the path"
     },

@@ -1,0 +1,31 @@
+-- domain/integration/capability's own "concept" attribute (required, a
+-- reference to domain/glossary/concept) — added after
+-- migrations/0003-capability-registry.sql shipped without it: the
+-- specification's own capability node did not yet declare this attribute
+-- when that script was written, and the analysis has since corrected that
+-- gap. migrations/0003-capability-registry.sql is not edited to add it
+-- (MIG-02 — a script already applied is never edited; a correction is the
+-- next script), and this script depends only on it and on
+-- migrations/0002-glossary-vocabulary.sql already having run.
+--
+-- Bare-named and foreign-keyed to concepts(name), the same convention
+-- migrations/0005-investigation.sql's own investigation_evidence.concept and
+-- investigation_evaluation_citations.concept already use for a single,
+-- literally-named "concept" reference — as opposed to the
+-- <element>_<identity-attribute> convention this schema's own join tables
+-- (migrations/0002-glossary-vocabulary.sql's concept_accepts,
+-- migrations/0004-case-and-hypothesis.sql's hypothesis_collects) use for a
+-- many-valued relationship with no attribute name of its own.
+--
+-- NOT NULL, with no reverse script beside it: capabilities is a table no
+-- migration or seed script in this project ever populates, so this
+-- ADD COLUMN neither destroys nor alters any row that exists anywhere this
+-- schema has been applied — MIG-03's own condition for shipping one.
+--
+-- Implements, from the specification:
+--   domain/integration/capability                            -- capabilities.concept
+--   constraints/the-stored-schema-mirrors-the-declared-model  -- closes the
+--     one required attribute this schema had left without a column
+
+ALTER TABLE capabilities
+  ADD COLUMN concept TEXT NOT NULL REFERENCES concepts (name);

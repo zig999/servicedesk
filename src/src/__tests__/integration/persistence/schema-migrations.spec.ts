@@ -281,7 +281,7 @@ beforeAll(async () => {
   await client.query("INSERT INTO concepts (name, ttl) VALUES ('a-concept', 60)");
   await client.query("INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ('a-concept', 'a-subject-type')");
   await client.query(
-    "INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector) VALUES ('a-capability','v1','read-only','{}','{}',1000,'a-connector')",
+    "INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ('a-capability','v1','read-only','{}','{}',1000,'a-connector','a-concept')",
   );
   glossary = {
     subjectType: 'a-subject-type',
@@ -467,16 +467,17 @@ it('accepts exactly the three values evaluation-reason declares and refuses one 
 it('accepts exactly the two values capability-nature declares and refuses one it does not', async () => {
   for (const [index, nature] of ['read-only', 'mutating'].entries()) {
     await client.query(
-      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector)
-       VALUES ($1, 'v1', $2, '{}', '{}', 1000, 'a-connector')`,
-      [`capability-${index}`, nature],
+      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+       VALUES ($1, 'v1', $2, '{}', '{}', 1000, 'a-connector', $3)`,
+      [`capability-${index}`, nature, glossary.concept],
     );
   }
 
   await expect(
     client.query(
-      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector)
-       VALUES ('capability-invalid', 'v1', 'destructive', '{}', '{}', 1000, 'a-connector')`,
+      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+       VALUES ('capability-invalid', 'v1', 'destructive', '{}', '{}', 1000, 'a-connector', $1)`,
+      [glossary.concept],
     ),
   ).rejects.toMatchObject({ code: CHECK_VIOLATION });
 });
