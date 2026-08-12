@@ -26,6 +26,14 @@
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
     },
     {
+      "id": "implementation/relational-stores/database-access-helper",
+      "kind": "implementation",
+      "file": "implementation/relational-stores/database-access-helper.md",
+      "title": "The shared relational access helper",
+      "summary": "A new persistence module giving every future relational store adapter one way to run a statement, answer absence as data, raise the caller's own typed error, and run a unit of work as a transaction that commits whole or rolls back whole.",
+      "task": "task/relational-stores/database-access-helper"
+    },
+    {
       "id": "implementation/relational-substrate/database-connection",
       "kind": "implementation",
       "file": "implementation/relational-substrate/database-connection.md",
@@ -80,6 +88,14 @@
       "title": "Replay by slug and version proves its answer whole, unvalidated and digest-free",
       "summary": "Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash contract and the structural-failure-through-replay path, and adds new tests proving each of this task's six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.",
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
+    },
+    {
+      "id": "proof/relational-stores/database-access-helper",
+      "kind": "proof",
+      "file": "proof/relational-stores/database-access-helper.md",
+      "title": "Proof for the shared relational access helper",
+      "summary": "Unit-level tests over stand-in IQueryable/DatabaseConnection objects proving the four criteria's mechanics, plus integration-level tests against the real database proving each criterion's actual data effect.",
+      "task": "task/relational-stores/database-access-helper"
     },
     {
       "id": "proof/relational-substrate/database-connection",
@@ -238,6 +254,12 @@
     {
       "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-stores/database-access-helper",
+      "to": "task/relational-stores/database-access-helper",
       "kind": "implements",
       "at": "the path"
     },
@@ -484,6 +506,12 @@
     {
       "from": "proof/case-and-investigation-model/replay-by-slug-and-version",
       "to": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-stores/database-access-helper",
+      "to": "implementation/relational-stores/database-access-helper",
       "kind": "proves",
       "at": "the path"
     },
