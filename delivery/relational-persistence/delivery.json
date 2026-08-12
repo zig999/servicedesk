@@ -42,6 +42,14 @@
       "task": "task/relational-stores/capability-store"
     },
     {
+      "id": "implementation/relational-stores/case-store",
+      "kind": "implementation",
+      "file": "implementation/relational-stores/case-store.md",
+      "title": "The relational case store, reading a case whole and writing a version once",
+      "summary": "Adds RelationalCaseStore, the database-backed implementation of ICaseStore, assembling a case's root, hypotheses, resolutions and referrals in one transaction and deciding write-once by case_versions' own primary key rather than by reading first.",
+      "task": "task/relational-stores/case-store"
+    },
+    {
       "id": "implementation/relational-stores/database-access-helper",
       "kind": "implementation",
       "file": "implementation/relational-stores/database-access-helper.md",
@@ -120,6 +128,14 @@
       "title": "Proof for RelationalCapabilityStore, plus the sibling regressions its migration caused",
       "summary": "Unit tests mocking DatabaseConnection and integration tests against a real database prove RelationalCapabilityStore's read/write mechanics, the criteria this task states, and the UNDERDETERMINED exclusion of an incomplete registration; three sibling proof files broken by migrations/0007-capability-concept.sql's new NOT NULL/count are fixed in this same delivery, disclosed.",
       "task": "task/relational-stores/capability-store"
+    },
+    {
+      "id": "proof/relational-stores/case-store",
+      "kind": "proof",
+      "file": "proof/relational-stores/case-store.md",
+      "title": "Proof for the relational case store",
+      "summary": "Unit-level tests over a fake DatabaseConnection prove RelationalCaseStore's own read/write mechanics, mapping and error-wrapping; integration-level tests against a real PostgreSQL database prove the whole-aggregate read, write-once refusal, version-list completeness, and — directly excluding this task's own UNDERDETERMINED non-atomic-write candidate — that a write that fails partway through leaves no case_versions row, no hypothesis row and no collect row behind.",
+      "task": "task/relational-stores/case-store"
     },
     {
       "id": "proof/relational-stores/database-access-helper",
@@ -358,6 +374,36 @@
     {
       "from": "implementation/relational-stores/capability-store",
       "to": "task/relational-stores/capability-store",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-stores/case-store",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-stores/case-store",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/relational-stores/case-store",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/relational-stores/case-store",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/relational-stores/case-store",
+      "to": "task/relational-stores/case-store",
       "kind": "implements",
       "at": "the path"
     },
@@ -622,6 +668,12 @@
     {
       "from": "proof/relational-stores/capability-store",
       "to": "implementation/relational-stores/capability-store",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-stores/case-store",
+      "to": "implementation/relational-stores/case-store",
       "kind": "proves",
       "at": "the path"
     },
