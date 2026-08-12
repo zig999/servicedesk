@@ -7,9 +7,21 @@
 // Each test gets its own fresh, disposable schema (CREATE SCHEMA in beforeEach, DROP SCHEMA in
 // afterEach), reached through one dedicated pg.Client, the same single-connection shape
 // schema-migrations.spec.ts already uses so a session-scoped SET search_path holds for every
-// statement a test issues, including the ones applyPendingMigrations issues on this file's behalf
-// — passed to it directly, since a Client's own query/end shape already satisfies everything
-// DatabaseConnection (Pool) declares.
+// statement a test issues, including the ones applyPendingMigrations issues on this file's behalf.
+//
+// Divergence disclosed here, caused by task/relational-substrate/integration-test-isolation (fixed
+// in this file as part of that task's own proof, per that task's own instructions, rather than
+// re-delivered separately for a four-line typing fix): this Client could once be passed to
+// applyPendingMigrations directly, because Client's own query/end shape structurally satisfied
+// everything DatabaseConnection (Pool) declared at the time. That task extended pg.d.ts's own Pool
+// with connect(): Promise<PoolClient> for its own, unrelated reason (checking one connection out of
+// a pool for a caller's exclusive use) — Client never had and never needed a matching connect(), so
+// Client is no longer structurally assignable to Pool. applyPendingMigrations itself (see its own
+// header and body in migration-runner.ts) only ever calls .query() on the connection it is given; it
+// never calls .connect() or .end(). asMigrationConnection() below asserts through that narrower,
+// query-only surface instead of relying on Client's now-broken full structural match against Pool —
+// this changes nothing this file tests or asserts, since every call this file already made through
+// client.query() is unaffected.
 //
 // Criterion 2 — "running against an empty database leaves it holding the schema" — is no longer
 // demonstrable here through a disposable schema: migration-runner.ts's own bookkeeping queries are
@@ -38,7 +50,19 @@ import { fileURLToPath } from 'node:url';
 import { Client } from 'pg';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { MigrationStepError } from '../../../errors/migration-step.error.js';
+import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { applyPendingMigrations } from '../../../persistence/migration-runner.js';
+
+/**
+ * Narrows this file's own Client down to the query-only surface applyPendingMigrations actually
+ * calls (see the divergence disclosed in this file's own header comment above), then asserts it
+ * back up to the full DatabaseConnection (Pool) type applyPendingMigrations declares — this file's
+ * Client already provides that query() surface in full, so nothing this cast lets through was not
+ * already true at runtime.
+ */
+function asMigrationConnection(connection: Pick<DatabaseConnection, 'query'>): DatabaseConnection {
+  return connection as unknown as DatabaseConnection;
+}
 
 const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../../../../migrations', import.meta.url));
 
@@ -85,7 +109,7 @@ afterEach(async () => {
 // ---------------------------------------------------------------- documents: bookkeeping is global
 
 it("leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path", async () => {
-  await applyPendingMigrations(client, MIGRATIONS_DIRECTORY);
+  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY);
 
   const { rows: sentinelRows } = await client.query<{ exists: boolean }>("SELECT to_regclass('cases') IS NOT NULL AS exists");
   expect(sentinelRows[0]?.exists).toBe(false);
@@ -94,9 +118,9 @@ it("leaves a disposable schema without the domain tables when an explicit call f
 // ---------------------------------------------------------------- criterion 3: idempotent re-run
 
 it('applies no script twice and fails nothing when run again against a database that already holds the schema', async () => {
-  await applyPendingMigrations(client, MIGRATIONS_DIRECTORY);
+  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY);
 
-  await expect(applyPendingMigrations(client, MIGRATIONS_DIRECTORY)).resolves.toBeUndefined();
+  await expect(applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY)).resolves.toBeUndefined();
 
   const { rows } = await client.query<{ filename: string; row_count: string }>(
     'SELECT filename, COUNT(*) AS row_count FROM public.schema_migrations GROUP BY filename',
@@ -114,7 +138,7 @@ it('raises MigrationStepError naming the file and wrapping the original error as
 
     let caught: unknown;
     try {
-      await applyPendingMigrations(client, brokenMigrationsDirectory);
+      await applyPendingMigrations(asMigrationConnection(client), brokenMigrationsDirectory);
     } catch (error) {
       caught = error;
     }
