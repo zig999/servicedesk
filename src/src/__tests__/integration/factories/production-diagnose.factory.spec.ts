@@ -61,12 +61,13 @@ function aCase(): Case {
     title: 'A case for proving the production diagnose wiring',
     when_to_use: 'when proving createProductionDiagnoseRunner wires the real pipeline',
     version: 1,
-    hash: 'wiring-proof-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT_TYPE,
     fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
     hypotheses: [
       {
         name: 'h1',
+        position: 1,
         criterion: 'h1 criterion',
         collects: [CONCEPT],
         resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } },

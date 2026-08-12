@@ -3,7 +3,7 @@
   "title": "Intermittent internet connection outage",
   "when_to_use": "When an attendant needs to troubleshoot a customer contract reporting an intermittent or unstable internet connection.",
   "version": 1,
-  "hash": "curated-fixture-hash-v1",
+  "authored_at": "2024-01-01T00:00:00.000Z",
   "subject": "contract",
   "consolidation_register": "formal",
   "fallback": {
@@ -16,6 +16,7 @@
   "hypotheses": [
     {
       "name": "customer-equipment-fault",
+      "position": 1,
       "criterion": "The customer's registered equipment reports a fault status in the corporate systems.",
       "collects": ["equipment-status"],
       "resolution": {
@@ -28,6 +29,7 @@
     },
     {
       "name": "area-network-outage",
+      "position": 2,
       "criterion": "An active network outage is currently registered for the contract's service area.",
       "collects": ["network-outage-flag"],
       "resolution": {

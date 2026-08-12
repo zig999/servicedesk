@@ -45,15 +45,16 @@ afterEach(() => {
 
 const CASE_SLUG = 'a-case';
 const CASE_VERSION = 1;
-const CASE_HASH = 'a-hash';
+const CASE_AUTHORED_AT = '2024-01-01T00:00:00.000Z';
 const A_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];
 const A_SUBJECT: Subject = { type: 'ont', attributes: A_SUBJECT_ATTRIBUTES };
 const A_REQUESTER = 'requester-1';
 
-/** One hypothesis, defaulted so a test states only its name and what it collects. */
-function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
+function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
   return {
     name,
+    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: `${name}-outcome`, referral: { action: 'refer', recipient: 'a-queue' } },
@@ -67,10 +68,10 @@ function aCase(overrides: Partial<Case> = {}): Case {
     title: 'A case for the diagnose composition',
     when_to_use: 'when testing the diagnose composition',
     version: CASE_VERSION,
-    hash: CASE_HASH,
+    authored_at: CASE_AUTHORED_AT,
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-fallback-queue' } },
-    hypotheses: [aHypothesis('h1', ['concept-a'])],
+    hypotheses: [aHypothesis('h1', ['concept-a'], 1)],
     ...overrides,
   };
 }
@@ -351,7 +352,7 @@ function twoHypothesisConcurrencyOptions(evaluator: ConcurrencyTrackingHypothesi
     'both confirmed text',
   );
   return baseOptions({
-    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])] }),
+    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a'], 1), aHypothesis('h2', ['concept-b'], 2)] }),
     capabilities,
     observationSource,
     evaluator,
@@ -617,25 +618,30 @@ it('computes the persistence deadline from the given now/deadline pair alone, un
 
 // -------------------------------------- criterion 6: runs exactly the given case
 
-// The two calls below still differ only in the given case's own hash —
-// aCase({ hash: 'hash-A' }) and aCase({ hash: 'hash-B' }) share the same slug
-// and version — which was enough to prove each call pinned exactly its own
-// case while pinned_case still carried hash. Under the narrowed pin
+// The two calls below once differed only in the given case's own hash —
+// aCase({ hash: 'hash-A' }) and aCase({ hash: 'hash-B' }) shared the same
+// slug and version — which was enough to prove each call pinned exactly its
+// own case while pinned_case still carried hash. Under the narrowed pin
 // (task/case-and-investigation-model/investigation-record-shape), slug and
-// version are the whole of what is pinned, and both calls' cases share both,
-// so nothing observable through pinned_case can any longer distinguish "this
-// call's own case" from "the other call's case" — the cross-call isolation
-// this test's name once claimed is no longer provable through this seam, and
-// no different aCase(...) override is substituted in its place, since doing
-// so would assert a difference the test itself never established. What
-// remains true and is asserted instead: each call still writes its own
-// document, independently, with its own case's slug and version pinned.
+// version were already the whole of what is pinned, and both calls' cases
+// shared both, so nothing observable through pinned_case could any longer
+// distinguish "this call's own case" from "the other call's case" — the
+// cross-call isolation this test's name once claimed was already unprovable
+// through this seam, and no different aCase(...) override was substituted in
+// its place, since doing so would assert a difference the test itself never
+// established. task/case-and-investigation-model/case-aggregate-shape now
+// removes Case's own hash attribute entirely, so even that no-longer-load-
+// bearing override stopped type-checking; both calls below now build their
+// case through a bare aCase(), which asserts nothing new but keeps compiling
+// what this test already asserted. What remains true and is asserted here:
+// each call still writes its own document, independently, with its own
+// case's slug and version pinned.
 it("pins each call's own written document with its own case's slug and version, independently of the other call", async () => {
   const storeA = new InMemoryInvestigationStore();
   const storeB = new InMemoryInvestigationStore();
 
-  await runDiagnosis(baseOptions({ id: 'investigation-a', store: storeA, case: aCase({ hash: 'hash-A' }) }));
-  await runDiagnosis(baseOptions({ id: 'investigation-b', store: storeB, case: aCase({ hash: 'hash-B' }) }));
+  await runDiagnosis(baseOptions({ id: 'investigation-a', store: storeA, case: aCase() }));
+  await runDiagnosis(baseOptions({ id: 'investigation-b', store: storeB, case: aCase() }));
 
   const documentA = await writtenDocument(storeA, 'investigation-a');
   const documentB = await writtenDocument(storeB, 'investigation-b');

@@ -62,10 +62,10 @@ function aCase(): Case {
     title: 'a title',
     when_to_use: 'a when-to-use',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'a-subject-type',
     fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: [{ name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } }],
+    hypotheses: [{ name: 'h1', position: 1, criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } }],
   };
 }
 

@@ -26,8 +26,11 @@ import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import { resolveAndNarrow } from '../../../investigation/resolve-and-narrow-input.js';
 
-/** A minimally valid Hypothesis, defaulted so a test states only what distinguishes it. */
-function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string }): Hypothesis {
+/** Everything a fixture hypothesis states before its own declared position is assigned by aCase(), from the given array's own order. */
+type HypothesisSpec = Omit<Hypothesis, 'position'>;
+
+/** A minimally valid Hypothesis (less its own declared position, which aCase() below assigns from array order), defaulted so a test states only what distinguishes it. */
+function aHypothesis(overrides: Partial<HypothesisSpec> & { readonly name: string }): HypothesisSpec {
   return {
     criterion: `${overrides.name} criterion`,
     collects: ['a-concept'],
@@ -36,17 +39,25 @@ function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string })
   };
 }
 
-/** A minimally valid Case around the given hypotheses, in the order given — the precedence resolve-outcome consults. */
-function aCase(hypotheses: readonly Hypothesis[], overrides: Partial<Case> = {}): Case {
+/**
+ * A minimally valid Case around the given hypotheses, in the order given —
+ * the precedence resolve-outcome (still) consults
+ * (task/case-and-investigation-model/precedence-from-position moves it onto
+ * each hypothesis's own declared position later). Each hypothesis's own
+ * declared position is assigned here from its index in the given array,
+ * matching that order exactly, since no test in this file is about the
+ * position field itself.
+ */
+function aCase(hypotheses: readonly HypothesisSpec[], overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-case',
     title: 'A case',
     when_to_use: 'when testing resolve-and-narrow-input',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses,
+    hypotheses: hypotheses.map((hypothesis, index) => ({ ...hypothesis, position: index + 1 })),
     ...overrides,
   };
 }

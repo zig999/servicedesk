@@ -28,27 +28,28 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-/** One hypothesis, defaulted so a test states only its name and what it collects. */
-function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
+function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
   return {
     name,
+    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
   };
 }
 
-/** A minimally valid Case holding exactly the given hypotheses, in the order given. */
+/** A minimally valid Case holding exactly the given hypotheses, in the order given — each one's own declared position set to match that order, since nothing in this module reads it yet. */
 function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly collects: readonly string[] }>): Case {
   return {
     slug: 'a-case',
     title: 'A case',
     when_to_use: 'when testing judgment',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: hypotheses.map((h) => aHypothesis(h.name, h.collects)),
+    hypotheses: hypotheses.map((h, index) => aHypothesis(h.name, h.collects, index + 1)),
   };
 }
 
@@ -69,7 +70,7 @@ function aCaseWithVolatileHypotheses(first: readonly Hypothesis[], subsequent: r
     title: 'A volatile case',
     when_to_use: 'when testing judgment',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
     get hypotheses(): readonly Hypothesis[] {
@@ -630,7 +631,7 @@ it('throws naming the missing hypothesis when evidenceByHypothesis carries no en
 it("throws naming the hypothesis when a required name is not found among the case's own hypotheses", async () => {
   const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
-  const theCase = aCaseWithVolatileHypotheses([aHypothesis('h1', ['concept-a'])], []);
+  const theCase = aCaseWithVolatileHypotheses([aHypothesis('h1', ['concept-a'], 1)], []);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   await expect(

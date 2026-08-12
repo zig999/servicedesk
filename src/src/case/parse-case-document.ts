@@ -55,7 +55,7 @@ function documentProblems(document: unknown, fileName: string): string[] {
     ...stringProblems(document['title'], 'title'),
     ...stringProblems(document['when_to_use'], 'when_to_use'),
     ...versionProblems(document['version']),
-    ...stringProblems(document['hash'], 'hash'),
+    ...stringProblems(document['authored_at'], 'authored_at'),
     ...stringProblems(document['subject'], 'subject'),
     ...resolutionProblems(document['fallback'], 'the fallback'),
     ...consolidationRegisterProblems(document['consolidation_register']),
@@ -128,18 +128,35 @@ function stringProblems(value: unknown, subject: string): string[] {
   return value === '' ? [`${subject} is empty`] : [];
 }
 
+/**
+ * Whether one value is the integer a version or a hypothesis's declared
+ * position must be — a guard, not an assertion (TYP-02), so version and
+ * position both narrow through it rather than through a cast.
+ */
+function isInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value);
+}
+
+/** How a required integer attribute departs from its declaration: absent, or not an integer. */
+function integerProblems(value: unknown, subject: string): string[] {
+  if (value === undefined) {
+    return [`${subject} is undeclared`];
+  }
+  return isInteger(value) ? [] : [`${subject} is not an integer`];
+}
+
 /** How the version departs from its declaration: the case declares it as an integer (domain/knowledge/case). */
 function versionProblems(value: unknown): string[] {
-  if (value === undefined) {
-    return ['version is undeclared'];
-  }
-  return Number.isInteger(value) ? [] : ['version is not an integer'];
+  return integerProblems(value, 'version');
 }
 
 /**
  * How the document's hypotheses violate the structural rules: at least one
  * hypothesis declared (rules/knowledge/a-case-has-at-least-one-hypothesis),
- * each one complete, and no name shared.
+ * each one complete, no name shared
+ * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case) and no
+ * declared position shared
+ * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case).
  */
 function hypothesesProblems(value: unknown): string[] {
   if (value === undefined) {
@@ -153,26 +170,31 @@ function hypothesesProblems(value: unknown): string[] {
     return [NO_HYPOTHESIS_PROBLEM];
   }
   return [
-    ...hypotheses.flatMap((hypothesis, index) => hypothesisProblems(hypothesis, positionOf(index))),
+    ...hypotheses.flatMap((hypothesis, index) => hypothesisProblems(hypothesis, locatorOf(index))),
     ...sharedNameProblems(hypotheses),
+    ...sharedPositionProblems(hypotheses),
   ];
 }
 
 /**
  * How one hypothesis violates the structural rules: a name
- * (domain/knowledge/hypothesis), a non-empty criterion
- * (rules/knowledge/a-hypothesis-declares-a-criterion), at least one
- * collected concept, and a complete resolution.
+ * (domain/knowledge/hypothesis), a declared integer position
+ * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case), a
+ * non-empty criterion (rules/knowledge/a-hypothesis-declares-a-criterion),
+ * at least one collected concept, and a complete resolution. `locator`
+ * names which hypothesis a problem belongs to as a reader counts them
+ * ("hypothesis 1"), never the declared `position` attribute itself.
  */
-function hypothesisProblems(value: unknown, position: string): string[] {
+function hypothesisProblems(value: unknown, locator: string): string[] {
   if (!isRecord(value)) {
-    return [`${position} is not one JSON object`];
+    return [`${locator} is not one JSON object`];
   }
   return [
-    ...stringProblems(value['name'], `${position}'s name`),
-    ...stringProblems(value['criterion'], `${position}'s criterion`),
-    ...collectsProblems(value['collects'], position),
-    ...resolutionProblems(value['resolution'], `${position}'s resolution`),
+    ...stringProblems(value['name'], `${locator}'s name`),
+    ...integerProblems(value['position'], `${locator}'s position`),
+    ...stringProblems(value['criterion'], `${locator}'s criterion`),
+    ...collectsProblems(value['collects'], locator),
+    ...resolutionProblems(value['resolution'], `${locator}'s resolution`),
   ];
 }
 
@@ -181,36 +203,36 @@ function hypothesisProblems(value: unknown, position: string): string[] {
  * concept, each entry naming one
  * (rules/knowledge/a-hypothesis-collects-at-least-one-concept).
  */
-function collectsProblems(value: unknown, position: string): string[] {
+function collectsProblems(value: unknown, locator: string): string[] {
   if (value === undefined) {
-    return [`${position} collects no concept`];
+    return [`${locator} collects no concept`];
   }
   if (!Array.isArray(value)) {
-    return [`${position}'s collects is not an array of concept names`];
+    return [`${locator}'s collects is not an array of concept names`];
   }
   const entries: readonly unknown[] = value;
   if (entries.length === 0) {
-    return [`${position} collects no concept`];
+    return [`${locator} collects no concept`];
   }
   return entries.every((name) => typeof name === 'string' && name !== '')
     ? []
-    : [`${position}'s collects holds an entry that names no concept`];
+    : [`${locator}'s collects holds an entry that names no concept`];
 }
 
 /**
  * Every name more than one hypothesis declares, one problem per shared name
- * naming the positions that share it
+ * naming the locators that share it
  * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case).
  */
 function sharedNameProblems(hypotheses: readonly unknown[]): string[] {
-  const positions = new Map<string, number[]>();
+  const locators = new Map<string, number[]>();
   for (const [index, hypothesis] of hypotheses.entries()) {
     const name = declaredName(hypothesis);
     if (name !== undefined) {
-      positions.set(name, [...(positions.get(name) ?? []), index + 1]);
+      locators.set(name, [...(locators.get(name) ?? []), index + 1]);
     }
   }
-  return [...positions.entries()]
+  return [...locators.entries()]
     .filter(([, at]) => at.length > 1)
     .map(([name, at]) => `hypotheses ${at.join(', ')} share the name "${name}"`);
 }
@@ -224,8 +246,37 @@ function declaredName(hypothesis: unknown): string | undefined {
   return typeof name === 'string' && name !== '' ? name : undefined;
 }
 
-/** Names one hypothesis's position as a reader counts them: the first hypothesis is hypothesis 1. */
-function positionOf(index: number): string {
+/**
+ * Every position more than one hypothesis declares, one problem per shared
+ * position naming the locators that share it
+ * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case) — the
+ * same collect-every-shared-value-once shape sharedNameProblems above
+ * already keeps for the name invariant.
+ */
+function sharedPositionProblems(hypotheses: readonly unknown[]): string[] {
+  const locators = new Map<number, number[]>();
+  for (const [index, hypothesis] of hypotheses.entries()) {
+    const position = declaredPosition(hypothesis);
+    if (position !== undefined) {
+      locators.set(position, [...(locators.get(position) ?? []), index + 1]);
+    }
+  }
+  return [...locators.entries()]
+    .filter(([, at]) => at.length > 1)
+    .map(([position, at]) => `hypotheses ${at.join(', ')} share the position ${position}`);
+}
+
+/** The position one hypothesis record declares, where it declares a valid integer one at all. */
+function declaredPosition(hypothesis: unknown): number | undefined {
+  if (!isRecord(hypothesis)) {
+    return undefined;
+  }
+  const position = hypothesis['position'];
+  return isInteger(position) ? position : undefined;
+}
+
+/** Names one hypothesis's locator as a reader counts them: the first hypothesis is hypothesis 1 — never the declared `position` attribute itself. */
+function locatorOf(index: number): string {
   return `hypothesis ${index + 1}`;
 }
 
@@ -284,7 +335,7 @@ function heldCase(document: Case): Case {
     title: document.title,
     when_to_use: document.when_to_use,
     version: document.version,
-    hash: document.hash,
+    authored_at: document.authored_at,
     subject: document.subject,
     fallback: heldResolution(document.fallback),
     ...(document.consolidation_register !== undefined
@@ -298,6 +349,7 @@ function heldCase(document: Case): Case {
 function heldHypothesis(hypothesis: Hypothesis): Hypothesis {
   return {
     name: hypothesis.name,
+    position: hypothesis.position,
     criterion: hypothesis.criterion,
     collects: [...hypothesis.collects],
     resolution: heldResolution(hypothesis.resolution),

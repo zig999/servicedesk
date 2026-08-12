@@ -1,0 +1,551 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 14s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:36161) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 24ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 37ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 67ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 54ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 49ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (50 tests) 56ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (25 tests) 55ms
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts (23 tests | 14 failed) 134ms
+   × answers the case whole, matching exactly what the document holds, when every structural and coherence rule holds for it 31ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   × pins the answered case by exactly the hash the store attached to the version this call read, not a value read-case computes itself 4ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   × pins each version by its own hash, never another version's 3ms
+     → the case "a-case" at version 2 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   ✓ refuses with CaseNotFoundError, naming the slug and version, when no version is stored at all 6ms
+   × refuses a case failing one structural rule, naming the violation in a CaseNotValidError 14ms
+     → expected { slug: 'a-case', version: 1, …(1) } to deeply equal { slug: 'a-case', version: 1, …(1) }
+   × joins several structural violations into the one CaseNotValidError 2ms
+     → expected [ 'title is empty', …(2) ] to deeply equal [ 'title is empty', …(1) ]
+   × refuses a structurally valid case failing one coherence rule, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError 5ms
+     → expected { slug: 'a-case', version: 1, …(1) } to deeply equal { slug: 'a-case', version: 1, …(1) }
+   × joins several coherence violations into the one CaseNotValidError 7ms
+     → expected [ 'authored_at is undeclared', …(1) ] to deeply equal [ …(2) ]
+   × names only the structural violations, never a coherence one, when a document fails both a structural rule and what would otherwise be a coherence rule — a document that fails to parse never reaches the coherence checks 12ms
+     → expected [ 'title is empty', …(2) ] to deeply equal [ 'title is empty' ]
+   × lets a capability-registry integrity failure reach the caller rather than becoming a coherence violation of the case 19ms
+     → expected CaseNotValidError: the case "a-case" at v… { context: { …(3) } } to be DuplicateConceptAnswerError: the registry… { context: { …(2) } } // Object.is equality
+   × refuses at a later read a case that validated earlier, once the glossary no longer holds a concept it depends on 7ms
+     → promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+   × refuses at a later read a case that validated earlier, once the capability registry no longer answers a concept it depends on 5ms
+     → promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+   × answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries 1ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   ✓ replays a pinned version without running the coherence checks at all, answering the case even though the same content would refuse at read-case 2ms
+   ✓ answers a replay from just the case store, with no glossary or capability dependency for it to call at all 1ms
+   ✓ refuses replay with the same CaseNotFoundError as read-case when the pinned version was never stored 1ms
+   ✓ answers a document that would fail read-case structurally, rather than refusing it, because replay skips the structural refusal too 1ms
+   ✓ answers the replay whole, matching exactly what the document holds, including its hypotheses and their resolutions and referrals 1ms
+   ✓ answers the version stored under the named slug, never the same version number stored under a different slug 5ms
+   ✓ answers the version a replay names, unaffected by a later version stored afterward under the same slug 1ms
+   ✓ resolves its case without ever reading the store's content-identity digest, even where doing so would throw 0ms
+   × answers a version written directly to the store as its very next read, with no separate publish step anywhere in this composition 1ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   × answers a case whose document declares a version different from the version number it is addressed by, since read-case never cross-checks the two 1ms
+     → the case "a-case" at version 2 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 292ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 20ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 41ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 37ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 151ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 48ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 1186ms
+   ✓ answers 200 with the assessment the diagnose call produced, for a request naming an existing case, subject, narrative and requester  844ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 77ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 526ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 49ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 66ms
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests | 5 failed) 241ms
+   × answers a case written directly to the real store, pinned by the sha256 of the exact bytes on disk, with no publish step in between 92ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   × refuses through the real wiring a case document declaring no hypothesis, naming the structural violation 59ms
+     → expected [ 'authored_at is undeclared', …(1) ] to deeply equal [ 'the case declares no hypothesis' ]
+   ✓ refuses through the real wiring a structurally valid case whose collected concept the glossary does not hold, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError 37ms
+   × refuses at a later read, through the real wiring, a case that validated earlier once the glossary file no longer holds a concept it depends on 21ms
+     → promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+   × replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is edited away 20ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+   × routes each of the three dependencies to the directory named for it, whether all three differ or two of them coincide 9ms
+     → the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 20ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 19ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 277ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 239ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 128ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 426ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 39ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (4 tests) 376ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 962ms
+   ✓ writes an investigation to the file-backed store for the request, readable back through createInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment  924ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 40ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 162ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 117ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 173ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 59ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 130ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 162ms
+ ✓ src/__tests__/unit/config/env.spec.ts (7 tests) 55ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 104ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 152ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (7 tests) 2408ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  1151ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env  495ms
+   ✓ persists the zero-valued cost and duration placeholders this HTTP layer stamps, since nothing behind it measures either yet  311ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 159ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 39ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 82ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 45ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 66ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 96ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 140ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 14ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 55ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 41ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 9ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 111ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 80ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 145ms
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 28607ms
+   ✓ applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  1930ms
+   ✓ persists and reads back a full case, hypothesis, resolution, referral and its collects  1051ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  1955ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  748ms
+   ✓ holds every domain column NOT NULL except exactly the five columns the model declares optional  484ms
+   ✓ refuses storing a case version whose title is absent  592ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  884ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  1330ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  3223ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1321ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  730ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1170ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  450ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  583ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  586ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  444ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1021ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1026ms
+   ✓ refuses a second case stored under a slug already in use  581ms
+   ✓ refuses storing the same case version a second time under its own slug and version  731ms
+   ✓ refuses a second hypothesis of one case sharing an already-used position  874ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  876ms
+   ✓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them  1026ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 19 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > answers a case written directly to the real store, pinned by the sha256 of the exact bytes on disk, with no publish step in between
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:136:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring a case document declaring no hypothesis, naming the structural violation
+AssertionError: expected [ 'authored_at is undeclared', …(1) ] to deeply equal [ 'the case declares no hypothesis' ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[31m+   "authored_at is undeclared",[39m
+[2m    "the case declares no hypothesis",[22m
+[2m  ][22m
+
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:155:61
+    153| 
+    154|   expect(refusal).toBeInstanceOf(CaseNotValidError);
+    155|   expect((refusal as CaseNotValidError).context.violations).toEqual(['…
+       |                                                             ^
+    156| });
+    157| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses at a later read, through the real wiring, a case that validated earlier once the glossary file no longer holds a concept it depends on
+AssertionError: promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:185:47
+    183|     await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCa…
+    184|     const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
+    185|     await expect(query.readCase(SLUG, VERSION)).resolves.toMatchObject…
+       |                                               ^
+    186| 
+    187|     // Edits the concept out of the glossary's own file directly, bypa…
+
+Caused by: CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:185:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { slug: 'a-case', version: 1, violations: [ 'authored_at is undeclared', 'hypothesis 1\'s position is undeclared' ] } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is edited away
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:206:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > routes each of the three dependencies to the directory named for it, whether all three differ or two of them coincide
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:231:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > answers the case whole, matching exactly what the document holds, when every structural and coherence rule holds for it
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:230:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > pins the answered case by exactly the hash the store attached to the version this call read, not a value read-case computes itself
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:259:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > pins each version by its own hash, never another version's
+CaseNotValidError: the case "a-case" at version 2 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:270:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > refuses a case failing one structural rule, naming the violation in a CaseNotValidError
+AssertionError: expected { slug: 'a-case', version: 1, …(1) } to deeply equal { slug: 'a-case', version: 1, …(1) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "slug": "a-case",[22m
+[2m    "version": 1,[22m
+[2m    "violations": [[22m
+[31m+     "authored_at is undeclared",[39m
+[2m      "the case declares no hypothesis",[22m
+[2m    ],[22m
+[2m  }[22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:294:50
+    292| 
+    293|   expect(refusal).toBeInstanceOf(CaseNotValidError);
+    294|   expect((refusal as CaseNotValidError).context).toEqual({
+       |                                                  ^
+    295|     slug: SLUG,
+    296|     version: VERSION,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > joins several structural violations into the one CaseNotValidError
+AssertionError: expected [ 'title is empty', …(2) ] to deeply equal [ 'title is empty', …(1) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "title is empty",[22m
+[31m+   "authored_at is undeclared",[39m
+[2m    "the case declares no hypothesis",[22m
+[2m  ][22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:311:61
+    309|   const refusal = await readAsError(service.readCase(SLUG, VERSION));
+    310| 
+    311|   expect((refusal as CaseNotValidError).context.violations).toEqual([
+       |                                                             ^
+    312|     'title is empty',
+    313|     'the case declares no hypothesis',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > refuses a structurally valid case failing one coherence rule, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError
+AssertionError: expected { slug: 'a-case', version: 1, …(1) } to deeply equal { slug: 'a-case', version: 1, …(1) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "slug": "a-case",[22m
+[2m    "version": 1,[22m
+[2m    "violations": [[22m
+[32m-     "the concept \"equipment-state\" does not exist in the glossary",[39m
+[31m+     "authored_at is undeclared",[39m
+[31m+     "hypothesis 1's position is undeclared",[39m
+[2m    ],[22m
+[2m  }[22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:328:50
+    326|   expect(refusal).toBeInstanceOf(CaseNotValidError);
+    327|   expect(refusal).not.toBeInstanceOf(IncoherentCaseError);
+    328|   expect((refusal as CaseNotValidError).context).toEqual({
+       |                                                  ^
+    329|     slug: SLUG,
+    330|     version: VERSION,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > joins several coherence violations into the one CaseNotValidError
+AssertionError: expected [ 'authored_at is undeclared', …(1) ] to deeply equal [ …(2) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[32m-   "the action \"notify-customer\" does not exist in the glossary",[39m
+[32m-   "the concept \"equipment-state\" does not exist in the glossary",[39m
+[31m+   "authored_at is undeclared",[39m
+[31m+   "hypothesis 1's position is undeclared",[39m
+[2m  ][22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:345:61
+    343|   const refusal = await readAsError(service.readCase(SLUG, VERSION));
+    344| 
+    345|   expect((refusal as CaseNotValidError).context.violations).toEqual([
+       |                                                             ^
+    346|     `the action "${ACTION}" does not exist in the glossary`,
+    347|     `the concept "${CONCEPT}" does not exist in the glossary`,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > names only the structural violations, never a coherence one, when a document fails both a structural rule and what would otherwise be a coherence rule — a document that fails to parse never reaches the coherence checks
+AssertionError: expected [ 'title is empty', …(2) ] to deeply equal [ 'title is empty' ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "title is empty",[22m
+[31m+   "authored_at is undeclared",[39m
+[31m+   "hypothesis 1's position is undeclared",[39m
+[2m  ][22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:367:63
+    365| 
+    366|     expect(refusal).toBeInstanceOf(CaseNotValidError);
+    367|     expect((refusal as CaseNotValidError).context.violations).toEqual(…
+       |                                                               ^
+    368|   },
+    369| );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > lets a capability-registry integrity failure reach the caller rather than becoming a coherence violation of the case
+AssertionError: expected CaseNotValidError: the case "a-case" at v… { context: { …(3) } } to be DuplicateConceptAnswerError: the registry… { context: { …(2) } } // Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- DuplicateConceptAnswerError {[39m
+[32m-   "message": "the registry holds 2 capabilities answering the concept \"equipment-state\", where each concept resolves to exactly one capability",[39m
+[31m+ CaseNotValidError {[39m
+[31m+   "message": "the case \"a-case\" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared",[39m
+[2m    "context": {[22m
+[32m-     "answers": [[39m
+[32m-       {[39m
+[32m-         "name": "a-capability",[39m
+[32m-         "version": "1.0.0",[39m
+[32m-       },[39m
+[32m-       {[39m
+[32m-         "name": "another-capability",[39m
+[32m-         "version": "1.0.0",[39m
+[32m-       },[39m
+[31m+     "slug": "a-case",[39m
+[31m+     "version": 1,[39m
+[31m+     "violations": [[39m
+[31m+       "authored_at is undeclared",[39m
+[31m+       "hypothesis 1's position is undeclared",[39m
+[2m      ],[22m
+[32m-     "concept": "equipment-state",[39m
+[2m    },[22m
+[32m-   "name": "DuplicateConceptAnswerError",[39m
+[31m+   "name": "CaseNotValidError",[39m
+[2m  }[22m
+
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:382:3
+    380|   const service = new CaseQueryService(store, coherentGlossary(), capa…
+    381| 
+    382|   await expect(service.readCase(SLUG, VERSION)).rejects.toBe(failure);
+       |   ^
+    383| });
+    384| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > refuses at a later read a case that validated earlier, once the glossary no longer holds a concept it depends on
+AssertionError: promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:392:47
+    390|   const glossary = coherentGlossary();
+    391|   const service = new CaseQueryService(store, glossary, coherentCapabi…
+    392|   await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject…
+       |                                               ^
+    393| 
+    394|   glossary.forgetConcept(CONCEPT);
+
+Caused by: CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:392:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { slug: 'a-case', version: 1, violations: [ 'authored_at is undeclared', 'hypothesis 1\'s position is undeclared' ] } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > refuses at a later read a case that validated earlier, once the capability registry no longer answers a concept it depends on
+AssertionError: promise rejected "CaseNotValidError: the case "a-case" at v… { context: { …(3) } }" instead of resolving
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:405:47
+    403|   const capabilities = coherentCapabilities();
+    404|   const service = new CaseQueryService(store, coherentGlossary(), capa…
+    405|   await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject…
+       |                                               ^
+    406| 
+    407|   capabilities.forget(CONCEPT);
+
+Caused by: CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:405:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { slug: 'a-case', version: 1, violations: [ 'authored_at is undeclared', 'hypothesis 1\'s position is undeclared' ] } }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:420:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > answers a version written directly to the store as its very next read, with no separate publish step anywhere in this composition
+CaseNotValidError: the case "a-case" at version 1 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:541:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/19]⎯
+
+ FAIL  src/__tests__/unit/case/case-query.service.spec.ts > answers a case whose document declares a version different from the version number it is addressed by, since read-case never cross-checks the two
+CaseNotValidError: the case "a-case" at version 2 violates its validator rules: authored_at is undeclared; hypothesis 1's position is undeclared
+ ❯ structuralCase src/case/case-query.service.ts:130:13
+    128|   } catch (error) {
+    129|     if (error instanceof InvalidCaseDocumentError) {
+    130|       throw new CaseNotValidError(slug, version, error.context.problem…
+       |             ^
+    131|     }
+    132|     throw error;
+ ❯ CaseQueryService.readCase src/case/case-query.service.ts:55:21
+ ❯ src/__tests__/unit/case/case-query.service.spec.ts:554:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/19]⎯
+
+
+ Test Files  2 failed | 53 passed (55)
+      Tests  19 failed | 495 passed (514)
+   Start at  13:31:04
+   Duration  30.49s (transform 8.79s, setup 0ms, collect 24.68s, tests 38.95s, environment 80ms, prepare 20.54s)
+
+

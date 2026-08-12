@@ -55,11 +55,13 @@ const READ_ONLY = 'read-only';
 
 /**
  * A raw case document — every attribute parseCaseDocument requires — for a
- * test to depart from one attribute at a time. Its `hash` attribute is the
- * document's own declared string (a structural requirement of
- * domain/knowledge/case), never the store's content-identity hash a
- * StoredCaseVersion answers, which is why the two are given visibly
- * different values throughout this file.
+ * test to depart from one attribute at a time. Declares no hash at all: the
+ * case aggregate no longer admits one
+ * (task/case-and-investigation-model/case-aggregate-shape); the store's own
+ * content-identity hash a StoredCaseVersion answers is a wholly separate
+ * value, seeded explicitly through FakeCaseStore.seed's own second argument
+ * throughout this file, which is why it is always given visibly distinct
+ * values from anything here.
  */
 function validCaseDocument(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
@@ -67,7 +69,7 @@ function validCaseDocument(overrides: Record<string, unknown> = {}): Record<stri
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
     version: VERSION,
-    hash: 'a-declared-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
     fallback: {
       outcome: FALLBACK_OUTCOME,
@@ -76,6 +78,7 @@ function validCaseDocument(overrides: Record<string, unknown> = {}): Record<stri
     hypotheses: [
       {
         name: 'h1',
+        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
@@ -234,7 +237,7 @@ it('answers the case whole, matching exactly what the document holds, when every
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
     version: VERSION,
-    hash: 'a-declared-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
     fallback: {
       outcome: FALLBACK_OUTCOME,
@@ -243,6 +246,7 @@ it('answers the case whole, matching exactly what the document holds, when every
     hypotheses: [
       {
         name: 'h1',
+        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
@@ -475,7 +479,7 @@ it('answers the replay whole, matching exactly what the document holds, includin
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
     version: VERSION,
-    hash: 'a-declared-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
     fallback: {
       outcome: FALLBACK_OUTCOME,
@@ -484,6 +488,7 @@ it('answers the replay whole, matching exactly what the document holds, includin
     hypotheses: [
       {
         name: 'h1',
+        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },

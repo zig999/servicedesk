@@ -5,6 +5,13 @@
 // violation named. The fixture is spelled here rather than read from the
 // source, so a drift in what the parser accepts fails against what the
 // specification shows.
+//
+// task/case-and-investigation-model/case-aggregate-shape: the case no longer
+// declares a hash at all, and now declares authored_at as a required
+// datetime; each hypothesis now declares its own required, unique position
+// instead of carrying its precedence by array arrangement alone. Every
+// fixture below carries authored_at and a position per hypothesis, and no
+// fixture carries hash, matching the aggregate's new declared shape.
 import { expect, it } from 'vitest';
 import { parseCaseDocument } from '../../../case/parse-case-document.js';
 import { InvalidCaseDocumentError } from '../../../errors/invalid-case-document.error.js';
@@ -32,8 +39,8 @@ function resolutionOf(outcome: string, action: string, recipient: string): Docum
   return { outcome, referral: { action, recipient } };
 }
 
-/** The worked example's four hypotheses, in their declared precedence. */
-function workedHypotheses(): Document[] {
+/** The worked example's four hypotheses' own fields, less position — workedHypotheses() below assigns each one's position from its own index here, matching this declared order. */
+function workedHypothesisSpecs(): Document[] {
   return [
     {
       name: 'incidente-regional',
@@ -62,14 +69,19 @@ function workedHypotheses(): Document[] {
   ];
 }
 
-/** A document declaring every attribute, for tests to depart from one attribute at a time. */
+/** The worked example's four hypotheses, in their declared precedence, each at its own declared position matching that order. */
+function workedHypotheses(): Document[] {
+  return workedHypothesisSpecs().map((spec, index) => ({ ...spec, position: index + 1 }));
+}
+
+/** A document declaring every attribute, for tests to depart from one attribute at a time. Declares no hash at all — the case aggregate no longer admits one (task/case-and-investigation-model/case-aggregate-shape). */
 function completeDocument(overrides: Document = {}): Document {
   return {
     slug: 'cliente-sem-internet',
     title: 'Cliente sem internet',
     when_to_use: 'cliente relata ausência total de conexão',
     version: 1,
-    hash: '1f2e3d4c5b6a',
+    authored_at: '2024-03-01T09:00:00.000Z',
     subject: 'contrato',
     fallback: resolutionOf('inconclusivo', 'escalar', 'suporte-n2'),
     hypotheses: workedHypotheses(),
@@ -81,6 +93,7 @@ function completeDocument(overrides: Document = {}): Document {
 function completeHypothesis(overrides: Document = {}): Document {
   return {
     name: 'incidente-regional',
+    position: 1,
     criterion: 'há incidente aberto cobrindo a localidade do cliente',
     collects: ['incidentes-na-regiao'],
     resolution: resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
@@ -160,6 +173,32 @@ it('carries nothing into the aggregate that the model does not declare', () => {
   expect(parsed).not.toHaveProperty('curador');
 });
 
+// ---------------------------------------- case-aggregate-shape: authored_at, position, no hash
+
+it('carries the document\'s declared authored_at unchanged, as the case\'s own datetime', () => {
+  const document = completeDocument({ authored_at: '2030-12-25T18:30:00.000Z' });
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect(parsed.authored_at).toBe('2030-12-25T18:30:00.000Z');
+});
+
+it("carries each hypothesis's own declared position unchanged, in the document's own order", () => {
+  const document = completeDocument();
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect(parsed.hypotheses.map((hypothesis) => hypothesis.position)).toEqual([1, 2, 3, 4]);
+});
+
+it('drops a hash the document still declares, carrying it into no part of the parsed aggregate', () => {
+  const document = completeDocument({ hash: 'a-stale-digest-nobody-asked-for' });
+
+  const parsed = parseCaseDocument(document, FILE_NAME);
+
+  expect(parsed).not.toHaveProperty('hash');
+});
+
 // ---------------------------------------------------------------- the enumerated refusals
 
 it('refuses a case whose slug differs from the name of the file that holds it', () => {
@@ -187,10 +226,15 @@ it('refuses a case declaring an empty list of hypotheses', () => {
 });
 
 it('refuses a case whose two hypotheses share a name', () => {
+  // Distinct positions (2 for the second), isolating this rule's own
+  // violation from the position-uniqueness rule proved separately below.
   const document = completeDocument({
     hypotheses: [
       completeHypothesis(),
-      completeHypothesis({ criterion: 'existe ordem de serviço em execução no cliente' }),
+      completeHypothesis({
+        position: 2,
+        criterion: 'existe ordem de serviço em execução no cliente',
+      }),
     ],
   });
 
@@ -198,6 +242,47 @@ it('refuses a case whose two hypotheses share a name', () => {
 
   expect(problems).toEqual([expect.stringContaining('share the name "incidente-regional"')]);
 });
+
+it('refuses a case whose two hypotheses share a position, naming both', () => {
+  // Distinct names, isolating this rule's own violation from the
+  // name-uniqueness rule proved separately above.
+  const document = completeDocument({
+    hypotheses: [
+      completeHypothesis(),
+      completeHypothesis({
+        name: 'ordem-em-andamento',
+        criterion: 'existe ordem de serviço em execução no cliente',
+      }),
+    ],
+  });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining('hypotheses 1, 2 share the position 1')]);
+});
+
+it(
+  'refuses a case whose hypotheses violate both uniqueness rules at once, naming the shared name and ' +
+    'the shared position together',
+  () => {
+    const document = completeDocument({
+      hypotheses: [
+        completeHypothesis(),
+        completeHypothesis(), // shares both this fixture's default name and default position
+      ],
+    });
+
+    const problems = problemsOf(document);
+
+    expect(problems).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('share the name "incidente-regional"'),
+        expect.stringContaining('hypotheses 1, 2 share the position 1'),
+      ]),
+    );
+    expect(problems).toHaveLength(2);
+  },
+);
 
 it('refuses a hypothesis that declares no collects', () => {
   const document = documentWithHypothesis({ collects: undefined });
@@ -277,7 +362,7 @@ it('refuses a fallback missing its referral', () => {
 
 // ------------------------------------------------- the required attributes beyond the enumeration
 
-it.each(['slug', 'title', 'when_to_use', 'hash', 'subject'])(
+it.each(['slug', 'title', 'when_to_use', 'authored_at', 'subject'])(
   'refuses a document that leaves %s undeclared',
   (attribute) => {
     const document = completeDocument({ [attribute]: undefined });
@@ -318,6 +403,22 @@ it('refuses a nameless hypothesis', () => {
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('name is undeclared')]);
+});
+
+it('refuses a hypothesis that declares no position', () => {
+  const document = documentWithHypothesis({ position: undefined });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("hypothesis 1's position is undeclared")]);
+});
+
+it('refuses a hypothesis whose position is not an integer, instead of coercing it', () => {
+  const document = documentWithHypothesis({ position: '1' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("hypothesis 1's position is not an integer")]);
 });
 
 it('refuses a referral missing its action', () => {
@@ -419,10 +520,15 @@ it('collects a consolidation_register violation together with another structural
 // ---------------------------------------------------------------- several violations, one refusal
 
 it('refuses a document violating several structural rules once, naming every violation', () => {
+  // Distinct positions (1 and 2), so the shared-name violation below is the
+  // only hypothesis-level uniqueness problem this fixture carries.
   const document = completeDocument({
     title: undefined,
     fallback: { referral: { action: 'escalar', recipient: 'suporte-n2' } },
-    hypotheses: [completeHypothesis({ criterion: '' }), completeHypothesis({ collects: [] })],
+    hypotheses: [
+      completeHypothesis({ position: 1, criterion: '' }),
+      completeHypothesis({ position: 2, collects: [] }),
+    ],
   });
 
   const problems = problemsOf(document, 'outro-case.json');

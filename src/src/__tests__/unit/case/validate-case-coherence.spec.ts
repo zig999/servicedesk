@@ -136,9 +136,9 @@ function resolutionOf(outcome: string, action: string, recipient: string): Resol
   return { outcome, referral: { action, recipient } };
 }
 
-/** One hypothesis carrying exactly what the coherence checks consult. */
+/** One hypothesis carrying exactly what the coherence checks consult, plus the declared position every hypothesis now requires — none of these checks reads it, so a fixed 1 serves every one of this file's always-single-hypothesis fixtures. */
 function hypothesisOf(name: string, collects: readonly string[], resolution: Resolution): Hypothesis {
-  return { name, criterion: UNCONSULTED_CRITERION, collects, resolution };
+  return { name, position: 1, criterion: UNCONSULTED_CRITERION, collects, resolution };
 }
 
 /**
@@ -153,7 +153,7 @@ function caseOf(overrides: Partial<Case> = {}): Case {
     title: 'A case',
     when_to_use: 'when a curator needs a case to test coherence over',
     version: 1,
-    hash: 'deadbeef',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT_CONTRACT,
     fallback: resolutionOf(FALLBACK_OUTCOME, FALLBACK_ACTION, FALLBACK_RECIPIENT),
     hypotheses: [hypothesisOf('h1', [CONCEPT], resolutionOf(OUTCOME, ACTION, RECIPIENT))],

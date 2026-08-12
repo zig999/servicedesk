@@ -49,13 +49,35 @@ function resolutionOf(outcome: string, action: string, recipient: string): Resol
   return { outcome, referral: { action, recipient } };
 }
 
-/** One hypothesis carrying exactly what these operations consult: name, collects, resolution. */
+/**
+ * Every hypothesis this file names keeps one fixed declared position across
+ * every test, matching its own index in the worked example's declared
+ * precedence — reused rather than derived from whatever array a given test
+ * happens to place it in, since several tests below (the reversed-order
+ * pair, most pointedly) deliberately vary the array position of an
+ * already-built hypothesis while its own declared position stays put. None
+ * of the three operations under proof here reads it yet
+ * (task/case-and-investigation-model/precedence-from-position moves
+ * resolve-outcome onto it later), so its value is otherwise inert.
+ */
+const DECLARED_POSITIONS: Readonly<Record<string, number>> = {
+  'incidente-regional': 1,
+  'ordem-em-andamento': 2,
+  'bloqueio-financeiro': 3,
+  'onu-offline': 4,
+};
+
+/** One hypothesis carrying exactly what these operations consult: name, collects, resolution — plus its own declared position, looked up by name. */
 function hypothesisOf(
   name: string,
   collects: readonly string[],
   resolution: Resolution,
 ): Hypothesis {
-  return { name, criterion: UNCONSULTED_CRITERION, collects, resolution };
+  const position = DECLARED_POSITIONS[name];
+  if (position === undefined) {
+    throw new Error(`no declared position fixture for hypothesis name ${JSON.stringify(name)}`);
+  }
+  return { name, position, criterion: UNCONSULTED_CRITERION, collects, resolution };
 }
 
 /** A hypothesis for the plan tests, whose resolution no plan test consults. */
@@ -99,7 +121,7 @@ function caseWith(hypotheses: readonly Hypothesis[]): Case {
     title: 'Cliente sem internet',
     when_to_use: 'cliente relata ausência total de conexão',
     version: 1,
-    hash: '1f2e3d4c5b6a',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'contrato',
     fallback: FALLBACK,
     hypotheses,

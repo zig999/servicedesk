@@ -45,14 +45,21 @@ const CAPABILITY_FILE = 'capability.json';
 /** The one plain JSON file concept registrations land in. */
 const CONCEPT_FILE = 'concept.json';
 
-/** A raw case document — every attribute parseCaseDocument requires — for a test to depart from one attribute at a time. */
+/**
+ * A raw case document — every attribute parseCaseDocument requires — for a
+ * test to depart from one attribute at a time. Declares no hash at all: the
+ * case aggregate no longer admits one
+ * (task/case-and-investigation-model/case-aggregate-shape) — the sha256 this
+ * file's own tests read is the real store's content-identity pin over the
+ * exact bytes on disk, never a value this document declares.
+ */
 function validCaseDocument(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     slug: SLUG,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
     version: VERSION,
-    hash: 'a-declared-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
     fallback: {
       outcome: FALLBACK_OUTCOME,
@@ -61,6 +68,7 @@ function validCaseDocument(overrides: Record<string, unknown> = {}): Record<stri
     hypotheses: [
       {
         name: 'h1',
+        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },

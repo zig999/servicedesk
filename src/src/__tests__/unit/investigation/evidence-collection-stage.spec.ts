@@ -41,11 +41,12 @@ function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly colle
     title: 'A case',
     when_to_use: 'when testing evidence collection',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: hypotheses.map((hypothesis) => ({
+    hypotheses: hypotheses.map((hypothesis, index) => ({
       name: hypothesis.name,
+      position: index + 1,
       criterion: `${hypothesis.name} criterion`,
       collects: hypothesis.collects,
       resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },

@@ -42,10 +42,10 @@ import type { BuildInvestigationOptions } from '../../../investigation/investiga
 import { buildInvestigation } from '../../../investigation/investigation-factory.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 
-/** The pinned case's own three identifying attributes — reused by the fixture and by the pin assertions, so a typo in either cannot fake a pass. */
+/** The pinned case's own two identifying attributes — reused by the fixture and by the pin assertions, so a typo in either cannot fake a pass. */
 const CASE_SLUG = 'a-case';
 const CASE_VERSION = 3;
-const CASE_HASH = 'a-hash';
+const CASE_AUTHORED_AT = '2024-01-01T00:00:00.000Z';
 /** The built investigation's own written_at, reused by the fixture and by the written_at assertions (task/case-and-investigation-model/investigation-record-shape). */
 const WRITTEN_AT = '2024-06-01T12:00:00.000Z';
 
@@ -85,10 +85,11 @@ function glossaryHolding(...names: readonly string[]): FakeGlossaryQuery {
   return glossary;
 }
 
-/** One hypothesis, defaulted so a test states only its name and what it collects. */
-function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
+function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
   return {
     name,
+    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
@@ -107,10 +108,10 @@ function aCase(overrides: Partial<Case> = {}): Case {
     title: 'A case for the factory to pin',
     when_to_use: 'when testing the investigation factory',
     version: CASE_VERSION,
-    hash: CASE_HASH,
+    authored_at: CASE_AUTHORED_AT,
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])],
+    hypotheses: [aHypothesis('h1', ['concept-a'], 1), aHypothesis('h2', ['concept-b'], 2)],
     ...overrides,
   };
 }
@@ -462,14 +463,26 @@ it('pins the case by exactly slug and version, never a hash and never the whole 
 });
 
 // ------------------------------------- record-shape criterion 2: no digest read over the case's content
-
-it("pins the same slug and version regardless of what the case's own hash holds, deriving or reading no digest over its content", async () => {
-  const withHashOne = await buildInvestigation(validOptions({ case: aCase({ hash: 'hash-one' }) }));
-  const withHashTwo = await buildInvestigation(validOptions({ case: aCase({ hash: 'hash-two' }) }));
-
-  expect(withHashOne.pinned_case).toEqual({ slug: CASE_SLUG, version: CASE_VERSION });
-  expect(withHashOne.pinned_case).toEqual(withHashTwo.pinned_case);
-});
+//
+// The test this comment replaces ("pins the same slug and version
+// regardless of what the case's own hash holds, deriving or reading no
+// digest over its content") varied aCase({ hash: 'hash-one' }) against
+// aCase({ hash: 'hash-two' }) to show the pin was invariant across a
+// hash-only difference. task/case-and-investigation-model/case-aggregate-shape
+// removes Case's own hash attribute from the type entirely, so that override
+// no longer type-checks at all — there is no longer a hash on a Case for two
+// otherwise-identical cases to differ by. Its first assertion
+// (pinned_case equals {slug, version}) is now a plain duplicate of the
+// "pins the case by exactly slug and version, never a hash and never the
+// whole case" test just above; its second (the two pins being equal to each
+// other) would compare pinned_case against itself once the only difference
+// between the two calls is gone, which is not a test. No substitute
+// difference is invented in its place. What the deleted test proved — that
+// nothing about pinning could ever read a hash — is now a structural fact of
+// Case's own declaration (case.ts) rather than a runtime behavior: pinnedCaseOf
+// cannot read theCase.hash because the property does not exist on the type at
+// all, which is a stronger guarantee than a test over two hash values ever
+// established.
 
 // --------------------------------------------------------------- record-shape criterion 3: written_at
 

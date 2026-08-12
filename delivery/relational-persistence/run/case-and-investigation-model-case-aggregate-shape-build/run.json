@@ -1,0 +1,39 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/case-and-investigation-model-case-aggregate-shape-build",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/src",
+  "timeout_seconds": 600,
+  "outcome": "failed",
+  "failed_step": "typecheck",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "failed",
+      "exit_code": 2,
+      "output": "typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null
+    }
+  ],
+  "combined_output": "run.log"
+}

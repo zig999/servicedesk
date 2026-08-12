@@ -27,18 +27,18 @@ function minimalCase(): Case {
     title: 'a title',
     when_to_use: 'a when-to-use',
     version: 1,
-    hash: 'a-hash',
+    authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'a-subject-type',
     fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
     hypotheses: [
-      { name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
+      { name: 'h1', position: 1, criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
     ],
   };
 }
 
-/** Answers minimalCase() unconditionally, regardless of the slug/version given — this file's own tests only assert on the HTTP surface, never on which case was requested. */
+/** Answers minimalCase() unconditionally, regardless of the slug/version given — this file's own tests only assert on the HTTP surface, never on which case was requested. The `hash` answered here is read-case's own store-level content pin (ReadCaseResult.hash — sha256 of the stored document's bytes), never a field of Case itself, which carries no hash at all; a fixed placeholder serves since no test in this file reads it. */
 function stubCaseQuery(theCase: Case): ICaseQuery {
-  return { readCase: async () => ({ case: theCase, hash: theCase.hash }) };
+  return { readCase: async () => ({ case: theCase, hash: 'a-hash' }) };
 }
 
 /** Everything diagnoseRequestSchema requires, as a plain object rather than the imported DTO type — some tests below intentionally break this shape to prove the validation boundary refuses it. */

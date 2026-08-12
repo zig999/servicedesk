@@ -35,12 +35,25 @@ export type Resolution = {
 /**
  * One falsifiable claim about the subject's situation
  * (domain/knowledge/hypothesis), named uniquely within its case
- * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case): its
- * investigation is the pair collects plus criterion, inline in the case
- * document, and its resolution follows its confirmation.
+ * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case) and placed
+ * at one declared position, also unique within its case
+ * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case): its
+ * investigation is the pair collects plus criterion, inline in the case's
+ * submitted version, and its resolution follows its confirmation.
  */
 export type Hypothesis = {
   readonly name: string;
+  /**
+   * Its own declared position in the case's precedence — the fact the
+   * case's ordering used to carry by arrangement alone
+   * (domain/knowledge/hypothesis,
+   * rules/knowledge/a-hypothesis-position-is-unique-within-its-case).
+   * resolve-outcome still reads the hypotheses' array order rather than
+   * this field until
+   * task/case-and-investigation-model/precedence-from-position moves it
+   * (rules/knowledge/hypotheses-are-ordered-by-precedence).
+   */
+  readonly position: number;
   /** The short business prose the judgment applies (rules/knowledge/a-hypothesis-declares-a-criterion). */
   readonly criterion: string;
   /** The concepts the claim collects, each by its glossary name, at least one (rules/knowledge/a-hypothesis-collects-at-least-one-concept). */
@@ -49,23 +62,31 @@ export type Hypothesis = {
 };
 
 /**
- * One troubleshooting procedure (domain/knowledge/case), whole as its one
- * JSON document states it: every declared attribute required except the
- * optional consolidation register, the fallback a disguised default
- * hypothesis that claims nothing about the world, and the hypotheses held
- * in the document's declared order — the precedence the experts affirm and
- * resolve-outcome consumes
- * (rules/knowledge/hypotheses-are-ordered-by-precedence), so the aggregate
+ * One troubleshooting procedure (domain/knowledge/case), whole as a
+ * submitted version states it: every declared attribute required except
+ * the optional consolidation register, the fallback a disguised default
+ * hypothesis that claims nothing about the world, and no digest over its
+ * own content — a version is written once and never altered, so slug and
+ * version alone name one content without one
+ * (rules/knowledge/a-case-version-is-written-once,
+ * task/case-and-investigation-model/case-aggregate-shape). The hypotheses
+ * are held in the document's declared order — the precedence the experts
+ * affirm and, once
+ * task/case-and-investigation-model/precedence-from-position moves
+ * resolve-outcome onto each hypothesis's own declared position, the fact
+ * that order records
+ * (rules/knowledge/hypotheses-are-ordered-by-precedence) — so the aggregate
  * never reorders them and never keys them by name.
  */
 export type Case = {
-  /** The case's identity, equal to the name of the file that holds it (rules/knowledge/the-slug-matches-the-file-name). */
+  /** The case's identity (rules/knowledge/a-slug-identifies-one-case). */
   readonly slug: string;
   readonly title: string;
   /** When an attendant reaches for this case, spelled as the specification spells it. */
   readonly when_to_use: string;
   readonly version: number;
-  readonly hash: string;
+  /** When this case version was authored, as an ISO-8601 instant (domain/knowledge/case's own authored_at). */
+  readonly authored_at: string;
   /** The kind of subject the case examines, by its glossary subject-type name. */
   readonly subject: string;
   /** The resolution that answers when no hypothesis confirms. */

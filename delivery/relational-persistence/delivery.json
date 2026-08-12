@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/case-aggregate-shape.md",
+      "title": "The case aggregate carries authored_at and position, and no hash",
+      "summary": "Case loses hash and gains authored_at, Hypothesis gains a declared position, and the structural validator collects every violation of the new shape in one pass, exactly as it did before.",
+      "task": "task/case-and-investigation-model/case-aggregate-shape"
+    },
+    {
       "id": "implementation/case-and-investigation-model/investigation-record-shape",
       "kind": "implementation",
       "file": "implementation/case-and-investigation-model/investigation-record-shape.md",
@@ -32,6 +40,14 @@
       "title": "The schema built by numbered scripts under migrations/",
       "summary": "Six ordered SQL scripts that create every relation this system records into, one column per\n  declared attribute, one key per stated invariant, and one rule enforcing a case version's full\n  immutability once stored.",
       "task": "task/relational-substrate/schema-migrations"
+    },
+    {
+      "id": "proof/case-and-investigation-model/case-aggregate-shape",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/case-aggregate-shape.md",
+      "title": "Proof for the case aggregate's new declared shape — authored_at, position, no hash",
+      "summary": "Eleven new or rewritten tests in parse-case-document.spec.ts prove authored_at and per-hypothesis position arriving and being required, hash gone from the aggregate, and the two new uniqueness/refusal paths this brings; twelve pre-existing test files broken by this same legitimate shape change were brought back into agreement with it, with no new behavior invented.",
+      "task": "task/case-and-investigation-model/case-aggregate-shape"
     },
     {
       "id": "proof/case-and-investigation-model/investigation-record-shape",
@@ -67,6 +83,72 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/case-and-investigation-model/investigation-record-shape",
       "to": "domain/investigation/investigation",
@@ -329,6 +411,12 @@
       "from": "implementation/relational-substrate/schema-migrations",
       "to": "task/relational-substrate/schema-migrations",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/case-aggregate-shape",
+      "to": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "kind": "proves",
       "at": "the path"
     },
     {
