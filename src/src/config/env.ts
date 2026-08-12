@@ -9,6 +9,12 @@
 // in source"), and no credential of any kind — both Anthropic-backed adapters
 // already resolve ANTHROPIC_API_KEY from the environment on their own
 // (STK-11), and this module introduces no second place that reads it.
+// Now also carries DATABASE_URL, the one URL this process reaches its
+// database through (constraints/the-database-is-externally-provisioned —
+// the database is provisioned outside the deployment and reached only
+// through a connection URL supplied as configuration): this schema is the
+// one place that URL is read, so no host, port, endpoint or credential for a
+// database is written anywhere else in source.
 
 import { z } from 'zod';
 import { InvalidEnvironmentError } from '../errors/invalid-environment.error.js';
@@ -17,6 +23,7 @@ import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register
 /** Every value this process's own startup needs, read from the environment exactly once. */
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
+  DATABASE_URL: z.string().min(1),
   CASE_DATA_DIRECTORY: z.string().min(1),
   GLOSSARY_DATA_DIRECTORY: z.string().min(1),
   CAPABILITY_DATA_DIRECTORY: z.string().min(1),

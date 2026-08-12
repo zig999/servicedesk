@@ -1,6 +1,11 @@
-// An audit over the dependency manifest: it declares no database driver, in
-// any dependency section (constraints/the-mvp-persists-to-no-database — the
-// glossary's records land as plain JSON files, proven beside the file store).
+// An audit over the dependency manifest: it declares no database driver
+// beyond pg, the one this project's own standard admits (STK-05 — "database
+// access goes through the pg driver... no ORM or query builder is
+// introduced"), in any dependency section. pg itself joins the admitted set
+// with task/relational-substrate/database-connection, which is the one
+// module in the tree that imports it (constraints/the-database-is-externally-
+// provisioned); every other listed driver, ORM and query builder stays
+// forbidden.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -8,9 +13,8 @@ import { z } from 'zod';
 
 const MANIFEST_PATH = fileURLToPath(new URL('../../../package.json', import.meta.url));
 
-/** Database drivers, ORMs and query builders — any of these declared is a database dependency. */
+/** Database drivers, ORMs and query builders — any of these declared is a database dependency this project's own standard does not admit. 'pg' itself is deliberately absent from this list: it is the one driver STK-05 admits, and its own presence is proven admitted by the tests below rather than forbidden here. */
 const DATABASE_DRIVERS = [
-  'pg',
   'pg-native',
   'postgres',
   'mysql',
@@ -56,7 +60,7 @@ async function readDependencySections() {
   return dependencySections.parse(parsed);
 }
 
-it('the dependency manifest declares no database driver', async () => {
+it('the dependency manifest declares no database driver beyond the one admitted pg', async () => {
   const manifest = await readDependencySections();
   const declared = [
     ...Object.keys(manifest.dependencies ?? {}),
@@ -68,6 +72,20 @@ it('the dependency manifest declares no database driver', async () => {
   const drivers = declared.filter((name) => DATABASE_DRIVERS.includes(name));
 
   expect(drivers).toEqual([]);
+});
+
+// -------------------------- database-connection criterion 5: the driver is declared and admitted
+
+it('the dependency manifest declares pg as a dependency', async () => {
+  const manifest = await readDependencySections();
+
+  expect(manifest.dependencies).toHaveProperty('pg');
+});
+
+it('the dependency manifest pins pg to ^8.13.0', async () => {
+  const manifest = await readDependencySections();
+
+  expect(manifest.dependencies?.pg).toBe('^8.13.0');
 });
 
 it('the dependency manifest declares @anthropic-ai/sdk as a dependency', async () => {
@@ -94,18 +112,19 @@ it('the dependency manifest pins fastify to ^5.0.0', async () => {
   expect(manifest.dependencies?.fastify).toBe('^5.0.0');
 });
 
-it("the dependency manifest's dependencies hold exactly @anthropic-ai/sdk, fastify and zod", async () => {
+it("the dependency manifest's dependencies hold exactly @anthropic-ai/sdk, fastify, pg and zod", async () => {
   const manifest = await readDependencySections();
 
   expect(Object.keys(manifest.dependencies ?? {}).sort()).toEqual(
-    ['@anthropic-ai/sdk', 'fastify', 'zod'].sort(),
+    ['@anthropic-ai/sdk', 'fastify', 'pg', 'zod'].sort(),
   );
 });
 
-it('the dependency manifest orders @anthropic-ai/sdk and fastify ahead of the pre-existing zod', async () => {
+it('the dependency manifest orders @anthropic-ai/sdk, fastify and pg ahead of the pre-existing zod', async () => {
   const manifest = await readDependencySections();
   const keys = Object.keys(manifest.dependencies ?? {});
 
   expect(keys.indexOf('@anthropic-ai/sdk')).toBeLessThan(keys.indexOf('zod'));
   expect(keys.indexOf('fastify')).toBeLessThan(keys.indexOf('zod'));
+  expect(keys.indexOf('pg')).toBeLessThan(keys.indexOf('zod'));
 });

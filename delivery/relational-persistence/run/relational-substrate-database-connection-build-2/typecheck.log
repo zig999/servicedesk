@@ -1,0 +1,5 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(68,9): error TS2741: Property 'DATABASE_URL' is missing in type '{ PORT: number; CASE_DATA_DIRECTORY: string; GLOSSARY_DATA_DIRECTORY: string; CAPABILITY_DATA_DIRECTORY: string; INVESTIGATION_DATA_DIRECTORY: string; OBSERVATIONS_FIXTURE_FILE: string; ... 5 more ...; PROMPT_VERSION: string; }' but required in type '{ PORT: number; DATABASE_URL: string; CASE_DATA_DIRECTORY: string; GLOSSARY_DATA_DIRECTORY: string; CAPABILITY_DATA_DIRECTORY: string; INVESTIGATION_DATA_DIRECTORY: string; OBSERVATIONS_FIXTURE_FILE: string; ... 6 more ...; EVALUATOR_MAX_TOKENS?: number | undefined; }'.

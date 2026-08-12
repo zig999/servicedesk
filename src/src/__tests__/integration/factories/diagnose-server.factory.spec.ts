@@ -67,6 +67,7 @@ beforeEach(async () => {
 
   const env: Env = {
     PORT: 3000,
+    DATABASE_URL: 'postgres://a-placeholder-connection-url',
     CASE_DATA_DIRECTORY: caseDir,
     GLOSSARY_DATA_DIRECTORY: glossaryDir,
     CAPABILITY_DATA_DIRECTORY: capabilityDir,

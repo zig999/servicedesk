@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/relational-substrate/database-connection",
+      "kind": "implementation",
+      "file": "implementation/relational-substrate/database-connection.md",
+      "title": "The database connection module and the connection URL in the environment schema",
+      "summary": "A persistence-only module that builds one pg connection pool from a URL the single environment schema now requires, with the driver declared in the manifest and nothing else in the tree touching it.",
+      "task": "task/relational-substrate/database-connection"
+    },
+    {
+      "id": "proof/relational-substrate/database-connection",
+      "kind": "proof",
+      "file": "proof/relational-substrate/database-connection.md",
+      "title": "Proof for task/relational-substrate/database-connection",
+      "summary": "New tests over env.ts's now-required DATABASE_URL, database-connection.ts's URL-only pg Pool construction, a repo-wide absence of deployment-provisioning artifacts, and a cross-directory import audit of case/glossary/capability-registry/investigation that closes criterion 4 and excludes all three UNDERDETERMINED shapes this task's Notes name; dependency-manifest.spec.ts's own pre-existing admitted/forbidden dependency lists are updated so pg -- newly authorized by this task's criterion 5 -- is admitted rather than forbidden, since its prior assertions were written against constraints/the-mvp-persists-to-no-database, a node the current specification no longer holds (superseded by constraints/the-system-persists-to-one-relational-database and constraints/the-database-is-externally-provisioned); and, per the launcher's explicit, narrowly-scoped human approval for this delivery only, two pre-existing fixtures from the closed live-engine-mvp initiative (env.spec.ts's validEnvSource() helper and diagnose-server.factory.spec.ts's literal Env object) each gain a placeholder DATABASE_URL so they keep typechecking and passing against the now-widened Env, with no assertion in either file changed.",
+      "task": "task/relational-substrate/database-connection"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/relational-substrate/database-connection",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-substrate/database-connection",
+      "to": "task/relational-substrate/database-connection",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-substrate/database-connection",
+      "to": "implementation/relational-substrate/database-connection",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
