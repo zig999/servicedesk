@@ -335,6 +335,26 @@
         "The tree holds a runnable step that applies every script under migrations/ in numbered order against the connection the environment names."
       ],
       "findings": 7
+    },
+    {
+      "id": "review/seed-fixtures-and-manifest-scripts",
+      "kind": "review",
+      "file": "review/seed-fixtures-and-manifest-scripts.md",
+      "title": "Seed fixture resolution and its manifest reconciliation, reviewed",
+      "summary": "Four passes over the two corrective deliveries that took npm run seed from ENOENT to a real, working run against the configured database -- coverage, specification conformance, standard conformance, and why the review's own fresh suite capture came back red.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "From a clean checkout with no dist/ directory at all, npm run build followed by npm run seed exits 0.",
+        "Running npm run seed a second time against a database that already holds the curated case still exits 0, unchanged from the idempotency alreadySeeded already provides.",
+        "`npm test`, run with `DATABASE_URL` and the rest of what `config/env.ts` requires present in the process environment, exits 0.",
+        "src/__tests__/unit/migrate.spec.ts's own assertion on the `migrate` script, and src/__tests__/unit/seed.spec.ts's own assertion on the `seed` script, each match package.json's actual current text exactly, asserting the whole script string rather than a substring or a pattern."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -1267,6 +1287,18 @@
       "to": "task/relational-stores/glossary-store",
       "kind": "reviews",
       "at": "tasks[9]"
+    },
+    {
+      "from": "review/seed-fixtures-and-manifest-scripts",
+      "to": "task/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/seed-fixtures-and-manifest-scripts",
+      "to": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
