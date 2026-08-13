@@ -298,6 +298,10 @@
         {
           "path": "src/migrations/0007-capability-concept.sql",
           "digest": "sha256:2518d97115e7ffa8cc8856c52abb8ee5741532c8c6f556b0759e2d43e31b3a96"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -308,6 +312,14 @@
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
           "digest": "sha256:64c2d2348c43659dbdb7854e152cacbb244b5838aa43fe76360bcb5c849738cb"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -546,6 +558,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -572,6 +588,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -598,6 +618,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -624,6 +648,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -646,6 +674,10 @@
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
           "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -672,6 +704,10 @@
         {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
       ]
     },
@@ -776,6 +812,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -812,6 +852,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -826,6 +870,10 @@
         {
           "path": "src/src/investigation/cost.ts",
           "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -840,6 +888,10 @@
         {
           "path": "src/src/investigation/durations.ts",
           "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -862,6 +914,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -880,6 +936,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -906,6 +966,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -932,6 +996,10 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -972,6 +1040,10 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:2cf86b6ef7f7f786ff95382e58970ee68e38995f6d019f6d0553dd63b1931454"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -998,6 +1070,10 @@
         {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -1020,6 +1096,10 @@
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
           "digest": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -1046,6 +1126,10 @@
         {
           "path": "src/src/investigation/verdict.ts",
           "digest": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },
@@ -1418,12 +1502,16 @@
           "digest": "sha256:c67fd8457a40c8c64458200feaac8f7b198665458bc1f5885590dea67d857db5"
         },
         {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+        },
+        {
           "path": "src/src/persistence/file-investigation-store.repository.ts",
           "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
         },
         {
-          "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:55ce21e472ffd8b4e3394c47b5601c145714fc11dcccc3602d0f2b6911599c52"
         }
       ]
     },

@@ -17,11 +17,23 @@
 // how often it is provoked; true per-worker database/connection isolation is
 // task/relational-substrate/integration-test-isolation's own, not-yet-delivered objective, and
 // this finding is direct evidence for it.
+//
+// testTimeout is raised from vitest's own 5000ms default (task/relational-stores/glossary-store,
+// fixed and disclosed in that task's own delivery): several integration specs across this
+// initiative open more than five sequential round trips to the real, externally provisioned
+// Neon endpoint inside one test (a whole-aggregate write followed by a whole-aggregate read is
+// the recurring shape), and real network latency on that connection has been observed to push a
+// single test past 5000ms without any fault the test is trying to provoke — first in
+// relational-glossary-store.repository.spec.ts's own five-vocabulary round trip, then in
+// relational-case-store.repository.spec.ts's own whole-case read. Raising the suite-wide default
+// once is the durable fix; patching every slow integration test's own third `it()` argument one
+// flake at a time is the alternative this replaces.
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     globalSetup: ['./src/vitest-global-setup.ts'],
     fileParallelism: false,
+    testTimeout: 20000,
   },
 });

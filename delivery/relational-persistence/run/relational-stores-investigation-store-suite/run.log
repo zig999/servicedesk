@@ -1,0 +1,558 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:197798) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (22 tests) 22ms
+ ❯ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (30 tests | 2 failed) 33ms
+   × sends every declared attribute of the root row — identity, subject type, prompt version, model, pinned case, assessment, cost, durations and written_at — as the root insert's own params, in order 13ms
+     → expected [ 'an-investigation-id', …(21) ] to deeply equal [ 'an-investigation-id', …(21) ]
+   ✓ inserts the root row first, then every subject attribute-value, every evidence item, and each evaluation immediately followed by its own citations, all through the one transaction it opens 1ms
+   ✓ inserts one row per subject attribute-value the investigation's subject carries 1ms
+   × carries each evidence item's capability_name and capability_version pin into its own insert row, not only the eight fields criterion 6 names explicitly 1ms
+     → expected [ 'an-investigation-id', …(10) ] to deeply equal [ 'an-investigation-id', …(10) ]
+   ✓ rolls back and raises this store's own typed error, carrying the driver failure as its cause, when an evidence insert fails after the root row and the subject attribute-values already succeeded 2ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, mapped from the root insert's own unique-violation, without any SELECT ever run before it 1ms
+   ✓ does not refuse a write for an id not already stored 2ms
+   ✓ answers absence, not a rejection, and reads no further, when investigations holds no row for the given id 0ms
+   ✓ answers one evidence item for every evidence row and one evaluation for every evaluation row a read finds, unfiltered 1ms
+   ✓ reads back the subject's whole attribute-value set, paired with its type 0ms
+   ✓ raises this store's own typed error, carrying the driver failure as its cause, when a read is refused 0ms
+   ✓ assembles each evidence item with its concept, inputs, observation, observed_at, ttl, origin, result and its capability pin, including result_detail when it carried one 0ms
+   ✓ raises this store's own typed error rather than answering a row whose result is outside evidence-result's declared enumeration 0ms
+   ✓ assembles a confirmed evaluation with its hypothesis, verdict and citations, and no reason 1ms
+   ✓ assembles an inconclusive evaluation with its hypothesis, verdict, reason and whatever citations it carried 0ms
+   ✓ raises this store's own typed error rather than answering a row whose verdict is outside verdict's declared enumeration 0ms
+   ✓ raises this store's own typed error rather than answering a confirmed evaluation whose citation set is empty 0ms
+   ✓ raises this store's own typed error rather than answering a refuted evaluation whose citation set is empty 0ms
+   ✓ raises this store's own typed error rather than answering an inconclusive evaluation whose reason column is null 0ms
+   ✓ raises this store's own typed error rather than answering an inconclusive evaluation whose reason is outside evaluation-reason's declared enumeration 0ms
+   ✓ assembles the assessment with its outcome, referral, determining_hypothesis and text, when a hypothesis was named 0ms
+   ✓ leaves determining_hypothesis out of the assembled assessment when the fallback answered and no hypothesis was named 0ms
+   ✓ issues no UPDATE statement anywhere while writing a whole investigation 0ms
+   ✓ opens no file of any kind: this module names no filesystem import and calls no filesystem function 4ms
+   ✓ reads evidence ordered by concept, evaluations ordered by hypothesis, citations ordered by hypothesis then concept then field, and subject attribute-values ordered by attribute then value 0ms
+   ✓ computes StoredInvestigation's own hash as sha256 of the assembled document's own JSON serialization 0ms
+   ✓ sends ticket_ref exactly as the given investigation holds it, including the empty string used where no ticket was given 0ms
+   ✓ answers ticket_ref as the empty string when the stored column itself is a SQL NULL 0ms
+   ✓ inserts no evidence row and no evaluation row for an investigation carrying neither 0ms
+   ✓ answers empty evidence and evaluations arrays when a read finds neither table holding a row for the given id 0ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 14ms
+(node:197913) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 43248ms
+   ✓ applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  2942ms
+   ✓ persists and reads back a full case, hypothesis, resolution, referral and its collects  1747ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  2991ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  1109ms
+   ✓ holds every domain column NOT NULL except exactly the five columns the model declares optional  778ms
+   ✓ refuses storing a case version whose title is absent  903ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  1409ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  2152ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  4988ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1833ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  1001ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1652ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  522ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  769ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  879ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  651ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1613ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1630ms
+   ✓ refuses a second case stored under a slug already in use  918ms
+   ✓ refuses storing the same case version a second time under its own slug and version  1294ms
+   ✓ refuses a second hypothesis of one case sharing an already-used position  1463ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  1570ms
+   ✓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them  1965ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (25 tests) 8ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (23 tests) 8ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 15ms
+(node:198269) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (10 tests | 1 failed) 50564ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  7023ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  6502ms
+   ✓ lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError  4999ms
+   ✓ does not refuse a write for an id not already stored  4745ms
+   ✓ answers undefined, not a rejection, for an id nothing was ever written under  592ms
+   × reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with 6448ms
+     → expected [ { …(9) }, { …(9) } ] to deeply equal [ { …(9) }, { …(9) } ]
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  5850ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  5840ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  4802ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored  3760ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (50 tests) 11ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 5ms
+(node:198638) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (10 tests) 52931ms
+   ✓ reads back a case's root together with its hypotheses and their resolutions and referrals, exactly as written  5543ms
+   ✓ orders hypotheses by their own declared position, and each hypothesis's own collects by concept name, regardless of the order they were written in  4435ms
+   ✓ answers absence, not a rejection, for a slug and version nothing was ever written under  590ms
+   ✓ refuses a second write to the same slug and version through this store's own typed error, and leaves the stored version exactly as it was  4787ms
+   ✓ lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store's own typed error  5973ms
+   ✓ does not refuse a write for a slug and version not already stored  5426ms
+   ✓ keeps an earlier version readable, and lists every version ever written under one slug, after later versions are written  9719ms
+   ✓ keeps exactly one row in cases for one slug after two versions are written under it, never creating a second case  6068ms
+   ✓ leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a later hypothesis in the same write violates a real constraint  4952ms
+   ✓ leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a hypothesis's own collects reference a concept that violates a real foreign key  5435ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (15 tests) 10ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (17 tests) 6ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 6ms
+(node:199042) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests) 21996ms
+   ✓ leaves the cases table holding no row for the slug it wrote, once it releases the isolated connection it wrote through  3316ms
+   ✓ lets a first integration test write a case under a slug a second test in this run will also write, without a unique-key collision  1495ms
+   ✓ lets a second integration test write a case under the same slug the first one already wrote, in the same suite run  1544ms
+   ✓ lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision  3053ms
+   ✓ lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run  2968ms
+   ✓ writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header  1245ms
+   ✓ observes no row for the slug the previous test wrote, once that test had already released its own connection  1281ms
+   ✓ still refuses a second case written under an already-used slug within one still-open isolated connection, since isolation scopes visibility rather than disabling constraints  1637ms
+   ✓ resolves release() without error when nothing was ever begun or written on the checked-out connection  697ms
+   ✓ resolves release() without error when the caller already sent its own ROLLBACK before calling it  1205ms
+   ✓ keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release  3554ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 6ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (19 tests) 8ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 118ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 5ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 7ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 6ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 8ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 94ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 10ms
+(node:199429) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (9 tests | 9 skipped) 812ms
+   ↓ persists and reads back a registration exactly as given — name, version, nature, both schemas, timeout, connector and concept
+   ↓ answers a read as the database holds it right now, never a value an earlier read already answered
+   ↓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint
+   ↓ excludes a registration with no output schema: the write is refused and nothing is stored
+   ↓ excludes a registration with no connector: the write is refused and nothing is stored
+   ↓ leaves the table exactly as it stood when a non-read-only registration is refused before ever reaching the store
+   ↓ persists a complete read-only registration, unrefused, when registered against the real store
+   ↓ holds a registration that states no timeout with the default of sixty seconds, in what the store actually persists
+   ↓ resolves a concept to the capability the database currently holds, reflecting a registration made since an earlier resolution
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 77ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 5ms
+ ✓ src/__tests__/integration/persistence/file-investigation-store.repository.spec.ts (12 tests) 31ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 39ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (9 tests) 6ms
+(node:199577) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (9 tests) 24181ms
+   ✓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows  5489ms
+   ✓ answers the empty vocabulary when the real table currently holds no row  1182ms
+   ✓ answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them  2956ms
+   ✓ answers a concept with an empty accepts array when it currently accepts no subject type  1928ms
+   ✓ answers no concepts, not a rejection, when the concepts table currently holds no row  1771ms
+   ✓ answers exactly what a row inserted directly into the real table holds, adding no term of its own  1335ms
+   ✓ answers a later write's own rows, never a row an earlier write already replaced  2803ms
+   ✓ persists a term write so a read against the real table, outside the store, finds it  1916ms
+   ✓ leaves a vocabulary's earlier content untouched, when a later insert inside one replace violates a real constraint  2805ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 4ms
+(node:199780) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 4132ms
+   ✓ leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path  933ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  1202ms
+   ✓ raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied  911ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (7 tests) 237ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 4ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 4ms
+(node:199893) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 6884ms
+   ✓ answers undefined, not a rejection, when a real query matches no row for the slug named  1078ms
+   ✓ raises the caller's own typed error, carrying a message, a context object and the real driver failure as its cause, when a statement violates a real database constraint  1790ms
+   ✓ commits a unit of work as a whole, leaving every statement it ran visible to a separate connection once it resolves  1341ms
+   ✓ lets a unit of work read back a row it just wrote, within the same still-open transaction, before ever committing  1321ms
+   ✓ leaves none of a unit of work's earlier statements applied, when a later statement inside it fails against a real constraint  1351ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 27ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 4ms
+ ✓ src/__tests__/integration/persistence/file-case-store.repository.spec.ts (11 tests) 29ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 9ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (4 tests) 35ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 4ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 10ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 10ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 10ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 7ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 5ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 3ms
+(node:200309) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 2638ms
+   ✓ has already recorded every migration file as applied and left the database holding the schema those files describe by the time this spec's own first test runs, proving the suite's own setup ran before any test  1371ms
+   ✓ resolves without error when called the same way vitest itself calls it, against the real configured connection  1265ms
+ ✓ src/__tests__/unit/config/env.spec.ts (7 tests) 4ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 11ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 7ms
+ ✓ src/__tests__/integration/persistence/file-capability-store.repository.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 7ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (2 tests) 2ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 10ms
+ ✓ src/__tests__/integration/persistence/file-glossary-store.repository.spec.ts (7 tests) 15ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 8ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 10ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 22ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 13ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 17ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 2ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 5ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 8ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 6ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts [ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts ]
+{
+  stack: 'AggregateError: \n' +
+    '    at /home/siegfriedneto/projects/siegardtest/src/node_modules/pg-pool/index.js:45:11\n' +
+    '    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n' +
+    '    at /home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts:77:3',
+  errors: [
+    {
+      stack: 'Error: connect ETIMEDOUT 13.58.18.166:5432\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1737:38)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ETIMEDOUT 13.58.18.166:5432',
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '13.58.18.166',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ENETUNREACH 2600:1f16:1c4:660e:b5e5:7b24:2f45:5623:5432 - Local (:::0)\n' +
+        '    at internalConnectMultiple (node:net:1206:16)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1742:5)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ENETUNREACH 2600:1f16:1c4:660e:b5e5:7b24:2f45:5623:5432 - Local (:::0)',
+      errno: -101,
+      code: 'ENETUNREACH',
+      syscall: 'connect',
+      address: '2600:1f16:1c4:660e:b5e5:7b24:2f45:5623',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ETIMEDOUT 18.226.241.3:5432\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1737:38)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ETIMEDOUT 18.226.241.3:5432',
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '18.226.241.3',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ENETUNREACH 2600:1f16:1c4:6621:c8f:607d:ea25:4345:5432 - Local (:::0)\n' +
+        '    at internalConnectMultiple (node:net:1206:16)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1742:5)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ENETUNREACH 2600:1f16:1c4:6621:c8f:607d:ea25:4345:5432 - Local (:::0)',
+      errno: -101,
+      code: 'ENETUNREACH',
+      syscall: 'connect',
+      address: '2600:1f16:1c4:6621:c8f:607d:ea25:4345',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ETIMEDOUT 16.59.10.57:5432\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1737:38)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ETIMEDOUT 16.59.10.57:5432',
+      errno: -110,
+      code: 'ETIMEDOUT',
+      syscall: 'connect',
+      address: '16.59.10.57',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ENETUNREACH 2600:1f16:1c4:661c:d148:b481:5246:e29d:5432 - Local (:::0)\n' +
+        '    at internalConnectMultiple (node:net:1206:16)\n' +
+        '    at Timeout.internalConnectMultipleTimeout (node:net:1742:5)\n' +
+        '    at listOnTimeout (node:internal/timers:587:11)\n' +
+        '    at processTimers (node:internal/timers:521:7)',
+      message: 'connect ENETUNREACH 2600:1f16:1c4:661c:d148:b481:5246:e29d:5432 - Local (:::0)',
+      errno: -101,
+      code: 'ENETUNREACH',
+      syscall: 'connect',
+      address: '2600:1f16:1c4:661c:d148:b481:5246:e29d',
+      port: 5432,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ETIMEDOUT',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: '',
+      file: '/home/siegfriedneto/projects/siegardtest/src/node_modules/pg-pool/index.js',
+      line: 45,
+      column: 11
+    },
+    {
+      method: '',
+      file: '/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts',
+      line: 77,
+      column: 3
+    }
+  ]
+}
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts:77:3
+     75|   // A safety wipe, not a per-row cleanup: no other suite in this proj…
+     76|   // public.capabilities, so an empty table is the only state this fil…
+     77|   await pool.query('DELETE FROM public.capabilities');
+       |   ^
+     78| });
+     79| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with
+AssertionError: expected [ { …(9) }, { …(9) } ] to deeply equal [ { …(9) }, { …(9) } ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,21 +1,21 @@[39m
+[2m  [[22m
+[2m    {[22m
+[2m      "capability_name": "investigation-store-capability-1c3f58cc-06db-4e05-97d6-100e743ac3e6",[22m
+[2m      "capability_version": "1.0.0",[22m
+[32m-     "concept": "investigation-store-concept-42c430be-3954-46ca-8be0-a01cf907935d",[39m
+[31m+     "concept": "investigation-store-concept-327c40ee-45c9-4954-8570-90d41eb5b8eb",[39m
+[2m      "inputs": "serialized-inputs",[22m
+[2m      "observation": "an-observation",[22m
+[2m      "observed_at": "2024-01-01T00:00:00.000Z",[22m
+[2m      "origin": "a-connector",[22m
+[2m      "result": "ok",[22m
+[2m      "ttl": 60,[22m
+[2m    },[22m
+[2m    {[22m
+[2m      "capability_name": "investigation-store-capability-1c3f58cc-06db-4e05-97d6-100e743ac3e6",[22m
+[2m      "capability_version": "1.0.0",[22m
+[32m-     "concept": "investigation-store-concept-327c40ee-45c9-4954-8570-90d41eb5b8eb",[39m
+[31m+     "concept": "investigation-store-concept-42c430be-3954-46ca-8be0-a01cf907935d",[39m
+[2m      "inputs": "serialized-inputs",[22m
+[2m      "observation": "an-observation",[22m
+[2m      "observed_at": "2024-01-01T00:00:00.000Z",[22m
+[2m      "origin": "a-connector",[22m
+[2m      "result": "ok",[22m
+
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:314:31
+    312|     const answered = (await store.read(id))?.document as Investigation;
+    313| 
+    314|     expect(answered.evidence).toEqual([base.evidence[0]!, { ...base.ev…
+       |                               ^
+    315|     expect(answered.evaluations).toEqual([base.evaluations[0]!, { hypo…
+    316|   },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts > sends every declared attribute of the root row — identity, subject type, prompt version, model, pinned case, assessment, cost, durations and written_at — as the root insert's own params, in order
+AssertionError: expected [ 'an-investigation-id', …(21) ] to deeply equal [ 'an-investigation-id', …(21) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -18,7 +18,7 @@[39m
+[2m    50,[22m
+[2m    10,[22m
+[2m    20,[22m
+[2m    5,[22m
+[2m    35,[22m
+[32m-   2024-01-01T00:00:00.000Z,[39m
+[31m+   "2024-01-01T00:00:00.000Z",[39m
+[2m  ][22m
+
+ ❯ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts:212:30
+    210| 
+    211|   const rootInsert = recorded.find((entry) => entry.text.includes('INS…
+    212|   expect(rootInsert?.params).toEqual([
+       |                              ^
+    213|     'an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative…
+    214|     'a-case-slug', 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts > carries each evidence item's capability_name and capability_version pin into its own insert row, not only the eight fields criterion 6 names explicitly
+AssertionError: expected [ 'an-investigation-id', …(10) ] to deeply equal [ 'an-investigation-id', …(10) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,11 +1,11 @@[39m
+[2m  [[22m
+[2m    "an-investigation-id",[22m
+[2m    "a-concept",[22m
+[2m    "serialized-inputs",[22m
+[2m    "an-observation",[22m
+[32m-   2024-01-01T00:00:00.000Z,[39m
+[31m+   "2024-01-01T00:00:00.000Z",[39m
+[2m    60,[22m
+[2m    "a-connector",[22m
+[2m    "ok",[22m
+[2m    null,[22m
+[2m    "a-registered-capability",[22m
+
+ ❯ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts:276:34
+    274| 
+    275|   const evidenceInsert = recorded.find((entry) => entry.text.includes(…
+    276|   expect(evidenceInsert?.params).toEqual([
+       |                                  ^
+    277|     investigation.id, 'a-concept', 'serialized-inputs', 'an-observatio…
+    278|     'a-registered-capability', '2.0.0',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed | 68 passed (71)
+      Tests  3 failed | 657 passed | 9 skipped (669)
+   Start at  21:12:19
+   Duration  222.08s (transform 826ms, setup 0ms, collect 2.26s, tests 208.53s, environment 10ms, prepare 2.98s)
+
+

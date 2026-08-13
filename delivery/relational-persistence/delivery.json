@@ -58,6 +58,22 @@
       "task": "task/relational-stores/database-access-helper"
     },
     {
+      "id": "implementation/relational-stores/glossary-store",
+      "kind": "implementation",
+      "file": "implementation/relational-stores/glossary-store.md",
+      "title": "The relational glossary store, answering the five vocabularies and the concepts as held",
+      "summary": "Adds RelationalGlossaryStore, the database-backed implementation of IGlossaryStore, reading each term vocabulary and every concept registration fresh from its own table and replacing a vocabulary's whole table content on write.",
+      "task": "task/relational-stores/glossary-store"
+    },
+    {
+      "id": "implementation/relational-stores/investigation-store",
+      "kind": "implementation",
+      "file": "implementation/relational-stores/investigation-store.md",
+      "title": "RelationalInvestigationStore writes and reads one investigation whole",
+      "summary": "Adds RelationalInvestigationStore, the database-backed implementation of IInvestigationStore, writing one investigation and every part it declares across five tables in one transaction, deciding write-once by the root row's own primary key rather than a read first, and reading it back whole including each evidence item's capability pin.",
+      "task": "task/relational-stores/investigation-store"
+    },
+    {
       "id": "implementation/relational-substrate/database-connection",
       "kind": "implementation",
       "file": "implementation/relational-substrate/database-connection.md",
@@ -144,6 +160,22 @@
       "title": "Proof for the shared relational access helper",
       "summary": "Unit-level tests over stand-in IQueryable/DatabaseConnection objects proving the four criteria's mechanics, plus integration-level tests against the real database proving each criterion's actual data effect.",
       "task": "task/relational-stores/database-access-helper"
+    },
+    {
+      "id": "proof/relational-stores/glossary-store",
+      "kind": "proof",
+      "file": "proof/relational-stores/glossary-store.md",
+      "title": "Proof for the relational glossary store",
+      "summary": "Unit tests mocking DatabaseConnection prove RelationalGlossaryStore's own read/write mechanics for the five term vocabularies and for concepts, and integration tests against a real database prove the same criteria's real effect, including a real primary-key refusal of a duplicate term inside one write.",
+      "task": "task/relational-stores/glossary-store"
+    },
+    {
+      "id": "proof/relational-stores/investigation-store",
+      "kind": "proof",
+      "file": "proof/relational-stores/investigation-store.md",
+      "title": "Proof for RelationalInvestigationStore, the IInvestigationStore relational adapter",
+      "summary": "Unit tests over a stand-in DatabaseConnection prove write()'s and read()'s mechanics (statement order and params, one transaction, write-once decided by a key, no UPDATE, no filesystem call, defensive re-narrowing on read), and integration tests against a real database prove the whole round trip, real write-once and atomicity under real constraint violations, and that the evidence-to-capability pin is a real foreign key rather than only this store's own shape.",
+      "task": "task/relational-stores/investigation-store"
     },
     {
       "id": "proof/relational-substrate/database-connection",
@@ -414,6 +446,150 @@
       "at": "the path"
     },
     {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/relational-stores/glossary-store",
+      "to": "task/relational-stores/glossary-store",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/relational-stores/investigation-store",
+      "to": "task/relational-stores/investigation-store",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/relational-substrate/database-connection",
       "to": "constraints/the-database-is-externally-provisioned",
       "kind": "encodes",
@@ -680,6 +856,18 @@
     {
       "from": "proof/relational-stores/database-access-helper",
       "to": "implementation/relational-stores/database-access-helper",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-stores/glossary-store",
+      "to": "implementation/relational-stores/glossary-store",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-stores/investigation-store",
+      "to": "implementation/relational-stores/investigation-store",
       "kind": "proves",
       "at": "the path"
     },
