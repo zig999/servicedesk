@@ -47,14 +47,13 @@ export class CaseQueryService implements ICaseQuery {
    * a structural rule, or where the parsed case fails a coherence rule
    * against the glossary and the capability registry as they stand right
    * now (CaseNotValidError either way) — and otherwise answers the case
-   * whole, pinned by the content identity of the exact document this call
-   * read.
+   * whole, validated as of this reading.
    */
   public async readCase(slug: string, version: number): Promise<ReadCaseResult> {
     const stored = await heldVersion(this.caseStore, slug, version);
     const theCase = structuralCase(stored.document, slug, version);
     await this.refuseIncoherence(theCase, version);
-    return { case: theCase, hash: stored.hash };
+    return { case: theCase };
   }
 
   /** Refuses a coherence violation, naming every one together, joining the same error type the structural refusal raises. */
@@ -79,9 +78,10 @@ export class CaseQueryService implements ICaseQuery {
  * version is written once and never altered
  * (rules/investigation/replay-is-pinned), so the store's own
  * content-identity hash on the version this call reads is never consulted
- * — this answers the case alone, never the read-case's own pinned-by-hash
- * shape. Still refuses a version nothing stored, through the same
- * CaseNotFoundError read-case raises.
+ * — read-case's own answer carries no such hash either, so neither
+ * function's shape is pinned by anything but slug and version. Still
+ * refuses a version nothing stored, through the same CaseNotFoundError
+ * read-case raises.
  */
 export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
   const { document } = await heldVersion(caseStore, slug, version);

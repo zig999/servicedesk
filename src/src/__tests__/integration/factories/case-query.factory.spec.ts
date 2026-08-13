@@ -33,7 +33,7 @@
 // it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
 // config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
 // configured too, which this file has no use for.
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { replayCase } from '../../../case/case-query.service.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
@@ -178,7 +178,7 @@ afterEach(async () => {
 
 // ---------------------------------------------------------------------- criteria 1 and 5
 
-it('answers a case written directly to the real store, pinned by the store\'s own content-identity hash over what is currently stored, with no publish step in between', async () => {
+it('answers a case written directly to the real store, matching what is currently stored, with no publish step in between', async () => {
   const vocabulary = freshVocabulary();
   await persistCoherentGlossary(vocabulary);
   await registerCoherentCapability(vocabulary);
@@ -189,7 +189,6 @@ it('answers a case written directly to the real store, pinned by the store\'s ow
 
   const rawStored = await new RelationalCaseStore(pool).readVersion(vocabulary.slug, VERSION);
   expect(rawStored).toBeDefined();
-  expect(result.hash).toBe(createHash('sha256').update(JSON.stringify(rawStored?.document), 'utf8').digest('hex'));
   expect(result.case).toMatchObject({ slug: vocabulary.slug, subject: vocabulary.subject });
 });
 

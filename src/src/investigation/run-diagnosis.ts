@@ -5,8 +5,8 @@
 // once, over a case, a subject and a narrative this call's own caller has
 // already resolved (constraints/diagnosis-answers-synchronously) — this
 // module never fetches or re-resolves the case itself, so the investigation
-// it runs is exactly the case its caller already read and pinned by content
-// at the start of the request (contracts/investigation/case-source).
+// it runs is exactly the case its caller already read and pinned by slug
+// and version at the start of the request (contracts/investigation/case-source).
 //
 // Takes `now` and `deadline` as explicit parameters and never reads the
 // system clock internally, the same discipline every stage it composes

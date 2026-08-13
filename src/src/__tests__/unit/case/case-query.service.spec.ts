@@ -255,25 +255,33 @@ it('answers the case whole, matching exactly what the document holds, when every
   });
 });
 
-it('pins the answered case by exactly the hash the store attached to the version this call read, not a value read-case computes itself', async () => {
+// ---- task/case-and-investigation-model/case-query-drops-the-document-hash
+
+it('answers a case with no hash property at all, since read-case no longer pins by content', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'pinned-hash-token' });
+  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-store-level-hash-unrelated-to-the-answer' });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
   const result = await service.readCase(SLUG, VERSION);
 
-  expect(result.hash).toBe('pinned-hash-token');
+  expect(result).not.toHaveProperty('hash');
 });
 
-it("pins each version by its own hash, never another version's", async () => {
+it("answers each version by its own content, never another version's", async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, 1, { document: validCaseDocument({ version: 1 }), hash: 'hash-of-version-1' });
-  store.seed(SLUG, 2, { document: validCaseDocument({ version: 2 }), hash: 'hash-of-version-2' });
+  store.seed(SLUG, 1, {
+    document: validCaseDocument({ version: 1, title: 'version one' }),
+    hash: 'irrelevant-hash-1',
+  });
+  store.seed(SLUG, 2, {
+    document: validCaseDocument({ version: 2, title: 'version two' }),
+    hash: 'irrelevant-hash-2',
+  });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
   const result = await service.readCase(SLUG, 2);
 
-  expect(result.hash).toBe('hash-of-version-2');
+  expect(result.case).toMatchObject({ version: 2, title: 'version two' });
 });
 
 it('refuses with CaseNotFoundError, naming the slug and version, when no version is stored at all', async () => {
@@ -393,7 +401,7 @@ it('refuses at a later read a case that validated earlier, once the glossary no 
   store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-hash' });
   const glossary = coherentGlossary();
   const service = new CaseQueryService(store, glossary, coherentCapabilities());
-  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ hash: 'a-hash' });
+  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ case: { slug: SLUG } });
 
   glossary.forgetConcept(CONCEPT);
 
@@ -406,7 +414,7 @@ it('refuses at a later read a case that validated earlier, once the capability r
   store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-hash' });
   const capabilities = coherentCapabilities();
   const service = new CaseQueryService(store, coherentGlossary(), capabilities);
-  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ hash: 'a-hash' });
+  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ case: { slug: SLUG } });
 
   capabilities.forget(CONCEPT);
 

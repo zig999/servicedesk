@@ -1,17 +1,15 @@
 import type { Case } from './case.js';
 
 /**
- * What read-case answers: the case whole, pinned by the content identity of
- * the exact document the read found on disk
- * (constraints/a-case-is-stored-as-one-json-document — pinning it is
- * hashing one file). replay-case answers the case alone, with no such pin:
- * it resolves without reading any digest over the case's content at all
- * (rules/investigation/replay-is-pinned), so this shape is read-case's own
- * rather than one the two share.
+ * What read-case answers: the case whole, validated at this reading
+ * (contracts/knowledge/case-query). No document hash accompanies it — a
+ * case is pinned by slug and version alone, never by a digest over its
+ * stored bytes (rules/investigation/replay-is-pinned, domain/investigation/
+ * investigation) — so this shape carries nothing read-case's own caller
+ * could mistake for such a pin.
  */
 export type ReadCaseResult = {
   readonly case: Case;
-  readonly hash: string;
 };
 
 /**
@@ -26,8 +24,8 @@ export type ReadCaseResult = {
  */
 export interface ICaseQuery {
   /**
-   * read-case: answers the case at slug and version whole and pinned by
-   * content where every structural and coherence rule holds for it right
+   * read-case: answers the case at slug and version whole, validated at
+   * this reading — every structural and coherence rule holds for it right
    * now; refuses with CaseNotFoundError where no such version is stored, or
    * with CaseNotValidError naming every violated rule together where any
    * rule fails at this reading.
