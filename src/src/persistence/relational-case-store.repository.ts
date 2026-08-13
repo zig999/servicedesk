@@ -23,8 +23,13 @@
 // as whole when it never finished writing). Write-once is decided by
 // case_versions' own primary key over (slug, version) rather than by reading
 // first (rules/knowledge/a-case-version-is-written-once): a duplicate insert
-// fails there and rolls back the whole unit of work, leaving whatever was
-// already stored exactly as it was. The case-identity insert is an
+// fails there and is mapped to this module's own CaseVersionAlreadyStoredError
+// rather than the generic write failure — the same unique-violation-to-typed-error
+// mapping relational-investigation-store.repository.ts's own root insert
+// already keeps for its own key, mirrored here for task/case-authoring/author-case-version-command,
+// which depends on this store and needed the two failures distinguished
+// (that task's own criterion 2) — and rolls back the whole unit of work,
+// leaving whatever was already stored exactly as it was. The case-identity insert is an
 // idempotent ON CONFLICT DO NOTHING against "cases", so a second version
 // under an already-held slug is never refused on that ground
 // (rules/knowledge/a-slug-identifies-one-case) while every version still
@@ -60,8 +65,16 @@ import { createHash } from 'node:crypto';
 import type { ICaseStore, StoredCaseVersion } from '../case/case-store.port.js';
 import type { Case, Hypothesis, Resolution } from '../case/case.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
+import { CaseVersionAlreadyStoredError } from '../errors/case-version-already-stored.error.js';
 import { CONSOLIDATION_REGISTERS, type ConsolidationRegister } from '../investigation/consolidation-register.js';
-import { queryOneOrAbsent, runInTransaction, runStatement, type IQueryable, type IStatement } from './database-access.js';
+import {
+  queryOneOrAbsent,
+  runInTransaction,
+  runStatement,
+  type IQueryable,
+  type IStatement,
+  type RaiseStoreError,
+} from './database-access.js';
 import type { DatabaseConnection } from './database-connection.js';
 
 /** slug and version together, the pair every one of case_versions', hypotheses' and hypothesis_collects' own keys is built from — bundled once so no helper below needs more than the standard's own three-positional-parameter limit (MNT-01). */
@@ -107,6 +120,9 @@ const CASE_VERSIONS_TABLE = 'public.case_versions';
 const HYPOTHESES_TABLE = 'public.hypotheses';
 const HYPOTHESIS_COLLECTS_TABLE = 'public.hypothesis_collects';
 
+/** Postgres' own error code for a unique-constraint violation — the signal write-once is decided by, never a value spelled out where it is compared (TYP-04), the same convention relational-investigation-store.repository.ts's own UNIQUE_VIOLATION_CODE already keeps for its own root key (task/case-authoring/author-case-version-command's own mirroring of that pattern here). */
+const UNIQUE_VIOLATION_CODE = '23505';
+
 /**
  * The relational adapter of the case module's store port: a case's root,
  * its hypotheses and their resolutions and referrals are read together in
@@ -122,7 +138,9 @@ export class RelationalCaseStore implements ICaseStore {
 
   public async writeVersion(slug: string, version: number, document: unknown): Promise<void> {
     const statements = writeStatementsFor(slug, version, document);
-    await runInTransaction(this.connection, raiseWriteFailure, (tx) => runAllStatements(tx, statements));
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) =>
+      runAllStatements(tx, { slug, version }, statements),
+    );
   }
 
   public async readVersion(slug: string, version: number): Promise<StoredCaseVersion | undefined> {
@@ -176,9 +194,25 @@ function caseVersionStatements(key: ICaseVersionKey, theCase: Case): readonly IS
   ];
 }
 
-/** Runs every given statement, in order, through the one checked-out connection a unit of work supplies. */
-async function runAllStatements(tx: IQueryable, statements: readonly IStatement[]): Promise<void> {
-  for (const statement of statements) {
+/**
+ * Runs every given statement, in order, through the one checked-out
+ * connection a unit of work supplies: the case-identity statement and every
+ * hypothesis/collect statement through this store's own generic write
+ * failure, and the version statement — always caseVersionStatements' own
+ * second entry, by that function's own fixed construction order — through
+ * the one raise that distinguishes a duplicate (slug, version) from any
+ * other failure (rules/knowledge/a-case-version-is-written-once,
+ * task/case-authoring/author-case-version-command's own criterion 2).
+ */
+async function runAllStatements(
+  tx: IQueryable,
+  key: ICaseVersionKey,
+  statements: readonly IStatement[],
+): Promise<void> {
+  const [identity, version, ...rest] = statements;
+  await runStatement(tx, identity, raiseWriteFailure);
+  await runStatement(tx, version, raiseCaseVersionInsertFailure(key));
+  for (const statement of rest) {
     await runStatement(tx, statement, raiseWriteFailure);
   }
 }
@@ -385,6 +419,26 @@ function hypothesisCollectsSelect(key: ICaseVersionKey): IStatement {
            ORDER BY hypothesis_name, concept_name`,
     params: [key.slug, key.version],
   };
+}
+
+/** Whether a failure the driver raised is Postgres' own unique-violation code (TYP-02's guard), the same convention relational-investigation-store.repository.ts's own isUniqueViolation already keeps for its own root key. */
+function isUniqueViolation(cause: unknown): boolean {
+  return cause instanceof Error && 'code' in cause && cause.code === UNIQUE_VIOLATION_CODE;
+}
+
+/**
+ * Builds the raise callback the version's own insert statement runs
+ * through: a unique-violation on its own primary key over (slug, version)
+ * is that version already being stored
+ * (rules/knowledge/a-case-version-is-written-once,
+ * task/case-authoring/author-case-version-command's own criterion 2),
+ * answered through this module's own CaseVersionAlreadyStoredError rather
+ * than the generic write failure; anything else is wrapped the same way
+ * every other statement's own failure is.
+ */
+function raiseCaseVersionInsertFailure(key: ICaseVersionKey): RaiseStoreError {
+  return (cause) =>
+    isUniqueViolation(cause) ? new CaseVersionAlreadyStoredError(key.slug, key.version) : raiseWriteFailure(cause);
 }
 
 /** Builds this store's own typed error for a failed read, carrying the driver failure as its cause. */

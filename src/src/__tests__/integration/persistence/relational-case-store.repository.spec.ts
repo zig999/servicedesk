@@ -34,6 +34,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { Case, Hypothesis } from '../../../case/case.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionAlreadyStoredError } from '../../../errors/case-version-already-stored.error.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
@@ -237,7 +238,12 @@ it('answers absence, not a rejection, for a slug and version nothing was ever wr
 
 // ---------------------------------------------------------------- criterion 4
 
-it("refuses a second write to the same slug and version through this store's own typed error, and leaves the stored version exactly as it was", async () => {
+// Sibling fix, disclosed in task/case-authoring/author-case-version-command's own proof record:
+// both tests below used to assert the generic CaseStoreError, which is what a duplicate
+// (slug, version) raised before that task's own extension of this store distinguished it into this
+// store's own CaseVersionAlreadyStoredError instead (that task's own criterion 2). The assertions
+// are updated to match the real behavior this store now has against a real unique-violation.
+it("refuses a second write to the same slug and version through this store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was", async () => {
   const slug = `case-store-write-once-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
   const glossary = await freshGlossary();
@@ -249,13 +255,13 @@ it("refuses a second write to the same slug and version through this store's own
 
   const rejection = store.writeVersion(slug, 1, conflicting);
 
-  await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-  await expect(rejection).rejects.toMatchObject({ cause: { code: UNIQUE_VIOLATION } });
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionAlreadyStoredError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
   const stillStored = await store.readVersion(slug, 1);
   expect(stillStored?.document).toEqual(original);
 });
 
-it('lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store\'s own typed error', async () => {
+it("lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store's own CaseVersionAlreadyStoredError", async () => {
   const slug = `case-store-concurrent-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
   const glossary = await freshGlossary();
@@ -267,7 +273,7 @@ it('lets only one of two concurrent writes to the same slug and version succeed,
 
   expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
   const rejected = results.find((result) => result.status === 'rejected') as PromiseRejectedResult | undefined;
-  expect(rejected?.reason).toBeInstanceOf(CaseStoreError);
+  expect(rejected?.reason).toBeInstanceOf(CaseVersionAlreadyStoredError);
 });
 
 // ---------------------------------------------------------------- criterion 5

@@ -480,8 +480,20 @@
       "digest": "sha256:3d68e7bdf52eea65288f25346d5da57d82ed2359cee0abc0732d531681ad3816",
       "files": [
         {
+          "path": "src/src/case/author-case-version.port.ts",
+          "digest": "sha256:eae8a295b51b7fe946e554443c2f7d0e89b52bb41406c46f207af59d0cd8b4f9"
+        },
+        {
+          "path": "src/src/case/author-case-version.service.ts",
+          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+        },
+        {
+          "path": "src/src/factories/author-case-version.factory.ts",
+          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
         }
       ]
     },
@@ -492,6 +504,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
+          "path": "src/src/factories/author-case-version.factory.ts",
+          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
         }
       ]
     },
@@ -520,6 +536,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
+          "path": "src/src/factories/author-case-version.factory.ts",
+          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
         }
       ]
     },
@@ -527,6 +547,10 @@
       "node": "contracts/system/case-authoring",
       "digest": "sha256:052303447f2b1414496936c2716f652698e76f0b4d235dd7391e615425b1ffec",
       "files": [
+        {
+          "path": "src/src/case/author-case-version.service.ts",
+          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
@@ -1966,6 +1990,10 @@
       "digest": "sha256:cd9041ba780b42719bb5a07af942b65e81380813a61a025a749df18bea5d99ac",
       "files": [
         {
+          "path": "src/src/case/author-case-version.service.ts",
+          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
         },
@@ -1979,6 +2007,10 @@
       "node": "rules/knowledge/validation-runs-at-every-read",
       "digest": "sha256:39cff144827003ca369789e8567a8c5b586f1f2c65a26f14b72f68bb71e294f5",
       "files": [
+        {
+          "path": "src/src/case/author-case-version.service.ts",
+          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
@@ -2047,6 +2079,10 @@
       "node": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
       "digest": "sha256:31354b5056568c224fcf633811de627027b820b6b866dd5a61ebe645ec74aa6c",
       "files": [
+        {
+          "path": "src/src/case/author-case-version.service.ts",
+          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
+        },
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"

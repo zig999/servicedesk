@@ -34,6 +34,14 @@
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
     },
     {
+      "id": "implementation/case-authoring/author-case-version-command",
+      "kind": "implementation",
+      "file": "implementation/case-authoring/author-case-version-command.md",
+      "title": "The curator's authoring command, backed by a distinguished write-once refusal",
+      "summary": "IAuthorCaseVersion/AuthorCaseVersionService submit one case version whole, answering every structural and coherence rule at that write before storing anything, and RelationalCaseStore now refuses a duplicate (slug, version) through its own typed error instead of the generic one.",
+      "task": "task/case-authoring/author-case-version-command"
+    },
+    {
       "id": "implementation/relational-stores/capability-store",
       "kind": "implementation",
       "file": "implementation/relational-stores/capability-store.md",
@@ -144,6 +152,14 @@
       "title": "Replay by slug and version proves its answer whole, unvalidated and digest-free",
       "summary": "Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash contract and the structural-failure-through-replay path, and adds new tests proving each of this task's six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.",
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
+    },
+    {
+      "id": "proof/case-authoring/author-case-version-command",
+      "kind": "proof",
+      "file": "proof/case-authoring/author-case-version-command.md",
+      "title": "Proof for the author-case-version command",
+      "summary": "Unit tests over fake ICaseStore/IGlossaryQuery/ICapabilityQuery ports prove AuthorCaseVersionService parses, coherence-checks and stores exactly the parsed case, refusing once with every violation named and storing nothing on any refusal; integration tests against a real PostgreSQL database prove the same through the real wiring, including that a missing concept is caught by coherence before the store's own foreign key is ever reached, that a real capability edit is re-read at the next submission, and that no row lands in cases/case_versions/hypotheses/hypothesis_collects on any refusal; two now-stale assertions in RelationalCaseStore's own sibling specs, which expected the generic CaseStoreError for a duplicate (slug, version) this task's own criterion 2 now distinguishes into CaseVersionAlreadyStoredError, are corrected in place.",
+      "task": "task/case-authoring/author-case-version-command"
     },
     {
       "id": "proof/relational-stores/capability-store",
@@ -386,6 +402,54 @@
     {
       "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "contracts/system/case-authoring",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-authoring/author-case-version-command",
+      "to": "task/case-authoring/author-case-version-command",
       "kind": "implements",
       "at": "the path"
     },
@@ -866,6 +930,12 @@
     {
       "from": "proof/case-and-investigation-model/replay-by-slug-and-version",
       "to": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring/author-case-version-command",
+      "to": "implementation/case-authoring/author-case-version-command",
       "kind": "proves",
       "at": "the path"
     },

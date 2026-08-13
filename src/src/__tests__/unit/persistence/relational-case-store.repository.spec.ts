@@ -12,6 +12,7 @@ import { createHash } from 'node:crypto';
 import { expect, it, vi } from 'vitest';
 import type { Case, Hypothesis } from '../../../case/case.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionAlreadyStoredError } from '../../../errors/case-version-already-stored.error.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
@@ -221,8 +222,19 @@ it("runs the case identity insert, the version insert, and each hypothesis immed
 
 // ---------------------------------------------------------------- criterion 4
 
-it("raises this store's own typed error, carrying the driver failure as its cause, and rolls back, when a duplicate version violates the primary key", async () => {
-  const driverFailure = new Error('duplicate key value violates unique constraint "case_versions_pkey"');
+// Sibling fix, disclosed in task/case-authoring/author-case-version-command's own proof record:
+// this test used to assert the generic CaseStoreError, which is what every version-insert failure
+// raised before that task's own extension of this store. The version-insert statement's own
+// unique-violation is now distinguished into this store's own CaseVersionAlreadyStoredError instead
+// (task/case-authoring/author-case-version-command's own criterion 2), so the driver failure below
+// now carries the real Postgres unique-violation code (relational-investigation-store.repository.spec.ts's
+// own established convention for faking one) rather than a bare Error with none, and the assertion
+// is updated to match the behavior this store now actually has.
+it("raises this store's own CaseVersionAlreadyStoredError, naming the slug and version, and rolls back, when a duplicate version violates the primary key", async () => {
+  const driverFailure = Object.assign(
+    new Error('duplicate key value violates unique constraint "case_versions_pkey"'),
+    { code: '23505' },
+  );
   const handleQuery = async (text: string): Promise<{ rows: unknown[] }> => {
     if (text.includes('INSERT INTO public.case_versions')) throw driverFailure;
     return { rows: [] };
@@ -232,10 +244,26 @@ it("raises this store's own typed error, carrying the driver failure as its caus
 
   const rejection = store.writeVersion('a-slug', 1, aCase());
 
-  await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-  await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
+  await expect(rejection).rejects.toBeInstanceOf(CaseVersionAlreadyStoredError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug: 'a-slug', version: 1 } });
   expect(client.query).toHaveBeenCalledWith('ROLLBACK');
   expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+it("still raises the generic CaseStoreError, carrying the driver failure as its cause, for a version-insert failure that is not a real unique-constraint violation", async () => {
+  const driverFailure = new Error('the connection to the database was lost');
+  const handleQuery = async (text: string): Promise<{ rows: unknown[] }> => {
+    if (text.includes('INSERT INTO public.case_versions')) throw driverFailure;
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalCaseStore(connection);
+
+  const rejection = store.writeVersion('a-slug', 1, aCase());
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
+  await expect(rejection).rejects.not.toBeInstanceOf(CaseVersionAlreadyStoredError);
+  await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
 // ---------------------------------------------------------------- criterion 6
