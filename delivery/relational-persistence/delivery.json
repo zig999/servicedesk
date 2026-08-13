@@ -272,6 +272,33 @@
       "title": "Store wiring cut to one connection, and the ten sibling test files that signature change broke",
       "summary": "Structural audits and one real-database integration test prove the four stores are built from one connection and no data-directory path anywhere in the wiring chain, the environment schema and the file tree are cut accordingly, and ten sibling integration/unit specs broken by this task's own signature change are rewritten against the real database and disclosed.",
       "task": "task/service-on-the-database/store-wiring"
+    },
+    {
+      "id": "review/relational-persistence",
+      "kind": "review",
+      "file": "review/relational-persistence.md",
+      "title": "Review of the relational-persistence initiative",
+      "summary": "Coverage, specification-conformance and standard-conformance passes over all 17 delivered tasks and their 89 files; the failures pass did not run because the captured suite passed clean.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A submission in which a hypothesis or the fallback declares no outcome, or no referral, is refused naming that position.",
+        "A submission in which two hypotheses share a name is refused, naming both.",
+        "A submission naming a subject type, concept, outcome, action or recipient the glossary does not hold is refused, naming the term.",
+        "A submission whose hypothesis carries an empty criterion is refused, naming the hypothesis.",
+        "A submission whose hypothesis collects a concept with no registered read-only capability declaring an output schema and a timeout is refused, naming the concept.",
+        "A submission whose hypothesis collects no concept is refused, naming the hypothesis.",
+        "Every column of every relation that holds a record pairs with one attribute one Domain Model element declares, and only the relation recording which scripts have been applied pairs with none.",
+        "No integration test creates, drops or alters a table to obtain its isolation.",
+        "No module derives or reads a digest over a case's content when building an investigation.",
+        "The case aggregate declares no hash, and no module derives a digest over a case's content.",
+        "The glossary holds the two non-conclusion outcomes, inconclusive-no-data and inconclusive-hypotheses-exhausted, before any case version is authored against it.",
+        "The tree holds a runnable step that applies every script under migrations/ in numbered order against the connection the environment names."
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -1078,6 +1105,108 @@
       "to": "implementation/service-on-the-database/store-wiring",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-stores/investigation-store",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-substrate/database-connection",
+      "kind": "reviews",
+      "at": "tasks[11]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "reviews",
+      "at": "tasks[12]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-substrate/migration-step",
+      "kind": "reviews",
+      "at": "tasks[13]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "reviews",
+      "at": "tasks[14]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/service-on-the-database/diagnose-end-to-end",
+      "kind": "reviews",
+      "at": "tasks[15]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/service-on-the-database/store-wiring",
+      "kind": "reviews",
+      "at": "tasks[16]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-and-investigation-model/precedence-from-position",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-authoring/author-case-version-command",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/case-authoring/curated-data-seeded",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-stores/capability-store",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-stores/case-store",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-stores/database-access-helper",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/relational-persistence",
+      "to": "task/relational-stores/glossary-store",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
