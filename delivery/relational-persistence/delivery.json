@@ -122,6 +122,14 @@
       "task": "task/relational-substrate/schema-migrations"
     },
     {
+      "id": "implementation/service-on-the-database/diagnose-end-to-end",
+      "kind": "implementation",
+      "file": "implementation/service-on-the-database/diagnose-end-to-end.md",
+      "title": "A diagnosis runs against the database",
+      "summary": "Every one of the nine criteria is already met by the diagnose composition and the real-database wiring two prior tasks delivered; this record adds one documentation-only header note and defers the one real gap — criterion 5 proven only at unit level — to the proof.",
+      "task": "task/service-on-the-database/diagnose-end-to-end"
+    },
+    {
       "id": "implementation/service-on-the-database/store-wiring",
       "kind": "implementation",
       "file": "implementation/service-on-the-database/store-wiring.md",
@@ -248,6 +256,14 @@
       "title": "Proof for the schema built by numbered scripts under migrations/",
       "summary": "Twenty-three tests, run against a real PostgreSQL database, that replay the six scripts onto an empty schema, round-trip every aggregate's required attributes, hold exactly the five nullable columns nullable, enforce each of the five enumerations, enforce the four unique keys, and hold a stored case version immutable under an ordinary UPDATE.",
       "task": "task/relational-substrate/schema-migrations"
+    },
+    {
+      "id": "proof/service-on-the-database/diagnose-end-to-end",
+      "kind": "proof",
+      "file": "proof/service-on-the-database/diagnose-end-to-end.md",
+      "title": "Integration proof for the diagnose end-to-end persistence deadline",
+      "summary": "Closes the one gap the implementation record disclosed — criterion 5 proven only at the unit level — with a new integration test against a real database and a deliberately slowed write, and cites the existing tests that already prove the other eight criteria.",
+      "task": "task/service-on-the-database/diagnose-end-to-end"
     },
     {
       "id": "proof/service-on-the-database/store-wiring",
@@ -932,6 +948,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/service-on-the-database/diagnose-end-to-end",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/service-on-the-database/diagnose-end-to-end",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/service-on-the-database/diagnose-end-to-end",
+      "to": "task/service-on-the-database/diagnose-end-to-end",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/service-on-the-database/store-wiring",
       "to": "constraints/the-system-persists-to-one-relational-database",
       "kind": "encodes",
@@ -1030,6 +1064,12 @@
     {
       "from": "proof/relational-substrate/schema-migrations",
       "to": "implementation/relational-substrate/schema-migrations",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/service-on-the-database/diagnose-end-to-end",
+      "to": "implementation/service-on-the-database/diagnose-end-to-end",
       "kind": "proves",
       "at": "the path"
     },

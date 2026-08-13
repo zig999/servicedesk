@@ -41,6 +41,18 @@
 // from this same propagated `now` rather than a second clock read, since
 // nothing else instant-shaped reaches this composition and the one write
 // that follows happens shortly after with no further stage in between.
+//
+// This same "response only after the write, an error rather than an
+// assessment when it does not conclude in time" behavior is also what
+// task/service-on-the-database/diagnose-end-to-end's own criteria 4 and 5
+// hold this module to, once every dependency above is wired against the real
+// database rather than a fake (task/service-on-the-database/store-wiring):
+// that task adds no seam of its own for this, since createDiagnoseRunner
+// (diagnose.factory.ts) already takes the shared DatabaseConnection as an
+// ordinary parameter, the exact seam diagnose-e2e.spec.ts already uses to
+// compose against a real connection outside createDiagnoseHttpServer's own
+// internal one — reused, at the integration level, to prove criterion 5's
+// deadline-exceeded branch against a real, deliberately slowed write.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { Case } from '../case/case.js';
