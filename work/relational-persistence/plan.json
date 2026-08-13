@@ -92,6 +92,14 @@
       "epic": "case-authoring"
     },
     {
+      "id": "task/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "task",
+      "file": "task/case-authoring/seed-fixtures-resolve-against-a-real-build.md",
+      "title": "Seed reads its fixtures from a build that actually produced them",
+      "summary": "The seed step, the source answering task/case-authoring/curated-data-seeded, stops assuming dist/ holds a copy of src/fixtures/ that no build step actually creates.",
+      "epic": "case-authoring"
+    },
+    {
       "id": "task/relational-stores/capability-store",
       "kind": "task",
       "file": "task/relational-stores/capability-store.md",
@@ -1206,6 +1214,12 @@
       "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
       "kind": "implements",
       "at": "implements[8]"
+    },
+    {
+      "from": "task/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "to": "task/case-authoring/curated-data-seeded",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
     },
     {
       "from": "task/relational-stores/capability-store",
