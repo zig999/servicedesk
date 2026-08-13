@@ -10,16 +10,16 @@ standard:
   pin: sha256:6885a32e5f44e39ab1cf8b5b90f6cae111d0a3f6c5e00711e48cab702e490f72
 run: run/case-and-investigation-model-case-query-drops-the-document-hash-build-2
 files:
-- path: case/case-query.port.ts
+- path: src/case/case-query.port.ts
   effect: 'ReadCaseResult now declares only `case: Case`, with no `hash` field; its own JSDoc and ICaseQuery.readCase''s
     JSDoc no longer describe read-case''s answer as "pinned by content", stating instead that it is validated
     at this reading and carries no document digest.'
-- path: case/case-query.service.ts
+- path: src/case/case-query.service.ts
   effect: 'CaseQueryService.readCase now returns `{ case: theCase }`, no longer spreading `stored.hash`
     into the answer; readCase''s own JSDoc and replayCase''s own JSDoc are corrected to stop describing
     read-case''s shape as pinned by content identity, since neither function''s answer carries such a
     pin any longer.'
-- path: investigation/run-diagnosis.ts
+- path: src/investigation/run-diagnosis.ts
   effect: The module's own header comment now describes the case this pipeline runs as pinned by slug
     and version at the start of the request, rather than pinned by content, matching domain/investigation/investigation
     and rules/investigation/replay-is-pinned's own wording; no executable code in this file changed.
@@ -46,16 +46,16 @@ criteria:
 nodes:
 - node: contracts/knowledge/case-query
   encoded_at:
-  - case/case-query.port.ts
-  - case/case-query.service.ts
+  - src/case/case-query.port.ts
+  - src/case/case-query.service.ts
   how: ReadCaseResult's shape and every JSDoc describing read-case now match the contract's own Description
     exactly — a case by slug and version, validated at this reading, and read whole — with the document
     hash the contract never named removed from the type and from the prose that used to describe it.
 - node: rules/investigation/replay-is-pinned
   encoded_at:
-  - case/case-query.port.ts
-  - case/case-query.service.ts
-  - investigation/run-diagnosis.ts
+  - src/case/case-query.port.ts
+  - src/case/case-query.service.ts
+  - src/investigation/run-diagnosis.ts
   how: 'This task''s criteria reach only the rule''s case-by-slug-and-version clause (per the task''s
     own REMAINDER note; the model, prompt_version and evidence clauses are unchanged and already correct
     elsewhere). That clause is now what all three files state: ReadCaseResult and readCase''s return carry
@@ -63,7 +63,7 @@ nodes:
     by anything but slug and version, and run-diagnosis.ts''s header names the pin the same way.'
 - node: domain/investigation/investigation
   encoded_at:
-  - investigation/run-diagnosis.ts
+  - src/investigation/run-diagnosis.ts
   how: 'Governs criterion 3 alone: the header comment''s description of the case this pipeline runs now
     matches this aggregate''s own stated fact that the case reference is pinned by slug and version, never
     by a digest — a fact investigation.ts''s own PinnedCase type (unchanged, out of this task''s scope)

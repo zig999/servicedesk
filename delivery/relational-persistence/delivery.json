@@ -10,6 +10,14 @@
       "task": "task/case-and-investigation-model/case-aggregate-shape"
     },
     {
+      "id": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/case-query-drops-the-document-hash.md",
+      "title": "ReadCaseResult and readCase drop the retired document hash; run-diagnosis's header stops calling the pin content-based",
+      "summary": "Removes the leftover hash field from ReadCaseResult and readCase's return in the knowledge context's published read, and corrects run-diagnosis.ts's own module header to describe the pinned case by slug and version rather than by content, closing a trace binding /reconcile flagged as stale.",
+      "task": "task/case-and-investigation-model/case-query-drops-the-document-hash"
+    },
+    {
       "id": "implementation/case-and-investigation-model/investigation-record-shape",
       "kind": "implementation",
       "file": "implementation/case-and-investigation-model/investigation-record-shape.md",
@@ -164,6 +172,14 @@
       "title": "Proof for the case aggregate's new declared shape — authored_at, position, no hash",
       "summary": "Eleven new or rewritten tests in parse-case-document.spec.ts prove authored_at and per-hypothesis position arriving and being required, hash gone from the aggregate, and the two new uniqueness/refusal paths this brings; twelve pre-existing test files broken by this same legitimate shape change were brought back into agreement with it, with no new behavior invented.",
       "task": "task/case-and-investigation-model/case-aggregate-shape"
+    },
+    {
+      "id": "proof/case-and-investigation-model/case-query-drops-the-document-hash",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/case-query-drops-the-document-hash.md",
+      "title": "Proof that read-case's answer carries no document hash",
+      "summary": "Two new/rewritten unit tests prove ReadCaseResult carries no hash and that read-case still distinguishes each stored version by its own content; the existing suite for diagnose.controller.ts and seed.ts continuing to pass, unedited, is the proof for real callers; run-diagnosis.ts's header-comment criterion is prose with no runtime effect and is left untested, disclosed rather than invented against.",
+      "task": "task/case-and-investigation-model/case-query-drops-the-document-hash"
     },
     {
       "id": "proof/case-and-investigation-model/investigation-record-shape",
@@ -421,6 +437,30 @@
     {
       "from": "implementation/case-and-investigation-model/case-aggregate-shape",
       "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "task/case-and-investigation-model/case-query-drops-the-document-hash",
       "kind": "implements",
       "at": "the path"
     },
@@ -1075,6 +1115,12 @@
     {
       "from": "proof/case-and-investigation-model/case-aggregate-shape",
       "to": "implementation/case-and-investigation-model/case-aggregate-shape",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "implementation/case-and-investigation-model/case-query-drops-the-document-hash",
       "kind": "proves",
       "at": "the path"
     },

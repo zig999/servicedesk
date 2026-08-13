@@ -521,11 +521,11 @@
       "files": [
         {
           "path": "src/src/case/case-query.port.ts",
-          "digest": "sha256:f885725d1eef7531ea21c18facbec4024313d4793b7904c5f481e28046d5046c"
+          "digest": "sha256:3b81c2bb2ab7dba14375b806522ee8c32cb650557144de8633fe6e0aef09032b"
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -1103,7 +1103,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:2cf86b6ef7f7f786ff95382e58970ee68e38995f6d019f6d0553dd63b1931454"
+          "digest": "sha256:f60b6b17a86c63de5b6273692888da220109fed29b3265f3b4dd1ba956d0bd32"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1668,8 +1668,12 @@
       "digest": "sha256:bd91f5ed7b161f53ad3fe5d61b0e5dcb0a9367ab6fbe4b650384be9600b31baa",
       "files": [
         {
+          "path": "src/src/case/case-query.port.ts",
+          "digest": "sha256:3b81c2bb2ab7dba14375b806522ee8c32cb650557144de8633fe6e0aef09032b"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -1681,7 +1685,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:f60b6b17a86c63de5b6273692888da220109fed29b3265f3b4dd1ba956d0bd32"
         }
       ]
     },
