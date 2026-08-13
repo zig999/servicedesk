@@ -50,6 +50,14 @@
       "task": "task/case-authoring/curated-data-seeded"
     },
     {
+      "id": "implementation/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "implementation",
+      "file": "implementation/case-authoring/seed-fixtures-resolve-against-a-real-build.md",
+      "title": "Seed resolves its fixtures against the source tree instead of the compiled output",
+      "summary": "seed.ts's FIXTURES_ROOT now steps up from its own module URL into the package's src/fixtures directory, so a compiled dist/seed.js finds the fixtures a real npm run build never copies there.",
+      "task": "task/case-authoring/seed-fixtures-resolve-against-a-real-build"
+    },
+    {
       "id": "implementation/relational-stores/capability-store",
       "kind": "implementation",
       "file": "implementation/relational-stores/capability-store.md",
@@ -104,6 +112,18 @@
       "title": "A pinned, per-caller checked-out connection for isolating one integration test's writes from every other",
       "summary": "A new persistence module lets a caller check one connection out of the shared pool for its exclusive use; checkOutIsolatedConnection now opens the transaction and resets search_path to public itself before ever handing the connection back, so every statement a caller sends is pinned to one physical backend and one known schema regardless of what an unrelated, earlier session left on it, and release() always rolls back before returning the connection.",
       "task": "task/relational-substrate/integration-test-isolation"
+    },
+    {
+      "id": "implementation/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "kind": "implementation",
+      "file": "implementation/relational-substrate/manifest-env-file-scripts-vs-their-tests.md",
+      "title": "Manifest env-file scripts verified against criterion 1",
+      "summary": "Confirms src/package.json's migrate and seed scripts already read exactly node --env-file=.env dist/migrate.js and node --env-file=.env dist/seed.js, so no manifest change was needed; the two spec files' stale assertions and npm test's exit code remain for the proof step.",
+      "task": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "unmet": [
+        "`npm test`, run with `DATABASE_URL` and the rest of what `config/env.ts` requires present in the process environment, exits 0.",
+        "src/__tests__/unit/migrate.spec.ts's own assertion on the `migrate` script, and src/__tests__/unit/seed.spec.ts's own assertion on the `seed` script, each match package.json's actual current text exactly, asserting the whole script string rather than a substring or a pattern."
+      ]
     },
     {
       "id": "implementation/relational-substrate/migration-step",
@@ -186,6 +206,14 @@
       "task": "task/case-authoring/curated-data-seeded"
     },
     {
+      "id": "proof/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "proof",
+      "file": "proof/case-authoring/seed-fixtures-resolve-against-a-real-build.md",
+      "title": "Seed's FIXTURES_ROOT resolves against what a real build actually produces",
+      "summary": "Two new unit tests read seed.ts's own currently-declared FIXTURES_ROOT segment and apply Node's real URL/fileURLToPath resolution from the fixed path a real npm run build always places its compiled entry point at, proving the fix removes the ENOENT the pre-fix constant produced there -- without spawning tsc or a shell -- while the task's rerun criterion is left to the pre-existing, unmodified integration test that already proves it.",
+      "task": "task/case-authoring/seed-fixtures-resolve-against-a-real-build"
+    },
+    {
       "id": "proof/relational-stores/capability-store",
       "kind": "proof",
       "file": "proof/relational-stores/capability-store.md",
@@ -240,6 +268,14 @@
       "title": "Proof for per-test transactional isolation over one shared Postgres pool",
       "summary": "Proves checkOutIsolatedConnection's own isolation — a write vanishes once its connection is released, two tests writing the same case slug or investigation id in one run both pass, a test observes none of another test's rows, and no test obtains any of that by creating, dropping or altering a table — plus a type-regression fix this task's own pg.d.ts extension caused in a sibling task's already-delivered proof file.",
       "task": "task/relational-substrate/integration-test-isolation"
+    },
+    {
+      "id": "proof/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "kind": "proof",
+      "file": "proof/relational-substrate/manifest-env-file-scripts-vs-their-tests.md",
+      "title": "The two stale manifest-script assertions now match package.json's actual text",
+      "summary": "migrate.spec.ts and seed.spec.ts each assert their script's full current --env-file text exactly, byte for byte, closing the reconciliation the manifest-side implementation record left open.",
+      "task": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests"
     },
     {
       "id": "proof/relational-substrate/migration-step",
@@ -531,6 +567,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "to": "task/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/relational-stores/capability-store",
       "to": "domain/integration/capability",
       "kind": "encodes",
@@ -761,6 +803,12 @@
     {
       "from": "implementation/relational-substrate/integration-test-isolation",
       "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "to": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests",
       "kind": "implements",
       "at": "the path"
     },
@@ -1041,6 +1089,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "to": "implementation/case-authoring/seed-fixtures-resolve-against-a-real-build",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/relational-stores/capability-store",
       "to": "implementation/relational-stores/capability-store",
       "kind": "proves",
@@ -1079,6 +1133,12 @@
     {
       "from": "proof/relational-substrate/integration-test-isolation",
       "to": "implementation/relational-substrate/integration-test-isolation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "to": "implementation/relational-substrate/manifest-env-file-scripts-vs-their-tests",
       "kind": "proves",
       "at": "the path"
     },

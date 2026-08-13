@@ -79,7 +79,7 @@ async function readManifestScripts(): Promise<Record<string, string>> {
 it('the manifest declares a "seed" script that runs the built seed.js from dist/, mirroring "migrate"\'s own precedent', async () => {
   const scripts = await readManifestScripts();
 
-  expect(scripts.seed).toBe('node dist/seed.js');
+  expect(scripts.seed).toBe('node --env-file=.env dist/seed.js');
 });
 
 // ---------------------------------------------------------------- task/case-authoring/seed-fixtures-resolve-against-a-real-build

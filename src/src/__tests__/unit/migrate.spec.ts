@@ -26,5 +26,5 @@ async function readManifestScripts(): Promise<Record<string, string>> {
 it('the manifest declares a "migrate" script that runs the built migrate.js from dist/, mirroring "start"\'s own precedent', async () => {
   const scripts = await readManifestScripts();
 
-  expect(scripts.migrate).toBe('node dist/migrate.js');
+  expect(scripts.migrate).toBe('node --env-file=.env dist/migrate.js');
 });
