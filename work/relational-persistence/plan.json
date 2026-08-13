@@ -1,0 +1,1907 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-and-investigation-model",
+      "kind": "epic",
+      "file": "epic/case-and-investigation-model.md",
+      "title": "The case and investigation shapes follow the specification",
+      "summary": "The aggregate changes the scope names — hash out of the case and the pin, position onto the hypothesis with precedence read from it, written_at on the investigation, authored_at on the case version — and the read paths that consume them."
+    },
+    {
+      "id": "epic/case-authoring",
+      "kind": "epic",
+      "file": "epic/case-authoring.md",
+      "title": "The curator authors against the database",
+      "summary": "The command contracts/knowledge/author-case-version publishes, with every validator rule answering at that write, and the curated vocabularies, registrations and case the database has to hold for a case to validate at all."
+    },
+    {
+      "id": "epic/relational-stores",
+      "kind": "epic",
+      "file": "epic/relational-stores.md",
+      "title": "The four stores answer from the database",
+      "summary": "The relational adapters behind ICaseStore, IGlossaryStore, ICapabilityStore and IInvestigationStore, and the one shared access helper they issue statements and open transactions through."
+    },
+    {
+      "id": "epic/relational-substrate",
+      "kind": "epic",
+      "file": "epic/relational-substrate.md",
+      "title": "The relational substrate",
+      "summary": "The connection the service reaches its database through, the configuration that names it, the numbered scripts that build the schema, and the arrangement that lets the suite run against a database the schema was applied to."
+    },
+    {
+      "id": "epic/service-on-the-database",
+      "kind": "epic",
+      "file": "epic/service-on-the-database.md",
+      "title": "The service runs end to end on the database",
+      "summary": "The wiring from environment to the four relational stores with no file left holding a record, and one diagnose call answered synchronously from the database with its investigation written before the response."
+    },
+    {
+      "id": "inventory/backend-persistence-and-case-model",
+      "kind": "inventory",
+      "file": "inventory/backend-persistence-and-case-model.md",
+      "title": "Backend service, its four file-backed stores and the case/investigation shapes around them",
+      "summary": "The area the relational-persistence scope lands in: one layered TypeScript/Fastify service under src/, whose four store ports are implemented today by four plain-JSON file repositories and whose case and investigation shapes still carry the file-era fields."
+    },
+    {
+      "id": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/case-aggregate-shape.md",
+      "title": "The case aggregate carries the attributes the model declares",
+      "summary": "The Case and Hypothesis types and the structural validator, with authored_at and position admitted, hash gone, and every structural refusal of one submission arriving together.",
+      "epic": "case-and-investigation-model"
+    },
+    {
+      "id": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/investigation-record-shape.md",
+      "title": "An investigation carries written_at and pins its case by slug and version",
+      "summary": "The investigation aggregate and the one place its pinned case is built, brought to the attributes the specification declares.",
+      "epic": "case-and-investigation-model"
+    },
+    {
+      "id": "task/case-and-investigation-model/precedence-from-position",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/precedence-from-position.md",
+      "title": "Precedence is read from the declared position",
+      "summary": "Resolve-outcome and collection-plan, reading which hypothesis dominates which from each hypothesis's declared position rather than from the order it arrived in.",
+      "epic": "case-and-investigation-model"
+    },
+    {
+      "id": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/replay-by-slug-and-version.md",
+      "title": "A replay resolves its case by slug and version",
+      "summary": "The replay read that takes the pinned slug and version and answers with that stored version whole, without the validation the ordinary read runs.",
+      "epic": "case-and-investigation-model"
+    },
+    {
+      "id": "task/case-authoring/author-case-version-command",
+      "kind": "task",
+      "file": "task/case-authoring/author-case-version-command.md",
+      "title": "The curator submits a case version whole",
+      "summary": "The command that takes one case version, answers every validator rule at that write, and stores nothing when any of them refuses.",
+      "epic": "case-authoring"
+    },
+    {
+      "id": "task/case-authoring/curated-data-seeded",
+      "kind": "task",
+      "file": "task/case-authoring/curated-data-seeded.md",
+      "title": "The curated vocabularies, registrations and case are in the database",
+      "summary": "The seed that carries the fixture-era glossary, capability registry and one curated case version into the database, the case entering through the authoring command.",
+      "epic": "case-authoring"
+    },
+    {
+      "id": "task/relational-stores/capability-store",
+      "kind": "task",
+      "file": "task/relational-stores/capability-store.md",
+      "title": "ICapabilityStore answers from the database",
+      "summary": "The relational adapter behind the capability store port, holding each registration's declared contract and resolving one capability per concept.",
+      "epic": "relational-stores"
+    },
+    {
+      "id": "task/relational-stores/case-store",
+      "kind": "task",
+      "file": "task/relational-stores/case-store.md",
+      "title": "ICaseStore answers from the database",
+      "summary": "The relational adapter behind the case store port, reading a case whole in one transaction and refusing a version that was already written.",
+      "epic": "relational-stores"
+    },
+    {
+      "id": "task/relational-stores/database-access-helper",
+      "kind": "task",
+      "file": "task/relational-stores/database-access-helper.md",
+      "title": "The one way an adapter runs a statement",
+      "summary": "The shared access helper that answers absence as data, raises the caller's typed error, and gives an adapter a transaction that commits or rolls back whole.",
+      "epic": "relational-stores"
+    },
+    {
+      "id": "task/relational-stores/glossary-store",
+      "kind": "task",
+      "file": "task/relational-stores/glossary-store.md",
+      "title": "IGlossaryStore answers from the database",
+      "summary": "The relational adapter behind the glossary store port, answering the five vocabularies and the concepts exactly as the database holds them.",
+      "epic": "relational-stores"
+    },
+    {
+      "id": "task/relational-stores/investigation-store",
+      "kind": "task",
+      "file": "task/relational-stores/investigation-store.md",
+      "title": "IInvestigationStore answers from the database",
+      "summary": "The relational adapter behind the investigation store port, writing one record whole in one transaction, refusing a second write of an id already stored, and reading back every part the record declared.",
+      "epic": "relational-stores"
+    },
+    {
+      "id": "task/relational-substrate/database-connection",
+      "kind": "task",
+      "file": "task/relational-substrate/database-connection.md",
+      "title": "The service reaches its database through a configured connection",
+      "summary": "The driver, the connection module beside the persistence adapters, and the connection URL added to the single environment schema.",
+      "epic": "relational-substrate"
+    },
+    {
+      "id": "task/relational-substrate/integration-test-isolation",
+      "kind": "task",
+      "file": "task/relational-substrate/integration-test-isolation.md",
+      "title": "Integration tests are isolated from each other against one database",
+      "summary": "The arrangement that lets tests sharing one database each observe only the rows they arranged.",
+      "epic": "relational-substrate"
+    },
+    {
+      "id": "task/relational-substrate/migration-step",
+      "kind": "task",
+      "file": "task/relational-substrate/migration-step.md",
+      "title": "The schema is applied by a step the tree records",
+      "summary": "A runnable step that applies every migration in order against the configured connection, and the suite setup that runs it so no test creates a table.",
+      "epic": "relational-substrate"
+    },
+    {
+      "id": "task/relational-substrate/schema-migrations",
+      "kind": "task",
+      "file": "task/relational-substrate/schema-migrations.md",
+      "title": "The schema is built by numbered scripts that mirror the declared model",
+      "summary": "The SQL scripts under migrations/ that create every relation the system records into, each column pairing with an attribute a Domain Model element declares and each key holding an invariant the specification states.",
+      "epic": "relational-substrate"
+    },
+    {
+      "id": "task/service-on-the-database/diagnose-end-to-end",
+      "kind": "task",
+      "file": "task/service-on-the-database/diagnose-end-to-end.md",
+      "title": "A diagnosis runs against the database",
+      "summary": "One diagnose call answered synchronously from the case, glossary and registrations the database holds, with the investigation written before the response and an error rather than an assessment when the write does not conclude.",
+      "epic": "service-on-the-database"
+    },
+    {
+      "id": "task/service-on-the-database/store-wiring",
+      "kind": "task",
+      "file": "task/service-on-the-database/store-wiring.md",
+      "title": "Every store is wired from the connection and no file holds a record",
+      "summary": "The factories and the environment rebuilt around one connection for the four persistence stores, with their file repositories and file helper gone from the tree.",
+      "epic": "service-on-the-database"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/one-falsifiable-claim-per-criterion",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-and-investigation-model",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/glossary/a-recipient-is-a-role",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/glossary/an-action-names-what-its-recipient-does",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/glossary/an-outcome-is-contributed-by-a-confirmable-hypothesis",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-authoring",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/relational-stores",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/relational-substrate",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "contracts/investigation/case-source",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/service-on-the-database",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-aggregate-shape",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-and-investigation-model/investigation-record-shape",
+      "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/investigation-record-shape",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/investigation-record-shape",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-and-investigation-model/precedence-from-position",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "task/relational-stores/case-store",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "task/relational-stores/glossary-store",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "task/relational-stores/capability-store",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "contracts/system/case-authoring",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-authoring/author-case-version-command",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "task/case-authoring/author-case-version-command",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "contracts/knowledge/vocabulary-terms",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-authoring/curated-data-seeded",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "task/relational-stores/database-access-helper",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/relational-stores/capability-store",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "task/relational-stores/database-access-helper",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "task/case-and-investigation-model/case-aggregate-shape",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-stores/case-store",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/relational-stores/database-access-helper",
+      "to": "task/relational-substrate/database-connection",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-stores/database-access-helper",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "task/relational-stores/database-access-helper",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/relational-stores/glossary-store",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "task/relational-stores/database-access-helper",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "task/relational-substrate/integration-test-isolation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "task/case-and-investigation-model/investigation-record-shape",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/relational-stores/investigation-store",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/relational-substrate/database-connection",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-substrate/database-connection",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-substrate/integration-test-isolation",
+      "to": "task/relational-substrate/migration-step",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-substrate/integration-test-isolation",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-substrate/integration-test-isolation",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-substrate/integration-test-isolation",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-substrate/migration-step",
+      "to": "task/relational-substrate/schema-migrations",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-substrate/migration-step",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-substrate/migration-step",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-substrate/migration-step",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "task/relational-substrate/database-connection",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[19]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[20]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[21]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[22]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[23]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[24]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[25]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[26]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "implements",
+      "at": "implements[27]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[28]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[29]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[30]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/relational-substrate/schema-migrations",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "task/service-on-the-database/store-wiring",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "task/case-authoring/curated-data-seeded",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "contracts/system/guided-diagnosis",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "contracts/investigation/case-source",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "contracts/investigation/glossary-source",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "scenarios/investigation/no-response-without-a-record",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/service-on-the-database/diagnose-end-to-end",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "task/relational-stores/case-store",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "task/relational-stores/glossary-store",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "task/relational-stores/capability-store",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "task/relational-stores/investigation-store",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/service-on-the-database/store-wiring",
+      "to": "constraints/the-database-is-externally-provisioned",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
