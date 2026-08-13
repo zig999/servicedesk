@@ -1,0 +1,13 @@
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/factories/production-diagnose.factory.spec.ts
+  105:1  error  Function 'callFor' has too many parameters (4). Maximum allowed is 3  max-params
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/factories/store-wiring.spec.ts
+  164:3  error  Async arrow function has too many lines (32). Maximum allowed is 30  max-lines-per-function
+
+✖ 2 problems (2 errors, 0 warnings)
+

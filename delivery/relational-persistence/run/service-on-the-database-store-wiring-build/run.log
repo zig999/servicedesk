@@ -1,0 +1,57 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(47,39): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(49,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(57,45): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(58,39): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/capability-registry/capability-query.port.spec.ts(74,39): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/capability-registry.factory.spec.ts(42,45): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/capability-registry.factory.spec.ts(52,45): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(108,34): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(141,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(142,42): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/case-query.factory.spec.ts(157,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(158,42): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/case-query.factory.spec.ts(173,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(174,44): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/case-query.factory.spec.ts(191,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(192,44): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/case-query.factory.spec.ts(211,35): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(213,44): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/case-query.factory.spec.ts(236,29): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(237,46): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(71,5): error TS2353: Object literal may only specify known properties, and 'CASE_DATA_DIRECTORY' does not exist in type '{ PORT: number; DATABASE_URL: string; OBSERVATIONS_FIXTURE_FILE: string; EVALUATOR_MODEL: string; CONSOLIDATOR_MODEL: string; CONSOLIDATOR_MAX_TOKENS: number; POOL_SIZE: number; DEFAULT_CONSOLIDATION_REGISTER: "formal" | "plain"; PROMPT_VERSION: string; EVALUATOR_MAX_TOKENS?: number | undefined; }'.
+src/__tests__/integration/factories/glossary.factory.spec.ts(25,35): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/glossary.factory.spec.ts(37,35): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(136,5): error TS2353: Object literal may only specify known properties, and 'investigationDataDirectory' does not exist in type 'ProductionDiagnoseDependencies'.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(156,42): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts(43,44): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/glossary/glossary-query.port.spec.ts(28,37): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/glossary/glossary-query.port.spec.ts(39,37): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/glossary/glossary-query.port.spec.ts(50,37): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(130,5): error TS2353: Object literal may only specify known properties, and 'investigationDataDirectory' does not exist in type 'DiagnoseDependencies'.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(151,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(196,44): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Pool'.
+src/__tests__/unit/factories/production-diagnose.factory.spec.ts(75,5): error TS2353: Object literal may only specify known properties, and 'investigationDataDirectory' does not exist in type 'ProductionDiagnoseDependencies'.
+src/__tests__/unit/factories/production-diagnose.factory.spec.ts(147,62): error TS2339: Property 'investigationDataDirectory' does not exist on type 'ProductionDiagnoseDependencies'.
+src/__tests__/unit/factories/production-diagnose.factory.spec.ts(148,57): error TS2339: Property 'glossaryDataDirectory' does not exist on type 'ProductionDiagnoseDependencies'.
+src/__tests__/unit/factories/production-diagnose.factory.spec.ts(149,59): error TS2339: Property 'capabilityDataDirectory' does not exist on type 'ProductionDiagnoseDependencies'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

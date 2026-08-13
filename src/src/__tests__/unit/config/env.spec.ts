@@ -9,6 +9,14 @@
 // 1 — DATABASE_URL joins the set envSchema requires, and a load missing it
 // refuses once, naming it together with every other violated field, exactly
 // like every field already covered above.
+//
+// Sibling fix, disclosed in this task's own proof record: validEnvSource()
+// below used to name CASE_DATA_DIRECTORY, GLOSSARY_DATA_DIRECTORY,
+// CAPABILITY_DATA_DIRECTORY and INVESTIGATION_DATA_DIRECTORY among the
+// variables envSchema requires; envSchema no longer declares any of the
+// four (task/service-on-the-database/store-wiring's own criterion 2), so
+// this fixture no longer names them, and one test below now asserts their
+// absence directly instead of asserting a refusal over one of them.
 import { expect, it } from 'vitest';
 import { loadEnv } from '../../../config/env.js';
 import { InvalidEnvironmentError } from '../../../errors/invalid-environment.error.js';
@@ -17,10 +25,6 @@ import { InvalidEnvironmentError } from '../../../errors/invalid-environment.err
 function validEnvSource(overrides: Record<string, string | undefined> = {}): NodeJS.ProcessEnv {
   return {
     DATABASE_URL: 'postgres://a-placeholder-connection-url',
-    CASE_DATA_DIRECTORY: 'a-case-directory',
-    GLOSSARY_DATA_DIRECTORY: 'a-glossary-directory',
-    CAPABILITY_DATA_DIRECTORY: 'a-capability-directory',
-    INVESTIGATION_DATA_DIRECTORY: 'an-investigation-directory',
     OBSERVATIONS_FIXTURE_FILE: 'an-observations-file',
     EVALUATOR_MODEL: 'an-evaluator-model',
     CONSOLIDATOR_MODEL: 'a-consolidator-model',
@@ -45,7 +49,7 @@ it('parses the given PORT instead of the default when the environment names one'
 });
 
 it('throws InvalidEnvironmentError naming every missing field together, rather than only the first one it reaches', () => {
-  const incomplete = validEnvSource({ CASE_DATA_DIRECTORY: undefined, EVALUATOR_MODEL: undefined });
+  const incomplete = validEnvSource({ CONSOLIDATOR_MODEL: undefined, EVALUATOR_MODEL: undefined });
 
   let caught: unknown;
   try {
@@ -56,8 +60,19 @@ it('throws InvalidEnvironmentError naming every missing field together, rather t
 
   expect(caught).toBeInstanceOf(InvalidEnvironmentError);
   const issues = (caught as InvalidEnvironmentError).context.issues;
-  expect(issues.some((issue) => issue.includes('CASE_DATA_DIRECTORY'))).toBe(true);
+  expect(issues.some((issue) => issue.includes('CONSOLIDATOR_MODEL'))).toBe(true);
   expect(issues.some((issue) => issue.includes('EVALUATOR_MODEL'))).toBe(true);
+});
+
+// ---------------------------------------------------- store-wiring criterion 2
+
+it('parses a valid environment naming none of the four retired data-directory variables, carrying no trace of any of them onto Env', () => {
+  const env = loadEnv(validEnvSource());
+
+  expect(env).not.toHaveProperty('CASE_DATA_DIRECTORY');
+  expect(env).not.toHaveProperty('GLOSSARY_DATA_DIRECTORY');
+  expect(env).not.toHaveProperty('CAPABILITY_DATA_DIRECTORY');
+  expect(env).not.toHaveProperty('INVESTIGATION_DATA_DIRECTORY');
 });
 
 // ---------------------------------------------------- database-connection criterion 1

@@ -119,11 +119,11 @@ it('none of these modules imports the LLM provider client directly, except the t
   expect(offenders).toEqual([]);
 });
 
-it('the connection module sits under persistence/, beside the file-backed repositories, rather than under any of the four audited domain directories', async () => {
+it('the connection module sits under persistence/, beside the relational store repositories, rather than under any of the four audited domain directories', async () => {
   const persistenceDirectory = fileURLToPath(new URL('../../persistence/', import.meta.url));
 
   const persistenceFiles = await readdir(persistenceDirectory);
 
   expect(persistenceFiles).toContain('database-connection.ts');
-  expect(persistenceFiles).toContain('file-case-store.repository.ts');
+  expect(persistenceFiles).toContain('relational-case-store.repository.ts');
 });

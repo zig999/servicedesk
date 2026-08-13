@@ -1,14 +1,15 @@
 import type { IInvestigationStore } from '../investigation/investigation-store.port.js';
-import { FileInvestigationStore } from '../persistence/file-investigation-store.repository.js';
+import type { DatabaseConnection } from '../persistence/database-connection.js';
+import { RelationalInvestigationStore } from '../persistence/relational-investigation-store.repository.js';
 
 /**
- * Wires the investigation store: the file-backed store behind the
+ * Wires the investigation store: the relational adapter behind the
  * investigation module's own port
- * (rules/investigation/an-investigation-is-written-once). The data
- * directory is the caller's to choose, so no data path is written in
- * source — the same convention createCaseStore already keeps for its own
- * store.
+ * (rules/investigation/an-investigation-is-written-once), built from the one
+ * connection this composition shares (task/service-on-the-database/store-wiring)
+ * rather than a data-directory path — the same convention createCaseStore
+ * already keeps for its own store.
  */
-export function createInvestigationStore(dataDirectory: string): IInvestigationStore {
-  return new FileInvestigationStore(dataDirectory);
+export function createInvestigationStore(connection: DatabaseConnection): IInvestigationStore {
+  return new RelationalInvestigationStore(connection);
 }

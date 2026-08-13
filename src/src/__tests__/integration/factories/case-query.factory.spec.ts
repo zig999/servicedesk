@@ -1,201 +1,253 @@
-// Proof through the module's real wiring (task/case-store/read-case): a case
-// authored directly into the real, file-backed case store is readable at its
-// very next read with no publication step in between, pinned by the sha256
-// of the exact bytes its file holds; a structural or a coherence violation
-// refuses through the real glossary and capability-registry factories the
-// same way the unit proof shows through fakes, and a coherence violation
-// refuses as the composed CaseNotValidError rather than the coherence
-// module's own IncoherentCaseError; a case that validated once is refused
-// again once the real glossary file is edited directly, bypassing every API,
-// so it no longer holds a concept the case depends on; and replaying a
-// pinned version through the real store answers it unchanged even after a
-// registration the case depends on is edited away from the real registry.
-import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { afterEach, beforeEach, expect, it } from 'vitest';
+// Proof through the module's real wiring (task/case-store/read-case), against a real, externally
+// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned): a case
+// written directly to the real, relational case store is readable at its very next read with no
+// publication step in between, pinned by the real store's own content-identity hash over what is
+// currently stored; a structural violation refuses through the real glossary and
+// capability-registry factories the same way the unit proof shows through fakes, and a coherence
+// violation refuses as the composed CaseNotValidError; a case that validated once is refused again
+// once the real glossary no longer accepts the subject type the case declares for a concept it
+// depends on, edited directly against the table bypassing every API; a case collecting a concept
+// the glossary never held is refused by the real store itself, at write time, through a real
+// foreign key — never reaching the coherence module's own identical, already-unit-tested check
+// (hypothesis_collects.concept_name → concepts.name is a real constraint the file-backed store this
+// task retired never enforced, so this scenario used to be a read-time discovery and is now a
+// write-time refusal instead); and replaying a pinned version through the real store answers it
+// unchanged even after the real capability registration the case depends on is deleted directly
+// against the table.
+//
+// Sibling fix, disclosed in this task's own proof record: this file used to seed three fresh temp
+// directories per test and write plain JSON files the way the file-backed stores used to persist
+// them; createCaseQuery now takes the one shared DatabaseConnection this task's own cutover wires
+// through createCaseStore, createGlossaryQuery and createCapabilityQuery alike, so this file seeds
+// a fresh vocabulary, concept and capability through the real database per test instead. The
+// former "routes each of the three dependencies to the directory named for it" inference test is
+// dropped rather than adapted: createCaseQuery no longer takes three independently routed
+// directories at all, so its own premise — that the three could differ — no longer exists under
+// this task's own single-connection signature. The "collected concept the glossary does not hold"
+// test is rewritten for the same underlying reason: hypothesis_collects' own real foreign key into
+// concepts refuses the write itself before a read could ever discover the absence, so what this
+// test proves moved from a read-time CaseNotValidError to a write-time CaseStoreError — the
+// coherence module's own identical check keeps its existing, unaffected unit-level proof.
+//
+// Divergence disclosed here for the same reason every sibling integration proof already discloses
+// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
+// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
+// configured too, which this file has no use for.
+import { createHash, randomUUID } from 'node:crypto';
+import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { replayCase } from '../../../case/case-query.service.js';
+import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
-import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
+import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { createCapabilityRegistry } from '../../../factories/capability-registry.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
-/** The fixture case's identity and the version every test addresses. */
-const SLUG = 'a-case';
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+  }
+  return url;
+}
+
 const VERSION = 1;
 
-/** The fixture's subject type, accepted by the one concept the fixture case collects. */
-const SUBJECT = 'contract';
+interface IVocabulary {
+  readonly slug: string;
+  readonly subject: string;
+  readonly concept: string;
+  readonly outcome: string;
+  readonly fallbackOutcome: string;
+  readonly action: string;
+  readonly fallbackAction: string;
+  readonly recipient: string;
+  readonly fallbackRecipient: string;
+  readonly capabilityName: string;
+}
 
-/** The one concept the fixture case's one hypothesis collects. */
-const CONCEPT = 'equipment-state';
+let pool: DatabaseConnection;
+let vocabulariesWrittenByThisTest: IVocabulary[] = [];
 
-/** The vocabulary terms the fixture names, each distinct from its fallback counterpart. */
-const OUTCOME = 'issue-resolved';
-const FALLBACK_OUTCOME = 'inconclusive';
-const ACTION = 'notify-customer';
-const FALLBACK_ACTION = 'escalate';
-const RECIPIENT = 'support-queue';
-const FALLBACK_RECIPIENT = 'escalation-queue';
+beforeAll(() => {
+  pool = createDatabaseConnection(requireDatabaseUrl());
+});
 
-/** The one plain JSON file capability registrations land in, spelled here so a renamed file fails the proof. */
-const CAPABILITY_FILE = 'capability.json';
-/** The one plain JSON file concept registrations land in. */
-const CONCEPT_FILE = 'concept.json';
+afterAll(async () => {
+  await pool.end();
+});
 
-/**
- * A raw case document — every attribute parseCaseDocument requires — for a
- * test to depart from one attribute at a time. Declares no hash at all: the
- * case aggregate no longer admits one
- * (task/case-and-investigation-model/case-aggregate-shape) — the sha256 this
- * file's own tests read is the real store's content-identity pin over the
- * exact bytes on disk, never a value this document declares.
- */
-function validCaseDocument(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+/** Every distinct, freshly generated name one test's own case, glossary and capability need — nothing here shared with any other test or any other suite file. */
+function freshVocabulary(): IVocabulary {
+  const id = randomUUID();
   return {
-    slug: SLUG,
+    slug: `case-query-case-${id}`,
+    subject: `case-query-subject-${id}`,
+    concept: `case-query-concept-${id}`,
+    outcome: `case-query-outcome-${id}`,
+    fallbackOutcome: `case-query-fallback-outcome-${id}`,
+    action: `case-query-action-${id}`,
+    fallbackAction: `case-query-fallback-action-${id}`,
+    recipient: `case-query-recipient-${id}`,
+    fallbackRecipient: `case-query-fallback-recipient-${id}`,
+    capabilityName: `case-query-capability-${id}`,
+  };
+}
+
+/** A raw case document — every attribute parseCaseDocument requires — naming exactly the given vocabulary's own terms, for a test to depart from one attribute at a time. */
+function validCaseDocument(vocabulary: IVocabulary, overrides: Record<string, unknown> = {}): Record<string, unknown> {
+  return {
+    slug: vocabulary.slug,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
     version: VERSION,
     authored_at: '2024-01-01T00:00:00.000Z',
-    subject: SUBJECT,
+    subject: vocabulary.subject,
     fallback: {
-      outcome: FALLBACK_OUTCOME,
-      referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT },
+      outcome: vocabulary.fallbackOutcome,
+      referral: { action: vocabulary.fallbackAction, recipient: vocabulary.fallbackRecipient },
     },
     hypotheses: [
       {
         name: 'h1',
         position: 1,
         criterion: 'prose no check in this composition ever reads',
-        collects: [CONCEPT],
-        resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
+        collects: [vocabulary.concept],
+        resolution: { outcome: vocabulary.outcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
       },
     ],
     ...overrides,
   };
 }
 
-/** Seeds a real glossary data directory with every term and the one concept the fixture case names. */
-async function persistCoherentGlossary(directory: string): Promise<void> {
-  await writeFile(join(directory, 'subject-type.json'), JSON.stringify([{ name: SUBJECT }]), 'utf8');
-  await writeFile(
-    join(directory, 'outcome.json'),
-    JSON.stringify([{ name: OUTCOME }, { name: FALLBACK_OUTCOME }]),
-    'utf8',
-  );
-  await writeFile(
-    join(directory, 'action.json'),
-    JSON.stringify([{ name: ACTION }, { name: FALLBACK_ACTION }]),
-    'utf8',
-  );
-  await writeFile(
-    join(directory, 'recipient.json'),
-    JSON.stringify([{ name: RECIPIENT }, { name: FALLBACK_RECIPIENT }]),
-    'utf8',
-  );
-  await writeFile(
-    join(directory, CONCEPT_FILE),
-    JSON.stringify([{ name: CONCEPT, accepts: [SUBJECT], ttl: 60 }]),
-    'utf8',
-  );
+/** Writes every vocabulary row and, unless told to skip it, the concept row this vocabulary's own case depends on, directly against the real tables — tracked for this file's own afterEach cleanup. */
+async function persistCoherentGlossary(vocabulary: IVocabulary, options: { withConcept?: boolean } = {}): Promise<void> {
+  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [vocabulary.subject]);
+  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1), ($2)', [vocabulary.outcome, vocabulary.fallbackOutcome]);
+  await pool.query('INSERT INTO public.actions (name) VALUES ($1), ($2)', [vocabulary.action, vocabulary.fallbackAction]);
+  await pool.query('INSERT INTO public.recipients (name) VALUES ($1), ($2)', [vocabulary.recipient, vocabulary.fallbackRecipient]);
+  if (options.withConcept ?? true) {
+    await registerConceptAccepting(vocabulary, vocabulary.subject);
+  }
+  vocabulariesWrittenByThisTest.push(vocabulary);
 }
 
-/** Registers, through the real registry, a complete read-only capability answering the fixture concept. */
-async function registerCoherentCapability(directory: string): Promise<void> {
-  await createCapabilityRegistry(directory).registerCapability({
-    name: 'equipment-state-reader',
+/** Writes the concept row plus one concept_accepts row naming the given subject type — split out so a test can register it accepting a subject type other than the case's own declared one, or not at all. */
+async function registerConceptAccepting(vocabulary: IVocabulary, subjectType: string): Promise<void> {
+  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
+  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
+}
+
+/** Registers, through the real registry, a complete read-only capability answering the vocabulary's own concept. */
+async function registerCoherentCapability(vocabulary: IVocabulary): Promise<void> {
+  await createCapabilityRegistry(pool).registerCapability({
+    name: vocabulary.capabilityName,
     version: '1.0.0',
     nature: 'read-only',
     input_schema: 'an-input-schema',
     output_schema: 'an-output-schema',
     timeout: 5_000,
     connector: 'a-connector',
-    concept: CONCEPT,
+    concept: vocabulary.concept,
   });
 }
 
-let caseDir: string;
-let glossaryDir: string;
-let capabilityDir: string;
-
-beforeEach(async () => {
-  caseDir = await mkdtemp(join(tmpdir(), 'case-query-case-'));
-  glossaryDir = await mkdtemp(join(tmpdir(), 'case-query-glossary-'));
-  capabilityDir = await mkdtemp(join(tmpdir(), 'case-query-capability-'));
-});
+/** Every row this file's own tests wrote for one vocabulary, deleted in an order that always satisfies their own foreign keys. */
+async function cleanupVocabulary(vocabulary: IVocabulary): Promise<void> {
+  await pool.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [vocabulary.slug]);
+  await pool.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await pool.query('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.slug]);
+  await pool.query('DELETE FROM public.cases WHERE slug = $1', [vocabulary.slug]);
+  await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await pool.query('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
+  await pool.query('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subject]);
+  await pool.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
+  await pool.query('DELETE FROM public.actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
+  await pool.query('DELETE FROM public.recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
+}
 
 afterEach(async () => {
-  await rm(caseDir, { recursive: true, force: true });
-  await rm(glossaryDir, { recursive: true, force: true });
-  await rm(capabilityDir, { recursive: true, force: true });
+  for (const vocabulary of vocabulariesWrittenByThisTest) {
+    await cleanupVocabulary(vocabulary);
+  }
+  vocabulariesWrittenByThisTest = [];
 });
 
 // ---------------------------------------------------------------------- criteria 1 and 5
 
-it('answers a case written directly to the real store, pinned by the sha256 of the exact bytes on disk, with no publish step in between', async () => {
-  await persistCoherentGlossary(glossaryDir);
-  await registerCoherentCapability(capabilityDir);
-  await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCaseDocument());
-  const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
+it('answers a case written directly to the real store, pinned by the store\'s own content-identity hash over what is currently stored, with no publish step in between', async () => {
+  const vocabulary = freshVocabulary();
+  await persistCoherentGlossary(vocabulary);
+  await registerCoherentCapability(vocabulary);
+  await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+  const query = createCaseQuery(pool);
 
-  const result = await query.readCase(SLUG, VERSION);
+  const result = await query.readCase(vocabulary.slug, VERSION);
 
-  const bytes = await readFile(join(caseDir, SLUG, `${VERSION}.json`), 'utf8');
-  const expectedHash = createHash('sha256').update(bytes, 'utf8').digest('hex');
-  expect(result.hash).toBe(expectedHash);
-  expect(result.case).toMatchObject({ slug: SLUG, subject: SUBJECT });
+  const rawStored = await new RelationalCaseStore(pool).readVersion(vocabulary.slug, VERSION);
+  expect(rawStored).toBeDefined();
+  expect(result.hash).toBe(createHash('sha256').update(JSON.stringify(rawStored?.document), 'utf8').digest('hex'));
+  expect(result.case).toMatchObject({ slug: vocabulary.slug, subject: vocabulary.subject });
 });
 
 // -------------------------------------------------------------------------------- criterion 2
 
 it('refuses through the real wiring a case document declaring no hypothesis, naming the structural violation', async () => {
-  await persistCoherentGlossary(glossaryDir);
-  await registerCoherentCapability(capabilityDir);
-  await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCaseDocument({ hypotheses: [] }));
-  const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
+  const vocabulary = freshVocabulary();
+  await persistCoherentGlossary(vocabulary);
+  await registerCoherentCapability(vocabulary);
+  await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary, { hypotheses: [] }));
+  const query = createCaseQuery(pool);
 
-  const refusal = await query.readCase(SLUG, VERSION).catch((error: unknown) => error);
+  const refusal = await query.readCase(vocabulary.slug, VERSION).catch((error: unknown) => error);
 
   expect(refusal).toBeInstanceOf(CaseNotValidError);
   expect((refusal as CaseNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
 });
 
 it(
-  "refuses through the real wiring a structurally valid case whose collected concept the glossary does not " +
-    "hold, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError",
+  'refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, ' +
+    'a case document whose collected concept the glossary does not hold — the real store\'s own ' +
+    'foreign key from hypothesis_collects into concepts, never reachable through the fake store this ' +
+    'task retired',
   async () => {
-    await persistCoherentGlossary(glossaryDir);
-    await writeFile(join(glossaryDir, CONCEPT_FILE), JSON.stringify([]), 'utf8'); // the concept is never registered
-    await registerCoherentCapability(capabilityDir);
-    await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCaseDocument());
-    const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
+    const vocabulary = freshVocabulary();
+    // The concept is deliberately never registered: hypothesis_collects.concept_name is a real
+    // foreign key into concepts under the real relational schema, so writing a case that collects an
+    // unregistered concept is refused here, at the store, rather than reaching a later read for the
+    // coherence module's own identical, already-unit-tested check
+    // (validate-case-coherence.spec.ts's "refuses a case collecting a concept the glossary does not
+    // hold, naming the concept") to discover — a stronger, real-effect guarantee the file-backed
+    // store this task retired never enforced.
+    await persistCoherentGlossary(vocabulary, { withConcept: false });
 
-    const refusal = await query.readCase(SLUG, VERSION).catch((error: unknown) => error);
+    const rejection = createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
 
-    expect(refusal).toBeInstanceOf(CaseNotValidError);
-    expect(refusal).not.toBeInstanceOf(IncoherentCaseError);
+    await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
+    await expect(createCaseQuery(pool).readCase(vocabulary.slug, VERSION)).rejects.toBeInstanceOf(CaseNotFoundError);
   },
 );
 
 // -------------------------------------------------------------------------------- criterion 3
 
 it(
-  'refuses at a later read, through the real wiring, a case that validated earlier once the glossary file ' +
-    'no longer holds a concept it depends on',
+  'refuses at a later read, through the real wiring, a case that validated earlier once the glossary no ' +
+    'longer accepts the subject type it depends on for a collected concept, edited directly against the table',
   async () => {
-    await persistCoherentGlossary(glossaryDir);
-    await registerCoherentCapability(capabilityDir);
-    await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCaseDocument());
-    const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
-    await expect(query.readCase(SLUG, VERSION)).resolves.toMatchObject({ case: { slug: SLUG } });
+    const vocabulary = freshVocabulary();
+    await persistCoherentGlossary(vocabulary);
+    await registerCoherentCapability(vocabulary);
+    await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+    const query = createCaseQuery(pool);
+    await expect(query.readCase(vocabulary.slug, VERSION)).resolves.toMatchObject({ case: { slug: vocabulary.slug } });
 
-    // Edits the concept out of the glossary's own file directly, bypassing every API.
-    await writeFile(join(glossaryDir, CONCEPT_FILE), JSON.stringify([]), 'utf8');
+    // Edits the concept's own accepted subject types away directly against the table, bypassing every API.
+    await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
 
-    const refusal = await query.readCase(SLUG, VERSION).catch((error: unknown) => error);
+    const refusal = await query.readCase(vocabulary.slug, VERSION).catch((error: unknown) => error);
     expect(refusal).toBeInstanceOf(CaseNotValidError);
   },
 );
@@ -204,43 +256,22 @@ it(
 
 it(
   'replays the pinned version through the real store, answering it unchanged even after the real ' +
-    'capability registration the case depends on is edited away',
+    'capability registration the case depends on is deleted directly against the table',
   async () => {
-    await persistCoherentGlossary(glossaryDir);
-    await registerCoherentCapability(capabilityDir);
-    const store = createCaseStore(caseDir);
-    await store.writeVersion(SLUG, VERSION, validCaseDocument());
-    const query = createCaseQuery(caseDir, glossaryDir, capabilityDir);
-    const read = await query.readCase(SLUG, VERSION);
+    const vocabulary = freshVocabulary();
+    await persistCoherentGlossary(vocabulary);
+    await registerCoherentCapability(vocabulary);
+    const store = createCaseStore(pool);
+    await store.writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+    const query = createCaseQuery(pool);
+    const read = await query.readCase(vocabulary.slug, VERSION);
 
-    // Edits the registration out of the capability registry's own file directly, bypassing every API.
-    await writeFile(join(capabilityDir, CAPABILITY_FILE), JSON.stringify([]), 'utf8');
-    await expect(query.readCase(SLUG, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
+    // Deletes the registration directly against the capabilities table, bypassing every API.
+    await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+    await expect(query.readCase(vocabulary.slug, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
 
-    const replayed = await replayCase(SLUG, VERSION, store);
+    const replayed = await replayCase(vocabulary.slug, VERSION, store);
 
     expect(replayed).toEqual(read.case);
-  },
-);
-
-// ---------------------------------------------------- inference: independently routed data directories
-
-it(
-  'routes each of the three dependencies to the directory named for it, whether all three differ or two ' +
-    'of them coincide',
-  async () => {
-    const sharedDir = await mkdtemp(join(tmpdir(), 'case-query-shared-'));
-    try {
-      await persistCoherentGlossary(sharedDir);
-      await registerCoherentCapability(sharedDir); // the glossary and the capability registry share one directory here
-      await createCaseStore(caseDir).writeVersion(SLUG, VERSION, validCaseDocument());
-      const query = createCaseQuery(caseDir, sharedDir, sharedDir);
-
-      const result = await query.readCase(SLUG, VERSION);
-
-      expect(result.case.slug).toBe(SLUG);
-    } finally {
-      await rm(sharedDir, { recursive: true, force: true });
-    }
   },
 );

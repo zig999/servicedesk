@@ -3,18 +3,24 @@
 // schema"): every value the diagnose HTTP surface needs at startup is read
 // once here, so a missing or malformed value fails loudly before the server
 // ever listens rather than surfacing later as an unexplained crash mid-request.
-// Carries no data-directory default of its own (createCaseStore/createGlossaryQuery/
-// createCapabilityQuery/createInvestigationStore's own shared convention:
-// "the data directory is the caller's to choose, so no data path is written
-// in source"), and no credential of any kind — both Anthropic-backed adapters
+// Declares no data-directory variable for the case, glossary,
+// capability-registry or investigation store
+// (task/service-on-the-database/store-wiring): each of the four now answers
+// from the one DATABASE_URL connection below, built once and threaded
+// through every factory that used to receive a directory of its own — no
+// data path for any of those four is written in source or read from this
+// schema. Carries no credential of any kind — both Anthropic-backed adapters
 // already resolve ANTHROPIC_API_KEY from the environment on their own
 // (STK-11), and this module introduces no second place that reads it.
-// Now also carries DATABASE_URL, the one URL this process reaches its
-// database through (constraints/the-database-is-externally-provisioned —
-// the database is provisioned outside the deployment and reached only
-// through a connection URL supplied as configuration): this schema is the
-// one place that URL is read, so no host, port, endpoint or credential for a
-// database is written anywhere else in source.
+// Carries DATABASE_URL, the one URL this process reaches its database
+// through (constraints/the-database-is-externally-provisioned — the
+// database is provisioned outside the deployment and reached only through a
+// connection URL supplied as configuration): this schema is the one place
+// that URL is read, so no host, port, endpoint or credential for a database
+// is written anywhere else in source. OBSERVATIONS_FIXTURE_FILE stays
+// untouched: it backs FakeObservationSource, the stand-in for
+// contracts/integration/corporate-records-source — a different capability
+// this task's own scope does not reach.
 
 import { z } from 'zod';
 import { InvalidEnvironmentError } from '../errors/invalid-environment.error.js';
@@ -24,10 +30,6 @@ import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1),
-  CASE_DATA_DIRECTORY: z.string().min(1),
-  GLOSSARY_DATA_DIRECTORY: z.string().min(1),
-  CAPABILITY_DATA_DIRECTORY: z.string().min(1),
-  INVESTIGATION_DATA_DIRECTORY: z.string().min(1),
   OBSERVATIONS_FIXTURE_FILE: z.string().min(1),
   EVALUATOR_MODEL: z.string().min(1),
   EVALUATOR_MAX_TOKENS: z.coerce.number().int().positive().optional(),

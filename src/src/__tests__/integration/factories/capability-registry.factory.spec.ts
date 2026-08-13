@@ -1,19 +1,38 @@
-// Proof through the module's real wiring: a capability registered over a
-// fresh data directory lands as a plain JSON file holding the record the
-// registry accepted, and a re-registration under the same name and version
-// replaces it in that file (constraints/the-mvp-persists-to-no-database).
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { afterEach, beforeEach, expect, it } from 'vitest';
+// Proof through the module's real wiring, against a real, externally provisioned PostgreSQL
+// database (constraints/the-database-is-externally-provisioned) reached through DATABASE_URL and
+// threaded into createCapabilityRegistry as one DatabaseConnection
+// (task/service-on-the-database/store-wiring): a capability registered through the real factory
+// lands as a row RelationalCapabilityStore reads back, and a re-registration under the same name
+// and version replaces it in that same row rather than the plain JSON file this module used to
+// write (constraints/the-system-persists-to-one-relational-database).
+//
+// Sibling fix, disclosed in this task's own proof record: this file used to seed a fresh temp
+// directory per test and assert against capability.json on disk; createCapabilityRegistry now
+// takes the one shared DatabaseConnection this task's own cutover wires everywhere, so this file
+// seeds a fresh concept through the real database instead and reads the registration back through
+// RelationalCapabilityStore, never through a file.
+//
+// Divergence disclosed here for the same reason every sibling integration proof already discloses
+// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
+// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
+// configured too, which this file has no use for.
+import { randomUUID } from 'node:crypto';
+import { afterEach, beforeAll, afterAll, expect, it } from 'vitest';
 import type { CapabilityRegistration } from '../../../capability-registry/capability.js';
 import { createCapabilityRegistry } from '../../../factories/capability-registry.factory.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+import { RelationalCapabilityStore } from '../../../persistence/relational-capability-store.repository.js';
 
-/** The one plain JSON file the registrations land in, spelled here so a renamed file fails the proof. */
-const CAPABILITY_FILE = 'capability.json';
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+  }
+  return url;
+}
 
-/** A registration declaring the whole contract, as a caller would submit it. */
-function completeRegistration(overrides: CapabilityRegistration = {}): CapabilityRegistration {
+/** A registration declaring the whole contract, as a caller would submit it, for the given concept. */
+function completeRegistration(concept: string, overrides: CapabilityRegistration = {}): CapabilityRegistration {
   return {
     name: 'a-capability',
     version: '1.0.0',
@@ -22,38 +41,55 @@ function completeRegistration(overrides: CapabilityRegistration = {}): Capabilit
     output_schema: 'an-output-schema',
     timeout: 5000,
     connector: 'a-connector',
-    concept: 'a-concept',
+    concept,
     ...overrides,
   };
 }
 
-let directory: string;
+let pool: DatabaseConnection;
+let conceptsWrittenByThisTest: string[] = [];
 
-beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'capability-registry-factory-'));
+beforeAll(() => {
+  pool = createDatabaseConnection(requireDatabaseUrl());
+});
+
+afterAll(async () => {
+  await pool.end();
 });
 
 afterEach(async () => {
-  await rm(directory, { recursive: true, force: true });
+  if (conceptsWrittenByThisTest.length > 0) {
+    await pool.query('DELETE FROM public.capabilities WHERE concept = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    conceptsWrittenByThisTest = [];
+  }
 });
 
-it('persists a registered capability as a plain JSON file under the data directory', async () => {
-  const dataDirectory = join(directory, 'data');
-  const registry = createCapabilityRegistry(dataDirectory);
+/** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
+async function aFreshConcept(): Promise<string> {
+  const name = `capability-registry-factory-concept-${randomUUID()}`;
+  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  conceptsWrittenByThisTest.push(name);
+  return name;
+}
 
-  await registry.registerCapability(completeRegistration());
+it('persists a registered capability as a row RelationalCapabilityStore reads back, through the real factory wiring', async () => {
+  const concept = await aFreshConcept();
+  const registry = createCapabilityRegistry(pool);
 
-  const text = await readFile(join(dataDirectory, CAPABILITY_FILE), 'utf8');
-  expect(JSON.parse(text)).toEqual([completeRegistration()]);
+  const registered = await registry.registerCapability(completeRegistration(concept));
+
+  const answered = (await new RelationalCapabilityStore(pool).readCapabilities()).filter((capability) => capability.concept === concept);
+  expect(answered).toEqual([registered]);
 });
 
 it('replaces the persisted record when the same name and version register again through the real wiring', async () => {
-  const dataDirectory = join(directory, 'data');
-  const registry = createCapabilityRegistry(dataDirectory);
-  await registry.registerCapability(completeRegistration({ connector: 'an-old-connector' }));
+  const concept = await aFreshConcept();
+  const registry = createCapabilityRegistry(pool);
+  await registry.registerCapability(completeRegistration(concept, { connector: 'an-old-connector' }));
 
-  await registry.registerCapability(completeRegistration({ connector: 'a-new-connector' }));
+  const replaced = await registry.registerCapability(completeRegistration(concept, { connector: 'a-new-connector' }));
 
-  const text = await readFile(join(dataDirectory, CAPABILITY_FILE), 'utf8');
-  expect(JSON.parse(text)).toEqual([completeRegistration({ connector: 'a-new-connector' })]);
+  const answered = (await new RelationalCapabilityStore(pool).readCapabilities()).filter((capability) => capability.concept === concept);
+  expect(answered).toEqual([replaced]);
 });

@@ -8,9 +8,19 @@
 // factory always constructs would otherwise call the real SDK's own
 // constructor, which throws synchronously with no credential in this
 // environment. What actually runs the pipeline end to end — the real
-// adapters, the real file-backed store, the given requester reaching a real
-// observation source, two calls writing two independent investigations — is
-// production-diagnose.factory.spec.ts under __tests__/integration instead.
+// adapters, the real relational store over a real database
+// (task/service-on-the-database/store-wiring), the given requester reaching
+// a real observation source, two calls writing two independent
+// investigations — is production-diagnose.factory.spec.ts under
+// __tests__/integration instead.
+//
+// Sibling fix, disclosed in this task's own proof record: baseDependencies()
+// below used to carry three data-directory strings
+// (investigationDataDirectory, glossaryDataDirectory,
+// capabilityDataDirectory); ProductionDiagnoseDependencies now carries the
+// one connection field this task's own cutover wires everywhere, so this
+// file passes a bare stand-in DatabaseConnection instead — createDiagnoseRunner
+// is mocked in this file, so nothing here ever issues a real query through it.
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const { anthropicConstructorMock } = vi.hoisted(() => {
@@ -39,6 +49,7 @@ import type { Cost } from '../../../investigation/cost.js';
 import type { Durations } from '../../../investigation/durations.js';
 import type { IObservationSource, ObservationOutcome } from '../../../investigation/observation-source.port.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
+import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import {
   createProductionDiagnoseRunner,
   type ProductionDiagnoseCall,
@@ -69,12 +80,13 @@ function aCase(): Case {
   };
 }
 
+/** A bare stand-in for DatabaseConnection, never queried in this file since createDiagnoseRunner is mocked — only its own identity matters, to the pass-through test below. */
+const FAKE_CONNECTION = {} as unknown as DatabaseConnection;
+
 /** Every field ProductionDiagnoseDependencies declares, all arbitrary except where a test reads one back. */
 function baseDependencies(overrides: Partial<ProductionDiagnoseDependencies> = {}): ProductionDiagnoseDependencies {
   return {
-    investigationDataDirectory: 'an-investigation-directory',
-    glossaryDataDirectory: 'a-glossary-directory',
-    capabilityDataDirectory: 'a-capability-directory',
+    connection: FAKE_CONNECTION,
     observationSource: new UnusedObservationSource(),
     poolSize: 3,
     defaultConsolidationRegister: 'plain',
@@ -127,14 +139,12 @@ type WiredPassThroughFields = {
   readonly observationSource: IObservationSource;
   readonly poolSize: number;
   readonly defaultConsolidationRegister: string;
-  readonly investigationDataDirectory: string;
-  readonly glossaryDataDirectory: string;
-  readonly capabilityDataDirectory: string;
+  readonly connection: DatabaseConnection;
 };
 
 // ------------------------------------------------------- criterion 1: pass-through wiring
 
-it('passes the caller-given observation source, pool size, data directories and default consolidation register through to the wired dependencies, unchanged', () => {
+it('passes the caller-given observation source, pool size, connection and default consolidation register through to the wired dependencies, unchanged', () => {
   const dependencies = baseDependencies();
 
   createProductionDiagnoseRunner(dependencies);
@@ -144,9 +154,7 @@ it('passes the caller-given observation source, pool size, data directories and 
   expect(wired.observationSource).toBe(dependencies.observationSource);
   expect(wired.poolSize).toBe(dependencies.poolSize);
   expect(wired.defaultConsolidationRegister).toBe(dependencies.defaultConsolidationRegister);
-  expect(wired.investigationDataDirectory).toBe(dependencies.investigationDataDirectory);
-  expect(wired.glossaryDataDirectory).toBe(dependencies.glossaryDataDirectory);
-  expect(wired.capabilityDataDirectory).toBe(dependencies.capabilityDataDirectory);
+  expect(wired.connection).toBe(dependencies.connection);
 });
 
 it('always wires a real AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator, never a caller-substituted implementation', () => {

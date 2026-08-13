@@ -1,12 +1,15 @@
 // Wires the diagnose HTTP surface for a real process
-// (task/http-surface/diagnose-http-endpoint): the file-backed case query and
-// the production diagnose runner behind the given env's own data
-// directories and model configuration, plus one FakeObservationSource
+// (task/http-surface/diagnose-http-endpoint): one database connection built
+// once from the given env's own DATABASE_URL, the relational case query and
+// the production diagnose runner built from that same connection
+// (task/service-on-the-database/store-wiring — every one of the four stores
+// this composition wires now answers from it, and no factory below receives
+// a data-directory path for any of them), plus one FakeObservationSource
 // seeded from the fixture's own canned observations.json — the stand-in
 // this MVP runs against since no real corporate-records connector exists
 // yet (contracts/integration/corporate-records-source's own declared
-// remainder). Never listens itself: buildApp's own instance is handed back
-// unstarted, so only src/index.ts calls .listen().
+// remainder, untouched by this task). Never listens itself: buildApp's own
+// instance is handed back unstarted, so only src/index.ts calls .listen().
 
 import { readFile } from 'node:fs/promises';
 import type { FastifyInstance } from 'fastify';
@@ -17,6 +20,7 @@ import { EVIDENCE_RESULTS } from '../investigation/evidence-result.js';
 import { FakeObservationSource } from '../investigation/fake-observation-source.adapter.js';
 import type { ObservationOutcome, Subject } from '../investigation/observation-source.port.js';
 import { buildSubject } from '../investigation/subject.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../persistence/database-connection.js';
 import { createCaseQuery } from './case-query.factory.js';
 import { createProductionDiagnoseRunner, type ProductionDiagnoseDependencies } from './production-diagnose.factory.js';
 
@@ -42,25 +46,29 @@ const cannedObservationSchema = z.object({
 const cannedObservationsSchema = z.array(cannedObservationSchema);
 
 /**
- * Builds the whole diagnose HTTP surface for a real process: the file-backed
- * case query and production diagnose runner wired from the given env, and a
+ * Builds the whole diagnose HTTP surface for a real process: one database
+ * connection built once from the given env, the relational case query and
+ * production diagnose runner wired from that same connection, and a
  * FakeObservationSource seeded from its own OBSERVATIONS_FIXTURE_FILE, all
  * handed to buildApp already built.
  */
 export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstance> {
+  const connection = createDatabaseConnection(env.DATABASE_URL);
   const observationSource = new FakeObservationSource();
   await seedFixtureObservations(observationSource, env.OBSERVATIONS_FIXTURE_FILE);
-  const caseQuery = createCaseQuery(env.CASE_DATA_DIRECTORY, env.GLOSSARY_DATA_DIRECTORY, env.CAPABILITY_DATA_DIRECTORY);
-  const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, observationSource));
+  const caseQuery = createCaseQuery(connection);
+  const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, connection, observationSource));
   return buildApp({ caseQuery, runDiagnose, model: env.EVALUATOR_MODEL, promptVersion: env.PROMPT_VERSION });
 }
 
-/** ProductionDiagnoseDependencies assembled from the given env and the already-seeded observation source, kept out of createDiagnoseHttpServer's own body to stay inside MNT-01's line bound. */
-function runnerDependencies(env: Env, observationSource: FakeObservationSource): ProductionDiagnoseDependencies {
+/** ProductionDiagnoseDependencies assembled from the given env, the shared connection and the already-seeded observation source, kept out of createDiagnoseHttpServer's own body to stay inside MNT-01's line bound. */
+function runnerDependencies(
+  env: Env,
+  connection: DatabaseConnection,
+  observationSource: FakeObservationSource,
+): ProductionDiagnoseDependencies {
   return {
-    investigationDataDirectory: env.INVESTIGATION_DATA_DIRECTORY,
-    glossaryDataDirectory: env.GLOSSARY_DATA_DIRECTORY,
-    capabilityDataDirectory: env.CAPABILITY_DATA_DIRECTORY,
+    connection,
     observationSource,
     poolSize: env.POOL_SIZE,
     defaultConsolidationRegister: env.DEFAULT_CONSOLIDATION_REGISTER,

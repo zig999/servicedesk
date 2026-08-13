@@ -1,28 +1,61 @@
-// Proof through the module's real wiring: a glossary created over a fresh
-// data directory holds both non-conclusion outcomes from its first read —
-// before anything else has touched it — and holds them as a plain JSON file
-// (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { afterEach, beforeEach, expect, it } from 'vitest';
-import { z } from 'zod';
+// Proof through the module's real wiring, against a real, externally provisioned PostgreSQL
+// database (constraints/the-database-is-externally-provisioned) reached through DATABASE_URL and
+// threaded into createGlossary as one DatabaseConnection
+// (task/service-on-the-database/store-wiring): a glossary built over an outcomes table currently
+// holding neither non-conclusion outcome answers both from its very first read, and persists them
+// as rows a read against the real table, outside the store, finds — never as the plain JSON file
+// this module used to write (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
+//
+// Sibling fix, disclosed in this task's own proof record: this file used to seed a fresh temp
+// directory per test and assert against outcome.json on disk; createGlossary now takes the one
+// shared DatabaseConnection this task's own cutover wires everywhere, so this file wipes the real
+// outcomes table itself before each test — the same table-owning convention
+// relational-glossary-store.repository.spec.ts's own integration proof already keeps for these
+// five vocabulary tables, safe under this project's fileParallelism: false (vitest.config.ts) —
+// rather than seeding a directory that never existed.
+//
+// Divergence disclosed here for the same reason every sibling integration proof already discloses
+// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
+// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
+// configured too, which this file has no use for.
+import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { createGlossary } from '../../../factories/glossary.factory.js';
+import { NON_CONCLUSION_OUTCOMES } from '../../../glossary/terms.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 
-const outcomeRecords = z.array(z.object({ name: z.string() }));
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+  }
+  return url;
+}
 
-let directory: string;
+/** Restores the two non-conclusion outcomes this suite's own global setup seeds once — this file's own tests deliberately wipe the whole outcomes table to exercise the empty-table top-up, and every sibling test file across the rest of the suite relies on GlossaryService never finding either missing (task/service-on-the-database/store-wiring, disclosed in that task's own delivery). */
+async function restoreNonConclusionOutcomes(connection: DatabaseConnection): Promise<void> {
+  for (const outcome of NON_CONCLUSION_OUTCOMES) {
+    await connection.query('INSERT INTO public.outcomes (name) VALUES ($1) ON CONFLICT DO NOTHING', [outcome.name]);
+  }
+}
 
-beforeEach(async () => {
-  directory = await mkdtemp(join(tmpdir(), 'glossary-factory-'));
+let pool: DatabaseConnection;
+
+beforeAll(async () => {
+  pool = createDatabaseConnection(requireDatabaseUrl());
+  await pool.query('DELETE FROM public.outcomes');
+});
+
+afterAll(async () => {
+  await restoreNonConclusionOutcomes(pool);
+  await pool.end();
 });
 
 afterEach(async () => {
-  await rm(directory, { recursive: true, force: true });
+  await pool.query('DELETE FROM public.outcomes');
 });
 
-it('answers both non-conclusion outcomes from a fresh data directory', async () => {
-  const glossary = createGlossary(join(directory, 'data'));
+it('answers both non-conclusion outcomes from an outcomes table currently holding neither', async () => {
+  const glossary = createGlossary(pool);
 
   const answered = await glossary.terms('outcome');
 
@@ -32,14 +65,11 @@ it('answers both non-conclusion outcomes from a fresh data directory', async () 
   ]);
 });
 
-it('persists the seeded non-conclusion outcomes as a plain JSON file', async () => {
-  const dataDirectory = join(directory, 'data');
-  const glossary = createGlossary(dataDirectory);
+it('persists the seeded non-conclusion outcomes as rows a read against the real table finds', async () => {
+  const glossary = createGlossary(pool);
 
   await glossary.terms('outcome');
 
-  const text = await readFile(join(dataDirectory, 'outcome.json'), 'utf8');
-  const parsed: unknown = JSON.parse(text);
-  const names = outcomeRecords.parse(parsed).map((record) => record.name);
-  expect(names.sort()).toEqual(['inconclusive-hypotheses-exhausted', 'inconclusive-no-data']);
+  const { rows } = await pool.query<{ name: string }>('SELECT name FROM public.outcomes');
+  expect(rows.map((row) => row.name).sort()).toEqual(['inconclusive-hypotheses-exhausted', 'inconclusive-no-data']);
 });

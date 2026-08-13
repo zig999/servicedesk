@@ -1,34 +1,46 @@
-// Proof for task/http-surface/end-to-end-diagnose-proof: one HTTP request
-// driving the whole synchronous diagnose flow — collection, judgment,
-// consolidation and writing, assessment out — through Fastify's own
-// app.inject() against buildApp() directly, composed with createDiagnoseRunner
-// (diagnose.factory.ts) rather than createProductionDiagnoseRunner
-// (production-diagnose.factory.ts), which always wires the real,
-// Anthropic-backed AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator.
-// FakeHypothesisEvaluator and FakeAssessmentConsolidator stand behind the
-// published judgment and consolidation ports instead (TST-03 — a stand-in
-// replaces a boundary, never business logic); FakeObservationSource stands
-// behind the collection port the same way every other test of this pipeline
-// already does, since no real corporate-records connector exists yet. Every
-// other stage — collection, the judgment pool orchestration, resolve-and-narrow
-// and persistence — is the real, unmocked code, run against the real,
-// committed fixture case, glossary and capability data
-// (src/fixtures/case/intermittent-connection-outage/1.json). This composition
-// imports @anthropic-ai/sdk nowhere: the files listed in
-// COMPOSITION_FILES_UNDER_TEST below are exactly what this test's own wiring
-// reaches, and none of them names that package, so nothing here can read
-// ANTHROPIC_API_KEY even if it were set — proven by running the whole suite
+// Proof for task/http-surface/end-to-end-diagnose-proof: one HTTP request driving the whole
+// synchronous diagnose flow — collection, judgment, consolidation and writing, assessment out —
+// through Fastify's own app.inject() against buildApp() directly, composed with
+// createDiagnoseRunner (diagnose.factory.ts) rather than createProductionDiagnoseRunner
+// (production-diagnose.factory.ts), which always wires the real, Anthropic-backed
+// AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator. FakeHypothesisEvaluator and
+// FakeAssessmentConsolidator stand behind the published judgment and consolidation ports instead
+// (TST-03 — a stand-in replaces a boundary, never business logic); FakeObservationSource stands
+// behind the collection port the same way every other test of this pipeline already does, since no
+// real corporate-records connector exists yet. Every other stage — collection, the judgment pool
+// orchestration, resolve-and-narrow and persistence — is the real, unmocked code, run against the
+// real, committed fixture case, glossary and capability data
+// (src/fixtures/case/intermittent-connection-outage/1.json), and against a real, externally
+// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned). This
+// composition imports @anthropic-ai/sdk nowhere: the files listed in COMPOSITION_FILES_UNDER_TEST
+// below are exactly what this test's own wiring reaches, and none of them names that package, so
+// nothing here can read ANTHROPIC_API_KEY even if it were set — proven by running the whole suite
 // below with that variable deliberately unset for the duration of every test.
-import { readFile, mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+//
+// Sibling fix, disclosed in this task's own proof record: this file used to seed a fresh temp
+// investigation directory per test and read the fixture's own case/glossary/capability directories
+// straight off disk; createDiagnoseRunner and createCaseQuery now take the one shared
+// DatabaseConnection this task's own cutover wires everywhere (task/service-on-the-database/store-wiring),
+// so this file seeds the committed fixture's own case, glossary and capability data into the real
+// tables once and reads the written investigation back through RelationalInvestigationStore over
+// that same connection — removing every row it seeded again in its own afterAll, so a sibling
+// integration file that wipes a glossary table wholesale (relational-glossary-store.repository.spec.ts's
+// own wipeGlossaryTables()) never meets a foreign key this file's own rows still hold open.
+//
+// Divergence disclosed here for the same reason every sibling integration proof already discloses
+// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
+// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
+// configured too, which this file has no use for.
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FastifyInstance } from 'fastify';
-import { afterEach, beforeEach, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
+import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
-import { createInvestigationStore } from '../../../factories/investigation-store.factory.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
+import { NON_CONCLUSION_OUTCOMES } from '../../../glossary/terms.js';
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
@@ -37,11 +49,21 @@ import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessme
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
 import { FakeObservationSource } from '../../../investigation/fake-observation-source.adapter.js';
 import type { Subject } from '../../../investigation/subject.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
 const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.url));
 const CASE_SLUG = 'intermittent-connection-outage';
 const CASE_VERSION = 1;
 const TOTAL_DEADLINE_BUDGET_MS = 20_000;
+
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+  }
+  return url;
+}
 
 /** The one subject the fixture's own canned observations.json is seeded for — the same subject-type/attribute-name convention diagnose-server.factory.ts's own SEEDED_SUBJECT and its spec's REQUEST_BODY already establish for this fixture case. */
 const SEEDED_SUBJECT: Subject = { type: 'contract', attributes: [{ attribute: 'contract-number', value: 'CTR-0001' }] };
@@ -86,6 +108,97 @@ const COMPOSITION_FILES_UNDER_TEST = [
   '../../../investigation/fake-observation-source.adapter.ts',
 ];
 
+/** One glossary vocabulary fixture file, parsed into the names its own table needs. */
+async function readTermNames(file: string): Promise<readonly string[]> {
+  const raw = await readFile(join(FIXTURES_ROOT, 'glossary', file), 'utf8');
+  const records = JSON.parse(raw) as ReadonlyArray<{ name: string }>;
+  return records.map((record) => record.name);
+}
+
+async function insertTerms(connection: DatabaseConnection, table: string, names: readonly string[]): Promise<void> {
+  for (const name of names) {
+    await connection.query(`INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, [name]);
+  }
+}
+
+async function insertConcepts(connection: DatabaseConnection): Promise<void> {
+  const raw = await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8');
+  const concepts = JSON.parse(raw) as ReadonlyArray<{ name: string; accepts: readonly string[]; ttl: number }>;
+  for (const concept of concepts) {
+    await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
+    for (const subjectType of concept.accepts) {
+      await connection.query(
+        'INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [concept.name, subjectType],
+      );
+    }
+  }
+}
+
+async function insertCapabilities(connection: DatabaseConnection): Promise<void> {
+  const raw = await readFile(join(FIXTURES_ROOT, 'capability', 'capability.json'), 'utf8');
+  const capabilities = JSON.parse(raw) as ReadonlyArray<Record<string, unknown>>;
+  for (const capability of capabilities) {
+    await connection.query(
+      `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
+      [capability.name, capability.version, capability.nature, capability.input_schema, capability.output_schema, capability.timeout, capability.connector, capability.concept],
+    );
+  }
+}
+
+/** Writes the fixture case's own committed document through the real store exactly once — writeVersion refuses a second write under the same slug and version, so this checks it is not already stored first. */
+async function insertFixtureCase(connection: DatabaseConnection): Promise<void> {
+  const store = createCaseStore(connection);
+  const alreadyStored = await store.readVersion(CASE_SLUG, CASE_VERSION);
+  if (alreadyStored !== undefined) {
+    return;
+  }
+  const raw = await readFile(join(FIXTURES_ROOT, 'case', CASE_SLUG, `${CASE_VERSION}.json`), 'utf8');
+  await store.writeVersion(CASE_SLUG, CASE_VERSION, JSON.parse(raw));
+}
+
+/** Inserts every row the committed fixture's own case, glossary and capability data need, each guarded by ON CONFLICT DO NOTHING so a row already present (left behind by a crash) never fails or duplicates. */
+async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
+  await insertTerms(connection, 'public.subject_types', await readTermNames('subject-type.json'));
+  await insertTerms(connection, 'public.subject_attributes', await readTermNames('subject-attribute.json'));
+  await insertTerms(connection, 'public.outcomes', await readTermNames('outcome.json'));
+  await insertTerms(connection, 'public.actions', await readTermNames('action.json'));
+  await insertTerms(connection, 'public.recipients', await readTermNames('recipient.json'));
+  await insertConcepts(connection);
+  await insertCapabilities(connection);
+  await insertFixtureCase(connection);
+}
+
+/** Removes every row this file's own beforeAll seeded, in an order that always satisfies their own foreign keys — so this file leaves the glossary and capability tables exactly as it found them, and a sibling suite that owns one of those tables wholesale (relational-glossary-store.repository.spec.ts's own wipeGlossaryTables()) never meets a row this file left behind. By the time this runs, every test's own afterEach has already deleted the one investigation it wrote, so no foreign key still holds the pinned case open. */
+async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<void> {
+  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [CASE_SLUG]);
+  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [CASE_SLUG]);
+  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [CASE_SLUG]);
+  await connection.query('DELETE FROM public.cases WHERE slug = $1', [CASE_SLUG]);
+  const capabilities = JSON.parse(await readFile(join(FIXTURES_ROOT, 'capability', 'capability.json'), 'utf8')) as ReadonlyArray<{ name: string; version: string }>;
+  for (const capability of capabilities) {
+    await connection.query('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+  }
+  const concepts = JSON.parse(await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8')) as ReadonlyArray<{ name: string }>;
+  for (const concept of concepts) {
+    await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
+    await connection.query('DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+  }
+  await connection.query('DELETE FROM public.subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
+  await connection.query('DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
+  // The fixture's own outcome.json happens to list both non-conclusion outcomes among its own
+  // terms; excluded here rather than deleted, since they are the glossary's own suite-wide seed
+  // (vitest-global-setup.ts), never this fixture's own to remove — deleting them mid-suite races
+  // GlossaryService.withNonConclusionOutcomes' own top-up against any other file's currently-live
+  // hypothesis row (task/service-on-the-database/store-wiring, disclosed in that task's own delivery).
+  const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
+  const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
+  await connection.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
+  await connection.query('DELETE FROM public.actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
+  await connection.query('DELETE FROM public.recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
+}
+
 function buildObservationSource(): FakeObservationSource {
   const source = new FakeObservationSource();
   source.seed('equipment-status', SEEDED_SUBJECT, { result: 'ok', observation: 'the registered equipment reports status: fault' });
@@ -125,11 +238,9 @@ type WiredRunner = {
  * controller generates for this call, so the test can read back exactly this
  * request's own written investigation afterwards.
  */
-function buildRunDiagnose(investigationDir: string): WiredRunner {
+function buildRunDiagnose(connection: DatabaseConnection): WiredRunner {
   const runner = createDiagnoseRunner({
-    investigationDataDirectory: investigationDir,
-    glossaryDataDirectory: join(FIXTURES_ROOT, 'glossary'),
-    capabilityDataDirectory: join(FIXTURES_ROOT, 'capability'),
+    connection,
     observationSource: buildObservationSource(),
     evaluator: buildEvaluator(),
     consolidator: buildConsolidator(),
@@ -145,10 +256,10 @@ function buildRunDiagnose(investigationDir: string): WiredRunner {
   return { runDiagnose, capturedId: () => capturedId };
 }
 
-function buildTestApp(investigationDir: string): { app: FastifyInstance; capturedId: () => string | undefined } {
-  const { runDiagnose, capturedId } = buildRunDiagnose(investigationDir);
+function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; capturedId: () => string | undefined } {
+  const { runDiagnose, capturedId } = buildRunDiagnose(connection);
   const dependencies: DiagnoseControllerDependencies = {
-    caseQuery: createCaseQuery(join(FIXTURES_ROOT, 'case'), join(FIXTURES_ROOT, 'glossary'), join(FIXTURES_ROOT, 'capability')),
+    caseQuery: createCaseQuery(connection),
     runDiagnose,
     model: 'an-end-to-end-test-model',
     promptVersion: 'an-end-to-end-test-prompt-version',
@@ -156,27 +267,43 @@ function buildTestApp(investigationDir: string): { app: FastifyInstance; capture
   return { app: buildApp(dependencies), capturedId };
 }
 
-let investigationDir: string;
+let connection: DatabaseConnection;
 let app: FastifyInstance;
 let getCapturedId: () => string | undefined;
 let originalAnthropicApiKey: string | undefined;
 
-beforeEach(async () => {
-  investigationDir = await mkdtemp(join(tmpdir(), 'diagnose-e2e-investigation-'));
+beforeAll(async () => {
+  connection = createDatabaseConnection(requireDatabaseUrl());
+  await ensureFixtureSeeded(connection);
+});
+
+afterAll(async () => {
+  await cleanupFixtureSeeded(connection);
+  await connection.end();
+});
+
+beforeEach(() => {
   // Criterion 3: deliberately unset for the whole test, rather than merely
   // asserted, so the run below is real evidence that no live network
   // credential is needed — not an incidental fact about whatever the
   // ambient environment happened to already have set.
   originalAnthropicApiKey = process.env.ANTHROPIC_API_KEY;
   delete process.env.ANTHROPIC_API_KEY;
-  const built = buildTestApp(investigationDir);
+  const built = buildTestApp(connection);
   app = built.app;
   getCapturedId = built.capturedId;
 });
 
 afterEach(async () => {
   await app.close();
-  await rm(investigationDir, { recursive: true, force: true });
+  const id = getCapturedId();
+  if (id !== undefined) {
+    await connection.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM public.investigation_evidence WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM public.investigations WHERE id = $1', [id]);
+  }
   if (originalAnthropicApiKey === undefined) {
     delete process.env.ANTHROPIC_API_KEY;
   } else {
@@ -187,13 +314,13 @@ afterEach(async () => {
 // ------------------------------------------------------------------ criteria 1 and 4
 
 it(
-  "writes an investigation to the file-backed store for the request, readable back through createInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment",
+  "writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment",
   async () => {
     const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
 
     const investigationId = getCapturedId();
     expect(investigationId).toBeDefined();
-    const store = createInvestigationStore(investigationDir);
+    const store = new RelationalInvestigationStore(connection);
     const stored = await store.read(investigationId as string);
     expect(stored).toBeDefined();
     const document = (stored as { document: { assessment: Assessment } }).document;

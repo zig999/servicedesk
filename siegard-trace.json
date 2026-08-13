@@ -310,6 +310,42 @@
       "digest": "sha256:18fac2e0282c66f6160e3e08d6021293bee5bcdfc94cbc663b313810788b8850",
       "files": [
         {
+          "path": "src/src/config/env.ts",
+          "digest": "sha256:157c581634b46628396520c1fdc7451448e782d5c70abe8ec21b9860db310822"
+        },
+        {
+          "path": "src/src/factories/capability-registry.factory.ts",
+          "digest": "sha256:d269385b710014cf5c40bc460537849d0912133b6cc13ccaaf04bdef7153bb9f"
+        },
+        {
+          "path": "src/src/factories/case-query.factory.ts",
+          "digest": "sha256:0d7882cce3747b0250d0f0f12f42e5b5310bcdececf6cd513d4e52a0711465b6"
+        },
+        {
+          "path": "src/src/factories/case-store.factory.ts",
+          "digest": "sha256:173746a1b46f217b09cdc05052daf02e98af89caeaf5d00c3f9cc4245f970845"
+        },
+        {
+          "path": "src/src/factories/diagnose-server.factory.ts",
+          "digest": "sha256:5050b98f10604db6109f692cba0b07174c201a27f889d08bb3335b6b6b001591"
+        },
+        {
+          "path": "src/src/factories/diagnose.factory.ts",
+          "digest": "sha256:a462e6e0c6d1467c1c4ad9c3bff28b05d50fa50ee8f555d1cccc58ead90fa0a3"
+        },
+        {
+          "path": "src/src/factories/glossary.factory.ts",
+          "digest": "sha256:6bd555ad42af4f9798167cbe12a6c68543f86297c290b9b6ebc8813721947fff"
+        },
+        {
+          "path": "src/src/factories/investigation-store.factory.ts",
+          "digest": "sha256:3c72e9923facb95a209f773f8c0d1f8a63126cc44c87b0c155923a3651a9b9a4"
+        },
+        {
+          "path": "src/src/factories/production-diagnose.factory.ts",
+          "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
+        },
+        {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
           "digest": "sha256:64c2d2348c43659dbdb7854e152cacbb244b5838aa43fe76360bcb5c849738cb"
         },

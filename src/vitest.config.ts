@@ -25,15 +25,27 @@
 // the recurring shape), and real network latency on that connection has been observed to push a
 // single test past 5000ms without any fault the test is trying to provoke — first in
 // relational-glossary-store.repository.spec.ts's own five-vocabulary round trip, then in
-// relational-case-store.repository.spec.ts's own whole-case read. Raising the suite-wide default
-// once is the durable fix; patching every slow integration test's own third `it()` argument one
-// flake at a time is the alternative this replaces.
+// relational-case-store.repository.spec.ts's own whole-case read.
+//
+// Raised again, to 40000ms (task/service-on-the-database/store-wiring, disclosed in that task's
+// own delivery): production-diagnose.factory.ts's own TOTAL_DEADLINE_BUDGET_MS already bounds one
+// production diagnose call to 20000ms end to end. A vitest testTimeout equal to or only slightly
+// above that internal deadline can itself expire at nearly the same instant the deadline does
+// under real Neon latency, aborting a test — and, on this project's own worker teardown, its
+// afterEach cleanup — before that cleanup can finish deleting the investigation the call just
+// wrote, leaving an orphaned row that then breaks a later, unrelated test's own DELETE against a
+// table that row's own foreign key still holds open (diagnose-server.factory.spec.ts's and
+// diagnose-e2e.spec.ts's own end-to-end HTTP integration tests are the first in this initiative to
+// exercise that internal deadline against the real database rather than a mock). Doubling the
+// test timeout over the application's own internal deadline gives every test's own afterEach
+// cleanup real headroom to run to completion even when a call it drove genuinely exhausts its own
+// 20-second budget.
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     globalSetup: ['./src/vitest-global-setup.ts'],
     fileParallelism: false,
-    testTimeout: 20000,
+    testTimeout: 40000,
   },
 });

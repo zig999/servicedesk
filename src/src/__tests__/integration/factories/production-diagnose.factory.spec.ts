@@ -1,23 +1,29 @@
-// Proof for task/diagnose-composition-root/wire-diagnose-runner: the real,
-// end-to-end wiring createProductionDiagnoseRunner assembles — the real
-// file-backed investigation store (over a scratch directory), the real
-// glossary and capability registry reads, and one AnthropicHypothesisEvaluator
-// plus one AnthropicAssessmentConsolidator actually reaching the provider
-// boundary. Only @anthropic-ai/sdk is a stand-in (TST-03 — a stand-in
-// replaces the network boundary, never business logic), mocked the same way
-// anthropic-hypothesis-evaluator.adapter.spec.ts and
-// anthropic-assessment-consolidator.adapter.spec.ts already do, so this suite
-// exercises production-diagnose.factory.ts's own composition genuinely
-// without ever reaching the live Anthropic API. The model's own answer is
-// deliberately never valid JSON, so every hypothesis judged here falls
-// through to inconclusive/judgment-failure and citation validation is never
-// exercised — that path already belongs to judgment-stage.spec.ts and
-// citation-validation.spec.ts, and this suite's own objective is this
-// factory's wiring, not the pipeline's judgment semantics.
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+// Proof for task/diagnose-composition-root/wire-diagnose-runner: the real, end-to-end wiring
+// createProductionDiagnoseRunner assembles — the real relational investigation store over a real,
+// externally provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned),
+// the real glossary and capability registry reads, and one AnthropicHypothesisEvaluator plus one
+// AnthropicAssessmentConsolidator actually reaching the provider boundary. Only @anthropic-ai/sdk
+// is a stand-in (TST-03 — a stand-in replaces the network boundary, never business logic), mocked
+// the same way anthropic-hypothesis-evaluator.adapter.spec.ts and
+// anthropic-assessment-consolidator.adapter.spec.ts already do, so this suite exercises
+// production-diagnose.factory.ts's own composition genuinely without ever reaching the live
+// Anthropic API. The model's own answer is deliberately never valid JSON, so every hypothesis
+// judged here falls through to inconclusive/judgment-failure and citation validation is never
+// exercised — that path already belongs to judgment-stage.spec.ts and citation-validation.spec.ts,
+// and this suite's own objective is this factory's wiring, not the pipeline's judgment semantics.
+//
+// Sibling fix, disclosed in this task's own proof record: this file used to seed three fresh temp
+// directories per test; ProductionDiagnoseDependencies now carries the one shared DatabaseConnection
+// this task's own cutover wires everywhere (task/service-on-the-database/store-wiring), so this
+// file seeds the glossary, capability and pinned-case rows the real investigation write needs
+// directly against the real tables instead, each under freshly generated names.
+//
+// Divergence disclosed here for the same reason every sibling integration proof already discloses
+// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
+// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
+// configured too, which this file has no use for.
+import { randomUUID } from 'node:crypto';
+import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
 
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
   const createMock = vi.fn().mockResolvedValue({ content: [{ type: 'text', text: 'the drafted assessment write-up' }] });
@@ -32,17 +38,33 @@ import {
   type ProductionDiagnoseCall,
   type ProductionDiagnoseDependencies,
 } from '../../../factories/production-diagnose.factory.js';
-import { createInvestigationStore } from '../../../factories/investigation-store.factory.js';
 import type { Cost } from '../../../investigation/cost.js';
 import type { Durations } from '../../../investigation/durations.js';
 import type { IObservationSource, ObservationOutcome, Subject } from '../../../investigation/observation-source.port.js';
+import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
+import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
-const CONCEPT = 'contract-status';
-const SUBJECT_TYPE = 'contract';
-const SUBJECT_ATTRIBUTE = 'contract-id';
-const A_REQUESTER = 'requester-shared-across-both-calls';
 const POOL_SIZE = 1;
 const CONSOLIDATOR_MAX_TOKENS = 256;
+
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error('DATABASE_URL must name a reachable PostgreSQL instance for this suite to run.');
+  }
+  return url;
+}
+
+interface IVocabulary {
+  readonly subjectType: string;
+  readonly subjectAttribute: string;
+  readonly concept: string;
+  readonly fallbackOutcome: string;
+  readonly action: string;
+  readonly recipient: string;
+  readonly caseSlug: string;
+  readonly capabilityName: string;
+}
 
 /** Records every observe-concept call it receives, in order, and always answers ok — the observation-source boundary this factory's caller supplies directly, so this suite never touches a real connector. */
 class RecordingObservationSource implements IObservationSource {
@@ -54,42 +76,46 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
-/** A minimally valid, single-hypothesis Case naming exactly the one concept and subject-attribute this suite's own scratch glossary/capability directories register. */
-function aCase(): Case {
+/** A minimally valid, single-hypothesis Case naming exactly the given vocabulary's own concept and subject-attribute — the pinned case this suite's own investigation writes reference. */
+function aCase(vocabulary: IVocabulary): Case {
   return {
-    slug: 'wiring-proof-case',
+    slug: vocabulary.caseSlug,
     title: 'A case for proving the production diagnose wiring',
     when_to_use: 'when proving createProductionDiagnoseRunner wires the real pipeline',
     version: 1,
     authored_at: '2024-01-01T00:00:00.000Z',
-    subject: SUBJECT_TYPE,
-    fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+    subject: vocabulary.subjectType,
+    fallback: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
     hypotheses: [
       {
         name: 'h1',
         position: 1,
         criterion: 'h1 criterion',
-        collects: [CONCEPT],
-        resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+        collects: [vocabulary.concept],
+        resolution: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
       },
     ],
   };
 }
 
-const SHARED_CASE = aCase();
 const A_COST: Cost = { calls: 1, input_tokens: 10, output_tokens: 5 };
 const A_DURATIONS: Durations = { collection: 0, judgment: 0, writing: 0, total: 0 };
 
+interface ICallFixture {
+  readonly theCase: Case;
+  readonly subjectAttribute: string;
+}
+
 /** Everything one call needs beyond the id and requester a test varies. */
-function callFor(id: string, requester: string): ProductionDiagnoseCall {
+function callFor(id: string, requester: string, fixture: ICallFixture): ProductionDiagnoseCall {
   return {
     id,
     requester,
     ticket_ref: 'TICKET-1',
     narrative: 'the same narrative for both calls',
-    subjectType: SUBJECT_TYPE,
-    subjectAttributes: [{ attribute: SUBJECT_ATTRIBUTE, value: 'contract-1' }],
-    case: SHARED_CASE,
+    subjectType: fixture.theCase.subject,
+    subjectAttributes: [{ attribute: fixture.subjectAttribute, value: 'contract-1' }],
+    case: fixture.theCase,
     prompt_version: 'prompt-v1',
     model: 'model-x',
     cost: A_COST,
@@ -97,45 +123,93 @@ function callFor(id: string, requester: string): ProductionDiagnoseCall {
   };
 }
 
-let investigationDir: string;
-let glossaryDir: string;
-let capabilityDir: string;
+let pool: DatabaseConnection;
 
-beforeEach(async () => {
-  investigationDir = await mkdtemp(join(tmpdir(), 'production-diagnose-investigation-'));
-  glossaryDir = await mkdtemp(join(tmpdir(), 'production-diagnose-glossary-'));
-  capabilityDir = await mkdtemp(join(tmpdir(), 'production-diagnose-capability-'));
-  await writeFile(join(glossaryDir, 'subject-attribute.json'), JSON.stringify([{ name: SUBJECT_ATTRIBUTE }]));
-  await writeFile(join(capabilityDir, 'capability.json'), JSON.stringify([capabilityRegistration()]));
+beforeAll(() => {
+  pool = createDatabaseConnection(requireDatabaseUrl());
+});
+
+afterAll(async () => {
+  await pool.end();
+});
+
+/** Every distinct, freshly generated name one test's own case, glossary and capability need — nothing here shared with any other test or any other suite file. */
+function freshVocabulary(): IVocabulary {
+  const id = randomUUID();
+  return {
+    subjectType: `production-diagnose-subject-${id}`,
+    subjectAttribute: `production-diagnose-attribute-${id}`,
+    concept: `production-diagnose-concept-${id}`,
+    fallbackOutcome: `production-diagnose-outcome-${id}`,
+    action: `production-diagnose-action-${id}`,
+    recipient: `production-diagnose-recipient-${id}`,
+    caseSlug: `production-diagnose-case-${id}`,
+    capabilityName: `production-diagnose-capability-${id}`,
+  };
+}
+
+/** Every row one test's own vocabulary needs, inserted directly against the real tables — the glossary terms, the concept, its capability (a JSON-Schema output_schema, never read for its own field names since every judged hypothesis here falls back to inconclusive before citation validation ever runs), and the case_versions row the investigation write's own foreign key requires. */
+async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
+  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [vocabulary.subjectType]);
+  await pool.query('INSERT INTO public.subject_attributes (name) VALUES ($1)', [vocabulary.subjectAttribute]);
+  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [vocabulary.fallbackOutcome]);
+  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [vocabulary.action]);
+  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [vocabulary.recipient]);
+  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
+  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, vocabulary.subjectType]);
+  await pool.query(
+    `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+     VALUES ($1, '1.0.0', 'read-only', 'input-schema', $2, 5000, 'contract-status-connector', $3)`,
+    [vocabulary.capabilityName, JSON.stringify({ type: 'object', properties: { 'a-field': { type: 'string' } } }), vocabulary.concept],
+  );
+  await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [vocabulary.caseSlug]);
+  await pool.query(
+    `INSERT INTO public.case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
+     VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+    [vocabulary.caseSlug, new Date('2024-01-01T00:00:00.000Z'), vocabulary.subjectType, vocabulary.fallbackOutcome, vocabulary.action, vocabulary.recipient],
+  );
+}
+
+/** Every row this file's own tests wrote for one vocabulary and its investigations, deleted in an order that always satisfies their own foreign keys. */
+async function cleanupVocabulary(vocabulary: IVocabulary, investigationIds: readonly string[]): Promise<void> {
+  if (investigationIds.length > 0) {
+    await pool.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await pool.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await pool.query('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIds]);
+    await pool.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIds]);
+    await pool.query('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIds]);
+  }
+  await pool.query('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.caseSlug]);
+  await pool.query('DELETE FROM public.cases WHERE slug = $1', [vocabulary.caseSlug]);
+  await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await pool.query('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
+  await pool.query('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subjectType]);
+  await pool.query('DELETE FROM public.subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
+  await pool.query('DELETE FROM public.outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
+  await pool.query('DELETE FROM public.actions WHERE name = $1', [vocabulary.action]);
+  await pool.query('DELETE FROM public.recipients WHERE name = $1', [vocabulary.recipient]);
+}
+
+let vocabulary: IVocabulary;
+let investigationIdsWrittenByThisTest: string[] = [];
+
+afterEach(async () => {
+  await cleanupVocabulary(vocabulary, investigationIdsWrittenByThisTest);
+  investigationIdsWrittenByThisTest = [];
   createMock.mockClear();
   anthropicConstructorMock.mockClear();
 });
 
-afterEach(async () => {
-  await rm(investigationDir, { recursive: true, force: true });
-  await rm(glossaryDir, { recursive: true, force: true });
-  await rm(capabilityDir, { recursive: true, force: true });
-});
-
-/** The one capability registration this suite's scratch capability directory holds, answering CONCEPT with a JSON-Schema output_schema — never read for its own field names, since every judged hypothesis here falls back to inconclusive before citation validation ever runs. */
-function capabilityRegistration(): Record<string, unknown> {
-  return {
-    name: 'contract-status-reader',
-    version: '1.0.0',
-    nature: 'read-only',
-    input_schema: 'input-schema',
-    output_schema: JSON.stringify({ type: 'object', properties: { 'a-field': { type: 'string' } } }),
-    timeout: 5_000,
-    connector: 'contract-status-connector',
-    concept: CONCEPT,
-  };
+async function freshCase(): Promise<Case> {
+  vocabulary = freshVocabulary();
+  await insertVocabulary(vocabulary);
+  return aCase(vocabulary);
 }
 
 function dependenciesFor(observationSource: IObservationSource): ProductionDiagnoseDependencies {
   return {
-    investigationDataDirectory: investigationDir,
-    glossaryDataDirectory: glossaryDir,
-    capabilityDataDirectory: capabilityDir,
+    connection: pool,
     observationSource,
     poolSize: POOL_SIZE,
     defaultConsolidationRegister: 'plain',
@@ -148,26 +222,36 @@ function dependenciesFor(observationSource: IObservationSource): ProductionDiagn
 // ------------------------------------------------- criterion 3: no caching, no joining
 
 it('writes two independent investigation records for two calls sharing the same case, subject, narrative and requester', async () => {
+  const theCase = await freshCase();
   const runner = createProductionDiagnoseRunner(dependenciesFor(new RecordingObservationSource()));
+  const idA = `production-diagnose-investigation-a-${randomUUID()}`;
+  const idB = `production-diagnose-investigation-b-${randomUUID()}`;
+  investigationIdsWrittenByThisTest.push(idA, idB);
+  const requester = 'requester-shared-across-both-calls';
 
-  await runner(callFor('investigation-a', A_REQUESTER));
-  await runner(callFor('investigation-b', A_REQUESTER));
+  await runner(callFor(idA, requester, { theCase, subjectAttribute: vocabulary.subjectAttribute }));
+  await runner(callFor(idB, requester, { theCase, subjectAttribute: vocabulary.subjectAttribute }));
 
-  const store = createInvestigationStore(investigationDir);
-  const first = await store.read('investigation-a');
-  const second = await store.read('investigation-b');
+  const store = new RelationalInvestigationStore(pool);
+  const first = await store.read(idA);
+  const second = await store.read(idB);
   expect(first).toBeDefined();
   expect(second).toBeDefined();
-  expect((first?.document as { id: string }).id).toBe('investigation-a');
-  expect((second?.document as { id: string }).id).toBe('investigation-b');
+  expect((first?.document as { id: string }).id).toBe(idA);
+  expect((second?.document as { id: string }).id).toBe(idB);
 });
 
 it("collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result", async () => {
+  const theCase = await freshCase();
   const observationSource = new RecordingObservationSource();
   const runner = createProductionDiagnoseRunner(dependenciesFor(observationSource));
+  const idA = `production-diagnose-investigation-a-${randomUUID()}`;
+  const idB = `production-diagnose-investigation-b-${randomUUID()}`;
+  investigationIdsWrittenByThisTest.push(idA, idB);
+  const requester = 'requester-shared-across-both-calls';
 
-  await runner(callFor('investigation-a', A_REQUESTER));
-  await runner(callFor('investigation-b', A_REQUESTER));
+  await runner(callFor(idA, requester, { theCase, subjectAttribute: vocabulary.subjectAttribute }));
+  await runner(callFor(idB, requester, { theCase, subjectAttribute: vocabulary.subjectAttribute }));
 
   expect(observationSource.calls).toHaveLength(2);
 });
@@ -175,11 +259,14 @@ it("collects evidence again for the second of two calls with identical inputs, r
 // ------------------------------------------------------ criterion 5: requester passthrough
 
 it('passes the given requester straight through to the observation source, substituting none of its own', async () => {
+  const theCase = await freshCase();
   const observationSource = new RecordingObservationSource();
   const runner = createProductionDiagnoseRunner(dependenciesFor(observationSource));
+  const id = `production-diagnose-investigation-${randomUUID()}`;
+  investigationIdsWrittenByThisTest.push(id);
   const distinctiveRequester = 'requester-distinctive-42';
 
-  await runner(callFor('investigation-a', distinctiveRequester));
+  await runner(callFor(id, distinctiveRequester, { theCase, subjectAttribute: vocabulary.subjectAttribute }));
 
   expect(observationSource.calls).toHaveLength(1);
   expect(observationSource.calls[0]?.requester).toBe(distinctiveRequester);
@@ -188,9 +275,12 @@ it('passes the given requester straight through to the observation source, subst
 // ------------------------------------------- criterion 1: real adapters, not swappable fakes
 
 it('reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake', async () => {
+  const theCase = await freshCase();
   const runner = createProductionDiagnoseRunner(dependenciesFor(new RecordingObservationSource()));
+  const id = `production-diagnose-investigation-${randomUUID()}`;
+  investigationIdsWrittenByThisTest.push(id);
 
-  await runner(callFor('investigation-a', A_REQUESTER));
+  await runner(callFor(id, 'a-requester', { theCase, subjectAttribute: vocabulary.subjectAttribute }));
 
   expect(createMock).toHaveBeenCalled();
 });
@@ -198,14 +288,17 @@ it('reaches the mocked Anthropic client when a call runs, confirming the real ad
 // ---------------------------- inference: caller's own evaluator/consolidator models reach the provider
 
 it('sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source', async () => {
+  const theCase = await freshCase();
   const dependencies = dependenciesFor(new RecordingObservationSource());
   const runner = createProductionDiagnoseRunner({
     ...dependencies,
     evaluatorModel: 'evaluator-configured-model',
     consolidatorModel: 'consolidator-configured-model',
   });
+  const id = `production-diagnose-investigation-${randomUUID()}`;
+  investigationIdsWrittenByThisTest.push(id);
 
-  await runner(callFor('investigation-a', A_REQUESTER));
+  await runner(callFor(id, 'a-requester', { theCase, subjectAttribute: vocabulary.subjectAttribute }));
 
   const sentModels = createMock.mock.calls.map((call) => (call[0] as { model: string }).model);
   expect(sentModels).toContain('evaluator-configured-model');
