@@ -156,6 +156,14 @@
       "epic": "relational-substrate"
     },
     {
+      "id": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests",
+      "kind": "task",
+      "file": "task/relational-substrate/manifest-env-file-scripts-vs-their-tests.md",
+      "title": "The manifest's env-loading scripts and their own tests agree",
+      "summary": "package.json's migrate and seed scripts load .env themselves via node --env-file, a wanted capability the human decided to keep; the two unit tests asserting their old literal text are updated to match, without weakening either assertion.",
+      "epic": "relational-substrate"
+    },
+    {
       "id": "task/relational-substrate/migration-step",
       "kind": "task",
       "file": "task/relational-substrate/migration-step.md",

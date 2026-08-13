@@ -42,7 +42,20 @@ import { NON_CONCLUSION_OUTCOMES, type GlossaryTerm } from './glossary/terms.js'
 import { createDatabaseConnection, type DatabaseConnection } from './persistence/database-connection.js';
 import { RelationalGlossaryStore } from './persistence/relational-glossary-store.repository.js';
 
-const FIXTURES_ROOT = fileURLToPath(new URL('./fixtures', import.meta.url));
+// Resolved against the source tree rather than the compiled output
+// (task/case-authoring/seed-fixtures-resolve-against-a-real-build): the
+// fixtures directory lives at <package-root>/src/fixtures, inside the
+// TypeScript rootDir tsc compiles from, and the project's own build step
+// (tsconfig.build.json) only ever emits .ts files — it copies nothing into
+// dist/, so a path resolved against this module's own compiled location
+// (dist/seed.js) never finds them there. Stepping up one level from this
+// module's own URL and back down into src/fixtures lands on the same
+// directory whether import.meta.url is dist/seed.js or the uncompiled
+// src/seed.ts (both sit exactly one level below the package root), which is
+// the same relative-URL, no-environment-variable technique migrate.ts
+// already uses for '../migrations' — that directory happens to sit beside
+// dist/ rather than inside rootDir, but the resolution is the same trick.
+const FIXTURES_ROOT = fileURLToPath(new URL('../src/fixtures', import.meta.url));
 const CASE_SLUG = 'intermittent-connection-outage';
 const CASE_VERSION = 1;
 

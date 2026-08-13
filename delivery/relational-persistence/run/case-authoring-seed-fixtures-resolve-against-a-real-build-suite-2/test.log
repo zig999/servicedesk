@@ -1,0 +1,36 @@
+
+> backend@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+No test files found, exiting with code 0
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+MigrationStepError: DATABASE_URL must name a reachable PostgreSQL instance for the suite to migrate before its tests run
+ ❯ Object.setup src/vitest-global-setup.ts:21:11
+     19| // schema_migrations are schema-qualified against exactly this project…
+     20| // pooled-connection endpoint (see persistence/migration-runner.ts's o…
+     21| // header), so this setup never needs to know that endpoint's behavior…
+       |           ^
+     22| //
+     23| // Seeds the two non-conclusion outcomes once, here, after migrating
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:50
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+ ❯ startVitest node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:10520:8
+ ❯ start node_modules/vitest/dist/chunks/cac.BfaZ95xE.js:1414:15
+ ❯ CAC.run node_modules/vitest/dist/chunks/cac.BfaZ95xE.js:1393:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { variable: 'DATABASE_URL' } }
+
+
+
