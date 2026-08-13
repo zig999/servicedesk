@@ -42,6 +42,14 @@
       "task": "task/case-authoring/author-case-version-command"
     },
     {
+      "id": "implementation/case-authoring/curated-data-seeded",
+      "kind": "implementation",
+      "file": "implementation/case-authoring/curated-data-seeded.md",
+      "title": "The curated fixture data is seeded into the database through the authoring command",
+      "summary": "A new seed.ts script writes the fixture-era glossary vocabularies, concepts and capability registrations, then authors the one curated case version exclusively through the published author-case-version command and self-checks it by reading it back.",
+      "task": "task/case-authoring/curated-data-seeded"
+    },
+    {
       "id": "implementation/relational-stores/capability-store",
       "kind": "implementation",
       "file": "implementation/relational-stores/capability-store.md",
@@ -160,6 +168,14 @@
       "title": "Proof for the author-case-version command",
       "summary": "Unit tests over fake ICaseStore/IGlossaryQuery/ICapabilityQuery ports prove AuthorCaseVersionService parses, coherence-checks and stores exactly the parsed case, refusing once with every violation named and storing nothing on any refusal; integration tests against a real PostgreSQL database prove the same through the real wiring, including that a missing concept is caught by coherence before the store's own foreign key is ever reached, that a real capability edit is re-read at the next submission, and that no row lands in cases/case_versions/hypotheses/hypothesis_collects on any refusal; two now-stale assertions in RelationalCaseStore's own sibling specs, which expected the generic CaseStoreError for a duplicate (slug, version) this task's own criterion 2 now distinguishes into CaseVersionAlreadyStoredError, are corrected in place.",
       "task": "task/case-authoring/author-case-version-command"
+    },
+    {
+      "id": "proof/case-authoring/curated-data-seeded",
+      "kind": "proof",
+      "file": "proof/case-authoring/curated-data-seeded.md",
+      "title": "Proof for task/case-authoring/curated-data-seeded",
+      "summary": "Proves the seed's npm-script wiring at the unit level and its six real-effect criteria against a real database at the integration level, running seed.ts's own unexported top-level code via a dynamic import rather than reinventing its logic.",
+      "task": "task/case-authoring/curated-data-seeded"
     },
     {
       "id": "proof/relational-stores/capability-store",
@@ -450,6 +466,24 @@
     {
       "from": "implementation/case-authoring/author-case-version-command",
       "to": "task/case-authoring/author-case-version-command",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring/curated-data-seeded",
+      "to": "contracts/knowledge/author-case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-authoring/curated-data-seeded",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-authoring/curated-data-seeded",
+      "to": "task/case-authoring/curated-data-seeded",
       "kind": "implements",
       "at": "the path"
     },
@@ -936,6 +970,12 @@
     {
       "from": "proof/case-authoring/author-case-version-command",
       "to": "implementation/case-authoring/author-case-version-command",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring/curated-data-seeded",
+      "to": "implementation/case-authoring/curated-data-seeded",
       "kind": "proves",
       "at": "the path"
     },

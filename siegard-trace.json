@@ -494,6 +494,10 @@
         {
           "path": "src/src/factories/author-case-version.factory.ts",
           "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:e29ee45697235a4664decca8f895ad353984d5eab82a2a9e7fd0a7e6a6c684f6"
         }
       ]
     },
@@ -1378,6 +1382,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:e29ee45697235a4664decca8f895ad353984d5eab82a2a9e7fd0a7e6a6c684f6"
         }
       ]
     },
