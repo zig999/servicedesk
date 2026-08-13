@@ -52,6 +52,14 @@
       "epic": "case-and-investigation-model"
     },
     {
+      "id": "task/case-and-investigation-model/case-query-drops-the-document-hash",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/case-query-drops-the-document-hash.md",
+      "title": "The published case read stops carrying a document hash",
+      "summary": "ReadCaseResult and readCase drop the hash field contracts/knowledge/case-query and rules/investigation/replay-is-pinned no longer provide for; run-diagnosis.ts's own header comment stops describing the case pin as content-based.",
+      "epic": "case-and-investigation-model"
+    },
+    {
       "id": "task/case-and-investigation-model/investigation-record-shape",
       "kind": "task",
       "file": "task/case-and-investigation-model/investigation-record-shape.md",
@@ -970,6 +978,24 @@
       "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
       "kind": "implements",
       "at": "implements[9]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-and-investigation-model/case-query-drops-the-document-hash",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[2]"
     },
     {
       "from": "task/case-and-investigation-model/investigation-record-shape",
