@@ -84,6 +84,14 @@
       "epic": "case-and-investigation-model"
     },
     {
+      "id": "task/case-and-investigation-model/ticket-ref-is-optional",
+      "kind": "task",
+      "file": "task/case-and-investigation-model/ticket-ref-is-optional.md",
+      "title": "ticket_ref becomes optional, matching what the specification already states",
+      "summary": "BuildInvestigationOptions.ticket_ref, Investigation.ticket_ref and RunDiagnosisOptions.ticket_ref stop being required, non-optional strings, so the code can represent a diagnose call that carried no ticket, exactly as domain/investigation/investigation and contracts/investigation/diagnosis already say most calls do.",
+      "epic": "case-and-investigation-model"
+    },
+    {
       "id": "task/case-authoring/author-case-version-command",
       "kind": "task",
       "file": "task/case-authoring/author-case-version-command.md",
@@ -1098,6 +1106,12 @@
       "to": "rules/investigation/replay-is-pinned",
       "kind": "implements",
       "at": "implements[7]"
+    },
+    {
+      "from": "task/case-and-investigation-model/ticket-ref-is-optional",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/case-authoring/author-case-version-command",
