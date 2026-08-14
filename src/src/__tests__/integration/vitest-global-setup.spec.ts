@@ -4,6 +4,15 @@
 // its own — the one place this task's own new code could have introduced the default candidate the
 // task's Notes name.
 //
+// The expected migration set below is derived from migrations/'s own directory listing — the same
+// open set criterion 1 scopes the step to, "every script under migrations/" — never from a closed
+// enumeration written into this file. An enumeration here claimed a totality over ground other
+// tasks legitimately land in, and a sibling delivery's correctly numbered 0008 falsified it while
+// applyPendingMigrations behaved exactly as this task's criteria require. One anchor keeps the
+// derivation from passing vacuously: the listing must still hold 0001-schema-migrations.sql — the
+// bookkeeping script this task's own dependency shipped, which MIG-02 forbids editing away — so an
+// empty or misdirected directory read fails here rather than agreeing with an empty table.
+//
 // The first test below also carries criterion 2 — "running that step against an empty database
 // leaves it holding the schema" — because it is the one real empty-database → populated-schema
 // transition this shared-database suite can still observe: migration-runner.ts's own bookkeeping is
@@ -17,21 +26,23 @@
 // (STK-08): DATABASE_URL is read directly from process.env below — exactly as the module under test
 // reads it — rather than through config/env.ts's loadEnv, so excluding a default is proven against
 // the real path this task's own code takes rather than against a second, defaulting one.
+import { readdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { Client } from 'pg';
 import { afterEach, beforeEach, expect, it } from 'vitest';
 import { MigrationStepError } from '../../errors/migration-step.error.js';
 import setup from '../../vitest-global-setup.js';
 
-/** Every migration file's own name, in the order MIG-01's own numbering fixes — present in schema_migrations only once the step has run. */
-const EXPECTED_MIGRATION_FILENAMES = [
-  '0001-schema-migrations.sql',
-  '0002-glossary-vocabulary.sql',
-  '0003-capability-registry.sql',
-  '0004-case-and-hypothesis.sql',
-  '0005-investigation.sql',
-  '0006-case-version-immutability.sql',
-  '0007-capability-concept.sql',
-];
+const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../../../migrations', import.meta.url));
+
+/** The bookkeeping script this task's own dependency shipped, which MIG-02 forbids removing — the anchor that keeps a derived-from-disk expectation from ever agreeing vacuously with an empty table over a wrong or empty directory read. */
+const ANCHOR_MIGRATION_FILENAME = '0001-schema-migrations.sql';
+
+/** Every migration file's own name as migrations/ holds it today, in the order MIG-01's own numbering fixes — read from the directory itself, so a sibling task's correctly numbered script extends this expectation instead of falsifying it. */
+async function migrationFilenamesOnDisk(): Promise<string[]> {
+  const entries = await readdir(MIGRATIONS_DIRECTORY);
+  return entries.filter((name) => name.endsWith('.sql')).sort();
+}
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -58,12 +69,15 @@ afterEach(() => {
 // ---------------------------------------------------------------- criteria 2 and 4: runs before any
 // test, and left the database holding the schema
 
-it("has already recorded every migration file as applied and left the database holding the schema those files describe by the time this spec's own first test runs, proving the suite's own setup ran before any test", async () => {
+it("has already recorded every script migrations/ holds as applied, exactly once each, and left the database holding the schema those scripts describe by the time this spec's own first test runs, proving the suite's own setup ran before any test", async () => {
+  const expectedFilenames = await migrationFilenamesOnDisk();
   const client = new Client({ connectionString: requireDatabaseUrl() });
   await client.connect();
   try {
     const { rows } = await client.query<{ filename: string }>('SELECT filename FROM public.schema_migrations ORDER BY filename');
-    expect(rows.map((row) => row.filename)).toEqual(EXPECTED_MIGRATION_FILENAMES);
+
+    expect(expectedFilenames).toContain(ANCHOR_MIGRATION_FILENAME);
+    expect(rows.map((row) => row.filename)).toEqual(expectedFilenames);
 
     const { rows: sentinelRows } = await client.query<{ exists: boolean }>("SELECT to_regclass('public.cases') IS NOT NULL AS exists");
     expect(sentinelRows[0]?.exists).toBe(true);

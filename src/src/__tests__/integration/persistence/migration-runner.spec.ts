@@ -42,7 +42,7 @@
 // (STK-08) DATABASE_URL is read directly from process.env below rather than through config/env.ts's
 // loadEnv, because loadEnv refuses unless every other application variable is configured too, which
 // this file has no use for.
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -66,16 +66,14 @@ function asMigrationConnection(connection: Pick<DatabaseConnection, 'query'>): D
 
 const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../../../../migrations', import.meta.url));
 
-/** Every migration file's own name, in the order MIG-01's own numbering fixes — the shape criterion 3 asks a re-run against an already-migrated database to leave recorded, once each. */
-const EXPECTED_MIGRATION_FILENAMES = [
-  '0001-schema-migrations.sql',
-  '0002-glossary-vocabulary.sql',
-  '0003-capability-registry.sql',
-  '0004-case-and-hypothesis.sql',
-  '0005-investigation.sql',
-  '0006-case-version-immutability.sql',
-  '0007-capability-concept.sql',
-];
+/** The bookkeeping script this task's own dependency shipped, which MIG-02 forbids removing — the anchor that keeps a derived-from-disk expectation from ever agreeing vacuously with an empty table over a wrong or empty directory read. */
+const ANCHOR_MIGRATION_FILENAME = '0001-schema-migrations.sql';
+
+/** Every migration file's own name as migrations/ holds it today, in the order MIG-01's own numbering fixes — the shape criterion 3 asks a re-run against an already-migrated database to leave recorded, once each. Read from the directory itself, never enumerated here: a closed enumeration claimed a totality over ground other tasks legitimately land in, and a sibling delivery's correctly numbered 0008 falsified it while applyPendingMigrations behaved exactly as this task's criteria require. */
+async function migrationFilenamesOnDisk(): Promise<string[]> {
+  const entries = await readdir(MIGRATIONS_DIRECTORY);
+  return entries.filter((name) => name.endsWith('.sql')).sort();
+}
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -119,14 +117,16 @@ it("leaves a disposable schema without the domain tables when an explicit call f
 // ---------------------------------------------------------------- criterion 3: idempotent re-run
 
 it('applies no script twice and fails nothing when run again against a database that already holds the schema', async () => {
+  const expectedFilenames = await migrationFilenamesOnDisk();
   await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY);
 
   await expect(applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY)).resolves.toBeUndefined();
 
   const { rows } = await client.query<{ filename: string; row_count: string }>(
-    'SELECT filename, COUNT(*) AS row_count FROM public.schema_migrations GROUP BY filename',
+    'SELECT filename, COUNT(*) AS row_count FROM public.schema_migrations GROUP BY filename ORDER BY filename',
   );
-  expect(rows).toHaveLength(EXPECTED_MIGRATION_FILENAMES.length);
+  expect(expectedFilenames).toContain(ANCHOR_MIGRATION_FILENAME);
+  expect(rows.map((row) => row.filename)).toEqual(expectedFilenames);
   expect(rows.every((row) => row.row_count === '1')).toBe(true);
 });
 

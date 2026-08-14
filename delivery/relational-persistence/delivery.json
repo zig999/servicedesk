@@ -313,8 +313,8 @@
       "id": "proof/relational-substrate/migration-step",
       "kind": "proof",
       "file": "proof/relational-substrate/migration-step.md",
-      "title": "Proof for the migration step, its CLI entry, and the suite's own global setup",
-      "summary": "Tests applyPendingMigrations directly (ordering, idempotent re-run, and a script's own failure) against both a mocked filesystem/driver and a real, externally-provisioned PostgreSQL database, prove the manifest exposes the step as npm run migrate, prove vitest's own global setup runs before any test and never substitutes a default connection, and audit the whole test tree for the one behavior criterion 4 forbids outright.",
+      "title": "Proof for the recorded migration step, re-authored against the tree as it stands",
+      "summary": "Holds task/relational-substrate/migration-step's four criteria and its UNDERDETERMINED note against a migrations/ directory that other tasks legitimately extend, deriving every totality from the directory itself instead of a closed enumeration a sibling's correctly numbered script falsifies.",
       "task": "task/relational-substrate/migration-step"
     },
     {
