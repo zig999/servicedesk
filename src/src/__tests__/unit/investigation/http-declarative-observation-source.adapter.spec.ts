@@ -11,7 +11,8 @@
 // adapter's own injectable httpClient, a vi.fn() never wired to a real
 // fetch. No test below makes a real network call or reaches a real store,
 // per this task's own stated testability expectation.
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
@@ -427,6 +428,49 @@ it("keys the ok observation by the capability's own output_schema property names
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ equipment_state: 'operational' }) });
   expect(outcome.result === 'ok' ? outcome.observation : '').not.toContain('raw_vendor');
+});
+
+// ------------------------------------------------------------------ criterion 10
+
+/** Matches a static import, re-export or dynamic import whose specifier names this task's adapter module. */
+const ADAPTER_IMPORT_PATTERN = /(?:from|import)\s*\(?\s*['"][^'"]*http-declarative-observation-source\.adapter[^'"]*['"]/;
+
+/**
+ * Every .ts module of the domain layer as
+ * constraints/the-domain-depends-on-no-infrastructure names it — case
+ * behavior (src/case), vocabulary (src/glossary), and the investigation
+ * modules that are not themselves adapters (the factory, the stages, the
+ * evaluation, the ports). Refuses an empty set so the sweep cannot pass
+ * vacuously over a directory that moved.
+ */
+async function domainModuleFiles(): Promise<readonly string[]> {
+  const files: string[] = [];
+  for (const root of ['case', 'glossary', 'investigation']) {
+    const directory = fileURLToPath(new URL(`../../../${root}/`, import.meta.url));
+    for (const file of await readdir(directory)) {
+      if (file.endsWith('.ts') && !file.endsWith('.adapter.ts')) {
+        files.push(join(directory, file));
+      }
+    }
+  }
+  if (files.length === 0) {
+    throw new Error('no domain module found to audit — the pass would be vacuous');
+  }
+  return files;
+}
+
+it('is imported by no domain module, so the domain layer reaches this adapter only through the IObservationSource port', async () => {
+  const files = await domainModuleFiles();
+
+  const offenders: string[] = [];
+  for (const file of files) {
+    const source = await readFile(file, 'utf8');
+    if (ADAPTER_IMPORT_PATTERN.test(source)) {
+      offenders.push(file);
+    }
+  }
+
+  expect(offenders).toEqual([]);
 });
 
 // ------------------------------------------------------------------ inference: capability/connector-configuration lookup faults

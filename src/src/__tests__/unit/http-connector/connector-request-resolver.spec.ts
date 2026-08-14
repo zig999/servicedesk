@@ -66,6 +66,14 @@ it('substitutes a Subject-drawn value nested arbitrarily deep inside the body', 
   expect(assembled.body).toEqual({ filter: { criteria: ['12345', 'a-literal-value'] } });
 });
 
+it('substitutes every placeholder when several sit inside one template, rather than only the first', () => {
+  const configuration = { address: 'https://api.example.com/${subject:id}/as/${requester}' };
+
+  const assembled = resolveConnectorRequest({ configuration, subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(assembled.address).toBe('https://api.example.com/12345/as/a-requester');
+});
+
 it('places every substituted value by ordinary string replacement — the resolver holds no eval, Function constructor, dynamic import or require anywhere in its own source', async () => {
   const source = await readFile(
     fileURLToPath(new URL('../../../http-connector/connector-request-resolver.ts', import.meta.url)),
