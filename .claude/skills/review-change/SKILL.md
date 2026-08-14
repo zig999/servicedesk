@@ -31,10 +31,13 @@ A missing input is a stop, not a default:
 3. **the project root** — where `siegard.json` lives. Named by the human; inferred rather than
    named, its absence is a stop.
 4. **the target** — which of the project's target source roots this change reaches, by the key
-   `siegard.json`'s `targets` names it.
+   `siegard.json`'s `targets` names it. Where `targets` declares exactly one key and the
+   invocation names none, that key is the target: a set of one holds no choice, so it is
+   decided and disclosed in the report, never asked.
 5. **the initiative's slug** — the plan the tasks belong to, and the delivery root taking this
    review's own record: both are `<slug>` under the project's `work_root` and `delivery_root`
-   respectively.
+   respectively. Where the invocation names none and the project's `work_root` holds exactly
+   one initiative, that is the slug: decided and disclosed, never asked.
 
 Run `python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/project.py <project-root>` once, before anything else.
 `specification_root`, `targets`, `work_root` and `delivery_root` answer only from here: naming
@@ -193,16 +196,19 @@ right. It is one fact, and no pass here produces it: whether the link this frame
 plan is deleted still describes the code as it stands. Report the counts by class, and the route
 each class takes. `orphaned` is a binding to a specification node that no longer exists; no rebind
 can repair it, because a bind refuses a node the base does not hold, and `trace.py --prune` is what
-clears it. `moved` and `code` are real drift with an owner: the delivery that changed the file or
-the `/analyse` that moved the node, answered by a rebind through `/implement-task`, never by a
-deletion.
+clears it. `moved` is the specification moving under a binding, healed when the node's task is next
+delivered — the bind restamps at the node as it stands. `code` is a file changed without a rebind,
+whatever wrote it — a hand edit, a merge, or a delivery rewriting a file another node's binding
+claims, which no delivery can answer because a bind restamps only its own task's nodes: the route is
+`/reconcile`, never a deletion.
 
 It is read here because this is the last place a delivered tree gets read whole with a report
 attached, and because the drift that matters most is the drift nothing else can see. Every path
-this framework runs binds at the end of it; a file that reached the tree another way — a
-correction typed in by hand, a conflict resolved during a merge — leaves the trace asserting a
-digest that is not there any more, and asserting it silently. A review that says nothing about it
-is how a tree accumulates a trace nobody can trust while every command still exits 0.
+this framework runs binds at the end of it — but only the delivering task's own nodes; a file that
+changed any other way — a correction typed in by hand, a conflict resolved during a merge, a shared
+file rewritten under another node's claim — leaves the trace asserting a digest that is not there
+any more, and asserting it silently. A review that says nothing about it is how a tree accumulates
+a trace nobody can trust while every command still exits 0.
 
 ### 2. Capture
 
