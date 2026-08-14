@@ -510,6 +510,45 @@ it('does not refuse to build when ticket_ref is absent, since domain/investigati
   await expect(buildInvestigation(options)).resolves.toBeDefined();
 });
 
+// -------------------- task/case-and-investigation-model/ticket-ref-is-optional: criteria 1 and 2
+
+/**
+ * Every property validOptions() would otherwise set, except ticket_ref, assembled as a genuine
+ * BuildInvestigationOptions literal — unlike validOptionsWithout() above, which deletes the
+ * property from a plain Record and casts the result back, bypassing whatever the type actually
+ * declares. This literal only type-checks because BuildInvestigationOptions.ticket_ref is
+ * declared `ticket_ref?: string`
+ * (task/case-and-investigation-model/ticket-ref-is-optional's own criterion 1): reverting it to a
+ * required string would leave this object literal missing a property the type still requires,
+ * failing `npm run typecheck` rather than merely a runtime assertion below.
+ */
+function optionsOmittingTicketRef(): BuildInvestigationOptions {
+  const full = validOptions();
+  return {
+    id: full.id,
+    requester: full.requester,
+    narrative: full.narrative,
+    subjectType: full.subjectType,
+    subjectAttributes: full.subjectAttributes,
+    case: full.case,
+    prompt_version: full.prompt_version,
+    model: full.model,
+    evidence: full.evidence,
+    evaluations: full.evaluations,
+    assessment: full.assessment,
+    cost: full.cost,
+    durations: full.durations,
+    written_at: full.written_at,
+    glossary: full.glossary,
+  };
+}
+
+it('builds an Investigation whose own ticket_ref is undefined, not an invented placeholder, when the given options carry no ticket_ref at all', async () => {
+  const investigation = await buildInvestigation(optionsOmittingTicketRef());
+
+  expect(investigation.ticket_ref).toBeUndefined();
+});
+
 // ---- excludes UNDERDETERMINED: a factory storing only written_at, the pinned slug/version, model, prompt_version and evidence
 
 it('carries id, requester, narrative, evaluations, assessment, cost and durations from the given options, unchanged — not only the four replay pins and written_at', async () => {

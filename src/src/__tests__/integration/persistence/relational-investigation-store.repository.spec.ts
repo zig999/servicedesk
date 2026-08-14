@@ -230,6 +230,30 @@ it(
   15000,
 );
 
+// ---------------------------------------------------------------- inference: node-postgres serializes an absent ticket_ref to NULL
+// (task/case-and-investigation-model/ticket-ref-is-optional's own recorded inference: leaving
+// write()/read() untouched here still works once Investigation.ticket_ref is optional, because
+// node-postgres converts an undefined bound parameter to SQL NULL the same way it already
+// converts an explicit null — against the real database, not the fake connection this file's own
+// unit-level sibling stands in for it with (TST-03).)
+
+it(
+  "writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column",
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-no-ticket-ref-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const investigation: Investigation = { ...anIntegrationInvestigation({ id, fixtures }), ticket_ref: undefined };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(investigation);
+    const answered = await store.read(id);
+
+    expect(answered?.document).toEqual({ ...investigation, ticket_ref: '' });
+  },
+  15000,
+);
+
 // ---------------------------------------------------------------- criterion 3, criterion 9
 
 it(

@@ -160,7 +160,12 @@ it('invokes the diagnose call under a fresh id for each of two requests naming t
 
 // ------------------------------------------------------------------ criterion 4
 
-it('supplies the empty string as ticket_ref to the diagnose call when the request names none', async () => {
+// This test used to assert the controller supplied the empty string as a placeholder for an
+// absent ticket_ref — the behavior task/case-and-investigation-model/ticket-ref-is-optional
+// removed (diagnose.controller.ts no longer synthesizes `body.ticket_ref ?? ''`), so the
+// assertion below now states what that task's own criteria 2 and 3 require instead: an absent
+// ticket_ref threads through as an absence, not an invented placeholder.
+it('passes ticket_ref through as undefined to the diagnose call when the request names none, inventing no placeholder', async () => {
   const built = buildTestApp();
   app = built.app;
   built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
@@ -168,7 +173,7 @@ it('supplies the empty string as ticket_ref to the diagnose call when the reques
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
 
   expect(response.statusCode).toBe(200);
-  expect(built.runDiagnose.mock.calls[0]?.[0].ticket_ref).toBe('');
+  expect(built.runDiagnose.mock.calls[0]?.[0].ticket_ref).toBeUndefined();
 });
 
 it('passes a given ticket_ref straight through to the diagnose call, unchanged', async () => {

@@ -50,9 +50,11 @@ export type DiagnoseControllerDependencies = {
  * configured model and prompt version, and the not-yet-measured cost/duration
  * placeholders above — and answers with the resulting Assessment unchanged.
  * A request naming no ticket_ref runs the same way as one that supplies it:
- * the empty string travels in its place, since RunDiagnosisOptions declares
- * ticket_ref a required string and no node states a different wire
- * representation for its absence.
+ * body.ticket_ref travels through exactly as the request carried it —
+ * undefined where none was given — since ProductionDiagnoseCall's own
+ * ticket_ref is optional and no node states a placeholder wire
+ * representation for its absence
+ * (task/case-and-investigation-model/ticket-ref-is-optional).
  */
 export async function handleDiagnoseRequest(
   dependencies: DiagnoseControllerDependencies,
@@ -62,7 +64,7 @@ export async function handleDiagnoseRequest(
   return dependencies.runDiagnose({
     id: randomUUID(),
     requester: body.requester,
-    ticket_ref: body.ticket_ref ?? '',
+    ticket_ref: body.ticket_ref,
     narrative: body.narrative,
     subjectType: body.subject.type,
     subjectAttributes: body.subject.attributes,

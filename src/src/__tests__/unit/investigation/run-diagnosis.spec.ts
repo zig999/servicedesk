@@ -700,3 +700,60 @@ it('fails fast on an empty subject attribute set before collecting any evidence,
   expect(evaluator.calls).toBe(0);
   expect(store.writeCount).toBe(0);
 });
+
+// -------------------- task/case-and-investigation-model/ticket-ref-is-optional: criteria 1, 2 and 3
+
+/**
+ * Every property baseOptions() would otherwise set, except ticket_ref, assembled as a genuine
+ * RunDiagnosisOptions literal rather than deleting the field from an already-built value and
+ * casting it back. This literal only type-checks because RunDiagnosisOptions.ticket_ref is
+ * declared `ticket_ref?: string` (task/case-and-investigation-model/ticket-ref-is-optional's own
+ * criterion 1): reverting it to a required string would leave this object literal missing a
+ * property the type still requires, failing `npm run typecheck` rather than merely a runtime
+ * assertion below.
+ */
+function baseOptionsOmittingTicketRef(): RunDiagnosisOptions {
+  const full = baseOptions();
+  return {
+    id: full.id,
+    requester: full.requester,
+    narrative: full.narrative,
+    subjectType: full.subjectType,
+    subjectAttributes: full.subjectAttributes,
+    case: full.case,
+    prompt_version: full.prompt_version,
+    model: full.model,
+    cost: full.cost,
+    durations: full.durations,
+    defaultConsolidationRegister: full.defaultConsolidationRegister,
+    glossary: full.glossary,
+    capabilities: full.capabilities,
+    observationSource: full.observationSource,
+    evaluator: full.evaluator,
+    poolSize: full.poolSize,
+    consolidator: full.consolidator,
+    store: full.store,
+    now: full.now,
+    deadline: full.deadline,
+  };
+}
+
+it('writes an investigation whose own ticket_ref is undefined, not an invented placeholder, when the given options carry no ticket_ref at all', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options: RunDiagnosisOptions = { ...baseOptionsOmittingTicketRef(), store };
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).ticket_ref).toBeUndefined();
+});
+
+it('writes the given ticket_ref through unchanged into the written investigation when one is supplied', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options = baseOptions({ store, ticket_ref: 'TICKET-99' });
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).ticket_ref).toBe('TICKET-99');
+});

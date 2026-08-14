@@ -584,6 +584,24 @@ it('sends ticket_ref exactly as the given investigation holds it, including the 
   expect(rootInsert?.params?.[2]).toBe('');
 });
 
+// This store's own write() is unmodified by task/case-and-investigation-model/ticket-ref-is-optional
+// (that task's own recorded deferral), but Investigation.ticket_ref is now optional, so a caller may
+// now pass it an Investigation whose ticket_ref is undefined rather than the empty string; the test
+// below is the fast, DB-independent half of that task's own recorded inference — that write() still
+// forwards the value unmodified rather than choking on it or coercing it into something else — the
+// other half (that node-postgres itself serializes an undefined bound parameter to a real SQL NULL)
+// needs a live connection and is proven separately, in this file's own integration-level sibling.
+it('sends ticket_ref as undefined in the root insert\'s own params when the given investigation carries no ticket_ref at all', async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  await store.write(anInvestigation({ ticket_ref: undefined }));
+
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.investigations'));
+  expect(rootInsert?.params?.[2]).toBeUndefined();
+});
+
 it('answers ticket_ref as the empty string when the stored column itself is a SQL NULL', async () => {
   const { handleQuery } = recordingQuery({ investigation: investigationRow({ ticket_ref: null }) });
   const { connection } = fakeTransactionConnection(handleQuery);

@@ -63,7 +63,16 @@ export type PinnedCase = {
 export type Investigation = {
   readonly id: string;
   readonly requester: string;
-  readonly ticket_ref: string;
+  /**
+   * Correlation with the ticketing system, never a matching key
+   * (contracts/investigation/diagnosis) — optional because not every
+   * diagnose call carries a ticket (domain/investigation/investigation's own
+   * "requester and ticket_ref both arrive in the diagnose call itself;
+   * requester is always given, ticket_ref is not"). Absent here means the
+   * built value carries no ticket_ref at all, not an invented placeholder
+   * (task/case-and-investigation-model/ticket-ref-is-optional).
+   */
+  readonly ticket_ref?: string;
   readonly narrative: string;
   readonly subject: Subject;
   readonly pinned_case: PinnedCase;

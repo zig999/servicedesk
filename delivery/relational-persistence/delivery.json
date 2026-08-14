@@ -42,6 +42,14 @@
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
     },
     {
+      "id": "implementation/case-and-investigation-model/ticket-ref-is-optional",
+      "kind": "implementation",
+      "file": "implementation/case-and-investigation-model/ticket-ref-is-optional.md",
+      "title": "ticket_ref becomes optional across the investigation build/run chain",
+      "summary": "BuildInvestigationOptions.ticket_ref, Investigation.ticket_ref and RunDiagnosisOptions.ticket_ref are now optional strings whose absence threads through as an absence, and the diagnose controller's now-unnecessary empty-string placeholder is removed.",
+      "task": "task/case-and-investigation-model/ticket-ref-is-optional"
+    },
+    {
       "id": "implementation/case-authoring/author-case-version-command",
       "kind": "implementation",
       "file": "implementation/case-authoring/author-case-version-command.md",
@@ -204,6 +212,14 @@
       "title": "Replay by slug and version proves its answer whole, unvalidated and digest-free",
       "summary": "Rewrites the two pre-existing assertions that held replayCase to its former ReadCaseResult-with-hash contract and the structural-failure-through-replay path, and adds new tests proving each of this task's six criteria against the bare-Case, no-revalidation, no-digest contract replayCase now answers.",
       "task": "task/case-and-investigation-model/replay-by-slug-and-version"
+    },
+    {
+      "id": "proof/case-and-investigation-model/ticket-ref-is-optional",
+      "kind": "proof",
+      "file": "proof/case-and-investigation-model/ticket-ref-is-optional.md",
+      "title": "ticket_ref becomes optional across the investigation build/run chain — proof",
+      "summary": "Tests that BuildInvestigationOptions.ticket_ref, Investigation.ticket_ref and RunDiagnosisOptions.ticket_ref are genuinely optional (not merely accepted after a delete-and-cast bypass), that an absent ticket_ref threads through as undefined rather than an invented placeholder end to end, that a supplied ticket_ref still propagates unchanged, and that the one recorded inference about the untouched investigation store holds; one pre-existing test that the delivered change made stale is corrected to state the new, intended behavior.",
+      "task": "task/case-and-investigation-model/ticket-ref-is-optional"
     },
     {
       "id": "proof/case-authoring/author-case-version-command",
@@ -557,6 +573,18 @@
     {
       "from": "implementation/case-and-investigation-model/replay-by-slug-and-version",
       "to": "task/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/ticket-ref-is-optional",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-and-investigation-model/ticket-ref-is-optional",
+      "to": "task/case-and-investigation-model/ticket-ref-is-optional",
       "kind": "implements",
       "at": "the path"
     },
@@ -1139,6 +1167,12 @@
     {
       "from": "proof/case-and-investigation-model/replay-by-slug-and-version",
       "to": "implementation/case-and-investigation-model/replay-by-slug-and-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-and-investigation-model/ticket-ref-is-optional",
+      "to": "implementation/case-and-investigation-model/ticket-ref-is-optional",
       "kind": "proves",
       "at": "the path"
     },

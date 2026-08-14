@@ -65,7 +65,18 @@ import type { SubjectAttributeValue } from './subject-attribute-value.js';
 export type BuildInvestigationOptions = {
   readonly id: string;
   readonly requester: string;
-  readonly ticket_ref: string;
+  /**
+   * Correlation with the ticketing system, never a matching key
+   * (contracts/investigation/diagnosis) — optional because not every
+   * diagnose call carries a ticket (domain/investigation/investigation's own
+   * "requester and ticket_ref both arrive in the diagnose call itself;
+   * requester is always given, ticket_ref is not"). Copied straight through
+   * into the built value unchanged, including its absence: given no
+   * ticket_ref at all, the built Investigation carries none either, rather
+   * than an invented placeholder
+   * (task/case-and-investigation-model/ticket-ref-is-optional).
+   */
+  readonly ticket_ref?: string;
   readonly narrative: string;
   /**
    * The subject's governed type, exactly as the entry point assembled it —

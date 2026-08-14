@@ -108,7 +108,17 @@ const WRITE_TIMED_OUT = Symbol('investigation-write-timeout');
 export type RunDiagnosisOptions = {
   readonly id: string;
   readonly requester: string;
-  readonly ticket_ref: string;
+  /**
+   * Correlation with the ticketing system, never a matching key
+   * (contracts/investigation/diagnosis's own "case, subject, narrative and
+   * requester in, with an optional ticket reference") — optional because not
+   * every diagnose call carries a ticket
+   * (domain/investigation/investigation's own "requester is always given,
+   * ticket_ref is not"). Passed straight through into
+   * BuildInvestigationOptions below unchanged, including its absence
+   * (task/case-and-investigation-model/ticket-ref-is-optional).
+   */
+  readonly ticket_ref?: string;
   readonly narrative: string;
   /** The subject's governed type, exactly as this call's own caller assembled it — raw, unvalidated input, the same convention BuildInvestigationOptions already keeps. */
   readonly subjectType: string;
