@@ -40,6 +40,27 @@
       "title": "Response path extractor",
       "summary": "A pure extraction function that reads a field-name-to-path mapping over an arbitrary parsed HTTP response body and returns a flat object keyed exactly by that mapping's own field names, supporting a nested object key and an array index in one path.",
       "task": "task/http-observation-runtime/response-path-extractor"
+    },
+    {
+      "id": "review/http-connector-adapter-change-review",
+      "kind": "review",
+      "file": "review/http-connector-adapter-change-review.md",
+      "title": "http-connector-adapter, first review",
+      "summary": "What four passes found over the 5-task HTTP declarative observation-source adapter change: coverage, specification conformance, standard conformance, and the 2 pre-existing, out-of-scope failures the captured suite still shows.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "Building the production diagnose pipeline no longer constructs FakeObservationSource.",
+        "Every environment variable env.ts still declares as required has at least one remaining production consumer once the swap lands.",
+        "The adapter and any HTTP client package it uses live outside the domain layer, and no domain module imports either directly.",
+        "The adapter implements observeConcept(concept, subject, requester) at the existing IObservationSource port, requiring no change to the port's signature or to evidence-collection-stage.ts's call site.",
+        "The translation from the external response's own structure into the returned observation happens entirely inside the adapter, never inside evidence-collection-stage.ts or any other domain module, so no source-system field name crosses past the adapter."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -204,6 +225,36 @@
       "to": "task/http-observation-runtime/response-path-extractor",
       "kind": "implements",
       "at": "the path"
+    },
+    {
+      "from": "review/http-connector-adapter-change-review",
+      "to": "task/connector-registration/connector-configuration-persistence",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/http-connector-adapter-change-review",
+      "to": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/http-connector-adapter-change-review",
+      "to": "task/http-observation-runtime/response-path-extractor",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/http-connector-adapter-change-review",
+      "to": "task/http-observation-runtime/http-declarative-observation-source",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/http-connector-adapter-change-review",
+      "to": "task/http-observation-runtime/production-wiring-swap",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }
