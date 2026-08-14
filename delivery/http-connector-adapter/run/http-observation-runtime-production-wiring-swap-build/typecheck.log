@@ -1,0 +1,5 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(232,5): error TS2353: Object literal may only specify known properties, and 'OBSERVATIONS_FIXTURE_FILE' does not exist in type '{ PORT: number; DATABASE_URL: string; EVALUATOR_MODEL: string; CONSOLIDATOR_MODEL: string; CONSOLIDATOR_MAX_TOKENS: number; POOL_SIZE: number; DEFAULT_CONSOLIDATION_REGISTER: "formal" | "plain"; PROMPT_VERSION: string; EVALUATOR_MAX_TOKENS?: number | undefined; }'.

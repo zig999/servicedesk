@@ -17,10 +17,13 @@
 // database is provisioned outside the deployment and reached only through a
 // connection URL supplied as configuration): this schema is the one place
 // that URL is read, so no host, port, endpoint or credential for a database
-// is written anywhere else in source. OBSERVATIONS_FIXTURE_FILE stays
-// untouched: it backs FakeObservationSource, the stand-in for
-// contracts/integration/corporate-records-source — a different capability
-// this task's own scope does not reach.
+// is written anywhere else in source. OBSERVATIONS_FIXTURE_FILE is no
+// longer declared here: it backed FakeObservationSource, the production
+// stand-in for contracts/integration/corporate-records-source, and
+// task/http-observation-runtime/production-wiring-swap retired that
+// production role in favor of HttpDeclarativeObservationSource — with no
+// remaining production consumer for the variable, this schema drops it
+// rather than leaving an orphaned required field.
 
 import { z } from 'zod';
 import { InvalidEnvironmentError } from '../errors/invalid-environment.error.js';
@@ -30,7 +33,6 @@ import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1),
-  OBSERVATIONS_FIXTURE_FILE: z.string().min(1),
   EVALUATOR_MODEL: z.string().min(1),
   EVALUATOR_MAX_TOKENS: z.coerce.number().int().positive().optional(),
   CONSOLIDATOR_MODEL: z.string().min(1),

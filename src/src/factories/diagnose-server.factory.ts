@@ -4,68 +4,55 @@
 // the production diagnose runner built from that same connection
 // (task/service-on-the-database/store-wiring — every one of the four stores
 // this composition wires now answers from it, and no factory below receives
-// a data-directory path for any of them), plus one FakeObservationSource
-// seeded from the fixture's own canned observations.json — the stand-in
-// this MVP runs against since no real corporate-records connector exists
-// yet (contracts/integration/corporate-records-source's own declared
-// remainder, untouched by this task). Never listens itself: buildApp's own
-// instance is handed back unstarted, so only src/index.ts calls .listen().
+// a data-directory path for any of them), plus the HTTP declarative
+// observation-source adapter
+// (task/http-observation-runtime/http-declarative-observation-source) built
+// from that same connection through the already-delivered capability and
+// connector-configuration registries
+// (task/http-observation-runtime/production-wiring-swap): the production
+// wiring point that used to construct and seed FakeObservationSource from
+// the static observations.json fixture now constructs
+// HttpDeclarativeObservationSource instead, so this process depends on a
+// registered capability and connector configuration rather than the fixture
+// — no production code path here seeds or reads observations.json any
+// longer. Never listens itself: buildApp's own instance is handed back
+// unstarted, so only src/index.ts calls .listen().
 
-import { readFile } from 'node:fs/promises';
 import type { FastifyInstance } from 'fastify';
-import { z } from 'zod';
 import type { Env } from '../config/env.js';
 import { buildApp } from '../http/build-app.js';
-import { EVIDENCE_RESULTS } from '../investigation/evidence-result.js';
-import { FakeObservationSource } from '../investigation/fake-observation-source.adapter.js';
-import type { ObservationOutcome, Subject } from '../investigation/observation-source.port.js';
-import { buildSubject } from '../investigation/subject.js';
+import { HttpDeclarativeObservationSource } from '../investigation/http-declarative-observation-source.adapter.js';
+import type { IObservationSource } from '../investigation/observation-source.port.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../persistence/database-connection.js';
+import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createCaseQuery } from './case-query.factory.js';
+import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
 import { createProductionDiagnoseRunner, type ProductionDiagnoseDependencies } from './production-diagnose.factory.js';
-
-/**
- * The one subject this MVP's stand-in observation source answers for:
- * observations.json carries no subject of its own (it is keyed by concept
- * alone) and no specification node names a canonical subject for this
- * fixture case, so this factory's own inference fixes one — the same
- * subject-type/attribute-name convention the fixture task's own
- * case-fixture-observations.spec.ts already demonstrates the stand-in
- * against. A request naming a different subject still validates and still
- * runs; it simply finds no seeded evidence for it, the same real gap a live
- * corporate-records connector would eventually close.
- */
-const SEEDED_SUBJECT: Subject = buildSubject('contract', [{ attribute: 'contract-number', value: 'CTR-0001' }]);
-
-/** The canned observations fixture's own record shape, validated rather than merely asserted (STK-08's own boundary-parsing discipline extended to this fixture read). */
-const cannedObservationSchema = z.object({
-  concept: z.string().min(1),
-  result: z.enum(EVIDENCE_RESULTS),
-  observation: z.string().optional(),
-});
-const cannedObservationsSchema = z.array(cannedObservationSchema);
 
 /**
  * Builds the whole diagnose HTTP surface for a real process: one database
  * connection built once from the given env, the relational case query and
- * production diagnose runner wired from that same connection, and a
- * FakeObservationSource seeded from its own OBSERVATIONS_FIXTURE_FILE, all
+ * production diagnose runner wired from that same connection, and the HTTP
+ * declarative observation-source adapter built from the capability query
+ * and connector-configuration registry this same connection backs, all
  * handed to buildApp already built.
  */
 export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstance> {
   const connection = createDatabaseConnection(env.DATABASE_URL);
-  const observationSource = new FakeObservationSource();
-  await seedFixtureObservations(observationSource, env.OBSERVATIONS_FIXTURE_FILE);
+  const observationSource = new HttpDeclarativeObservationSource({
+    capabilities: createCapabilityQuery(connection),
+    connectorConfigurations: createConnectorConfigurationRegistry(connection),
+  });
   const caseQuery = createCaseQuery(connection);
   const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, connection, observationSource));
   return buildApp({ caseQuery, runDiagnose, model: env.EVALUATOR_MODEL, promptVersion: env.PROMPT_VERSION });
 }
 
-/** ProductionDiagnoseDependencies assembled from the given env, the shared connection and the already-seeded observation source, kept out of createDiagnoseHttpServer's own body to stay inside MNT-01's line bound. */
+/** ProductionDiagnoseDependencies assembled from the given env, the shared connection and the already-built observation source, kept out of createDiagnoseHttpServer's own body to stay inside MNT-01's line bound. */
 function runnerDependencies(
   env: Env,
   connection: DatabaseConnection,
-  observationSource: FakeObservationSource,
+  observationSource: IObservationSource,
 ): ProductionDiagnoseDependencies {
   return {
     connection,
@@ -77,18 +64,4 @@ function runnerDependencies(
     consolidatorModel: env.CONSOLIDATOR_MODEL,
     consolidatorMaxTokens: env.CONSOLIDATOR_MAX_TOKENS,
   };
-}
-
-/** Seeds the given source with one canned outcome per concept the fixture file declares, all for SEEDED_SUBJECT. */
-async function seedFixtureObservations(source: FakeObservationSource, file: string): Promise<void> {
-  const raw = await readFile(file, 'utf8');
-  const canned = cannedObservationsSchema.parse(JSON.parse(raw));
-  for (const entry of canned) {
-    source.seed(entry.concept, SEEDED_SUBJECT, outcomeOf(entry));
-  }
-}
-
-/** One canned entry's data as one of the four evidence-result endings ObservationOutcome declares. */
-function outcomeOf(entry: z.infer<typeof cannedObservationSchema>): ObservationOutcome {
-  return entry.result === 'ok' ? { result: 'ok', observation: entry.observation ?? '' } : { result: entry.result };
 }

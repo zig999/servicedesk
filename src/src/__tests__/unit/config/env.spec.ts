@@ -17,6 +17,17 @@
 // four (task/service-on-the-database/store-wiring's own criterion 2), so
 // this fixture no longer names them, and one test below now asserts their
 // absence directly instead of asserting a refusal over one of them.
+//
+// Second sibling fix, disclosed the same way for
+// task/http-observation-runtime/production-wiring-swap's own criterion 4:
+// validEnvSource() below used to also name OBSERVATIONS_FIXTURE_FILE among
+// "a complete, valid source loadEnv accepts"; envSchema no longer declares
+// it either, since its only production consumer (diagnose-server.factory.ts's
+// own retired fixture-seeding call) is gone, so a fixture calling itself a
+// valid environment should not still name a variable production no longer
+// reads. Removed from the base object below, and named explicitly instead in
+// the one new test that proves it is still accepted but silently dropped
+// rather than carried onto Env.
 import { expect, it } from 'vitest';
 import { loadEnv } from '../../../config/env.js';
 import { InvalidEnvironmentError } from '../../../errors/invalid-environment.error.js';
@@ -25,7 +36,6 @@ import { InvalidEnvironmentError } from '../../../errors/invalid-environment.err
 function validEnvSource(overrides: Record<string, string | undefined> = {}): NodeJS.ProcessEnv {
   return {
     DATABASE_URL: 'postgres://a-placeholder-connection-url',
-    OBSERVATIONS_FIXTURE_FILE: 'an-observations-file',
     EVALUATOR_MODEL: 'an-evaluator-model',
     CONSOLIDATOR_MODEL: 'a-consolidator-model',
     CONSOLIDATOR_MAX_TOKENS: '256',
@@ -73,6 +83,14 @@ it('parses a valid environment naming none of the four retired data-directory va
   expect(env).not.toHaveProperty('GLOSSARY_DATA_DIRECTORY');
   expect(env).not.toHaveProperty('CAPABILITY_DATA_DIRECTORY');
   expect(env).not.toHaveProperty('INVESTIGATION_DATA_DIRECTORY');
+});
+
+// ---------------------------------------------- production-wiring-swap criterion 4
+
+it('parses an environment naming the retired OBSERVATIONS_FIXTURE_FILE variable without carrying it onto Env, now that no production path reads it', () => {
+  const env = loadEnv(validEnvSource({ OBSERVATIONS_FIXTURE_FILE: 'an-observations-file' }));
+
+  expect(env).not.toHaveProperty('OBSERVATIONS_FIXTURE_FILE');
 });
 
 // ---------------------------------------------------- database-connection criterion 1

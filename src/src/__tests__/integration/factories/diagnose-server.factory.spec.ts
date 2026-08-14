@@ -3,17 +3,22 @@
 // (constraints/the-database-is-externally-provisioned) — the real relational case query over the
 // fixture's own committed case/glossary/capability data (case intermittent-connection-outage/1,
 // task/case-fixture/author-diagnose-fixture-case), seeded once into the real tables below, the
-// real production diagnose runner, and the FakeObservationSource this factory seeds once from the
-// fixture's own observations.json — reached entirely through Fastify's own app.inject() against
-// POST /v1/diagnose, never a hand-rolled substitute for the route. Only @anthropic-ai/sdk is a
-// stand-in (TST-03 — a stand-in replaces the network boundary, never business logic), mocked the
-// same way production-diagnose.factory.spec.ts and case-fixture-reads-clean.spec.ts already do.
-// The model's own answer is deliberately never valid JSON, so every hypothesis judged here falls
-// through to inconclusive/judgment-failure and the case's own declared fallback answers —
-// deterministic regardless of which of the fixture case's two hypotheses is judged first, since
-// neither ever confirms. What the HTTP surface itself does with an injected runDiagnose stand-in —
-// the exact response shape, ticket_ref handling, freshness of the generated id, and header
-// independence — is proven at the unit level instead, in __tests__/unit/http/build-app.spec.ts.
+// real production diagnose runner, and (since task/http-observation-runtime/production-wiring-swap)
+// the real HttpDeclarativeObservationSource built from the capability and connector-configuration
+// registries this same connection backs, observing each collected concept through a connector
+// configuration this file registers below — reached entirely through Fastify's own app.inject()
+// against POST /v1/diagnose, never a hand-rolled substitute for the route. Two stand-ins replace
+// the two network boundaries this pipeline crosses (TST-03 — a stand-in replaces a boundary, never
+// business logic): @anthropic-ai/sdk, mocked the same way production-diagnose.factory.spec.ts and
+// case-fixture-reads-clean.spec.ts already do, and (since that same swap) the platform's own global
+// fetch HttpDeclarativeObservationSource issues its one HTTP call through, with no client injectable
+// from production wiring. The model's own answer is deliberately never valid JSON, so every
+// hypothesis judged here falls through to inconclusive/judgment-failure and the case's own declared
+// fallback answers — deterministic regardless of which of the fixture case's two hypotheses is
+// judged first, or what either connector's own mocked response carries, since neither hypothesis
+// ever confirms. What the HTTP surface itself does with an injected runDiagnose stand-in — the exact
+// response shape, ticket_ref handling, freshness of the generated id, and header independence — is
+// proven at the unit level instead, in __tests__/unit/http/build-app.spec.ts.
 //
 // Sibling fix, disclosed in this task's own proof record: this file used to build four fresh
 // temp directories per test, copy the fixture's own committed directories into them and count
@@ -30,8 +35,24 @@
 // it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
 // config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
 // configured too, which this file has no use for.
+//
+// Reconciled for task/http-observation-runtime/production-wiring-swap, disclosed in that task's
+// own proof record rather than its implementation (its own deferred entry names this file as the
+// proof pass's own to settle): createDiagnoseHttpServer no longer constructs FakeObservationSource
+// seeded from this fixture's own observations.json, so the Env literal below no longer names
+// OBSERVATIONS_FIXTURE_FILE (dropped from the Env type itself) and this file instead registers a
+// connector configuration for each connector the fixture case's own two collected concepts name
+// (corporate-records-equipment-status-connector, corporate-records-network-outage-connector),
+// through the same createConnectorConfigurationRegistry wiring
+// connector-configuration-registry.factory.spec.ts already exercises. A second stand-in joins
+// @anthropic-ai/sdk at the network boundary (TST-03): HttpDeclarativeObservationSource issues its
+// one HTTP call through the platform's own global fetch with no injectable client in production
+// wiring, so this file stubs globalThis.fetch for the whole suite rather than letting it reach a
+// real network address. The model's own answer stays deliberately invalid JSON regardless, so
+// which of the two fetched connectors answers what is immaterial to the fixture's own declared
+// fallback outcome this file already asserted before this swap.
 import { randomUUID } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
@@ -46,6 +67,7 @@ vi.mock('@anthropic-ai/sdk', () => ({ default: anthropicConstructorMock }));
 import type { FastifyInstance } from 'fastify';
 import type { Env } from '../../../config/env.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
+import { createConnectorConfigurationRegistry } from '../../../factories/connector-configuration-registry.factory.js';
 import { createDiagnoseHttpServer } from '../../../factories/diagnose-server.factory.js';
 import { NON_CONCLUSION_OUTCOMES } from '../../../glossary/terms.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -53,6 +75,17 @@ import { createDatabaseConnection, type DatabaseConnection } from '../../../pers
 const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.url));
 const SLUG = 'intermittent-connection-outage';
 const VERSION = 1;
+
+/** The two connectors the fixture case's own hypotheses collect through (capability.json), and the fixed address this suite registers each of them against — no placeholder, so the resolved request never depends on the subject or requester under test. */
+const EQUIPMENT_STATUS_CONNECTOR = 'corporate-records-equipment-status-connector';
+const NETWORK_OUTAGE_CONNECTOR = 'corporate-records-network-outage-connector';
+const EQUIPMENT_STATUS_ADDRESS = 'https://corporate-records.test/equipment-status';
+const NETWORK_OUTAGE_ADDRESS = 'https://corporate-records.test/network-outage';
+
+/** Stands in for the network boundary (TST-03) HttpDeclarativeObservationSource's own global fetch reaches: every call answers 200 with a body carrying both connectors' own declared response-map fields, so neither connector's own call ever reaches a real address. Typed with fetch's own two parameters (both unused by the stand-in) so a call's own address is still readable off fetchMock.mock.calls below. */
+const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+  new Response(JSON.stringify({ status: 'ok', active: false }), { status: 200, headers: { 'content-type': 'application/json' } }),
+);
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -79,6 +112,20 @@ async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void
   await insertConcepts(connection);
   await insertCapabilities(connection);
   await insertFixtureCase(connection);
+  await insertConnectorConfigurations(connection);
+}
+
+/** Registers a connector configuration for each of the fixture case's own two collected concepts' connectors, through the real registry wiring — replacing rather than duplicating on a re-run, since register-connector holds one row per connector identity. */
+async function insertConnectorConfigurations(connection: DatabaseConnection): Promise<void> {
+  const registry = createConnectorConfigurationRegistry(connection);
+  await registry.registerConnector({
+    connector: EQUIPMENT_STATUS_CONNECTOR,
+    configuration: { method: 'GET', address: EQUIPMENT_STATUS_ADDRESS, responseMap: { status: 'status' }, statusMap: { '200': 'ok' } },
+  });
+  await registry.registerConnector({
+    connector: NETWORK_OUTAGE_CONNECTOR,
+    configuration: { method: 'GET', address: NETWORK_OUTAGE_ADDRESS, responseMap: { active: 'active' }, statusMap: { '200': 'ok' } },
+  });
 }
 
 async function insertTerms(connection: DatabaseConnection, table: string, names: readonly string[]): Promise<void> {
@@ -160,6 +207,14 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   await connection.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
   await connection.query('DELETE FROM public.actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
   await connection.query('DELETE FROM public.recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
+  await cleanupConnectorConfigurations(connection);
+}
+
+/** Removes the two connector configurations this file's own beforeAll registered, so a sibling suite reading the whole table (connector-configuration-registry.factory.spec.ts's own afterEach, filtered to its own connector-registry-factory- prefix, never collides) never meets a row this file left behind. */
+async function cleanupConnectorConfigurations(connection: DatabaseConnection): Promise<void> {
+  await connection.query('DELETE FROM public.connector_configurations WHERE connector = ANY($1)', [
+    [EQUIPMENT_STATUS_CONNECTOR, NETWORK_OUTAGE_CONNECTOR],
+  ]);
 }
 
 /** The request body this suite submits, naming a fresh requester per test so this file's own investigation rows never collide with another test's. */
@@ -207,29 +262,11 @@ async function cleanupInvestigationsFor(connection: DatabaseConnection, requeste
   await connection.query('DELETE FROM public.investigations WHERE id = ANY($1)', [ids]);
 }
 
-let seedingConnection: DatabaseConnection;
-let app: FastifyInstance;
-let requester: string;
-
-beforeAll(async () => {
-  seedingConnection = createDatabaseConnection(requireDatabaseUrl());
-  await ensureFixtureSeeded(seedingConnection);
-});
-
-afterAll(async () => {
-  await cleanupFixtureSeeded(seedingConnection);
-  await seedingConnection.end();
-});
-
-beforeEach(async () => {
-  requester = `diagnose-server-factory-requester-${randomUUID()}`;
-  createMock.mockClear();
-  anthropicConstructorMock.mockClear();
-
-  const env: Env = {
+/** The Env every test below builds createDiagnoseHttpServer from, absent OBSERVATIONS_FIXTURE_FILE now that env.ts no longer declares it (task/http-observation-runtime/production-wiring-swap) — named once so a test needing its own separate app (the corrupted-fixture criterion-3 test below) never redeclares this literal (MNT-03). */
+function baseEnv(): Env {
+  return {
     PORT: 3000,
     DATABASE_URL: requireDatabaseUrl(),
-    OBSERVATIONS_FIXTURE_FILE: join(FIXTURES_ROOT, 'observations.json'),
     EVALUATOR_MODEL: 'a-test-evaluator-model',
     CONSOLIDATOR_MODEL: 'a-test-consolidator-model',
     CONSOLIDATOR_MAX_TOKENS: 256,
@@ -237,7 +274,31 @@ beforeEach(async () => {
     DEFAULT_CONSOLIDATION_REGISTER: 'plain',
     PROMPT_VERSION: 'prompt-v1',
   };
-  app = await createDiagnoseHttpServer(env);
+}
+
+let seedingConnection: DatabaseConnection;
+let app: FastifyInstance;
+let requester: string;
+
+beforeAll(async () => {
+  vi.stubGlobal('fetch', fetchMock);
+  seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+  await ensureFixtureSeeded(seedingConnection);
+});
+
+afterAll(async () => {
+  await cleanupFixtureSeeded(seedingConnection);
+  await seedingConnection.end();
+  vi.unstubAllGlobals();
+});
+
+beforeEach(async () => {
+  requester = `diagnose-server-factory-requester-${randomUUID()}`;
+  createMock.mockClear();
+  anthropicConstructorMock.mockClear();
+  fetchMock.mockClear();
+
+  app = await createDiagnoseHttpServer(baseEnv());
 });
 
 afterEach(async () => {
@@ -338,3 +399,50 @@ it('persists the zero-valued cost and duration placeholders this HTTP layer stam
     total: written?.durations_total,
   }).toEqual({ collection: 0, judgment: 0, writing: 0, total: 0 });
 });
+
+// ---------------------- task/http-observation-runtime/production-wiring-swap, criteria 1 and 2
+
+it(
+  "reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture",
+  async () => {
+    await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
+
+    expect(fetchMock).toHaveBeenCalled();
+  },
+);
+
+it(
+  "calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one",
+  async () => {
+    await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
+
+    const calledUrls = fetchMock.mock.calls.map((call) => String(call[0]));
+    expect(calledUrls).toEqual(expect.arrayContaining([EQUIPMENT_STATUS_ADDRESS, NETWORK_OUTAGE_ADDRESS]));
+  },
+);
+
+// --------------------------- task/http-observation-runtime/production-wiring-swap, criterion 3
+
+it(
+  'answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it',
+  async () => {
+    const fixturePath = join(FIXTURES_ROOT, 'observations.json');
+    const original = await readFile(fixturePath, 'utf8');
+    await writeFile(fixturePath, '{ this is not valid json');
+    let corruptedFixtureApp: FastifyInstance | undefined;
+    try {
+      corruptedFixtureApp = await createDiagnoseHttpServer(baseEnv());
+      const response = await corruptedFixtureApp.inject({
+        method: 'POST',
+        url: '/v1/diagnose',
+        payload: requestBodyFor(requester),
+      });
+      expect(response.statusCode).toBe(200);
+    } finally {
+      await writeFile(fixturePath, original);
+      if (corruptedFixtureApp) {
+        await corruptedFixtureApp.close();
+      }
+    }
+  },
+);
