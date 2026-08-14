@@ -56,6 +56,20 @@
       ]
     },
     {
+      "node": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "digest": "sha256:21573d12ce0e8a83f3d207aae7aa829401f95747ef4aa39017ac3c984af7abfa",
+      "files": [
+        {
+          "path": "src/src/http-connector/response-path-extractor.ts",
+          "digest": "sha256:326ff6865e475491e76623c834becc97941244ebe759ac6aec7f37e5225dcb59"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
+        }
+      ]
+    },
+    {
       "node": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
       "digest": "sha256:f33736c815ac4a410d3b668cfa2f5eebe421e4617fe06b7e765dd4e7f4dd8f39",
       "files": [
@@ -146,12 +160,28 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:bd061567f3ecc534ffd6f64233e3e184a707fc59579223de58c3e425d63990b2"
+        },
+        {
+          "path": "src/src/connector-registry/connector-configuration-store.port.ts",
+          "digest": "sha256:fb5ec53cd80f50e931b76d34701ada1f8d6be7a470930c379ab7cc87e778493a"
+        },
+        {
           "path": "src/src/errors/investigation-not-buildable.error.ts",
           "digest": "sha256:50e9159d1fa53aeef2c3c28fcf8bec2b077e304232fe877de7c3cadfb9e14fa0"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
           "digest": "sha256:c3a2ddf7545b4b32afe58637c7faf5d18eb898b42d50da71141e6383dcb3bebe"
+        },
+        {
+          "path": "src/src/http-connector/connector-call-descriptor.ts",
+          "digest": "sha256:a01a879facda8b9a38fa4a84ed6cf34d396aa571a2313fb64973a551cc2be201"
+        },
+        {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
@@ -190,6 +220,10 @@
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
         },
         {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
+        },
+        {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
         },
@@ -208,6 +242,10 @@
         {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:54bb8cf9c8ee3cb39b2cf6c91575937912a122850fc11266ec50ad979cba105b"
         }
       ]
     },
@@ -310,6 +348,10 @@
       "digest": "sha256:18fac2e0282c66f6160e3e08d6021293bee5bcdfc94cbc663b313810788b8850",
       "files": [
         {
+          "path": "src/migrations/0008-connector-configuration.sql",
+          "digest": "sha256:c17b48dc07f09b549b562eacc46ef5cdc16c47228e8fda45c2ed403990cdf1df"
+        },
+        {
           "path": "src/src/config/env.ts",
           "digest": "sha256:157c581634b46628396520c1fdc7451448e782d5c70abe8ec21b9860db310822"
         },
@@ -348,6 +390,10 @@
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
           "digest": "sha256:64c2d2348c43659dbdb7854e152cacbb244b5838aa43fe76360bcb5c849738cb"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:54bb8cf9c8ee3cb39b2cf6c91575937912a122850fc11266ec50ad979cba105b"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -392,8 +438,16 @@
       "digest": "sha256:babc4ff528eaa01ff919b80c372f200a014227176e80fed3aeb63af817669397",
       "files": [
         {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+        },
+        {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -403,11 +457,19 @@
     },
     {
       "node": "contracts/integration/corporate-records-source",
-      "digest": "sha256:c46cdd38f9026cc3fb5ba92f4f970119fd24ea33348187f36287b912ba0f6287",
+      "digest": "sha256:86092ded024b5e461643694b2559e6719e90d96fe9b316dbccb90b07594feeb0",
       "files": [
         {
           "path": "src/src/fixtures/observations.json",
           "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
+        },
+        {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         }
       ]
     },
@@ -468,6 +530,10 @@
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
           "digest": "sha256:73efcc3ef5263881b9b6253cc47d1fd2c57ae010b42d2697350113663d4d2a00"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -578,6 +644,24 @@
         {
           "path": "src/src/errors/incoherent-case.error.ts",
           "digest": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036"
+        }
+      ]
+    },
+    {
+      "node": "contracts/system/corporate-records",
+      "digest": "sha256:35f4c5b840d7beda5af7e613f3b16e9f94e79d5761dfc2ad3d5852613d974f3c",
+      "files": [
+        {
+          "path": "src/src/http-connector/connector-call-descriptor.ts",
+          "digest": "sha256:a01a879facda8b9a38fa4a84ed6cf34d396aa571a2313fb64973a551cc2be201"
+        },
+        {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         }
       ]
     },
@@ -802,6 +886,10 @@
         {
           "path": "src/src/fixtures/capability/capability.json",
           "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/persistence/file-capability-store.repository.ts",
@@ -1056,6 +1144,10 @@
         {
           "path": "src/src/investigation/evidence-result.ts",
           "digest": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1422,6 +1514,20 @@
       ]
     },
     {
+      "node": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "digest": "sha256:b476b505a513da0b109d7afc39be94d3acecb33cfcbce40c43bdba9b088066b5",
+      "files": [
+        {
+          "path": "src/src/http-connector/response-path-extractor.ts",
+          "digest": "sha256:326ff6865e475491e76623c834becc97941244ebe759ac6aec7f37e5225dcb59"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/one-capability-answers-one-concept",
       "digest": "sha256:4a64f8f413778361a6410e6714e61b7308f56325a3e200709cdee34abe00251f",
       "files": [
@@ -1590,6 +1696,10 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         }
       ]
     },
@@ -1598,8 +1708,16 @@
       "digest": "sha256:fca9dd22ff0f0b85e3ffff552e0082e893935afecc1bf92374918074e3c28822",
       "files": [
         {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+        },
+        {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -1624,6 +1742,10 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -2036,6 +2158,10 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",

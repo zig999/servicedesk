@@ -1,0 +1,209 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-registration/connector-configuration-persistence",
+      "kind": "implementation",
+      "file": "implementation/connector-registration/connector-configuration-persistence.md",
+      "title": "Connector configuration's relational persistence boundary, outside the domain",
+      "summary": "A new connector-registry module (port, service, relational store, migration and factory) that writes and reads a connector's own opaque call configuration through the system's one relational database, reachable by nothing under the domain layer.",
+      "task": "task/connector-registration/connector-configuration-persistence"
+    },
+    {
+      "id": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "kind": "implementation",
+      "file": "implementation/http-observation-runtime/descriptor-placeholder-resolver.md",
+      "title": "Connector request-assembly translation (Subject, requester, connector configuration, credential)",
+      "summary": "A pure, side-effect-free (besides one environment read) translation module that turns a Subject's attribute-values, the collection's requester identity and a connector's own opaque call configuration into the concrete address/query/headers/body of an outbound HTTP request, with a credential sourced from the environment by name and every reference resolved through one string-substitution mechanism — never executed as code, and never left unresolved.",
+      "task": "task/http-observation-runtime/descriptor-placeholder-resolver"
+    },
+    {
+      "id": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "kind": "implementation",
+      "file": "implementation/http-observation-runtime/http-declarative-observation-source.md",
+      "title": "Generic HTTP adapter for IObservationSource",
+      "summary": "HttpDeclarativeObservationSource, a data-driven adapter behind the unchanged IObservationSource port that resolves a concept's capability and its connector's own opaque HTTP configuration, issues exactly one fetch call bounded by the capability's own declared timeout, and classifies the result into one of the four evidence-result endings with the ok observation keyed by the capability's own output_schema.",
+      "task": "task/http-observation-runtime/http-declarative-observation-source"
+    },
+    {
+      "id": "implementation/http-observation-runtime/production-wiring-swap",
+      "kind": "implementation",
+      "file": "implementation/http-observation-runtime/production-wiring-swap.md",
+      "title": "Production wiring swap — HTTP declarative adapter replaces the fixture-backed fake",
+      "summary": "diagnose-server.factory.ts now constructs HttpDeclarativeObservationSource from the capability and connector-configuration registries instead of FakeObservationSource, and env.ts drops OBSERVATIONS_FIXTURE_FILE now that no production path reads it.",
+      "task": "task/http-observation-runtime/production-wiring-swap"
+    },
+    {
+      "id": "implementation/http-observation-runtime/response-path-extractor",
+      "kind": "implementation",
+      "file": "implementation/http-observation-runtime/response-path-extractor.md",
+      "title": "Response path extractor",
+      "summary": "A pure extraction function that reads a field-name-to-path mapping over an arbitrary parsed HTTP response body and returns a flat object keyed exactly by that mapping's own field names, supporting a nested object key and an array index in one path.",
+      "task": "task/http-observation-runtime/response-path-extractor"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-registration/connector-configuration-persistence",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-registration/connector-configuration-persistence",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-registration/connector-configuration-persistence",
+      "to": "task/connector-registration/connector-configuration-persistence",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/integration/concept-observation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/system/corporate-records",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/integration/concept-observation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/system/corporate-records",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/http-declarative-observation-source",
+      "to": "task/http-observation-runtime/http-declarative-observation-source",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/http-observation-runtime/production-wiring-swap",
+      "to": "task/http-observation-runtime/production-wiring-swap",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/http-observation-runtime/response-path-extractor",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/response-path-extractor",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/http-observation-runtime/response-path-extractor",
+      "to": "task/http-observation-runtime/response-path-extractor",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}
