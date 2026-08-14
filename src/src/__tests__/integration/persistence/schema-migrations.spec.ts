@@ -47,7 +47,14 @@ const UNIQUE_VIOLATION = '23505';
 const CHECK_VIOLATION = '23514';
 const INVALID_TEXT_REPRESENTATION = '22P02';
 
-/** Every table the five scripts create together, independent of which element or column pairs with which — the observable shape criterion 1 asks replay to produce. */
+/**
+ * Every table the scripts create together, independent of which element or column pairs with
+ * which — the observable shape criterion 1 asks replay to produce. Extended for
+ * task/connector-registration/connector-configuration-persistence's own
+ * migrations/0008-connector-configuration.sql: connector_configurations is the one table that
+ * script adds, holding wherever a connector's own call configuration is kept
+ * (constraints/the-system-persists-to-one-relational-database) rather than a file.
+ */
 const EXPECTED_TABLES = [
   'actions',
   'capabilities',
@@ -55,6 +62,7 @@ const EXPECTED_TABLES = [
   'cases',
   'concept_accepts',
   'concepts',
+  'connector_configurations',
   'hypotheses',
   'hypothesis_collects',
   'investigation_evaluation_citations',

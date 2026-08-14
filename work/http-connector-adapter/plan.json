@@ -1,0 +1,482 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-registration",
+      "kind": "epic",
+      "file": "epic/connector-registration.md",
+      "title": "Connector registration",
+      "summary": "The validated write path that registers and persists an external system's connector descriptor before any call reads it."
+    },
+    {
+      "id": "epic/http-observation-runtime",
+      "kind": "epic",
+      "file": "epic/http-observation-runtime.md",
+      "title": "HTTP observation runtime",
+      "summary": "The generic adapter that executes a registered connector's HTTP call and the production wiring that puts it behind the observation-source port."
+    },
+    {
+      "id": "inventory/http-connector-adapter",
+      "kind": "inventory",
+      "file": "inventory/http-connector-adapter.md",
+      "title": "Observation-source area — production HTTP adapter replacing the fixture-backed fake",
+      "summary": "The port, its sole current adapter, the collection stage that calls it, the production wiring that constructs it, and the registry/persistence conventions the new connector descriptor would extend."
+    },
+    {
+      "id": "task/connector-registration/connector-configuration-persistence",
+      "kind": "task",
+      "file": "task/connector-registration/connector-configuration-persistence.md",
+      "title": "Connector configuration persists in the relational store, outside the domain",
+      "summary": "Wherever a connector's own call configuration is kept persists in the system's one relational database and stays a dependency no domain module imports.",
+      "epic": "connector-registration"
+    },
+    {
+      "id": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "kind": "task",
+      "file": "task/http-observation-runtime/descriptor-placeholder-resolver.md",
+      "title": "Request-assembly translation from Subject data and a stored credential",
+      "summary": "A translation step that turns a Subject's attribute-values, the collection's requester identity and a separately-sourced credential into the concrete address, query, headers and body of an outbound HTTP request, without executing configuration as code.",
+      "epic": "http-observation-runtime"
+    },
+    {
+      "id": "task/http-observation-runtime/http-declarative-observation-source",
+      "kind": "task",
+      "file": "task/http-observation-runtime/http-declarative-observation-source.md",
+      "title": "Generic HTTP adapter answering the observation-source port for any registered connector",
+      "summary": "The one adapter behind IObservationSource that executes a registered connector's HTTP call and resolves it to one of the four evidence-result endings, in the glossary's vocabulary, within scope and timeout.",
+      "epic": "http-observation-runtime"
+    },
+    {
+      "id": "task/http-observation-runtime/production-wiring-swap",
+      "kind": "task",
+      "file": "task/http-observation-runtime/production-wiring-swap.md",
+      "title": "Production wiring swap",
+      "summary": "The production diagnose pipeline is rewired to construct the HTTP declarative adapter instead of the fixture-backed fake.",
+      "epic": "http-observation-runtime"
+    },
+    {
+      "id": "task/http-observation-runtime/response-path-extractor",
+      "kind": "task",
+      "file": "task/http-observation-runtime/response-path-extractor.md",
+      "title": "Response path extractor",
+      "summary": "A pure extraction engine that turns an arbitrary parsed HTTP response body into a flat object keyed exactly by a response mapping's declared fields.",
+      "epic": "http-observation-runtime"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-registration",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-registration",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "contracts/integration/concept-observation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "contracts/system/corporate-records",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/http-observation-runtime",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/connector-registration/connector-configuration-persistence",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-registration/connector-configuration-persistence",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/integration/concept-observation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/system/corporate-records",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "task/http-observation-runtime/descriptor-placeholder-resolver",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "task/http-observation-runtime/response-path-extractor",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "task/connector-registration/connector-configuration-persistence",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/integration/concept-observation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/system/corporate-records",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "contracts/integration/corporate-records-source",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/http-observation-runtime/http-declarative-observation-source",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/http-observation-runtime/production-wiring-swap",
+      "to": "task/http-observation-runtime/http-declarative-observation-source",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/http-observation-runtime/response-path-extractor",
+      "to": "constraints/evidence-normalization-is-an-anticorruption-layer",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/http-observation-runtime/response-path-extractor",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

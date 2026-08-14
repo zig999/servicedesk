@@ -19,6 +19,15 @@
 //      each is the one file its own directory comment already names as the sole exception, and each
 //      implements a published port precisely so the domain calling through that port never imports
 //      the provider itself).
+//
+// Extended for task/connector-registration/connector-configuration-persistence's own criterion 2 —
+// "No module under the domain layer ... imports the connector-configuration store, its
+// persistence driver, or any HTTP client package directly" — which names the same domain layer
+// this file already sweeps in full: the fifth test below fails if any of these modules imports the
+// connector-configuration store or its relational adapter, by any relative path, and the sixth
+// fails if any imports a common HTTP client package. This task introduced no HTTP client package
+// at all, so that test currently passes over an empty intersection; it stands as the guard should
+// one be added to a domain module later.
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -79,6 +88,17 @@ function reachesTheConnectionModule(specifier: string): boolean {
   return /(^|\/)database-connection(\.js)?$/.test(specifier);
 }
 
+/** Common HTTP client packages — what task/connector-registration/connector-configuration-persistence's own criterion 2 forbids directly, beyond the driver names FORBIDDEN_DRIVERS_AND_FRAMEWORKS already lists. */
+const HTTP_CLIENT_PACKAGES = ['axios', 'node-fetch', 'got', 'undici', 'ws', 'superagent', 'request'];
+
+/** Whether a specifier reaches the connector-configuration store task/connector-registration/connector-configuration-persistence adds, or its relational adapter, by any relative path. */
+function reachesTheConnectorConfigurationStore(specifier: string): boolean {
+  return (
+    /(^|\/)connector-configuration-store\.port(\.js)?$/.test(specifier) ||
+    /(^|\/)relational-connector-configuration-store\.repository(\.js)?$/.test(specifier)
+  );
+}
+
 it('the case, glossary, capability-registry and investigation modules import no driver and no framework', async () => {
   const imports = await domainModuleImports();
 
@@ -112,6 +132,32 @@ it('none of these modules imports the LLM provider client directly, except the t
   for (const [file, specifiers] of imports) {
     if (PROVIDER_ADAPTER_EXCEPTIONS.has(file.split('/')[1] ?? '')) continue;
     for (const specifier of specifiers.filter((s) => namesOneOf(s, [PROVIDER_CLIENT_PACKAGE]))) {
+      offenders.push(`${file} imports ${specifier}`);
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it('none of these modules imports the connector-configuration store or its relational adapter, by any relative path', async () => {
+  const imports = await domainModuleImports();
+
+  const offenders: string[] = [];
+  for (const [file, specifiers] of imports) {
+    for (const specifier of specifiers.filter(reachesTheConnectorConfigurationStore)) {
+      offenders.push(`${file} imports ${specifier}`);
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it('none of these modules imports an HTTP client package', async () => {
+  const imports = await domainModuleImports();
+
+  const offenders: string[] = [];
+  for (const [file, specifiers] of imports) {
+    for (const specifier of specifiers.filter((s) => namesOneOf(s, HTTP_CLIENT_PACKAGES))) {
       offenders.push(`${file} imports ${specifier}`);
     }
   }
