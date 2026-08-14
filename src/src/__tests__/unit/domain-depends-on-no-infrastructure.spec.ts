@@ -45,6 +45,15 @@
 // name or exported functions, however it might be referenced, and the tenth confirms the one real
 // port at the domain boundary, IObservationSource, is still declared as an interface — together
 // they are what this task's own Notes ask a test to confirm beyond the absence of a static import.
+//
+// Extended again for task/http-observation-runtime/http-declarative-observation-source's own
+// criterion 10 — "The adapter and any HTTP client package it uses live outside the domain layer,
+// and no domain module imports either directly." A new test below the tenth fails if any of these
+// modules imports that task's own production adapter by relative path, bypassing the unchanged
+// IObservationSource port. That same adapter is exactly the "future HTTP adapter" the seventh and
+// ninth tests' own module-under-test already anticipated as its one legitimate consumer, so both
+// are rescoped to exclude it by name rather than report its own, intended composition as an offense
+// (see the exclusion constant's own comment below for the retroactive-correction reasoning).
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -141,6 +150,23 @@ const CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS = [
   'asConnectorCallDescriptor',
 ];
 
+/**
+ * task/http-observation-runtime/http-declarative-observation-source's own production adapter —
+ * exactly the "future HTTP adapter" connector-request-resolver.ts's own header comment, and this
+ * file's own header above, already anticipated as the one legitimate importer of the
+ * connector-request-resolver module and its call-descriptor vocabulary. Excluded from the
+ * reachesTheConnectorRequestResolver sweep and the bypass-mention scan below, the same way
+ * PROVIDER_ADAPTER_EXCEPTIONS excludes the two provider adapters from the provider-client sweep
+ * above: this adapter composes resolveConnectorRequest by design, so flagging its own, intended
+ * import as an offense would require in code exactly what that task's own criteria state.
+ * (Retroactive correction, by task/http-observation-runtime/http-declarative-observation-source's
+ * own test-author: this adapter landed after the two checks below were written, and both would
+ * otherwise report its own, entirely intended, imports and mentions as offenses the moment this
+ * file existed — the same shape of correction observation-source-modules.spec.ts's own two
+ * retroactive corrections already record for their own directory-wide sweeps.)
+ */
+const HTTP_DECLARATIVE_OBSERVATION_SOURCE_ADAPTER_KEY = 'investigation/http-declarative-observation-source.adapter.ts';
+
 /** Reads every .ts module's whole raw source under each of the four audited directories, keyed by "<directory>/<file>" — unlike domainModuleImports, this keeps the full text rather than only the extracted import specifiers, since a bypass this task's own Notes flag need not appear as one. */
 async function domainModuleSources(): Promise<ReadonlyMap<string, string>> {
   const sources = new Map<string, string>();
@@ -229,11 +255,12 @@ it('the connection module sits under persistence/, beside the relational store r
   expect(persistenceFiles).toContain('relational-case-store.repository.ts');
 });
 
-it('none of these modules imports the connector-request-resolver module or its call-descriptor vocabulary, by any relative path', async () => {
+it('none of these modules imports the connector-request-resolver module or its call-descriptor vocabulary, by any relative path, except this epic\'s own legitimate HTTP adapter', async () => {
   const imports = await domainModuleImports();
 
   const offenders: string[] = [];
   for (const [file, specifiers] of imports) {
+    if (file === HTTP_DECLARATIVE_OBSERVATION_SOURCE_ADAPTER_KEY) continue;
     for (const specifier of specifiers.filter(reachesTheConnectorRequestResolver)) {
       offenders.push(`${file} imports ${specifier}`);
     }
@@ -255,15 +282,34 @@ it('none of these modules imports either error the connector-request-resolver ra
   expect(offenders).toEqual([]);
 });
 
-it("none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out", async () => {
+it("none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out — except this epic's own legitimate HTTP adapter", async () => {
   const sources = await domainModuleSources();
 
   const offenders: string[] = [];
   for (const [file, source] of sources) {
+    if (file === HTTP_DECLARATIVE_OBSERVATION_SOURCE_ADAPTER_KEY) continue;
     for (const mention of CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS) {
       if (source.includes(mention)) {
         offenders.push(`${file} mentions "${mention}"`);
       }
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+/** Whether a specifier reaches task/http-observation-runtime/http-declarative-observation-source's own production adapter, by any relative path — criterion 10's "no domain module imports [the adapter] ... directly." */
+function reachesTheHttpDeclarativeObservationSourceAdapter(specifier: string): boolean {
+  return /(^|\/)http-declarative-observation-source\.adapter(\.js)?$/.test(specifier);
+}
+
+it('none of these modules imports the http-declarative-observation-source adapter directly, by any relative path — it is reached only through the unchanged IObservationSource port', async () => {
+  const imports = await domainModuleImports();
+
+  const offenders: string[] = [];
+  for (const [file, specifiers] of imports) {
+    for (const specifier of specifiers.filter(reachesTheHttpDeclarativeObservationSourceAdapter)) {
+      offenders.push(`${file} imports ${specifier}`);
     }
   }
 

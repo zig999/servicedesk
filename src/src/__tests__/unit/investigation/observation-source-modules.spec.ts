@@ -30,6 +30,18 @@
 // below rather than rescoped to a fixed file list, so every file this sweep
 // already covered — including evaluation.ts and evidence.ts, which own no
 // import-purity audit of their own — stays covered.)
+//
+// (Third retroactive correction, by
+// task/http-observation-runtime/http-declarative-observation-source's own
+// test-author: that task's own objective is a second, legitimate concrete
+// class answering IObservationSource — a generic HTTP adapter beside the
+// fake — so the "exactly one implementer" count below broke the moment its
+// own file landed, exactly the shape the first retroactive correction's own
+// comment already names as this check's known failure mode. Rescoped again
+// to what task/evidence-collection/observation-source-port's own criterion 2
+// and this new task's own objective together now establish: exactly these
+// two named implementers, sorted so the comparison holds regardless of the
+// order readdir happens to enumerate them in.)
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -155,7 +167,7 @@ it('the observation-source modules import nothing from the standard library, so 
   expect(offenders).toEqual([]);
 });
 
-it('ships exactly one concrete class implementing IObservationSource', async () => {
+it('ships exactly two concrete classes implementing IObservationSource: the fake, and this epic\'s own generic HTTP adapter', async () => {
   const files = await investigationFiles();
 
   const implementers: string[] = [];
@@ -166,5 +178,7 @@ it('ships exactly one concrete class implementing IObservationSource', async () 
     }
   }
 
-  expect(implementers).toEqual(['fake-observation-source.adapter.ts']);
+  expect(implementers.slice().sort()).toEqual(
+    ['fake-observation-source.adapter.ts', 'http-declarative-observation-source.adapter.ts'].sort(),
+  );
 });
