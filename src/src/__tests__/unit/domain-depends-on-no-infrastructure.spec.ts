@@ -28,6 +28,23 @@
 // fails if any imports a common HTTP client package. This task introduced no HTTP client package
 // at all, so that test currently passes over an empty intersection; it stands as the guard should
 // one be added to a domain module later.
+//
+// Extended again for task/http-observation-runtime/descriptor-placeholder-resolver's own
+// criterion 5 — "No module under the domain layer ... imports this translation module, its
+// secret-reading mechanism, or any HTTP-request-building package directly." The
+// HTTP-request-building-package half is already the sixth test above (HTTP_CLIENT_PACKAGES); the
+// seventh test below fails if any of these modules imports the connector-request-resolver module
+// or its call-descriptor vocabulary, by any relative path, and the eighth fails if any imports
+// either error that resolver raises. Its own credential-reading mechanism
+// (resolveCredentialPlaceholder) is never itself exported, so importing the resolver module is the
+// only way to reach it — the seventh test already covers this.
+// Its own Notes flag a gap those import-specifier sweeps cannot see on their own: a domain module
+// could reach this task's http-connector module through a dynamic lookup, a global registry or a
+// string-keyed service locator, none of which is a static "from '...'" specifier at all. The ninth
+// test below scans each domain module's raw source for any mention of the resolver's own module
+// name or exported functions, however it might be referenced, and the tenth confirms the one real
+// port at the domain boundary, IObservationSource, is still declared as an interface — together
+// they are what this task's own Notes ask a test to confirm beyond the absence of a static import.
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -97,6 +114,44 @@ function reachesTheConnectorConfigurationStore(specifier: string): boolean {
     /(^|\/)connector-configuration-store\.port(\.js)?$/.test(specifier) ||
     /(^|\/)relational-connector-configuration-store\.repository(\.js)?$/.test(specifier)
   );
+}
+
+/** Whether a specifier reaches task/http-observation-runtime/descriptor-placeholder-resolver's own translation module or its call-descriptor vocabulary, by any relative path. */
+function reachesTheConnectorRequestResolver(specifier: string): boolean {
+  return (
+    /(^|\/)connector-request-resolver(\.js)?$/.test(specifier) ||
+    /(^|\/)connector-call-descriptor(\.js)?$/.test(specifier)
+  );
+}
+
+/** Whether a specifier reaches either error connector-request-resolver.ts raises, by any relative path. */
+function reachesTheConnectorPlaceholderErrors(specifier: string): boolean {
+  return (
+    /(^|\/)incomplete-connector-call-descriptor\.error(\.js)?$/.test(specifier) ||
+    /(^|\/)connector-placeholder-not-resolved\.error(\.js)?$/.test(specifier)
+  );
+}
+
+/** Any bare mention of the connector-request-resolver module or its own exports a domain module's raw source could carry — a dynamic lookup, a global registry, or a string-keyed service locator, none of which is a static import specifier the sweep above would ever see. */
+const CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS = [
+  'http-connector',
+  'connector-request-resolver',
+  'connector-call-descriptor',
+  'resolveConnectorRequest',
+  'asConnectorCallDescriptor',
+];
+
+/** Reads every .ts module's whole raw source under each of the four audited directories, keyed by "<directory>/<file>" — unlike domainModuleImports, this keeps the full text rather than only the extracted import specifiers, since a bypass this task's own Notes flag need not appear as one. */
+async function domainModuleSources(): Promise<ReadonlyMap<string, string>> {
+  const sources = new Map<string, string>();
+  for (const directory of AUDITED_DIRECTORIES) {
+    const directoryPath = fileURLToPath(new URL(`../../${directory}/`, import.meta.url));
+    const files = (await readdir(directoryPath)).filter((file) => file.endsWith('.ts'));
+    for (const file of files) {
+      sources.set(`${directory}/${file}`, await readFile(join(directoryPath, file), 'utf8'));
+    }
+  }
+  return sources;
 }
 
 it('the case, glossary, capability-registry and investigation modules import no driver and no framework', async () => {
@@ -172,4 +227,54 @@ it('the connection module sits under persistence/, beside the relational store r
 
   expect(persistenceFiles).toContain('database-connection.ts');
   expect(persistenceFiles).toContain('relational-case-store.repository.ts');
+});
+
+it('none of these modules imports the connector-request-resolver module or its call-descriptor vocabulary, by any relative path', async () => {
+  const imports = await domainModuleImports();
+
+  const offenders: string[] = [];
+  for (const [file, specifiers] of imports) {
+    for (const specifier of specifiers.filter(reachesTheConnectorRequestResolver)) {
+      offenders.push(`${file} imports ${specifier}`);
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it('none of these modules imports either error the connector-request-resolver raises, by any relative path', async () => {
+  const imports = await domainModuleImports();
+
+  const offenders: string[] = [];
+  for (const [file, specifiers] of imports) {
+    for (const specifier of specifiers.filter(reachesTheConnectorPlaceholderErrors)) {
+      offenders.push(`${file} imports ${specifier}`);
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it("none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out", async () => {
+  const sources = await domainModuleSources();
+
+  const offenders: string[] = [];
+  for (const [file, source] of sources) {
+    for (const mention of CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS) {
+      if (source.includes(mention)) {
+        offenders.push(`${file} mentions "${mention}"`);
+      }
+    }
+  }
+
+  expect(offenders).toEqual([]);
+});
+
+it('IObservationSource is still declared as an interface in observation-source.port.ts — the one real port at the domain boundary this task must not be bypassed by', async () => {
+  const portSource = await readFile(
+    fileURLToPath(new URL('../../investigation/observation-source.port.ts', import.meta.url)),
+    'utf8',
+  );
+
+  expect(portSource).toMatch(/export\s+interface\s+IObservationSource\b/);
 });
