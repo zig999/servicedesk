@@ -129,7 +129,7 @@
         },
         {
           "path": "src/src/vitest-global-setup.ts",
-          "digest": "sha256:b920d84098af8fd0f17a319c1b5410230894a2e3bf88271581c64d0b4ff5d772"
+          "digest": "sha256:5001ff8fe2ac1b8ab3cbedfb319044cb065c8dfb58c272e9be91ff6f00b02851"
         }
       ]
     },
@@ -305,7 +305,7 @@
         },
         {
           "path": "src/src/vitest-global-setup.ts",
-          "digest": "sha256:b920d84098af8fd0f17a319c1b5410230894a2e3bf88271581c64d0b4ff5d772"
+          "digest": "sha256:5001ff8fe2ac1b8ab3cbedfb319044cb065c8dfb58c272e9be91ff6f00b02851"
         }
       ]
     },
