@@ -57,13 +57,13 @@ inferences:
   from: capability-registry.factory.ts's own precedent for wiring a registry-over-a-store module from the shared DatabaseConnection, and the standard's own ARC-02/ARC-03 convention that a module's construction lives in one factory function under src/factories/ rather than being constructed ad hoc by whichever future task consumes it.
 divergences:
 - cites: COR-02
-  file: src/errors/incomplete-connector-configuration.error.ts
-  departure: The error class carries a name, a message and a context field, but no status field.
+  file: src/connector-registry/connector-configuration-registry.service.ts
+  departure: registerConnector raises IncompleteConnectorConfigurationError carrying a name, a message and a context field, but no status field.
   why: Every error class already under src/errors/ (CapabilityStoreError, IncompleteCapabilityContractError, InvalidEnvironmentError, and every other sibling) carries the same name/message/context shape with no status field, and no status-map.ts or equivalent single mapping exists anywhere in this project — the presupposition COR-04 states the mapping belongs to. registerConnector is, per the scope's own explicit framing, never a published HTTP operation, so this error never crosses a transport boundary. Inventing a status value for only this one new class, with no central mapping to hold it, would not satisfy COR-04's "one place" requirement and would fragment the existing convention rather than fix it; building the cross-cutting status-mapping infrastructure that would actually satisfy both rules reaches past this task's own objective of persisting configuration in the relational store, so this class follows the codebase's existing, uniform error shape instead.
 - cites: COR-02
-  file: src/errors/connector-configuration-store.error.ts
-  departure: The error class carries a name, a message and a context field, but no status field.
-  why: 'Same reasoning as the divergence recorded for incomplete-connector-configuration.error.ts: this class mirrors CapabilityStoreError''s own shape exactly, which itself already carries no status field, and no status-map.ts exists in this project for either to plug into.'
+  file: src/persistence/relational-connector-configuration-store.repository.ts
+  departure: A read or write against connector_configurations raises ConnectorConfigurationStoreError carrying a name, a message and a context field, but no status field.
+  why: 'Same reasoning as the divergence recorded against connector-configuration-registry.service.ts: this class mirrors CapabilityStoreError''s own shape exactly, which itself already carries no status field, and no status-map.ts exists in this project for either to plug into.'
 deferred:
 - what: No foreign key or existence check ties capabilities.connector to connector_configurations.connector; a capability can name a connector no row here answers.
   why: 'This is exactly the inventory''s own recorded risk, and adding such a constraint is deliberately not part of this task''s criteria: the scope''s own design has a concept whose capability names an unregistered or removed connector resolve silently to the "unavailable"/configuration-error path at call time, never a registration-time or schema-level refusal. Changing that behavior would also require altering the existing capabilities table and its registration path, which this task''s own scope does not reach.'
