@@ -7,11 +7,11 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:57e2b2373c39393279a244de4c96b3f69d2de7f227d025247cc0417a016f13ee"
+          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
         }
       ]
     },
@@ -43,7 +43,7 @@
       "files": [
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
-          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+          "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -51,7 +51,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -117,7 +117,7 @@
       "files": [
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:660915aad31554453ac2d17d57b9a87cbcf3f7639edc2802d426198a5335c45c"
+          "digest": "sha256:0713fa64fc9017400230810cc13280a4e8777c2addedd27b59971767f695c0cc"
         },
         {
           "path": "src/src/migrate.ts",
@@ -139,7 +139,7 @@
       "files": [
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
-          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+          "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -151,7 +151,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -225,11 +225,11 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/investigation.ts",
-          "digest": "sha256:70011007199a2a95a905d041a4ea168b4db8851943630c211e97d9dbce9ef859"
+          "digest": "sha256:3b00a58eb5922c226d1c815a3f7ab8ab481379186aee7b19b4c390a65dcb4b45"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -353,7 +353,7 @@
         },
         {
           "path": "src/src/config/env.ts",
-          "digest": "sha256:157c581634b46628396520c1fdc7451448e782d5c70abe8ec21b9860db310822"
+          "digest": "sha256:0713fa64fc9017400230810cc13280a4e8777c2addedd27b59971767f695c0cc"
         },
         {
           "path": "src/src/factories/capability-registry.factory.ts",
@@ -369,7 +369,7 @@
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
-          "digest": "sha256:5050b98f10604db6109f692cba0b07174c201a27f889d08bb3335b6b6b001591"
+          "digest": "sha256:6dfcbf1e7b67f0ae67cf6962215a41cab90eca3a1d9cdfba91dca273b041bfc3"
         },
         {
           "path": "src/src/factories/diagnose.factory.ts",
@@ -410,16 +410,16 @@
       "digest": "sha256:2c7c3030e0d986ef7fb64e34d190b319de91d40db4d88a7f610d2a505e759095",
       "files": [
         {
+          "path": "src/src/factories/glossary.factory.ts",
+          "digest": "sha256:6bd555ad42af4f9798167cbe12a6c68543f86297c290b9b6ebc8813721947fff"
+        },
+        {
           "path": "src/src/glossary/glossary-query.port.ts",
           "digest": "sha256:f207a117d05553ecae2b7357ee3e6908ea63cf6178cad5843d2097cd646b6a36"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
-        },
-        {
-          "path": "src/src/factories/glossary.factory.ts",
-          "digest": "sha256:41a8bf011946141bd81c27408c1e063130137c7676bf5d29423255d062b8ef3a"
         }
       ]
     },
@@ -475,11 +475,11 @@
     },
     {
       "node": "contracts/investigation/case-source",
-      "digest": "sha256:96c2aa946e9b76e31761b1966a1c8f0de74dd3790f42ed77bff504074d5bf7e5",
+      "digest": "sha256:ed414dcefd7b56ebbed666c1b92bc855c213621b735043e1735e857fe4e41886",
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -489,11 +489,11 @@
       "files": [
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
-          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+          "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:55be0b9b95d8026d0408964cfe3fa20cf720364857052a5102bd2083fdd74347"
+          "digest": "sha256:4feb4a15ed5b7166479fbdfebf643b987d7c82089ac72f9dbe9b3a9d628b5f80"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -505,7 +505,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:43c6407dbd97e9ba8751dc361c2fb48c396aba637636cd91f99de755fec5e4e6"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -515,7 +515,7 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         }
       ]
     },
@@ -555,7 +555,7 @@
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/factories/author-case-version.factory.ts",
@@ -563,7 +563,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:e29ee45697235a4664decca8f895ad353984d5eab82a2a9e7fd0a7e6a6c684f6"
+          "digest": "sha256:863f7140baf76ef030754e1a786250f5fae203a880d0d7a79d840eb69a553e46"
         }
       ]
     },
@@ -595,7 +595,7 @@
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
-          "digest": "sha256:0667dd2441add666748b909f2ab62cfe37f78c43157533476dfdfcb93bec745b"
+          "digest": "sha256:0d7882cce3747b0250d0f0f12f42e5b5310bcdececf6cd513d4e52a0711465b6"
         }
       ]
     },
@@ -623,11 +623,11 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -671,7 +671,7 @@
       "files": [
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:55be0b9b95d8026d0408964cfe3fa20cf720364857052a5102bd2083fdd74347"
+          "digest": "sha256:4feb4a15ed5b7166479fbdfebf643b987d7c82089ac72f9dbe9b3a9d628b5f80"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -817,7 +817,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
@@ -890,10 +890,6 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
-        },
-        {
-          "path": "src/src/persistence/file-capability-store.repository.ts",
-          "digest": "sha256:0efe7cd8fb0af7d1097b8c52320cbb4411a16e2e9e778c71989c247ca7ed2c05"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -1087,7 +1083,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:2ee08a5e3b7f5fd5f7058cae4d168b83b255264f44b21598c29da45d33938cfc"
+          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1195,7 +1191,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:f60b6b17a86c63de5b6273692888da220109fed29b3265f3b4dd1ba956d0bd32"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1221,7 +1217,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -1247,7 +1243,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/subject-attribute-value.ts",
@@ -1299,7 +1295,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -1311,7 +1307,7 @@
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -1337,15 +1333,15 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
+          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         },
         {
           "path": "src/src/investigation/consolidation-register.ts",
@@ -1367,7 +1363,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -1379,7 +1375,7 @@
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -1409,15 +1405,15 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+          "digest": "sha256:0ff4ceed3cc5e309bd5231d7ca8507355165a4b7ec56a254ccbf901984fb67a9"
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
+          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -1425,7 +1421,7 @@
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1439,15 +1435,15 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:a5915d362bd6ecd43bc9910e9e88cbbb29484a08806b84f8ce95b9970d2ba589"
+          "digest": "sha256:0ff4ceed3cc5e309bd5231d7ca8507355165a4b7ec56a254ccbf901984fb67a9"
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
+          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -1455,7 +1451,7 @@
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1477,7 +1473,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:e29ee45697235a4664decca8f895ad353984d5eab82a2a9e7fd0a7e6a6c684f6"
+          "digest": "sha256:863f7140baf76ef030754e1a786250f5fae203a880d0d7a79d840eb69a553e46"
         }
       ]
     },
@@ -1609,7 +1605,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         }
       ]
     },
@@ -1623,7 +1619,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -1637,11 +1633,11 @@
       "files": [
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
-          "digest": "sha256:e4c3d27fed59745f8d131be8e4011c64803fc184b49bd72708531b86d74a9c36"
+          "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -1677,11 +1673,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
-        },
-        {
-          "path": "src/src/persistence/file-investigation-store.repository.ts",
-          "digest": "sha256:bb5312ac41e47510f1040e00478f4bbc2b3dbb12fd7f05eba514384cabe42c80"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1753,7 +1745,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -1763,7 +1755,7 @@
       "files": [
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -1781,7 +1773,7 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:8e23c88e34997b7f483f431f0a438e56f8f87a47201e2e844bb4f55107be9fc5"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         }
       ]
     },
@@ -1799,15 +1791,15 @@
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
-          "digest": "sha256:3b78e9dfcf2732f0eaa50130b642be46bbadb75972c42da2136df869cc133d6b"
+          "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
           "path": "src/src/investigation/investigation.ts",
-          "digest": "sha256:8a60d1c98f35da65298821d3484b40ff83c60225356e01af8ca20e9447cb8bf2"
+          "digest": "sha256:3b00a58eb5922c226d1c815a3f7ab8ab481379186aee7b19b4c390a65dcb4b45"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:f60b6b17a86c63de5b6273692888da220109fed29b3265f3b4dd1ba956d0bd32"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -1839,7 +1831,7 @@
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:43c6407dbd97e9ba8751dc361c2fb48c396aba637636cd91f99de755fec5e4e6"
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
@@ -1867,11 +1859,11 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1889,7 +1881,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:57e2b2373c39393279a244de4c96b3f69d2de7f227d025247cc0417a016f13ee"
+          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
         }
       ]
     },
@@ -1921,7 +1913,7 @@
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         },
         {
           "path": "src/src/fixtures/glossary/concept.json",
@@ -1935,11 +1927,11 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1949,11 +1941,11 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1967,11 +1959,11 @@
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -1985,11 +1977,11 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:5a7044b20ec42b8e26f14d6096459166aa700b523fe8a0918184406af2cca5c4"
+          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         }
       ]
     },
@@ -2003,7 +1995,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:57e2b2373c39393279a244de4c96b3f69d2de7f227d025247cc0417a016f13ee"
+          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
         }
       ]
     },
@@ -2017,7 +2009,7 @@
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         },
         {
           "path": "src/src/fixtures/glossary/action.json",
@@ -2043,19 +2035,15 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:4d2bded0183172349f7ab1e54391e08ba8bf5127123a7d679c6ee1f823ec864c"
         },
         {
-          "path": "src/src/persistence/file-case-store.repository.ts",
-          "digest": "sha256:ff40088688e191e299756d0ad5a407300a2a3d4bad0ee1c540c3d292de2e01d1"
-        },
-        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:57e2b2373c39393279a244de4c96b3f69d2de7f227d025247cc0417a016f13ee"
+          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
         }
       ]
     },
@@ -2079,11 +2067,11 @@
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:35619ed3c053c596cb81fd3c2e9b4d049ab154303ac8fb152f3b8f86b64fdbcd"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -2097,15 +2085,15 @@
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:fd933c73f44e8631354ad598a24c5ea44f4ecab7e83871275d8fe6f3116afcac"
+          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:ba7569e7dac9cd720ab6ee03271421a775343cfe0c21e26defc87eb42053b3a5"
+          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -2115,7 +2103,7 @@
       "files": [
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
-          "digest": "sha256:9f1eeb8b81e1ad91b7d0415bf794fa60d7b6e8e588cb9185d62f8e6ba00cb216"
+          "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         }
       ]
     },
@@ -2129,7 +2117,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a67ec8d90b8fc62e5eaab4bdc46017f104020d3e5cfa60b40d2e8610eff654a6"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -2147,7 +2135,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:92c8a54d5c2391f8a5d063e3d227f8d4cebbcf496ca63d67012fd028e1ab1ebc"
+          "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         }
       ]
     },
@@ -2204,12 +2192,12 @@
       "digest": "sha256:5c82d402773b100305b593f1d68206a60f5455347cc92f075e4a2a123ca5cdc4",
       "files": [
         {
-          "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:19736d3c74fa548a1b0497d873833ca6862ede26ae0befb8b144335677324ca4"
-        },
-        {
           "path": "src/src/errors/investigation-write-deadline-exceeded.error.ts",
           "digest": "sha256:466b080452b2d638bf707c3d9db72dbd789dabd23732e350dfbb1761b5f793a8"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
         }
       ]
     },
