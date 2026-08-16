@@ -7,7 +7,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "secret-scan": "secretlint \"**/*\"",
-    "test": "vitest run --passWithNoTests",
+    "test": "node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests",
     "build": "tsc -p tsconfig.build.json",
     "migrate": "node --env-file=.env dist/migrate.js",
     "seed": "node --env-file=.env dist/seed.js",
