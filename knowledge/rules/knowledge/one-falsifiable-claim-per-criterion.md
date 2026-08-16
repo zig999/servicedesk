@@ -2,7 +2,7 @@
 type: invariant
 statement: One criterion states exactly one falsifiable claim.
 constrains:
-  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
 ---
 
 ## Description

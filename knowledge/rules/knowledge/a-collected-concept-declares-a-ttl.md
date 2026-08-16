@@ -1,8 +1,8 @@
 ---
 type: policy
-statement: Every concept a case collects has a ttl defined in the glossary; a registration that states none takes the default of sixty seconds.
+statement: Every concept a hypothesis-revision collects has a ttl defined in the glossary; a registration that states none takes the default of sixty seconds.
 constrains:
-  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
   - domain/glossary/concept
 consistency: eventual
 ---

@@ -3,30 +3,60 @@ classDiagram
         class Case {
             <<AggregateRoot>>
             +string slug
+            +createDraft()
+        }
+    }
+    namespace CaseVersionAggregate {
+        class CaseVersion {
+            <<AggregateRoot>>
+            +integer version
             +string title
             +string whenToUse
-            +integer version
             +datetime authoredAt
             +SubjectType subject
             +Resolution fallback
             +ConsolidationRegister consolidationRegister
+            +CaseVersionState state
+            +datetime releasedAt
+            +ManifestEntry[] manifest
             +collectionPlan()
             +requiresEvaluationOf()
             +resolveOutcome()
+            +placeHypothesis()
+            +removeHypothesis()
+            +release()
+            +discard()
         }
+    }
+    namespace HypothesisAggregate {
         class Hypothesis {
-            <<Entity>>
+            <<AggregateRoot>>
             +string name
-            +integer position
+            +revise()
+        }
+    }
+    namespace HypothesisRevisionAggregate {
+        class HypothesisRevision {
+            <<AggregateRoot>>
+            +integer revision
             +string criterion
             +Concept[] collects
             +Resolution resolution
         }
     }
+    class CaseVersionState {
+        <<Enumeration>>
+        DRAFT
+        RELEASED
+    }
     class ConsolidationRegister {
         <<Enumeration>>
         FORMAL
         PLAIN
+    }
+    class ManifestEntry {
+        <<ValueObject>>
+        +integer position
     }
     class Referral {
         <<ValueObject>>
@@ -53,4 +83,7 @@ classDiagram
     class SubjectType {
         <<external: glossary>>
     }
-    Case "1" *-- "1..*" Hypothesis
+    CaseVersion "0..*" --> "1" Case
+    Hypothesis "0..*" --> "1" Case
+    HypothesisRevision "0..*" --> "1" Hypothesis
+    ManifestEntry "0..*" --> "1" HypothesisRevision

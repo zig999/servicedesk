@@ -8,4 +8,4 @@ constrains:
 ## Description
 
 Judgment is non-deterministic and models and prompts change; the pins are what make an audit read what actually ran.
-Slug and version name one content without a digest over it, because a case version is written once and never altered.
+Slug and version name one content without a digest over it, because a released case version, and every hypothesis-revision its manifest references, is never altered again.

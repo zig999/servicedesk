@@ -1,9 +1,10 @@
 ---
-type: invariant
-statement: No two hypotheses of one case share a name.
+type: policy
+statement: No two hypotheses of one case share a name, across every version the case ever holds.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/hypothesis
+consistency: eventual
 ---
 
 ## Description

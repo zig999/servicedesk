@@ -1,9 +1,9 @@
 ---
-subject: domain/knowledge/case
+subject: domain/knowledge/case-version
 given:
-  - every hypothesis of the pinned case was refuted or inconclusive
+  - every hypothesis-revision the pinned case version manifests was refuted or inconclusive
 when:
-  - the case resolves the outcome over the evaluations
+  - the case version resolves the outcome over the evaluations
 then:
   - the assessment carries the fallback's outcome and referral
   - no determining hypothesis is named

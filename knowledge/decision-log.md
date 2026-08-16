@@ -325,4 +325,34 @@ entries:
     unstated: rules/integration/one-capability-answers-one-concept states that each concept resolves to exactly one capability, and domain/integration/capability-registry's own resolve-concept operation looks a capability up by the concept it answers, but no attribute of the capability itself ever named which concept that is — the element's own Description already spoke of "its concept" in prose, an operative fact with nowhere to be held.
     decided: A capability declares concept, a required reference to domain/glossary/concept.
     why: The lookup resolve-concept performs and the one-to-one invariant one-capability-answers-one-concept states both presuppose a fact readable off the capability itself; leaving it unstated left a column no attribute would declare, which constraints/the-stored-schema-mirrors-the-declared-model refuses, and left an operative claim living only in the element's own Description, which SPEC-001 R7 refuses. The reference is singular, not many, since the existing resolution reads one capability as answering one concept.
+  - location: domain/knowledge/case.md
+    field: attributes
+    unstated: The material describes a case's identity as distinct from any one of its versions, and gives the identity a next-draft behavior, but does not say whether it carries any attribute of its own beyond the slug.
+    decided: slug alone.
+    why: Everything the material once described as belonging to "the case" beyond bare identity — title, when-to-use, subject, fallback, its hypotheses — is now explicitly per-version or per-hypothesis; nothing the material states is a fact of the identity itself, and inventing one would be exactly the kind of technical bookkeeping this class refuses.
+  - location: domain/knowledge/hypothesis-revision.md
+    field: type
+    unstated: The material describes a hypothesis's content as revisioned, reused across several case versions, but does not say whether one revision is an entity living inside the hypothesis's own aggregate or a root of its own.
+    decided: aggregate-root, referenced both by the hypothesis it belongs to and by the manifest entry that adopts it.
+    why: A manifest entry belongs to a different aggregate (case-version) than the hypothesis whose content it adopts, and a reference may only target another aggregate's root, never reach into a sibling aggregate's own entity (SPEC-002 R11); a revision that a manifest entry outside the hypothesis aggregate must address by identity therefore has to stand as a root of its own.
+  - location: domain/knowledge/manifest-entry.md
+    field: attributes.position
+    unstated: The material shows a hypothesis's precedence position without saying whether it belongs to the hypothesis's revisioned content or to the version's own placement of it.
+    decided: position is the manifest entry's own attribute, never a fact of the hypothesis-revision it references.
+    why: The material's own example reorders hypotheses between one version and the next with neither hypothesis's content changing; had position lived on the revision, that same reorder would force a content revision nobody asked for, purely to relabel a number.
+  - location: rules/knowledge/validation-runs-at-every-read.md
+    field: statement
+    unstated: The material says a draft may be temporarily incomplete or incoherent while it is being composed, without saying whether reading a case version in that state is refused, exactly as an incoherent version already is today, or answered as partial data.
+    decided: Reading a case version — draft or released alike — still requires every validator rule to hold at that reading; an incomplete or incoherent draft is not yet readable as a case at all, whether previewed or diagnosed against, and this needs no field of its own to track.
+    why: Keeps the specification's own established mechanism — an unfinished version does not validate, so it is not a case, and nothing has to mark it as not ready — doing exactly the job it already did, rather than inventing a second, parallel notion of partial readability the material never asked for; draft and released answer a different question (whether a version may yet be diagnosed against), never whether it is coherent.
+  - location: rules/knowledge/a-case-has-at-most-one-draft.md
+    field: statement
+    unstated: The material's own working-copy metaphor implies a single draft in flight per case, without stating this as a standing rule.
+    decided: A case holds at most one version in draft state at a time.
+    why: The material's own accepted numbering choice — assign the next version number the moment a draft is created, not at release — only avoids two drafts racing for the same number if at most one draft can exist per case at once; without this as a standing rule, that numbering choice has nothing stopping the collision it was meant to prevent.
+  - location: rules/knowledge/a-case-version-number-is-never-reused.md
+    field: statement
+    unstated: The material states that a discarded draft's version number is never reused as a described behavior of rollback, without saying whether this is a standing invariant or an implementation detail nobody has to honor.
+    decided: A standing rule of the case aggregate, not an implementation detail.
+    why: The whole reason the material insists rollback always mints a new, higher version rather than reactivating an old one is auditability; leaving the no-reuse guarantee as an unstated implementation detail would let a future implementation derive the next number from whichever rows happen to still exist, silently reopening exactly the ambiguity rollback's own discipline exists to close.
 ---

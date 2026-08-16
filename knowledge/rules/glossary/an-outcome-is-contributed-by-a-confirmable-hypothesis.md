@@ -1,9 +1,9 @@
 ---
 type: policy
-statement: Every confirmable hypothesis of every case contributes exactly one outcome to the glossary.
+statement: Every confirmable hypothesis-revision contributes exactly one outcome to the glossary.
 constrains:
   - domain/glossary/outcome
-  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
 consistency: eventual
 ---
 

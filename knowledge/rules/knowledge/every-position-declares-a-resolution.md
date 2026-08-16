@@ -1,9 +1,10 @@
 ---
-type: invariant
-statement: Every hypothesis and the fallback declare an outcome and a referral.
+type: policy
+statement: Every hypothesis-revision and every case version's fallback declare an outcome and a referral.
 constrains:
-  - domain/knowledge/case
-  - domain/knowledge/hypothesis
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
 ---
 
 ## Description

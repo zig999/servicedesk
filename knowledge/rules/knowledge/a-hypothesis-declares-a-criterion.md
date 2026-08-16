@@ -1,8 +1,8 @@
 ---
 type: invariant
-statement: Every hypothesis carries a non-empty criterion.
+statement: Every hypothesis-revision carries a non-empty criterion.
 constrains:
-  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
 ---
 
 ## Description

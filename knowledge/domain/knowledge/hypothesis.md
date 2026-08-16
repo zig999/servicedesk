@@ -1,32 +1,22 @@
 ---
-type: entity
-aggregate: case
+type: aggregate-root
 attributes:
   - name: name
     type: string
     required: true
-  - name: position
-    type: integer
-    required: true
-  - name: criterion
-    type: string
-    required: true
-  - name: collects
-    type: domain/glossary/concept
-    required: true
-    many: true
-  - name: resolution
-    type: resolution
-    required: true
+relationships:
+  - target: domain/knowledge/case
+    type: reference
+    cardinality: "1"
+operations:
+  - revise
 ---
 
 ## Description
 
-One falsifiable claim about the subject's situation, named uniquely within its case and placed at one position in its case's precedence.
-The position is declared rather than implied: it is the fact the case's own ordering used to carry by arrangement alone, and resolve-outcome reads it to find the first confirmed hypothesis.
-Its investigation is the pair collects plus criterion, held inside its case and reached only through it.
-The criterion is short business prose — one to three sentences — and it is the one field where the expert's nuance is the value, refactorable only by curation.
+One falsifiable claim's own stable identity within its case, named uniquely across every version the case ever holds — past, current or future.
+Its content — the criterion it states, what it collects and the resolution that follows its confirmation — belongs to its revisions, never to this identity directly: revising a hypothesis never changes this name, it only adds a new revision for a case version's manifest to adopt.
 
 ## Responsibility
 
-State what to collect and what confirms the claim, and declare the resolution that follows its confirmation.
+Name one falsifiable claim for as long as the case exists, and originate a new revision when its content changes.

@@ -1,9 +1,9 @@
 ---
 type: policy
-statement: Every subject type, concept, outcome, action and recipient a case names exists in the glossary.
+statement: Every subject type, concept, outcome, action and recipient a case version or its manifested hypothesis-revisions name exists in the glossary.
 constrains:
-  - domain/knowledge/case
-  - domain/knowledge/hypothesis
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis-revision
   - domain/glossary/subject-type
   - domain/glossary/concept
   - domain/glossary/outcome
@@ -14,4 +14,4 @@ consistency: eventual
 
 ## Description
 
-The glossary is the published language; a case naming a term it does not hold is naming nothing.
+The glossary is the published language; a case version naming a term it does not hold is naming nothing.
