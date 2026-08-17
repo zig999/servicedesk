@@ -9,7 +9,7 @@
 //
 // Grouped by what the refusal means for the caller: a resource that plainly
 // does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError,
-// ConceptNotHeldError); an operation the named resource's own current state forbids — a second open
+// ConceptNotHeldError, VocabularyTermNotHeldError); an operation the named resource's own current state forbids — a second open
 // draft, an already occupied manifest position, a mutation against anything
 // but a draft version — answers 409 Conflict; a request that is well-formed
 // but would violate a business invariant were it applied — a release whose
@@ -28,6 +28,7 @@ import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
+import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
 
 /** A constructor of a typed domain error — usable both as a Map key and with `instanceof`, so the table below keys by class rather than by a string a caller could misspell. */
 type DomainErrorClass = new (...args: never[]) => Error;
@@ -36,13 +37,14 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * The status map itself: every typed domain error this HTTP surface's
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
- * here would be found by the base class's entry first — none of these nine
+ * here would be found by the base class's entry first — none of these ten
  * extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
   [ConceptNotAnsweredError, 404],
   [ConceptNotHeldError, 404],
+  [VocabularyTermNotHeldError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],
