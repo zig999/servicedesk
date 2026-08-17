@@ -41,6 +41,13 @@
 // what refuses removing a released version, not application logic
 // re-checking what the schema already decides.
 //
+// findDraftVersion is this file's one later addition
+// (work/revise-hypothesis-draft-gate/task/revise-hypothesis-draft-gate/refuse-without-draft):
+// one read against case_versions, run directly against the pool rather than
+// through runInTransaction, the same convention placeHypothesis, release and
+// removeManifestEntry already keep for a single statement that needs no
+// unit-of-work boundary.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -165,6 +172,11 @@ export class RelationalCaseStore implements ICaseStore {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => assembleWholeVersion(tx, { slug, version }));
   }
 
+  public async findDraftVersion(slug: string): Promise<number | undefined> {
+    const row = await queryOneOrAbsent<{ version: number }>(this.connection, draftVersionSelect(slug), raiseReadFailure);
+    return row?.version;
+  }
+
   public async createDraft(input: CreateDraftInput): Promise<number> {
     return runInTransaction(this.connection, raiseWriteFailure, (tx) => createDraftVersion(tx, input));
   }
@@ -259,6 +271,14 @@ function caseVersionSelect(key: ICaseVersionKey): IStatement {
            FROM ${CASE_VERSIONS_TABLE}
            WHERE slug = $1 AND version = $2`,
     params: [key.slug, key.version],
+  };
+}
+
+/** The version currently in draft state for the given slug, if any (rules/knowledge/a-case-has-at-most-one-draft guarantees at most one row can ever match). */
+function draftVersionSelect(slug: string): IStatement {
+  return {
+    text: `SELECT version FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
+    params: [slug, DRAFT_STATE],
   };
 }
 

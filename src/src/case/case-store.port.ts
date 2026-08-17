@@ -28,6 +28,14 @@
 // already decides — assembling a whole version, whether or not one exists,
 // is the one read this port still composes end to end
 // (constraints/a-case-is-read-whole).
+//
+// findDraftVersion is this file's one later addition
+// (work/revise-hypothesis-draft-gate/task/revise-hypothesis-draft-gate/refuse-without-draft),
+// closing the UNDERDETERMINED note revise-hypothesis.operation.ts's own
+// header disclosed: no read existed here answering "which version, if any,
+// of this case is currently in draft" without already knowing the version
+// number, and rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+// needs exactly that read before a hypothesis is revised.
 
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import type { Resolution } from './case.js';
@@ -158,6 +166,18 @@ export interface ICaseStore {
    * never a partial assembly.
    */
   assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
+
+  /**
+   * Answers the version number of the one version this case currently holds
+   * in draft state, if any — undefined where the case holds none: never
+   * drafted, or its only draft already released or discarded.
+   * rules/knowledge/a-case-has-at-most-one-draft guarantees at most one such
+   * version ever exists to answer, so this never needs to disambiguate among
+   * several. revise-hypothesis.operation.ts's own gate reads this before
+   * originating any hypothesis identity or revision
+   * (rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft).
+   */
+  findDraftVersion(slug: string): Promise<number | undefined>;
 
   /**
    * Originates a new draft version: assigns the case's next version number

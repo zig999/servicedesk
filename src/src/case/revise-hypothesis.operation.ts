@@ -26,13 +26,17 @@
 // rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft states
 // that a hypothesis is revised only while its case holds a draft version,
 // and that the concept-acceptance check above reads that draft version's own
-// declared subject type. This operation answers only the second half: it
-// takes the subject type to check against as part of its own input, supplied
-// by whichever caller has already anchored it to the case's own current
-// draft — it does not itself read a case version or check that one exists in
-// draft state at all (this task's own UNDERDETERMINED note: the whole
-// "revised only against a draft" gate belongs to a broader check this task
-// does not close, and nothing here contradicts it).
+// declared subject type. reviseHypothesis now reads the case's own current
+// draft through ICaseStore.findDraftVersion before doing anything else,
+// refusing through CaseHoldsNoDraftError where the case holds none
+// (work/revise-hypothesis-draft-gate/task/revise-hypothesis-draft-gate/refuse-without-draft,
+// closing this file's own former UNDERDETERMINED note: "the whole 'revised
+// only against a draft' gate belongs to a broader check this task does not
+// close"). The second half of the rule stays exactly as before: this
+// operation still takes the subject type to check against as part of its
+// own input rather than reading it back off the draft itself, supplied by
+// whichever caller has already anchored it to the case's own current draft
+// — the draft the gate above has by then already confirmed exists.
 //
 // validate-case-coherence.ts's own conceptViolations() checks this same pair
 // of rules, but over a whole assembled Case's own collection plan
@@ -44,6 +48,7 @@
 // already exists, since assembling a whole Case to call a whole-case check
 // is a different block, not a copy of this one).
 
+import { CaseHoldsNoDraftError } from '../errors/case-holds-no-draft.error.js';
 import { ConceptNotInGlossaryError } from '../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../errors/concept-refuses-subject-type.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../errors/hypothesis-revision-collects-no-concept.error.js';
@@ -101,9 +106,25 @@ export class ReviseHypothesisOperation implements IReviseHypothesis {
   ) {}
 
   public async reviseHypothesis(input: ReviseHypothesisInput): Promise<RevisedHypothesis> {
+    await this.refuseWithoutDraft(input.slug);
     await this.refuseInvalidCollects(input);
     const revision = await this.caseStore.insertHypothesisRevision(input);
     return { hypothesis_name: input.hypothesis_name, revision };
+  }
+
+  /**
+   * Refuses before anything else where the named case currently holds no
+   * version in draft state — never drafted, or its only draft already
+   * released or discarded
+   * (rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft) —
+   * through CaseHoldsNoDraftError, closing this file's own former
+   * UNDERDETERMINED note (this task's own delivery record).
+   */
+  private async refuseWithoutDraft(slug: string): Promise<void> {
+    const draftVersion = await this.caseStore.findDraftVersion(slug);
+    if (draftVersion === undefined) {
+      throw new CaseHoldsNoDraftError(slug);
+    }
   }
 
   /**

@@ -123,6 +123,10 @@ class FakeCaseStore implements ICaseStore {
     };
   }
 
+  public async findDraftVersion(slug: string): Promise<number | undefined> {
+    return this.cases.get(slug)?.draftVersion;
+  }
+
   public async createDraft(input: CreateDraftInput): Promise<number> {
     const record = this.cases.get(input.slug) ?? { nextVersion: 1, versions: new Map<number, IStoredVersion>() };
     if (record.draftVersion !== undefined) {
