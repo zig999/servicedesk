@@ -81,31 +81,44 @@ async function fixtureTerms(file: string): Promise<readonly GlossaryTerm[]> {
 }
 
 /**
- * Writes the outcome vocabulary with the two non-conclusion outcomes merged
- * in alongside the fixture's own names
- * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case) —
- * called first below, before every other vocabulary, every concept, every
+ * Adds the outcome vocabulary's fixture-declared names and the two
+ * non-conclusion outcomes to whatever the table already holds
+ * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case),
+ * through insertMissingTerms rather than writeTerms
+ * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome):
+ * once the curated case's own hypotheses reference an outcome row by
+ * foreign key, writeTerms' own DELETE fails, and this call now runs on
+ * every execution of this script rather than only before the case first
+ * exists (task/seed-already-seeded-guard-hotfix/narrow-the-guard) — called
+ * first below, before every other vocabulary, every concept, every
  * capability and the case itself (criterion 1).
  */
 async function seedOutcomes(store: IGlossaryStore): Promise<void> {
   const fixtureOutcomes = await fixtureTerms('outcome.json');
   const known = new Set(fixtureOutcomes.map((outcome) => outcome.name));
   const missing = NON_CONCLUSION_OUTCOMES.filter((outcome) => !known.has(outcome.name));
-  await store.writeTerms('outcome', [...fixtureOutcomes, ...missing]);
+  await store.insertMissingTerms('outcome', [...fixtureOutcomes, ...missing]);
 }
 
 /**
- * Writes the remaining four term vocabularies exactly as the fixtures
- * declare them — subject-attribute included, even though the curated case
- * names no subject attribute of its own, so the glossary can still answer
- * one where a diagnosis request assembles it (this task's own inference,
- * recorded in the delivery).
+ * Adds the remaining four term vocabularies' fixture-declared names to
+ * whatever each table already holds, through insertMissingTerms rather
+ * than writeTerms, for the same reason seedOutcomes above now does
+ * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome):
+ * once the curated case's own hypotheses reference an action or recipient
+ * row by foreign key, writeTerms' own DELETE fails, and this call now runs
+ * on every execution of this script rather than only before the case first
+ * exists (task/seed-already-seeded-guard-hotfix/narrow-the-guard) —
+ * subject-attribute included, even though the curated case names no
+ * subject attribute of its own, so the glossary can still answer one where
+ * a diagnosis request assembles it (this task's own inference, recorded in
+ * the delivery).
  */
 async function seedRemainingVocabularies(store: IGlossaryStore): Promise<void> {
-  await store.writeTerms('subject-type', await fixtureTerms('subject-type.json'));
-  await store.writeTerms('subject-attribute', await fixtureTerms('subject-attribute.json'));
-  await store.writeTerms('action', await fixtureTerms('action.json'));
-  await store.writeTerms('recipient', await fixtureTerms('recipient.json'));
+  await store.insertMissingTerms('subject-type', await fixtureTerms('subject-type.json'));
+  await store.insertMissingTerms('subject-attribute', await fixtureTerms('subject-attribute.json'));
+  await store.insertMissingTerms('action', await fixtureTerms('action.json'));
+  await store.insertMissingTerms('recipient', await fixtureTerms('recipient.json'));
 }
 
 /** One concept fixture entry, read exactly as committed. */
@@ -254,18 +267,31 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
 }
 
 /**
- * Whether the curated case version already stands. A rerun of this script
- * against a database that already holds it must skip every vocabulary,
- * concept and capability write above, not only the case write itself:
- * seedOutcomes and seedRemainingVocabularies replace a whole vocabulary
- * table (IGlossaryStore.writeTerms' own DELETE, then INSERT), and once the
- * curated case's own hypotheses hold a row of "hypotheses" naming one of
- * those outcome/action/recipient rows by foreign key, that DELETE fails —
- * discovered live, running this exact script a second time against an
- * already-seeded database, disclosed in this delivery's own proof record.
- * Checking this once, before any write, is the fix: the whole sequence
- * below is this script's own write-once unit, the same way one case version
- * is the case store's.
+ * Whether the curated case version already stands — this script's own
+ * write-once guard for seedCase alone
+ * (rules/knowledge/a-case-version-is-written-once), narrowed from an
+ * earlier all-or-nothing gate that also skipped every vocabulary, concept
+ * and capability write above whenever the case already existed
+ * (task/seed-already-seeded-guard-hotfix/narrow-the-guard). That wider gate
+ * was itself the fix for a real failure — seedOutcomes and
+ * seedRemainingVocabularies used to replace a whole vocabulary table
+ * (IGlossaryStore.writeTerms' own DELETE, then INSERT), and once the
+ * curated case's own hypotheses held a row naming one of those
+ * outcome/action/recipient rows by foreign key, that DELETE failed,
+ * discovered live running this exact script a second time against an
+ * already-seeded database — but it went on skipping those writes forever
+ * once the case became permanently released
+ * (rules/knowledge/a-case-version-is-written-once), even on a run where a
+ * sibling test file's own cleanup (seed.spec.ts's own
+ * wipeFixtureOwnedRows) had deleted concept_accepts and capabilities rows
+ * with nothing left to reseed them, which is what verifySeededCase caught
+ * as a CaseNotValidError — discovered live against the real database,
+ * disclosed in this delivery's own record. seedOutcomes and
+ * seedRemainingVocabularies are additive now (insertMissingTerms, above),
+ * and seedConcepts and seedCapabilities were already safe to rerun
+ * unconditionally (their own ON CONFLICT DO NOTHING and
+ * replace-on-reregistration respectively), so only originating and
+ * releasing the case itself still needs this check.
  */
 async function alreadySeeded(connection: DatabaseConnection): Promise<boolean> {
   const stored = await createCaseStore(connection).assembleVersion(CASE_SLUG, CASE_VERSION);
@@ -287,12 +313,12 @@ async function verifySeededCase(connection: DatabaseConnection): Promise<void> {
 const env = loadEnv();
 const connection = createDatabaseConnection(env.DATABASE_URL);
 try {
+  const glossary = new RelationalGlossaryStore(connection);
+  await seedOutcomes(glossary);
+  await seedRemainingVocabularies(glossary);
+  await seedConcepts(connection);
+  await seedCapabilities(connection);
   if (!(await alreadySeeded(connection))) {
-    const glossary = new RelationalGlossaryStore(connection);
-    await seedOutcomes(glossary);
-    await seedRemainingVocabularies(glossary);
-    await seedConcepts(connection);
-    await seedCapabilities(connection);
     await seedCase(connection);
   }
   await verifySeededCase(connection);
