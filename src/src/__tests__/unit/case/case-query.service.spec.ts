@@ -42,6 +42,7 @@ import type {
   HypothesisIdentity,
   HypothesisRevisionContent,
   HypothesisRevisionInput,
+  HypothesisRevisionListItem,
   ICaseStore,
   ManifestEntry,
   PlaceHypothesisInput,
@@ -170,6 +171,21 @@ class FakeCaseStore implements ICaseStore {
    * fixture).
    */
   public async listHypotheses(_slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
+    return { data: [], total: 0, limit: pagination.limit, offset: pagination.offset, pageCount: 0 };
+  }
+
+  /**
+   * A minimal stand-in for listHypothesisRevisions: no test in this file exercises it at all, so this
+   * fake answers an empty page unconditionally — sufficient only to keep FakeCaseStore satisfying
+   * ICaseStore in full, the same reason the listHypotheses stub just above already gives (this
+   * delivery's own inference — the task that adds listHypothesisRevisions did not touch this file's
+   * own fixture).
+   */
+  public async listHypothesisRevisions(
+    _slug: string,
+    _hypothesisName: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
     return { data: [], total: 0, limit: pagination.limit, offset: pagination.offset, pageCount: 0 };
   }
 

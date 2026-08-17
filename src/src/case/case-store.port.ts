@@ -86,6 +86,39 @@
 // (domain/knowledge/hypothesis's own one declared attribute beyond its case
 // relationship) — its content (criterion, collects, resolution) belongs to
 // its revisions, a separate element this listing never reaches.
+//
+// listHypothesisRevisions is this file's next later addition
+// (task/case-query-http/list-hypothesis-revisions-store-extension),
+// answering contracts/knowledge/case-query's own list-hypothesis-revisions
+// operation: every revision the named hypothesis (case slug plus
+// hypothesis name) currently holds, paginated the same way listHypotheses
+// already is. domain/knowledge/hypothesis-revision's own revisions belong
+// to the hypothesis identity directly, never to a case version's manifest —
+// the same case-scoped-not-version-scoped fact listHypotheses's own header
+// already reads off domain/knowledge/hypothesis, carried one level down to
+// its revisions — so the implementation queries hypothesis_revisions
+// directly by (case_slug, hypothesis_name) and never joins through
+// case_version_hypotheses or any manifest. Refused, through
+// CaseNotFoundError, where the slug or the hypothesis name (or both) names
+// nothing this case has originated — a single existence check against the
+// hypotheses identity row answers both absences at once, since a row there
+// can only exist for a case_slug the cases table already holds. No case
+// with this slug ever originating a hypothesis with this name answers this
+// one refusal regardless of which half was missing; a hypothesis that
+// exists but currently holds a revision count of zero cannot occur, since
+// insertHypothesisRevision always originates a revision in the same
+// transaction it originates the identity row. HypothesisRevisionListItem is
+// this port's own inference for what a listing item carries, disclosed in
+// this task's delivery record: every attribute
+// domain/knowledge/hypothesis-revision declares beyond its own hypothesis
+// relationship (revision, criterion, collects, resolution) — the full
+// content rather than a lighter identity, since no separate "read one
+// revision" operation exists for this listing to defer detail to the way
+// listCaseVersions and listHypotheses defer to assembleVersion. It omits
+// hypothesis_name, which HypothesisRevisionContent carries flat: this
+// listing is already scoped to one named hypothesis by its own parameter,
+// the same convention CaseVersionListItem already keeps by omitting slug
+// and HypothesisIdentity by omitting slug.
 
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -240,6 +273,26 @@ export type HypothesisIdentity = {
 };
 
 /**
+ * One revision as listHypothesisRevisions answers it: every attribute
+ * domain/knowledge/hypothesis-revision declares beyond its own hypothesis
+ * relationship — revision, criterion, collects and resolution — the full
+ * content rather than a lighter identity, since no separate "read one
+ * revision" operation exists for this listing to defer detail to. Unlike
+ * HypothesisRevisionContent, it carries no hypothesis_name: this listing is
+ * already scoped to one named hypothesis by its own parameter, the same
+ * convention CaseVersionListItem and HypothesisIdentity already keep by
+ * omitting the slug their own listing is scoped by. No node names a shape
+ * for this listing item, so this is this port's own inference, disclosed in
+ * this task's delivery record.
+ */
+export type HypothesisRevisionListItem = {
+  readonly revision: number;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
+};
+
+/**
  * The port through which every case-lifecycle fact reaches its persistence:
  * one whole read, and one storage primitive per lifecycle mutation. Every
  * refusal this port's implementation raises is what a schema constraint the
@@ -305,6 +358,28 @@ export interface ICaseStore {
    * listCaseVersions already keeps for a case currently holding no version.
    */
   listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;
+
+  /**
+   * Lists every revision the named hypothesis (case slug plus hypothesis
+   * name) currently holds, by its own full content, paginated per
+   * src/types/pagination.ts (contracts/knowledge/case-query's own
+   * list-hypothesis-revisions operation). Queried directly against the
+   * hypothesis's own revisions — never scoped to only the revision one case
+   * version's current manifest happens to adopt, since
+   * domain/knowledge/hypothesis-revision's revisions belong to the
+   * hypothesis identity directly rather than to any one version. Refused,
+   * through CaseNotFoundError, where the slug or the hypothesis name (or
+   * both) names nothing this case has originated — there is no case
+   * currently holding this hypothesis's identity but zero revisions for
+   * this refusal to distinguish from, since insertHypothesisRevision always
+   * originates a revision in the same transaction it originates the
+   * identity row.
+   */
+  listHypothesisRevisions(
+    slug: string,
+    hypothesisName: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
 
   /**
    * Originates a new draft version: assigns the case's next version number

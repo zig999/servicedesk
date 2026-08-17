@@ -93,6 +93,32 @@
 // hypothesis's case membership is exactly the identity row migrations/0009
 // made "identity-only" — no content column, and no version column either.
 //
+// listHypothesisRevisions is this file's next later addition
+// (task/case-query-http/list-hypothesis-revisions-store-extension): every
+// row of "hypothesis_revisions" for one named (case_slug, hypothesis_name),
+// by its own full content (HypothesisRevisionListItem), paginated the same
+// way listHypothesesPage already is — one transaction running the
+// hypothesis-identity check, the total, the page and its own collects
+// together. "hypothesis_revisions" is queried directly by (case_slug,
+// hypothesis_name) and never joined through case_version_hypotheses or any
+// manifest, the same case-scoped-not-version-scoped principle
+// listHypothesesPage already keeps one level up, carried down from
+// domain/knowledge/hypothesis to domain/knowledge/hypothesis-revision: a
+// revision belongs to the hypothesis identity it references directly, not
+// to whichever version's manifest happens to have adopted it. The identity
+// check queries "hypotheses" — never "hypothesis_revisions" — for
+// (case_slug, name): a row there can exist only for a case_slug "cases"
+// already holds (its own foreign key), so its absence answers both an
+// unknown slug and an unknown hypothesis name with the same CaseNotFoundError,
+// exactly this task's own criterion 2. Collects are read for every revision
+// of the hypothesis, grouped by revision the same way collectsByHypothesisName
+// already groups a version's manifest collects by hypothesis name, rather
+// than scoped to just the current page's revisions: this task's own
+// inference, disclosed in its delivery record, following the existing
+// convention of fetching a hypothesis's own related rows unscoped by page
+// rather than introducing an array-parameter query this file names nowhere
+// else.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -115,6 +141,7 @@ import type {
   HypothesisIdentity,
   HypothesisRevisionContent,
   HypothesisRevisionInput,
+  HypothesisRevisionListItem,
   ICaseStore,
   ManifestEntry,
   PlaceHypothesisInput,
@@ -240,6 +267,16 @@ export class RelationalCaseStore implements ICaseStore {
 
   public async listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => listHypothesesPage(tx, slug, pagination));
+  }
+
+  public async listHypothesisRevisions(
+    slug: string,
+    hypothesisName: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) =>
+      listHypothesisRevisionsPage(tx, { slug, hypothesis_name: hypothesisName }, pagination),
+    );
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {
@@ -487,6 +524,105 @@ function hypothesesPageSelect(slug: string, pagination: PaginationRequest): ISta
   return {
     text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 ORDER BY name LIMIT $2 OFFSET $3`,
     params: [slug, pagination.limit, pagination.offset],
+  };
+}
+
+// ---------------------------------------------------------------- listHypothesisRevisions
+
+/** One row of "hypothesis_revisions", exactly the columns beyond its own key. */
+interface IHypothesisRevisionRow {
+  readonly revision: number;
+  readonly criterion: string;
+  readonly resolution_outcome: string;
+  readonly resolution_action: string;
+  readonly resolution_recipient: string;
+}
+
+/** Every revision the named hypothesis currently holds, by its own full content, paginated — refused through CaseNotFoundError where the slug or the hypothesis name (or both) names nothing this case has originated (criterion 2), the identity check, the total, the page and its own collects all read through the same transaction so none can disagree about what "hypothesis_revisions" held at the instant any of them ran. */
+async function listHypothesisRevisionsPage(
+  tx: IQueryable,
+  key: IHypothesisKey,
+  pagination: PaginationRequest,
+): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
+  await requireHypothesisIdentity(tx, key);
+  const total = await countHypothesisRevisions(tx, key);
+  const rows = await runStatement<IHypothesisRevisionRow>(tx, hypothesisRevisionsPageSelect(key, pagination), raiseReadFailure);
+  const collects = await collectsByRevision(tx, key);
+  return {
+    data: rows.map((row) => hypothesisRevisionListItemOf(row, collects.get(row.revision) ?? [])),
+    total,
+    limit: pagination.limit,
+    offset: pagination.offset,
+    pageCount: pageCountOf(total, pagination.limit),
+  };
+}
+
+/** Refuses, through CaseNotFoundError, a (case_slug, name) pair "hypotheses" holds no row for at all (criterion 2) — a row there can exist only for a case_slug "cases" already holds (its own foreign key), so this one check answers an unknown slug and an unknown hypothesis name alike. */
+async function requireHypothesisIdentity(tx: IQueryable, key: IHypothesisKey): Promise<void> {
+  const row = await queryOneOrAbsent<{ name: string }>(tx, hypothesisIdentitySelect(key), raiseReadFailure);
+  if (row === undefined) {
+    throw new CaseNotFoundError(key.slug, NO_VERSION_NAMED);
+  }
+}
+
+function hypothesisIdentitySelect(key: IHypothesisKey): IStatement {
+  return { text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 AND name = $2`, params: [key.slug, key.hypothesis_name] };
+}
+
+/** How many revisions the named hypothesis holds in total, across every page. */
+async function countHypothesisRevisions(tx: IQueryable, key: IHypothesisKey): Promise<number> {
+  const row = await queryOneOrAbsent<{ count: string }>(tx, hypothesisRevisionsCountSelect(key), raiseReadFailure);
+  return row === undefined ? 0 : Number(row.count);
+}
+
+function hypothesisRevisionsCountSelect(key: IHypothesisKey): IStatement {
+  return {
+    text: `SELECT COUNT(*) AS count FROM ${HYPOTHESIS_REVISIONS_TABLE} WHERE case_slug = $1 AND hypothesis_name = $2`,
+    params: [key.slug, key.hypothesis_name],
+  };
+}
+
+/** One page of the named hypothesis's own revisions, ordered by revision so a stable page boundary means the same rows on a repeated call between two writes. */
+function hypothesisRevisionsPageSelect(key: IHypothesisKey, pagination: PaginationRequest): IStatement {
+  return {
+    text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient
+           FROM ${HYPOTHESIS_REVISIONS_TABLE}
+           WHERE case_slug = $1 AND hypothesis_name = $2
+           ORDER BY revision
+           LIMIT $3 OFFSET $4`,
+    params: [key.slug, key.hypothesis_name, pagination.limit, pagination.offset],
+  };
+}
+
+/** Every concept every revision of the named hypothesis collects, grouped by revision — read unscoped by page, the same convention collectsByHypothesisName already keeps for a version's manifest collects. */
+async function collectsByRevision(tx: IQueryable, key: IHypothesisKey): Promise<ReadonlyMap<number, readonly string[]>> {
+  const rows = await runStatement<{ revision: number; concept_name: string }>(tx, hypothesisRevisionCollectsSelect(key), raiseReadFailure);
+  const grouped = new Map<number, string[]>();
+  for (const row of rows) {
+    const concepts = grouped.get(row.revision) ?? [];
+    concepts.push(row.concept_name);
+    grouped.set(row.revision, concepts);
+  }
+  return grouped;
+}
+
+function hypothesisRevisionCollectsSelect(key: IHypothesisKey): IStatement {
+  return {
+    text: `SELECT revision, concept_name
+           FROM ${HYPOTHESIS_REVISION_COLLECTS_TABLE}
+           WHERE case_slug = $1 AND hypothesis_name = $2
+           ORDER BY revision, concept_name`,
+    params: [key.slug, key.hypothesis_name],
+  };
+}
+
+/** One revision row plus its already-grouped collects, assembled into the shape domain/knowledge/hypothesis-revision declares. */
+function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: readonly string[]): HypothesisRevisionListItem {
+  return {
+    revision: row.revision,
+    criterion: row.criterion,
+    collects,
+    resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
   };
 }
 

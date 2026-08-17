@@ -548,6 +548,183 @@ it(
   },
 );
 
+// ------------------------------------ task/case-query-http/list-hypothesis-revisions-store-extension
+//
+// "hypothesis_revisions" is queried scoped to one (case_slug, hypothesis_name) pair at a time (WHERE
+// case_slug = $1 AND hypothesis_name = $2 in every statement listHypothesisRevisionsPage runs), so a
+// page answered for one pair can never include a row this suite wrote under a different slug or a
+// different hypothesis name — every assertion below compares the page's own data array by full
+// equality rather than arrayContaining.
+//
+// The third absence this task's own criterion 2 might otherwise have needed a test for — a hypothesis
+// whose identity row exists but currently holds zero revisions — is excluded rather than tested: the
+// only way this store ever creates a hypothesis's own identity row is insertHypothesisRevision, which
+// this file's own "excludes a non-atomic insertHypothesisRevision (EDG-05)" section already holds to
+// rolling the whole transaction back — the identity row's own insert together with the revision row
+// and its collects — when one of that same revision's own collects violates a foreign key, so the
+// identity row an aborted revision would have left behind never survives either. And
+// domain/knowledge/hypothesis's own one declared operation ("revise") never originates a hypothesis
+// without, in the same act, originating its first revision. Reaching that state at all would need a
+// raw INSERT bypassing the store entirely — a state neither this store's own write path nor the
+// domain it encodes ever produces, so a test manufacturing it would prove a quirk of an unreachable
+// row rather than a behavior this task's criteria state.
+
+it(
+  "returns every revision the named hypothesis currently holds, by its own full content, each " +
+    "revision's own collects grouped to it alone and never conflated with another revision of the " +
+    'same hypothesis',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const [conceptA, conceptB] = await Promise.all([freshConcept(), freshConcept()]);
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const firstRevision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'first criterion',
+      collects: [conceptA],
+      resolution: aResolution(glossary),
+    });
+    const secondRevision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'second criterion',
+      collects: [conceptB],
+      resolution: aResolution(glossary),
+    });
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([
+      { revision: firstRevision, criterion: 'first criterion', collects: [conceptA], resolution: aResolution(glossary) },
+      { revision: secondRevision, criterion: 'second criterion', collects: [conceptB], resolution: aResolution(glossary) },
+    ]);
+  },
+);
+
+it(
+  "excludes another hypothesis's own revisions from the page, within the same case, naming only the " +
+    'hypothesis name it was asked for',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-isolated-name-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'another-hypothesis',
+      criterion: 'another criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary) }]);
+  },
+);
+
+it(
+  "excludes a different case's own revisions of a hypothesis sharing the same name, naming only the " +
+    'slug it was asked for',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-isolated-slug-${randomUUID()}`;
+    const otherSlug = `case-lifecycle-store-list-revisions-isolated-slug-other-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug, otherSlug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.createDraft(aCreateDraftInput(otherSlug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'shared-name',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.insertHypothesisRevision({
+      slug: otherSlug,
+      hypothesis_name: 'shared-name',
+      criterion: 'another criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    const page = await store.listHypothesisRevisions(slug, 'shared-name', { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([{ revision, criterion: 'a criterion', collects: [], resolution: aResolution(glossary) }]);
+  },
+);
+
+it(
+  'answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named ' +
+    "hypothesis's own revisions — the given limit and offset echoed back, the page itself held to " +
+    'that limit even though the hypothesis holds more revisions, and pageCount computed from total ' +
+    'and limit',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-page-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = () => ({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [] as string[],
+      resolution: aResolution(glossary),
+    });
+    await store.insertHypothesisRevision(revisionInput());
+    await store.insertHypothesisRevision(revisionInput());
+    await store.insertHypothesisRevision(revisionInput());
+
+    const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 1 });
+
+    expect(page.limit).toBe(1);
+    expect(page.offset).toBe(0);
+    expect(page.data).toHaveLength(1);
+    expect(page.total).toBe(3);
+    expect(page.pageCount).toBe(3);
+  },
+);
+
+it('refuses, through CaseNotFoundError naming the slug, a slug that names no case at all', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-list-revisions-absent-slug-${randomUUID()}`;
+
+  const rejection = store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 0 } });
+});
+
+it(
+  'refuses, through CaseNotFoundError naming the slug, a known case that has never originated a ' +
+    'hypothesis by the given name',
+  async () => {
+    const slug = `case-lifecycle-store-list-revisions-absent-name-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+
+    const rejection = store.listHypothesisRevisions(slug, 'never-originated', { offset: 0, limit: 20 });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version: 0 } });
+  },
+);
+
 // ---------------------------------------------------------------- criterion 3
 
 it(
