@@ -1,0 +1,11 @@
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(43,3): error TS2741: Property 'listCases' is missing in type '{ readCase: () => Promise<{ case: Case; hash: string; }>; }' but required in type 'ICaseQuery'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

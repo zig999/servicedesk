@@ -18,12 +18,28 @@
       "task": "task/case-lifecycle-http/status-map"
     },
     {
+      "id": "implementation/case-query-http/list-case-versions-route",
+      "kind": "implementation",
+      "file": "implementation/case-query-http/list-case-versions-route.md",
+      "title": "GET /v1/cases/{slug}/versions",
+      "summary": "A thin Fastify plugin, controller and Zod DTO over the new listCaseVersions store operation, reached through ICaseQuery/CaseQueryService's own new pass-through.",
+      "task": "task/case-query-http/list-case-versions-route"
+    },
+    {
       "id": "implementation/case-query-http/list-case-versions-store-extension",
       "kind": "implementation",
       "file": "implementation/case-query-http/list-case-versions-store-extension.md",
       "title": "ICaseStore gains listCaseVersions",
       "summary": "Adds a paginated listCaseVersions read to ICaseStore and its relational adapter, refusing a slug naming no case at all through CaseNotFoundError.",
       "task": "task/case-query-http/list-case-versions-store-extension"
+    },
+    {
+      "id": "implementation/case-query-http/list-cases-route",
+      "kind": "implementation",
+      "file": "implementation/case-query-http/list-cases-route.md",
+      "title": "GET /v1/cases",
+      "summary": "A thin Fastify plugin, controller and Zod DTO over the new listCases store operation, reached through ICaseQuery/CaseQueryService's own new pass-through.",
+      "task": "task/case-query-http/list-cases-route"
     },
     {
       "id": "implementation/case-query-http/list-cases-store-extension",
@@ -34,12 +50,28 @@
       "task": "task/case-query-http/list-cases-store-extension"
     },
     {
+      "id": "implementation/case-query-http/list-hypotheses-route",
+      "kind": "implementation",
+      "file": "implementation/case-query-http/list-hypotheses-route.md",
+      "title": "GET /v1/cases/{slug}/hypotheses",
+      "summary": "A thin Fastify plugin, controller and Zod DTO over the new listHypotheses store operation, reached through ICaseQuery/CaseQueryService's own new pass-through.",
+      "task": "task/case-query-http/list-hypotheses-route"
+    },
+    {
       "id": "implementation/case-query-http/list-hypotheses-store-extension",
       "kind": "implementation",
       "file": "implementation/case-query-http/list-hypotheses-store-extension.md",
       "title": "ICaseStore gains listHypotheses",
       "summary": "Adds a read-only listHypotheses operation to ICaseStore and RelationalCaseStore, returning every hypothesis a named case has ever originated, queried directly against the identity-only hypotheses table rather than scoped by any version's manifest.",
       "task": "task/case-query-http/list-hypotheses-store-extension"
+    },
+    {
+      "id": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "kind": "implementation",
+      "file": "implementation/case-query-http/list-hypothesis-revisions-route.md",
+      "title": "GET /v1/cases/{slug}/hypotheses/{name}/revisions",
+      "summary": "A thin Fastify plugin, controller and Zod DTO over the new listHypothesisRevisions store operation, reached through ICaseQuery/CaseQueryService's own new pass-through.",
+      "task": "task/case-query-http/list-hypothesis-revisions-route"
     },
     {
       "id": "implementation/case-query-http/list-hypothesis-revisions-store-extension",
@@ -98,12 +130,28 @@
       "task": "task/case-lifecycle-http/status-map"
     },
     {
+      "id": "proof/case-query-http/list-case-versions-route",
+      "kind": "proof",
+      "file": "proof/case-query-http/list-case-versions-route.md",
+      "title": "Proof for GET /v1/cases/{slug}/versions",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createListCaseVersionsRoutesPlugin plus the shared error handler, that a valid request returns the named case's paginated version page unchanged, that an unknown slug is refused at the status status-map assigns CaseNotFoundError, and that the controller's own pagination-bound resolution behaves as disclosed.",
+      "task": "task/case-query-http/list-case-versions-route"
+    },
+    {
       "id": "proof/case-query-http/list-case-versions-store-extension",
       "kind": "proof",
       "file": "proof/case-query-http/list-case-versions-store-extension.md",
       "title": "RelationalCaseStore.listCaseVersions proof, plus the FakeCaseStore compile fix",
       "summary": "Integration tests over a real PostgreSQL database proving listCaseVersions returns every version a named case holds, paginated, and refuses only an unknown slug while answering an empty page for a known case currently holding none.",
       "task": "task/case-query-http/list-case-versions-store-extension"
+    },
+    {
+      "id": "proof/case-query-http/list-cases-route",
+      "kind": "proof",
+      "file": "proof/case-query-http/list-cases-route.md",
+      "title": "Proof for GET /v1/cases",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createListCasesRoutesPlugin plus the shared error handler, that a valid request returns the paginated page of every case's identity unchanged, and that the controller's own pagination-bound resolution behaves as this task's delivery record discloses it inferred.",
+      "task": "task/case-query-http/list-cases-route"
     },
     {
       "id": "proof/case-query-http/list-cases-store-extension",
@@ -114,12 +162,28 @@
       "task": "task/case-query-http/list-cases-store-extension"
     },
     {
+      "id": "proof/case-query-http/list-hypotheses-route",
+      "kind": "proof",
+      "file": "proof/case-query-http/list-hypotheses-route.md",
+      "title": "Proof for GET /v1/cases/{slug}/hypotheses",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createListHypothesesRoutesPlugin plus the shared error handler, that a valid request returns the named case's paginated hypothesis page unchanged, that an unknown slug is refused at the status status-map assigns CaseNotFoundError, and that the controller's own pagination-bound resolution behaves as disclosed.",
+      "task": "task/case-query-http/list-hypotheses-route"
+    },
+    {
       "id": "proof/case-query-http/list-hypotheses-store-extension",
       "kind": "proof",
       "file": "proof/case-query-http/list-hypotheses-store-extension.md",
       "title": "Proof for listHypotheses on RelationalCaseStore",
       "summary": "Seven integration tests against a real PostgreSQL database prove listHypotheses is case-scoped, refuses an unknown slug, answers the pagination envelope, and — the task's own UNDERDETERMINED note — still returns a hypothesis no version's current manifest references.",
       "task": "task/case-query-http/list-hypotheses-store-extension"
+    },
+    {
+      "id": "proof/case-query-http/list-hypothesis-revisions-route",
+      "kind": "proof",
+      "file": "proof/case-query-http/list-hypothesis-revisions-route.md",
+      "title": "Proof for GET /v1/cases/{slug}/hypotheses/{name}/revisions",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createListHypothesisRevisionsRoutesPlugin plus the shared error handler, that a valid request returns the named hypothesis's paginated revision page unchanged, that an unknown slug or hypothesis name is each refused at the status status-map assigns CaseNotFoundError, and that the controller's own pagination-bound resolution behaves as disclosed.",
+      "task": "task/case-query-http/list-hypothesis-revisions-route"
     },
     {
       "id": "proof/case-query-http/list-hypothesis-revisions-store-extension",
@@ -194,6 +258,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-query-http/list-case-versions-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-query-http/list-case-versions-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-query-http/list-case-versions-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-query-http/list-case-versions-route",
+      "to": "task/case-query-http/list-case-versions-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-query-http/list-case-versions-store-extension",
       "to": "contracts/knowledge/case-query",
       "kind": "encodes",
@@ -218,6 +306,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-query-http/list-cases-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-query-http/list-cases-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-query-http/list-cases-route",
+      "to": "task/case-query-http/list-cases-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-query-http/list-cases-store-extension",
       "to": "contracts/knowledge/case-query",
       "kind": "encodes",
@@ -232,6 +338,36 @@
     {
       "from": "implementation/case-query-http/list-cases-store-extension",
       "to": "task/case-query-http/list-cases-store-extension",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypotheses-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypotheses-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypotheses-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypotheses-route",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypotheses-route",
+      "to": "task/case-query-http/list-hypotheses-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -256,6 +392,42 @@
     {
       "from": "implementation/case-query-http/list-hypotheses-store-extension",
       "to": "task/case-query-http/list-hypotheses-store-extension",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-query-http/list-hypothesis-revisions-route",
+      "to": "task/case-query-http/list-hypothesis-revisions-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -404,8 +576,20 @@
       "at": "the path"
     },
     {
+      "from": "proof/case-query-http/list-case-versions-route",
+      "to": "implementation/case-query-http/list-case-versions-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-query-http/list-case-versions-store-extension",
       "to": "implementation/case-query-http/list-case-versions-store-extension",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-query-http/list-cases-route",
+      "to": "implementation/case-query-http/list-cases-route",
       "kind": "proves",
       "at": "the path"
     },
@@ -416,8 +600,20 @@
       "at": "the path"
     },
     {
+      "from": "proof/case-query-http/list-hypotheses-route",
+      "to": "implementation/case-query-http/list-hypotheses-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-query-http/list-hypotheses-store-extension",
       "to": "implementation/case-query-http/list-hypotheses-store-extension",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-query-http/list-hypothesis-revisions-route",
+      "to": "implementation/case-query-http/list-hypothesis-revisions-route",
       "kind": "proves",
       "at": "the path"
     },
