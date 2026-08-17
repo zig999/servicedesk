@@ -1,0 +1,52 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(103,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(410,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(439,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(450,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(458,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(471,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(486,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(501,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(520,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(541,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(559,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(570,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(583,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(597,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(600,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(610,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(613,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(621,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(627,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(630,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(641,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(671,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(681,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(694,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'findDraftVersion' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.

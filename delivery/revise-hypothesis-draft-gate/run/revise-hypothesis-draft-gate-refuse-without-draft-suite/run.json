@@ -1,0 +1,18 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/revise-hypothesis-draft-gate-refuse-without-draft-suite",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/src",
+  "timeout_seconds": 1800,
+  "outcome": "failed",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "test.log"
+    }
+  ],
+  "combined_output": "run.log"
+}

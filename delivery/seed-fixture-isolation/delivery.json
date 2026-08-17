@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/seed-fixture-isolation/tolerate-released-fixture",
+      "kind": "implementation",
+      "file": "implementation/seed-fixture-isolation/tolerate-released-fixture.md",
+      "title": "seed.spec.ts tolerates release-immutability already having made rows permanent",
+      "summary": "assertGenuinelyEmpty now tolerates both the shared fixture case and either non-conclusion outcome standing permanently referenced by an earlier, legitimate release anywhere in this shared database; a sibling file's own timing-out afterAll hook is given the same explicit-timeout fix already established elsewhere this session.",
+      "task": "task/seed-fixture-isolation/tolerate-released-fixture"
+    },
+    {
+      "id": "proof/seed-fixture-isolation/tolerate-released-fixture",
+      "kind": "proof",
+      "file": "proof/seed-fixture-isolation/tolerate-released-fixture.md",
+      "title": "Proof for seed.spec.ts's tolerance of release-immutability already having made rows permanent",
+      "summary": "The file's own 12 it() blocks (11 pre-existing plus one added by work/seed-already-seeded-guard-hotfix's own proof pass), confirmed passing by a real, comprehensive install-through-suite run, against the task's four criteria.",
+      "task": "task/seed-fixture-isolation/tolerate-released-fixture"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/seed-fixture-isolation/tolerate-released-fixture",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-fixture-isolation/tolerate-released-fixture",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/seed-fixture-isolation/tolerate-released-fixture",
+      "to": "task/seed-fixture-isolation/tolerate-released-fixture",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-fixture-isolation/tolerate-released-fixture",
+      "to": "implementation/seed-fixture-isolation/tolerate-released-fixture",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
