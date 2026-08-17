@@ -269,6 +269,68 @@ it('answers absence, not a rejection, for a slug and version nothing was ever st
   expect(assembled).toBeUndefined();
 });
 
+// ---------------------------------------------------- task/case-query-http/list-cases-store-extension
+//
+// "cases" is a shared, persistent table across this whole suite (this file's own header comment
+// already explains why an ordinary DELETE cannot make anything genuinely disappear from it once a
+// version has ever been released) — so none of the three tests below assume the table's own total
+// row count, only what each test's own freshly created slugs, or a page nothing could possibly
+// reach, guarantee regardless of whatever else the table currently holds.
+
+it("returns every case currently held, with no filter narrowing it, so all three freshly created cases show up on one wide-enough page", async () => {
+  const slugA = `case-lifecycle-store-list-${randomUUID()}`;
+  const slugB = `case-lifecycle-store-list-${randomUUID()}`;
+  const slugC = `case-lifecycle-store-list-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slugA, slugB, slugC);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  // A limit derived from the table's own count right now, plus headroom for the three rows this
+  // test is about to add — wide enough to cover every case currently held, whatever that count is,
+  // without this test ever asserting what that count equals.
+  const { rows } = await pool.query<{ count: string }>('SELECT COUNT(*) AS count FROM public.cases');
+  const wideEnoughLimit = Number(rows[0]?.count ?? '0') + 10;
+  await store.createDraft(aCreateDraftInput(slugA, glossary));
+  await store.createDraft(aCreateDraftInput(slugB, glossary));
+  await store.createDraft(aCreateDraftInput(slugC, glossary));
+
+  const page = await store.listCases({ offset: 0, limit: wideEnoughLimit });
+
+  const slugs = page.data.map((identity) => identity.slug);
+  expect(slugs).toEqual(expect.arrayContaining([slugA, slugB, slugC]));
+});
+
+it(
+  'answers the PaginatedResponse envelope src/types/pagination.ts declares — the given limit and ' +
+    'offset echoed back, the page itself held to that limit even though more cases exist, and ' +
+    'pageCount computed from total and limit rather than hardcoded',
+  async () => {
+    const slugA = `case-lifecycle-store-list-page-${randomUUID()}`;
+    const slugB = `case-lifecycle-store-list-page-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slugA, slugB);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slugA, glossary));
+    await store.createDraft(aCreateDraftInput(slugB, glossary));
+
+    const page = await store.listCases({ offset: 0, limit: 1 });
+
+    expect(page.limit).toBe(1);
+    expect(page.offset).toBe(0);
+    expect(page.data).toHaveLength(1);
+    expect(page.total).toBeGreaterThanOrEqual(2);
+    expect(page.pageCount).toBe(Math.ceil(page.total / 1));
+  },
+);
+
+it('answers an empty page — data: [] — rather than an error or an absent value, for a page far beyond anything the table could hold', async () => {
+  const store = new RelationalCaseStore(pool);
+
+  const page = await store.listCases({ offset: 100_000_000, limit: 20 });
+
+  expect(page).toBeDefined();
+  expect(page.data).toEqual([]);
+});
+
 // ---------------------------------------------------------------- criterion 3
 
 it(

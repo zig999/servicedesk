@@ -35,6 +35,7 @@ import type { Resolution } from '../../../case/case.js';
 import { CaseQueryService, replayCase } from '../../../case/case-query.service.js';
 import type {
   AssembledCaseVersion,
+  CaseIdentity,
   CaseVersionState,
   CreateDraftInput,
   HypothesisRevisionContent,
@@ -55,6 +56,7 @@ import type {
   TermResolution,
 } from '../../../glossary/glossary-query.port.js';
 import type { Concept, TermVocabulary } from '../../../glossary/terms.js';
+import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
 
 /** The fixture case's identity, unless a test names another slug of its own. */
 const SLUG = 'a-case';
@@ -125,6 +127,26 @@ class FakeCaseStore implements ICaseStore {
 
   public async findDraftVersion(slug: string): Promise<number | undefined> {
     return this.cases.get(slug)?.draftVersion;
+  }
+
+  /**
+   * A minimal stand-in for listCases: every slug this fake currently tracks, paginated the same way
+   * the real store's own pageCountOf computes a page count — sufficient because no test in this file
+   * exercises listCases at all; it exists only so this class keeps satisfying ICaseStore in full
+   * (this delivery's own inference — the task that adds listCases did not touch this file's own
+   * fixture).
+   */
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+    const slugs = [...this.cases.keys()].sort();
+    const total = slugs.length;
+    const page = slugs.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data: page.map((slug) => ({ slug })),
+      total,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pagination.limit > 0 ? Math.ceil(total / pagination.limit) : 0,
+    };
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {

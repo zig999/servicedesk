@@ -36,8 +36,18 @@
 // of this case is currently in draft" without already knowing the version
 // number, and rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
 // needs exactly that read before a hypothesis is revised.
+//
+// listCases is this file's next later addition
+// (task/case-query-http/list-cases-store-extension), answering
+// contracts/knowledge/case-query's own list-cases operation: every case
+// currently held, paginated per src/types/pagination.ts's own
+// PaginationRequest/PaginatedResponse<T>. It carries no filter and no new
+// refusal — an empty store answers an empty page, never an error or
+// undefined, the same absence-as-data rule every other read in this port
+// already keeps.
 
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { Resolution } from './case.js';
 
 /**
@@ -150,6 +160,18 @@ export type PlaceHypothesisInput = {
 };
 
 /**
+ * One case's own bare identity as listCases answers it: slug alone —
+ * domain/knowledge/case's own identity carries nothing else beyond
+ * next_version, and next_version is the durable counter that assigns a
+ * draft's version number, not a fact a listing of cases states about each
+ * one (domain/knowledge/case's own "almost everything a curator once wrote
+ * directly onto 'the case' ... now belongs to a specific case version").
+ */
+export type CaseIdentity = {
+  readonly slug: string;
+};
+
+/**
  * The port through which every case-lifecycle fact reaches its persistence:
  * one whole read, and one storage primitive per lifecycle mutation. Every
  * refusal this port's implementation raises is what a schema constraint the
@@ -178,6 +200,15 @@ export interface ICaseStore {
    * (rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft).
    */
   findDraftVersion(slug: string): Promise<number | undefined>;
+
+  /**
+   * Lists every case currently held, by its own bare identity, paginated per
+   * src/types/pagination.ts (contracts/knowledge/case-query's own list-cases
+   * operation). Carries no filter — every case, not a subset a caller
+   * narrowed. An empty store answers an empty page — data: [], total: 0 —
+   * never an error or undefined.
+   */
+  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>>;
 
   /**
    * Originates a new draft version: assigns the case's next version number

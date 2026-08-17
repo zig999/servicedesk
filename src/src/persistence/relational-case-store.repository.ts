@@ -48,6 +48,17 @@
 // removeManifestEntry already keep for a single statement that needs no
 // unit-of-work boundary.
 //
+// listCases is this file's next later addition
+// (task/case-query-http/list-cases-store-extension): every row of "cases" —
+// which, per this file's own long-standing header comment, holds one row
+// per slug and nothing else — by slug alone, in one transaction the same
+// way assembleVersion already runs its own two related reads (the page and
+// its total) so the two never disagree about what was held at the instant
+// either ran. total, limit, offset and pageCount answer exactly what
+// src/types/pagination.ts's own PaginatedResponse<T> declares (API-03); an
+// empty "cases" table answers total: 0 and data: [], never an error or
+// undefined.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -63,6 +74,7 @@
 // run inside a transaction this module opens itself.
 import type {
   AssembledCaseVersion,
+  CaseIdentity,
   CaseVersionState,
   CreateDraftInput,
   HypothesisRevisionContent,
@@ -77,6 +89,7 @@ import { CaseStoreError } from '../errors/case-store.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import {
   queryOneOrAbsent,
   runInTransaction,
@@ -175,6 +188,10 @@ export class RelationalCaseStore implements ICaseStore {
   public async findDraftVersion(slug: string): Promise<number | undefined> {
     const row = await queryOneOrAbsent<{ version: number }>(this.connection, draftVersionSelect(slug), raiseReadFailure);
     return row?.version;
+  }
+
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) => listCasesPage(tx, pagination));
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {
@@ -280,6 +297,44 @@ function draftVersionSelect(slug: string): IStatement {
     text: `SELECT version FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
     params: [slug, DRAFT_STATE],
   };
+}
+
+// ---------------------------------------------------------------- listCases
+
+/** Every case currently held, by slug alone, paginated: the total count and this page's own rows, read through the same transaction so the two never disagree about what "cases" held at that instant — an empty table answers total: 0 and data: [], never an error or undefined. */
+async function listCasesPage(tx: IQueryable, pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+  const total = await countCases(tx);
+  const rows = await runStatement<{ slug: string }>(tx, casesPageSelect(pagination), raiseReadFailure);
+  return {
+    data: rows.map((row) => ({ slug: row.slug })),
+    total,
+    limit: pagination.limit,
+    offset: pagination.offset,
+    pageCount: pageCountOf(total, pagination.limit),
+  };
+}
+
+/** How many rows "cases" holds in total, across every page — 0 where it holds none. */
+async function countCases(tx: IQueryable): Promise<number> {
+  const row = await queryOneOrAbsent<{ count: string }>(tx, casesCountSelect(), raiseReadFailure);
+  return row === undefined ? 0 : Number(row.count);
+}
+
+function casesCountSelect(): IStatement {
+  return { text: `SELECT COUNT(*) AS count FROM ${CASES_TABLE}` };
+}
+
+/** One page of "cases", ordered by slug so a stable page boundary means the same rows on a repeated call between two writes. */
+function casesPageSelect(pagination: PaginationRequest): IStatement {
+  return {
+    text: `SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2`,
+    params: [pagination.limit, pagination.offset],
+  };
+}
+
+/** The page count this limit divides total into (API-03) — 0 for a non-positive limit, since dividing by it would answer no page count at all rather than one a caller could page through; neither this task's own criteria nor src/types/pagination.ts states what a non-positive limit answers, so this is this store's own defensive floor rather than a documented behavior. */
+function pageCountOf(total: number, limit: number): number {
+  return limit > 0 ? Math.ceil(total / limit) : 0;
 }
 
 function manifestSelect(key: ICaseVersionKey): IStatement {
