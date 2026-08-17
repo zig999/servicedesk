@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/revise-hypothesis-draft-gate",
+      "kind": "epic",
+      "file": "epic/revise-hypothesis-draft-gate.md",
+      "title": "revise-hypothesis draft-gate hotfix",
+      "summary": "The one corrective task that fixes revise-hypothesis originating content for a case with no open draft."
+    },
+    {
+      "id": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "kind": "task",
+      "file": "task/revise-hypothesis-draft-gate/refuse-without-draft.md",
+      "title": "revise-hypothesis refuses a case with no open draft version",
+      "summary": "Fixes a defect where reviseHypothesis originates a new hypothesis-revision for any case slug, even one holding no draft version at all, never refusing.",
+      "epic": "revise-hypothesis-draft-gate"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/revise-hypothesis-draft-gate",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/revise-hypothesis-draft-gate",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/revise-hypothesis-draft-gate",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/revise-hypothesis-draft-gate",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/revise-hypothesis-draft-gate",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/revise-hypothesis-draft-gate/refuse-without-draft",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
