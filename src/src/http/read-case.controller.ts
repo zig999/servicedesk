@@ -48,8 +48,14 @@ export async function handleReadCaseRequest(
  * projection case.ts's own header comment keeps for out-of-scope internal
  * consumers rather than declaring as a domain-version attribute (this
  * module's own dto's header comment).
+ *
+ * Exported so update-draft.controller.ts's own read-back after
+ * ICaseStore.updateDraft (task/case-lifecycle-http/update-draft-route) can
+ * reuse this exact projection rather than restating it (MNT-03) — both
+ * routes answer the same case-version wire shape, so the projection belongs
+ * in one place, not two.
  */
-function toReadCaseResponse(theCase: Case): ReadCaseResponseDto {
+export function toReadCaseResponse(theCase: Case): ReadCaseResponseDto {
   return {
     slug: theCase.slug,
     title: theCase.title,
