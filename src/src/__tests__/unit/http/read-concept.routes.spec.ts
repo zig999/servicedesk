@@ -108,13 +108,13 @@ it('refuses with the status the status map assigns ConceptNotHeldError, when the
 
 // ------------------------------------------------------------------ edge cases
 
-it('answers 404 for a request naming no concept segment at all, never reaching the glossary query', async () => {
+it('answers 400 via validation for a request with an empty concept segment, never reaching the glossary query', async () => {
   const built = buildTestApp();
   app = built.app;
 
   const response = await app.inject({ method: 'GET', url: '/v1/glossary/concepts/' });
 
-  expect(response.statusCode).toBe(404);
+  expect(response.statusCode).toBe(400);
   expect(built.readConcept).not.toHaveBeenCalled();
 });
 

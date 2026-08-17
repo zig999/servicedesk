@@ -109,13 +109,13 @@ it('refuses with the status the status map assigns ConceptNotAnsweredError, when
 
 // ------------------------------------------------------------------ edge cases
 
-it('answers 404 for a request naming no concept segment at all, never reaching the capability query', async () => {
+it('answers 400 via validation for a request with an empty concept segment, never reaching the capability query', async () => {
   const built = buildTestApp();
   app = built.app;
 
   const response = await app.inject({ method: 'GET', url: '/v1/capabilities/' });
 
-  expect(response.statusCode).toBe(404);
+  expect(response.statusCode).toBe(400);
   expect(built.readCapability).not.toHaveBeenCalled();
 });
 

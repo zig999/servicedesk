@@ -131,13 +131,15 @@ it('answers 400 for a :vocabulary segment naming none of the five term vocabular
   expect(built.readVocabularyTerm).not.toHaveBeenCalled();
 });
 
-it('answers 404 for a request naming no term segment at all, never reaching the glossary query', async () => {
+it('answers 400 via validation for a request with an empty term segment, never reaching the glossary query', async () => {
   const built = buildTestApp();
   app = built.app;
 
   const response = await app.inject({ method: 'GET', url: '/v1/glossary/subject-type/' });
 
-  expect(response.statusCode).toBe(404);
+  expect(response.statusCode).toBe(400);
+  const body = response.json() as { error: { code: string } };
+  expect(body.error.code).toBe('VALIDATION_ERROR');
   expect(built.readVocabularyTerm).not.toHaveBeenCalled();
 });
 

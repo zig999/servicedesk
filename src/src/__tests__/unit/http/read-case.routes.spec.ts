@@ -223,12 +223,12 @@ it('answers 400 for a version of zero, one below the positive range the domain d
   expect(built.readCase).not.toHaveBeenCalled();
 });
 
-it('answers 404 for a request naming no version segment at all, never reaching the case query', async () => {
+it('answers 400 via validation for a request with an empty version segment, never reaching the case query', async () => {
   const built = buildTestApp();
   app = built.app;
 
   const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/' });
 
-  expect(response.statusCode).toBe(404);
+  expect(response.statusCode).toBe(400);
   expect(built.readCase).not.toHaveBeenCalled();
 });
