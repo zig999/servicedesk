@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "kind": "epic",
+      "file": "epic/seed-vocabulary-assertions-scope-hotfix.md",
+      "title": "seed.spec.ts's vocabulary assertions survive a shared, persistent database",
+      "summary": "The one corrective task that scopes seed.spec.ts's five whole-table vocabulary assertions to the fixture's own declared names, since a persistent shared database can no longer support \"the table holds nothing else.\""
+    },
+    {
+      "id": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "kind": "task",
+      "file": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names.md",
+      "title": "seed.spec.ts's five whole-table vocabulary assertions scope to the fixture's own declared names",
+      "summary": "Fixes seed.spec.ts's own outcome, subject-type, action, recipient and concept/concept_accepts assertions failing against another test file's own permanently-undeletable leftover rows in the same shared vocabulary tables, by filtering each query to the fixture's own declared names instead of reading the whole table.",
+      "epic": "seed-vocabulary-assertions-scope-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-vocabulary-assertions-scope-hotfix",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
