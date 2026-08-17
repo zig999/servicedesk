@@ -204,26 +204,26 @@ async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<voi
 
 /** Removes every row seed.ts's own run wrote, the same way wipeFixtureOwnedRows empties them, except the two non-conclusion outcomes (see this file's own header) — table set and order rewired the same way wipeFixtureOwnedRows was, above. */
 async function cleanupSeededRows(connection: DatabaseConnection): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.cases WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [SLUG]);
   for (const capability of await readCapabilityFixture()) {
-    await connection.query('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   for (const concept of await readConceptFixture()) {
-    await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await connection.query('DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
   }
-  await connection.query('DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await connection.query('DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readGlossaryFixtureNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
-  await connection.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
-  await connection.query('DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
-  await connection.query('DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
+  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
 /** Every application variable seed.ts's own loadEnv() call requires besides DATABASE_URL, set to the same kind of placeholder value diagnose-server.factory.spec.ts's own Env object already uses — seed.ts never reads any of these itself, only env.DATABASE_URL. */

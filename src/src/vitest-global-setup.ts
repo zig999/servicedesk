@@ -35,6 +35,19 @@
 // present and the top-up's own write path never fires during this suite at
 // all — the durable fix, in the one place a fixture cannot leave a gap for
 // a later test to fall into.
+//
+// Repairs a known, historical gap in the fixture data, once, here, after
+// migrating (task/manifest-collects-hotfix/fix-collects-readback): the two
+// hypothesis_revision_collects rows the fixture case
+// intermittent-connection-outage was originated with were already deleted,
+// on this suite's own real, shared, persistent database, by an earlier
+// run's own test-file cleanup, before migration 0010's own
+// release-immutability rule existed to stop it — migrations/0010's own
+// header comment carries the full trace, cited here rather than restated.
+// A schema migration cannot itself repair this, because it runs once, at
+// this exact global-setup step, before any test file's own beforeAll has
+// seeded the concepts this repair's own foreign keys depend on — so the
+// repair moved here instead, where those concepts are ensured first.
 import { fileURLToPath } from 'node:url';
 import { MigrationStepError } from './errors/migration-step.error.js';
 import { NON_CONCLUSION_OUTCOMES } from './glossary/terms.js';
@@ -50,7 +63,61 @@ async function seedNonConclusionOutcomes(connection: DatabaseConnection): Promis
   }
 }
 
-/** Runs once, before any test file in the suite, applying every pending script under migrations/ to the database DATABASE_URL names, then seeding the two non-conclusion outcomes so no test's own glossary read ever triggers the whole-table top-up write. */
+/** The fixture case whose two hypothesis-revision collects rows this repair backfills — intermittent-connection-outage's own revision 1 of each hypothesis, matching fixtures/case/intermittent-connection-outage/1.json exactly. */
+const REPAIRED_CASE_SLUG = 'intermittent-connection-outage';
+const REPAIRED_REVISION = 1;
+const REPAIRED_SUBJECT_TYPE = 'contract';
+
+/** The two concepts this repair needs, matching src/fixtures/glossary/concept.json exactly (task/manifest-collects-hotfix/fix-collects-readback). */
+const REPAIRED_CONCEPTS: ReadonlyArray<{ readonly name: string; readonly ttl: number }> = [
+  { name: 'equipment-status', ttl: 300 },
+  { name: 'network-outage-flag', ttl: 60 },
+];
+
+/** The two hypothesis_revision_collects rows this repair backfills, each pairing the hypothesis this fixture's revision belongs to with the one concept it collects. */
+const REPAIRED_COLLECTS: ReadonlyArray<{ readonly hypothesisName: string; readonly concept: string }> = [
+  { hypothesisName: 'customer-equipment-fault', concept: 'equipment-status' },
+  { hypothesisName: 'area-network-outage', concept: 'network-outage-flag' },
+];
+
+/** Ensures the subject type this repair's own concept_accepts rows reference exists, then the two concepts and their own concept_accepts row, each idempotent through ON CONFLICT DO NOTHING (concepts and concept_accepts carry no rule, unlike hypothesis_revision_collects below). */
+async function ensureRepairedConceptsExist(connection: DatabaseConnection): Promise<void> {
+  await connection.query('INSERT INTO public.subject_types (name) VALUES ($1) ON CONFLICT DO NOTHING', [REPAIRED_SUBJECT_TYPE]);
+  for (const concept of REPAIRED_CONCEPTS) {
+    await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
+    await connection.query(
+      'INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+      [concept.name, REPAIRED_SUBJECT_TYPE],
+    );
+  }
+}
+
+/** Backfills the two hypothesis_revision_collects rows a real suite run's own cleanup already deleted, each guarded twice as migrations/0010's own original backfill was: WHERE EXISTS names the owning hypothesis_revisions row, so a database where this fixture was never seeded inserts nothing; WHERE NOT EXISTS against hypothesis_revision_collects itself keeps the insert idempotent — never ON CONFLICT, since that table carries the no_update rule migration 0010 adds. */
+async function backfillRepairedCollects(connection: DatabaseConnection): Promise<void> {
+  for (const collect of REPAIRED_COLLECTS) {
+    await connection.query(
+      `INSERT INTO public.hypothesis_revision_collects (case_slug, hypothesis_name, revision, concept_name)
+       SELECT $1, $2, $3, $4
+       WHERE EXISTS (
+         SELECT 1 FROM public.hypothesis_revisions
+         WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3
+       )
+       AND NOT EXISTS (
+         SELECT 1 FROM public.hypothesis_revision_collects
+         WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3 AND concept_name = $4
+       )`,
+      [REPAIRED_CASE_SLUG, collect.hypothesisName, REPAIRED_REVISION, collect.concept],
+    );
+  }
+}
+
+/** Repairs the fixture case's own two hypothesis-revision collects rows, idempotently and safely for a database where this fixture was never seeded at all: ensures the reference data the backfill's own foreign keys depend on exists first, then backfills the collects rows themselves. */
+async function repairFixtureManifestCollects(connection: DatabaseConnection): Promise<void> {
+  await ensureRepairedConceptsExist(connection);
+  await backfillRepairedCollects(connection);
+}
+
+/** Runs once, before any test file in the suite, applying every pending script under migrations/ to the database DATABASE_URL names, then seeding the two non-conclusion outcomes so no test's own glossary read ever triggers the whole-table top-up write, then repairing the fixture case's own known-missing collects rows. */
 export default async function setup(): Promise<void> {
   const connectionUrl = process.env.DATABASE_URL;
   if (!connectionUrl) {
@@ -63,6 +130,7 @@ export default async function setup(): Promise<void> {
   try {
     await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
     await seedNonConclusionOutcomes(connection);
+    await repairFixtureManifestCollects(connection);
   } finally {
     await connection.end();
   }

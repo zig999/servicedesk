@@ -385,11 +385,23 @@ beforeAll(async () => {
   await ensureFixtureSeeded(seedingConnection);
 });
 
+/** Raised from vitest's own 10000ms hookTimeout default, the same plain per-hook-argument
+ * mechanism seed.spec.ts's own beforeAll/afterAll already establish (60000ms there — the
+ * codebase's own existing convention for a hook that needs more than the default, checked
+ * against that file and release.operation.spec.ts before picking this one). Running the full
+ * suite (89 files) twice in a row shows this exact hook occasionally failing with "Hook timed
+ * out in 10000ms", though this file in isolation passes cleanly in ~80s with no lock found in
+ * pg_stat_activity/pg_locks while reproducing directly — not a deadlock, but accumulated latency:
+ * this file's own tests already take ~10s each against the real network and database, so
+ * cleanupFixtureSeeded's own several sequential DELETE statements (including two now touching
+ * the release-protected hypothesis_revision_collects table) have very little headroom left under
+ * the 10-second default once 88 other files have already put load on the same pooled Neon
+ * connection. 30000ms gives real headroom without masking a genuine hang. */
 afterAll(async () => {
   await cleanupFixtureSeeded(seedingConnection);
   await seedingConnection.end();
   vi.unstubAllGlobals();
-});
+}, 30000);
 
 beforeEach(async () => {
   requester = `diagnose-server-factory-requester-${randomUUID()}`;

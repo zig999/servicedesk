@@ -115,3 +115,28 @@ it("keeps naming DATABASE_URL rather than substituting a default even when it is
   expect(caught).toBeInstanceOf(MigrationStepError);
   expect((caught as MigrationStepError).context).toEqual({ variable: 'DATABASE_URL' });
 });
+
+// ---------------------------------------------------------------- task/manifest-collects-hotfix/fix-collects-readback:
+// repairFixtureManifestCollects' own idempotency
+//
+// setup()'s own last step (repairFixtureManifestCollects, added by this sibling task) ensures the
+// fixture's own reference data exists and backfills its two known-missing hypothesis_revision_collects
+// rows, both guarded by WHERE NOT EXISTS/ON CONFLICT DO NOTHING rather than by running once and never
+// again — the same real, unexported sequence the two tests above already reach through this file's
+// own default export, run a second time here against a database its own first invocation (this
+// suite's real globalSetup, already run before this spec's own first test) has already migrated,
+// seeded and repaired. This is exactly the shape of the two real failures this task's own delivery
+// record discloses correcting: an INSERT ... ON CONFLICT DO NOTHING issued against
+// hypothesis_revision_collects once it carries any rule at all is rejected outright by Postgres
+// (error 0A000, "ON CONFLICT clause is not supported with a table that has associated rules"), and a
+// bare second INSERT of an already-present row without a WHERE NOT EXISTS guard is a duplicate-key
+// violation against that table's own PRIMARY KEY (case_slug, hypothesis_name, revision, concept_name).
+// Neither is stood in for: this calls the real setup(), against the real database, exactly the
+// technique seed.spec.ts's own "resolves without rejecting" rerun test already establishes for that
+// sibling top-level script.
+it(
+  "resolves without rejecting when the suite's own global setup runs a second time, proving its own repair step guards its insert rather than relying on running exactly once",
+  async () => {
+    await expect(setup()).resolves.toBeUndefined();
+  },
+);
