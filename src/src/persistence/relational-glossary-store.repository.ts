@@ -23,9 +23,23 @@
 // same whole-replace unit of work
 // relational-capability-store.repository.ts's own writeCapabilities already
 // runs, so a failure partway through never leaves a table holding a mix of
-// the old and the new set (EDG-05). The port declares no write operation
-// for concepts, so this store adds none of its own (this task's own
-// ADVISORY note).
+// the old and the new set (EDG-05). insertMissingTerms is the port's own
+// narrower sibling to writeTerms
+// (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome):
+// it runs one INSERT ... ON CONFLICT DO NOTHING per given term, inside one
+// transaction the same way (EDG-05 again, now that more than one term can
+// go in), issuing no DELETE at all — every already-held row, including one
+// some other table now permanently references by foreign key
+// (case_versions.fallback_outcome, hypothesis_revisions.resolution_outcome),
+// stays exactly as it was. Every vocabulary table's own "name" column is
+// already that table's primary key (migrations/0002-glossary-vocabulary.sql),
+// so ON CONFLICT DO NOTHING with no target list resolves against it
+// unambiguously — the same idempotent-insert shape
+// vitest-global-setup.ts's own seedNonConclusionOutcomes already runs
+// against this exact table, which this task's own investigation found to be
+// this codebase's established way to add what is missing without touching
+// what already exists. The port declares no write operation for concepts,
+// so this store adds none of its own (this task's own ADVISORY note).
 //
 // Names no import of 'pg': DatabaseConnection, database-connection.ts's own
 // exported type, and the runStatement/runInTransaction helpers
@@ -78,8 +92,11 @@ const CONCEPT_ACCEPTS_TABLE = 'public.concept_accepts';
 /**
  * The relational adapter of the glossary's store port: each term vocabulary
  * lives in its own table, read fresh on every call (criterion 1, criterion
- * 3) and replaced whole on every write, inside one transaction (criterion
- * 4); every concept lives in one row of "concepts" plus one row of
+ * 3) and replaced whole on every writeTerms call, inside one transaction
+ * (criterion 4); insertMissingTerms instead adds only what a vocabulary does
+ * not already hold, deleting nothing
+ * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome);
+ * every concept lives in one row of "concepts" plus one row of
  * "concept_accepts" per subject type it accepts, read fresh the same way
  * (criterion 2).
  */
@@ -106,6 +123,24 @@ export class RelationalGlossaryStore implements IGlossaryStore {
     });
   }
 
+  /**
+   * Adds to the named vocabulary's table exactly the given terms it does not
+   * already hold, and deletes nothing: each runs through its own
+   * INSERT ... ON CONFLICT DO NOTHING, inside one transaction so a failure
+   * partway through never leaves some of the given terms inserted and
+   * others not (EDG-05). A row the vocabulary already holds — including one
+   * some other table now permanently references — is never touched
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   */
+  public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
+    const table = VOCABULARY_TABLES[vocabulary];
+    await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+      for (const term of terms) {
+        await runStatement(tx, insertMissingTermStatement(table, term), raiseWriteFailure);
+      }
+    });
+  }
+
   /** Every concept the table holds right now, each with the subject types it accepts and its ttl (criterion 2), assembled inside one transaction so both tables answer as of one consistent read. */
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => readWholeConcepts(tx));
@@ -115,6 +150,11 @@ export class RelationalGlossaryStore implements IGlossaryStore {
 /** The one INSERT every kept and incoming term runs through writeTerms' own whole replace. */
 function insertTermStatement(table: string, term: GlossaryTerm): IStatement {
   return { text: `INSERT INTO ${table} (name) VALUES ($1)`, params: [term.name] };
+}
+
+/** The one idempotent INSERT insertMissingTerms runs per given term: a no-op where the vocabulary's own primary key (name) already holds it, an ordinary insert otherwise. */
+function insertMissingTermStatement(table: string, term: GlossaryTerm): IStatement {
+  return { text: `INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, params: [term.name] };
 }
 
 /** Reads "concepts" and "concept_accepts" through the one connection the caller's own transaction checked out, and assembles them into the shape readConcepts promises. */

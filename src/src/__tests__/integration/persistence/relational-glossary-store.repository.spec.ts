@@ -356,3 +356,26 @@ it(
     await expect(rejection).rejects.toMatchObject({ cause: { code: FOREIGN_KEY_VIOLATION } });
   },
 );
+
+// ---------------------------------------------------------------- task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome
+
+// insertMissingTerms is the port's own additive-only sibling to writeTerms: it never issues a
+// DELETE, so — unlike writeTerms, which this file's header comment already confirms fails at its
+// own first statement against 'outcome' today, on this shared database, because the outcomes table
+// already holds rows a released case_versions/hypothesis_revisions fixture permanently references
+// (357 outcome rows behind 303 released case versions at the time this was checked) — a call against
+// 'outcome' should succeed regardless of that pinning. This is exactly the guarantee this task
+// exists to add, proven here directly against the real, already-pinned table rather than only
+// through a store stand-in.
+it('adds only the terms the outcomes table does not already hold, and leaves an already-held row untouched, even though the table already holds rows permanently referenced by released fixtures', async () => {
+  const store = new RelationalGlossaryStore(pool);
+  const alreadyHeld = freshTerm('glossary-store-insert-missing-already-held', outcomesWrittenByThisTest);
+  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [alreadyHeld.name]);
+  const missing = freshTerm('glossary-store-insert-missing-new', outcomesWrittenByThisTest);
+
+  await store.insertMissingTerms('outcome', [alreadyHeld, missing]);
+
+  const held = (await store.readTerms('outcome')).map((term) => term.name);
+  expect(held).toContain(alreadyHeld.name);
+  expect(held).toContain(missing.name);
+});

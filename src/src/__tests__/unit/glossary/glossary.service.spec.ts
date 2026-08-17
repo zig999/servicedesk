@@ -19,6 +19,7 @@ const SIXTY_SECONDS = 60;
 /** Stands in for the store boundary, so the service is exercised without any filesystem. */
 class InMemoryGlossaryStore implements IGlossaryStore {
   private readonly records = new Map<TermVocabulary, readonly GlossaryTerm[]>();
+  private readonly writeTermsBlocked = new Set<TermVocabulary>();
 
   public constructor(private readonly concepts: readonly ConceptRegistration[] = []) {}
 
@@ -27,7 +28,25 @@ class InMemoryGlossaryStore implements IGlossaryStore {
   }
 
   public async writeTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
+    if (this.writeTermsBlocked.has(vocabulary)) {
+      throw new Error(`a whole-table replace of ${vocabulary} failed: a row it already holds is now permanently referenced elsewhere`);
+    }
     this.records.set(vocabulary, terms);
+  }
+
+  /**
+   * Adds exactly the given terms this vocabulary does not already hold by
+   * name, and touches nothing else — the same additive, no-delete semantics
+   * RelationalGlossaryStore.insertMissingTerms has
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   */
+  public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
+    const held = this.held(vocabulary);
+    const names = new Set(held.map((term) => term.name));
+    const additions = terms.filter((term) => !names.has(term.name));
+    if (additions.length > 0) {
+      this.records.set(vocabulary, [...held, ...additions]);
+    }
   }
 
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
@@ -37,6 +56,18 @@ class InMemoryGlossaryStore implements IGlossaryStore {
   /** What the store now holds for one vocabulary, for asserting what a read persisted. */
   public held(vocabulary: TermVocabulary): readonly GlossaryTerm[] {
     return this.records.get(vocabulary) ?? [];
+  }
+
+  /**
+   * Simulates a vocabulary where a whole-table replace (writeTerms) now
+   * fails because a row it already holds is permanently referenced
+   * elsewhere in the database — a released case version's fallback_outcome
+   * or a released hypothesis-revision's resolution_outcome
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * insertMissingTerms, which never deletes, stays unaffected.
+   */
+  public blockWriteTerms(vocabulary: TermVocabulary): void {
+    this.writeTermsBlocked.add(vocabulary);
   }
 }
 
@@ -167,6 +198,66 @@ it('seeds only the absent non-conclusion outcome beside what the store already h
     'inconclusive-hypotheses-exhausted',
     'inconclusive-no-data',
   ]);
+});
+
+// -------------------- task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome
+
+it(
+  'resolves a non-conclusion outcome without throwing even though some other outcome is now permanently referenced elsewhere, and leaves that other outcome held unchanged',
+  async () => {
+    const store = new InMemoryGlossaryStore();
+    await store.writeTerms('outcome', [{ name: 'a-permanently-referenced-outcome' }]);
+    // Simulates release-immutability elsewhere in the database having made this
+    // row permanent: a whole-table replace (writeTerms) of 'outcome' can no
+    // longer succeed, exactly as a real DELETE against a permanently
+    // referenced row raises Postgres' own foreign-key violation. Before this
+    // task's fix, withNonConclusionOutcomes topped up through writeTerms and
+    // this call would reject with that store failure instead of resolving.
+    store.blockWriteTerms('outcome');
+    const glossary = new GlossaryService(store);
+
+    const resolution = await glossary.readVocabularyTerm('outcome', 'inconclusive-no-data');
+
+    expect(resolution).toEqual({ held: true, term: { name: 'inconclusive-no-data' } });
+    expect(store.held('outcome').map((term) => term.name).sort()).toEqual([
+      'a-permanently-referenced-outcome',
+      'inconclusive-hypotheses-exhausted',
+      'inconclusive-no-data',
+    ]);
+  },
+);
+
+it('leaves the outcome vocabulary exactly as held, with no name changed, when both non-conclusion outcomes are already present', async () => {
+  const store = new InMemoryGlossaryStore();
+  const alreadyHeld = [
+    { name: 'a-conclusion' },
+    { name: 'inconclusive-no-data' },
+    { name: 'inconclusive-hypotheses-exhausted' },
+  ];
+  await store.writeTerms('outcome', alreadyHeld);
+  const glossary = new GlossaryService(store);
+
+  const answered = await glossary.terms('outcome');
+
+  expect(answered).toEqual(alreadyHeld);
+  expect(store.held('outcome')).toEqual(alreadyHeld);
+});
+
+it('seeds both missing non-conclusion outcomes beside another outcome that stays held with its own name unchanged', async () => {
+  const store = new InMemoryGlossaryStore();
+  await store.writeTerms('outcome', [{ name: 'a-conclusion' }]);
+  const glossary = new GlossaryService(store);
+
+  const answered = await glossary.terms('outcome');
+
+  expect(answered.map((term) => term.name).sort()).toEqual([
+    'a-conclusion',
+    'inconclusive-hypotheses-exhausted',
+    'inconclusive-no-data',
+  ]);
+  expect(store.held('outcome')).toEqual(
+    expect.arrayContaining([{ name: 'a-conclusion' }]),
+  );
 });
 
 it('leaves a vocabulary other than outcome unseeded and answers it empty', async () => {

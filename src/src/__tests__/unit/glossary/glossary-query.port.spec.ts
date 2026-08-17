@@ -42,6 +42,21 @@ class MutableGlossaryStore implements IGlossaryStore {
     this.vocabularies.set(vocabulary, terms);
   }
 
+  /**
+   * Adds exactly the given terms this vocabulary does not already hold by
+   * name, and touches nothing else — the same additive, no-delete semantics
+   * RelationalGlossaryStore.insertMissingTerms has
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   */
+  public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
+    const held = this.vocabularies.get(vocabulary) ?? [];
+    const names = new Set(held.map((term) => term.name));
+    const additions = terms.filter((term) => !names.has(term.name));
+    if (additions.length > 0) {
+      this.vocabularies.set(vocabulary, [...held, ...additions]);
+    }
+  }
+
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
     if (this.failure !== undefined) {
       throw this.failure;

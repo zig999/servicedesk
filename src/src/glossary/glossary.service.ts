@@ -22,8 +22,13 @@ export class GlossaryService implements IGlossaryQuery {
   /**
    * Answers one term vocabulary as the glossary holds it: each name exactly
    * once — and the outcome vocabulary never without the two non-conclusion
-   * outcomes, which are seeded through the port where the records lack them
-   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
+   * outcomes, which are added through the port's own additive primitive
+   * where the records lack them
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case),
+   * never through the port's whole-replace writeTerms — ensuring these two
+   * exist must never delete or rewrite an outcome some other row now
+   * permanently references
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
    */
   public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
     const held = await this.store.readTerms(vocabulary);
@@ -74,6 +79,16 @@ export class GlossaryService implements IGlossaryQuery {
     return concept === undefined ? { held: false, name } : { held: true, concept };
   }
 
+  /**
+   * Ensures the two non-conclusion outcomes exist by adding only what is
+   * missing, through insertMissingTerms — never writeTerms's own
+   * whole-replace, which would delete every outcome row first and fail the
+   * moment any of them, non-conclusion or not, is permanently referenced by
+   * a released case version's fallback_outcome or a released hypothesis
+   * revision's resolution_outcome
+   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * Every currently-held outcome's own name is left exactly as it was.
+   */
   private async withNonConclusionOutcomes(held: readonly GlossaryTerm[]): Promise<readonly GlossaryTerm[]> {
     const missing = NON_CONCLUSION_OUTCOMES.filter(
       (outcome) => !held.some((term) => term.name === outcome.name),
@@ -81,9 +96,8 @@ export class GlossaryService implements IGlossaryQuery {
     if (missing.length === 0) {
       return held;
     }
-    const seeded = [...held, ...missing];
-    await this.store.writeTerms('outcome', seeded);
-    return seeded;
+    await this.store.insertMissingTerms('outcome', missing);
+    return [...held, ...missing];
   }
 }
 
