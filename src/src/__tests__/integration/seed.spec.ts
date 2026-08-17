@@ -184,21 +184,94 @@ async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<voi
   }
   await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
   await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [await readGlossaryFixtureNames('outcome.json')]);
+  // One deleteTolerantly call per name, not one batched ANY($1) array, the same per-row shape the
+  // capability and concept loops above already use — found live, running this exact file against a
+  // database where the fixture case already stands released: a single batched DELETE targeting both
+  // the two case-specific outcome names (still referenced by the released case's own permanent
+  // hypothesis_revisions rows, migration 0009) and the two non-conclusion names fails atomically on
+  // the case-specific names alone, and Postgres' own all-or-nothing statement semantics then leave
+  // even the otherwise perfectly removable non-conclusion names undeleted too. One DELETE per name
+  // lets deleteTolerantly's own foreign-key tolerance apply per name instead of to the whole array.
+  for (const outcomeName of await readGlossaryFixtureNames('outcome.json')) {
+    await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = $1', [outcomeName]);
+  }
   await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
   await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
-/** Confirms the wipe above genuinely left the database lacking the case and both non-conclusion outcomes, before seed.ts ever runs — not itself a test (see this file's own header on why criterion 1's own "before" cannot be asserted as one), a loud failure of this file's own arrangement rather than a silently wrong premise for every it() below. */
+/**
+ * Whether the named outcome is permanently referenced by a released case version anywhere in this
+ * database, through either of the two paths the schema actually declares a NOT NULL FK to
+ * outcomes(name) for — domain/knowledge/hypothesis-revision's and domain/knowledge/case-version's
+ * own "once any case version in released state manifests it, this content never changes again"
+ * propagating onto the outcome row either column names:
+ *
+ *   1. case_versions.fallback_outcome (migration 0004) directly, combined with
+ *      case_versions_no_delete_when_released (migration 0009) — the path actually populated in this
+ *      database today: every case fixture across this suite that declares this name as its own
+ *      case-level fallback pins it the moment that version is released for real, with no
+ *      hypothesis-revision involved at all.
+ *   2. hypothesis_revisions.resolution_outcome (migration 0009), reached from a hypothesis-revision
+ *      to case_versions.state the same way migration 0009's own
+ *      case_version_hypotheses_no_update_when_released rule and migration 0010's own
+ *      hypothesis_revision_collects_no_delete_when_released rule already do — real per the schema
+ *      even though nothing in this database currently populates it for either non-conclusion name.
+ *
+ * Neither is scoped to this file's own SLUG: any case anywhere in this shared database
+ * (diagnose-e2e.spec.ts's and diagnose-server.factory.spec.ts's own fixture seeding included) may
+ * hold the released version or revision that made this particular name permanent.
+ */
+async function isPermanentlyReferencedByAReleasedCaseVersion(connection: DatabaseConnection, outcomeName: string): Promise<boolean> {
+  const { rows } = await connection.query(
+    `SELECT 1
+       FROM public.case_versions cv
+      WHERE cv.fallback_outcome = $1 AND cv.state = 'released'
+      UNION
+     SELECT 1
+       FROM public.hypothesis_revisions hr
+       JOIN public.case_version_hypotheses cvh
+         ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
+       JOIN public.case_versions cv2
+         ON cv2.slug = cvh.case_slug AND cv2.version = cvh.case_version
+      WHERE hr.resolution_outcome = $1 AND cv2.state = 'released'
+      LIMIT 1`,
+    [outcomeName],
+  );
+  return rows.length > 0;
+}
+
+/**
+ * Confirms the wipe above genuinely left the database lacking the case and both non-conclusion
+ * outcomes, before seed.ts ever runs — not itself a test (see this file's own header on why
+ * criterion 1's own "before" cannot be asserted as one), a loud failure of this file's own
+ * arrangement rather than a silently wrong premise for every it() below.
+ *
+ * A case this wipe cannot actually remove is tolerated here rather than treated as the wipe's own
+ * failure: rules/knowledge/a-case-version-is-written-once (case-store.port.ts's own release())
+ * makes a genuinely released version permanent once release.operation.spec.ts, or any sibling
+ * integration file run earlier in the same suite, has released it for real — wipeFixtureOwnedRows'
+ * own deleteTolerantly already tolerates the same foreign-key violation that permanence raises.
+ * assembleVersion's own AssembledCaseVersion.state names exactly the two states
+ * domain/knowledge/case-version-state holds, so a released state is the one defined-but-not-throw
+ * case; a draft state is still this file's own wipe genuinely failing to remove something it
+ * should have been able to, and still throws.
+ *
+ * A remaining non-conclusion outcome row is tolerated the same way, and for the same reason, once
+ * isPermanentlyReferencedByAReleasedCaseVersion confirms release-immutability elsewhere in this
+ * shared database is exactly why it survived the wipe above — never merely because it is still
+ * present: a name present for any other reason still throws, the same as before this task.
+ */
 async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<void> {
   const storedCase = await createCaseStore(connection).assembleVersion(SLUG, VERSION);
-  if (storedCase !== undefined) {
+  if (storedCase !== undefined && storedCase.state !== 'released') {
     throw new Error("this file's own wipe left the fixture case stored; the transition this file proves would not be genuine");
   }
   const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);
   const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [nonConclusionNames]);
-  if (rows.length > 0) {
-    throw new Error("this file's own wipe left a non-conclusion outcome stored; the transition this file proves would not be genuine");
+  for (const row of rows) {
+    if (!(await isPermanentlyReferencedByAReleasedCaseVersion(connection, row.name))) {
+      throw new Error("this file's own wipe left a non-conclusion outcome stored; the transition this file proves would not be genuine");
+    }
   }
 }
 

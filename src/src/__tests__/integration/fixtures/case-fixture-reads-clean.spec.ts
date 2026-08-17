@@ -240,10 +240,18 @@ beforeAll(async () => {
   await ensureFixtureSeeded(connection);
 });
 
+/** Raised from vitest's own 10000ms hookTimeout default, the same plain per-hook-argument
+ * mechanism seed.spec.ts's own beforeAll/afterAll and diagnose-server.factory.spec.ts's own
+ * afterAll already establish (30000ms there, for the identical reason): this file's own
+ * cleanupFixtureSeeded issues 12+ sequential deleteTolerantly round-trips against the real,
+ * pooled Neon connection, which have very little headroom left under the 10-second default once
+ * the rest of the full 89-file suite has already put load on that same connection — this file
+ * passes cleanly in isolation, so the failure is accumulated latency under the suite's load
+ * rather than a genuine hang. 30000ms gives real headroom without masking one. */
 afterAll(async () => {
   await cleanupFixtureSeeded(connection);
   await connection.end();
-});
+}, 30000);
 
 it(
   "reads the fixture case whole, with no coherence violation, through the real case-query wiring over " +
