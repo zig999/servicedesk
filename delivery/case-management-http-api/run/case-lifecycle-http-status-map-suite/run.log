@@ -1,0 +1,490 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 6s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: timed_out =====
+
+> backend@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:2210567) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (23 tests) 26ms
+(node:2210655) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 30178ms
+   ✓ applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  2377ms
+   ✓ persists and reads back a full case, hypothesis revision, resolution, referral and its collects  1363ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  1960ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  748ms
+   ✓ holds every domain column NOT NULL except exactly the six columns the model declares optional  497ms
+   ✓ refuses storing a case version whose title is absent  598ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  894ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  1347ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  3279ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1353ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  755ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1201ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  472ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  631ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  672ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  492ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1141ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1101ms
+   ✓ refuses a second case stored under a slug already in use  614ms
+   ✓ refuses storing the same case version a second time under its own slug and version  743ms
+   ✓ refuses a second manifest entry of one case version sharing an already-used position  1488ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  743ms
+   ✓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them  1044ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 19ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (28 tests) 22ms
+(node:2210981) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (18 tests) 125370ms
+   ✓ assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects  8787ms
+   ✓ answers absence, not a rejection, for a slug and version nothing was ever stored under  588ms
+   ✓ assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded  10095ms
+   ✓ copies a named source version's manifest into the new draft's own manifest, entry for entry  13446ms
+   ✓ copies the case's own latest released version's manifest when naming no source version at all  13222ms
+   ✓ starts a case's very first draft with an empty manifest, since no released version exists yet to copy from  4975ms
+   ✓ refuses a second draft for a case that already holds one in draft state  4198ms
+   ✓ lets only one of two concurrent draft-creation calls for the same case succeed, the other refused through CaseAlreadyHasDraftError  4000ms
+   ✓ creates a hypothesis's own identity row only the first time its name is used for a case, never a second one for a name already held  4753ms
+   ✓ numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis  5583ms
+   ✓ refuses placing a revision at a manifest position already occupied by a different hypothesis in the same version  5751ms
+   ✓ removes only the named manifest entry, never the hypothesis-revision it referenced  5275ms
+   ✓ records the instant of release, and a second call to release leaves that instant unchanged  8933ms
+   ✓ leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it  11666ms
+   ✓ removes a draft version and its own manifest entries, without deleting any hypothesis-revision  6356ms
+   ✓ leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's  11130ms
+   ✓ leaves nothing behind — no cases row, no case_versions row — when the draft-row insert violates a real foreign key on an unregistered fallback outcome, even though the case-identity insert runs first  2070ms
+   ✓ leaves no hypothesis-revision behind when one of its own collects violates a real foreign key on an unregistered concept  4539ms
+(node:2212098) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests) 36368ms
+   ✓ stores a draft case_versions row with released_at absent  799ms
+   ✓ stores a released case_versions row with released_at present  744ms
+   ✓ refuses a case_versions row whose state names a value outside draft or released  594ms
+   ✓ keeps cases.next_version writable to a value independent of any stored case_versions row, proving it is a stored counter rather than one computed from MAX(version)  893ms
+   ✓ defaults a newly created case row (no case_versions row at all) to next_version 1  593ms
+   ✓ refuses inserting a second draft case_versions row for a case that already has one  757ms
+   ✓ permits two released case_versions rows to coexist for the same case, since the one-draft constraint is scoped to draft state alone  742ms
+   ✓ shapes hypotheses as exactly case_slug and name, carrying no content column  448ms
+   ✓ stores and reads back a hypothesis by its identity alone  743ms
+   ✓ refuses a second hypothesis stored under an already-used (case_slug, name) key  740ms
+   ✓ stores and reads back a hypothesis revision's own criterion and resolution  892ms
+   ✓ refuses a second row under an already-used (case_slug, hypothesis_name, revision) key  890ms
+   ✓ leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them  1184ms
+   ✓ stores and reads back the concepts one hypothesis revision collects, referencing that exact revision  1047ms
+   ✓ refuses a collect row naming a revision that was never stored  742ms
+   ✓ stores and reads back a manifest entry's hypothesis, revision and position  1188ms
+   ✓ refuses a second manifest entry at a position already used within the same case version's manifest  1482ms
+   ✓ permits the same position to be reused across two different case versions of the same case, since uniqueness is scoped per version  1336ms
+   ✓ leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them  1041ms
+   ✓ changes an ordinary column of a still-draft case_versions row on UPDATE  892ms
+   ✓ lets an UPDATE transition a draft case_versions row to released  897ms
+   ✓ drops hypothesis_collects (migration 0004) entirely, leaving no table for any old row to have been carried into  444ms
+   ✓ refuses to alter a manifest entry belonging to a released case version  1486ms
+   ✓ refuses to delete a manifest entry belonging to a released case version  1481ms
+   ✓ updates a draft case version's own manifest entry ordinarily  1338ms
+   ✓ deletes a draft case version's own manifest entry ordinarily  1342ms
+   ✓ refuses to delete a released case_versions row  1061ms
+   ✓ permits deleting a draft case_versions row that carries no manifest entries  888ms
+   ✓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column  4818ms
+   ✓ defaults a newly-inserted case_versions row that does not name its own state to 'released', since the column's own DEFAULT is kept permanently rather than dropped after backfill — every currently-shipped write path that inserts without naming state depends on this  595ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (20 tests) 11ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 10ms
+(node:2212487) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (6 tests | 6 failed) 27926ms
+   × answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject 2023ms
+     → expected 500 to be 200 // Object.is equality
+   × sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env 2077ms
+     → expected [] to include 'a-test-evaluator-model'
+   × persists the zero-valued cost and duration placeholders this HTTP layer stamps, since nothing behind it measures either yet 2176ms
+     → expected undefined to be defined
+   × reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture 1948ms
+     → expected "spy" to be called at least once
+   × calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one 1969ms
+     → expected [] to deeply equal ArrayContaining{…}
+   × answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it 1935ms
+     → expected 500 to be 200 // Object.is equality
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (25 tests) 15ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (64 tests) 10ms
+(node:2212797) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests) 100181ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  10566ms
+   ✓ writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column  10706ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  11112ms
+   ✓ lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError  8560ms
+   ✓ does not refuse a write for an id not already stored  9176ms
+   ✓ answers undefined, not a rejection, for an id nothing was ever written under  1503ms
+   ✓ reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with  11102ms
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  9420ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  10421ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  9354ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored  8260ms
+(node:2213704) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests | 1 failed) 13606ms
+   × writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment 991ms
+     → expected undefined to be defined
+   ✓ imports @anthropic-ai/sdk nowhere across every file this test's own composition reaches, so the run above never made or could make a call to the Anthropic API 22ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (24 tests) 33ms
+(node:2213872) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/seed.spec.ts (11 tests | 11 skipped) 11324ms
+   ↓ holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand
+   ↓ holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together
+   ↓ holds exactly the fixture's own subject-type name, the one the curated case declares as its subject
+   ↓ holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own
+   ↓ holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare
+   ↓ holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare
+   ↓ holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly
+   ↓ registers one read-only capability, with every attribute the fixture declares, for each of the two concepts the curated case collects
+   ↓ the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand
+   ↓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names
+   ↓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded
+(node:2213999) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test) 30843ms
+   ✓ answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline  15128ms
+(node:2214298) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (9 tests) 11191ms
+   ✓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows  4831ms
+   ✓ answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them  1621ms
+   ✓ answers a concept with an empty accepts array when it currently accepts no subject type  1183ms
+   ✓ answers no concepts, not a rejection, when no row was ever stored under a given name  733ms
+   ✓ answers exactly what a row inserted directly into the real table holds, among whatever else the table currently holds  458ms
+   ✓ rejects a call against 'action' with a foreign-key violation, now that this shared database always holds a row a released fixture permanently references — the later-write-replaces-earlier-write real effect this test proved stays unprovable for this vocabulary until that pinning is lifted  743ms
+   ✓ rejects a call against 'recipient' with a foreign-key violation, now that this shared database always holds a row a released fixture permanently references — the persists-so-an-outside-read-finds-it real effect this test proved stays unprovable for this vocabulary until that pinning is lifted  742ms
+   ✓ rejects a call against 'recipient' with a foreign-key violation before it ever reaches its own insert — the duplicate-name-refused-leaving-prior-content-untouched real effect this test proved stays unprovable for this vocabulary until that pinning is lifted  731ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 12ms
+(node:2214445) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/case/release.operation.spec.ts (5 tests) 73631ms
+   ✓ refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, naming both structural violations together, leaving the version in draft state with no release recorded  7749ms
+   ✓ refuses releasing a draft whose collected concept both rejects the declared subject type and answers no capability, naming both coherence violations together, leaving the version in draft state with no release recorded  9101ms
+   ✓ marks a draft that holds against every rule released, recording the instant of release  15197ms
+   ✓ refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged  18302ms
+   ✓ releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed  23281ms
+(node:2215133) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/case/manifest-composition.operations.spec.ts (12 tests) 99688ms
+   ✓ places a hypothesis-revision at a position not yet occupied in a draft manifest  7447ms
+   ✓ refuses placing a hypothesis-revision at a position already occupied by a different hypothesis  7069ms
+   ✓ does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead  8216ms
+   ✓ refuses placing a hypothesis-revision against a version that is not in draft state  12632ms
+   ✓ refuses removing a manifest entry against a version that is not in draft state  12793ms
+   ✓ refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis  7940ms
+   ✓ never deletes the hypothesis-revision a removed manifest entry referenced  9206ms
+   ✓ swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either  11571ms
+   ✓ refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them  8070ms
+   ✓ does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry  7192ms
+   ✓ refuses placing a hypothesis-revision against a version that was never stored  582ms
+   ✓ lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError  6968ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 6ms
+(node:2216092) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 54458ms
+   ✓ writes two independent investigation records for two calls sharing the same case, subject, narrative and requester  13885ms
+   ✓ collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result  11224ms
+   ✓ passes the given requester straight through to the observation source, substituting none of its own  9838ms
+   ✓ reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake  9768ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source  9742ms
+(node:2216613) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 71985ms
+   ✓ answers a case written directly to the real store, matching what is currently stored, with no publish step in between  17205ms
+   ✓ refuses with CaseNotFoundError, through the real wiring, for a slug and version nothing was ever created for  1520ms
+   ✓ refuses through the real wiring a case document declaring no hypothesis, naming the structural violation  9444ms
+   ✓ refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, a hypothesis-revision whose collected concept the glossary does not hold — the real store's own foreign key from hypothesis_revision_collects into concepts, never reachable through the fake store the unit-level proof stands in with  6286ms
+   ✓ refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table  18009ms
+   ✓ replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table  19520ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 8ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 4ms
+(node:2217333) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts (7 tests | 1 failed) 31918ms
+   ✓ originates a never-named hypothesis's own identity and its first revision, numbered 1  5783ms
+   ✓ numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered  6541ms
+   ✓ refuses revising with an empty collects list, naming that the revision collects no concept, and never reaches the store  2689ms
+   ✓ refuses revising with a collected concept the glossary does not currently hold, naming the concept, and never reaches the store  3446ms
+   ✓ refuses revising with a collected concept that does not accept the declared subject type, naming both the concept and the subject type, and never reaches the store  3707ms
+   ✓ changes no version's manifest on its own — an existing manifest entry stays exactly as it was, and the newly originated revision is placed nowhere  5274ms
+   × excludes an implementation that originates a hypothesis identity and revision for a case holding no draft version at all, without refusing 4474ms
+     → promise resolved "{ …(2) }" instead of rejecting
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 103ms
+(node:2217659) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/case/create-draft.operation.spec.ts (6 tests) 52462ms
+   ✓ assigns a new draft a version number greater than every version the case has ever held, including one later discarded  10934ms
+   ✓ refuses a second draft creation while the case already holds one open, naming that a draft already exists  5122ms
+   ✓ lets only one of two concurrent draft creations for the same case succeed, the other refused through CaseAlreadyHasDraftError  4036ms
+   ✓ creates a draft with an empty manifest when naming no source version and the case holds no released version yet  4004ms
+   ✓ copies the case's own latest released version's manifest when a draft is created naming no source version  12485ms
+   ✓ copies the named historical version's own manifest instead of the case's latest released version, when a draft is created naming a source version  15881ms
+(node:2218148) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test | 1 failed) 13671ms
+   × reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data 900ms
+     → the case "intermittent-connection-outage" at version 1 violates its validator rules: manifest entry 1 collects no concept; manifest entry 2 collects no concept
+(node:2218287) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests) 13808ms
+   ✓ leaves the cases table holding no row for the slug it wrote, once it releases the isolated connection it wrote through  1966ms
+   ✓ lets a first integration test write a case under a slug a second test in this run will also write, without a unique-key collision  883ms
+   ✓ lets a second integration test write a case under the same slug the first one already wrote, in the same suite run  883ms
+   ✓ lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision  1825ms
+   ✓ lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run  1862ms
+   ✓ writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header  755ms
+   ✓ observes no row for the slug the previous test wrote, once that test had already released its own connection  739ms
+   ✓ still refuses a second case written under an already-used slug within one still-open isolated connection, since isolation scopes visibility rather than disabling constraints  887ms
+   ✓ resolves release() without error when nothing was ever begun or written on the checked-out connection  441ms
+   ✓ resolves release() without error when the caller already sent its own ROLLBACK before calling it  741ms
+   ✓ keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release  2821ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 7ms
+(node:2218458) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests) 26846ms
+   ✓ answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached  15741ms
+   ✓ answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection  11104ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 97ms
+(node:2218747) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/case/discard.operation.spec.ts (6 tests) 40808ms
+   ✓ removes the discarded draft version itself, so no later read answers it at all  7064ms
+   ✓ removes the discarded draft's own manifest entries  5723ms
+   ✓ refuses to discard a version that is not in draft state, naming the state it actually holds  7830ms
+   ✓ leaves a released version and its manifest entry in place after refusing to discard it  13047ms
+   ✓ never removes a hypothesis-revision the discarded draft's manifest referenced, even though no other version ever adopted it  6567ms
+   ✓ refuses to discard a slug/version nothing stores, through CaseNotFoundError  574ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 6ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (17 tests) 10ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 4ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 8ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (22 tests) 6ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (8 tests) 4ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (12 tests) 12ms
+(node:2219285) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (9 tests) 14825ms
+   ✓ persists and reads back a registration exactly as given — name, version, nature, both schemas, timeout, connector and concept  1337ms
+   ✓ answers a read as the database holds it right now, never a value an earlier read already answered  2348ms
+   ✓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint  2282ms
+   ✓ excludes a registration with no output schema: the write is refused and nothing is stored  1323ms
+   ✓ excludes a registration with no connector: the write is refused and nothing is stored  1322ms
+   ✓ leaves the table exactly as it stood when a non-read-only registration is refused before ever reaching the store  590ms
+   ✓ persists a complete read-only registration, unrefused, when registered against the real store  1466ms
+   ✓ holds a registration that states no timeout with the default of sixty seconds, in what the store actually persists  1477ms
+   ✓ resolves a concept to the capability the database currently holds, reflecting a registration made since an earlier resolution  1613ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 198ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (17 tests) 5ms
+(node:2219499) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 4069ms
+   ✓ leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path  895ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  1206ms
+   ✓ raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied  893ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (7 tests) 12ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (7 tests) 5ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 3ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (12 tests) 3ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 27ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (8 tests) 3ms
+(node:2219693) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[run] terminated after 900s; what it printed up to then is above
+
