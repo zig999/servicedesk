@@ -428,6 +428,126 @@ it(
   },
 );
 
+// ------------------------------------------------ task/case-query-http/list-hypotheses-store-extension
+//
+// Like "case_versions" above, "hypotheses" is queried scoped to one case_slug at a time, so a page
+// answered for one slug can never include a row this suite wrote under a different one — every
+// assertion below compares the page's own data array by full equality, ordered by name, rather than
+// arrayContaining.
+
+it(
+  'returns every hypothesis the named case has ever originated, by its own bare name, regardless of ' +
+    'how many revisions each one holds',
+  async () => {
+    const slug = `case-lifecycle-store-list-hypotheses-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = (hypothesisName: string) => ({ slug, hypothesis_name: hypothesisName, criterion: 'a criterion', collects: [] as string[], resolution: aResolution(glossary) });
+    await store.insertHypothesisRevision(revisionInput('alpha'));
+    await store.insertHypothesisRevision(revisionInput('beta'));
+    await store.insertHypothesisRevision(revisionInput('beta'));
+
+    const page = await store.listHypotheses(slug, { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([{ name: 'alpha' }, { name: 'beta' }]);
+  },
+);
+
+it("excludes another case's own hypotheses from the page, naming only the slug it was asked for", async () => {
+  const slug = `case-lifecycle-store-list-hypotheses-isolated-${randomUUID()}`;
+  const otherSlug = `case-lifecycle-store-list-hypotheses-isolated-other-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug, otherSlug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.createDraft(aCreateDraftInput(otherSlug, glossary));
+  await store.insertHypothesisRevision({ slug, hypothesis_name: 'a-hypothesis', criterion: 'a criterion', collects: [], resolution: aResolution(glossary) });
+  await store.insertHypothesisRevision({ slug: otherSlug, hypothesis_name: 'other-hypothesis', criterion: 'a criterion', collects: [], resolution: aResolution(glossary) });
+
+  const page = await store.listHypotheses(slug, { offset: 0, limit: 20 });
+
+  expect(page.data).toEqual([{ name: 'a-hypothesis' }]);
+});
+
+it(
+  'answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named ' +
+    "case's own hypotheses — the given limit and offset echoed back, the page itself held to that " +
+    'limit even though the case holds more hypotheses, and pageCount computed from total and limit',
+  async () => {
+    const slug = `case-lifecycle-store-list-hypotheses-page-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revisionInput = (hypothesisName: string) => ({ slug, hypothesis_name: hypothesisName, criterion: 'a criterion', collects: [] as string[], resolution: aResolution(glossary) });
+    await store.insertHypothesisRevision(revisionInput('alpha'));
+    await store.insertHypothesisRevision(revisionInput('beta'));
+    await store.insertHypothesisRevision(revisionInput('gamma'));
+
+    const page = await store.listHypotheses(slug, { offset: 0, limit: 1 });
+
+    expect(page.limit).toBe(1);
+    expect(page.offset).toBe(0);
+    expect(page.data).toHaveLength(1);
+    expect(page.total).toBe(3);
+    expect(page.pageCount).toBe(3);
+  },
+);
+
+it('refuses, through CaseNotFoundError naming the slug, a slug that names no case at all', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-list-hypotheses-absent-${randomUUID()}`;
+
+  const rejection = store.listHypotheses(slug, { offset: 0, limit: 20 });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 0 } });
+});
+
+it('answers an empty page, never CaseNotFoundError, for a case that has originated no hypothesis yet', async () => {
+  const slug = `case-lifecycle-store-list-hypotheses-zero-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+
+  const page = await store.listHypotheses(slug, { offset: 0, limit: 20 });
+
+  expect(page).toEqual({ data: [], total: 0, limit: 20, offset: 0, pageCount: 0 });
+});
+
+// --------------------------- excludes this task's own UNDERDETERMINED note (domain/knowledge/hypothesis)
+//
+// A hypothesis's case membership is a fact of its own identity row alone, never of whether the
+// case's current version's manifest still references it. The case below holds exactly one version,
+// and that version's own manifest is empty by the time listHypotheses is called — its one entry was
+// placed and then removed — so an implementation that joined through case_version_hypotheses instead
+// of reading "hypotheses" directly would answer an empty page here, while the one actually delivered
+// still answers both hypotheses this case ever originated.
+
+it(
+  "still returns a hypothesis originated but never placed into any manifest, and one placed into the " +
+    "case's own current version and then removed from it — case membership does not depend on that " +
+    "version's own manifest",
+  async () => {
+    const slug = `case-lifecycle-store-list-hypotheses-unplaced-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.insertHypothesisRevision({ slug, hypothesis_name: 'never-placed', criterion: 'a criterion', collects: [], resolution: aResolution(glossary) });
+    const removedRevision = await store.insertHypothesisRevision({ slug, hypothesis_name: 'placed-then-removed', criterion: 'a criterion', collects: [], resolution: aResolution(glossary) });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'placed-then-removed', revision: removedRevision, position: 1 });
+    await store.removeManifestEntry(slug, version, 'placed-then-removed');
+
+    const page = await store.listHypotheses(slug, { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([{ name: 'never-placed' }, { name: 'placed-then-removed' }]);
+  },
+);
+
 // ---------------------------------------------------------------- criterion 3
 
 it(

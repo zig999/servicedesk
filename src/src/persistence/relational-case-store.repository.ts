@@ -77,6 +77,22 @@
 // version cases.next_version's own DEFAULT 1 (migrations/0009-case-version-
 // lifecycle-schema.sql) guarantees no case version is ever assigned.
 //
+// listHypotheses is this file's next later addition
+// (task/case-query-http/list-hypotheses-store-extension): every row of
+// "hypotheses" for one named case_slug, by its own bare name alone
+// (HypothesisIdentity), paginated the same way listCaseVersionsPage already
+// is — one transaction running the case-identity check, the total and the
+// page together, and the same CaseNotFoundError/empty-page split
+// listCaseVersionsPage already keeps. "hypotheses" is queried directly and
+// never joined through case_version_hypotheses or any manifest: this task's
+// own UNDERDETERMINED note disclosed that a reading scoped to only the
+// hypotheses one version's current manifest happens to reference would
+// satisfy the task's criteria as literally worded but contradicts
+// domain/knowledge/hypothesis's own "named uniquely within its case across
+// every version the case ever holds — past, current or future", so a
+// hypothesis's case membership is exactly the identity row migrations/0009
+// made "identity-only" — no content column, and no version column either.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -96,6 +112,7 @@ import type {
   CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
+  HypothesisIdentity,
   HypothesisRevisionContent,
   HypothesisRevisionInput,
   ICaseStore,
@@ -219,6 +236,10 @@ export class RelationalCaseStore implements ICaseStore {
 
   public async listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => listCaseVersionsPage(tx, slug, pagination));
+  }
+
+  public async listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) => listHypothesesPage(tx, slug, pagination));
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {
@@ -431,6 +452,40 @@ function caseVersionsCountSelect(slug: string): IStatement {
 function caseVersionsPageSelect(slug: string, pagination: PaginationRequest): IStatement {
   return {
     text: `SELECT version, state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 ORDER BY version LIMIT $2 OFFSET $3`,
+    params: [slug, pagination.limit, pagination.offset],
+  };
+}
+
+// ---------------------------------------------------------------- listHypotheses
+
+/** Every hypothesis the named case has ever originated, by its own bare name alone, paginated — refused through CaseNotFoundError where the slug names no case at all, the identity check, the total and the page all read through the same transaction so none of the three can disagree about what "hypotheses" held at the instant any of them ran. Reads "hypotheses" directly by case_slug, never through case_version_hypotheses or any manifest, so a hypothesis already originated but not currently adopted by any version's manifest is still answered. */
+async function listHypothesesPage(tx: IQueryable, slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
+  await requireCaseIdentity(tx, slug);
+  const total = await countHypotheses(tx, slug);
+  const rows = await runStatement<{ name: string }>(tx, hypothesesPageSelect(slug, pagination), raiseReadFailure);
+  return {
+    data: rows.map((row) => ({ name: row.name })),
+    total,
+    limit: pagination.limit,
+    offset: pagination.offset,
+    pageCount: pageCountOf(total, pagination.limit),
+  };
+}
+
+/** How many hypotheses the named case has originated in total, across every page — 0 where it has originated none yet. */
+async function countHypotheses(tx: IQueryable, slug: string): Promise<number> {
+  const row = await queryOneOrAbsent<{ count: string }>(tx, hypothesesCountSelect(slug), raiseReadFailure);
+  return row === undefined ? 0 : Number(row.count);
+}
+
+function hypothesesCountSelect(slug: string): IStatement {
+  return { text: `SELECT COUNT(*) AS count FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1`, params: [slug] };
+}
+
+/** One page of the named case's own hypotheses, ordered by name so a stable page boundary means the same rows on a repeated call between two writes. */
+function hypothesesPageSelect(slug: string, pagination: PaginationRequest): IStatement {
+  return {
+    text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 ORDER BY name LIMIT $2 OFFSET $3`,
     params: [slug, pagination.limit, pagination.offset],
   };
 }
