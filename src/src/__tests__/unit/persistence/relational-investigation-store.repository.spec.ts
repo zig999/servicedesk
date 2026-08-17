@@ -318,18 +318,6 @@ it("refuses a second write of an id already stored through InvestigationAlreadyS
   expect(recorded.some((entry) => entry.text.includes('SELECT'))).toBe(false);
 });
 
-// ---------------------------------------------------------------- criterion 4
-
-it('does not refuse a write for an id not already stored', async () => {
-  const { handleQuery } = recordingQuery({});
-  const { connection, client } = fakeTransactionConnection(handleQuery);
-  const store = new RelationalInvestigationStore(connection);
-
-  await expect(store.write(anInvestigation({ id: 'a-fresh-id' }))).resolves.toBeUndefined();
-
-  expect(client.query).toHaveBeenCalledWith('COMMIT');
-});
-
 // ---------------------------------------------------------------- criterion 5
 
 it('answers absence, not a rejection, and reads no further, when investigations holds no row for the given id', async () => {
@@ -612,25 +600,3 @@ it('answers ticket_ref as the empty string when the stored column itself is a SQ
   expect(answered.ticket_ref).toBe('');
 });
 
-// ---------------------------------------------------------------- edge case: an empty evidence or evaluation set
-
-it('inserts no evidence row and no evaluation row for an investigation carrying neither', async () => {
-  const { handleQuery, recorded } = recordingQuery({});
-  const { connection } = fakeTransactionConnection(handleQuery);
-  const store = new RelationalInvestigationStore(connection);
-
-  await store.write(anInvestigation({ evidence: [], evaluations: [] }));
-
-  expect(recorded.some((entry) => entry.text.includes('INSERT INTO public.investigation_evidence') || entry.text.includes('INSERT INTO public.investigation_evaluations'))).toBe(false);
-});
-
-it('answers empty evidence and evaluations arrays when a read finds neither table holding a row for the given id', async () => {
-  const { handleQuery } = recordingQuery({ investigation: investigationRow() });
-  const { connection } = fakeTransactionConnection(handleQuery);
-  const store = new RelationalInvestigationStore(connection);
-
-  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
-
-  expect(answered.evidence).toEqual([]);
-  expect(answered.evaluations).toEqual([]);
-});

@@ -23,7 +23,7 @@
 // replay pinning and plain-value shape — unchanged in substance, only made
 // async because the factory itself now is.
 import { expect, it } from 'vitest';
-import type { Case, Hypothesis } from '../../../case/case.js';
+import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import { InvestigationNotBuildableError } from '../../../errors/investigation-not-buildable.error.js';
 import { SubjectAttributeNotInGlossaryError } from '../../../errors/subject-attribute-not-in-glossary.error.js';
 import { SubjectCarriesNoAttributeError } from '../../../errors/subject-carries-no-attribute.error.js';
@@ -85,14 +85,27 @@ function glossaryHolding(...names: readonly string[]): FakeGlossaryQuery {
   return glossary;
 }
 
-/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
-function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name and what it collects. */
+function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
-    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+  };
+}
+
+/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — collectionPlan and requiresEvaluationOf both read theCase.manifest exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
+function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: hypothesis.name },
+      revision: 1,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    },
   };
 }
 
@@ -100,9 +113,12 @@ function aHypothesis(name: string, collects: readonly string[], position: number
  * A structurally valid Case declaring exactly two hypotheses — h1 collecting
  * concept-a, h2 collecting concept-b — so collectionPlan and
  * requiresEvaluationOf both answer two names, the smallest fixture that lets
- * a totality test remove or duplicate exactly one without touching the other.
+ * a totality test remove or duplicate exactly one without touching the
+ * other. A test overriding `hypotheses` gets its own manifest rebuilt to
+ * match, so the two never disagree.
  */
 function aCase(overrides: Partial<Case> = {}): Case {
+  const hypotheses = overrides.hypotheses ?? [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])];
   return {
     slug: CASE_SLUG,
     title: 'A case for the factory to pin',
@@ -111,7 +127,9 @@ function aCase(overrides: Partial<Case> = {}): Case {
     authored_at: CASE_AUTHORED_AT,
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: [aHypothesis('h1', ['concept-a'], 1), aHypothesis('h2', ['concept-b'], 2)],
+    state: 'released',
+    manifest: hypotheses.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses,
     ...overrides,
   };
 }

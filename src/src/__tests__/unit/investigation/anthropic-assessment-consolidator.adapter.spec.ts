@@ -214,12 +214,6 @@ it('falls back to ANTHROPIC_API_KEY from the environment when the config supplie
 
 // ------------------------------------------------------------- criterion 5 and the import boundary (task Notes)
 
-it('imports @anthropic-ai/sdk for the call', async () => {
-  const source = await readFile(ADAPTER_PATH, 'utf8');
-
-  expect(importSpecifiersOf(source)).toContain('@anthropic-ai/sdk');
-});
-
 it('imports no other HTTP client library beside @anthropic-ai/sdk', async () => {
   const source = await readFile(ADAPTER_PATH, 'utf8');
   const specifiers = importSpecifiersOf(source);

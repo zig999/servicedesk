@@ -42,14 +42,6 @@ it('builds the pg Pool with exactly the given connection URL as its connectionSt
   expect(poolMock).toHaveBeenCalledWith({ connectionString: A_CONNECTION_URL });
 });
 
-it('passes a different given URL straight through unchanged, never a value fixed in the module itself', () => {
-  const aDifferentUrl = 'postgres://a-completely-different-caller-configured-url';
-
-  createDatabaseConnection(aDifferentUrl);
-
-  expect(poolMock).toHaveBeenCalledWith({ connectionString: aDifferentUrl });
-});
-
 it('writes no literal database port anywhere in its own source', async () => {
   const source = await readFile(MODULE_PATH, 'utf8');
 

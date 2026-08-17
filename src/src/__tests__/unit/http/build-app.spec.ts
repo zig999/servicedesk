@@ -20,7 +20,7 @@ import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 
-/** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed. */
+/** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed; manifest stays empty for the same reason (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function minimalCase(): Case {
   return {
     slug: 'a-case',
@@ -30,8 +30,10 @@ function minimalCase(): Case {
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'a-subject-type',
     fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+    state: 'released',
+    manifest: [],
     hypotheses: [
-      { name: 'h1', position: 1, criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
+      { name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } },
     ],
   };
 }

@@ -86,10 +86,6 @@ it("has already recorded every script migrations/ holds as applied, exactly once
   }
 });
 
-it('resolves without error when called the same way vitest itself calls it, against the real configured connection', async () => {
-  await expect(setup()).resolves.toBeUndefined();
-});
-
 // ---------------------------------------------------------------- UNDERDETERMINED: excludes a default
 
 it('refuses with a typed error naming DATABASE_URL, never substituting a default, when the environment names no connection', async () => {

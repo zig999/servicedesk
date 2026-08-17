@@ -14,7 +14,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
-import type { Case, Hypothesis } from '../../../case/case.js';
+import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
@@ -28,19 +28,33 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
-function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name and what it collects. */
+function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
-    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
   };
 }
 
-/** A minimally valid Case holding exactly the given hypotheses, in the order given — each one's own declared position set to match that order, since nothing in this module reads it yet. */
+/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — requiresEvaluationOf reads theCase.manifest exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation), while hypothesisNamed still reads theCase.hypotheses to find the named one. */
+function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: hypothesis.name },
+      revision: 1,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    },
+  };
+}
+
+/** A minimally valid Case holding exactly the given hypotheses, in the order given — each one's own manifest position set to match that order, and its flat .hypotheses projection built from the same declared hypotheses, never independently. */
 function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly collects: readonly string[] }>): Case {
+  const declared = hypotheses.map((h) => aHypothesis(h.name, h.collects));
   return {
     slug: 'a-case',
     title: 'A case',
@@ -49,34 +63,45 @@ function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly colle
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: hypotheses.map((h, index) => aHypothesis(h.name, h.collects, index + 1)),
+    state: 'released',
+    manifest: declared.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses: declared,
   };
 }
 
 /**
- * A Case whose own `.hypotheses` answers `first` on its very first read and
- * `subsequent` on every read after that — a hostile double, never something
- * a real case parse produces, built only to exercise hypothesisNamed's own
- * caller-contract fault: requiresEvaluationOf(theCase) reads `.hypotheses`
- * once to name what is required, and hypothesisNamed reads it again to find
- * the hypothesis for each name, so a case that answers differently the
- * second time is the only way to make a name requiresEvaluationOf just
- * named absent from what hypothesisNamed then finds.
+ * A Case whose manifest names a required hypothesis its own flat
+ * .hypotheses projection does not carry — a hostile double, never something
+ * a real case parse produces (parse-case-document.ts's own heldCase always
+ * derives .hypotheses from .manifest, so the two never disagree there),
+ * built only to exercise hypothesisNamed's own caller-contract fault:
+ * requiresEvaluationOf(theCase) names a required hypothesis from the
+ * manifest alone, and hypothesisNamed then searches .hypotheses for it — a
+ * case whose two fields disagree is the only way to make a name
+ * requiresEvaluationOf just named absent from what hypothesisNamed then
+ * finds. (Fixture rework, task/case-lifecycle-domain-model/aggregate-types-and-structural-validation:
+ * requiresEvaluationOf moved from reading .hypotheses to reading .manifest,
+ * so the volatile-getter-on-.hypotheses trick this fixture previously used
+ * to fake that same disagreement across two reads of one field no longer
+ * applies — only hypothesisNamed still reads .hypotheses at all, so a case
+ * whose manifest and .hypotheses simply disagree from the start reaches
+ * the same fault deterministically.)
  */
-function aCaseWithVolatileHypotheses(first: readonly Hypothesis[], subsequent: readonly Hypothesis[]): Case {
-  let reads = 0;
+function aCaseWithMismatchedHypotheses(
+  requiredHypotheses: readonly Hypothesis[],
+  actualHypotheses: readonly Hypothesis[],
+): Case {
   return {
-    slug: 'a-volatile-case',
-    title: 'A volatile case',
+    slug: 'a-mismatched-case',
+    title: 'A mismatched case',
     when_to_use: 'when testing judgment',
     version: 1,
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    get hypotheses(): readonly Hypothesis[] {
-      reads += 1;
-      return reads === 1 ? first : subsequent;
-    },
+    state: 'released',
+    manifest: requiredHypotheses.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses: actualHypotheses,
   };
 }
 
@@ -631,7 +656,7 @@ it('throws naming the missing hypothesis when evidenceByHypothesis carries no en
 it("throws naming the hypothesis when a required name is not found among the case's own hypotheses", async () => {
   const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
-  const theCase = aCaseWithVolatileHypotheses([aHypothesis('h1', ['concept-a'], 1)], []);
+  const theCase = aCaseWithMismatchedHypotheses([aHypothesis('h1', ['concept-a'])], []);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   await expect(

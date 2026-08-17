@@ -16,6 +16,14 @@
 // __tests__/integration/factories/diagnose-server.factory.spec.ts and
 // __tests__/integration/http/diagnose-e2e.spec.ts — cited here rather than duplicated.
 //
+// The first test below calls writeStore.release() for real, so migrations/0009's own
+// release-conditioned rules now make that released case_versions row (and its own
+// case_version_hypotheses entry) permanent — an ordinary DELETE against one is a silent no-op, and a
+// DELETE against whatever it still references (a hypothesis-revision, a glossary row) fails on that
+// surviving row's own foreign key. deleteTolerantly below runs every cleanup statement expecting
+// exactly that — the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already
+// establishes for this migration's consequence.
+//
 // Divergence disclosed here for the same reason every sibling integration proof in this initiative
 // already discloses it: (STK-08) DATABASE_URL is read directly from process.env below rather than
 // through config/env.ts's loadEnv, because loadEnv refuses unless every other application variable
@@ -37,7 +45,23 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
+const FOREIGN_KEY_VIOLATION = '23503';
+
 let connection: DatabaseConnection;
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
+async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await connection.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
 
 beforeAll(() => {
   connection = createDatabaseConnection(requireDatabaseUrl());
@@ -91,17 +115,23 @@ async function seedGlossaryAndCapability(fixture: IFixture): Promise<void> {
 }
 
 async function cleanupFixture(fixture: IFixture): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
-  await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
-  await connection.query('DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
-  await connection.query('DELETE FROM public.subject_types WHERE name = $1', [fixture.subject]);
-  await connection.query('DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
-  await connection.query('DELETE FROM public.actions WHERE name = $1', [fixture.action]);
-  await connection.query('DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
+  // Rewritten against the schema task/case-lifecycle-persistence/case-version-lifecycle-schema
+  // migrated: hypothesis_collects is dropped, and hypotheses is split into hypotheses (identity),
+  // hypothesis_revisions and hypothesis_revision_collects, joined into one version's manifest
+  // through case_version_hypotheses. Deleted in the order their own foreign keys require.
+  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
+  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [fixture.subject]);
+  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
+  await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [fixture.action]);
+  await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
 }
 
 let fixturesWrittenByThisTest: IFixture[] = [];
@@ -128,32 +158,34 @@ it(
     const fixture = freshFixture();
     await seedGlossaryAndCapability(fixture);
     fixturesWrittenByThisTest.push(fixture);
-    const caseDocument = {
+
+    // The write goes through one store instance, built at one call site — createDraft, one
+    // insertHypothesisRevision and one placeHypothesis, then release, replacing this file's own
+    // previous single writeVersion call (task/case-lifecycle-persistence/
+    // relational-case-store-for-lifecycle: the new ICaseStore has no such call).
+    const writeStore = createCaseStore(connection);
+    const version = await writeStore.createDraft({
       slug: fixture.slug,
       title: 'A case proving the connection is shared',
       when_to_use: 'when proving store-wiring criterion 5',
-      version: 1,
       authored_at: '2024-01-01T00:00:00.000Z',
       subject: fixture.subject,
       fallback: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
-      hypotheses: [
-        {
-          name: 'h1',
-          position: 1,
-          criterion: 'unused by this test',
-          collects: [fixture.concept],
-          resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
-        },
-      ],
-    };
-
-    // The write goes through one store instance, built at one call site.
-    await createCaseStore(connection).writeVersion(fixture.slug, 1, caseDocument);
+    });
+    const revision = await writeStore.insertHypothesisRevision({
+      slug: fixture.slug,
+      hypothesis_name: 'h1',
+      criterion: 'unused by this test',
+      collects: [fixture.concept],
+      resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
+    });
+    await writeStore.placeHypothesis({ slug: fixture.slug, version, hypothesis_name: 'h1', revision, position: 1 });
+    await writeStore.release(fixture.slug, version);
 
     // The read goes through a wholly different composition, built at a different call site,
     // that in turn composes its own, separately-built case store, glossary query and
     // capability query — every one of them given the same connection object, never each other.
-    const result = await createCaseQuery(connection).readCase(fixture.slug, 1);
+    const result = await createCaseQuery(connection).readCase(fixture.slug, version);
 
     expect(result.case.slug).toBe(fixture.slug);
     expect(result.case.hypotheses).toHaveLength(1);

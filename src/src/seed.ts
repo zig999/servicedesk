@@ -15,30 +15,45 @@
 // outcome vocabulary, merged with the two non-conclusion outcomes, is
 // written first; the curated case is authored last, once every other
 // vocabulary, every concept and every capability registration it needs
-// already stands. The case enters only through the published
-// author-case-version command (contracts/knowledge/author-case-version) and
-// through no other write (criterion 5) — never through the case store
-// directly. Every vocabulary term and concept
+// already stands. Every vocabulary term and concept
 // (contracts/knowledge/vocabulary-terms) and every capability's declared
 // contract (contracts/knowledge/capability-check) the curated case needs is
-// seeded before that write, so the coherence checks
+// seeded before that authoring, so the coherence checks
 // rules/knowledge/validation-runs-at-every-read requires at every read —
 // case-terms-exist-in-the-glossary, a-concept-accepts-the-declared-subject-type,
 // a-collected-concept-declares-a-ttl, every-collected-concept-has-a-read-only-
 // capability — hold both when the case is authored and again at the
 // self-check read below (criterion 6).
+//
+// Rewired against the six published case-lifecycle operations
+// (task/case-lifecycle-operations/wire-and-retire-author-case-version): the
+// retired author-case-version command this module used to enter the case
+// through is gone, and the case now enters only through
+// createCaseLifecycle's own createDraft, reviseHypothesis, placeHypothesis
+// and release, called in that order — never through the case store
+// directly (this task's own extension of criterion 5's "no other write" to
+// the operations that replaced the one command it named). The fixture's own
+// declared "hypotheses" array — each entry naming its own position, exactly
+// the flat shape the retired parse-case-document.ts once read directly —
+// still names one hypothesis-revision and the manifest position it is
+// placed at; this module reads it as CaseFixture below rather than as the
+// aggregate's own CaseDocument shape, since the fixture predates the
+// domain-model rewrite that split a hypothesis's identity from its content
+// and this task does not touch the fixture itself (this delivery's own
+// inference, disclosed below).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { CapabilityRegistration } from './capability-registry/capability.js';
+import type { Resolution } from './case/case.js';
 import { loadEnv } from './config/env.js';
-import { CaseVersionAlreadyStoredError } from './errors/case-version-already-stored.error.js';
-import { createAuthorCaseVersion } from './factories/author-case-version.factory.js';
 import { createCapabilityRegistry } from './factories/capability-registry.factory.js';
+import { createCaseLifecycle, type CaseLifecycleOperations } from './factories/case-lifecycle.factory.js';
 import { createCaseQuery } from './factories/case-query.factory.js';
 import { createCaseStore } from './factories/case-store.factory.js';
 import type { IGlossaryStore } from './glossary/glossary-store.port.js';
 import { NON_CONCLUSION_OUTCOMES, type GlossaryTerm } from './glossary/terms.js';
+import type { ConsolidationRegister } from './investigation/consolidation-register.js';
 import { createDatabaseConnection, type DatabaseConnection } from './persistence/database-connection.js';
 import { RelationalGlossaryStore } from './persistence/relational-glossary-store.repository.js';
 
@@ -97,6 +112,34 @@ async function seedRemainingVocabularies(store: IGlossaryStore): Promise<void> {
 type ConceptFixture = { readonly name: string; readonly accepts: readonly string[]; readonly ttl: number };
 
 /**
+ * One manifest entry exactly as the fixture's own committed document
+ * declares it: its own declared position and hypothesis name alongside the
+ * content revise-hypothesis needs (the same flat shape
+ * parse-case-document.ts's own ManifestEntryDocument now requires of every
+ * case document, fixture or otherwise).
+ */
+type CaseFixtureManifestEntry = {
+  readonly position: number;
+  readonly hypothesis_name: string;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
+};
+
+/** The curated case fixture's own whole committed document, read exactly as committed. */
+type CaseFixture = {
+  readonly slug: string;
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly version: number;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly consolidation_register?: ConsolidationRegister;
+  readonly fallback: Resolution;
+  readonly manifest: readonly CaseFixtureManifestEntry[];
+};
+
+/**
  * Seeds "concepts" and "concept_accepts" directly through the given
  * connection: the glossary store's own port declares no write operation for
  * concepts (this task's own ADVISORY note), so this mirrors the exact
@@ -142,28 +185,72 @@ async function seedCapabilities(connection: DatabaseConnection): Promise<void> {
 }
 
 /**
- * Authors the curated case version through the published command and by no
- * other write (criterion 5). A rerun of this script meets the one
- * deliberately write-once refusal the command's own case store raises for a
- * slug and version already stored
- * (rules/knowledge/a-case-version-is-written-once) — caught here and
- * treated as already seeded rather than propagated, since no criterion
- * states what a second run of this otherwise-idempotent script should do
- * with that one refusal (this task's own disclosed judgment). In ordinary
- * operation this catch is defensive rather than load-bearing: alreadySeeded()
- * below is what actually makes a rerun idempotent, by skipping the whole
- * sequence — including this call — once the case already stands.
+ * Revises then places every fixture-declared hypothesis at its own
+ * fixture-declared position, in the fixture's own declared order — the
+ * per-hypothesis half of seedCase's own criterion-5 sequence (below), pulled
+ * out into its own function only so that seedCase's own body stays inside
+ * the standard's max-lines-per-function rule; the sequence and behavior are
+ * exactly what seedCase's own loop ran before this split (this delivery's
+ * own inference — the extraction changes nothing but where the lines are
+ * counted).
+ */
+async function placeFixtureHypotheses(
+  lifecycle: CaseLifecycleOperations,
+  fixture: CaseFixture,
+  version: number,
+): Promise<void> {
+  for (const entry of fixture.manifest) {
+    const revised = await lifecycle.reviseHypothesis({
+      slug: fixture.slug,
+      hypothesis_name: entry.hypothesis_name,
+      criterion: entry.criterion,
+      collects: entry.collects,
+      resolution: entry.resolution,
+      subject: fixture.subject,
+    });
+    await lifecycle.placeHypothesis({
+      slug: fixture.slug,
+      version,
+      hypothesis_name: revised.hypothesis_name,
+      revision: revised.revision,
+      position: entry.position,
+    });
+  }
+}
+
+/**
+ * Authors the curated case version through the six published case-lifecycle
+ * operations and by no other write (criterion 5, extended from the retired
+ * author-case-version command to the operations that replaced it — this
+ * module's own header comment): originates the draft from the fixture's own
+ * case-level attributes, revises and places every fixture-declared
+ * hypothesis at its own fixture-declared position, in the fixture's own
+ * declared order (placeFixtureHypotheses above), then releases the draft —
+ * the same structural and coherence validation the retired command once ran
+ * up front now running at release() itself
+ * (rules/knowledge/validation-runs-at-every-read). Unlike the retired
+ * command's own write-once refusal, no case already answering
+ * alreadySeeded() below ever reaches this function, so no defensive catch is
+ * needed here: alreadySeeded() is this script's whole idempotency guard, the
+ * same way it already was before this task's rewiring (this delivery's own
+ * inference, since no criterion states a replacement race-safety behavior
+ * for the six operations that replaced the one command's own refusal).
  */
 async function seedCase(connection: DatabaseConnection): Promise<void> {
   const raw = await readFile(join(FIXTURES_ROOT, 'case', CASE_SLUG, `${CASE_VERSION}.json`), 'utf8');
-  const document: unknown = JSON.parse(raw);
-  try {
-    await createAuthorCaseVersion(connection).authorCaseVersion(document);
-  } catch (error) {
-    if (!(error instanceof CaseVersionAlreadyStoredError)) {
-      throw error;
-    }
-  }
+  const fixture = JSON.parse(raw) as CaseFixture;
+  const lifecycle = createCaseLifecycle(connection);
+  const draft = await lifecycle.createDraft({
+    slug: fixture.slug,
+    title: fixture.title,
+    when_to_use: fixture.when_to_use,
+    authored_at: fixture.authored_at,
+    subject: fixture.subject,
+    fallback: fixture.fallback,
+    consolidation_register: fixture.consolidation_register,
+  });
+  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await lifecycle.release(fixture.slug, draft.version);
 }
 
 /**
@@ -181,7 +268,7 @@ async function seedCase(connection: DatabaseConnection): Promise<void> {
  * is the case store's.
  */
 async function alreadySeeded(connection: DatabaseConnection): Promise<boolean> {
-  const stored = await createCaseStore(connection).readVersion(CASE_SLUG, CASE_VERSION);
+  const stored = await createCaseStore(connection).assembleVersion(CASE_SLUG, CASE_VERSION);
   return stored !== undefined;
 }
 

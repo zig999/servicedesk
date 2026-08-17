@@ -1,0 +1,39 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/case-lifecycle-epic-suite-5",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/src",
+  "timeout_seconds": 1500,
+  "outcome": "failed",
+  "failed_step": "lint",
+  "steps": [
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "lint.log"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null
+    },
+    {
+      "name": "test",
+      "command": "node --env-file=.env.test node_modules/.bin/vitest run",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null
+    }
+  ],
+  "combined_output": "run.log"
+}

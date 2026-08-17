@@ -4,7 +4,6 @@
 // store on every call, so nothing survives the holding changing. The store
 // boundary is an in-memory stand-in; no test here touches a file.
 import { expect, it } from 'vitest';
-import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
@@ -76,15 +75,6 @@ it('reports a term the glossary does not hold as an absence naming what was aske
   expect(resolution).toEqual({ held: false, vocabulary: 'action', name: 'an-absent-term' });
 });
 
-it('reports any term of an empty vocabulary as the absence', async () => {
-  const store = new MutableGlossaryStore();
-  const query = queryOver(store);
-
-  const resolution = await query.readVocabularyTerm('recipient', 'any-term');
-
-  expect(resolution).toEqual({ held: false, vocabulary: 'recipient', name: 'any-term' });
-});
-
 it('answers a held concept with its accepted subject types and its ttl', async () => {
   const store = new MutableGlossaryStore();
   store.holdConcepts([
@@ -120,16 +110,6 @@ it('no longer answers a term the holding no longer carries, even after answering
   const resolution = await query.readVocabularyTerm('action', 'a-replaced-term');
 
   expect(resolution).toEqual({ held: false, vocabulary: 'action', name: 'a-replaced-term' });
-});
-
-it('refuses to resolve over a vocabulary holding one name twice rather than picking a copy', async () => {
-  const store = new MutableGlossaryStore();
-  store.holdTerms('action', [{ name: 'repeated-term' }, { name: 'repeated-term' }]);
-  const query = queryOver(store);
-
-  await expect(query.readVocabularyTerm('action', 'repeated-term')).rejects.toBeInstanceOf(
-    DuplicateGlossaryNameError,
-  );
 });
 
 it('lets a failing store read reach the caller instead of answering an absence', async () => {

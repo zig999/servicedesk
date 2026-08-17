@@ -3,29 +3,75 @@ import {
   CONSOLIDATION_REGISTERS,
   type ConsolidationRegister,
 } from '../investigation/consolidation-register.js';
-import { CASE_DOCUMENT_ENDING, type Case, type Hypothesis, type Resolution } from './case.js';
+import {
+  CASE_DOCUMENT_ENDING,
+  CASE_VERSION_STATES,
+  type Case,
+  type CaseVersionState,
+  type Hypothesis,
+  type HypothesisRevision,
+  type ManifestEntry,
+  type Resolution,
+} from './case.js';
 
 /** The refusal a case declaring no hypothesis is named with (rules/knowledge/a-case-has-at-least-one-hypothesis). */
 const NO_HYPOTHESIS_PROBLEM = 'the case declares no hypothesis';
 
 /**
- * Parses one case JSON document into the whole aggregate — hypotheses,
- * resolutions and referrals all read from the one document, never from a
- * second store (constraints/a-case-is-stored-as-one-json-document). The
- * document arrives as its parsed JSON data plus the name of the file that
- * holds it, which the slug is held to
- * (rules/knowledge/the-slug-matches-the-file-name); a document violating any
- * structural rule is refused once, with every violation named, and no
- * missing part is ever defaulted or coerced. What the structural rules do
- * not decide — a term existing in the glossary, a concept's capability —
- * is no concern of this parse: those checks read other contexts and belong
- * to the coherence validation. The consolidation register is the one
- * exception to "every declared attribute required": it is optional, and,
- * where declared, closed to the two values the vocabulary admits rather
- * than glossary-checked, so this module's only import beyond its own types
- * and its typed error is that vocabulary's own plain type and value set
- * (domain/knowledge/consolidation-register), itself free of any import
- * (constraints/the-domain-depends-on-no-infrastructure).
+ * The raw shape one case-version JSON document declares once every
+ * structural rule below holds: a manifest entry's own adopted
+ * hypothesis-revision content flattened onto the entry itself
+ * (hypothesis_name, revision, criterion, collects, resolution) — the same
+ * flattening convention case-store.port.ts's own HypothesisRevisionContent
+ * already keeps for the same fact (MNT-03) — reshaped into the aggregate's
+ * own nested ManifestEntry/HypothesisRevision/HypothesisIdentity types by
+ * heldCase below, never asserted to already be that shape: refuseStructuralViolations
+ * only ever asserts a document is this flatter shape, so heldCase is the one
+ * place the two-distinct-types split this task's own criterion 1 requires is
+ * actually built.
+ */
+type ManifestEntryDocument = {
+  readonly position: number;
+  readonly hypothesis_name: string;
+  readonly revision: number;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
+};
+
+/** The whole raw document shape parseCaseDocument accepts, once every structural rule below holds. */
+type CaseDocument = {
+  readonly slug: string;
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly version: number;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly fallback: Resolution;
+  readonly consolidation_register?: ConsolidationRegister;
+  readonly state: CaseVersionState;
+  readonly released_at?: string;
+  readonly manifest: readonly ManifestEntryDocument[];
+};
+
+/**
+ * Parses one case-version JSON document into the whole aggregate — the
+ * manifest, its own hypothesis-revisions and their resolutions and
+ * referrals, all read from the one document, never from a second store
+ * (constraints/a-case-is-stored-as-one-json-document). The document arrives
+ * as its parsed JSON data plus the name of the file that holds it, which the
+ * slug is held to (rules/knowledge/the-slug-matches-the-file-name); a
+ * document violating any structural rule is refused once, with every
+ * violation named, and no missing part is ever defaulted or coerced. What
+ * the structural rules do not decide — a term existing in the glossary, a
+ * concept's capability — is no concern of this parse: those checks read
+ * other contexts and belong to the coherence validation. The consolidation
+ * register is the one exception to "every declared attribute required": it
+ * is optional, and, where declared, closed to the two values the vocabulary
+ * admits rather than glossary-checked, so this module's only import beyond
+ * its own types and its typed error is that vocabulary's own plain type and
+ * value set (domain/knowledge/consolidation-register), itself free of any
+ * import (constraints/the-domain-depends-on-no-infrastructure).
  */
 export function parseCaseDocument(document: unknown, fileName: string): Case {
   refuseStructuralViolations(document, fileName);
@@ -34,10 +80,10 @@ export function parseCaseDocument(document: unknown, fileName: string): Case {
 
 /**
  * Refuses a document violating any structural rule, once, with every
- * violation named (domain/knowledge/case) — the checks below are the whole
- * of what this assertion claims.
+ * violation named (domain/knowledge/case-version) — the checks below are the
+ * whole of what this assertion claims.
  */
-function refuseStructuralViolations(document: unknown, fileName: string): asserts document is Case {
+function refuseStructuralViolations(document: unknown, fileName: string): asserts document is CaseDocument {
   const problems = documentProblems(document, fileName);
   if (problems.length > 0) {
     throw new InvalidCaseDocumentError(fileName, problems);
@@ -59,13 +105,15 @@ function documentProblems(document: unknown, fileName: string): string[] {
     ...stringProblems(document['subject'], 'subject'),
     ...resolutionProblems(document['fallback'], 'the fallback'),
     ...consolidationRegisterProblems(document['consolidation_register']),
-    ...hypothesesProblems(document['hypotheses']),
+    ...stateProblems(document['state']),
+    ...optionalStringProblems(document['released_at'], 'released_at'),
+    ...manifestProblems(document['manifest']),
   ];
 }
 
 /**
  * How the case's optional consolidation register departs from its
- * declaration (domain/knowledge/case): never required, so a document
+ * declaration (domain/knowledge/case-version): never required, so a document
  * leaving it undeclared holds no problem here at all — the consolidation
  * step then keeps whatever register its own adapter defaults to — but a
  * document that does declare it must name one of the two closed values the
@@ -84,6 +132,23 @@ function consolidationRegisterProblems(value: unknown): string[] {
 /** Whether the given value is one of the two closed values the register admits. */
 function isConsolidationRegister(value: unknown): value is ConsolidationRegister {
   return CONSOLIDATION_REGISTERS.some((register) => register === value);
+}
+
+/**
+ * How the case version's state departs from its declaration
+ * (domain/knowledge/case-version-state): required, and closed to the two
+ * values the enumeration admits.
+ */
+function stateProblems(value: unknown): string[] {
+  if (value === undefined) {
+    return ['state is undeclared'];
+  }
+  return isCaseVersionState(value) ? [] : ['state is not one of draft, released'];
+}
+
+/** Whether the given value is one of the two closed values domain/knowledge/case-version-state admits. */
+function isCaseVersionState(value: unknown): value is CaseVersionState {
+  return CASE_VERSION_STATES.some((state) => state === value);
 }
 
 /**
@@ -129,9 +194,28 @@ function stringProblems(value: unknown, subject: string): string[] {
 }
 
 /**
- * Whether one value is the integer a version or a hypothesis's declared
- * position must be — a guard, not an assertion (TYP-02), so version and
- * position both narrow through it rather than through a cast.
+ * How one optional string attribute departs from its declaration — absent is
+ * never a problem here, unlike stringProblems above: released_at is present
+ * only once released (domain/knowledge/case-version), and this module adds
+ * no refusal pairing its presence to state, since that fact is not among
+ * this task's own criteria and no document this parse ever authors one
+ * itself (this delivery's own inferences).
+ */
+function optionalStringProblems(value: unknown, subject: string): string[] {
+  if (value === undefined) {
+    return [];
+  }
+  if (typeof value !== 'string') {
+    return [`${subject} is not a string`];
+  }
+  return value === '' ? [`${subject} is empty`] : [];
+}
+
+/**
+ * Whether one value is the integer a version, a manifest entry's declared
+ * position, or a hypothesis-revision's declared revision must be — a guard,
+ * not an assertion (TYP-02), so every one of them narrows through it rather
+ * than through a cast.
  */
 function isInteger(value: unknown): value is number {
   return typeof value === 'number' && Number.isInteger(value);
@@ -145,53 +229,54 @@ function integerProblems(value: unknown, subject: string): string[] {
   return isInteger(value) ? [] : [`${subject} is not an integer`];
 }
 
-/** How the version departs from its declaration: the case declares it as an integer (domain/knowledge/case). */
+/** How the version departs from its declaration: the case declares it as an integer (domain/knowledge/case-version). */
 function versionProblems(value: unknown): string[] {
   return integerProblems(value, 'version');
 }
 
 /**
- * How the document's hypotheses violate the structural rules: at least one
- * hypothesis declared (rules/knowledge/a-case-has-at-least-one-hypothesis),
- * each one complete, no name shared
- * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case) and no
- * declared position shared
- * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case).
+ * How the document's manifest violates the structural rules
+ * (domain/knowledge/case-version, domain/knowledge/manifest-entry): at least
+ * one entry declared (rules/knowledge/a-case-has-at-least-one-hypothesis),
+ * each one complete, no hypothesis shared and no declared position shared.
  */
-function hypothesesProblems(value: unknown): string[] {
+function manifestProblems(value: unknown): string[] {
   if (value === undefined) {
     return [NO_HYPOTHESIS_PROBLEM];
   }
   if (!Array.isArray(value)) {
-    return ['hypotheses is not an array of hypotheses'];
+    return ['manifest is not an array of manifest entries'];
   }
-  const hypotheses: readonly unknown[] = value;
-  if (hypotheses.length === 0) {
+  const entries: readonly unknown[] = value;
+  if (entries.length === 0) {
     return [NO_HYPOTHESIS_PROBLEM];
   }
   return [
-    ...hypotheses.flatMap((hypothesis, index) => hypothesisProblems(hypothesis, locatorOf(index))),
-    ...sharedNameProblems(hypotheses),
-    ...sharedPositionProblems(hypotheses),
+    ...entries.flatMap((entry, index) => manifestEntryProblems(entry, locatorOf(index))),
+    ...sharedHypothesisProblems(entries),
+    ...sharedPositionProblems(entries),
   ];
 }
 
 /**
- * How one hypothesis violates the structural rules: a name
- * (domain/knowledge/hypothesis), a declared integer position
- * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case), a
- * non-empty criterion (rules/knowledge/a-hypothesis-declares-a-criterion),
- * at least one collected concept, and a complete resolution. `locator`
- * names which hypothesis a problem belongs to as a reader counts them
- * ("hypothesis 1"), never the declared `position` attribute itself.
+ * How one manifest entry violates the structural rules: a declared integer
+ * position (domain/knowledge/manifest-entry), and its one adopted
+ * hypothesis-revision's own facts — the hypothesis it names, its declared
+ * integer revision, a non-empty criterion
+ * (rules/knowledge/a-hypothesis-declares-a-criterion), at least one
+ * collected concept (rules/knowledge/a-hypothesis-collects-at-least-one-concept)
+ * and a complete resolution. `locator` names which manifest entry a problem
+ * belongs to as a reader counts them ("manifest entry 1"), never the
+ * declared `position` attribute itself.
  */
-function hypothesisProblems(value: unknown, locator: string): string[] {
+function manifestEntryProblems(value: unknown, locator: string): string[] {
   if (!isRecord(value)) {
     return [`${locator} is not one JSON object`];
   }
   return [
-    ...stringProblems(value['name'], `${locator}'s name`),
     ...integerProblems(value['position'], `${locator}'s position`),
+    ...stringProblems(value['hypothesis_name'], `${locator}'s hypothesis`),
+    ...integerProblems(value['revision'], `${locator}'s revision`),
     ...stringProblems(value['criterion'], `${locator}'s criterion`),
     ...collectsProblems(value['collects'], locator),
     ...resolutionProblems(value['resolution'], `${locator}'s resolution`),
@@ -199,8 +284,8 @@ function hypothesisProblems(value: unknown, locator: string): string[] {
 }
 
 /**
- * How one hypothesis's collects violates its declaration: at least one
- * concept, each entry naming one
+ * How one manifest entry's adopted hypothesis-revision's collects violates
+ * its declaration: at least one concept, each entry naming one
  * (rules/knowledge/a-hypothesis-collects-at-least-one-concept).
  */
 function collectsProblems(value: unknown, locator: string): string[] {
@@ -220,64 +305,65 @@ function collectsProblems(value: unknown, locator: string): string[] {
 }
 
 /**
- * Every name more than one hypothesis declares, one problem per shared name
- * naming the locators that share it
- * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case).
+ * Every hypothesis more than one manifest entry names, one problem per
+ * shared hypothesis naming the locators that share it — a manifest entry
+ * adopting the same hypothesis twice, at two positions, is preserved from
+ * this module's own prior behavior over the flat hypotheses array (this
+ * delivery's own `preserved`).
  */
-function sharedNameProblems(hypotheses: readonly unknown[]): string[] {
+function sharedHypothesisProblems(entries: readonly unknown[]): string[] {
   const locators = new Map<string, number[]>();
-  for (const [index, hypothesis] of hypotheses.entries()) {
-    const name = declaredName(hypothesis);
+  for (const [index, entry] of entries.entries()) {
+    const name = declaredHypothesisName(entry);
     if (name !== undefined) {
       locators.set(name, [...(locators.get(name) ?? []), index + 1]);
     }
   }
   return [...locators.entries()]
     .filter(([, at]) => at.length > 1)
-    .map(([name, at]) => `hypotheses ${at.join(', ')} share the name "${name}"`);
+    .map(([name, at]) => `manifest entries ${at.join(', ')} share the hypothesis "${name}"`);
 }
 
-/** The name one hypothesis record declares, where it declares one at all. */
-function declaredName(hypothesis: unknown): string | undefined {
-  if (!isRecord(hypothesis)) {
+/** The hypothesis name one manifest entry record declares, where it declares one at all. */
+function declaredHypothesisName(entry: unknown): string | undefined {
+  if (!isRecord(entry)) {
     return undefined;
   }
-  const name = hypothesis['name'];
+  const name = entry['hypothesis_name'];
   return typeof name === 'string' && name !== '' ? name : undefined;
 }
 
 /**
- * Every position more than one hypothesis declares, one problem per shared
- * position naming the locators that share it
- * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case) — the
- * same collect-every-shared-value-once shape sharedNameProblems above
- * already keeps for the name invariant.
+ * Every position more than one manifest entry declares, one problem per
+ * shared position naming the locators that share it
+ * (domain/knowledge/manifest-entry) — preserved from this module's own prior
+ * behavior over the flat hypotheses array (this delivery's own `preserved`).
  */
-function sharedPositionProblems(hypotheses: readonly unknown[]): string[] {
+function sharedPositionProblems(entries: readonly unknown[]): string[] {
   const locators = new Map<number, number[]>();
-  for (const [index, hypothesis] of hypotheses.entries()) {
-    const position = declaredPosition(hypothesis);
+  for (const [index, entry] of entries.entries()) {
+    const position = declaredPosition(entry);
     if (position !== undefined) {
       locators.set(position, [...(locators.get(position) ?? []), index + 1]);
     }
   }
   return [...locators.entries()]
     .filter(([, at]) => at.length > 1)
-    .map(([position, at]) => `hypotheses ${at.join(', ')} share the position ${position}`);
+    .map(([position, at]) => `manifest entries ${at.join(', ')} share the position ${position}`);
 }
 
-/** The position one hypothesis record declares, where it declares a valid integer one at all. */
-function declaredPosition(hypothesis: unknown): number | undefined {
-  if (!isRecord(hypothesis)) {
+/** The position one manifest entry record declares, where it declares a valid integer one at all. */
+function declaredPosition(entry: unknown): number | undefined {
+  if (!isRecord(entry)) {
     return undefined;
   }
-  const position = hypothesis['position'];
+  const position = entry['position'];
   return isInteger(position) ? position : undefined;
 }
 
-/** Names one hypothesis's locator as a reader counts them: the first hypothesis is hypothesis 1 — never the declared `position` attribute itself. */
+/** Names one manifest entry's locator as a reader counts them: the first entry is manifest entry 1 — never the declared `position` attribute itself. */
 function locatorOf(index: number): string {
-  return `hypothesis ${index + 1}`;
+  return `manifest entry ${index + 1}`;
 }
 
 /**
@@ -319,18 +405,24 @@ function referralProblems(value: unknown, subject: string): string[] {
 
 /**
  * The aggregate as the document declares it: exactly the declared
- * attributes, so nothing undeclared travels in, and the hypotheses in the
- * document's own array order — never reordered and never keyed by name.
- * The precedence collection-plan and resolve-outcome consult is each
- * hypothesis's own declared position instead of that array arrangement
+ * attributes, so nothing undeclared travels in, the manifest reshaped into
+ * this aggregate's own nested ManifestEntry/HypothesisRevision/HypothesisIdentity
+ * types (domain/knowledge/manifest-entry, domain/knowledge/hypothesis-revision,
+ * domain/knowledge/hypothesis — this task's own criterion 1 and criterion 2),
+ * in the document's own array order — never reordered and never keyed by
+ * name. The precedence collection-plan and resolve-outcome consult is each
+ * manifest entry's own declared position instead of that array arrangement
  * (rules/knowledge/hypotheses-are-ordered-by-precedence,
- * task/case-and-investigation-model/precedence-from-position). The optional
- * consolidation register travels through exactly where the document
- * declares it (domain/knowledge/consolidation-register) and is left off the
- * held case entirely where the document leaves it undeclared, rather than
- * carried as an explicit undefined.
+ * task/case-and-investigation-model/precedence-from-position). hypotheses is
+ * the same manifest, flattened for this aggregate's own out-of-scope
+ * consumers (case.ts's own header comment) — derived here, never
+ * independently read off the document. The optional consolidation register
+ * and released_at travel through exactly where the document declares them
+ * and are left off the held case entirely where the document leaves them
+ * undeclared, rather than carried as an explicit undefined.
  */
-function heldCase(document: Case): Case {
+function heldCase(document: CaseDocument): Case {
+  const manifest = document.manifest.map(heldManifestEntry);
   return {
     slug: document.slug,
     title: document.title,
@@ -342,18 +434,37 @@ function heldCase(document: Case): Case {
     ...(document.consolidation_register !== undefined
       ? { consolidation_register: document.consolidation_register }
       : {}),
-    hypotheses: document.hypotheses.map(heldHypothesis),
+    state: document.state,
+    ...(document.released_at !== undefined ? { released_at: document.released_at } : {}),
+    manifest,
+    hypotheses: manifest.map(flatHypothesisOf),
   };
 }
 
-/** One hypothesis exactly as declared, its collects kept in the document's order. */
-function heldHypothesis(hypothesis: Hypothesis): Hypothesis {
+/** One manifest entry exactly as declared, its own adopted hypothesis-revision nested rather than inlined (domain/knowledge/manifest-entry). */
+function heldManifestEntry(entry: ManifestEntryDocument): ManifestEntry {
+  return { position: entry.position, hypothesis_revision: heldHypothesisRevision(entry) };
+}
+
+/** One hypothesis-revision exactly as declared, referencing the hypothesis it belongs to by its own identity (domain/knowledge/hypothesis-revision, domain/knowledge/hypothesis). */
+function heldHypothesisRevision(entry: ManifestEntryDocument): HypothesisRevision {
   return {
-    name: hypothesis.name,
-    position: hypothesis.position,
-    criterion: hypothesis.criterion,
-    collects: [...hypothesis.collects],
-    resolution: heldResolution(hypothesis.resolution),
+    hypothesis: { name: entry.hypothesis_name },
+    revision: entry.revision,
+    criterion: entry.criterion,
+    collects: [...entry.collects],
+    resolution: heldResolution(entry.resolution),
+  };
+}
+
+/** One manifest entry's own adopted hypothesis-revision, flattened into the shape this aggregate's own out-of-scope consumers already read (case.ts's own Hypothesis, its own header comment). */
+function flatHypothesisOf(entry: ManifestEntry): Hypothesis {
+  const revision = entry.hypothesis_revision;
+  return {
+    name: revision.hypothesis.name,
+    criterion: revision.criterion,
+    collects: revision.collects,
+    resolution: revision.resolution,
   };
 }
 

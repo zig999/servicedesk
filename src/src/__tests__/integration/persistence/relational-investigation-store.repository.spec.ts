@@ -24,6 +24,16 @@
 // original stored record explicitly, the same convention relational-case-store.repository.spec.ts's
 // own tests already follow.
 //
+// Every case_versions row insertFixtureRows below writes names no "state" column, so
+// migrations/0009-case-version-lifecycle-schema.sql's own DEFAULT 'released' applies to it — meaning
+// the row is permanently undeletable the moment it is written (rules/knowledge/a-case-version-is-
+// written-once), and so, transitively through its own foreign keys, are the cases row it names, and
+// the fixture's own subject_types/outcomes/actions/recipients rows its subject/fallback_* columns
+// reference. cleanupWrittenFixtures below therefore runs every one of its own DELETEs through
+// deleteTolerantly, the same foreign-key-violation-only tolerance
+// create-draft.operation.spec.ts's own deleteTolerantly already establishes for exactly this
+// migration's own consequence — a real failure (any code but 23503) still surfaces.
+//
 // Several tests below write and then read back a whole investigation across five tables in one
 // transaction each — many sequential statements against Neon's own real network latency — which can
 // exceed vitest's 5000ms default per-test timeout under ordinary latency, not under any fault the test
@@ -46,6 +56,20 @@ import { RelationalInvestigationStore } from '../../../persistence/relational-in
 /** The Postgres SQLSTATE codes this suite's refusal assertions match against (TYP-04). */
 const UNIQUE_VIOLATION = '23505';
 const FOREIGN_KEY_VIOLATION = '23503';
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug, once a fixture's own case_versions row defaults to released. */
+async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await pool.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -185,22 +209,22 @@ async function cleanupWrittenInvestigations(): Promise<void> {
   investigationIdsWrittenByThisTest = [];
 }
 
-/** Every fixture bundle freshFixtures() wrote for this file's own tests, in an order that always satisfies their own foreign keys. */
+/** Every fixture bundle freshFixtures() wrote for this file's own tests that can still be removed, attempted in an order that always satisfies their own foreign keys — a permanently released case_versions row (this file's header comment explains why every one of them is) leaves the cases row, and the subject_types/outcomes/actions/recipients rows it names, behind, exactly as a real curator's released case would. */
 async function cleanupWrittenFixtures(): Promise<void> {
   for (const fixtures of fixtureBundlesWrittenByThisTest) {
-    await pool.query('DELETE FROM public.case_versions WHERE slug = $1', [fixtures.caseSlug]);
-    await pool.query('DELETE FROM public.cases WHERE slug = $1', [fixtures.caseSlug]);
-    await pool.query('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [fixtures.capabilityName, fixtures.capabilityVersion]);
-    await pool.query('DELETE FROM public.concepts WHERE name = $1', [fixtures.concept]);
-    await pool.query('DELETE FROM public.subject_types WHERE name = $1', [fixtures.subjectType]);
-    await pool.query('DELETE FROM public.subject_attributes WHERE name = $1', [fixtures.subjectAttribute]);
-    await pool.query('DELETE FROM public.outcomes WHERE name = $1', [fixtures.outcome]);
-    await pool.query('DELETE FROM public.actions WHERE name = $1', [fixtures.action]);
-    await pool.query('DELETE FROM public.recipients WHERE name = $1', [fixtures.recipient]);
+    await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [fixtures.caseSlug]);
+    await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [fixtures.caseSlug]);
+    await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [fixtures.capabilityName, fixtures.capabilityVersion]);
+    await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [fixtures.concept]);
+    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [fixtures.subjectType]);
+    await deleteTolerantly('DELETE FROM public.subject_attributes WHERE name = $1', [fixtures.subjectAttribute]);
+    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [fixtures.outcome]);
+    await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [fixtures.action]);
+    await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [fixtures.recipient]);
   }
   fixtureBundlesWrittenByThisTest = [];
   if (extraConceptsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [extraConceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [extraConceptsWrittenByThisTest]);
     extraConceptsWrittenByThisTest = [];
   }
 }

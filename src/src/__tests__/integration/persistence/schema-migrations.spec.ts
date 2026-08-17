@@ -6,9 +6,9 @@
 // Every test but the first runs inside its own transaction (BEGIN in beforeEach, ROLLBACK in
 // afterEach) against one schema the whole suite shares, seeded once in beforeAll with the
 // glossary rows most tests reference by foreign key; nothing a test writes outlives it, and no
-// test depends on another having run first. The first test applies the five scripts to a second,
-// disposable schema of its own, to prove the replay property directly against an empty database
-// rather than one this file has already migrated.
+// test depends on another having run first. The first test applies every migration script to a
+// second, disposable schema of its own, to prove the replay property directly against an empty
+// database rather than one this file has already migrated.
 //
 // Covers, from the task: criteria 1 and 7-10 directly (replay, and the four unique keys); criteria
 // 2-6 through the round-trips and the one NOT-NULL/nullable totality check below (the pairing of
@@ -27,7 +27,7 @@
 //     couple this schema-only suite to the whole application's environment for a value it uses
 //     once, verbatim, with no caller downstream of it.
 //   - TST-04 ("mirrors the path of the unit under test") is departed from below: the unit under
-//     test is migrations/*.sql, five files sitting outside src/src (this task's own rationale
+//     test is migrations/*.sql, nine files sitting outside src/src (this task's own rationale
 //     calls the whole schema "one artifact" precisely so it is not split across files or tasks),
 //     so there is no single TypeScript path for this file to mirror; it is named for the artifact
 //     as a whole instead.
@@ -53,18 +53,25 @@ const INVALID_TEXT_REPRESENTATION = '22P02';
  * task/connector-registration/connector-configuration-persistence's own
  * migrations/0008-connector-configuration.sql: connector_configurations is the one table that
  * script adds, holding wherever a connector's own call configuration is kept
- * (constraints/the-system-persists-to-one-relational-database) rather than a file.
+ * (constraints/the-system-persists-to-one-relational-database) rather than a file. Extended again
+ * for task/case-lifecycle-persistence/case-version-lifecycle-schema's own
+ * migrations/0009-case-version-lifecycle-schema.sql: it drops hypothesis_collects and replaces the
+ * old flat hypotheses table with an identity-only one, plus hypothesis_revisions,
+ * hypothesis_revision_collects (each revision's own collects) and case_version_hypotheses (the
+ * manifest tying one case version's own precedence position to a hypothesis's revision).
  */
 const EXPECTED_TABLES = [
   'actions',
   'capabilities',
+  'case_version_hypotheses',
   'case_versions',
   'cases',
   'concept_accepts',
   'concepts',
   'connector_configurations',
   'hypotheses',
-  'hypothesis_collects',
+  'hypothesis_revision_collects',
+  'hypothesis_revisions',
   'investigation_evaluation_citations',
   'investigation_evaluations',
   'investigation_evidence',
@@ -139,35 +146,62 @@ async function insertCaseVersion(client: Client, options: ICaseVersionOptions): 
 
 interface IHypothesisOptions {
   slug: string;
-  version: number;
   name: string;
-  position: number;
+}
+
+/** hypotheses is identity-only since 0009: (case_slug, name), no content and no case_version. */
+async function insertHypothesis(client: Client, options: IHypothesisOptions): Promise<void> {
+  await client.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [options.slug, options.name]);
+}
+
+interface IHypothesisRevisionOptions {
+  slug: string;
+  name: string;
+  revision: number;
   glossary: IGlossary;
   criterion?: string | null;
 }
 
-async function insertHypothesis(client: Client, options: IHypothesisOptions): Promise<void> {
+/** hypothesis_revisions since 0009: one numbered row per revision of a hypothesis's own content, carrying the criterion and the flattened resolution that used to sit on hypotheses itself. */
+async function insertHypothesisRevision(client: Client, options: IHypothesisRevisionOptions): Promise<void> {
   const criterionText = options.criterion === undefined ? 'A representative criterion.' : options.criterion;
   await client.query(
-    `INSERT INTO hypotheses
-       (case_slug, case_version, name, position, criterion, resolution_outcome, resolution_action, resolution_recipient)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [options.slug, options.version, options.name, options.position, criterionText,
+    `INSERT INTO hypothesis_revisions
+       (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [options.slug, options.name, options.revision, criterionText,
       options.glossary.outcome, options.glossary.action, options.glossary.recipient],
   );
 }
 
-interface IHypothesisCollectsOptions {
+interface IHypothesisRevisionCollectsOptions {
   slug: string;
-  version: number;
   hypothesisName: string;
+  revision: number;
   conceptName: string;
 }
 
-async function insertHypothesisCollects(client: Client, options: IHypothesisCollectsOptions): Promise<void> {
+/** hypothesis_revision_collects since 0009: one row per concept one hypothesis revision collects, replacing the old case-version-scoped hypothesis_collects. */
+async function insertHypothesisRevisionCollects(client: Client, options: IHypothesisRevisionCollectsOptions): Promise<void> {
   await client.query(
-    'INSERT INTO hypothesis_collects (case_slug, case_version, hypothesis_name, concept_name) VALUES ($1,$2,$3,$4)',
-    [options.slug, options.version, options.hypothesisName, options.conceptName],
+    'INSERT INTO hypothesis_revision_collects (case_slug, hypothesis_name, revision, concept_name) VALUES ($1,$2,$3,$4)',
+    [options.slug, options.hypothesisName, options.revision, options.conceptName],
+  );
+}
+
+interface ICaseVersionHypothesisOptions {
+  slug: string;
+  version: number;
+  hypothesisName: string;
+  revision: number;
+  position: number;
+}
+
+/** case_version_hypotheses since 0009: the manifest tying one case version's own precedence position to a hypothesis's own revision — where position-uniqueness now lives (rules/knowledge/a-hypothesis-position-is-unique-within-its-case). */
+async function insertCaseVersionHypothesis(client: Client, options: ICaseVersionHypothesisOptions): Promise<void> {
+  await client.query(
+    'INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position) VALUES ($1,$2,$3,$4,$5)',
+    [options.slug, options.version, options.hypothesisName, options.revision, options.position],
   );
 }
 
@@ -317,7 +351,7 @@ afterEach(async () => {
 
 // ---------------------------------------------------------------- criterion 1: replay
 
-it('applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not', async () => {
+it('applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not', async () => {
   const freshSchema = `fresh_${randomUUID().replace(/-/g, '_')}`;
   await client.query(`CREATE SCHEMA "${freshSchema}"`);
   await client.query(`SET search_path TO "${freshSchema}"`);
@@ -333,12 +367,14 @@ it('applies the five scripts, in the order their file names number them, to a fr
 
 // ---------------------------------------------------------------- criteria 2-4: round trips
 
-it('persists and reads back a full case, hypothesis, resolution, referral and its collects', async () => {
+it('persists and reads back a full case, hypothesis revision, resolution, referral and its collects', async () => {
   const slug = 'a-full-case';
   await insertCase(client, slug);
   await insertCaseVersion(client, { slug, version: 1, glossary, title: 'A full case title', consolidationRegister: 'formal' });
-  await insertHypothesis(client, { slug, version: 1, name: 'the-hypothesis', position: 1, glossary, criterion: 'A real criterion.' });
-  await insertHypothesisCollects(client, { slug, version: 1, hypothesisName: 'the-hypothesis', conceptName: glossary.concept });
+  await insertHypothesis(client, { slug, name: 'the-hypothesis' });
+  await insertHypothesisRevision(client, { slug, name: 'the-hypothesis', revision: 1, glossary, criterion: 'A real criterion.' });
+  await insertHypothesisRevisionCollects(client, { slug, hypothesisName: 'the-hypothesis', revision: 1, conceptName: glossary.concept });
+  await insertCaseVersionHypothesis(client, { slug, version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });
 
   const { rows } = await client.query<{
     title: string;
@@ -347,10 +383,11 @@ it('persists and reads back a full case, hypothesis, resolution, referral and it
     position: number;
     concept_name: string;
   }>(
-    `SELECT cv.title, cv.consolidation_register, h.criterion, h.position, hc.concept_name
+    `SELECT cv.title, cv.consolidation_register, hr.criterion, cvh.position, hrc.concept_name
      FROM case_versions cv
-     JOIN hypotheses h ON h.case_slug = cv.slug AND h.case_version = cv.version
-     JOIN hypothesis_collects hc ON hc.case_slug = h.case_slug AND hc.case_version = h.case_version AND hc.hypothesis_name = h.name
+     JOIN case_version_hypotheses cvh ON cvh.case_slug = cv.slug AND cvh.case_version = cv.version
+     JOIN hypothesis_revisions hr ON hr.case_slug = cvh.case_slug AND hr.hypothesis_name = cvh.hypothesis_name AND hr.revision = cvh.revision
+     JOIN hypothesis_revision_collects hrc ON hrc.case_slug = hr.case_slug AND hrc.hypothesis_name = hr.hypothesis_name AND hrc.revision = hr.revision
      WHERE cv.slug = $1`,
     [slug],
   );
@@ -402,7 +439,7 @@ it('persists and reads back concept, subject-type, subject-attribute, action, ou
 
 // ---------------------------------------------------------------- criteria 3-5: required vs optional
 
-it('holds every domain column NOT NULL except exactly the five columns the model declares optional', async () => {
+it('holds every domain column NOT NULL except exactly the six columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
      WHERE table_schema = $1 AND table_name <> 'schema_migrations' AND is_nullable = 'YES'
@@ -412,6 +449,7 @@ it('holds every domain column NOT NULL except exactly the five columns the model
 
   expect(rows).toEqual([
     { table_name: 'case_versions', column_name: 'consolidation_register' },
+    { table_name: 'case_versions', column_name: 'released_at' },
     { table_name: 'investigation_evaluations', column_name: 'reason' },
     { table_name: 'investigation_evidence', column_name: 'result_detail' },
     { table_name: 'investigations', column_name: 'assessment_determining_hypothesis' },
@@ -599,28 +637,39 @@ it('refuses storing the same case version a second time under its own slug and v
 });
 
 // ---------------------------------------------------------------- criterion 9: a-hypothesis-position-is-unique-within-its-case
+//
+// Since 0009, position-uniqueness is case_version_hypotheses' own constraint (UNIQUE over
+// (case_slug, case_version, position)), not hypotheses' — two distinct, identity-only hypotheses
+// each get their own revision, and only the manifest entry naming the second one at an
+// already-used position is refused.
 
-it('refuses a second hypothesis of one case sharing an already-used position', async () => {
+it('refuses a second manifest entry of one case version sharing an already-used position', async () => {
   const slug = 'a-case-with-two-hypotheses-at-one-position';
   await insertCase(client, slug);
   await insertCaseVersion(client, { slug, version: 1, glossary });
-  await insertHypothesis(client, { slug, version: 1, name: 'first', position: 1, glossary });
+  await insertHypothesis(client, { slug, name: 'first' });
+  await insertHypothesisRevision(client, { slug, name: 'first', revision: 1, glossary });
+  await insertCaseVersionHypothesis(client, { slug, version: 1, hypothesisName: 'first', revision: 1, position: 1 });
+  await insertHypothesis(client, { slug, name: 'second' });
+  await insertHypothesisRevision(client, { slug, name: 'second', revision: 1, glossary });
 
   await expect(
-    insertHypothesis(client, { slug, version: 1, name: 'second', position: 1, glossary }),
+    insertCaseVersionHypothesis(client, { slug, version: 1, hypothesisName: 'second', revision: 1, position: 1 }),
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 
 // ---------------------------------------------------------------- criterion 10: a-hypothesis-name-is-unique-within-its-case
+//
+// Since 0009, this is hypotheses' own PRIMARY KEY over (case_slug, name) directly — no case_version
+// or position involved, since the identity-only table now holds nothing else.
 
 it('refuses a second hypothesis of one case sharing an already-used name', async () => {
   const slug = 'a-case-with-two-hypotheses-sharing-a-name';
   await insertCase(client, slug);
-  await insertCaseVersion(client, { slug, version: 1, glossary });
-  await insertHypothesis(client, { slug, version: 1, name: 'shared-name', position: 1, glossary });
+  await insertHypothesis(client, { slug, name: 'shared-name' });
 
   await expect(
-    insertHypothesis(client, { slug, version: 1, name: 'shared-name', position: 2, glossary }),
+    insertHypothesis(client, { slug, name: 'shared-name' }),
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 

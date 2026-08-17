@@ -6,6 +6,8 @@
   "authored_at": "2024-01-01T00:00:00.000Z",
   "subject": "contract",
   "consolidation_register": "formal",
+  "state": "released",
+  "released_at": "2024-01-01T00:00:00.000Z",
   "fallback": {
     "outcome": "inconclusive-hypotheses-exhausted",
     "referral": {
@@ -13,10 +15,11 @@
       "recipient": "tier-two-support-queue"
     }
   },
-  "hypotheses": [
+  "manifest": [
     {
-      "name": "customer-equipment-fault",
       "position": 1,
+      "hypothesis_name": "customer-equipment-fault",
+      "revision": 1,
       "criterion": "The customer's registered equipment reports a fault status in the corporate systems.",
       "collects": ["equipment-status"],
       "resolution": {
@@ -28,8 +31,9 @@
       }
     },
     {
-      "name": "area-network-outage",
       "position": 2,
+      "hypothesis_name": "area-network-outage",
+      "revision": 1,
       "criterion": "An active network outage is currently registered for the contract's service area.",
       "collects": ["network-outage-flag"],
       "resolution": {

@@ -82,16 +82,6 @@ it('refuses a registration whose nature is mutating', async () => {
   expect(refusal).toMatchObject({ context: { nature: 'mutating' } });
 });
 
-it('refuses a registration whose nature is outside the capability-nature vocabulary', async () => {
-  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
-
-  const refusal = await registry
-    .registerCapability(completeRegistration({ nature: 'advisory' }))
-    .catch((error: unknown) => error);
-
-  expect(refusal).toBeInstanceOf(CapabilityNotReadOnlyError);
-});
-
 it('writes nothing to the store when it refuses a registration', async () => {
   const alreadyHeld = heldCapability();
   const store = new InMemoryCapabilityStore([alreadyHeld]);

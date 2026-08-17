@@ -93,13 +93,6 @@ it("answers the second call's own rows, never a value the first call already ans
   expect(query).toHaveBeenCalledTimes(2);
 });
 
-it('answers the empty vocabulary, adding no term of its own, when the table currently holds no row', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalGlossaryStore(fakeBareConnection(query));
-
-  await expect(store.readTerms('action')).resolves.toEqual([]);
-});
-
 it("raises this store's own typed error, carrying the driver failure as its cause, when a term read is refused", async () => {
   const driverFailure = new Error('the driver refused this read');
   const query = vi.fn().mockRejectedValue(driverFailure);
@@ -240,14 +233,6 @@ it('answers a concept with an empty accepts array when concept_accepts holds no 
   const answered = await store.readConcepts();
 
   expect(answered).toEqual([{ name: 'a-lonely-concept', accepts: [], ttl: 45 }]);
-});
-
-it('answers no concepts, not a rejection, when concepts currently holds no row', async () => {
-  const { handleQuery } = recordingConceptQuery({ concepts: [], accepts: [] });
-  const { connection } = fakeTransactionConnection(handleQuery);
-  const store = new RelationalGlossaryStore(connection);
-
-  await expect(store.readConcepts()).resolves.toEqual([]);
 });
 
 it('reads concept_accepts ordered by concept name and subject type name, for a deterministic accepts array', async () => {

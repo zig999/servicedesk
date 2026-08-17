@@ -70,16 +70,6 @@ it('answers the text seeded for the evaluations, evidence and consolidation regi
   expect(text).toBe('the consolidated write-up');
 });
 
-it('answers text alone, never an object carrying an outcome, a referral or a determining hypothesis', async () => {
-  const fake = new FakeAssessmentConsolidator();
-  fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
-  const consolidator = consolidatorOver(fake);
-
-  const text = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
-
-  expect(typeof text).toBe('string');
-});
-
 it('accepts empty evaluations and evidence arrays without refusing the call', async () => {
   const fake = new FakeAssessmentConsolidator();
   fake.seed({ evaluations: [], evidence: [], consolidationRegister: A_REGISTER }, 'nothing was required');

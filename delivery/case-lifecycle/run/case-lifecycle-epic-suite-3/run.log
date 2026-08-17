@@ -1,0 +1,1177 @@
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: node --env-file=.env.test node_modules/.bin/vitest run :: failed =====
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:2025992) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2026044) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (18 tests | 17 failed) 87390ms
+   × assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects 8401ms
+     → expected [ { position: 1, …(1) }, …(1) ] to deeply equal [ { position: 1, …(1) }, …(1) ]
+   ✓ answers absence, not a rejection, for a slug and version nothing was ever stored under  589ms
+   × assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded 5725ms
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × copies a named source version's manifest into the new draft's own manifest, entry for entry 6180ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × copies the case's own latest released version's manifest when naming no source version at all 6568ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × starts a case's very first draft with an empty manifest, since no released version exists yet to copy from 3924ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses a second draft for a case that already holds one in draft state 4010ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × lets only one of two concurrent draft-creation calls for the same case succeed, the other refused through CaseAlreadyHasDraftError 3948ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × creates a hypothesis's own identity row only the first time its name is used for a case, never a second one for a name already held 3744ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis 5250ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses placing a revision at a manifest position already occupied by a different hypothesis in the same version 5673ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × removes only the named manifest entry, never the hypothesis-revision it referenced 5123ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × records the instant of release, and a second call to release leaves that instant unchanged 5149ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it 5045ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × removes a draft version and its own manifest entries, without deleting any hypothesis-revision 5496ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's 5670ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × leaves nothing behind — no cases row, no case_versions row — when the draft-row insert violates a real foreign key on an unregistered fallback outcome, even though the case-identity insert runs first 2571ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × leaves no hypothesis-revision behind when one of its own collects violates a real foreign key on an unregistered concept 4320ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2026821) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/case/manifest-composition.operations.spec.ts (12 tests | 9 failed) 86597ms
+   ✓ places a hypothesis-revision at a position not yet occupied in a draft manifest  7348ms
+   ✓ refuses placing a hypothesis-revision at a position already occupied by a different hypothesis  7318ms
+   ✓ does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead  8508ms
+   × refuses placing a hypothesis-revision against a version that is not in draft state 6228ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses removing a manifest entry against a version that is not in draft state 6024ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis 6911ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × never deletes the hypothesis-revision a removed manifest entry referenced 9043ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either 11540ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them 7894ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry 7103ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses placing a hypothesis-revision against a version that was never stored 1995ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError 6683ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2027584) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/case/release.operation.spec.ts (5 tests | 3 failed) 54844ms
+   ✓ refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, naming both structural violations together, leaving the version in draft state with no release recorded  7574ms
+   ✓ refuses releasing a draft whose collected concept both rejects the declared subject type and answers no capability, naming both coherence violations together, leaving the version in draft state with no release recorded  8395ms
+   × marks a draft that holds against every rule released, recording the instant of release 9241ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged 12381ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed 17251ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2028075) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests | 6 failed) 56319ms
+   × answers a case written directly to the real store, matching what is currently stored, with no publish step in between 11498ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses with CaseNotFoundError, through the real wiring, for a slug and version nothing was ever created for 2015ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses through the real wiring a case document declaring no hypothesis, naming the structural violation 7417ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, a hypothesis-revision whose collected concept the glossary does not hold — the real store's own foreign key from hypothesis_revision_collects into concepts, never reachable through the fake store the unit-level proof stands in with 4788ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table 15611ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table 14987ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2028587) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests) 36105ms
+   ✓ stores a draft case_versions row with released_at absent  748ms
+   ✓ stores a released case_versions row with released_at present  737ms
+   ✓ refuses a case_versions row whose state names a value outside draft or released  592ms
+   ✓ keeps cases.next_version writable to a value independent of any stored case_versions row, proving it is a stored counter rather than one computed from MAX(version)  885ms
+   ✓ defaults a newly created case row (no case_versions row at all) to next_version 1  592ms
+   ✓ refuses inserting a second draft case_versions row for a case that already has one  738ms
+   ✓ permits two released case_versions rows to coexist for the same case, since the one-draft constraint is scoped to draft state alone  738ms
+   ✓ shapes hypotheses as exactly case_slug and name, carrying no content column  454ms
+   ✓ stores and reads back a hypothesis by its identity alone  742ms
+   ✓ refuses a second hypothesis stored under an already-used (case_slug, name) key  741ms
+   ✓ stores and reads back a hypothesis revision's own criterion and resolution  891ms
+   ✓ refuses a second row under an already-used (case_slug, hypothesis_name, revision) key  887ms
+   ✓ leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them  1183ms
+   ✓ stores and reads back the concepts one hypothesis revision collects, referencing that exact revision  1036ms
+   ✓ refuses a collect row naming a revision that was never stored  737ms
+   ✓ stores and reads back a manifest entry's hypothesis, revision and position  1182ms
+   ✓ refuses a second manifest entry at a position already used within the same case version's manifest  1481ms
+   ✓ permits the same position to be reused across two different case versions of the same case, since uniqueness is scoped per version  1328ms
+   ✓ leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them  1034ms
+   ✓ changes an ordinary column of a still-draft case_versions row on UPDATE  890ms
+   ✓ lets an UPDATE transition a draft case_versions row to released  912ms
+   ✓ drops hypothesis_collects (migration 0004) entirely, leaving no table for any old row to have been carried into  441ms
+   ✓ refuses to alter a manifest entry belonging to a released case version  1476ms
+   ✓ refuses to delete a manifest entry belonging to a released case version  1475ms
+   ✓ updates a draft case version's own manifest entry ordinarily  1329ms
+   ✓ deletes a draft case version's own manifest entry ordinarily  1328ms
+   ✓ refuses to delete a released case_versions row  1032ms
+   ✓ permits deleting a draft case_versions row that carries no manifest entries  887ms
+   ✓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column  4717ms
+   ✓ defaults a newly-inserted case_versions row that does not name its own state to 'released', since the column's own DEFAULT is kept permanently rather than dropped after backfill — every currently-shipped write path that inserts without naming state depends on this  591ms
+(node:2028911) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/case/discard.operation.spec.ts (7 tests | 5 failed) 35525ms
+   ✓ removes the discarded draft version itself, so no later read answers it at all  7174ms
+   ✓ removes the discarded draft's own manifest entries  5781ms
+   × refuses to discard a version that is not in draft state, naming the state it actually holds 3562ms
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × leaves a released version and its manifest entry in place after refusing to discard it 5794ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × never removes a hypothesis-revision the discarded draft's manifest referenced, even though no other version ever adopted it 5664ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × refuses to discard a slug/version nothing stores, through CaseNotFoundError 1933ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × never reuses a discarded draft's own version number for the same case's next draft 5615ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2029248) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts (7 tests | 1 failed) 31617ms
+   ✓ originates a never-named hypothesis's own identity and its first revision, numbered 1  5663ms
+   ✓ numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered  6345ms
+   ✓ refuses revising with an empty collects list, naming that the revision collects no concept, and never reaches the store  2668ms
+   ✓ refuses revising with a collected concept the glossary does not currently hold, naming the concept, and never reaches the store  3531ms
+   ✓ refuses revising with a collected concept that does not accept the declared subject type, naming both the concept and the subject type, and never reaches the store  3681ms
+   ✓ changes no version's manifest on its own — an existing manifest entry stays exactly as it was, and the newly originated revision is placed nowhere  5297ms
+   × excludes an implementation that originates a hypothesis identity and revision for a case holding no draft version at all, without refusing 4429ms
+     → promise resolved "{ …(2) }" instead of rejecting
+(node:2029534) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests | 5 failed) 25699ms
+   × writes two independent investigation records for two calls sharing the same case, subject, narrative and requester 7504ms
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result 5157ms
+     → expected [] to have a length of 2 but got +0
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × passes the given requester straight through to the observation source, substituting none of its own 4429ms
+     → expected [] to have a length of 1 but got +0
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake 4303ms
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+   × sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source 4305ms
+     → expected [ Array(7) ] to include 'evaluator-configured-model'
+     → update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+(node:2029796) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test) 24580ms
+   ✓ answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline  15311ms
+(node:2030034) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests | 2 failed) 20780ms
+   × answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached 11250ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+   × answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection 9529ms
+     → update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+(node:2030232) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (9 tests | 5 failed) 8735ms
+   × answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows 2219ms
+     → a write against the glossary store failed
+   × answers the empty vocabulary when the real table currently holds no row 149ms
+     → expected [ …(6) ] to deeply equal []
+   ✓ answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them  1598ms
+   ✓ answers a concept with an empty accepts array when it currently accepts no subject type  1305ms
+   ✓ answers no concepts, not a rejection, when no row was ever stored under a given name  722ms
+   ✓ answers exactly what a row inserted directly into the real table holds, among whatever else the table currently holds  581ms
+   × answers a later write's own rows, never a row an earlier write already replaced 719ms
+     → a write against the glossary store failed
+   × persists a term write so a read against the real table, outside the store, finds it 720ms
+     → a write against the glossary store failed
+   × leaves a vocabulary's earlier content untouched, when a later insert inside one replace violates a real constraint 720ms
+     → a write against the glossary store failed
+(node:2030328) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/seed.spec.ts (13 tests | 13 skipped) 8703ms
+   ↓ holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand
+   ↓ holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together
+   ↓ holds exactly the fixture's own subject-type name, the one the curated case declares as its subject
+   ↓ holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own
+   ↓ holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare
+   ↓ holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare
+   ↓ holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly
+   ↓ registers one read-only capability, with every attribute the fixture declares, for each of the two concepts the curated case collects
+   ↓ the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand
+   ↓ seed.ts's own source enters the case only through the published case-lifecycle operations — createCaseLifecycle's own createDraft, reviseHypothesis, placeHypothesis and release — and never a direct write against the case store itself (task/case-lifecycle-operations/wire-and-retire-author-case-version's own criterion 2, extended from the retired author-case-version command to the six operations that replaced it)
+   ↓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names
+   ↓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded
+   ↓ seed.ts's own source guards its whole write sequence — every vocabulary, concept, capability and case write — behind alreadySeeded()'s own idempotency check, rather than reaching a case-writing call unconditionally and catching a write-once refusal from it (this delivery's own disclosed inference: alreadySeeded() checked once, before any write, is this script's whole idempotency guard, replacing the retired command's own per-call CaseVersionAlreadyStoredError catch, since a rerun must skip every vocabulary and concept write too, not only the case write a catch alone would guard)
+(node:2030436) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (10 tests | 10 skipped) 8216ms
+   ↓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject
+   ↓ writes two independent investigation records for two requests naming the same case, subject, narrative and requester
+   ↓ answers 200 when the request supplies no ticket_ref
+   ↓ answers 200 when the request supplies a ticket_ref
+   ↓ answers 200 for a request carrying no headers at all
+   ↓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env
+   ↓ persists the zero-valued cost and duration placeholders this HTTP layer stamps, since nothing behind it measures either yet
+   ↓ reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture
+   ↓ calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one
+   ↓ answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it
+(node:2030526) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests | 2 skipped) 7947ms
+   ↓ writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment
+   ↓ imports @anthropic-ai/sdk nowhere across every file this test's own composition reaches, so the run above never made or could make a call to the Anthropic API
+(node:2030616) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test | 1 skipped) 7788ms
+   ↓ reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data
+(node:2030718) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests) 101632ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  10920ms
+   ✓ writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column  10584ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  11427ms
+   ✓ lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError  8795ms
+   ✓ does not refuse a write for an id not already stored  9237ms
+   ✓ answers undefined, not a rejection, for an id nothing was ever written under  1526ms
+   ✓ reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with  11188ms
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  9592ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  10635ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  9405ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored  8321ms
+(node:2031602) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/case/create-draft.operation.spec.ts (8 tests) 64299ms
+   ✓ assigns a new draft a version number greater than every version the case has ever held, including one later discarded  11043ms
+   ✓ answers the created draft as exactly its slug and the assigned version number, and nothing else  4047ms
+   ✓ refuses a second draft creation while the case already holds one open, naming that a draft already exists  4178ms
+   ✓ lets only one of two concurrent draft creations for the same case succeed, the other refused through CaseAlreadyHasDraftError  4006ms
+   ✓ creates a draft with an empty manifest when naming no source version and the case holds no released version yet  3985ms
+   ✓ copies the case's own latest released version's manifest when a draft is created naming no source version  12166ms
+   ✓ copies the named historical version's own manifest instead of the case's latest released version, when a draft is created naming a source version  15814ms
+   ✓ advances the assigned version number on a second draft, after the first is released, rather than reissuing the same value  9058ms
+(node:2032240) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 29487ms
+   ✓ applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  2237ms
+   ✓ persists and reads back a full case, hypothesis revision, resolution, referral and its collects  1365ms
+   ✓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value  1967ms
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  742ms
+   ✓ holds every domain column NOT NULL except exactly the six columns the model declares optional  456ms
+   ✓ refuses storing a case version whose title is absent  602ms
+   ✓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional  894ms
+   ✓ accepts exactly the three values verdict declares and refuses one it does not  1348ms
+   ✓ accepts exactly the four values evidence-result declares and refuses one it does not  3338ms
+   ✓ accepts exactly the three values evaluation-reason declares and refuses one it does not  1340ms
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  752ms
+   ✓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not  1194ms
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  450ms
+   ✓ refuses a case version whose subject names a subject type the glossary does not hold  596ms
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  597ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  456ms
+   ✓ refuses a second evidence row for one investigation under a concept it already collected  1043ms
+   ✓ refuses a second evaluation row for one investigation under a hypothesis already judged  1066ms
+   ✓ refuses a second case stored under a slug already in use  593ms
+   ✓ refuses storing the same case version a second time under its own slug and version  745ms
+   ✓ refuses a second manifest entry of one case version sharing an already-used position  1492ms
+   ✓ refuses a second hypothesis of one case sharing an already-used name  742ms
+   ✓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them  1043ms
+(node:2032600) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (9 tests) 15129ms
+   ✓ persists and reads back a registration exactly as given — name, version, nature, both schemas, timeout, connector and concept  1372ms
+   ✓ answers a read as the database holds it right now, never a value an earlier read already answered  2428ms
+   ✓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint  2254ms
+   ✓ excludes a registration with no output schema: the write is refused and nothing is stored  1359ms
+   ✓ excludes a registration with no connector: the write is refused and nothing is stored  1353ms
+   ✓ leaves the table exactly as it stood when a non-read-only registration is refused before ever reaching the store  603ms
+   ✓ persists a complete read-only registration, unrefused, when registered against the real store  1502ms
+   ✓ holds a registration that states no timeout with the default of sixty seconds, in what the store actually persists  1509ms
+   ✓ resolves a concept to the capability the database currently holds, reflecting a registration made since an earlier resolution  1660ms
+(node:2032799) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests) 13549ms
+   ✓ leaves the cases table holding no row for the slug it wrote, once it releases the isolated connection it wrote through  1945ms
+   ✓ lets a first integration test write a case under a slug a second test in this run will also write, without a unique-key collision  875ms
+   ✓ lets a second integration test write a case under the same slug the first one already wrote, in the same suite run  873ms
+   ✓ lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision  1769ms
+   ✓ lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run  1750ms
+   ✓ writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header  728ms
+   ✓ observes no row for the slug the previous test wrote, once that test had already released its own connection  727ms
+   ✓ still refuses a second case written under an already-used slug within one still-open isolated connection, since isolation scopes visibility rather than disabling constraints  883ms
+   ✓ resolves release() without error when nothing was ever begun or written on the checked-out connection  438ms
+   ✓ resolves release() without error when the caller already sent its own ROLLBACK before calling it  730ms
+   ✓ keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release  2826ms
+(node:2032943) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts (6 tests) 8474ms
+   ✓ persists and reads back a connector configuration exactly as given  1046ms
+   ✓ answers a read as the database holds it right now, never a value an earlier read already answered  1939ms
+   ✓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint  1940ms
+   ✓ excludes a write with no connector identity: the write is refused by the real database and nothing is stored  1035ms
+   ✓ excludes a write with no configuration payload: the write is refused by the real database and nothing is stored  1035ms
+(node:2033068) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 5825ms
+   ✓ answers a capability registered since the previous read, never a remembered absence  2557ms
+   ✓ answers a changed registration as it now stands, never the record it replaced  2521ms
+   ✓ refuses to resolve over a real holding with two rows answering one concept, inserted directly against the table bypassing every API  744ms
+(node:2033171) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 5377ms
+   ✓ answers undefined, not a rejection, when a real query matches no row for the slug named  1151ms
+   ✓ raises the caller's own typed error, carrying a message, a context object and the real driver failure as its cause, when a statement violates a real database constraint  1373ms
+   ✓ commits a unit of work as a whole, leaving every statement it ran visible to a separate connection once it resolves  1053ms
+   ✓ lets a unit of work read back a row it just wrote, within the same still-open transaction, before ever committing  901ms
+   ✓ leaves none of a unit of work's earlier statements applied, when a later statement inside it fails against a real constraint  896ms
+(node:2033259) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 5028ms
+   ✓ answers a term added to the data since the previous read  1862ms
+   ✓ no longer answers a term removed from the data since the previous read  605ms
+   ✓ answers a concept's ttl as the data now states it, not as it stood at the previous read  2557ms
+(node:2033325) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 4743ms
+   ✓ persists a registered capability as a row RelationalCapabilityStore reads back, through the real factory wiring  2396ms
+   ✓ replaces the persisted record when the same name and version register again through the real wiring  2345ms
+(node:2033397) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts (2 tests) 4188ms
+   ✓ persists a registered connector configuration as a row RelationalConnectorConfigurationStore reads back, through the real factory wiring  2127ms
+   ✓ replaces the persisted configuration when the same connector registers again through the real wiring  2059ms
+(node:2033451) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 4160ms
+   ✓ leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path  907ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  1261ms
+   ✓ raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied  901ms
+(node:2033511) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 2920ms
+   ✓ has already recorded every script migrations/ holds as applied, exactly once each, and left the database holding the schema those scripts describe by the time this spec's own first test runs, proving the suite's own setup ran before any test  1395ms
+   ✓ resolves without error when called the same way vitest itself calls it, against the real configured connection  1521ms
+(node:2033571) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 1660ms
+   ✓ answers both non-conclusion outcomes among whatever the real outcomes table currently holds  1212ms
+   ✓ persists the two non-conclusion outcomes as rows a read against the real table, outside the store, finds  444ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (11 tests) 100ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 155ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 90ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (31 tests) 15ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (26 tests) 44ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 53ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 39ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (24 tests) 38ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (25 tests) 27ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 18ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 25ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 21ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 14ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (68 tests) 15ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (21 tests) 13ms
+ ✓ src/__tests__/unit/seed.spec.ts (3 tests) 13ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 16ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 13ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 13ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 7ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 19ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (19 tests) 23ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 10ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 11ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 5ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (8 tests) 10ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 13ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 8ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 9ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (23 tests) 9ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (9 tests) 11ms
+ ✓ src/__tests__/unit/config/env.spec.ts (9 tests) 6ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 7ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 13ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 6ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 8ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 6ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 5ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 7ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (17 tests) 6ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 7ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 8ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 8ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 6ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 6ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 4ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (12 tests) 5ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 7ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 6ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 4ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/seed.spec.ts [ src/__tests__/integration/seed.spec.ts ]
+GlossaryStoreError: a write against the glossary store failed
+ ❯ raiseWriteFailure src/persistence/relational-glossary-store.repository.ts:150:10
+    148| /** Builds this store's own typed error for a failed write, carrying t…
+    149| function raiseWriteFailure(cause: unknown): Error {
+    150|   return new GlossaryStoreError('a write against the glossary store fa…
+       |          ^
+    151| }
+    152| 
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ seedOutcomes src/seed.ts:34:3
+ ❯ src/seed.ts:113:5
+
+Caused by: error: update or delete on table "outcomes" violates foreign key constraint "case_versions_fallback_outcome_fkey" on table "case_versions"
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ seedOutcomes src/seed.ts:34:3
+ ❯ src/seed.ts:113:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 388, severity: 'ERROR', code: '23503', detail: 'Key (name)=(case-lifecycle-store-outcome-36365feb-02c5-4b13-9d86-7ab949e8e08c) is still referenced from table "case_versions".', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: 'case_versions_fallback_outcome_fkey', file: 'ri_triggers.c', routine: 'ri_ReportViolation' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/61]⎯
+
+ FAIL  src/__tests__/integration/factories/diagnose-server.factory.spec.ts [ src/__tests__/integration/factories/diagnose-server.factory.spec.ts ]
+TypeError: fixture.hypotheses is not iterable
+ ❯ placeFixtureHypotheses src/__tests__/integration/factories/diagnose-server.factory.spec.ts:208:36
+    206|   version: number,
+    207| ): Promise<void> {
+    208|   for (const hypothesis of fixture.hypotheses) {
+       |                                    ^
+    209|     const revised = await lifecycle.reviseHypothesis({
+    210|       slug: fixture.slug,
+ ❯ insertFixtureCase src/__tests__/integration/factories/diagnose-server.factory.spec.ts:254:9
+ ❯ ensureFixtureSeeded src/__tests__/integration/factories/diagnose-server.factory.spec.ts:115:3
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts:369:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/61]⎯
+
+ FAIL  src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts [ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts ]
+TypeError: fixture.hypotheses is not iterable
+ ❯ placeFixtureHypotheses src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:121:36
+    119|   version: number,
+    120| ): Promise<void> {
+    121|   for (const hypothesis of fixture.hypotheses) {
+       |                                    ^
+    122|     const revised = await lifecycle.reviseHypothesis({
+    123|       slug: fixture.slug,
+ ❯ insertFixtureCase src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:167:9
+ ❯ ensureFixtureSeeded src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:180:3
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:224:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/61]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-e2e.spec.ts [ src/__tests__/integration/http/diagnose-e2e.spec.ts ]
+TypeError: fixture.hypotheses is not iterable
+ ❯ placeFixtureHypotheses src/__tests__/integration/http/diagnose-e2e.spec.ts:186:36
+    184|   version: number,
+    185| ): Promise<void> {
+    186|   for (const hypothesis of fixture.hypotheses) {
+       |                                    ^
+    187|     const revised = await lifecycle.reviseHypothesis({
+    188|       slug: fixture.slug,
+ ❯ insertFixtureCase src/__tests__/integration/http/diagnose-e2e.spec.ts:232:9
+ ❯ ensureFixtureSeeded src/__tests__/integration/http/diagnose-e2e.spec.ts:245:3
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:360:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/61]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts [ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts ]
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixture src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:219:3
+    217|   await connection.query('DELETE FROM public.hypothesis_revision_colle…
+    218|   await connection.query('DELETE FROM public.case_version_hypotheses W…
+    219|   await connection.query('DELETE FROM public.hypothesis_revisions WHER…
+       |   ^
+    220|   await connection.query('DELETE FROM public.hypotheses WHERE case_slu…
+    221|   await connection.query('DELETE FROM public.case_versions WHERE slug …
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:350:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/61]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 53 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/case/discard.operation.spec.ts > refuses to discard a version that is not in draft state, naming the state it actually holds
+error: update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/case/discard.operation.spec.ts:107:3
+    105|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    106|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+    107|   await pool.query('DELETE FROM public.cases WHERE slug = ANY($1)', [s…
+       |   ^
+    108|   slugsWrittenByThisTest = [];
+    109| }
+ ❯ src/__tests__/integration/case/discard.operation.spec.ts:132:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/61]⎯
+
+ FAIL  src/__tests__/integration/case/discard.operation.spec.ts > leaves a released version and its manifest entry in place after refusing to discard it
+ FAIL  src/__tests__/integration/case/discard.operation.spec.ts > never removes a hypothesis-revision the discarded draft's manifest referenced, even though no other version ever adopted it
+ FAIL  src/__tests__/integration/case/discard.operation.spec.ts > refuses to discard a slug/version nothing stores, through CaseNotFoundError
+ FAIL  src/__tests__/integration/case/discard.operation.spec.ts > never reuses a discarded draft's own version number for the same case's next draft
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/case/discard.operation.spec.ts:104:3
+    102|   await pool.query('DELETE FROM public.case_version_hypotheses WHERE c…
+    103|   await pool.query('DELETE FROM public.hypothesis_revision_collects WH…
+    104|   await pool.query('DELETE FROM public.hypothesis_revisions WHERE case…
+       |   ^
+    105|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    106|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+ ❯ src/__tests__/integration/case/discard.operation.spec.ts:132:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/61]⎯
+
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses placing a hypothesis-revision against a version that is not in draft state
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses removing a manifest entry against a version that is not in draft state
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > never deletes the hypothesis-revision a removed manifest entry referenced
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses placing a hypothesis-revision against a version that was never stored
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/case/manifest-composition.operations.spec.ts:144:3
+    142|   await pool.query('DELETE FROM public.case_version_hypotheses WHERE c…
+    143|   await pool.query('DELETE FROM public.hypothesis_revision_collects WH…
+    144|   await pool.query('DELETE FROM public.hypothesis_revisions WHERE case…
+       |   ^
+    145|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    146|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+ ❯ src/__tests__/integration/case/manifest-composition.operations.spec.ts:165:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/61]⎯
+
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts > marks a draft that holds against every rule released, recording the instant of release
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts > refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts > releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupCaseRows src/__tests__/integration/case/release.operation.spec.ts:183:3
+    181|   await pool.query('DELETE FROM public.hypothesis_revision_collects WH…
+    182|   await pool.query('DELETE FROM public.case_version_hypotheses WHERE c…
+    183|   await pool.query('DELETE FROM public.hypothesis_revisions WHERE case…
+       |   ^
+    184|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    185|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+ ❯ src/__tests__/integration/case/release.operation.spec.ts:213:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/61]⎯
+
+ FAIL  src/__tests__/integration/case/revise-hypothesis.operation.spec.ts > excludes an implementation that originates a hypothesis identity and revision for a case holding no draft version at all, without refusing
+AssertionError: promise resolved "{ …(2) }" instead of rejecting
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "hypothesis_name": "the-hypothesis",[39m
+[31m+   "revision": 1,[39m
+[2m  }[22m
+
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts:311:27
+    309|     const rejection = operation.reviseHypothesis(reviseInput(fixture));
+    310| 
+    311|     await expect(rejection).rejects.toBeInstanceOf(Error);
+       |                           ^
+    312|     const { rows } = await pool.query('SELECT name FROM public.hypothe…
+    313|     expect(rows).toEqual([]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/61]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > answers a case written directly to the real store, matching what is currently stored, with no publish step in between
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses with CaseNotFoundError, through the real wiring, for a slug and version nothing was ever created for
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring a case document declaring no hypothesis, naming the structural violation
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, a hypothesis-revision whose collected concept the glossary does not hold — the real store's own foreign key from hypothesis_revision_collects into concepts, never reachable through the fake store the unit-level proof stands in with
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupVocabulary src/__tests__/integration/factories/case-query.factory.spec.ts:164:3
+    162|   await pool.query('DELETE FROM public.case_version_hypotheses WHERE c…
+    163|   await pool.query('DELETE FROM public.hypothesis_revision_collects WH…
+    164|   await pool.query('DELETE FROM public.hypothesis_revisions WHERE case…
+       |   ^
+    165|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = $1…
+    166|   await pool.query('DELETE FROM public.case_versions WHERE slug = $1',…
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:179:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/61]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > writes two independent investigation records for two calls sharing the same case, subject, narrative and requester
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > passes the given requester straight through to the observation source, substituting none of its own
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source
+error: update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:184:3
+    182|   }
+    183|   await pool.query('DELETE FROM public.case_versions WHERE slug = $1',…
+    184|   await pool.query('DELETE FROM public.cases WHERE slug = $1', [vocabu…
+       |   ^
+    185|   await pool.query('DELETE FROM public.capabilities WHERE name = $1', …
+    186|   await pool.query('DELETE FROM public.concept_accepts WHERE concept_n…
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:199:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/61]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result
+AssertionError: expected [] to have a length of 2 but got +0
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 0[39m
+
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:257:35
+    255|   await runner(callFor(idB, requester, { theCase, subjectAttribute: vo…
+    256| 
+    257|   expect(observationSource.calls).toHaveLength(2);
+       |                                   ^
+    258| });
+    259| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/61]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > passes the given requester straight through to the observation source, substituting none of its own
+AssertionError: expected [] to have a length of 1 but got +0
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 0[39m
+
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:272:35
+    270|   await runner(callFor(id, distinctiveRequester, { theCase, subjectAtt…
+    271| 
+    272|   expect(observationSource.calls).toHaveLength(1);
+       |                                   ^
+    273|   expect(observationSource.calls[0]?.requester).toBe(distinctiveReques…
+    274| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/61]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source
+AssertionError: expected [ Array(7) ] to include 'evaluator-configured-model'
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:305:22
+    303| 
+    304|   const sentModels = createMock.mock.calls.map((call) => (call[0] as {…
+    305|   expect(sentModels).toContain('evaluator-configured-model');
+       |                      ^
+    306|   expect(sentModels).toContain('consolidator-configured-model');
+    307| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/61]⎯
+
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixture src/__tests__/integration/factories/store-wiring.spec.ts:100:3
+     98|   await connection.query('DELETE FROM public.case_version_hypotheses W…
+     99|   await connection.query('DELETE FROM public.hypothesis_revision_colle…
+    100|   await connection.query('DELETE FROM public.hypothesis_revisions WHER…
+       |   ^
+    101|   await connection.query('DELETE FROM public.hypotheses WHERE case_slu…
+    102|   await connection.query('DELETE FROM public.case_versions WHERE slug …
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts:126:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects
+AssertionError: expected [ { position: 1, …(1) }, …(1) ] to deeply equal [ { position: 1, …(1) }, …(1) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -8,16 +8,24 @@[39m
+[2m        "revision": 1,[22m
+[2m      },[22m
+[2m      "position": 1,[22m
+[2m    },[22m
+[2m    {[22m
+[32m-     "hypothesis_revision": ObjectContaining {[39m
+[31m+     "hypothesis_revision": {[39m
+[2m        "collects": [[22m
+[32m-         "case-lifecycle-store-concept-3090549a-b174-4715-a8b0-77243627b001",[39m
+[2m          "case-lifecycle-store-concept-0349fcc7-e1ec-455e-a025-425255dbc85a",[22m
+[31m+         "case-lifecycle-store-concept-3090549a-b174-4715-a8b0-77243627b001",[39m
+[2m        ],[22m
+[31m+       "criterion": "a criterion",[39m
+[2m        "hypothesis_name": "first",[22m
+[31m+       "resolution": {[39m
+[31m+         "outcome": "case-lifecycle-store-outcome-132d83d9-caa7-4314-b5ed-69c979da46ea",[39m
+[31m+         "referral": {[39m
+[31m+           "action": "case-lifecycle-store-action-e1f69240-ffbe-44df-9904-a01e09ffca28",[39m
+[31m+           "recipient": "case-lifecycle-store-recipient-531c8ace-dd02-4853-82af-e54853a17981",[39m
+[31m+         },[39m
+[31m+       },[39m
+[2m        "revision": 1,[22m
+[2m      },[22m
+[2m      "position": 2,[22m
+[2m    },[22m
+[2m  ][22m
+
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:226:33
+    224|       state: 'draft',
+    225|     });
+    226|     expect(assembled?.manifest).toEqual([
+       |                                 ^
+    227|       { position: 1, hypothesis_revision: expect.objectContaining({ hy…
+    228|       { position: 2, hypothesis_revision: expect.objectContaining({ hy…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded
+error: update or delete on table "cases" violates foreign key constraint "case_versions_slug_fkey" on table "case_versions"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:135:3
+    133|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    134|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+    135|   await pool.query('DELETE FROM public.cases WHERE slug = ANY($1)', [s…
+       |   ^
+    136|   slugsWrittenByThisTest = [];
+    137| }
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:164:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > copies a named source version's manifest into the new draft's own manifest, entry for entry
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > copies the case's own latest released version's manifest when naming no source version at all
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > starts a case's very first draft with an empty manifest, since no released version exists yet to copy from
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > refuses a second draft for a case that already holds one in draft state
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > lets only one of two concurrent draft-creation calls for the same case succeed, the other refused through CaseAlreadyHasDraftError
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > creates a hypothesis's own identity row only the first time its name is used for a case, never a second one for a name already held
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > refuses placing a revision at a manifest position already occupied by a different hypothesis in the same version
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > removes only the named manifest entry, never the hypothesis-revision it referenced
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > records the instant of release, and a second call to release leaves that instant unchanged
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > removes a draft version and its own manifest entries, without deleting any hypothesis-revision
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves nothing behind — no cases row, no case_versions row — when the draft-row insert violates a real foreign key on an unregistered fallback outcome, even though the case-identity insert runs first
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves no hypothesis-revision behind when one of its own collects violates a real foreign key on an unregistered concept
+error: update or delete on table "hypothesis_revisions" violates foreign key constraint "case_version_hypotheses_revision_fkey" on table "case_version_hypotheses"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:132:3
+    130|   await pool.query('DELETE FROM public.case_version_hypotheses WHERE c…
+    131|   await pool.query('DELETE FROM public.hypothesis_revision_collects WH…
+    132|   await pool.query('DELETE FROM public.hypothesis_revisions WHERE case…
+       |   ^
+    133|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    134|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:164:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts > answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows
+GlossaryStoreError: a write against the glossary store failed
+ ❯ raiseWriteFailure src/persistence/relational-glossary-store.repository.ts:150:10
+    148| /** Builds this store's own typed error for a failed write, carrying t…
+    149| function raiseWriteFailure(cause: unknown): Error {
+    150|   return new GlossaryStoreError('a write against the glossary store fa…
+       |          ^
+    151| }
+    152| 
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:168:5
+
+Caused by: error: update or delete on table "subject_types" violates foreign key constraint "case_versions_subject_fkey" on table "case_versions"
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:168:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 375, severity: 'ERROR', code: '23503', detail: 'Key (name)=(case-lifecycle-store-subject-654f3b64-f26c-473e-81ca-74a5e58e18da) is still referenced from table "case_versions".', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: 'case_versions_subject_fkey', file: 'ri_triggers.c', routine: 'ri_ReportViolation' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts > answers the empty vocabulary when the real table currently holds no row
+AssertionError: expected [ …(6) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   {[39m
+[31m+     "name": "production-diagnose-attribute-0d36daeb-e20b-48e8-81c9-428c3722b00c",[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "name": "production-diagnose-attribute-21318bc6-ef47-4daa-b19a-6f832e60c987",[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "name": "production-diagnose-attribute-1a9f8638-71d8-4bbe-8a2f-38764814c137",[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "name": "production-diagnose-attribute-e95b0209-6d4c-4408-be5c-04097a47a346",[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "name": "production-diagnose-attribute-74754be4-9d90-4be0-80bd-caa13bcc4231",[39m
+[31m+   },[39m
+[31m+   {[39m
+[31m+     "name": "persistence-deadline-attribute-ac7ef1ad-633e-4a2d-b463-87ad6126e742",[39m
+[31m+   },[39m
+[31m+ ][39m
+
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:195:3
+    193|   const store = new RelationalGlossaryStore(pool);
+    194| 
+    195|   await expect(store.readTerms('subject-attribute')).resolves.toEqual(…
+       |   ^
+    196| });
+    197| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts > answers a later write's own rows, never a row an earlier write already replaced
+GlossaryStoreError: a write against the glossary store failed
+ ❯ raiseWriteFailure src/persistence/relational-glossary-store.repository.ts:150:10
+    148| /** Builds this store's own typed error for a failed write, carrying t…
+    149| function raiseWriteFailure(cause: unknown): Error {
+    150|   return new GlossaryStoreError('a write against the glossary store fa…
+       |          ^
+    151| }
+    152| 
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:257:3
+
+Caused by: error: update or delete on table "actions" violates foreign key constraint "case_versions_fallback_action_fkey" on table "case_versions"
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:257:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 384, severity: 'ERROR', code: '23503', detail: 'Key (name)=(case-lifecycle-store-action-9e2189ca-f8cd-4568-be89-477c5bf9947e) is still referenced from table "case_versions".', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: 'case_versions_fallback_action_fkey', file: 'ri_triggers.c', routine: 'ri_ReportViolation' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts > persists a term write so a read against the real table, outside the store, finds it
+GlossaryStoreError: a write against the glossary store failed
+ ❯ raiseWriteFailure src/persistence/relational-glossary-store.repository.ts:150:10
+    148| /** Builds this store's own typed error for a failed write, carrying t…
+    149| function raiseWriteFailure(cause: unknown): Error {
+    150|   return new GlossaryStoreError('a write against the glossary store fa…
+       |          ^
+    151| }
+    152| 
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:274:3
+
+Caused by: error: update or delete on table "recipients" violates foreign key constraint "case_versions_fallback_recipient_fkey" on table "case_versions"
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:274:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 396, severity: 'ERROR', code: '23503', detail: 'Key (name)=(case-lifecycle-store-recipient-0f897e7b-7cf8-492c-ba16-fac590e5a5bb) is still referenced from table "case_versions".', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: 'case_versions_fallback_recipient_fkey', file: 'ri_triggers.c', routine: 'ri_ReportViolation' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/61]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts > leaves a vocabulary's earlier content untouched, when a later insert inside one replace violates a real constraint
+GlossaryStoreError: a write against the glossary store failed
+ ❯ raiseWriteFailure src/persistence/relational-glossary-store.repository.ts:150:10
+    148| /** Builds this store's own typed error for a failed write, carrying t…
+    149| function raiseWriteFailure(cause: unknown): Error {
+    150|   return new GlossaryStoreError('a write against the glossary store fa…
+       |          ^
+    151| }
+    152| 
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:289:3
+
+Caused by: error: update or delete on table "recipients" violates foreign key constraint "case_versions_fallback_recipient_fkey" on table "case_versions"
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ src/persistence/relational-glossary-store.repository.ts:102:7
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalGlossaryStore.writeTerms src/persistence/relational-glossary-store.repository.ts:101:5
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:289:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 396, severity: 'ERROR', code: '23503', detail: 'Key (name)=(case-lifecycle-store-recipient-0f897e7b-7cf8-492c-ba16-fac590e5a5bb) is still referenced from table "case_versions".', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: 'case_versions_fallback_recipient_fkey', file: 'ri_triggers.c', routine: 'ri_ReportViolation' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/61]⎯
+
+
+ Test Files  14 failed | 71 passed (85)
+      Tests  53 failed | 792 passed | 26 skipped (871)
+   Start at  18:38:04
+   Duration  787.13s (transform 1.16s, setup 0ms, collect 3.41s, tests 768.34s, environment 15ms, prepare 4.53s)
+
+

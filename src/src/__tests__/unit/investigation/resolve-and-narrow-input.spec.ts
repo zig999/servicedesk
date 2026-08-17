@@ -19,18 +19,15 @@ import { builtinModules } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { resolveOutcome, type Verdicts } from '../../../case/case-resolution.js';
-import type { Case, Hypothesis } from '../../../case/case.js';
+import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { EvaluationReason } from '../../../investigation/evaluation-reason.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import { resolveAndNarrow } from '../../../investigation/resolve-and-narrow-input.js';
 
-/** Everything a fixture hypothesis states before its own declared position is assigned by aCase(), from the given array's own order. */
-type HypothesisSpec = Omit<Hypothesis, 'position'>;
-
-/** A minimally valid Hypothesis (less its own declared position, which aCase() below assigns from array order), defaulted so a test states only what distinguishes it. */
-function aHypothesis(overrides: Partial<HypothesisSpec> & { readonly name: string }): HypothesisSpec {
+/** A minimally valid Hypothesis, defaulted so a test states only what distinguishes it. */
+function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string }): Hypothesis {
   return {
     criterion: `${overrides.name} criterion`,
     collects: ['a-concept'],
@@ -39,16 +36,31 @@ function aHypothesis(overrides: Partial<HypothesisSpec> & { readonly name: strin
   };
 }
 
+/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — resolveOutcome and requiresEvaluationOf both read theCase.manifest exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
+function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: hypothesis.name },
+      revision: 1,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    },
+  };
+}
+
 /**
  * A minimally valid Case around the given hypotheses, in the order given —
- * the precedence resolve-outcome (still) consults
- * (task/case-and-investigation-model/precedence-from-position moves it onto
- * each hypothesis's own declared position later). Each hypothesis's own
- * declared position is assigned here from its index in the given array,
- * matching that order exactly, since no test in this file is about the
- * position field itself.
+ * the precedence resolve-outcome consults is each manifest entry's own
+ * declared position (task/case-and-investigation-model/precedence-from-position),
+ * assigned here from the given array's own index, matching that order
+ * exactly, since no test in this file is about the position field itself.
+ * hypotheses is carried through unchanged alongside the manifest built from
+ * it, the same relationship parse-case-document.ts's own heldCase keeps
+ * between the two.
  */
-function aCase(hypotheses: readonly HypothesisSpec[], overrides: Partial<Case> = {}): Case {
+function aCase(hypotheses: readonly Hypothesis[], overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-case',
     title: 'A case',
@@ -57,7 +69,9 @@ function aCase(hypotheses: readonly HypothesisSpec[], overrides: Partial<Case> =
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: hypotheses.map((hypothesis, index) => ({ ...hypothesis, position: index + 1 })),
+    state: 'released',
+    manifest: hypotheses.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses,
     ...overrides,
   };
 }

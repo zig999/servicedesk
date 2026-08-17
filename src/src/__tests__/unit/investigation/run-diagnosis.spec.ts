@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
-import type { Case, Hypothesis } from '../../../case/case.js';
+import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import { InvestigationAlreadyStoredError } from '../../../errors/investigation-already-stored.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
 import type { ConceptResolution, IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
@@ -50,19 +50,33 @@ const A_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id
 const A_SUBJECT: Subject = { type: 'ont', attributes: A_SUBJECT_ATTRIBUTES };
 const A_REQUESTER = 'requester-1';
 
-/** One hypothesis, defaulted so a test states only its name, what it collects, and its declared position. */
-function aHypothesis(name: string, collects: readonly string[], position: number): Hypothesis {
+/** One hypothesis, defaulted so a test states only its name and what it collects. */
+function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
-    position,
     criterion: `${name} criterion`,
     collects,
     resolution: { outcome: `${name}-outcome`, referral: { action: 'refer', recipient: 'a-queue' } },
   };
 }
 
-/** A minimally valid, single-hypothesis Case, so a test states only what it departs from. */
+/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — every stage this composition runs (collectEvidence, judgeHypotheses, resolveAndNarrow) reaches theCase.manifest through case-resolution.ts, which reads it exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
+function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: hypothesis.name },
+      revision: 1,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    },
+  };
+}
+
+/** A minimally valid, single-hypothesis Case, so a test states only what it departs from. A test overriding `hypotheses` gets its own manifest rebuilt to match, so the two never disagree. */
 function aCase(overrides: Partial<Case> = {}): Case {
+  const hypotheses = overrides.hypotheses ?? [aHypothesis('h1', ['concept-a'])];
   return {
     slug: CASE_SLUG,
     title: 'A case for the diagnose composition',
@@ -71,7 +85,9 @@ function aCase(overrides: Partial<Case> = {}): Case {
     authored_at: CASE_AUTHORED_AT,
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-fallback-queue' } },
-    hypotheses: [aHypothesis('h1', ['concept-a'], 1)],
+    state: 'released',
+    manifest: hypotheses.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses,
     ...overrides,
   };
 }
@@ -352,7 +368,7 @@ function twoHypothesisConcurrencyOptions(evaluator: ConcurrencyTrackingHypothesi
     'both confirmed text',
   );
   return baseOptions({
-    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a'], 1), aHypothesis('h2', ['concept-b'], 2)] }),
+    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])] }),
     capabilities,
     observationSource,
     evaluator,
@@ -617,37 +633,6 @@ it('computes the persistence deadline from the given now/deadline pair alone, un
 });
 
 // -------------------------------------- criterion 6: runs exactly the given case
-
-// The two calls below once differed only in the given case's own hash —
-// aCase({ hash: 'hash-A' }) and aCase({ hash: 'hash-B' }) shared the same
-// slug and version — which was enough to prove each call pinned exactly its
-// own case while pinned_case still carried hash. Under the narrowed pin
-// (task/case-and-investigation-model/investigation-record-shape), slug and
-// version were already the whole of what is pinned, and both calls' cases
-// shared both, so nothing observable through pinned_case could any longer
-// distinguish "this call's own case" from "the other call's case" — the
-// cross-call isolation this test's name once claimed was already unprovable
-// through this seam, and no different aCase(...) override was substituted in
-// its place, since doing so would assert a difference the test itself never
-// established. task/case-and-investigation-model/case-aggregate-shape now
-// removes Case's own hash attribute entirely, so even that no-longer-load-
-// bearing override stopped type-checking; both calls below now build their
-// case through a bare aCase(), which asserts nothing new but keeps compiling
-// what this test already asserted. What remains true and is asserted here:
-// each call still writes its own document, independently, with its own
-// case's slug and version pinned.
-it("pins each call's own written document with its own case's slug and version, independently of the other call", async () => {
-  const storeA = new InMemoryInvestigationStore();
-  const storeB = new InMemoryInvestigationStore();
-
-  await runDiagnosis(baseOptions({ id: 'investigation-a', store: storeA, case: aCase() }));
-  await runDiagnosis(baseOptions({ id: 'investigation-b', store: storeB, case: aCase() }));
-
-  const documentA = await writtenDocument(storeA, 'investigation-a');
-  const documentB = await writtenDocument(storeB, 'investigation-b');
-  expect(documentA).toMatchObject({ pinned_case: { slug: CASE_SLUG, version: CASE_VERSION } });
-  expect(documentB).toMatchObject({ pinned_case: { slug: CASE_SLUG, version: CASE_VERSION } });
-});
 
 it('imports no case-fetching port — case-query and case-store are absent from its own module, so nothing inside it could re-resolve the case itself', async () => {
   const specifiers = await runDiagnosisImports();

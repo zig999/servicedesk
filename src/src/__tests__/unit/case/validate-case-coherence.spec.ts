@@ -24,7 +24,7 @@ import type {
   ICapabilityQuery,
 } from '../../../capability-registry/capability-query.port.js';
 import type { Capability } from '../../../capability-registry/capability.js';
-import type { Case, Hypothesis, Resolution } from '../../../case/case.js';
+import type { Case, Hypothesis, ManifestEntry, Resolution } from '../../../case/case.js';
 import { caseCoherenceViolations, validateCaseCoherence } from '../../../case/validate-case-coherence.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
@@ -136,18 +136,42 @@ function resolutionOf(outcome: string, action: string, recipient: string): Resol
   return { outcome, referral: { action, recipient } };
 }
 
-/** One hypothesis carrying exactly what the coherence checks consult, plus the declared position every hypothesis now requires — none of these checks reads it, so a fixed 1 serves every one of this file's always-single-hypothesis fixtures. */
+/** One hypothesis carrying exactly what the coherence checks consult — none of these checks reads a declared position, so this file's own manifest builder below assigns one from array order alone. */
 function hypothesisOf(name: string, collects: readonly string[], resolution: Resolution): Hypothesis {
-  return { name, position: 1, criterion: UNCONSULTED_CRITERION, collects, resolution };
+  return { name, criterion: UNCONSULTED_CRITERION, collects, resolution };
+}
+
+/**
+ * One manifest entry mirroring one flat Hypothesis fixture, position
+ * assigned from array order — case-resolution.ts's own collectionPlan,
+ * which every coherence check here reaches through, reads theCase.manifest
+ * exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation),
+ * so every case fixture below must keep both fields in agreement.
+ */
+function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: hypothesis.name },
+      revision: 1,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    },
+  };
 }
 
 /**
  * A structurally valid case declaring subject contract, one hypothesis
  * collecting the one fixture concept, and a fallback naming its own
  * distinct terms — every attribute the coherence checks read, for a test to
- * depart from one at a time.
+ * depart from one at a time. A test overriding `hypotheses` gets its own
+ * manifest rebuilt to match, so collectionPlan (read from manifest alone)
+ * and declaredResolutions (read from hypotheses alone) never disagree.
  */
 function caseOf(overrides: Partial<Case> = {}): Case {
+  const hypotheses =
+    overrides.hypotheses ?? [hypothesisOf('h1', [CONCEPT], resolutionOf(OUTCOME, ACTION, RECIPIENT))];
   return {
     slug: 'a-case',
     title: 'A case',
@@ -156,7 +180,9 @@ function caseOf(overrides: Partial<Case> = {}): Case {
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT_CONTRACT,
     fallback: resolutionOf(FALLBACK_OUTCOME, FALLBACK_ACTION, FALLBACK_RECIPIENT),
-    hypotheses: [hypothesisOf('h1', [CONCEPT], resolutionOf(OUTCOME, ACTION, RECIPIENT))],
+    state: 'released',
+    manifest: hypotheses.map((hypothesis, index) => manifestEntryOf(hypothesis, index + 1)),
+    hypotheses,
     ...overrides,
   };
 }

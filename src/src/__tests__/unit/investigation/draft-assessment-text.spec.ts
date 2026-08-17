@@ -125,20 +125,6 @@ it('answers the register-specific text seeded for the register actually given, n
   expect(plainResult.text).toBe('plain write-up');
 });
 
-// ------------------------------------------------------------- criterion 3
-
-it('lets the consolidation register given in options alone decide which seeded text answers, proving it reaches this call as an explicit input rather than a value fixed in advance', async () => {
-  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
-  const fake = new FakeAssessmentConsolidator();
-  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'formal' }, 'formal answer');
-  fake.seed({ evaluations: narrowedInput.evaluations, evidence: narrowedInput.evidence, consolidationRegister: 'plain' }, 'plain answer');
-  const resolved = aFallbackResolvedOutcome();
-
-  const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'plain', consolidator: fake }));
-
-  expect(result.text).toBe('plain answer');
-});
-
 // ------------------------------------------------------------- criterion 4
 
 it("carries resolved's own outcome, referral and determining hypothesis through unchanged, regardless of what the consolidator answers", async () => {

@@ -1,0 +1,168 @@
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/author-case-version.factory.spec.ts(195,54): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/factories/author-case-version.factory.spec.ts(215,56): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(185,31): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(190,57): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(201,31): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(226,45): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(242,33): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/case-query.factory.spec.ts(264,17): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(175,37): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/diagnose-server.factory.spec.ts(180,15): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/factories/store-wiring.spec.ts(151,39): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts(88,37): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts(93,15): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(153,37): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/http/diagnose-e2e.spec.ts(158,15): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts(195,37): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(197,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(198,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(222,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(223,33): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(234,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(253,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(256,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(260,35): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(272,51): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(272,89): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(289,22): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(301,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(302,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(303,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(305,32): error TS2339: Property 'listVersions' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(306,42): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(321,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(322,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(346,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/persistence/relational-case-store.repository.spec.ts(372,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/integration/seed.spec.ts(166,56): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/__tests__/integration/seed.spec.ts(346,52): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/__tests__/unit/case/author-case-version.service.spec.ts(17,27): error TS2305: Module '"../../../case/case-store.port.js"' has no exported member 'StoredCaseVersion'.
+src/__tests__/unit/case/author-case-version.service.spec.ts(86,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(218,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(231,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(244,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(257,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(271,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(287,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(302,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(316,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(332,50): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(333,56): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(344,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(364,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(377,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(401,50): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(439,50): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(454,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(465,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(475,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(487,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(498,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/author-case-version.service.spec.ts(516,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(23,27): error TS2305: Module '"../../../case/case-store.port.js"' has no exported member 'StoredCaseVersion'.
+src/__tests__/unit/case/case-query.service.spec.ts(98,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(231,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(263,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(280,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(288,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(301,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(319,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(334,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(353,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(374,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(392,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(403,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(416,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(430,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(433,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(443,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(446,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(455,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(463,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(469,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(472,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(483,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(517,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(527,46): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(542,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(553,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/case/case-query.service.spec.ts(565,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Type 'FakeCaseStore' is missing the following properties from type 'ICaseStore': assembleVersion, createDraft, insertHypothesisRevision, placeHypothesis, and 3 more.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(141,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(164,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(183,27): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(202,15): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(245,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(262,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(275,32): error TS2339: Property 'listVersions' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(286,27): error TS2339: Property 'listVersions' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(298,22): error TS2339: Property 'listVersions' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(308,27): error TS2339: Property 'writeVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(320,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(334,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(346,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(359,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(369,32): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/__tests__/unit/persistence/relational-case-store.repository.spec.ts(379,22): error TS2339: Property 'readVersion' does not exist on type 'RelationalCaseStore'.
+src/case/author-case-version.service.ts(57,26): error TS2339: Property 'writeVersion' does not exist on type 'ICaseStore'.
+src/case/case-query.service.ts(27,27): error TS2305: Module '"./case-store.port.js"' has no exported member 'StoredCaseVersion'.
+src/case/case-query.service.ts(112,30): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+src/seed.ts(184,52): error TS2339: Property 'readVersion' does not exist on type 'ICaseStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

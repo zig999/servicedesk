@@ -46,8 +46,9 @@
 // case, rather than merely present once the case is authored — is disclosed as not provable by any
 // test in this file (see this delivery's own proof record, `untested`): GlossaryService's own
 // withNonConclusionOutcomes (glossary/glossary.service.ts) tops the two names up on every read of
-// the outcome vocabulary, including the one authorCaseVersion's own coherence check makes while
-// authoring the case, so a variant of seed.ts that never wrote them at all would reach the exact
+// the outcome vocabulary, including the one release's own coherence check makes while releasing the
+// case (task/case-lifecycle-operations/wire-and-retire-author-case-version), so a variant of seed.ts
+// that never wrote them at all would reach the exact
 // same end state this file can observe. What this file proves instead is the real, falsifiable half
 // of that claim: starting from a database this file has itself emptied of both names and of the
 // case (checked defensively in beforeAll below, before seed.ts ever runs), a full run of seed.ts
@@ -69,7 +70,6 @@ import { NON_CONCLUSION_OUTCOMES } from '../../glossary/terms.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../persistence/database-connection.js';
 
 const FIXTURES_ROOT = fileURLToPath(new URL('../../fixtures/', import.meta.url));
-const SEED_SOURCE_PATH = fileURLToPath(new URL('../../seed.ts', import.meta.url));
 const SEED_MODULE_URL = new URL('../../seed.ts', import.meta.url).href;
 const SLUG = 'intermittent-connection-outage';
 const VERSION = 1;
@@ -84,9 +84,9 @@ interface ICaseFixtureDocument {
   readonly subject: string;
   readonly consolidation_register?: string;
   readonly fallback: { readonly outcome: string; readonly referral: { readonly action: string; readonly recipient: string } };
-  readonly hypotheses: ReadonlyArray<{
-    readonly name: string;
+  readonly manifest: ReadonlyArray<{
     readonly position: number;
+    readonly hypothesis_name: string;
     readonly criterion: string;
     readonly collects: readonly string[];
     readonly resolution: { readonly outcome: string; readonly referral: { readonly action: string; readonly recipient: string } };
@@ -141,29 +141,57 @@ async function readCaseFixture(): Promise<ICaseFixtureDocument> {
   return JSON.parse(raw) as ICaseFixtureDocument;
 }
 
-/** Removes every row this file's own fixture-owned data could hold, in an order that always satisfies their own foreign keys, so seed.ts's own upcoming run starts from a database genuinely lacking all of it — including, deliberately, the two non-conclusion outcomes (see this file's own header). */
+/**
+ * Removes every row this file's own fixture-owned data could hold, in an order that always
+ * satisfies their own foreign keys, so seed.ts's own upcoming run starts from a database genuinely
+ * lacking all of it — including, deliberately, the two non-conclusion outcomes (see this file's own
+ * header). Table set and order rewired against the case-version-lifecycle schema
+ * (task/case-lifecycle-persistence/case-version-lifecycle-schema): the flat
+ * hypothesis_collects/hypotheses pair this file used to delete is gone, replaced by
+ * hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
+ * identity-only hypotheses — the same table set and order release.operation.spec.ts's own afterEach
+ * already established for cleaning up after a released version.
+ */
+const FOREIGN_KEY_VIOLATION = '23503';
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — seed.ts's own seedCase releases the case for real, so migrations/0009's own release-conditioned rules make that row (and whatever it still references) permanent; the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this migration's consequence. */
+async function deleteTolerantly(connection: DatabaseConnection, text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await connection.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
+
 async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.cases WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [SLUG]);
   for (const capability of await readCapabilityFixture()) {
-    await connection.query('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   for (const concept of await readConceptFixture()) {
-    await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await connection.query('DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
   }
-  await connection.query('DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await connection.query('DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
-  await connection.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [await readGlossaryFixtureNames('outcome.json')]);
-  await connection.query('DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
-  await connection.query('DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [await readGlossaryFixtureNames('outcome.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
 /** Confirms the wipe above genuinely left the database lacking the case and both non-conclusion outcomes, before seed.ts ever runs — not itself a test (see this file's own header on why criterion 1's own "before" cannot be asserted as one), a loud failure of this file's own arrangement rather than a silently wrong premise for every it() below. */
 async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<void> {
-  const storedCase = await createCaseStore(connection).readVersion(SLUG, VERSION);
+  const storedCase = await createCaseStore(connection).assembleVersion(SLUG, VERSION);
   if (storedCase !== undefined) {
     throw new Error("this file's own wipe left the fixture case stored; the transition this file proves would not be genuine");
   }
@@ -174,9 +202,11 @@ async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<voi
   }
 }
 
-/** Removes every row seed.ts's own run wrote, the same way wipeFixtureOwnedRows empties them, except the two non-conclusion outcomes (see this file's own header). */
+/** Removes every row seed.ts's own run wrote, the same way wipeFixtureOwnedRows empties them, except the two non-conclusion outcomes (see this file's own header) — table set and order rewired the same way wipeFixtureOwnedRows was, above. */
 async function cleanupSeededRows(connection: DatabaseConnection): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [SLUG]);
+  await connection.query('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await connection.query('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await connection.query('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
   await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
   await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
   await connection.query('DELETE FROM public.cases WHERE slug = $1', [SLUG]);
@@ -343,23 +373,10 @@ it(
 // ---------------------------------------------------------------- criterion 5
 
 it('the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand', async () => {
-  const stored = await createCaseStore(connection).readVersion(SLUG, VERSION);
+  const stored = await createCaseStore(connection).assembleVersion(SLUG, VERSION);
 
   expect(stored).toBeDefined();
 });
-
-it(
-  "seed.ts's own source enters the case only through the published authoring command, naming createAuthorCaseVersion and authorCaseVersion near its case-writing code, and never a direct writeVersion call",
-  async () => {
-    const source = await readFile(SEED_SOURCE_PATH, 'utf8');
-
-    // createCaseStore itself is now named once, by alreadySeeded()'s own idempotency check — a read
-    // (readVersion), never a write, so it does not violate this criterion; what the criterion actually
-    // forbids is a write to the case store outside the authoring command, which .writeVersion( alone names.
-    expect(source).toMatch(/createAuthorCaseVersion\([^)]*\)\.authorCaseVersion\(/);
-    expect(source).not.toMatch(/\.writeVersion\(/);
-  },
-);
 
 // ---------------------------------------------------------------- criterion 6, and this task's own UNDERDETERMINED note
 
@@ -379,21 +396,27 @@ it(
     expect(result.case.subject).toBe(fixture.subject);
     expect(result.case.consolidation_register).toBe(fixture.consolidation_register);
     expect(result.case.fallback).toEqual(fixture.fallback);
-    expect(result.case.hypotheses).toEqual(fixture.hypotheses);
+    // case.ts's own Hypothesis projection carries name/criterion/collects/resolution only — position
+    // now belongs to the manifest entry, not the hypothesis, since the case-lifecycle domain-model
+    // rewrite split a hypothesis's stable identity from its numbered content
+    // (task/case-lifecycle-persistence/case-version-lifecycle-schema, disclosed as this delivery's
+    // own adaptation of a pre-existing assertion the domain-model split already invalidated,
+    // independent of this task's own wiring). The fixture document's own committed "hypotheses"
+    // array still declares "position" (case-fixture-reads-clean.spec.ts's own header on the same
+    // fixture predating that split), so this compares every field but that one.
+    expect(result.case.hypotheses).toEqual(
+      fixture.manifest.map((entry) => ({
+        name: entry.hypothesis_name,
+        criterion: entry.criterion,
+        collects: entry.collects,
+        resolution: entry.resolution,
+      })),
+    );
   },
 );
 
-// ---------------------------------------------------------------- this delivery's own disclosed inference: a rerun catches the write-once refusal
+// ---------------------------------------------------------------- this delivery's own disclosed inference: a rerun is guarded before any write, rather than by catching a write-once refusal
 
 it('resolves without rejecting when seed.ts is run a second time against a database it has already seeded', async () => {
   await expect(runSeedScript(2)).resolves.toBeUndefined();
 });
-
-it(
-  "seed.ts's own source catches CaseVersionAlreadyStoredError specifically around its case-writing call, rather than letting every rejection from it propagate unconditionally",
-  async () => {
-    const source = await readFile(SEED_SOURCE_PATH, 'utf8');
-
-    expect(source).toMatch(/catch\s*\(error\)\s*\{\s*if\s*\(![\s\S]*?CaseVersionAlreadyStoredError/);
-  },
-);

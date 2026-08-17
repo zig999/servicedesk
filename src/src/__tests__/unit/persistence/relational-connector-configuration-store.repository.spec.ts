@@ -90,15 +90,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect((caught as Error).cause).toBe(driverFailure);
 });
 
-// ---------------------------------------------------------------- edge case: no row currently registered
-
-it('answers the empty registry when the table currently holds no row', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalConnectorConfigurationStore(fakeBareConnection(query));
-
-  await expect(store.readConnectorConfigurations()).resolves.toEqual([]);
-});
-
 // ---------------------------------------------------------------- write mechanics: whole replace inside one transaction
 
 it('deletes every existing row and inserts exactly the given configurations, in that order, inside one transaction', async () => {

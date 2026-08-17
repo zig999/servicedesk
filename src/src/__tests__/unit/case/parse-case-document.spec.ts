@@ -1,17 +1,23 @@
-// Proof for the case document model: the specification's worked example
-// (cliente-sem-internet) parses whole — hypotheses, resolutions and
-// referrals read from the one document, in the document's declared order —
-// and a document violating any structural rule is refused once, with every
-// violation named. The fixture is spelled here rather than read from the
-// source, so a drift in what the parser accepts fails against what the
-// specification shows.
+// Proof for task/case-lifecycle-domain-model/aggregate-types-and-structural-validation:
+// the case document's own manifest-based structural validator — a hypothesis's
+// stable identity (its name) and its revisioned content (revision, criterion,
+// collects, resolution) declared as two distinct facts on the document, held
+// together only by one manifest entry's own position plus its one nested
+// adopted hypothesis-revision (never inlined) — and the three refusals this
+// task's own criteria name: a manifest holding no entry at all (whether the
+// version is draft or released), an adopted hypothesis-revision collecting no
+// concept, and one declaring an empty criterion. The specification's own
+// worked example (cliente-sem-internet) parses whole — every manifest entry's
+// own hypothesis-revision, resolution and referral read from the one document,
+// in the document's declared order — and a document violating any structural
+// rule is refused once, with every violation named. The fixture is spelled
+// here rather than read from the source, so a drift in what the parser
+// accepts fails against what the specification shows.
 //
-// task/case-and-investigation-model/case-aggregate-shape: the case no longer
-// declares a hash at all, and now declares authored_at as a required
-// datetime; each hypothesis now declares its own required, unique position
-// instead of carrying its precedence by array arrangement alone. Every
-// fixture below carries authored_at and a position per hypothesis, and no
-// fixture carries hash, matching the aggregate's new declared shape.
+// The position-uniqueness and hypothesis-name-uniqueness checks this module
+// kept over the old flat hypotheses array are preserved here over the
+// manifest instead (this module's own `preserved` inference,
+// sharedHypothesisProblems/sharedPositionProblems in parse-case-document.ts).
 import { expect, it } from 'vitest';
 import { parseCaseDocument } from '../../../case/parse-case-document.js';
 import { InvalidCaseDocumentError } from '../../../errors/invalid-case-document.error.js';
@@ -22,59 +28,56 @@ type Document = Record<string, unknown>;
 /** The name of the file the worked example sits in, stated with the ending the medium carries. */
 const FILE_NAME = 'cliente-sem-internet.json';
 
-/**
- * The worked example's declared precedence — deliberately not the
- * alphabetical order of the names, so a model that sorts its hypotheses or
- * keys them by name fails here rather than passing by accident.
- */
-const DECLARED_PRECEDENCE = [
-  'incidente-regional',
-  'ordem-em-andamento',
-  'bloqueio-financeiro',
-  'onu-offline',
-];
-
 /** One resolution as a document declares it: an outcome paired with a referral. */
 function resolutionOf(outcome: string, action: string, recipient: string): Document {
   return { outcome, referral: { action, recipient } };
 }
 
-/** The worked example's four hypotheses' own fields, less position — workedHypotheses() below assigns each one's position from its own index here, matching this declared order. */
-function workedHypothesisSpecs(): Document[] {
+/**
+ * One worked manifest entry's own fields, less position — pulled out into
+ * its own function only so workedManifestEntrySpecs' own body stays inside
+ * the standard's max-lines-per-function rule; the fields and behavior are
+ * exactly what each of workedManifestEntrySpecs' own four object literals
+ * declared before this split (this delivery's own inference — the
+ * extraction changes nothing but where the lines are counted).
+ */
+function manifestEntrySpec(spec: {
+  hypothesisName: string;
+  criterion: string;
+  collects: readonly string[];
+  resolutionOutcome: string;
+  resolutionAction: string;
+  resolutionRecipient: string;
+}): Document {
+  return {
+    hypothesis_name: spec.hypothesisName,
+    revision: 1,
+    criterion: spec.criterion,
+    collects: spec.collects,
+    resolution: resolutionOf(spec.resolutionOutcome, spec.resolutionAction, spec.resolutionRecipient),
+  };
+}
+
+/**
+ * The worked example's four manifest entries' own fields, less position —
+ * workedManifest() below assigns each one's position from its own index
+ * here, matching this declared order.
+ */
+function workedManifestEntrySpecs(): Document[] {
   return [
-    {
-      name: 'incidente-regional',
-      criterion: 'há incidente aberto cobrindo a localidade do cliente',
-      collects: ['incidentes-na-regiao'],
-      resolution: resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
-    },
-    {
-      name: 'ordem-em-andamento',
-      criterion: 'existe ordem de serviço em execução no cliente',
-      collects: ['ordens-em-andamento'],
-      resolution: resolutionOf('intervencao-tecnica-em-curso', 'informar-ordem', 'atendimento'),
-    },
-    {
-      name: 'bloqueio-financeiro',
-      criterion: 'o acesso está bloqueado por inadimplência',
-      collects: ['situacao-financeira'],
-      resolution: resolutionOf('bloqueio-financeiro', 'orientar-pagamento', 'atendimento'),
-    },
-    {
-      name: 'onu-offline',
-      criterion: 'o equipamento do cliente não responde',
-      collects: ['estado-do-equipamento'],
-      resolution: resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
-    },
+    manifestEntrySpec({ hypothesisName: 'incidente-regional', criterion: 'há incidente aberto cobrindo a localidade do cliente', collects: ['incidentes-na-regiao'], resolutionOutcome: 'incidente-regional', resolutionAction: 'informar-prazo', resolutionRecipient: 'atendimento' }),
+    manifestEntrySpec({ hypothesisName: 'ordem-em-andamento', criterion: 'existe ordem de serviço em execução no cliente', collects: ['ordens-em-andamento'], resolutionOutcome: 'intervencao-tecnica-em-curso', resolutionAction: 'informar-ordem', resolutionRecipient: 'atendimento' }),
+    manifestEntrySpec({ hypothesisName: 'bloqueio-financeiro', criterion: 'o acesso está bloqueado por inadimplência', collects: ['situacao-financeira'], resolutionOutcome: 'bloqueio-financeiro', resolutionAction: 'orientar-pagamento', resolutionRecipient: 'atendimento' }),
+    manifestEntrySpec({ hypothesisName: 'onu-offline', criterion: 'o equipamento do cliente não responde', collects: ['estado-do-equipamento'], resolutionOutcome: 'onu-offline', resolutionAction: 'abrir-ordem-corretiva', resolutionRecipient: 'suporte-n2' }),
   ];
 }
 
-/** The worked example's four hypotheses, in their declared precedence, each at its own declared position matching that order. */
-function workedHypotheses(): Document[] {
-  return workedHypothesisSpecs().map((spec, index) => ({ ...spec, position: index + 1 }));
+/** The worked example's four manifest entries, in their declared precedence, each at its own declared position matching that order. */
+function workedManifest(): Document[] {
+  return workedManifestEntrySpecs().map((spec, index) => ({ ...spec, position: index + 1 }));
 }
 
-/** A document declaring every attribute, for tests to depart from one attribute at a time. Declares no hash at all — the case aggregate no longer admits one (task/case-and-investigation-model/case-aggregate-shape). */
+/** A document declaring every attribute, for tests to depart from one attribute at a time. Declares no hash at all — the case aggregate no longer admits one. */
 function completeDocument(overrides: Document = {}): Document {
   return {
     slug: 'cliente-sem-internet',
@@ -84,16 +87,18 @@ function completeDocument(overrides: Document = {}): Document {
     authored_at: '2024-03-01T09:00:00.000Z',
     subject: 'contrato',
     fallback: resolutionOf('inconclusivo', 'escalar', 'suporte-n2'),
-    hypotheses: workedHypotheses(),
+    state: 'released',
+    manifest: workedManifest(),
     ...overrides,
   };
 }
 
-/** A complete hypothesis, for tests to depart from one attribute at a time. */
-function completeHypothesis(overrides: Document = {}): Document {
+/** A complete manifest entry, for tests to depart from one attribute at a time. */
+function completeManifestEntry(overrides: Document = {}): Document {
   return {
-    name: 'incidente-regional',
     position: 1,
+    hypothesis_name: 'incidente-regional',
+    revision: 1,
     criterion: 'há incidente aberto cobrindo a localidade do cliente',
     collects: ['incidentes-na-regiao'],
     resolution: resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
@@ -101,9 +106,55 @@ function completeHypothesis(overrides: Document = {}): Document {
   };
 }
 
-/** The complete document with its hypotheses replaced by one departing hypothesis. */
-function documentWithHypothesis(overrides: Document): Document {
-  return completeDocument({ hypotheses: [completeHypothesis(overrides)] });
+/** The complete document with its manifest replaced by one departing entry. */
+function documentWithManifestEntry(overrides: Document): Document {
+  return completeDocument({ manifest: [completeManifestEntry(overrides)] });
+}
+
+/** One manifest entry document spec reshaped into the aggregate's own nested ManifestEntry shape parseCaseDocument produces: position alongside one hypothesis_revision, never the revision's own content inlined. */
+function expectedManifestEntry(spec: Document, position: number): Document {
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name: spec['hypothesis_name'] },
+      revision: spec['revision'],
+      criterion: spec['criterion'],
+      collects: spec['collects'],
+      resolution: spec['resolution'],
+    },
+  };
+}
+
+/** The worked example's manifest, reshaped as parseCaseDocument is expected to hold it. */
+function expectedWorkedManifest(): Document[] {
+  return workedManifestEntrySpecs().map((spec, index) => expectedManifestEntry(spec, index + 1));
+}
+
+/** One manifest entry spec flattened into the shape this aggregate's own out-of-scope consumers read off Case.hypotheses. */
+function expectedHypothesis(spec: Document): Document {
+  return {
+    name: spec['hypothesis_name'],
+    criterion: spec['criterion'],
+    collects: spec['collects'],
+    resolution: spec['resolution'],
+  };
+}
+
+/** The whole parsed aggregate the worked example is expected to produce, for a test to depart from one attribute at a time. */
+function expectedCase(overrides: Document = {}): Document {
+  return {
+    slug: 'cliente-sem-internet',
+    title: 'Cliente sem internet',
+    when_to_use: 'cliente relata ausência total de conexão',
+    version: 1,
+    authored_at: '2024-03-01T09:00:00.000Z',
+    subject: 'contrato',
+    fallback: resolutionOf('inconclusivo', 'escalar', 'suporte-n2'),
+    state: 'released',
+    manifest: expectedWorkedManifest(),
+    hypotheses: workedManifestEntrySpecs().map(expectedHypothesis),
+    ...overrides,
+  };
 }
 
 /** Every violation one document is refused with; fails the test where the document parses instead. */
@@ -122,38 +173,20 @@ function problemsOf(document: unknown, fileName: string = FILE_NAME): readonly s
 
 // ---------------------------------------------------------------- what parses
 
-it('parses a document declaring every attribute into the one case aggregate', () => {
+it('parses a document declaring every attribute into the one case aggregate, splitting each manifest entry into its own position and nested hypothesis-revision', () => {
   const document = completeDocument();
 
   const parsed = parseCaseDocument(document, FILE_NAME);
 
-  expect(parsed).toEqual(completeDocument());
+  expect(parsed).toEqual(expectedCase());
 });
 
-it('reads hypotheses, resolutions and referrals from the one document alone', () => {
-  const document = completeDocument();
+it('parses a case declaring exactly one manifest entry', () => {
+  const document = completeDocument({ manifest: [completeManifestEntry()] });
 
   const parsed = parseCaseDocument(document, FILE_NAME);
 
-  expect(parsed.fallback).toEqual(resolutionOf('inconclusivo', 'escalar', 'suporte-n2'));
-  expect(parsed.hypotheses[3]?.resolution).toEqual(
-    resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
-  );
-});
-
-it('holds the hypotheses in the declared order of the document, never sorted and never keyed by name', () => {
-  const document = completeDocument();
-
-  const parsed = parseCaseDocument(document, FILE_NAME);
-
-  expect(parsed.hypotheses.map((hypothesis) => hypothesis.name)).toEqual(DECLARED_PRECEDENCE);
-});
-
-it('parses a case declaring exactly one hypothesis', () => {
-  const document = completeDocument({ hypotheses: [completeHypothesis()] });
-
-  const parsed = parseCaseDocument(document, FILE_NAME);
-
+  expect(parsed.manifest).toHaveLength(1);
   expect(parsed.hypotheses).toHaveLength(1);
 });
 
@@ -173,8 +206,6 @@ it('carries nothing into the aggregate that the model does not declare', () => {
   expect(parsed).not.toHaveProperty('curador');
 });
 
-// ---------------------------------------- case-aggregate-shape: authored_at, position, no hash
-
 it('carries the document\'s declared authored_at unchanged, as the case\'s own datetime', () => {
   const document = completeDocument({ authored_at: '2030-12-25T18:30:00.000Z' });
 
@@ -183,141 +214,154 @@ it('carries the document\'s declared authored_at unchanged, as the case\'s own d
   expect(parsed.authored_at).toBe('2030-12-25T18:30:00.000Z');
 });
 
-it("carries each hypothesis's own declared position unchanged, in the document's own order", () => {
-  const document = completeDocument();
+// ---------------------------------------------------- domain/knowledge/case-version-state
+
+it('parses a document declaring state draft, carrying no released_at at all', () => {
+  const document = completeDocument({ state: 'draft' });
 
   const parsed = parseCaseDocument(document, FILE_NAME);
 
-  expect(parsed.hypotheses.map((hypothesis) => hypothesis.position)).toEqual([1, 2, 3, 4]);
+  expect(parsed.state).toBe('draft');
+  expect('released_at' in parsed).toBe(false);
 });
 
-it('drops a hash the document still declares, carrying it into no part of the parsed aggregate', () => {
-  const document = completeDocument({ hash: 'a-stale-digest-nobody-asked-for' });
+it('parses a document declaring state released together with released_at, carrying both unchanged', () => {
+  const document = completeDocument({ state: 'released', released_at: '2024-03-02T10:00:00.000Z' });
 
   const parsed = parseCaseDocument(document, FILE_NAME);
 
-  expect(parsed).not.toHaveProperty('hash');
+  expect(parsed.state).toBe('released');
+  expect(parsed.released_at).toBe('2024-03-02T10:00:00.000Z');
 });
 
-// ---------------------------------------------------------------- the enumerated refusals
+it('refuses a document that leaves state undeclared', () => {
+  const document = completeDocument({ state: undefined });
 
-it('refuses a case whose slug differs from the name of the file that holds it', () => {
-  const document = completeDocument();
+  const problems = problemsOf(document);
 
-  const problems = problemsOf(document, 'outro-case.json');
-
-  expect(problems).toEqual([expect.stringContaining('does not equal the name "outro-case"')]);
+  expect(problems).toEqual(['state is undeclared']);
 });
 
-it('refuses a case that declares no hypotheses attribute', () => {
-  const document = completeDocument({ hypotheses: undefined });
+it.each([
+  ['an unrecognized word', 'published'],
+  ['an empty string', ''],
+  ['the wrong case', 'Draft'],
+  ['a number', 1],
+  ['null', null],
+])('refuses a state declared as %s', (_label, value) => {
+  const document = completeDocument({ state: value });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual(['state is not one of draft, released']);
+});
+
+it('refuses a released_at that is not a string, instead of coercing it', () => {
+  const document = completeDocument({ released_at: 42 });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual(['released_at is not a string']);
+});
+
+it('refuses an empty released_at', () => {
+  const document = completeDocument({ released_at: '' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual(['released_at is empty']);
+});
+
+// ---------------------------------------- criterion: a case declaring no hypothesis is refused
+
+it('refuses a released case whose manifest holds no entry, naming that the case declares no hypothesis', () => {
+  const document = completeDocument({ state: 'released', manifest: [] });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
 });
 
-it('refuses a case declaring an empty list of hypotheses', () => {
-  const document = completeDocument({ hypotheses: [] });
+it('refuses a draft case whose manifest holds no entry, the same way a released one is refused', () => {
+  const document = completeDocument({ state: 'draft', manifest: [] });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
 });
 
-it('refuses a case whose two hypotheses share a name', () => {
-  // Distinct positions (2 for the second), isolating this rule's own
-  // violation from the position-uniqueness rule proved separately below.
-  const document = completeDocument({
-    hypotheses: [
-      completeHypothesis(),
-      completeHypothesis({
-        position: 2,
-        criterion: 'existe ordem de serviço em execução no cliente',
-      }),
-    ],
-  });
+it('refuses a case that declares no manifest attribute at all', () => {
+  const document = completeDocument({ manifest: undefined });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('share the name "incidente-regional"')]);
+  expect(problems).toEqual([expect.stringContaining('declares no hypothesis')]);
 });
 
-it('refuses a case whose two hypotheses share a position, naming both', () => {
-  // Distinct names, isolating this rule's own violation from the
-  // name-uniqueness rule proved separately above.
-  const document = completeDocument({
-    hypotheses: [
-      completeHypothesis(),
-      completeHypothesis({
-        name: 'ordem-em-andamento',
-        criterion: 'existe ordem de serviço em execução no cliente',
-      }),
-    ],
-  });
+it('refuses a manifest that is not an array of manifest entries', () => {
+  const document = completeDocument({ manifest: 'not-an-array' });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('hypotheses 1, 2 share the position 1')]);
+  expect(problems).toEqual([expect.stringContaining('manifest is not an array of manifest entries')]);
 });
 
-it(
-  'refuses a case whose hypotheses violate both uniqueness rules at once, naming the shared name and ' +
-    'the shared position together',
-  () => {
-    const document = completeDocument({
-      hypotheses: [
-        completeHypothesis(),
-        completeHypothesis(), // shares both this fixture's default name and default position
-      ],
-    });
+// ------------------------------------------- criterion: a revision collecting no concept is refused
 
-    const problems = problemsOf(document);
-
-    expect(problems).toEqual(
-      expect.arrayContaining([
-        expect.stringContaining('share the name "incidente-regional"'),
-        expect.stringContaining('hypotheses 1, 2 share the position 1'),
-      ]),
-    );
-    expect(problems).toHaveLength(2);
-  },
-);
-
-it('refuses a hypothesis that declares no collects', () => {
-  const document = documentWithHypothesis({ collects: undefined });
+it('refuses a manifest entry whose adopted hypothesis-revision declares no collects at all', () => {
+  const document = documentWithManifestEntry({ collects: undefined });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('collects no concept')]);
 });
 
-it('refuses a hypothesis collecting no concept', () => {
-  const document = documentWithHypothesis({ collects: [] });
+it('refuses a manifest entry whose adopted hypothesis-revision collects an empty list', () => {
+  const document = documentWithManifestEntry({ collects: [] });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('collects no concept')]);
 });
 
-it('refuses a hypothesis whose collects holds an entry naming no concept', () => {
-  const document = documentWithHypothesis({ collects: [''] });
+it('refuses a manifest entry whose collects is not an array of concept names', () => {
+  const document = documentWithManifestEntry({ collects: 'not-an-array' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("collects is not an array of concept names")]);
+});
+
+it('refuses a manifest entry whose collects holds an entry naming no concept', () => {
+  const document = documentWithManifestEntry({ collects: [''] });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('names no concept')]);
 });
 
-it('refuses a hypothesis carrying an empty criterion', () => {
-  const document = documentWithHypothesis({ criterion: '' });
+// ---------------------------------------------- criterion: a revision with an empty criterion is refused
+
+it('refuses a manifest entry whose adopted hypothesis-revision carries an empty criterion', () => {
+  const document = documentWithManifestEntry({ criterion: '' });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('criterion is empty')]);
+  expect(problems).toEqual([expect.stringContaining("criterion is empty")]);
 });
 
-it('refuses a hypothesis whose resolution misses its outcome', () => {
-  const document = documentWithHypothesis({
+it('refuses a manifest entry that declares no criterion at all', () => {
+  const document = documentWithManifestEntry({ criterion: undefined });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("criterion is undeclared")]);
+});
+
+// ------------------------------------------------------------- the resolution a revision adopts
+
+it('refuses a manifest entry whose resolution misses its outcome', () => {
+  const document = documentWithManifestEntry({
     resolution: { referral: { action: 'informar-prazo', recipient: 'atendimento' } },
   });
 
@@ -326,16 +370,16 @@ it('refuses a hypothesis whose resolution misses its outcome', () => {
   expect(problems).toEqual([expect.stringContaining('outcome is undeclared')]);
 });
 
-it('refuses a hypothesis whose resolution misses its referral', () => {
-  const document = documentWithHypothesis({ resolution: { outcome: 'incidente-regional' } });
+it('refuses a manifest entry whose resolution misses its referral', () => {
+  const document = documentWithManifestEntry({ resolution: { outcome: 'incidente-regional' } });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('referral is undeclared')]);
 });
 
-it('refuses a hypothesis declaring no resolution at all', () => {
-  const document = documentWithHypothesis({ resolution: undefined });
+it('refuses a manifest entry declaring no resolution at all', () => {
+  const document = documentWithManifestEntry({ resolution: undefined });
 
   const problems = problemsOf(document);
 
@@ -359,6 +403,67 @@ it('refuses a fallback missing its referral', () => {
 
   expect(problems).toEqual([expect.stringContaining("the fallback's referral is undeclared")]);
 });
+
+// ---------------------------------------------- the two uniqueness rules, preserved over the manifest
+
+it('refuses a case whose two manifest entries share a hypothesis', () => {
+  // Distinct positions (2 for the second), isolating this rule's own
+  // violation from the position-uniqueness rule proved separately below.
+  const document = completeDocument({
+    manifest: [
+      completeManifestEntry(),
+      completeManifestEntry({
+        position: 2,
+        criterion: 'existe ordem de serviço em execução no cliente',
+      }),
+    ],
+  });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining('share the hypothesis "incidente-regional"')]);
+});
+
+it('refuses a case whose two manifest entries share a position, naming both', () => {
+  // Distinct hypothesis names, isolating this rule's own violation from the
+  // hypothesis-uniqueness rule proved separately above.
+  const document = completeDocument({
+    manifest: [
+      completeManifestEntry(),
+      completeManifestEntry({
+        hypothesis_name: 'ordem-em-andamento',
+        criterion: 'existe ordem de serviço em execução no cliente',
+      }),
+    ],
+  });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining('manifest entries 1, 2 share the position 1')]);
+});
+
+it(
+  'refuses a case whose manifest entries violate both uniqueness rules at once, naming the shared ' +
+    'hypothesis and the shared position together',
+  () => {
+    const document = completeDocument({
+      manifest: [
+        completeManifestEntry(),
+        completeManifestEntry(), // shares both this fixture's default hypothesis and default position
+      ],
+    });
+
+    const problems = problemsOf(document);
+
+    expect(problems).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('share the hypothesis "incidente-regional"'),
+        expect.stringContaining('manifest entries 1, 2 share the position 1'),
+      ]),
+    );
+    expect(problems).toHaveLength(2);
+  },
+);
 
 // ------------------------------------------------- the required attributes beyond the enumeration
 
@@ -397,32 +502,64 @@ it('refuses a document that leaves the fallback undeclared', () => {
   expect(problems).toEqual([expect.stringContaining('the fallback is undeclared')]);
 });
 
-it('refuses a nameless hypothesis', () => {
-  const document = documentWithHypothesis({ name: undefined });
+it('refuses a manifest entry that is not one JSON object', () => {
+  const document = completeDocument({ manifest: [42] });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining('name is undeclared')]);
+  expect(problems).toEqual([expect.stringContaining('manifest entry 1 is not one JSON object')]);
 });
 
-it('refuses a hypothesis that declares no position', () => {
-  const document = documentWithHypothesis({ position: undefined });
+it('refuses a manifest entry that declares no hypothesis at all', () => {
+  const document = documentWithManifestEntry({ hypothesis_name: undefined });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("hypothesis 1's position is undeclared")]);
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's hypothesis is undeclared")]);
 });
 
-it('refuses a hypothesis whose position is not an integer, instead of coercing it', () => {
-  const document = documentWithHypothesis({ position: '1' });
+it('refuses a manifest entry whose hypothesis name is empty', () => {
+  const document = documentWithManifestEntry({ hypothesis_name: '' });
 
   const problems = problemsOf(document);
 
-  expect(problems).toEqual([expect.stringContaining("hypothesis 1's position is not an integer")]);
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's hypothesis is empty")]);
+});
+
+it('refuses a manifest entry that declares no position', () => {
+  const document = documentWithManifestEntry({ position: undefined });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's position is undeclared")]);
+});
+
+it('refuses a manifest entry whose position is not an integer, instead of coercing it', () => {
+  const document = documentWithManifestEntry({ position: '1' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's position is not an integer")]);
+});
+
+it('refuses a manifest entry that declares no revision', () => {
+  const document = documentWithManifestEntry({ revision: undefined });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's revision is undeclared")]);
+});
+
+it('refuses a manifest entry whose revision is not an integer, instead of coercing it', () => {
+  const document = documentWithManifestEntry({ revision: '1' });
+
+  const problems = problemsOf(document);
+
+  expect(problems).toEqual([expect.stringContaining("manifest entry 1's revision is not an integer")]);
 });
 
 it('refuses a referral missing its action', () => {
-  const document = documentWithHypothesis({
+  const document = documentWithManifestEntry({
     resolution: { outcome: 'incidente-regional', referral: { recipient: 'atendimento' } },
   });
 
@@ -432,7 +569,7 @@ it('refuses a referral missing its action', () => {
 });
 
 it('refuses a referral missing its recipient', () => {
-  const document = documentWithHypothesis({
+  const document = documentWithManifestEntry({
     resolution: { outcome: 'incidente-regional', referral: { action: 'informar-prazo' } },
   });
 
@@ -447,6 +584,14 @@ it('refuses an empty slug once, not also as a mismatch against the file name', (
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('slug is empty')]);
+});
+
+it('refuses a case whose slug differs from the name of the file that holds it', () => {
+  const document = completeDocument();
+
+  const problems = problemsOf(document, 'outro-case.json');
+
+  expect(problems).toEqual([expect.stringContaining('does not equal the name "outro-case"')]);
 });
 
 // ---------------------------------------------------------------- documents with no shape at all
@@ -520,14 +665,14 @@ it('collects a consolidation_register violation together with another structural
 // ---------------------------------------------------------------- several violations, one refusal
 
 it('refuses a document violating several structural rules once, naming every violation', () => {
-  // Distinct positions (1 and 2), so the shared-name violation below is the
-  // only hypothesis-level uniqueness problem this fixture carries.
+  // Distinct positions (1 and 2), so the shared-hypothesis violation below is
+  // the only manifest-level uniqueness problem this fixture carries.
   const document = completeDocument({
     title: undefined,
     fallback: { referral: { action: 'escalar', recipient: 'suporte-n2' } },
-    hypotheses: [
-      completeHypothesis({ position: 1, criterion: '' }),
-      completeHypothesis({ position: 2, collects: [] }),
+    manifest: [
+      completeManifestEntry({ position: 1, criterion: '' }),
+      completeManifestEntry({ position: 2, collects: [] }),
     ],
   });
 
@@ -538,9 +683,9 @@ it('refuses a document violating several structural rules once, naming every vio
     expect.arrayContaining([
       expect.stringContaining('does not equal the name "outro-case"'),
       expect.stringContaining('title is undeclared'),
-      expect.stringContaining("hypothesis 1's criterion is empty"),
-      expect.stringContaining('hypothesis 2 collects no concept'),
-      expect.stringContaining('share the name "incidente-regional"'),
+      expect.stringContaining("manifest entry 1's criterion is empty"),
+      expect.stringContaining('manifest entry 2 collects no concept'),
+      expect.stringContaining('share the hypothesis "incidente-regional"'),
       expect.stringContaining("the fallback's outcome is undeclared"),
     ]),
   );

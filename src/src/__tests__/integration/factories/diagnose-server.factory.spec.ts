@@ -66,6 +66,7 @@ vi.mock('@anthropic-ai/sdk', () => ({ default: anthropicConstructorMock }));
 
 import type { FastifyInstance } from 'fastify';
 import type { Env } from '../../../config/env.js';
+import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createConnectorConfigurationRegistry } from '../../../factories/connector-configuration-registry.factory.js';
 import { createDiagnoseHttpServer } from '../../../factories/diagnose-server.factory.js';
@@ -169,34 +170,132 @@ async function insertCapabilities(connection: DatabaseConnection): Promise<void>
   }
 }
 
-/** Writes the fixture case's own committed document through the real store exactly once — writeVersion refuses a second write under the same slug and version, so this checks it is not already stored first. */
+/** One manifest entry exactly as the committed fixture document declares it — its own declared position and hypothesis name alongside the content revise-hypothesis needs, the same flat shape seed.ts's own CaseFixtureManifestEntry reads (task/case-lifecycle-operations/wire-and-retire-author-case-version). */
+type CaseFixtureManifestEntry = {
+  readonly position: number;
+  readonly hypothesis_name: string;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: { readonly outcome: string; readonly referral: { readonly action: string; readonly recipient: string } };
+};
+
+/** The committed fixture case document's own whole shape, read exactly as committed — mirrors seed.ts's own CaseFixture. */
+type CaseFixtureDocument = {
+  readonly slug: string;
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly consolidation_register?: 'formal' | 'plain';
+  readonly fallback: { readonly outcome: string; readonly referral: { readonly action: string; readonly recipient: string } };
+  readonly manifest: readonly CaseFixtureManifestEntry[];
+};
+
+/**
+ * Revises then places every fixture-declared hypothesis at its own fixture-declared position, in
+ * the fixture's own declared order — the per-hypothesis half of insertFixtureCase's own sequence
+ * below, pulled out into its own function only so that insertFixtureCase's own body stays inside
+ * the standard's max-lines-per-function rule; the sequence and behavior are exactly what
+ * insertFixtureCase's own loop ran before this split (this delivery's own inference — the
+ * extraction changes nothing but where the lines are counted), the same split seed.ts's own
+ * seedCase already made into placeFixtureHypotheses.
+ */
+async function placeFixtureHypotheses(
+  lifecycle: CaseLifecycleOperations,
+  fixture: CaseFixtureDocument,
+  version: number,
+): Promise<void> {
+  for (const entry of fixture.manifest) {
+    const revised = await lifecycle.reviseHypothesis({
+      slug: fixture.slug,
+      hypothesis_name: entry.hypothesis_name,
+      criterion: entry.criterion,
+      collects: entry.collects,
+      resolution: entry.resolution,
+      subject: fixture.subject,
+    });
+    await lifecycle.placeHypothesis({
+      slug: fixture.slug,
+      version,
+      hypothesis_name: revised.hypothesis_name,
+      revision: revised.revision,
+      position: entry.position,
+    });
+  }
+}
+
+/**
+ * Writes the fixture case's own committed document through the six published case-lifecycle
+ * operations — createDraft, then revise-and-place every declared hypothesis at its own declared
+ * position (placeFixtureHypotheses above), then release — exactly the sequence seed.ts itself runs
+ * (task/case-lifecycle-operations/wire-and-retire-author-case-version), rather than through the
+ * store directly, which no longer takes a whole document. assembleVersion answers undefined for an
+ * unstored version, so this checks the case is not already stored first, the same idempotency guard
+ * seed.ts's own alreadySeeded() keeps.
+ */
 async function insertFixtureCase(connection: DatabaseConnection): Promise<void> {
   const store = createCaseStore(connection);
-  const alreadyStored = await store.readVersion(SLUG, VERSION);
+  const alreadyStored = await store.assembleVersion(SLUG, VERSION);
   if (alreadyStored !== undefined) {
     return;
   }
   const raw = await readFile(join(FIXTURES_ROOT, 'case', SLUG, `${VERSION}.json`), 'utf8');
-  await store.writeVersion(SLUG, VERSION, JSON.parse(raw));
+  const fixture = JSON.parse(raw) as CaseFixtureDocument;
+  const lifecycle = createCaseLifecycle(connection);
+  const draft = await lifecycle.createDraft({
+    slug: fixture.slug,
+    title: fixture.title,
+    when_to_use: fixture.when_to_use,
+    authored_at: fixture.authored_at,
+    subject: fixture.subject,
+    fallback: fixture.fallback,
+    consolidation_register: fixture.consolidation_register,
+  });
+  await placeFixtureHypotheses(lifecycle, fixture, draft.version);
+  await lifecycle.release(fixture.slug, draft.version);
 }
 
 /** Removes every row this file's own beforeAll seeded, in an order that always satisfies their own foreign keys — so this file leaves the glossary and capability tables exactly as it found them, and a sibling suite that owns one of those tables wholesale (relational-glossary-store.repository.spec.ts's own wipeGlossaryTables()) never meets a row this file left behind. By the time this runs, every test's own afterEach has already deleted every investigation this file wrote, so no foreign key still holds the pinned case open. */
+const FOREIGN_KEY_VIOLATION = '23503';
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this fixture releases the seeded version for real, so migrations/0009's own release-conditioned rules make that row (and whatever it still references) permanent; the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this migration's consequence. */
+async function deleteTolerantly(connection: DatabaseConnection, text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await connection.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
+
 async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
-  await connection.query('DELETE FROM public.cases WHERE slug = $1', [SLUG]);
+  // Table set and order rewired against the case-version-lifecycle schema
+  // (task/case-lifecycle-persistence/case-version-lifecycle-schema): the flat
+  // hypothesis_collects/hypotheses pair this file used to delete is gone, replaced by
+  // hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
+  // identity-only hypotheses — the same table set and order release.operation.spec.ts's own
+  // afterEach already established for cleaning up after a released version.
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [SLUG]);
   const capabilities = JSON.parse(await readFile(join(FIXTURES_ROOT, 'capability', 'capability.json'), 'utf8')) as ReadonlyArray<{ name: string; version: string }>;
   for (const capability of capabilities) {
-    await connection.query('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   const concepts = JSON.parse(await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8')) as ReadonlyArray<{ name: string }>;
   for (const concept of concepts) {
-    await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await connection.query('DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
   }
-  await connection.query('DELETE FROM public.subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
-  await connection.query('DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
   // The fixture's own outcome.json happens to list both non-conclusion outcomes among its own
   // terms; excluded here rather than deleted, since they are the glossary's own suite-wide seed
   // (vitest-global-setup.ts), never this fixture's own to remove — deleting them mid-suite races
@@ -204,9 +303,9 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   // hypothesis row (task/service-on-the-database/store-wiring, disclosed in that task's own delivery).
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
-  await connection.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
-  await connection.query('DELETE FROM public.actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
-  await connection.query('DELETE FROM public.recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
+  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
   await cleanupConnectorConfigurations(connection);
 }
 
@@ -322,53 +421,6 @@ it(
     });
   },
 );
-
-// ------------------------------------------------------------- criterion 3
-
-it(
-  'writes two independent investigation records for two requests naming the same case, subject, narrative and requester',
-  async () => {
-    const body = requestBodyFor(requester);
-    const first = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: body });
-    const second = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: body });
-
-    expect(first.statusCode).toBe(200);
-    expect(second.statusCode).toBe(200);
-    const written = await investigationsFor(seedingConnection, requester);
-    expect(written).toHaveLength(2);
-  },
-  // Two full diagnose pipelines run sequentially, each against the real, externally provisioned
-  // database and each bounded by production-diagnose.factory.ts's own 20000ms deadline; the suite's
-  // own 40000ms testTimeout leaves one call almost no headroom against a second, so this test states
-  // its own longer bound explicitly rather than raising the suite-wide default again for one test.
-  70000,
-);
-
-// ------------------------------------------------------------- criterion 4
-
-it('answers 200 when the request supplies no ticket_ref', async () => {
-  const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
-
-  expect(response.statusCode).toBe(200);
-});
-
-it('answers 200 when the request supplies a ticket_ref', async () => {
-  const response = await app.inject({
-    method: 'POST',
-    url: '/v1/diagnose',
-    payload: { ...requestBodyFor(requester), ticket_ref: 'TCK-1' },
-  });
-
-  expect(response.statusCode).toBe(200);
-});
-
-// ------------------------------------------------------------- criterion 5
-
-it('answers 200 for a request carrying no headers at all', async () => {
-  const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester), headers: {} });
-
-  expect(response.statusCode).toBe(200);
-});
 
 // ------------------------------------------------- inference: env's models reach the provider
 

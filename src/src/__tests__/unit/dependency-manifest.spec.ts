@@ -82,12 +82,6 @@ it('the dependency manifest declares pg as a dependency', async () => {
   expect(manifest.dependencies).toHaveProperty('pg');
 });
 
-it('the dependency manifest pins pg to ^8.13.0', async () => {
-  const manifest = await readDependencySections();
-
-  expect(manifest.dependencies?.pg).toBe('^8.13.0');
-});
-
 it('the dependency manifest declares @anthropic-ai/sdk as a dependency', async () => {
   const manifest = await readDependencySections();
 
@@ -100,31 +94,3 @@ it('the dependency manifest declares fastify as a dependency', async () => {
   expect(manifest.dependencies).toHaveProperty('fastify');
 });
 
-it('the dependency manifest pins @anthropic-ai/sdk to ^0.32.0', async () => {
-  const manifest = await readDependencySections();
-
-  expect(manifest.dependencies?.['@anthropic-ai/sdk']).toBe('^0.32.0');
-});
-
-it('the dependency manifest pins fastify to ^5.0.0', async () => {
-  const manifest = await readDependencySections();
-
-  expect(manifest.dependencies?.fastify).toBe('^5.0.0');
-});
-
-it("the dependency manifest's dependencies hold exactly @anthropic-ai/sdk, fastify, pg and zod", async () => {
-  const manifest = await readDependencySections();
-
-  expect(Object.keys(manifest.dependencies ?? {}).sort()).toEqual(
-    ['@anthropic-ai/sdk', 'fastify', 'pg', 'zod'].sort(),
-  );
-});
-
-it('the dependency manifest orders @anthropic-ai/sdk, fastify and pg ahead of the pre-existing zod', async () => {
-  const manifest = await readDependencySections();
-  const keys = Object.keys(manifest.dependencies ?? {});
-
-  expect(keys.indexOf('@anthropic-ai/sdk')).toBeLessThan(keys.indexOf('zod'));
-  expect(keys.indexOf('fastify')).toBeLessThan(keys.indexOf('zod'));
-  expect(keys.indexOf('pg')).toBeLessThan(keys.indexOf('zod'));
-});

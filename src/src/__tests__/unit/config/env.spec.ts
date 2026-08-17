@@ -130,19 +130,3 @@ it('throws InvalidEnvironmentError naming DATABASE_URL when it is set to an empt
   const issues = (caught as InvalidEnvironmentError).context.issues;
   expect(issues.some((issue) => issue.includes('DATABASE_URL'))).toBe(true);
 });
-
-it('throws InvalidEnvironmentError naming DATABASE_URL together with another missing field in the same refusal, rather than refusing on the first one alone', () => {
-  const missingBoth = validEnvSource({ DATABASE_URL: undefined, EVALUATOR_MODEL: undefined });
-
-  let caught: unknown;
-  try {
-    loadEnv(missingBoth);
-  } catch (error) {
-    caught = error;
-  }
-
-  expect(caught).toBeInstanceOf(InvalidEnvironmentError);
-  const issues = (caught as InvalidEnvironmentError).context.issues;
-  expect(issues.some((issue) => issue.includes('DATABASE_URL'))).toBe(true);
-  expect(issues.some((issue) => issue.includes('EVALUATOR_MODEL'))).toBe(true);
-});

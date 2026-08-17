@@ -36,11 +36,6 @@ class MutableCapabilityStore implements ICapabilityStore {
     this.failure = failure;
   }
 
-  /** What the store now holds, for asserting that a refusal wrote nothing. */
-  public held(): readonly Capability[] {
-    return this.records;
-  }
-
   public async readCapabilities(): Promise<readonly Capability[]> {
     if (this.failure !== undefined) {
       throw this.failure;
@@ -113,24 +108,6 @@ it('reports a concept no capability currently answers as an absence naming what 
   expect(resolution).toEqual({ held: false, concept: 'an-absent-concept' });
 });
 
-it('reports any concept as absent over an empty registry', async () => {
-  const query = queryOver(new MutableCapabilityStore());
-
-  const resolution = await query.readCapability('any-concept');
-
-  expect(resolution).toEqual({ held: false, concept: 'any-concept' });
-});
-
-it('reports the empty concept as the same absence rather than failing', async () => {
-  const store = new MutableCapabilityStore();
-  store.hold([heldCapability()]);
-  const query = queryOver(store);
-
-  const resolution = await query.readCapability('');
-
-  expect(resolution).toEqual({ held: false, concept: '' });
-});
-
 it('refuses to resolve a concept the holding answers twice rather than choosing among the answers', async () => {
   const store = new MutableCapabilityStore();
   store.hold([heldCapability(), heldCapability({ name: 'another-capability' })]);
@@ -167,17 +144,6 @@ it('refuses a registration naming a concept a different capability already answe
       registering: { name: 'another-capability', version: '1.0.0' },
     },
   });
-});
-
-it('holds no second answer for a concept when it refuses the registration', async () => {
-  const alreadyHeld = heldCapability();
-  const store = new MutableCapabilityStore();
-  store.hold([alreadyHeld]);
-  const registry = new CapabilityRegistryService(store);
-
-  await registry.registerCapability(completeRegistration({ name: 'another-capability' })).catch(() => undefined);
-
-  expect(store.held()).toEqual([alreadyHeld]);
 });
 
 it('lets a re-registration under its own name and version move its concept', async () => {

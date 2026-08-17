@@ -39,8 +39,8 @@ import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, expect, it } from 'vitest';
+import { createCaseLifecycle } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
-import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { buildApp } from '../../../http/build-app.js';
@@ -167,47 +167,83 @@ async function seedCapability(connection: DatabaseConnection, fixture: IFixture)
   );
 }
 
-/** The one, minimally valid, single-hypothesis case this file's own request pins by slug and version — its fallback is what answers, since the seeded evaluator (below) always judges its own single hypothesis inconclusive. */
-function fixtureCaseDocument(fixture: IFixture): Record<string, unknown> {
-  return {
-    slug: fixture.slug,
-    title: 'A case for the persistence-deadline proof',
-    when_to_use: 'when proving criterion 5 of task/service-on-the-database/diagnose-end-to-end at the integration level',
-    version: 1,
-    authored_at: '2024-01-01T00:00:00.000Z',
-    subject: fixture.subjectType,
-    fallback: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
-    hypotheses: [
-      {
-        name: 'h1',
-        position: 1,
-        criterion: fixture.hypothesisCriterion,
-        collects: [fixture.concept],
-        resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
-      },
-    ],
-  };
-}
-
+/**
+ * Originates, revises-and-places, then releases the one, minimally valid, single-hypothesis case
+ * this file's own request pins by slug and version — its fallback is what answers, since the
+ * seeded evaluator (below) always judges its own single hypothesis inconclusive. Rewired against
+ * the six published case-lifecycle operations (task/case-lifecycle-operations/wire-and-retire-author-case-version):
+ * the store no longer takes a whole document, so this runs createDraft, then revises and places the
+ * one hypothesis, then releases — the same sequence seed.ts itself runs. fixture.slug is always
+ * freshly generated (freshFixture above), so createDraft's own durable per-case counter always
+ * assigns version 1 here, matching the literal this file's own request bodies already pin.
+ */
 async function seedFixture(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await seedVocabulary(connection, fixture);
   await seedCapability(connection, fixture);
-  await createCaseStore(connection).writeVersion(fixture.slug, 1, fixtureCaseDocument(fixture));
+  const lifecycle = createCaseLifecycle(connection);
+  const draft = await lifecycle.createDraft({
+    slug: fixture.slug,
+    title: 'A case for the persistence-deadline proof',
+    when_to_use: 'when proving criterion 5 of task/service-on-the-database/diagnose-end-to-end at the integration level',
+    authored_at: '2024-01-01T00:00:00.000Z',
+    subject: fixture.subjectType,
+    fallback: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
+  });
+  const revised = await lifecycle.reviseHypothesis({
+    slug: fixture.slug,
+    hypothesis_name: 'h1',
+    criterion: fixture.hypothesisCriterion,
+    collects: [fixture.concept],
+    resolution: { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } },
+    subject: fixture.subjectType,
+  });
+  await lifecycle.placeHypothesis({
+    slug: fixture.slug,
+    version: draft.version,
+    hypothesis_name: revised.hypothesis_name,
+    revision: revised.revision,
+    position: 1,
+  });
+  await lifecycle.release(fixture.slug, draft.version);
+}
+
+const FOREIGN_KEY_VIOLATION = '23503';
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this fixture calls release() for real, so migrations/0009's own release-conditioned rules make the released row (and whatever it still references) permanent; the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this migration's consequence. */
+async function deleteTolerantly(connection: DatabaseConnection, text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await connection.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
 }
 
 async function cleanupFixture(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
-  await connection.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
-  await connection.query('DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
-  await connection.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
-  await connection.query('DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
-  await connection.query('DELETE FROM public.subject_types WHERE name = $1', [fixture.subjectType]);
-  await connection.query('DELETE FROM public.subject_attributes WHERE name = $1', [fixture.subjectAttribute]);
-  await connection.query('DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
-  await connection.query('DELETE FROM public.actions WHERE name = $1', [fixture.action]);
-  await connection.query('DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
+  // Table set and order rewired against the case-version-lifecycle schema
+  // (task/case-lifecycle-persistence/case-version-lifecycle-schema): the flat
+  // hypothesis_collects/hypotheses pair this file used to delete is gone, replaced by
+  // hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
+  // identity-only hypotheses — the same table set and order release.operation.spec.ts's own
+  // afterEach already established for cleaning up after a released version.
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
+  await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
+  await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = $1', [fixture.subjectType]);
+  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = $1', [fixture.subjectAttribute]);
+  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
+  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = $1', [fixture.action]);
+  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
 }
 
 /** Deletes whatever investigation the delayed write may have eventually finished committing, in the child-then-root order every foreign key needs — a no-op where nothing landed. */

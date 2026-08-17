@@ -16,15 +16,37 @@
 // without reading any digest over it at all, since slug and version alone
 // name one content (rules/investigation/replay-is-pinned). read-case alone
 // runs that validation, at every one of its own readings.
+//
+// Rewired against the case store's own rebuilt port
+// (task/case-lifecycle-operations/wire-and-retire-author-case-version): the
+// single readVersion/writeVersion pair and its StoredCaseVersion answer are
+// gone, replaced by assembleVersion's own whole-version read
+// (case-store.port.ts). assembleVersion answers the manifest with each
+// entry's own adopted hypothesis-revision content flattened onto the entry
+// (HypothesisRevisionContent), the same flattening convention
+// parse-case-document.ts's own ManifestEntryDocument already keeps for a raw
+// document — so read-case projects the assembled version into that same
+// flat raw shape (assembledAsRawDocument below) and hands it to
+// parseCaseDocument unchanged, exactly the adapter release.operation.ts
+// already built for the same gap (this module's own duplicate of that
+// adapter, disclosed as a divergence from MNT-03 in this task's delivery
+// record, since sharing it would mean editing release.operation.ts, a
+// sibling task's already-delivered file, which reaches past what this task
+// touches). replay-case instead reshapes the assembled version directly into
+// Case's own nested ManifestEntry/HypothesisRevision/HypothesisIdentity
+// shape, trusting its content the same way this module's own trustedCase
+// always did for a whole document — never running parseCaseDocument's
+// structural refusal at all, which is exactly what "without revalidation"
+// means for replay.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../errors/case-not-valid.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
-import { CASE_DOCUMENT_ENDING, type Case } from './case.js';
+import { CASE_DOCUMENT_ENDING, type Case, type Hypothesis, type ManifestEntry } from './case.js';
 import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
-import type { ICaseStore, StoredCaseVersion } from './case-store.port.js';
+import type { AssembledCaseVersion, ICaseStore, ManifestEntry as StoredManifestEntry } from './case-store.port.js';
 import { parseCaseDocument } from './parse-case-document.js';
 import { caseCoherenceViolations } from './validate-case-coherence.js';
 
@@ -43,15 +65,15 @@ export class CaseQueryService implements ICaseQuery {
 
   /**
    * read-case: refuses once, naming every violated rule together, where the
-   * version is unstored (CaseNotFoundError), where the stored document fails
-   * a structural rule, or where the parsed case fails a coherence rule
+   * version is unstored (CaseNotFoundError), where the assembled version
+   * fails a structural rule, or where the parsed case fails a coherence rule
    * against the glossary and the capability registry as they stand right
    * now (CaseNotValidError either way) — and otherwise answers the case
    * whole, validated as of this reading.
    */
   public async readCase(slug: string, version: number): Promise<ReadCaseResult> {
-    const stored = await heldVersion(this.caseStore, slug, version);
-    const theCase = structuralCase(stored.document, slug, version);
+    const assembled = await heldVersion(this.caseStore, slug, version);
+    const theCase = structuralCase(assembled, slug, version);
     await this.refuseIncoherence(theCase, version);
     return { case: theCase };
   }
@@ -84,51 +106,129 @@ export class CaseQueryService implements ICaseQuery {
  * read-case raises.
  */
 export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {
-  const { document } = await heldVersion(caseStore, slug, version);
-  return trustedCase(document);
+  const assembled = await heldVersion(caseStore, slug, version);
+  return trustedCaseOf(assembled);
 }
 
 /**
- * Reads a stored document as the case it already was, trusting its shape
- * rather than checking it — the one place this module departs from
+ * Reshapes an assembled version into the aggregate whole, trusting its
+ * content rather than checking it — the one place this module departs from
  * TYP-02's guard-alongside-every-assertion convention, disclosed in this
- * task's own delivery record rather than silently. A guard thorough enough
- * to narrow `unknown` to `Case` here would have to test the same structural
- * facts parseCaseDocument's own refusal already tests — at least one
- * hypothesis, a resolution on every position, and the rest — which is
- * exactly the validation criterion 4 of this file's own task requires
- * replay to skip, so building one would re-open what this function exists
- * to close. A version is written once and never altered
- * (rules/knowledge/every-case-version-remains-readable), so the bytes this
- * call reads are the exact bytes an investigation once pinned, and trusting
- * their shape is what "without revalidation" means for replay.
+ * task's own delivery record rather than silently, the same departure this
+ * module's own trustedCase always carried for a whole document before this
+ * task's rewiring. A guard thorough enough to narrow the assembled version's
+ * own content here would have to test the same structural facts
+ * parseCaseDocument's own refusal already tests, which is exactly the
+ * validation replay exists to skip. A version is written once and never
+ * altered (rules/knowledge/every-case-version-remains-readable), so the row
+ * this call reads is the exact content an investigation once pinned, and
+ * reshaping it without running any refusal is what "without revalidation"
+ * means for replay.
  */
-function trustedCase(document: unknown): Case {
-  return document as Case;
+function trustedCaseOf(assembled: AssembledCaseVersion): Case {
+  const manifest = assembled.manifest.map(trustedManifestEntryOf);
+  return {
+    slug: assembled.slug,
+    title: assembled.title,
+    when_to_use: assembled.when_to_use,
+    version: assembled.version,
+    authored_at: assembled.authored_at,
+    subject: assembled.subject,
+    fallback: assembled.fallback,
+    ...(assembled.consolidation_register !== undefined
+      ? { consolidation_register: assembled.consolidation_register }
+      : {}),
+    state: assembled.state,
+    ...(assembled.released_at !== undefined ? { released_at: assembled.released_at } : {}),
+    manifest,
+    hypotheses: manifest.map(trustedHypothesisOf),
+  };
 }
 
-/** Answers the stored version, refusing an unstored one through the typed not-found error read-case and replay-case share. */
-async function heldVersion(store: ICaseStore, slug: string, version: number): Promise<StoredCaseVersion> {
-  const stored = await store.readVersion(slug, version);
-  if (stored === undefined) {
+/** One stored manifest entry, reshaped into the aggregate's own nested ManifestEntry/HypothesisRevision/HypothesisIdentity shape (domain/knowledge/manifest-entry, domain/knowledge/hypothesis-revision, domain/knowledge/hypothesis) — trusted rather than reasserted, the store's own flat hypothesis_revision content nested under the hypothesis identity it names. */
+function trustedManifestEntryOf(entry: StoredManifestEntry): ManifestEntry {
+  const content = entry.hypothesis_revision;
+  return {
+    position: entry.position,
+    hypothesis_revision: {
+      hypothesis: { name: content.hypothesis_name },
+      revision: content.revision,
+      criterion: content.criterion,
+      collects: content.collects,
+      resolution: content.resolution,
+    },
+  };
+}
+
+/** One reshaped manifest entry's own adopted hypothesis-revision, flattened into case.ts's own out-of-scope Hypothesis projection (case.ts's own header comment) — the same flattening parse-case-document.ts's own flatHypothesisOf keeps for a freshly parsed document, never independently declared. */
+function trustedHypothesisOf(entry: ManifestEntry): Hypothesis {
+  const revision = entry.hypothesis_revision;
+  return {
+    name: revision.hypothesis.name,
+    criterion: revision.criterion,
+    collects: revision.collects,
+    resolution: revision.resolution,
+  };
+}
+
+/** Answers the assembled version, refusing an unstored one through the typed not-found error read-case and replay-case share. */
+async function heldVersion(store: ICaseStore, slug: string, version: number): Promise<AssembledCaseVersion> {
+  const assembled = await store.assembleVersion(slug, version);
+  if (assembled === undefined) {
     throw new CaseNotFoundError(slug, version);
   }
-  return stored;
+  return assembled;
 }
 
 /**
- * Parses the stored document for read-case, joining a structural refusal
+ * Parses the assembled version for read-case, joining a structural refusal
  * into the one joint error type read-case promises
  * (contracts/system/case-authoring) — every violated structural rule named
  * together, exactly as InvalidCaseDocumentError already collected them.
  */
-function structuralCase(document: unknown, slug: string, version: number): Case {
+function structuralCase(assembled: AssembledCaseVersion, slug: string, version: number): Case {
   try {
-    return parseCaseDocument(document, `${slug}${CASE_DOCUMENT_ENDING}`);
+    return parseCaseDocument(assembledAsRawDocument(assembled), `${slug}${CASE_DOCUMENT_ENDING}`);
   } catch (error) {
     if (error instanceof InvalidCaseDocumentError) {
       throw new CaseNotValidError(slug, version, error.context.problems);
     }
     throw error;
   }
+}
+
+/**
+ * Projects the assembled version into the flat raw shape parseCaseDocument
+ * accepts: each manifest entry's own adopted hypothesis-revision content
+ * flattened onto the entry itself (hypothesis_name, revision, criterion,
+ * collects, resolution) rather than nested under hypothesis_revision, the
+ * document shape parse-case-document.ts's own ManifestEntryDocument
+ * declares — the same projection release.operation.ts's own
+ * assembledAsDocument already builds for the same gap, duplicated here
+ * rather than shared (this module's own header comment, disclosed as a
+ * divergence from MNT-03 in this task's delivery record).
+ */
+function assembledAsRawDocument(assembled: AssembledCaseVersion): unknown {
+  return {
+    slug: assembled.slug,
+    title: assembled.title,
+    when_to_use: assembled.when_to_use,
+    version: assembled.version,
+    authored_at: assembled.authored_at,
+    subject: assembled.subject,
+    fallback: assembled.fallback,
+    ...(assembled.consolidation_register !== undefined
+      ? { consolidation_register: assembled.consolidation_register }
+      : {}),
+    state: assembled.state,
+    ...(assembled.released_at !== undefined ? { released_at: assembled.released_at } : {}),
+    manifest: assembled.manifest.map((entry) => ({
+      position: entry.position,
+      hypothesis_name: entry.hypothesis_revision.hypothesis_name,
+      revision: entry.hypothesis_revision.revision,
+      criterion: entry.hypothesis_revision.criterion,
+      collects: entry.hypothesis_revision.collects,
+      resolution: entry.hypothesis_revision.resolution,
+    })),
+  };
 }

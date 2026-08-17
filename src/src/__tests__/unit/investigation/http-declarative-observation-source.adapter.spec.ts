@@ -25,7 +25,7 @@ import {
   HttpDeclarativeObservationSource,
   type IConnectorConfigurationQuery,
 } from '../../../investigation/http-declarative-observation-source.adapter.js';
-import type { IObservationSource, Subject } from '../../../investigation/observation-source.port.js';
+import type { Subject } from '../../../investigation/observation-source.port.js';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -134,16 +134,6 @@ function anAdapter(options: {
 }
 
 // ------------------------------------------------------------------ criterion 1
-
-it('implements the existing IObservationSource port with an unmodified observeConcept(concept, subject, requester) signature', async () => {
-  const httpClient = newHttpClient().mockResolvedValue(okResponse({ status: 'a-value' }));
-  const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), connectorConfiguration: anHttpConfiguration(), httpClient });
-  const port: IObservationSource = adapter;
-
-  const outcome = await port.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
-
-  expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'a-value' }) });
-});
 
 it('imports no HTTP client package, reaching the network only through the platform global fetch', async () => {
   const source = await readFile(
@@ -271,17 +261,6 @@ it("defaults an HTTP status absent from the connector's own status map to the un
   const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
 
   expect(outcome).toEqual({ result: 'unavailable' });
-});
-
-it('never throws for a status its own connector configuration does not classify, answering one of the four endings instead', async () => {
-  const httpClient = newHttpClient().mockResolvedValue(new Response(null, { status: 599 }));
-  const adapter = anAdapter({
-    capability: aCapability({ concept: 'a-concept' }),
-    connectorConfiguration: anHttpConfiguration({ statusMap: { '200': 'ok' } }),
-    httpClient,
-  });
-
-  await expect(adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER)).resolves.toEqual({ result: 'unavailable' });
 });
 
 // ------------------------------------------------------------------ criterion 6

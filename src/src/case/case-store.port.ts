@@ -1,53 +1,223 @@
-// The port through which every version of every case reaches its
-// persistence (constraints/the-mvp-persists-to-no-database,
-// constraints/a-case-is-stored-as-one-json-document). The case module
-// declares it and infrastructure implements it
-// (constraints/the-domain-depends-on-no-infrastructure): no case module
-// opens a file, and no framework, driver or client is imported here.
+// The port through which every case-lifecycle fact reaches its persistence
+// (task/case-lifecycle-persistence/relational-case-store-for-lifecycle),
+// rebuilt against the schema task/case-lifecycle-persistence/case-version-lifecycle-schema
+// added: a hypothesis's own stable identity (domain/knowledge/hypothesis),
+// split from its numbered content (domain/knowledge/hypothesis-revision),
+// adopted into a case version's manifest at a declared position
+// (domain/knowledge/manifest-entry) — replacing the flat, per-version
+// hypotheses shape and the single writeVersion/readVersion pair this port
+// used to declare. The case module declares it and infrastructure
+// implements it (constraints/the-domain-depends-on-no-infrastructure): no
+// case module opens a file or imports a driver here.
+//
+// This is a full replacement of the port's previous shape, not an
+// extension of it: readVersion/writeVersion/listVersions and
+// StoredCaseVersion are gone, because the aggregate they answered for —
+// one whole per-version document — is no longer what this store persists
+// or reads. A caller still built against that shape (case-query.service.ts,
+// author-case-version.service.ts, and whatever wires either) needs its own
+// rewiring against the shape below; that rewiring is a later task's, not
+// this one's (task/case-lifecycle-operations/wire-and-retire-author-case-version).
+//
+// One storage primitive per lifecycle mutation, mirroring
+// domain/knowledge/case-version's own declared operations
+// (place-hypothesis, remove-hypothesis, release, discard) and
+// domain/knowledge/case's own (create-draft) and
+// domain/knowledge/hypothesis's own (revise): this port states no
+// validation and no business refusal beyond what a schema constraint
+// already decides — assembling a whole version, whether or not one exists,
+// is the one read this port still composes end to end
+// (constraints/a-case-is-read-whole).
+
+import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
+import type { Resolution } from './case.js';
 
 /**
- * One version of a case exactly as its file holds it: the document, raw and
- * unparsed, and the hash — the content identity of the document this read
- * found on disk, sha256 of its exact bytes, never a hash the document itself
- * might declare (constraints/a-case-is-stored-as-one-json-document —
- * pinning it is hashing one file). Structural and coherence validation are
- * no concern of this store; a caller holding the document decides whether it
- * is a Case.
+ * The one state domain/knowledge/case-version-state names, restricting a
+ * case version to exactly the two values its lifecycle ever holds
+ * (rules/knowledge/a-case-version-moves-through-its-declared-lifecycle).
  */
-export type StoredCaseVersion = {
-  readonly document: unknown;
-  readonly hash: string;
+export type CaseVersionState = 'draft' | 'released';
+
+/**
+ * One numbered state of a hypothesis's own content, adopted by a manifest
+ * entry (domain/knowledge/hypothesis-revision): hypothesis_name is the
+ * identity this revision belongs to (domain/knowledge/hypothesis), carried
+ * flat here the same way PinnedCase flattens a case's own identifying
+ * fields (src/investigation/investigation.ts) rather than nesting a further
+ * reference.
+ */
+export type HypothesisRevisionContent = {
+  readonly hypothesis_name: string;
+  readonly revision: number;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
 };
 
 /**
- * The port through which every version of every case reaches its
- * persistence: one plain JSON document per case version, addressed by slug
- * and version, so storing a new version never touches an earlier one's file
- * (rules/knowledge/every-case-version-remains-readable) and loading a case
- * is reading exactly one file
- * (constraints/a-case-is-stored-as-one-json-document). This port stores and
- * retrieves the document exactly as it arrives — it neither parses nor
- * validates it, and it names no "read-case" operation: composing this
- * store with structural and coherence validation into the knowledge
- * context's published read (contracts/knowledge/case-query) is a later
- * task's to build, never this port's.
+ * One line of a case version's manifest (domain/knowledge/manifest-entry):
+ * the precedence position this version places one hypothesis at, and
+ * exactly which revision of that hypothesis's content it uses.
+ */
+export type ManifestEntry = {
+  readonly position: number;
+  readonly hypothesis_revision: HypothesisRevisionContent;
+};
+
+/**
+ * One version of a case, assembled whole (domain/knowledge/case-version):
+ * every declared attribute, its manifest in declared-position order and
+ * each manifest entry's own adopted hypothesis-revision and its collects
+ * (constraints/a-case-is-read-whole). slug identifies the case this version
+ * belongs to, carried flat the same way PinnedCase carries a case's slug
+ * and version together rather than nesting a further reference to Case —
+ * no node names a field for this relationship, so this is this port's own
+ * choice, disclosed in its delivery record.
+ */
+export type AssembledCaseVersion = {
+  readonly slug: string;
+  readonly version: number;
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly fallback: Resolution;
+  readonly consolidation_register?: ConsolidationRegister;
+  readonly state: CaseVersionState;
+  /** Present only once released (domain/knowledge/case-version's own "released_at is present only once released"). */
+  readonly released_at?: string;
+  readonly manifest: readonly ManifestEntry[];
+};
+
+/**
+ * What create-draft needs to originate a new draft version
+ * (domain/knowledge/case's own create-draft): every attribute the new
+ * version's own row requires, and which existing version's manifest to
+ * copy into the new draft's own manifest — a specific version, or, naming
+ * none, the case's own latest released version
+ * (rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version).
+ * Bundled as one object because the field count already exceeds the
+ * standard's three-positional-parameter limit (MNT-01).
+ */
+export type CreateDraftInput = {
+  readonly slug: string;
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly fallback: Resolution;
+  readonly consolidation_register?: ConsolidationRegister;
+  /** Naming none copies the case's own latest released version's manifest instead, empty where the case holds none yet. */
+  readonly source_version?: number;
+};
+
+/**
+ * What revise needs to originate one new hypothesis-revision
+ * (domain/knowledge/hypothesis's own revise): the hypothesis's own name —
+ * identity, created only the first time this case ever uses it
+ * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case) — and the
+ * revision's own content.
+ */
+export type HypothesisRevisionInput = {
+  readonly slug: string;
+  readonly hypothesis_name: string;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
+};
+
+/**
+ * What place-hypothesis needs to adopt one hypothesis-revision into one
+ * case version's manifest, at one declared position
+ * (domain/knowledge/case-version's own place-hypothesis,
+ * domain/knowledge/manifest-entry).
+ */
+export type PlaceHypothesisInput = {
+  readonly slug: string;
+  readonly version: number;
+  readonly hypothesis_name: string;
+  readonly revision: number;
+  readonly position: number;
+};
+
+/**
+ * The port through which every case-lifecycle fact reaches its persistence:
+ * one whole read, and one storage primitive per lifecycle mutation. Every
+ * refusal this port's implementation raises is what a schema constraint the
+ * sibling migration task added maps to — no business rule is re-decided
+ * here that the schema does not already decide.
  */
 export interface ICaseStore {
-  /** Persists one version of a case as its own file, never overwriting an earlier version's file. */
-  writeVersion(slug: string, version: number, document: unknown): Promise<void>;
+  /**
+   * Assembles one version of a case whole: its own attributes, its manifest
+   * in declared-position order, and each manifest entry's own adopted
+   * hypothesis-revision and its collects, in one transaction, whole or not
+   * at all (constraints/a-case-is-read-whole). An unstored slug/version
+   * answers absence — undefined — before any manifest entry is ever read,
+   * never a partial assembly.
+   */
+  assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined>;
 
   /**
-   * Answers one version of a case exactly as its file holds it, pinned by
-   * the content identity of what this call read, or its absence stated as
-   * data — an unwritten version is data, never a failure.
+   * Originates a new draft version: assigns the case's next version number
+   * by incrementing its own durable counter, never by computing MAX(version)
+   * over existing rows (rules/knowledge/a-case-version-number-is-never-reused),
+   * and copies the named source version's manifest — or, naming none, the
+   * case's own latest released version's manifest — into the new draft's
+   * own manifest, entry for entry
+   * (rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version).
+   * Refused where the case already holds a version in draft state
+   * (rules/knowledge/a-case-has-at-most-one-draft), through
+   * CaseAlreadyHasDraftError. Answers the newly assigned version number.
    */
-  readVersion(slug: string, version: number): Promise<StoredCaseVersion | undefined>;
+  createDraft(input: CreateDraftInput): Promise<number>;
 
   /**
-   * Answers every version number currently stored for a case, an absent
-   * case reading as no versions — the index behind
-   * rules/knowledge/every-case-version-remains-readable, kept as the set of
-   * files themselves rather than as a second record of them.
+   * Originates one new hypothesis-revision: creates the hypothesis's own
+   * identity row only the first time its name is used for this case, never
+   * a second identity row for a name already held
+   * (rules/knowledge/a-hypothesis-name-is-unique-within-its-case), and
+   * numbers the revision one past that hypothesis's own highest existing
+   * revision, or 1 where none exists yet
+   * (rules/knowledge/a-hypothesis-revision-number-is-never-reused). Answers
+   * the assigned revision number.
    */
-  listVersions(slug: string): Promise<readonly number[]>;
+  insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number>;
+
+  /**
+   * Places one hypothesis-revision at one position in one case version's
+   * manifest. Refused where that position is already occupied by a
+   * different hypothesis in the same version's manifest
+   * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case),
+   * through ManifestPositionOccupiedError.
+   */
+  placeHypothesis(input: PlaceHypothesisInput): Promise<void>;
+
+  /**
+   * Removes one manifest entry, by the hypothesis it names, from one case
+   * version's manifest — deletes only that entry, never the
+   * hypothesis-revision it referenced
+   * (domain/knowledge/case-version's own remove-hypothesis).
+   */
+  removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void>;
+
+  /**
+   * Transitions a version's state to released, recording the instant of
+   * release (rules/knowledge/a-case-version-moves-through-its-declared-lifecycle).
+   * No further write against that version's own row or its manifest entries
+   * takes effect afterward
+   * (rules/knowledge/a-case-version-is-written-once) — enforced by the
+   * schema's own release-conditioned rules, not re-checked here.
+   */
+  release(slug: string, version: number): Promise<void>;
+
+  /**
+   * Discards a draft version: removes it and its own manifest entries,
+   * never any hypothesis-revision they referenced
+   * (rules/knowledge/only-a-draft-case-version-may-be-discarded). A
+   * released version is never removed — enforced by the schema's own
+   * release-conditioned delete rules, not re-checked here.
+   */
+  discard(slug: string, version: number): Promise<void>;
 }

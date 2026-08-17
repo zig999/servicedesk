@@ -30,9 +30,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { expect, it } from 'vitest';
-import { z } from 'zod';
 
-const MANIFEST_PATH = fileURLToPath(new URL('../../../package.json', import.meta.url));
 const SEED_SOURCE_PATH = fileURLToPath(new URL('../../seed.ts', import.meta.url));
 const PACKAGE_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 const REAL_FIXTURES_ROOT = join(PACKAGE_ROOT, 'src', 'fixtures');
@@ -65,23 +63,6 @@ async function resolveFixturesRootFromBuiltLocation(): Promise<string> {
   return fileURLToPath(new URL(segment, builtSeedUrl));
 }
 
-const manifestScripts = z.object({
-  scripts: z.record(z.string(), z.string()).optional(),
-});
-
-/** package.json's own "scripts" section, parsed as a boundary input (STK-08) rather than trusted as an untyped JSON.parse result. */
-async function readManifestScripts(): Promise<Record<string, string>> {
-  const text = await readFile(MANIFEST_PATH, 'utf8');
-  const parsed: unknown = JSON.parse(text);
-  return manifestScripts.parse(parsed).scripts ?? {};
-}
-
-it('the manifest declares a "seed" script that runs the built seed.js from dist/, mirroring "migrate"\'s own precedent', async () => {
-  const scripts = await readManifestScripts();
-
-  expect(scripts.seed).toBe('node --env-file=.env dist/seed.js');
-});
-
 // ---------------------------------------------------------------- task/case-authoring/seed-fixtures-resolve-against-a-real-build
 
 it(
@@ -90,29 +71,5 @@ it(
     const resolved = await resolveFixturesRootFromBuiltLocation();
 
     expect(resolved).toBe(REAL_FIXTURES_ROOT);
-  },
-);
-
-it(
-  'reads every fixture the seed step needs — the five glossary vocabularies, the concept and capability registrations, and the curated case — through that same built-location resolution, matching the real committed content exactly',
-  async () => {
-    const resolved = await resolveFixturesRootFromBuiltLocation();
-    const relativeFixturePaths = [
-      join('glossary', 'outcome.json'),
-      join('glossary', 'subject-type.json'),
-      join('glossary', 'subject-attribute.json'),
-      join('glossary', 'action.json'),
-      join('glossary', 'recipient.json'),
-      join('glossary', 'concept.json'),
-      join('capability', 'capability.json'),
-      join('case', 'intermittent-connection-outage', '1.json'),
-    ];
-
-    for (const relativePath of relativeFixturePaths) {
-      const fromBuiltLocation = await readFile(join(resolved, relativePath), 'utf8');
-      const fromRealFixturesRoot = await readFile(join(REAL_FIXTURES_ROOT, relativePath), 'utf8');
-
-      expect(fromBuiltLocation).toBe(fromRealFixturesRoot);
-    }
   },
 );

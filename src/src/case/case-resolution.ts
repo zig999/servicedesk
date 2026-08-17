@@ -1,12 +1,23 @@
-// The resolution logic the case owns (domain/knowledge/case): its three
-// declared operations — collection-plan, requires-evaluation-of and
-// resolve-outcome — as pure behavior over the parsed aggregate, answering
-// from its declared hypotheses and fallback alone. Verdicts arrive as plain
-// per-name values and the answer is plain values, so this module imports
-// nothing but the aggregate's own types
+// The resolution logic the case-version owns (domain/knowledge/case-version):
+// its three declared operations — collection-plan, requires-evaluation-of
+// and resolve-outcome — as pure behavior over the parsed aggregate,
+// answering from its declared manifest and fallback alone. Verdicts arrive
+// as plain per-name values and the answer is plain values, so this module
+// imports nothing but the aggregate's own types
 // (constraints/the-domain-depends-on-no-infrastructure).
+//
+// Reads theCase.manifest directly, never theCase.hypotheses — the flat
+// projection Case.hypotheses carries is this aggregate's own out-of-scope
+// consumers' shape (case.ts's own header comment), and manifest is the
+// canonical source every hypothesis-revision's own name, collects and
+// resolution is read through
+// (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation).
+// Every function below keeps exactly the control flow it always had — sort
+// by declared position, find the first confirmed entry, map names — only the
+// field-access path from one manifest entry down to its own adopted
+// hypothesis-revision changed.
 
-import type { Case, Hypothesis, Referral } from './case.js';
+import type { Case, ManifestEntry, Referral } from './case.js';
 
 /**
  * What one hypothesis's judgment concluded, as the plain value it arrives
@@ -38,69 +49,69 @@ export type ResolvedOutcome = {
 };
 
 /**
- * The case's hypotheses ordered by the precedence each one's own declared
- * position states (domain/knowledge/hypothesis,
+ * The case version's manifest ordered by the precedence each entry's own
+ * declared position states (domain/knowledge/manifest-entry,
  * rules/knowledge/hypotheses-are-ordered-by-precedence): ascending by
- * position, never by theCase.hypotheses's own array arrangement — the fact
- * the case's ordering used to carry by arrangement alone before this field
- * existed. Position is unique within a case
- * (rules/knowledge/a-hypothesis-position-is-unique-within-its-case, enforced
- * at parse), so this ordering is never ambiguous; collection-plan and
+ * position, never by theCase.manifest's own array arrangement — the fact the
+ * case's ordering used to carry by arrangement alone before this field
+ * existed. Position is unique within one version's manifest (enforced at
+ * parse), so this ordering is never ambiguous; collection-plan and
  * resolve-outcome read it rather than the array's own order, so the order
- * the hypotheses happen to arrive in changes neither answer
+ * the manifest entries happen to arrive in changes neither answer
  * (task/case-and-investigation-model/precedence-from-position).
  */
-function byPrecedence(theCase: Case): readonly Hypothesis[] {
-  return [...theCase.hypotheses].sort((a, b) => a.position - b.position);
+function byPrecedence(theCase: Case): readonly ManifestEntry[] {
+  return [...theCase.manifest].sort((a, b) => a.position - b.position);
 }
 
 /**
- * The case's collection plan (domain/knowledge/case): the deduplicated
- * union of every hypothesis's collects, each concept appearing once, where
- * the declared precedence — each hypothesis's own position, never the
- * array's own arrangement — first names it
- * (rules/knowledge/hypotheses-are-ordered-by-precedence).
+ * The case's collection plan (domain/knowledge/case-version): the
+ * deduplicated union of every manifested hypothesis-revision's collects,
+ * each concept appearing once, where the declared precedence — each
+ * manifest entry's own position, never the array's own arrangement — first
+ * names it (rules/knowledge/hypotheses-are-ordered-by-precedence).
  */
 export function collectionPlan(theCase: Case): readonly string[] {
-  return [...new Set(byPrecedence(theCase).flatMap((hypothesis) => hypothesis.collects))];
+  return [...new Set(byPrecedence(theCase).flatMap((entry) => entry.hypothesis_revision.collects))];
 }
 
 /**
- * What totality demands as the case declares it (domain/knowledge/case):
- * one entry per declared hypothesis name, in theCase.hypotheses's own
+ * What totality demands as the case declares it (domain/knowledge/case-version):
+ * one entry per manifested hypothesis's own name, in theCase.manifest's own
  * declared array order — which hypotheses this answers with is a fact no
  * specification node states, so this reads exactly as it always has and is
  * left untouched by moving collection-plan and resolve-outcome onto each
- * hypothesis's own position
+ * manifest entry's own position
  * (task/case-and-investigation-model/precedence-from-position).
  */
 export function requiresEvaluationOf(theCase: Case): readonly string[] {
-  return theCase.hypotheses.map((hypothesis) => hypothesis.name);
+  return theCase.manifest.map((entry) => entry.hypothesis_revision.hypothesis.name);
 }
 
 /**
- * Resolves the outcome over the verdicts (domain/knowledge/case): the first
- * confirmed hypothesis in the precedence each hypothesis's own declared
- * position states — never theCase.hypotheses's own array arrangement, and
- * the only precedence consulted
+ * Resolves the outcome over the verdicts (domain/knowledge/case-version): the
+ * first confirmed hypothesis in the precedence each manifest entry's own
+ * declared position states — never theCase.manifest's own array
+ * arrangement, and the only precedence consulted
  * (rules/knowledge/hypotheses-are-ordered-by-precedence) — answers with its
- * outcome, its referral and its determining role, and every other
- * hypothesis keeps the verdict it received, unmarked: the verdicts are only
- * read here, never written
+ * adopted hypothesis-revision's own outcome, referral and determining role,
+ * and every other hypothesis keeps the verdict it received, unmarked: the
+ * verdicts are only read here, never written
  * (scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome).
  * When none confirms, the fallback answers and no determining hypothesis is
  * named (scenarios/knowledge/no-confirmation-falls-back).
  */
 export function resolveOutcome(theCase: Case, verdicts: Verdicts): ResolvedOutcome {
   const determining = byPrecedence(theCase).find(
-    (hypothesis) => verdicts[hypothesis.name] === CONFIRMED,
+    (entry) => verdicts[entry.hypothesis_revision.hypothesis.name] === CONFIRMED,
   );
   if (determining === undefined) {
     return { outcome: theCase.fallback.outcome, referral: theCase.fallback.referral };
   }
+  const revision = determining.hypothesis_revision;
   return {
-    outcome: determining.resolution.outcome,
-    referral: determining.resolution.referral,
-    determining: determining.name,
+    outcome: revision.resolution.outcome,
+    referral: revision.resolution.referral,
+    determining: revision.hypothesis.name,
   };
 }

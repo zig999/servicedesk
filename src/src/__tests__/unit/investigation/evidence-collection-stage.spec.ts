@@ -34,8 +34,25 @@ afterEach(() => {
 const A_SUBJECT: Subject = { type: 'ont', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
 const A_REQUESTER = 'a-requester';
 
-/** A minimally valid Case whose collection plan is exactly the given hypotheses' collects, deduplicated in declared order — the same rule case-resolution.spec.ts already proves collectionPlan itself follows. */
+/**
+ * A minimally valid Case whose collection plan is exactly the given
+ * hypotheses' collects, deduplicated in declared order — the same rule
+ * case-resolution.spec.ts already proves collectionPlan itself follows.
+ * collectEvidence reads theCase.manifest exclusively
+ * (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation),
+ * so this fixture builds a manifest entry per given hypothesis, its own
+ * declared position matching that array's own order, and derives the flat
+ * .hypotheses projection from the same declared entries — never
+ * independently, the same convention parse-case-document.ts's own heldCase
+ * keeps.
+ */
 function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly collects: readonly string[] }>): Case {
+  const declared = hypotheses.map((hypothesis) => ({
+    name: hypothesis.name,
+    criterion: `${hypothesis.name} criterion`,
+    collects: hypothesis.collects,
+    resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+  }));
   return {
     slug: 'a-case',
     title: 'A case',
@@ -44,13 +61,18 @@ function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly colle
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'ont',
     fallback: { outcome: 'no-data', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: hypotheses.map((hypothesis, index) => ({
-      name: hypothesis.name,
+    state: 'released',
+    manifest: declared.map((hypothesis, index) => ({
       position: index + 1,
-      criterion: `${hypothesis.name} criterion`,
-      collects: hypothesis.collects,
-      resolution: { outcome: 'an-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
+      hypothesis_revision: {
+        hypothesis: { name: hypothesis.name },
+        revision: 1,
+        criterion: hypothesis.criterion,
+        collects: hypothesis.collects,
+        resolution: hypothesis.resolution,
+      },
     })),
+    hypotheses: declared,
   };
 }
 

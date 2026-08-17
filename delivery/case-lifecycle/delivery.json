@@ -1,0 +1,523 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation.md",
+      "title": "Case-version aggregate types and structural validation for the draft/released split",
+      "summary": "case.ts now declares hypothesis identity, hypothesis-revision content and manifest entries as distinct types with a state/released_at/manifest-bearing case-version type, and parse-case-document.ts validates the new manifest structurally, while case-resolution.ts is repointed onto the manifest and every out-of-scope consumer's flat hypotheses/criterion/collects/resolution shape is preserved unchanged.",
+      "task": "task/case-lifecycle-domain-model/aggregate-types-and-structural-validation"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/create-draft-operation",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/create-draft-operation.md",
+      "title": "create-draft operation",
+      "summary": "A thin ICreateDraft/CreateDraftOperation pair that originates a new draft version by delegating version assignment, the at-most-one-draft refusal and the manifest copy-source decision entirely to ICaseStore.createDraft.",
+      "task": "task/case-lifecycle-operations/create-draft-operation"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/discard-operation",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/discard-operation.md",
+      "title": "discard operation",
+      "summary": "Adds the case-lifecycle 'discard' operation, which checks a version's own state through assembleVersion and refuses explicitly before ever calling the store's own discard() primitive.",
+      "task": "task/case-lifecycle-operations/discard-operation"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/manifest-composition-operations.md",
+      "title": "Manifest composition operations — place-hypothesis and remove-hypothesis",
+      "summary": "Adds a new operations module composing a draft case version's own manifest through the persisted store, plus the two typed errors it needed that no existing class already covered.",
+      "task": "task/case-lifecycle-operations/manifest-composition-operations"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/release-operation",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/release-operation.md",
+      "title": "release operation",
+      "summary": "A ReleaseOperation composing the case store with the glossary and capability-registry ports to gate every release on the assembled version's own draft state and on parse-case-document.ts's and validate-case-coherence.ts's own validation, refusing once with every violation named and writing nothing until the store's own release() primitive is called.",
+      "task": "task/case-lifecycle-operations/release-operation"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/revise-hypothesis-operation.md",
+      "title": "revise-hypothesis operation",
+      "summary": "A new ReviseHypothesisOperation checks a hypothesis-revision's collects list against the a-hypothesis-collects-at-least-one-concept, case-terms-exist-in-the-glossary and a-concept-accepts-the-declared-subject-type rules before delegating the whole identity-claim and numbering decision to ICaseStore.insertHypothesisRevision.",
+      "task": "task/case-lifecycle-operations/revise-hypothesis-operation"
+    },
+    {
+      "id": "implementation/case-lifecycle-operations/wire-and-retire-author-case-version",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-operations/wire-and-retire-author-case-version.md",
+      "title": "Wire the six case-lifecycle operations and retire author-case-version",
+      "summary": "Adds the case-lifecycle composition root, rewires case-query.service.ts and seed.ts off the retired ICaseStore.readVersion/writeVersion shape and the retired author-case-version command, and deletes the three retired files. This is the task whose landing brings the whole project's own typecheck/lint/secret-scan green across every sibling task in this delivery.",
+      "task": "task/case-lifecycle-operations/wire-and-retire-author-case-version"
+    },
+    {
+      "id": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema.md",
+      "title": "Case-version lifecycle schema migration",
+      "summary": "A new, next-numbered SQL migration that gives cases a durable version counter, case_versions a state/released_at lifecycle with a corrected release-conditioned immutability rule, and splits hypothesis identity from its revisioned content behind a manifest, dropping the old flat hypotheses/hypothesis_collects tables.",
+      "task": "task/case-lifecycle-persistence/case-version-lifecycle-schema"
+    },
+    {
+      "id": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle.md",
+      "title": "Relational store adapter rebuilt for the case-version lifecycle",
+      "summary": "ICaseStore and its relational adapter are rewritten against the new schema — one whole-version assembly and seven storage primitives, each refusal mapped from a schema constraint the sibling migration task added.",
+      "task": "task/case-lifecycle-persistence/relational-case-store-for-lifecycle"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "to": "task/case-lifecycle-domain-model/aggregate-types-and-structural-validation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/create-draft-operation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/create-draft-operation",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/create-draft-operation",
+      "to": "task/case-lifecycle-operations/create-draft-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/discard-operation",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/discard-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/discard-operation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/discard-operation",
+      "to": "task/case-lifecycle-operations/discard-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/manifest-composition-operations",
+      "to": "task/case-lifecycle-operations/manifest-composition-operations",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/release-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/release-operation",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/release-operation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/release-operation",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/release-operation",
+      "to": "task/case-lifecycle-operations/release-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/revise-hypothesis-operation",
+      "to": "task/case-lifecycle-operations/revise-hypothesis-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/wire-and-retire-author-case-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-operations/wire-and-retire-author-case-version",
+      "to": "task/case-lifecycle-operations/wire-and-retire-author-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "to": "task/case-lifecycle-persistence/case-version-lifecycle-schema",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "to": "task/case-lifecycle-persistence/relational-case-store-for-lifecycle",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}

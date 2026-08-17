@@ -1,0 +1,22 @@
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/src/src/__tests__/integration/factories/production-diagnose.factory.spec.ts
+  90:1  error  Function 'aCase' has too many lines (32). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: node --env-file=.env.test node_modules/.bin/vitest run :: not_run =====
+

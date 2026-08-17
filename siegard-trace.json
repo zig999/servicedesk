@@ -3,15 +3,19 @@
   "bindings": [
     {
       "node": "constraints/a-case-is-read-whole",
-      "digest": "sha256:02810635e7a8dd09c06913128e5b87a3e0d6669805ce36c62b7ed7f3df224a7d",
+      "digest": "sha256:61c4ee6500987751597f8af4459bd99939652f671412405418b17a15444007ff",
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         }
       ]
     },
@@ -578,6 +582,36 @@
         {
           "path": "src/src/factories/author-case-version.factory.ts",
           "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
+        }
+      ]
+    },
+    {
+      "node": "contracts/knowledge/case-lifecycle",
+      "digest": "sha256:a0dbf5b339e4001e3c90efb2bcea0221a37f0593658a58bfeb59cbe0334ce2b8",
+      "files": [
+        {
+          "path": "src/src/case/create-draft.operation.ts",
+          "digest": "sha256:8d2912bb9cf387d39f547de799401ea75199be303381ab3819a82be4ac45167a"
+        },
+        {
+          "path": "src/src/case/discard.operation.ts",
+          "digest": "sha256:807196811dfde49deef4caf5d9a2988474d3c6076f8864da65eedeaa84686d94"
+        },
+        {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:919fd936d0519632b10d87934cae6eef581842165cad94f7898b36f63cca5399"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
+        {
+          "path": "src/src/factories/case-lifecycle.factory.ts",
+          "digest": "sha256:579d840a3597aa508bc2a6a6b90fc3262dd4dfc0c1c59e69ce7e3230902dd88e"
         }
       ]
     },
@@ -1287,11 +1321,15 @@
     },
     {
       "node": "domain/knowledge/case",
-      "digest": "sha256:f1a0498496be04fa717cc0bd17085fe3cacbffbbcf56d30fd64cac765da1dcd1",
+      "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -1302,8 +1340,16 @@
           "digest": "sha256:0ff4ceed3cc5e309bd5231d7ca8507355165a4b7ec56a254ccbf901984fb67a9"
         },
         {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
+        },
+        {
+          "path": "src/src/case/create-draft.operation.ts",
+          "digest": "sha256:8d2912bb9cf387d39f547de799401ea75199be303381ab3819a82be4ac45167a"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -1320,6 +1366,78 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/case-version",
+      "digest": "sha256:f1fc082d0d7984a729a90f257661371e5a9fbfd298f697288dbf49f84706a108",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:c05ed15b81bef12ffc98039d36c5ec8c1b11b465de085d2171dad03dcf666a48"
+        },
+        {
+          "path": "src/src/case/discard.operation.ts",
+          "digest": "sha256:807196811dfde49deef4caf5d9a2988474d3c6076f8864da65eedeaa84686d94"
+        },
+        {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:919fd936d0519632b10d87934cae6eef581842165cad94f7898b36f63cca5399"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/case-version-state",
+      "digest": "sha256:003195adcf0d0674d592f8525264bbe9929617421bd91c391f35a01135742272",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:c05ed15b81bef12ffc98039d36c5ec8c1b11b465de085d2171dad03dcf666a48"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         }
       ]
     },
@@ -1355,11 +1473,15 @@
     },
     {
       "node": "domain/knowledge/hypothesis",
-      "digest": "sha256:15a6d165380b8c82430a9b8c60a4e5b5102561f14120d3ee05bd9916702e8030",
+      "digest": "sha256:a0aa9b68560af13f233a92017e710a828aceffe717d7fb6d26b2526c89c7d1c6",
       "files": [
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
           "path": "src/src/case/case-query.service.ts",
@@ -1367,15 +1489,23 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:0ff4ceed3cc5e309bd5231d7ca8507355165a4b7ec56a254ccbf901984fb67a9"
+          "digest": "sha256:541f26e9b3db850969ae8339760aa1a2e4612d5448607f28b525ecaea1e67072"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
         },
         {
           "path": "src/src/case/case.ts",
-          "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
+          "digest": "sha256:c05ed15b81bef12ffc98039d36c5ec8c1b11b465de085d2171dad03dcf666a48"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -1388,6 +1518,74 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/hypothesis-revision",
+      "digest": "sha256:d1d5fd5ef12d0a26101d52edcbebb5f7b339f5f4885e549d149b90c1cccc236b",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:c05ed15b81bef12ffc98039d36c5ec8c1b11b465de085d2171dad03dcf666a48"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "domain/knowledge/manifest-entry",
+      "digest": "sha256:45cef39ec3b278f063a02dbaeeef62e8ba9a2a0e36e686f2ca69e1ae0e4820bf",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:541f26e9b3db850969ae8339760aa1a2e4612d5448607f28b525ecaea1e67072"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
+          "path": "src/src/case/case.ts",
+          "digest": "sha256:c05ed15b81bef12ffc98039d36c5ec8c1b11b465de085d2171dad03dcf666a48"
+        },
+        {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         }
       ]
     },
@@ -1855,11 +2053,19 @@
     },
     {
       "node": "rules/knowledge/a-case-has-at-least-one-hypothesis",
-      "digest": "sha256:3408a4f4bc7a74e2d921cd68b43caed6108098230135f9ba5ec010ecf3bd1092",
+      "digest": "sha256:5c038152a881af2ddfd301cb7e9362d94aedbabf4837094058f5f935fbd7c88f",
       "files": [
         {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/errors/manifest-would-hold-no-hypothesis.error.ts",
+          "digest": "sha256:84a4af3684de3942a2ed755656797e51906c195f2dd3e1b2489f284a3e8a22cf"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1868,8 +2074,26 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-has-at-most-one-draft",
+      "digest": "sha256:e196af5a34201d65005cd9f56d23d3d31d0ff9163e7d66943f741ee61f2baefe",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/errors/case-already-has-draft.error.ts",
+          "digest": "sha256:3f38a4a10c62d2c96df6e7c1fcf238dcdbe67cfb4392afaaea71ab47bdfa26f2"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-version-is-written-once",
-      "digest": "sha256:22d0578f1c5f08e48c9e0cfd2e72d4cc2eabe3133cf86dff7a4fb907773ac7e8",
+      "digest": "sha256:fa26580622354ffe96857211bc70edcecf3314fd2666ab81f02d80a29249da25",
       "files": [
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
@@ -1880,8 +2104,68 @@
           "digest": "sha256:2608f685356bc70060ac5d38e21cafbc013466a1f7bf2ac3f4e479da64522ff9"
         },
         {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:7320d6eed3f31d0a558f630963876b96af3712864d10fb4527475c81bf33208d"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "digest": "sha256:8a2a36366e87c09dbe0871e23ee385d39ba1b43f2f6f014a1da68a7db8f593cf",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+        },
+        {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:919fd936d0519632b10d87934cae6eef581842165cad94f7898b36f63cca5399"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft-at-release.error.ts",
+          "digest": "sha256:04a67bacd34247774fc7496c66ab9ace2837f63a930cca901da905b9af622039"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:7320d6eed3f31d0a558f630963876b96af3712864d10fb4527475c81bf33208d"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-case-version-number-is-never-reused",
+      "digest": "sha256:e853d716288dac7a8fc52a84be3d799abdcb6b2a7fd037408668e21a3b5b7ef4",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         }
       ]
     },
@@ -1905,11 +2189,19 @@
     },
     {
       "node": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
-      "digest": "sha256:ccefa5f4b1b24325e706cdd9c3c57d8988f174ede286b1ff6dccf6eb11e8d7f3",
+      "digest": "sha256:4e88ca75f8d4f5251f424cb8113863e905eb477fbc72f228fbfd6f682c236ee1",
       "files": [
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
+          "path": "src/src/errors/concept-refuses-subject-type.error.ts",
+          "digest": "sha256:4d7e0e4a7ec48466d376bc33b27b5b65b75d900b8fe4521a707aa5245125b82c"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1923,11 +2215,19 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
-      "digest": "sha256:b1f67aa7c4c465de5025bd113ad6259ba8688525fc6450223ccd8b06a5232c60",
+      "digest": "sha256:35e49c53f6f1c973e5afbab204a5c804369fdaa1c6b8889166926b800a55ba04",
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
+        {
+          "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
+          "digest": "sha256:8d466efc931d4db2228dd077c530fdb31c92b358b723ec8401c6469df751d21d"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1937,25 +2237,39 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-declares-a-criterion",
-      "digest": "sha256:10b8538d37ea2532bb579264ab9691b777d80b8416af804bb8f6bc731f4534d3",
+      "digest": "sha256:fe16999b12668ecfc3760b4cd466c6f15264c4b68ce57fa4f13de92b795e9314",
       "files": [
         {
           "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "digest": "sha256:ebb8edc61845a260dfe6597eabe2c8455c4745112970c648d22ba7d280963386",
+      "files": [
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
         }
       ]
     },
     {
       "node": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
-      "digest": "sha256:739b86a88704b9909800a64ea80008b47831c41d88dc25d0e017a3ddfedc5578",
+      "digest": "sha256:ca4f4133546bd636e04eacf165ad479ce7aa38c2370a81860bb6646cb57e7aa0",
       "files": [
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -1964,24 +2278,78 @@
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         }
       ]
     },
     {
       "node": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
-      "digest": "sha256:90a4d0c8fb7793c8aa8a423dbbb3a7b22f305358e1bb6638d8a93663bf486d03",
+      "digest": "sha256:372152e4243f9519490a6456bfb6d2371c3274c550e62deb5ea4b2921bd527ac",
       "files": [
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
+        },
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
           "path": "src/src/case/case.ts",
           "digest": "sha256:6432d0925fd45e6d398665db5294817a88fc622b332d3f22b5971d2701255175"
         },
         {
+          "path": "src/src/case/manifest-composition.operations.ts",
+          "digest": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
+        },
+        {
+          "path": "src/src/errors/manifest-position-occupied.error.ts",
+          "digest": "sha256:a1cecfcb8a96664fcbd933c1e2d2ce50f8fbd7b2f0ef3b746615857769bae44f"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "digest": "sha256:f964cd86990f9827145dfb8a9dfb93288de94e0f7774cb398aded320720c45e5",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "digest": "sha256:3b24a3d2083259e99cdbba77feceafe343d23bd22ca628de5f177e3703be54b2",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "digest": "sha256:0073b04e2d9138395e4e8f89ce4c0cd83940982cc0e7d3a11b5c1b078ec07c8a",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         }
       ]
     },
@@ -2001,11 +2369,19 @@
     },
     {
       "node": "rules/knowledge/case-terms-exist-in-the-glossary",
-      "digest": "sha256:0c078d79534670360d775fc12edb565b09a4c7d14c7a294030714a031add3bef",
+      "digest": "sha256:7c720043ce7f4d9a8b2ac658dfcd426e0b800642da15a5a3adabcf81e271239d",
       "files": [
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+        },
+        {
+          "path": "src/src/errors/concept-not-in-glossary.error.ts",
+          "digest": "sha256:114cb8acca78ba8e6f39ba67429f8f5d0db972d3b359dc20f81f952874ecf884"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -2063,8 +2439,12 @@
     },
     {
       "node": "rules/knowledge/every-position-declares-a-resolution",
-      "digest": "sha256:67a1a09aba61e65ec1a4917c9dd866f0799bdf96774d8218eecd8ce0452ef1c9",
+      "digest": "sha256:4f50ba624fa0d8568b5d49e3fd6206e735dd8f024a7ca770a70e2b51041c5068",
       "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
@@ -2108,6 +2488,24 @@
       ]
     },
     {
+      "node": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "digest": "sha256:cae0bb16856d7598c4886764d902941b63927569a64b9acbd25fc96d61b07a06",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/discard.operation.ts",
+          "digest": "sha256:807196811dfde49deef4caf5d9a2988474d3c6076f8864da65eedeaa84686d94"
+        },
+        {
+          "path": "src/src/errors/case-version-not-draft.error.ts",
+          "digest": "sha256:7320d6eed3f31d0a558f630963876b96af3712864d10fb4527475c81bf33208d"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/the-contract-check-reads-the-current-registration",
       "digest": "sha256:cd9041ba780b42719bb5a07af942b65e81380813a61a025a749df18bea5d99ac",
       "files": [
@@ -2127,7 +2525,7 @@
     },
     {
       "node": "rules/knowledge/validation-runs-at-every-read",
-      "digest": "sha256:39cff144827003ca369789e8567a8c5b586f1f2c65a26f14b72f68bb71e294f5",
+      "digest": "sha256:d23c3ea3ac2b08f3c477641ff601f37f513c678160e0078cee69d95633eda8b7",
       "files": [
         {
           "path": "src/src/case/author-case-version.service.ts",
@@ -2136,6 +2534,14 @@
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
+        },
+        {
+          "path": "src/src/case/parse-case-document.ts",
+          "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/case/release.operation.ts",
+          "digest": "sha256:919fd936d0519632b10d87934cae6eef581842165cad94f7898b36f63cca5399"
         }
       ]
     },
@@ -2198,6 +2604,16 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "digest": "sha256:f58902e7e6a2370afae3cad739520f33e59f1710079558c778927a78fa60941b",
+      "files": [
+        {
+          "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
+          "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         }
       ]
     },

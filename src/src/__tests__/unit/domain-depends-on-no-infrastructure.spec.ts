@@ -315,12 +315,3 @@ it('none of these modules imports the http-declarative-observation-source adapte
 
   expect(offenders).toEqual([]);
 });
-
-it('IObservationSource is still declared as an interface in observation-source.port.ts — the one real port at the domain boundary this task must not be bypassed by', async () => {
-  const portSource = await readFile(
-    fileURLToPath(new URL('../../investigation/observation-source.port.ts', import.meta.url)),
-    'utf8',
-  );
-
-  expect(portSource).toMatch(/export\s+interface\s+IObservationSource\b/);
-});

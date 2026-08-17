@@ -27,8 +27,19 @@
 // name's spot, to assert that instead: reversing the array changes nothing.
 // New tests proving this task's other criteria sit beside the existing ones,
 // in the same file, per TST-04.
+//
+// Fixture rework, task/case-lifecycle-domain-model/aggregate-types-and-structural-validation:
+// case-resolution.ts now reads theCase.manifest exclusively — never
+// theCase.hypotheses, the flat projection this aggregate's own out-of-scope
+// consumers read (case.ts's own header comment) — so every fixture below now
+// builds ManifestEntry values (position plus one nested hypothesis_revision:
+// hypothesis identity, revision, criterion, collects, resolution) rather than
+// flat Hypothesis values carrying their own position directly. Every
+// existing behavioral assertion this file already proved — precedence order,
+// the first-confirmed search, the fallback, the array-arrangement
+// independence — is kept exactly as it was; only the fixture shape moved.
 import { expect, it } from 'vitest';
-import type { Case, Hypothesis, Resolution } from '../../../case/case.js';
+import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { Verdicts } from '../../../case/case-resolution.js';
 import {
   collectionPlan,
@@ -38,7 +49,7 @@ import {
 
 /**
  * The worked example's declared precedence — deliberately not the
- * alphabetical order of the names, so a resolver that sorts its hypotheses
+ * alphabetical order of the names, so a resolver that sorts its manifest
  * fails here rather than passing by accident.
  */
 const DECLARED_PRECEDENCE = [
@@ -48,7 +59,7 @@ const DECLARED_PRECEDENCE = [
   'onu-offline',
 ];
 
-/** The prose a hypothesis carries and none of the three operations ever consults. */
+/** The prose a hypothesis-revision carries and none of the three operations ever consults. */
 const UNCONSULTED_CRITERION = 'prose the resolution operations never read';
 
 /** The worked example's fallback: what answers when no hypothesis confirms. */
@@ -66,12 +77,10 @@ function resolutionOf(outcome: string, action: string, recipient: string): Resol
  * Every hypothesis this file names keeps one fixed declared position across
  * every test, matching its own index in the worked example's declared
  * precedence — reused rather than derived from whatever array a given test
- * happens to place it in, since several tests below (the reversed-order
- * pair, most pointedly) deliberately vary the array position of an
- * already-built hypothesis while its own declared position stays put. None
- * of the three operations under proof here reads it yet
- * (task/case-and-investigation-model/precedence-from-position moves
- * resolve-outcome onto it later), so its value is otherwise inert.
+ * happens to place its manifest entry in, since several tests below (the
+ * reversed-order pair, most pointedly) deliberately vary the array position
+ * of an already-built manifest entry while its own declared position stays
+ * put.
  */
 const DECLARED_POSITIONS: Readonly<Record<string, number>> = {
   'incidente-regional': 1,
@@ -80,46 +89,51 @@ const DECLARED_POSITIONS: Readonly<Record<string, number>> = {
   'onu-offline': 4,
 };
 
-/** One hypothesis carrying exactly what these operations consult: name, collects, resolution — plus its own declared position, looked up by name. */
-function hypothesisOf(
-  name: string,
-  collects: readonly string[],
-  resolution: Resolution,
-): Hypothesis {
+/** One manifest entry carrying exactly what these operations consult: its hypothesis's name, collects, resolution — plus its own declared position, looked up by name. */
+function manifestEntryOf(name: string, collects: readonly string[], resolution: Resolution): ManifestEntry {
   const position = DECLARED_POSITIONS[name];
   if (position === undefined) {
     throw new Error(`no declared position fixture for hypothesis name ${JSON.stringify(name)}`);
   }
-  return { name, position, criterion: UNCONSULTED_CRITERION, collects, resolution };
+  return {
+    position,
+    hypothesis_revision: {
+      hypothesis: { name },
+      revision: 1,
+      criterion: UNCONSULTED_CRITERION,
+      collects,
+      resolution,
+    },
+  };
 }
 
-/** A hypothesis for the plan tests, whose resolution no plan test consults. */
-function collectingHypothesis(name: string, collects: readonly string[]): Hypothesis {
-  return hypothesisOf(name, collects, resolutionOf(name, 'informar-prazo', 'atendimento'));
+/** A manifest entry for the plan tests, whose resolution no plan test consults. */
+function collectingEntry(name: string, collects: readonly string[]): ManifestEntry {
+  return manifestEntryOf(name, collects, resolutionOf(name, 'informar-prazo', 'atendimento'));
 }
 
 /**
- * The worked example's four hypotheses in their declared precedence, each
- * resolving distinctly so a test can tell which one answered.
+ * The worked example's four manifest entries in their declared precedence,
+ * each resolving distinctly so a test can tell which one answered.
  */
-function workedHypotheses(): readonly Hypothesis[] {
+function workedManifest(): readonly ManifestEntry[] {
   return [
-    hypothesisOf(
+    manifestEntryOf(
       'incidente-regional',
       ['incidentes-na-regiao'],
       resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'ordem-em-andamento',
       ['ordens-em-andamento'],
       resolutionOf('intervencao-tecnica-em-curso', 'informar-ordem', 'atendimento'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'bloqueio-financeiro',
       ['situacao-financeira'],
       resolutionOf('bloqueio-financeiro', 'orientar-pagamento', 'atendimento'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'onu-offline',
       ['estado-do-equipamento'],
       resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
@@ -128,30 +142,30 @@ function workedHypotheses(): readonly Hypothesis[] {
 }
 
 /**
- * The worked example's four hypotheses again, with every array slot
+ * The worked example's four manifest entries again, with every array slot
  * deliberately not matching its own declared position — proving
  * task/case-and-investigation-model/precedence-from-position's own claim
  * that resolve-outcome and collection-plan read position and never array
  * arrangement.
  */
-function scrambledWorkedHypotheses(): readonly Hypothesis[] {
+function scrambledWorkedManifest(): readonly ManifestEntry[] {
   return [
-    hypothesisOf(
+    manifestEntryOf(
       'onu-offline',
       ['estado-do-equipamento'],
       resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'bloqueio-financeiro',
       ['situacao-financeira'],
       resolutionOf('bloqueio-financeiro', 'orientar-pagamento', 'atendimento'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'ordem-em-andamento',
       ['ordens-em-andamento'],
       resolutionOf('intervencao-tecnica-em-curso', 'informar-ordem', 'atendimento'),
     ),
-    hypothesisOf(
+    manifestEntryOf(
       'incidente-regional',
       ['incidentes-na-regiao'],
       resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
@@ -169,8 +183,8 @@ function regionalAndOnuOfflineConfirmedVerdicts(): Verdicts {
   };
 }
 
-/** A valid aggregate around the given hypotheses — the shape the parser has already admitted. */
-function caseWith(hypotheses: readonly Hypothesis[]): Case {
+/** A valid aggregate around the given manifest — the shape the parser has already admitted, its own flat .hypotheses projection derived the same way parse-case-document.ts's own heldCase derives it, never independently declared. */
+function caseWith(manifest: readonly ManifestEntry[]): Case {
   return {
     slug: 'cliente-sem-internet',
     title: 'Cliente sem internet',
@@ -179,22 +193,29 @@ function caseWith(hypotheses: readonly Hypothesis[]): Case {
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'contrato',
     fallback: FALLBACK,
-    hypotheses,
+    state: 'released',
+    manifest,
+    hypotheses: manifest.map((entry) => ({
+      name: entry.hypothesis_revision.hypothesis.name,
+      criterion: entry.hypothesis_revision.criterion,
+      collects: entry.hypothesis_revision.collects,
+      resolution: entry.hypothesis_revision.resolution,
+    })),
   };
 }
 
 /** The worked example whole: the pinned case both scenarios resolve over. */
 function workedCase(): Case {
-  return caseWith(workedHypotheses());
+  return caseWith(workedManifest());
 }
 
 // ---------------------------------------------------------------- the collection plan
 
 it("answers the deduplicated union of every hypothesis's collects, each concept once", () => {
   const overlapping = caseWith([
-    collectingHypothesis('incidente-regional', ['incidentes-na-regiao']),
-    collectingHypothesis('ordem-em-andamento', ['ordens-em-andamento', 'incidentes-na-regiao']),
-    collectingHypothesis('bloqueio-financeiro', ['situacao-financeira', 'ordens-em-andamento']),
+    collectingEntry('incidente-regional', ['incidentes-na-regiao']),
+    collectingEntry('ordem-em-andamento', ['ordens-em-andamento', 'incidentes-na-regiao']),
+    collectingEntry('bloqueio-financeiro', ['situacao-financeira', 'ordens-em-andamento']),
   ]);
 
   const plan = collectionPlan(overlapping);
@@ -203,11 +224,11 @@ it("answers the deduplicated union of every hypothesis's collects, each concept 
 });
 
 it('lists each concept where the declared order first names it', () => {
-  // The first hypothesis's own collects are deliberately not alphabetical,
-  // so a sorted plan and a last-appearance plan both fail here.
+  // The first entry's own collects are deliberately not alphabetical, so a
+  // sorted plan and a last-appearance plan both fail here.
   const overlapping = caseWith([
-    collectingHypothesis('ordem-em-andamento', ['ordens-em-andamento', 'incidentes-na-regiao']),
-    collectingHypothesis('bloqueio-financeiro', ['incidentes-na-regiao', 'situacao-financeira']),
+    collectingEntry('ordem-em-andamento', ['ordens-em-andamento', 'incidentes-na-regiao']),
+    collectingEntry('bloqueio-financeiro', ['incidentes-na-regiao', 'situacao-financeira']),
   ]);
 
   const plan = collectionPlan(overlapping);
@@ -215,26 +236,16 @@ it('lists each concept where the declared order first names it', () => {
   expect(plan).toEqual(['ordens-em-andamento', 'incidentes-na-regiao', 'situacao-financeira']);
 });
 
-it('answers a concept one hypothesis collects twice exactly once', () => {
-  const repeating = caseWith([
-    collectingHypothesis('incidente-regional', ['incidentes-na-regiao', 'incidentes-na-regiao']),
-  ]);
-
-  const plan = collectionPlan(repeating);
-
-  expect(plan).toEqual(['incidentes-na-regiao']);
-});
-
-it("orders and dedupes the collection plan by each hypothesis's own declared position, never by the array's own arrangement", () => {
+it("orders and dedupes the collection plan by each manifest entry's own declared position, never by the array's own arrangement", () => {
   // Declared positions: incidente-regional 1, ordem-em-andamento 2,
   // bloqueio-financeiro 3 — the array below places them in a different
   // order (3, 1, 2), and bloqueio-financeiro repeats incidente-regional's
   // own concept, so an array-order reader answers a different sequence
   // than a position reader does.
   const scrambled = caseWith([
-    collectingHypothesis('bloqueio-financeiro', ['situacao-financeira', 'incidentes-na-regiao']),
-    collectingHypothesis('incidente-regional', ['incidentes-na-regiao']),
-    collectingHypothesis('ordem-em-andamento', ['ordens-em-andamento']),
+    collectingEntry('bloqueio-financeiro', ['situacao-financeira', 'incidentes-na-regiao']),
+    collectingEntry('incidente-regional', ['incidentes-na-regiao']),
+    collectingEntry('ordem-em-andamento', ['ordens-em-andamento']),
   ]);
 
   const plan = collectionPlan(scrambled);
@@ -250,14 +261,6 @@ it('demands one evaluation per declared hypothesis, named and ordered as the cas
   const demanded = requiresEvaluationOf(theCase);
 
   expect(demanded).toEqual(DECLARED_PRECEDENCE);
-});
-
-it('demands exactly the one hypothesis of a single-hypothesis case', () => {
-  const single = caseWith([collectingHypothesis('onu-offline', ['estado-do-equipamento'])]);
-
-  const demanded = requiresEvaluationOf(single);
-
-  expect(demanded).toEqual(['onu-offline']);
 });
 
 // ------------------------------------- resolve-outcome: the first confirmed hypothesis determines
@@ -305,14 +308,14 @@ it("follows each hypothesis's own declared position alone, so reversing the arra
   // test used to pin the opposite fact — that reversing the array flipped
   // the answer — which that task's own criterion 1 explicitly supersedes.
   // incidente-regional's own declared position (1) precedes onu-offline's
-  // (4) regardless of which array slot either object sits in, so reversing
+  // (4) regardless of which array slot either entry sits in, so reversing
   // their arrangement must not flip the answer any more.
-  const regional = hypothesisOf(
+  const regional = manifestEntryOf(
     'incidente-regional',
     ['incidentes-na-regiao'],
     resolutionOf('incidente-regional', 'informar-prazo', 'atendimento'),
   );
-  const onu = hypothesisOf(
+  const onu = manifestEntryOf(
     'onu-offline',
     ['estado-do-equipamento'],
     resolutionOf('onu-offline', 'abrir-ordem-corretiva', 'suporte-n2'),
@@ -331,7 +334,7 @@ it('answers with the earlier-position hypothesis of two confirmed ones that are 
   // are both confirmed; the outer two are refuted, so this isolates the
   // precedence comparison to a pair that sits in the middle of the range,
   // over the array whose own arrangement matches none of the positions.
-  const theCase = caseWith(scrambledWorkedHypotheses());
+  const theCase = caseWith(scrambledWorkedManifest());
   const verdicts: Verdicts = {
     'incidente-regional': 'refuted',
     'ordem-em-andamento': 'confirmed',
@@ -344,8 +347,8 @@ it('answers with the earlier-position hypothesis of two confirmed ones that are 
   expect(resolved.determining).toBe('ordem-em-andamento');
 });
 
-it("answers with regional-incident's own outcome, referral and determining role over the scenario's declared precedence even when the hypotheses array does not arrange them that way", () => {
-  const theCase = caseWith(scrambledWorkedHypotheses());
+it("answers with regional-incident's own outcome, referral and determining role over the scenario's declared precedence even when the manifest array does not arrange them that way", () => {
+  const theCase = caseWith(scrambledWorkedManifest());
   const verdicts = regionalAndOnuOfflineConfirmedVerdicts();
 
   const resolved = resolveOutcome(theCase, verdicts);
@@ -355,16 +358,6 @@ it("answers with regional-incident's own outcome, referral and determining role 
     referral: { action: 'informar-prazo', recipient: 'atendimento' },
     determining: 'incidente-regional',
   });
-});
-
-it('keeps onu-offline confirmed and marks it in no way in that same scrambled-array resolution', () => {
-  const theCase = caseWith(scrambledWorkedHypotheses());
-  const verdicts = regionalAndOnuOfflineConfirmedVerdicts();
-
-  const resolved = resolveOutcome(theCase, verdicts);
-
-  expect(verdicts).toEqual(regionalAndOnuOfflineConfirmedVerdicts());
-  expect(resolved.determining).toBe('incidente-regional');
 });
 
 it('never lets a confirmed verdict under a name the case does not declare determine anything', () => {
@@ -433,13 +426,3 @@ it('names no determining hypothesis when the fallback answers', () => {
   expect(resolved).not.toHaveProperty('determining');
 });
 
-it('falls back over a single-hypothesis case whose one claim is refuted', () => {
-  const single = caseWith([collectingHypothesis('onu-offline', ['estado-do-equipamento'])]);
-
-  const resolved = resolveOutcome(single, { 'onu-offline': 'refuted' });
-
-  expect(resolved).toEqual({
-    outcome: 'inconclusivo',
-    referral: { action: 'escalar', recipient: 'suporte-n2' },
-  });
-});

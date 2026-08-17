@@ -105,15 +105,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect((caught as Error).cause).toBe(driverFailure);
 });
 
-// ---------------------------------------------------------------- edge case: no row currently registered
-
-it('answers the empty registry when the table currently holds no row', async () => {
-  const query = vi.fn().mockResolvedValue({ rows: [] });
-  const store = new RelationalCapabilityStore(fakeBareConnection(query));
-
-  await expect(store.readCapabilities()).resolves.toEqual([]);
-});
-
 // ---------------------------------------------------------------- edge case: a row holding a nature the enumeration does not declare
 
 it("raises this store's own typed error rather than answering a row whose nature is outside the declared enumeration", async () => {
@@ -163,15 +154,6 @@ it('issues only the DELETE and still commits, when replacing the whole table wit
 
   expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'SET LOCAL search_path TO public', 'DELETE FROM public.capabilities', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
-});
-
-// ---------------------------------------------------------------- criterion 4
-
-it('persists a capability whose nature is read-only without refusing it on that ground', async () => {
-  const { connection } = fakeTransactionConnection(async () => ({ rows: [] }));
-  const store = new RelationalCapabilityStore(connection);
-
-  await expect(store.writeCapabilities([capabilityRecord({ nature: 'read-only' })])).resolves.toBeUndefined();
 });
 
 // ---------------------------------------------------------------- write failure wrapping

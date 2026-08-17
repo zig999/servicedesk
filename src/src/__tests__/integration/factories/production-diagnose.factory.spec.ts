@@ -18,6 +18,14 @@
 // file seeds the glossary, capability and pinned-case rows the real investigation write needs
 // directly against the real tables instead, each under freshly generated names.
 //
+// insertVocabulary below inserts its own case_versions row directly, which defaults to
+// state = 'released' (migrations/0009's own header comment explains why), so migrations/0009's own
+// release-conditioned rules now make that row permanent — an ordinary DELETE against it is a silent
+// no-op, and a DELETE against a glossary row it still references fails on that surviving row's own
+// foreign key. deleteTolerantly below runs every cleanup statement expecting exactly that — the same
+// tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this
+// migration's consequence.
+//
 // Divergence disclosed here for the same reason every sibling integration proof already discloses
 // it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
 // config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
@@ -55,6 +63,8 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
+const FOREIGN_KEY_VIOLATION = '23503';
+
 interface IVocabulary {
   readonly subjectType: string;
   readonly subjectAttribute: string;
@@ -76,6 +86,15 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
+/** h1's own criterion/collects/resolution, shared between the manifest entry and its flattened hypotheses projection below (case.ts's own header comment: hypotheses is derived from manifest, never independently declared). */
+function h1Content(vocabulary: IVocabulary) {
+  return {
+    criterion: 'h1 criterion',
+    collects: [vocabulary.concept],
+    resolution: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
+  };
+}
+
 /** A minimally valid, single-hypothesis Case naming exactly the given vocabulary's own concept and subject-attribute — the pinned case this suite's own investigation writes reference. */
 function aCase(vocabulary: IVocabulary): Case {
   return {
@@ -86,15 +105,9 @@ function aCase(vocabulary: IVocabulary): Case {
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: vocabulary.subjectType,
     fallback: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
-    hypotheses: [
-      {
-        name: 'h1',
-        position: 1,
-        criterion: 'h1 criterion',
-        collects: [vocabulary.concept],
-        resolution: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
-      },
-    ],
+    state: 'released',
+    manifest: [{ position: 1, hypothesis_revision: { hypothesis: { name: 'h1' }, revision: 1, ...h1Content(vocabulary) } }],
+    hypotheses: [{ name: 'h1', ...h1Content(vocabulary) }],
   };
 }
 
@@ -124,6 +137,20 @@ function callFor(id: string, requester: string, fixture: ICallFixture): Producti
 }
 
 let pool: DatabaseConnection;
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
+async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await pool.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
 
 beforeAll(() => {
   pool = createDatabaseConnection(requireDatabaseUrl());
@@ -173,22 +200,22 @@ async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
 /** Every row this file's own tests wrote for one vocabulary and its investigations, deleted in an order that always satisfies their own foreign keys. */
 async function cleanupVocabulary(vocabulary: IVocabulary, investigationIds: readonly string[]): Promise<void> {
   if (investigationIds.length > 0) {
-    await pool.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
-    await pool.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIds]);
-    await pool.query('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIds]);
-    await pool.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIds]);
-    await pool.query('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIds]);
   }
-  await pool.query('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.caseSlug]);
-  await pool.query('DELETE FROM public.cases WHERE slug = $1', [vocabulary.caseSlug]);
-  await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
-  await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
-  await pool.query('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
-  await pool.query('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subjectType]);
-  await pool.query('DELETE FROM public.subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
-  await pool.query('DELETE FROM public.outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
-  await pool.query('DELETE FROM public.actions WHERE name = $1', [vocabulary.action]);
-  await pool.query('DELETE FROM public.recipients WHERE name = $1', [vocabulary.recipient]);
+  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.caseSlug]);
+  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [vocabulary.caseSlug]);
+  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subjectType]);
+  await deleteTolerantly('DELETE FROM public.subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
+  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
+  await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [vocabulary.action]);
+  await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [vocabulary.recipient]);
 }
 
 let vocabulary: IVocabulary;

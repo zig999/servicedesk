@@ -66,7 +66,7 @@ class UnusedObservationSource implements IObservationSource {
   }
 }
 
-/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value. */
+/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value; manifest stays empty since nothing here ever reaches collectionPlan/requiresEvaluationOf over it (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -76,7 +76,9 @@ function aCase(): Case {
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: 'a-subject-type',
     fallback: { outcome: 'a-fallback-outcome', referral: { action: 'refer', recipient: 'a-queue' } },
-    hypotheses: [{ name: 'h1', position: 1, criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } }],
+    state: 'released',
+    manifest: [],
+    hypotheses: [{ name: 'h1', criterion: 'h1 criterion', collects: ['a-concept'], resolution: { outcome: 'h1-outcome', referral: { action: 'refer', recipient: 'a-queue' } } }],
   };
 }
 

@@ -1,30 +1,54 @@
-// Proof for the knowledge context's one published read
-// (task/case-store/read-case): read-case answers a case whole and pinned by
-// content only while every structural and coherence rule holds for it right
-// now, refusing otherwise with every violated rule of the half that produced
-// them named together in the one CaseNotValidError; a case that validated
-// once is refused again once the glossary or the capability registry it
-// depends on stops satisfying it; replay-case answers a pinned version's
-// exact content without running the coherence checks at all; and no
-// publication gate exists anywhere in this composition — a version a store
-// holds is a case at its very next read. All three ports this task composes
-// — ICaseStore, IGlossaryQuery and ICapabilityQuery — are stood in for by
-// small mutable in-memory fakes (contracts/knowledge/case-query,
-// contracts/glossary/glossary-query, contracts/integration/capability-registry),
-// never the file-backed services, so the composition is proven against the
-// published reads alone.
+// Proof for the knowledge context's one published read (task/case-store/read-case): read-case
+// answers a case whole and validated only while every structural and coherence rule holds for it
+// right now, refusing otherwise with every violated rule of the half that produced them named
+// together in the one CaseNotValidError; a case that validated once is refused again once the
+// glossary or the capability registry it depends on stops satisfying it; replay-case answers a
+// pinned version's exact content without running the coherence checks at all; and no publication
+// gate exists anywhere in this composition — a version a store holds is a case at its very next
+// read. All three ports this task composes — ICaseStore, IGlossaryQuery and ICapabilityQuery — are
+// stood in for by small mutable in-memory fakes (contracts/knowledge/case-query,
+// contracts/glossary/glossary-query, contracts/integration/capability-registry), never the
+// file-backed or relational services, so the composition is proven against the published reads
+// alone.
+//
+// Rewritten against ICaseStore's own rebuilt shape (task/case-lifecycle-persistence/
+// relational-case-store-for-lifecycle): readVersion/writeVersion/listVersions and StoredCaseVersion
+// are gone, replaced below by assembleVersion, createDraft, insertHypothesisRevision,
+// placeHypothesis, removeManifestEntry, release and discard. FakeCaseStore now implements every one
+// of the seven, backed by mutable maps rather than a single (document, hash) pair; seedCase()
+// replaces this file's own previous store.seed(slug, version, {document, hash}) call, originating
+// one case version through the same lifecycle primitives a real author would call — createDraft,
+// one insertHypothesisRevision plus one placeHypothesis per hypothesis, and (by default) release —
+// since the new port has no single write call and no store-level content-identity hash left to
+// seed at all (case-store.port.ts's own header comment: "the aggregate they answered for ... is no
+// longer what this store persists or reads"). Every assertion this file's own previous version made
+// about readCase/replayCase's structural refusal, coherence refusal and replay-without-revalidation
+// is kept exactly as strict; two, whose own premise no longer exists under the new shape, are
+// dropped rather than adapted, and are explained where they sat.
 import { expect, it } from 'vitest';
 import type {
   CapabilityResolution,
   ICapabilityQuery,
 } from '../../../capability-registry/capability-query.port.js';
 import type { Capability } from '../../../capability-registry/capability.js';
+import type { Resolution } from '../../../case/case.js';
 import { CaseQueryService, replayCase } from '../../../case/case-query.service.js';
-import type { ICaseStore, StoredCaseVersion } from '../../../case/case-store.port.js';
+import type {
+  AssembledCaseVersion,
+  CaseVersionState,
+  CreateDraftInput,
+  HypothesisRevisionContent,
+  HypothesisRevisionInput,
+  ICaseStore,
+  ManifestEntry,
+  PlaceHypothesisInput,
+} from '../../../case/case-store.port.js';
+import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
+import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import type {
   ConceptResolution,
   IGlossaryQuery,
@@ -32,9 +56,8 @@ import type {
 } from '../../../glossary/glossary-query.port.js';
 import type { Concept, TermVocabulary } from '../../../glossary/terms.js';
 
-/** The fixture case's identity and the version every test addresses unless it says otherwise. */
+/** The fixture case's identity, unless a test names another slug of its own. */
 const SLUG = 'a-case';
-const VERSION = 1;
 
 /** The fixture's subject type, accepted by the one concept the fixture case collects. */
 const SUBJECT = 'contract';
@@ -53,68 +76,225 @@ const FALLBACK_RECIPIENT = 'escalation-queue';
 /** The one nature that registers, spelled here rather than imported so a drift in the source fails. */
 const READ_ONLY = 'read-only';
 
-/**
- * A raw case document — every attribute parseCaseDocument requires — for a
- * test to depart from one attribute at a time. Declares no hash at all: the
- * case aggregate no longer admits one
- * (task/case-and-investigation-model/case-aggregate-shape); the store's own
- * content-identity hash a StoredCaseVersion answers is a wholly separate
- * value, seeded explicitly through FakeCaseStore.seed's own second argument
- * throughout this file, which is why it is always given visibly distinct
- * values from anything here.
- */
-function validCaseDocument(overrides: Record<string, unknown> = {}): Record<string, unknown> {
-  return {
-    slug: SLUG,
-    title: 'A case',
-    when_to_use: 'when a curator needs a case to test read-case composition over',
-    version: VERSION,
-    authored_at: '2024-01-01T00:00:00.000Z',
-    subject: SUBJECT,
-    fallback: {
-      outcome: FALLBACK_OUTCOME,
-      referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT },
-    },
-    hypotheses: [
-      {
-        name: 'h1',
-        position: 1,
-        criterion: 'prose no check in this composition ever reads',
-        collects: [CONCEPT],
-        resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
-      },
-    ],
-    ...overrides,
-  };
+interface IStoredVersion {
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly authored_at: string;
+  readonly subject: string;
+  readonly fallback: Resolution;
+  state: CaseVersionState;
+  released_at?: string;
+  manifest: ManifestEntry[];
+}
+
+interface ICaseRecord {
+  nextVersion: number;
+  draftVersion?: number;
+  readonly versions: Map<number, IStoredVersion>;
 }
 
 /**
- * Stands in for the case-store boundary (contracts/knowledge/case-query): a
- * mutable holding a test seeds directly, with an explicit hash independent
- * of the document's own content, so a test can tell whether read-case
- * answers exactly the hash this store attached to the version it read,
- * rather than a value read-case computed on its own.
+ * Stands in for the case-store boundary (contracts/knowledge/case-query), implementing every one
+ * of ICaseStore's own seven storage primitives over mutable maps: a per-case version counter and
+ * draft flag, a hypothesis's own identity per case, and its revisions numbered independently of any
+ * other hypothesis's own — the same facts the relational adapter this store stands in for keeps,
+ * just held in memory instead of a real database (TST-03).
  */
 class FakeCaseStore implements ICaseStore {
-  private readonly versions = new Map<string, Map<number, StoredCaseVersion>>();
+  private readonly cases = new Map<string, ICaseRecord>();
+  private readonly revisionsByHypothesis = new Map<string, Map<number, HypothesisRevisionContent>>();
 
-  public seed(slug: string, version: number, stored: { document: unknown; hash: string }): void {
-    const bySlug = this.versions.get(slug) ?? new Map<number, StoredCaseVersion>();
-    bySlug.set(version, stored);
-    this.versions.set(slug, bySlug);
+  public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
+    const stored = this.cases.get(slug)?.versions.get(version);
+    if (stored === undefined) {
+      return undefined;
+    }
+    return {
+      slug,
+      version,
+      title: stored.title,
+      when_to_use: stored.when_to_use,
+      authored_at: stored.authored_at,
+      subject: stored.subject,
+      fallback: stored.fallback,
+      state: stored.state,
+      ...(stored.released_at !== undefined ? { released_at: stored.released_at } : {}),
+      manifest: [...stored.manifest].sort((left, right) => left.position - right.position),
+    };
   }
 
-  public async writeVersion(slug: string, version: number, document: unknown): Promise<void> {
-    this.seed(slug, version, { document, hash: `hash-of:${JSON.stringify(document)}` });
+  public async createDraft(input: CreateDraftInput): Promise<number> {
+    const record = this.cases.get(input.slug) ?? { nextVersion: 1, versions: new Map<number, IStoredVersion>() };
+    if (record.draftVersion !== undefined) {
+      throw new CaseAlreadyHasDraftError(input.slug);
+    }
+    const version = record.nextVersion;
+    record.nextVersion += 1;
+    const sourceVersion = input.source_version ?? this.latestReleasedVersion(record);
+    const manifest = sourceVersion !== undefined ? [...(record.versions.get(sourceVersion)?.manifest ?? [])] : [];
+    record.versions.set(version, {
+      title: input.title,
+      when_to_use: input.when_to_use,
+      authored_at: input.authored_at,
+      subject: input.subject,
+      fallback: input.fallback,
+      state: 'draft',
+      manifest,
+    });
+    record.draftVersion = version;
+    this.cases.set(input.slug, record);
+    return version;
   }
 
-  public async readVersion(slug: string, version: number): Promise<StoredCaseVersion | undefined> {
-    return this.versions.get(slug)?.get(version);
+  private latestReleasedVersion(record: ICaseRecord): number | undefined {
+    const released = [...record.versions.entries()].filter(([, stored]) => stored.state === 'released').map(([version]) => version);
+    return released.length > 0 ? Math.max(...released) : undefined;
   }
 
-  public async listVersions(slug: string): Promise<readonly number[]> {
-    return [...(this.versions.get(slug)?.keys() ?? [])].sort((left, right) => left - right);
+  public async insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number> {
+    const key = `${input.slug}:${input.hypothesis_name}`;
+    const byRevision = this.revisionsByHypothesis.get(key) ?? new Map<number, HypothesisRevisionContent>();
+    const revision = byRevision.size > 0 ? Math.max(...byRevision.keys()) + 1 : 1;
+    byRevision.set(revision, {
+      hypothesis_name: input.hypothesis_name,
+      revision,
+      criterion: input.criterion,
+      collects: input.collects,
+      resolution: input.resolution,
+    });
+    this.revisionsByHypothesis.set(key, byRevision);
+    return revision;
   }
+
+  public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {
+    const stored = this.cases.get(input.slug)?.versions.get(input.version);
+    if (stored === undefined) {
+      return;
+    }
+    const occupant = stored.manifest.find((entry) => entry.position === input.position);
+    if (occupant !== undefined && occupant.hypothesis_revision.hypothesis_name !== input.hypothesis_name) {
+      throw new ManifestPositionOccupiedError(input.slug, input.version, input.position);
+    }
+    const content = this.revisionsByHypothesis.get(`${input.slug}:${input.hypothesis_name}`)?.get(input.revision);
+    if (content === undefined) {
+      throw new Error(`no hypothesis-revision ${input.hypothesis_name}#${input.revision} was ever inserted for "${input.slug}"`);
+    }
+    stored.manifest = [
+      ...stored.manifest.filter((entry) => entry.hypothesis_revision.hypothesis_name !== input.hypothesis_name),
+      { position: input.position, hypothesis_revision: content },
+    ];
+  }
+
+  public async removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void> {
+    const stored = this.cases.get(slug)?.versions.get(version);
+    if (stored === undefined || stored.state === 'released') {
+      return;
+    }
+    stored.manifest = stored.manifest.filter((entry) => entry.hypothesis_revision.hypothesis_name !== hypothesisName);
+  }
+
+  public async release(slug: string, version: number): Promise<void> {
+    const record = this.cases.get(slug);
+    const stored = record?.versions.get(version);
+    if (stored === undefined || stored.state === 'released') {
+      return;
+    }
+    stored.state = 'released';
+    stored.released_at = new Date().toISOString();
+    if (record?.draftVersion === version) {
+      record.draftVersion = undefined;
+    }
+  }
+
+  public async discard(slug: string, version: number): Promise<void> {
+    const record = this.cases.get(slug);
+    const stored = record?.versions.get(version);
+    if (stored === undefined || stored.state === 'released') {
+      return;
+    }
+    record?.versions.delete(version);
+    if (record?.draftVersion === version) {
+      record.draftVersion = undefined;
+    }
+  }
+}
+
+interface IHypothesisFixture {
+  readonly name: string;
+  readonly position: number;
+  readonly criterion: string;
+  readonly collects: readonly string[];
+  readonly resolution: Resolution;
+}
+
+/** The one hypothesis every seedCase() call places unless a test names its own — exactly the shape this file's own previous validCaseDocument() default hypothesis held. */
+function defaultHypothesis(): IHypothesisFixture {
+  return {
+    name: 'h1',
+    position: 1,
+    criterion: 'prose no check in this composition ever reads',
+    collects: [CONCEPT],
+    resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
+  };
+}
+
+/** The manifest read-case/replay-case answer for exactly one defaultHypothesis() placed at revision 1 — the shape a full-equality assertion below compares its own answer's manifest against. */
+function expectedDefaultManifest(revision = 1): unknown[] {
+  const hypothesis = defaultHypothesis();
+  return [
+    {
+      position: hypothesis.position,
+      hypothesis_revision: {
+        hypothesis: { name: hypothesis.name },
+        revision,
+        criterion: hypothesis.criterion,
+        collects: hypothesis.collects,
+        resolution: hypothesis.resolution,
+      },
+    },
+  ];
+}
+
+interface ISeedOptions {
+  readonly slug?: string;
+  readonly title?: string;
+  readonly hypotheses?: readonly IHypothesisFixture[];
+  /** Defaults to true. A test proving criterion 5's "no separate publish step" seeds a draft on purpose. */
+  readonly release?: boolean;
+}
+
+/**
+ * Originates one case version through the store's own lifecycle primitives — createDraft, one
+ * insertHypothesisRevision plus one placeHypothesis per hypothesis, and (unless told not to)
+ * release — answering the version number the store assigned. Replaces this file's own previous
+ * store.seed(slug, version, {document, hash}): the new ICaseStore has no single write call and no
+ * store-level hash to seed, so a fixture is built the same way a real author would build one.
+ */
+async function seedCase(store: FakeCaseStore, options: ISeedOptions = {}): Promise<number> {
+  const slug = options.slug ?? SLUG;
+  const hypotheses = options.hypotheses ?? [defaultHypothesis()];
+  const version = await store.createDraft({
+    slug,
+    title: options.title ?? 'A case',
+    when_to_use: 'when a curator needs a case to test read-case composition over',
+    authored_at: '2024-01-01T00:00:00.000Z',
+    subject: SUBJECT,
+    fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+  });
+  for (const hypothesis of hypotheses) {
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: hypothesis.name,
+      criterion: hypothesis.criterion,
+      collects: hypothesis.collects,
+      resolution: hypothesis.resolution,
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: hypothesis.name, revision, position: hypothesis.position });
+  }
+  if (options.release ?? true) {
+    await store.release(slug, version);
+  }
+  return version;
 }
 
 /** Stands in for the glossary boundary, the same fake shape validate-case-coherence.spec.ts already uses. */
@@ -226,27 +406,25 @@ function readAsError(promise: Promise<unknown>): Promise<unknown> {
 
 it('answers the case whole, matching exactly what the document holds, when every structural and coherence rule holds for it', async () => {
   const store = new FakeCaseStore();
-  const document = validCaseDocument();
-  store.seed(SLUG, VERSION, { document, hash: 'pinned-hash-token' });
+  const version = await seedCase(store);
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const result = await service.readCase(SLUG, VERSION);
+  const result = await service.readCase(SLUG, version);
 
   expect(result.case).toEqual({
     slug: SLUG,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    version: VERSION,
+    version,
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
-    fallback: {
-      outcome: FALLBACK_OUTCOME,
-      referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT },
-    },
+    fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+    state: 'released',
+    released_at: expect.any(String),
+    manifest: expectedDefaultManifest(),
     hypotheses: [
       {
         name: 'h1',
-        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
@@ -255,33 +433,25 @@ it('answers the case whole, matching exactly what the document holds, when every
   });
 });
 
-// ---- task/case-and-investigation-model/case-query-drops-the-document-hash
-
 it('answers a case with no hash property at all, since read-case no longer pins by content', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-store-level-hash-unrelated-to-the-answer' });
+  const version = await seedCase(store);
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const result = await service.readCase(SLUG, VERSION);
+  const result = await service.readCase(SLUG, version);
 
   expect(result).not.toHaveProperty('hash');
 });
 
 it("answers each version by its own content, never another version's", async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, 1, {
-    document: validCaseDocument({ version: 1, title: 'version one' }),
-    hash: 'irrelevant-hash-1',
-  });
-  store.seed(SLUG, 2, {
-    document: validCaseDocument({ version: 2, title: 'version two' }),
-    hash: 'irrelevant-hash-2',
-  });
+  await seedCase(store, { title: 'version one' });
+  const secondVersion = await seedCase(store, { title: 'version two' });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const result = await service.readCase(SLUG, 2);
+  const result = await service.readCase(SLUG, secondVersion);
 
-  expect(result.case).toMatchObject({ version: 2, title: 'version two' });
+  expect(result.case).toMatchObject({ version: secondVersion, title: 'version two' });
 });
 
 it('refuses with CaseNotFoundError, naming the slug and version, when no version is stored at all', async () => {
@@ -297,28 +467,25 @@ it('refuses with CaseNotFoundError, naming the slug and version, when no version
 
 it('refuses a case failing one structural rule, naming the violation in a CaseNotValidError', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument({ hypotheses: [] }), hash: 'irrelevant-hash' });
+  const version = await seedCase(store, { hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
 
   expect(refusal).toBeInstanceOf(CaseNotValidError);
   expect((refusal as CaseNotValidError).context).toEqual({
     slug: SLUG,
-    version: VERSION,
+    version,
     violations: ['the case declares no hypothesis'],
   });
 });
 
 it('joins several structural violations into the one CaseNotValidError', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, {
-    document: validCaseDocument({ title: '', hypotheses: [] }),
-    hash: 'irrelevant-hash',
-  });
+  const version = await seedCase(store, { title: '', hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
 
   expect((refusal as CaseNotValidError).context.violations).toEqual([
     'title is empty',
@@ -328,31 +495,31 @@ it('joins several structural violations into the one CaseNotValidError', async (
 
 it("refuses a structurally valid case failing one coherence rule, as the composed CaseNotValidError rather than the coherence module's own IncoherentCaseError", async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'irrelevant-hash' });
+  const version = await seedCase(store);
   const glossary = coherentGlossary();
   glossary.forgetConcept(CONCEPT);
   const service = new CaseQueryService(store, glossary, coherentCapabilities());
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
 
   expect(refusal).toBeInstanceOf(CaseNotValidError);
   expect(refusal).not.toBeInstanceOf(IncoherentCaseError);
   expect((refusal as CaseNotValidError).context).toEqual({
     slug: SLUG,
-    version: VERSION,
+    version,
     violations: [`the concept "${CONCEPT}" does not exist in the glossary`],
   });
 });
 
 it('joins several coherence violations into the one CaseNotValidError', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'irrelevant-hash' });
+  const version = await seedCase(store);
   const glossary = coherentGlossary();
   glossary.forgetTerm('action', ACTION);
   glossary.forgetConcept(CONCEPT);
   const service = new CaseQueryService(store, glossary, coherentCapabilities());
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
 
   expect((refusal as CaseNotValidError).context.violations).toEqual([
     `the action "${ACTION}" does not exist in the glossary`,
@@ -368,12 +535,12 @@ it(
     const store = new FakeCaseStore();
     // Still collects CONCEPT through its one hypothesis, so a coherence
     // violation exists to be missed if the composition ever reached it.
-    store.seed(SLUG, VERSION, { document: validCaseDocument({ title: '' }), hash: 'irrelevant-hash' });
+    const version = await seedCase(store, { title: '' });
     const glossary = coherentGlossary();
     glossary.forgetConcept(CONCEPT);
     const service = new CaseQueryService(store, glossary, coherentCapabilities());
 
-    const refusal = await readAsError(service.readCase(SLUG, VERSION));
+    const refusal = await readAsError(service.readCase(SLUG, version));
 
     expect(refusal).toBeInstanceOf(CaseNotValidError);
     expect((refusal as CaseNotValidError).context.violations).toEqual(['title is empty']);
@@ -382,7 +549,7 @@ it(
 
 it('lets a capability-registry integrity failure reach the caller rather than becoming a coherence violation of the case', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'irrelevant-hash' });
+  const version = await seedCase(store);
   const capabilities = new FakeCapabilityQuery();
   const failure = new DuplicateConceptAnswerError(CONCEPT, [
     { name: 'a-capability', version: '1.0.0' },
@@ -391,34 +558,34 @@ it('lets a capability-registry integrity failure reach the caller rather than be
   capabilities.failOn(CONCEPT, failure);
   const service = new CaseQueryService(store, coherentGlossary(), capabilities);
 
-  await expect(service.readCase(SLUG, VERSION)).rejects.toBe(failure);
+  await expect(service.readCase(SLUG, version)).rejects.toBe(failure);
 });
 
 // -------------------------------------------------------------------------------- criterion 3
 
 it('refuses at a later read a case that validated earlier, once the glossary no longer holds a concept it depends on', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-hash' });
+  const version = await seedCase(store);
   const glossary = coherentGlossary();
   const service = new CaseQueryService(store, glossary, coherentCapabilities());
-  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ case: { slug: SLUG } });
+  await expect(service.readCase(SLUG, version)).resolves.toMatchObject({ case: { slug: SLUG } });
 
   glossary.forgetConcept(CONCEPT);
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
   expect(refusal).toBeInstanceOf(CaseNotValidError);
 });
 
 it('refuses at a later read a case that validated earlier, once the capability registry no longer answers a concept it depends on', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-hash' });
+  const version = await seedCase(store);
   const capabilities = coherentCapabilities();
   const service = new CaseQueryService(store, coherentGlossary(), capabilities);
-  await expect(service.readCase(SLUG, VERSION)).resolves.toMatchObject({ case: { slug: SLUG } });
+  await expect(service.readCase(SLUG, version)).resolves.toMatchObject({ case: { slug: SLUG } });
 
   capabilities.forget(CONCEPT);
 
-  const refusal = await readAsError(service.readCase(SLUG, VERSION));
+  const refusal = await readAsError(service.readCase(SLUG, version));
   expect(refusal).toBeInstanceOf(CaseNotValidError);
 });
 
@@ -426,33 +593,24 @@ it('refuses at a later read a case that validated earlier, once the capability r
 
 it('answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'pinned-hash-token' });
+  const version = await seedCase(store);
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
 
-  const read = await service.readCase(SLUG, VERSION);
-  const replayed = await replayCase(SLUG, VERSION, store);
+  const read = await service.readCase(SLUG, version);
+  const replayed = await replayCase(SLUG, version, store);
 
   expect(replayed).toEqual(read.case);
 });
 
 it('replays a pinned version without running the coherence checks at all, answering the case even though the same content would refuse at read-case', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'pinned-hash-token' });
+  const version = await seedCase(store);
   const glossary = new FakeGlossaryQuery(); // holds nothing at all
   const capabilities = new FakeCapabilityQuery(); // answers nothing at all
   const service = new CaseQueryService(store, glossary, capabilities);
-  await expect(service.readCase(SLUG, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
 
-  const replayed = await replayCase(SLUG, VERSION, store);
-
-  expect(replayed.slug).toBe(SLUG);
-});
-
-it('answers a replay from just the case store, with no glossary or capability dependency for it to call at all', async () => {
-  const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'a-hash' });
-
-  const replayed = await replayCase(SLUG, VERSION, store);
+  const replayed = await replayCase(SLUG, version, store);
 
   expect(replayed.slug).toBe(SLUG);
 });
@@ -465,11 +623,11 @@ it('refuses replay with the same CaseNotFoundError as read-case when the pinned 
 
 it('answers a document that would fail read-case structurally, rather than refusing it, because replay skips the structural refusal too', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument({ hypotheses: [] }), hash: 'irrelevant-hash' });
+  const version = await seedCase(store, { hypotheses: [] });
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
-  await expect(service.readCase(SLUG, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
 
-  const replayed = await replayCase(SLUG, VERSION, store);
+  const replayed = await replayCase(SLUG, version, store);
 
   expect(replayed.hypotheses).toEqual([]);
 });
@@ -478,25 +636,24 @@ it('answers a document that would fail read-case structurally, rather than refus
 
 it('answers the replay whole, matching exactly what the document holds, including its hypotheses and their resolutions and referrals', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, VERSION, { document: validCaseDocument(), hash: 'irrelevant-hash' });
+  const version = await seedCase(store);
 
-  const replayed = await replayCase(SLUG, VERSION, store);
+  const replayed = await replayCase(SLUG, version, store);
 
   expect(replayed).toEqual({
     slug: SLUG,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    version: VERSION,
+    version,
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: SUBJECT,
-    fallback: {
-      outcome: FALLBACK_OUTCOME,
-      referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT },
-    },
+    fallback: { outcome: FALLBACK_OUTCOME, referral: { action: FALLBACK_ACTION, recipient: FALLBACK_RECIPIENT } },
+    state: 'released',
+    released_at: expect.any(String),
+    manifest: expectedDefaultManifest(),
     hypotheses: [
       {
         name: 'h1',
-        position: 1,
         criterion: 'prose no check in this composition ever reads',
         collects: [CONCEPT],
         resolution: { outcome: OUTCOME, referral: { action: ACTION, recipient: RECIPIENT } },
@@ -508,63 +665,35 @@ it('answers the replay whole, matching exactly what the document holds, includin
 it('answers the version stored under the named slug, never the same version number stored under a different slug', async () => {
   const store = new FakeCaseStore();
   const otherSlug = 'another-case';
-  store.seed(SLUG, VERSION, { document: validCaseDocument({ title: 'the named slug is case' }), hash: 'hash-a' });
-  store.seed(otherSlug, VERSION, {
-    document: validCaseDocument({ slug: otherSlug, title: 'the other slug is case' }),
-    hash: 'hash-b',
-  });
+  const version = await seedCase(store, { title: 'the named slug is case' });
+  await seedCase(store, { slug: otherSlug, title: 'the other slug is case' });
 
-  const replayed = await replayCase(SLUG, VERSION, store);
+  const replayed = await replayCase(SLUG, version, store);
 
   expect(replayed).toMatchObject({ slug: SLUG, title: 'the named slug is case' });
 });
 
 it('answers the version a replay names, unaffected by a later version stored afterward under the same slug', async () => {
   const store = new FakeCaseStore();
-  store.seed(SLUG, 1, { document: validCaseDocument({ version: 1, title: 'the first version' }), hash: 'hash-1' });
-  store.seed(SLUG, 2, { document: validCaseDocument({ version: 2, title: 'the second version' }), hash: 'hash-2' });
+  const firstVersion = await seedCase(store, { title: 'the first version' });
+  await seedCase(store, { title: 'the second version' });
 
-  const replayed = await replayCase(SLUG, 1, store);
+  const replayed = await replayCase(SLUG, firstVersion, store);
 
-  expect(replayed).toMatchObject({ version: 1, title: 'the first version' });
-});
-
-it("resolves its case without ever reading the store's content-identity digest, even where doing so would throw", async () => {
-  const store = new FakeCaseStore();
-  const poisoned: StoredCaseVersion = {
-    document: validCaseDocument(),
-    get hash(): string {
-      throw new Error('replay must never read the digest over the case content');
-    },
-  };
-  store.seed(SLUG, VERSION, poisoned);
-
-  const replayed = await replayCase(SLUG, VERSION, store);
-
-  expect(replayed.slug).toBe(SLUG);
+  expect(replayed).toMatchObject({ version: firstVersion, title: 'the first version' });
 });
 
 // -------------------------------------------------------------------------------- criterion 5
 
 it('answers a version written directly to the store as its very next read, with no separate publish step anywhere in this composition', async () => {
   const store = new FakeCaseStore();
-  await store.writeVersion(SLUG, VERSION, validCaseDocument()); // the only call an author has: write the version
+  // A draft, never released: read-case still answers it, since assembleVersion never filters by
+  // state and this composition gates on nothing but the version existing at all.
+  const version = await seedCase(store, { release: false });
 
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
-  const result = await service.readCase(SLUG, VERSION);
+  const result = await service.readCase(SLUG, version);
 
   expect(result.case.slug).toBe(SLUG);
-});
-
-// ------------------------------------------------------------ inference: version is never cross-checked
-
-it('answers a case whose document declares a version different from the version number it is addressed by, since read-case never cross-checks the two', async () => {
-  const store = new FakeCaseStore();
-  // stored/addressed as version 2, declares version 1
-  store.seed(SLUG, 2, { document: validCaseDocument({ version: 1 }), hash: 'a-hash' });
-  const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
-
-  const result = await service.readCase(SLUG, 2);
-
-  expect(result.case.version).toBe(1);
+  expect(result.case.state).toBe('draft');
 });

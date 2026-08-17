@@ -1,0 +1,2021 @@
+===== typecheck :: npm run typecheck :: passed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> backend@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> backend@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: node --env-file=.env.test node_modules/.bin/vitest run :: failed =====
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:1872384) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (24 tests) 36ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (31 tests) 36ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (19 tests) 33ms
+(node:1872544) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests) 36753ms
+   ✓ stores a draft case_versions row with released_at absent  793ms
+   ✓ stores a released case_versions row with released_at present  754ms
+   ✓ refuses a case_versions row whose state names a value outside draft or released  596ms
+   ✓ keeps cases.next_version writable to a value independent of any stored case_versions row, proving it is a stored counter rather than one computed from MAX(version)  893ms
+   ✓ defaults a newly created case row (no case_versions row at all) to next_version 1  607ms
+   ✓ refuses inserting a second draft case_versions row for a case that already has one  785ms
+   ✓ permits two released case_versions rows to coexist for the same case, since the one-draft constraint is scoped to draft state alone  744ms
+   ✓ shapes hypotheses as exactly case_slug and name, carrying no content column  516ms
+   ✓ stores and reads back a hypothesis by its identity alone  751ms
+   ✓ refuses a second hypothesis stored under an already-used (case_slug, name) key  744ms
+   ✓ stores and reads back a hypothesis revision's own criterion and resolution  896ms
+   ✓ refuses a second row under an already-used (case_slug, hypothesis_name, revision) key  915ms
+   ✓ leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them  1214ms
+   ✓ stores and reads back the concepts one hypothesis revision collects, referencing that exact revision  1048ms
+   ✓ refuses a collect row naming a revision that was never stored  746ms
+   ✓ stores and reads back a manifest entry's hypothesis, revision and position  1196ms
+   ✓ refuses a second manifest entry at a position already used within the same case version's manifest  1499ms
+   ✓ permits the same position to be reused across two different case versions of the same case, since uniqueness is scoped per version  1336ms
+   ✓ leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them  1041ms
+   ✓ changes an ordinary column of a still-draft case_versions row on UPDATE  899ms
+   ✓ lets an UPDATE transition a draft case_versions row to released  893ms
+   ✓ drops hypothesis_collects (migration 0004) entirely, leaving no table for any old row to have been carried into  445ms
+   ✓ refuses to alter a manifest entry belonging to a released case version  1484ms
+   ✓ refuses to delete a manifest entry belonging to a released case version  1530ms
+   ✓ updates a draft case version's own manifest entry ordinarily  1350ms
+   ✓ deletes a draft case version's own manifest entry ordinarily  1341ms
+   ✓ refuses to delete a released case_versions row  1065ms
+   ✓ permits deleting a draft case_versions row that carries no manifest entries  908ms
+   ✓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column  4809ms
+   ✓ refuses a newly-inserted case_versions row that does not name its own state, since the backfill default was dropped once existing rows were backfilled  604ms
+(node:1872886) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests | 16 failed) 19713ms
+   × applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not 2243ms
+     → expected [ 'actions', 'capabilities', …(19) ] to deeply equal [ 'actions', 'capabilities', …(17) ]
+   × persists and reads back a full case, hypothesis, resolution, referral and its collects 602ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value 594ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once  746ms
+   × holds every domain column NOT NULL except exactly the five columns the model declares optional 456ms
+     → expected [ { …(2) }, { …(2) }, { …(2) }, …(3) ] to deeply equal [ { …(2) }, { …(2) }, { …(2) }, …(2) ]
+   ✓ refuses storing a case version whose title is absent  595ms
+   × accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional 592ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × accepts exactly the three values verdict declares and refuses one it does not 598ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × accepts exactly the four values evidence-result declares and refuses one it does not 593ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × accepts exactly the three values evaluation-reason declares and refuses one it does not 591ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ accepts exactly the two values capability-nature declares and refuses one it does not  747ms
+   × accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not 608ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ declares each of the five enumeration columns as plain text, not a native Postgres enum type  449ms
+   × refuses a case version whose subject names a subject type the glossary does not hold 596ms
+     → expected error: null value in column "state" of re… { …(15) } to match object { code: '23503' }
+(17 matching properties omitted from actual)
+   ✓ refuses a non-numeric value for a case version's integer-typed version column  591ms
+   ✓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts  448ms
+   × refuses a second evidence row for one investigation under a concept it already collected 598ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × refuses a second evaluation row for one investigation under a hypothesis already judged 651ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ refuses a second case stored under a slug already in use  592ms
+   × refuses storing the same case version a second time under its own slug and version 593ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × refuses a second hypothesis of one case sharing an already-used position 591ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × refuses a second hypothesis of one case sharing an already-used name 604ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them 603ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 13ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (26 tests) 66ms
+(node:1873118) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (10 tests | 10 skipped) 5264ms
+   ↓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject
+   ↓ writes two independent investigation records for two requests naming the same case, subject, narrative and requester
+   ↓ answers 200 when the request supplies no ticket_ref
+   ↓ answers 200 when the request supplies a ticket_ref
+   ↓ answers 200 for a request carrying no headers at all
+   ↓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env
+   ↓ persists the zero-valued cost and duration placeholders this HTTP layer stamps, since nothing behind it measures either yet
+   ↓ reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture
+   ↓ calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one
+   ↓ answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it
+(node:1873193) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests | 10 failed) 23613ms
+   × reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction 2240ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column 2251ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged 2391ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError 2253ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × does not refuse a write for an id not already stored 2261ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ answers undefined, not a rejection, for an id nothing was ever written under  1517ms
+   × reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with 1324ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × reads back an evidence item exactly as written when its result is not ok and it carries a result detail 2281ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × reads back an assessment with no determining_hypothesis when the fallback answered and none was named 2292ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis 2555ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored 2246ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+ ✓ src/__tests__/unit/case/author-case-version.service.spec.ts (20 tests) 10ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (23 tests) 9ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (13 tests) 13ms
+(node:1873465) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/seed.spec.ts (13 tests | 13 skipped) 2224ms
+   ↓ holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand
+   ↓ holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together
+   ↓ holds exactly the fixture's own subject-type name, the one the curated case declares as its subject
+   ↓ holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own
+   ↓ holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare
+   ↓ holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare
+   ↓ holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly
+   ↓ registers one read-only capability, with every attribute the fixture declares, for each of the two concepts the curated case collects
+   ↓ the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand
+   ↓ seed.ts's own source enters the case only through the published authoring command, naming createAuthorCaseVersion and authorCaseVersion near its case-writing code, and never a direct writeVersion call
+   ↓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names
+   ↓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded
+   ↓ seed.ts's own source catches CaseVersionAlreadyStoredError specifically around its case-writing call, rather than letting every rejection from it propagate unconditionally
+(node:1873510) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test | 1 skipped) 3041ms
+   ↓ answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline
+(node:1873567) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts (11 tests | 11 failed) 71731ms
+   × stores a submission of one valid case version, through the real wiring, and answers with its slug and version 7717ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × refuses a submission naming a slug and version already stored, through the real store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was 7740ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × does not refuse, through the real wiring, a submission that holds against every validator rule, including a case declaring more than one hypothesis 7873ms
+     → promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring a submission naming an outcome the glossary does not hold, naming the outcome — every other term, the concept and its capability staying coherent 7418ms
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring a submission whose hypothesis collects a concept that does not accept the case's declared subject type, naming the concept and the subject type 7800ms
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring a submission whose collected concept has no registered capability at all, naming the concept 4039ms
+     → relation "public.hypothesis_collects" does not exist
+   × answers the real capability check from the registration as it stands at this submission, refusing a later submission once the real registration's own output schema is edited away directly against the table, and storing nothing for that refused version 8421ms
+     → promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring, joining every coherence violation together, when a collected concept is absent from the glossary entirely — which also leaves it with no capability, since a capability's own concept column is a real foreign key into concepts and can never name one the glossary does not hold 3857ms
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring, joining every structural violation together, before the coherence checks or the store are ever reached 5631ms
+     → relation "public.hypothesis_collects" does not exist
+   × leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused structurally 6916ms
+     → relation "public.hypothesis_collects" does not exist
+     → relation "public.hypothesis_collects" does not exist
+   × leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused for a coherence violation 4317ms
+     → relation "public.hypothesis_collects" does not exist
+     → relation "public.hypothesis_collects" does not exist
+(node:1874323) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests | 2 skipped) 5085ms
+   ↓ writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment
+   ↓ imports @anthropic-ai/sdk nowhere across every file this test's own composition reaches, so the run above never made or could make a call to the Anthropic API
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (16 tests) 22ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (50 tests) 14ms
+(node:1874431) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (10 tests | 10 failed) 24844ms
+   × reads back a case's root together with its hypotheses and their resolutions and referrals, exactly as written 2722ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × orders hypotheses by their own declared position, and each hypothesis's own collects by concept name, regardless of the order they were written in 2725ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × answers absence, not a rejection, for a slug and version nothing was ever written under 1662ms
+     → relation "public.hypothesis_collects" does not exist
+   × refuses a second write to the same slug and version through this store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was 2536ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store's own CaseVersionAlreadyStoredError 3404ms
+     → expected [] to have a length of 1 but got +0
+     → relation "public.hypothesis_collects" does not exist
+   × does not refuse a write for a slug and version not already stored 1581ms
+     → promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+     → relation "public.hypothesis_collects" does not exist
+   × keeps an earlier version readable, and lists every version ever written under one slug, after later versions are written 2563ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × keeps exactly one row in cases for one slug after two versions are written under it, never creating a second case 2533ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a later hypothesis in the same write violates a real constraint 2568ms
+     → expected CaseStoreError: a write against the case … { context: { operation: '…' } } to match object { cause: { code: '23505' } }
+(3 matching properties omitted from actual)
+     → relation "public.hypothesis_collects" does not exist
+   × leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a hypothesis's own collects reference a concept that violates a real foreign key 2548ms
+     → expected CaseStoreError: a write against the case … { context: { operation: '…' } } to match object { cause: { code: '23503' } }
+(3 matching properties omitted from actual)
+     → relation "public.hypothesis_collects" does not exist
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (17 tests) 9ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (17 tests) 5ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (11 tests) 150ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (17 tests) 9ms
+(node:1874756) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests | 5 failed) 20537ms
+   × writes two independent investigation records for two calls sharing the same case, subject, narrative and requester 4833ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result 3892ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × passes the given requester straight through to the observation source, substituting none of its own 3942ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake 3889ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source 3980ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+(node:1874949) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts (5 tests | 5 failed) 31272ms
+   × answers a case written directly to the real store, matching what is currently stored, with no publish step in between 6939ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring a case document declaring no hypothesis, naming the structural violation 7283ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, a case document whose collected concept the glossary does not hold — the real store's own foreign key from hypothesis_collects into concepts, never reachable through the fake store this task retired 2940ms
+     → relation "public.hypothesis_collects" does not exist
+   × refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table 6949ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table 7159ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+(node:1875250) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests | 2 failed) 13203ms
+   ✓ leaves the cases table holding no row for the slug it wrote, once it releases the isolated connection it wrote through  1974ms
+   ✓ lets a first integration test write a case under a slug a second test in this run will also write, without a unique-key collision  878ms
+   ✓ lets a second integration test write a case under the same slug the first one already wrote, in the same suite run  872ms
+   × lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision 1479ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   × lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run 1477ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+   ✓ writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header  733ms
+   ✓ observes no row for the slug the previous test wrote, once that test had already released its own connection  738ms
+   ✓ still refuses a second case written under an already-used slug within one still-open isolated connection, since isolation scopes visibility rather than disabling constraints  879ms
+   ✓ resolves release() without error when nothing was ever begun or written on the checked-out connection  446ms
+   ✓ resolves release() without error when the caller already sent its own ROLLBACK before calling it  738ms
+   ✓ keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release  2984ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (20 tests) 18ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (13 tests) 297ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (19 tests) 43ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 10ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 7ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (23 tests) 9ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (9 tests) 7ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 11ms
+(node:1875665) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests | 2 failed) 15422ms
+   × answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached 7494ms
+     → a write against the case store failed
+     → relation "public.hypothesis_collects" does not exist
+   × answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection 7927ms
+     → null value in column "state" of relation "case_versions" violates not-null constraint
+     → relation "public.hypothesis_collects" does not exist
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (13 tests) 16ms
+(node:1875851) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (9 tests) 15018ms
+   ✓ persists and reads back a registration exactly as given — name, version, nature, both schemas, timeout, connector and concept  1332ms
+   ✓ answers a read as the database holds it right now, never a value an earlier read already answered  2540ms
+   ✓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint  2208ms
+   ✓ excludes a registration with no output schema: the write is refused and nothing is stored  1321ms
+   ✓ excludes a registration with no connector: the write is refused and nothing is stored  1331ms
+   ✓ leaves the table exactly as it stood when a non-read-only registration is refused before ever reaching the store  588ms
+   ✓ persists a complete read-only registration, unrefused, when registered against the real store  1481ms
+   ✓ holds a registration that states no timeout with the default of sixty seconds, in what the store actually persists  1480ms
+   ✓ resolves a concept to the capability the database currently holds, reflecting a registration made since an earlier resolution  1654ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 74ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (18 tests) 14ms
+(node:1876082) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test | 1 skipped) 5013ms
+   ↓ reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (9 tests) 8ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (8 tests) 8ms
+(node:1876230) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (9 tests | 9 skipped) 1258ms
+   ↓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows
+   ↓ answers the empty vocabulary when the real table currently holds no row
+   ↓ answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them
+   ↓ answers a concept with an empty accepts array when it currently accepts no subject type
+   ↓ answers no concepts, not a rejection, when the concepts table currently holds no row
+   ↓ answers exactly what a row inserted directly into the real table holds, adding no term of its own
+   ↓ answers a later write's own rows, never a row an earlier write already replaced
+   ↓ persists a term write so a read against the real table, outside the store, finds it
+   ↓ leaves a vocabulary's earlier content untouched, when a later insert inside one replace violates a real constraint
+(node:1876260) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 4037ms
+   ✓ leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path  887ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  1184ms
+   ✓ raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied  885ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (8 tests) 12ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (12 tests) 5ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (10 tests) 6ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (9 tests) 5ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 63ms
+(node:1876430) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 5365ms
+   ✓ answers undefined, not a rejection, when a real query matches no row for the slug named  1072ms
+   ✓ raises the caller's own typed error, carrying a message, a context object and the real driver failure as its cause, when a statement violates a real database constraint  1372ms
+   ✓ commits a unit of work as a whole, leaving every statement it ran visible to a separate connection once it resolves  1046ms
+   ✓ lets a unit of work read back a row it just wrote, within the same still-open transaction, before ever committing  959ms
+   ✓ leaves none of a unit of work's earlier statements applied, when a later statement inside it fails against a real constraint  915ms
+(node:1876496) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts (6 tests) 8637ms
+   ✓ persists and reads back a connector configuration exactly as given  1062ms
+   ✓ answers a read as the database holds it right now, never a value an earlier read already answered  1955ms
+   ✓ leaves the table's earlier content untouched, when a later insert inside one replace violates a real constraint  2153ms
+   ✓ excludes a write with no connector identity: the write is refused by the real database and nothing is stored  1023ms
+   ✓ excludes a write with no configuration payload: the write is refused by the real database and nothing is stored  1032ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (11 tests) 4ms
+ ✓ src/__tests__/unit/config/env.spec.ts (9 tests) 7ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 17ms
+ ✓ src/__tests__/unit/seed.spec.ts (3 tests) 16ms
+(node:1876680) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 5030ms
+   ✓ answers a term added to the data since the previous read  1708ms
+   ✓ no longer answers a term removed from the data since the previous read  761ms
+   ✓ answers a concept's ttl as the data now states it, not as it stood at the previous read  2558ms
+(node:1876746) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 2872ms
+   ✓ has already recorded every script migrations/ holds as applied, exactly once each, and left the database holding the schema those scripts describe by the time this spec's own first test runs, proving the suite's own setup ran before any test  1368ms
+   ✓ resolves without error when called the same way vitest itself calls it, against the real configured connection  1503ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (8 tests) 4ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 10ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (8 tests) 5ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 10ms
+(node:1876888) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 6826ms
+   ✓ answers a capability registered since the previous read, never a remembered absence  2937ms
+   ✓ answers a changed registration as it now stands, never the record it replaced  3136ms
+   ✓ refuses to resolve over a real holding with two rows answering one concept, inserted directly against the table bypassing every API  750ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 14ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 8ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (8 tests) 5ms
+(node:1877071) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (2 tests) 5748ms
+   ✓ persists a registered capability as a row RelationalCapabilityStore reads back, through the real factory wiring  2756ms
+   ✓ replaces the persisted record when the same name and version register again through the real wiring  2987ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (9 tests) 22ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 4ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (2 tests) 12ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 55ms
+(node:1877247) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 4034ms
+   ✓ answers both non-conclusion outcomes from an outcomes table currently holding neither  1347ms
+   ✓ persists the seeded non-conclusion outcomes as rows a read against the real table finds  1328ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (7 tests) 13ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 8ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (2 tests) 3ms
+(node:1877372) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts (2 tests) 4553ms
+   ✓ persists a registered connector configuration as a row RelationalConnectorConfigurationStore reads back, through the real factory wiring  2130ms
+   ✓ replaces the persisted configuration when the same connector registers again through the real wiring  2422ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 38ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 9ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 7ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/seed.spec.ts [ src/__tests__/integration/seed.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ wipeFixtureOwnedRows src/__tests__/integration/seed.spec.ts:146:3
+
+ ❯ src/__tests__/integration/seed.spec.ts:239:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/93]⎯
+
+ FAIL  src/__tests__/integration/seed.spec.ts [ src/__tests__/integration/seed.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupSeededRows src/__tests__/integration/seed.spec.ts:179:3
+    177| /** Removes every row seed.ts's own run wrote, the same way wipeFixtur…
+    178| async function cleanupSeededRows(connection: DatabaseConnection): Prom…
+    179|   await connection.query('DELETE FROM public.hypothesis_collects WHERE…
+       |   ^
+    180|   await connection.query('DELETE FROM public.hypotheses WHERE case_slu…
+    181|   await connection.query('DELETE FROM public.case_versions WHERE slug …
+ ❯ src/__tests__/integration/seed.spec.ts:245:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/93]⎯
+
+ FAIL  src/__tests__/integration/factories/diagnose-server.factory.spec.ts [ src/__tests__/integration/factories/diagnose-server.factory.spec.ts ]
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/factories/diagnose-server.factory.spec.ts:180:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/factories/diagnose-server.factory.spec.ts:114:3
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts:286:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/factories/diagnose-server.factory.spec.ts:180:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/factories/diagnose-server.factory.spec.ts:114:3
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts:286:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 496, severity: 'ERROR', code: '23502', detail: 'Failing row contains (intermittent-connection-outage, 1, Intermittent internet connection outage, When an attendant needs to troubleshoot a customer contract repo..., 2024-01-01 00:00:00+00, contract, inconclusive-hypotheses-exhausted, escalate-to-specialist, tier-two-support-queue, formal, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/93]⎯
+
+ FAIL  src/__tests__/integration/factories/diagnose-server.factory.spec.ts [ src/__tests__/integration/factories/diagnose-server.factory.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixtureSeeded src/__tests__/integration/factories/diagnose-server.factory.spec.ts:185:3
+
+ ❯ src/__tests__/integration/factories/diagnose-server.factory.spec.ts:290:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/93]⎯
+
+ FAIL  src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts [ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts ]
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:93:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:105:3
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:141:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:93:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:105:3
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:141:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 496, severity: 'ERROR', code: '23502', detail: 'Failing row contains (intermittent-connection-outage, 1, Intermittent internet connection outage, When an attendant needs to troubleshoot a customer contract repo..., 2024-01-01 00:00:00+00, contract, inconclusive-hypotheses-exhausted, escalate-to-specialist, tier-two-support-queue, formal, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/93]⎯
+
+ FAIL  src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts [ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixtureSeeded src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:110:3
+
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:145:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/93]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-e2e.spec.ts [ src/__tests__/integration/http/diagnose-e2e.spec.ts ]
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/http/diagnose-e2e.spec.ts:158:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/http/diagnose-e2e.spec.ts:170:3
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:277:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ insertFixtureCase src/__tests__/integration/http/diagnose-e2e.spec.ts:158:3
+ ❯ ensureFixtureSeeded src/__tests__/integration/http/diagnose-e2e.spec.ts:170:3
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:277:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 496, severity: 'ERROR', code: '23502', detail: 'Failing row contains (intermittent-connection-outage, 1, Intermittent internet connection outage, When an attendant needs to troubleshoot a customer contract repo..., 2024-01-01 00:00:00+00, contract, inconclusive-hypotheses-exhausted, escalate-to-specialist, tier-two-support-queue, formal, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/93]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-e2e.spec.ts [ src/__tests__/integration/http/diagnose-e2e.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixtureSeeded src/__tests__/integration/http/diagnose-e2e.spec.ts:175:3
+
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:281:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/93]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts [ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts ]
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ seedFixture src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:195:3
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:326:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ seedFixture src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:195:3
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:326:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 708, severity: 'ERROR', code: '23502', detail: 'Failing row contains (persistence-deadline-case-3b1160c5-2cf2-4600-8172-36b1f0148c3e, 1, A case for the persistence-deadline proof, when proving criterion 5 of task/service-on-the-database/diagnos..., 2024-01-01 00:00:00+00, persistence-deadline-subject-3b1160c5-2cf2-4600-8172-36b1f0148c3..., persistence-deadline-outcome-3b1160c5-2cf2-4600-8172-36b1f0148c3..., persistence-deadline-action-3b1160c5-2cf2-4600-8172-36b1f0148c3e, persistence-deadline-recipient-3b1160c5-2cf2-4600-8172-36b1f0148..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/93]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts [ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts ]
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixture src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:199:3
+    197| 
+    198| async function cleanupFixture(connection: DatabaseConnection, fixture:…
+    199|   await connection.query('DELETE FROM public.hypothesis_collects WHERE…
+       |   ^
+    200|   await connection.query('DELETE FROM public.hypotheses WHERE case_slu…
+    201|   await connection.query('DELETE FROM public.case_versions WHERE slug …
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:330:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts [ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts ]
+error: update or delete on table "concepts" violates foreign key constraint "capabilities_concept_fkey" on table "capabilities"
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ wipeGlossaryTables src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:54:3
+     52| async function wipeGlossaryTables(): Promise<void> {
+     53|   await pool.query('DELETE FROM public.concept_accepts');
+     54|   await pool.query('DELETE FROM public.concepts');
+       |   ^
+     55|   await pool.query('DELETE FROM public.subject_types');
+     56|   await pool.query('DELETE FROM public.subject_attributes');
+ ❯ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts:64:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/93]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 61 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > stores a submission of one valid case version, through the real wiring, and answers with its slug and version
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:192:18
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:192:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 672, severity: 'ERROR', code: '23502', detail: 'Failing row contains (author-case-version-case-4be31b06-108d-4b33-9e22-11ed7adac2ed, 1, A case, when a curator submits a case version for author-case-version to..., 2024-01-01 00:00:00+00, author-case-version-subject-4be31b06-108d-4b33-9e22-11ed7adac2ed, author-case-version-fallback-outcome-4be31b06-108d-4b33-9e22-11e..., author-case-version-fallback-action-4be31b06-108d-4b33-9e22-11ed..., author-case-version-fallback-recipient-4be31b06-108d-4b33-9e22-1..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > stores a submission of one valid case version, through the real wiring, and answers with its slug and version
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses a submission naming a slug and version already stored, through the real store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > does not refuse, through the real wiring, a submission that holds against every validator rule, including a case declaring more than one hypothesis
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses through the real wiring a submission naming an outcome the glossary does not hold, naming the outcome — every other term, the concept and its capability staying coherent
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses through the real wiring a submission whose hypothesis collects a concept that does not accept the case's declared subject type, naming the concept and the subject type
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses through the real wiring a submission whose collected concept has no registered capability at all, naming the concept
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > answers the real capability check from the registration as it stands at this submission, refusing a later submission once the real registration's own output schema is edited away directly against the table, and storing nothing for that refused version
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses through the real wiring, joining every coherence violation together, when a collected concept is absent from the glossary entirely — which also leaves it with no capability, since a capability's own concept column is a real foreign key into concepts and can never name one the glossary does not hold
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses through the real wiring, joining every structural violation together, before the coherence checks or the store are ever reached
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused structurally
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused for a coherence violation
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupVocabulary src/__tests__/integration/factories/author-case-version.factory.spec.ts:148:3
+    146| /** Every row this file's own tests wrote for one vocabulary, deleted …
+    147| async function cleanupVocabulary(vocabulary: IVocabulary): Promise<voi…
+    148|   await pool.query('DELETE FROM public.hypothesis_collects WHERE case_…
+       |   ^
+    149|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = $1…
+    150|   await pool.query('DELETE FROM public.case_versions WHERE slug = $1',…
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:163:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > refuses a submission naming a slug and version already stored, through the real store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:209:5
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:209:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 672, severity: 'ERROR', code: '23502', detail: 'Failing row contains (author-case-version-case-a3fef588-cd67-4fe1-9b45-0d4057cc8c67, 1, A case, when a curator submits a case version for author-case-version to..., 2024-01-01 00:00:00+00, author-case-version-subject-a3fef588-cd67-4fe1-9b45-0d4057cc8c67, author-case-version-fallback-outcome-a3fef588-cd67-4fe1-9b45-0d4..., author-case-version-fallback-action-a3fef588-cd67-4fe1-9b45-0d40..., author-case-version-fallback-recipient-a3fef588-cd67-4fe1-9b45-0..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > does not refuse, through the real wiring, a submission that holds against every validator rule, including a case declaring more than one hypothesis
+AssertionError: promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:251:51
+    249|   });
+    250| 
+    251|   await expect(command.authorCaseVersion(document)).resolves.toEqual({…
+       |                                                   ^
+    252| });
+    253| 
+
+Caused by: CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:251:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { operation: 'write' } }
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:251:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 672, severity: 'ERROR', code: '23502', detail: 'Failing row contains (author-case-version-case-c3067016-aa07-4621-b023-229bd70ca0e0, 1, A case, when a curator submits a case version for author-case-version to..., 2024-01-01 00:00:00+00, author-case-version-subject-c3067016-aa07-4621-b023-229bd70ca0e0, author-case-version-fallback-outcome-c3067016-aa07-4621-b023-229..., author-case-version-fallback-action-c3067016-aa07-4621-b023-229b..., author-case-version-fallback-recipient-c3067016-aa07-4621-b023-2..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > answers the real capability check from the registration as it stands at this submission, refusing a later submission once the real registration's own output schema is edited away directly against the table, and storing nothing for that refused version
+AssertionError: promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:336:90
+    334|     await registerCoherentCapability(vocabulary);
+    335|     const command = createAuthorCaseVersion(pool);
+    336|     await expect(command.authorCaseVersion(validCaseDocument(vocabular…
+       |                                                                                          ^
+    337|       slug: vocabulary.slug,
+    338|       version: 1,
+
+Caused by: CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:336:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { operation: 'write' } }
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ AuthorCaseVersionService.authorCaseVersion src/case/author-case-version.service.ts:57:5
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:336:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 672, severity: 'ERROR', code: '23502', detail: 'Failing row contains (author-case-version-case-396bd8e4-0590-47e4-90cb-353b734f29d8, 1, A case, when a curator submits a case version for author-case-version to..., 2024-01-01 00:00:00+00, author-case-version-subject-396bd8e4-0590-47e4-90cb-353b734f29d8, author-case-version-fallback-outcome-396bd8e4-0590-47e4-90cb-353..., author-case-version-fallback-action-396bd8e4-0590-47e4-90cb-353b..., author-case-version-fallback-recipient-396bd8e4-0590-47e4-90cb-3..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused structurally
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ storedRowsFor src/__tests__/integration/factories/author-case-version.factory.spec.ts:175:51
+    173|   collects: readonly unknown[];
+    174| }> {
+    175|   const [cases, versions, hypotheses, collects] = await Promise.all([
+       |                                                   ^
+    176|     pool.query('SELECT slug FROM public.cases WHERE slug = $1', [slug]…
+    177|     pool.query('SELECT version FROM public.case_versions WHERE slug = …
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:409:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/93]⎯
+
+ FAIL  src/__tests__/integration/factories/author-case-version.factory.spec.ts > leaves no row in cases, case_versions, hypotheses or hypothesis_collects when a submission is refused for a coherence violation
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ storedRowsFor src/__tests__/integration/factories/author-case-version.factory.spec.ts:175:51
+    173|   collects: readonly unknown[];
+    174| }> {
+    175|   const [cases, versions, hypotheses, collects] = await Promise.all([
+       |                                                   ^
+    176|     pool.query('SELECT slug FROM public.cases WHERE slug = $1', [slug]…
+    177|     pool.query('SELECT version FROM public.case_versions WHERE slug = …
+ ❯ src/__tests__/integration/factories/author-case-version.factory.spec.ts:420:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/93]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > answers a case written directly to the real store, matching what is currently stored, with no publish step in between
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:185:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:185:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 642, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-query-case-392fd614-2250-4e50-91ff-5eb662eb219c, 1, A case, when a curator needs a case to test read-case composition over, 2024-01-01 00:00:00+00, case-query-subject-392fd614-2250-4e50-91ff-5eb662eb219c, case-query-fallback-outcome-392fd614-2250-4e50-91ff-5eb662eb219c, case-query-fallback-action-392fd614-2250-4e50-91ff-5eb662eb219c, case-query-fallback-recipient-392fd614-2250-4e50-91ff-5eb662eb21..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/93]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > answers a case written directly to the real store, matching what is currently stored, with no publish step in between
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring a case document declaring no hypothesis, naming the structural violation
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, a case document whose collected concept the glossary does not hold — the real store's own foreign key from hypothesis_collects into concepts, never reachable through the fake store this task retired
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupVocabulary src/__tests__/integration/factories/case-query.factory.spec.ts:159:3
+    157| /** Every row this file's own tests wrote for one vocabulary, deleted …
+    158| async function cleanupVocabulary(vocabulary: IVocabulary): Promise<voi…
+    159|   await pool.query('DELETE FROM public.hypothesis_collects WHERE case_…
+       |   ^
+    160|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = $1…
+    161|   await pool.query('DELETE FROM public.case_versions WHERE slug = $1',…
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:174:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/93]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses through the real wiring a case document declaring no hypothesis, naming the structural violation
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:201:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:201:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 642, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-query-case-37278aa1-feb8-47ce-b479-4fcb9d480e71, 1, A case, when a curator needs a case to test read-case composition over, 2024-01-01 00:00:00+00, case-query-subject-37278aa1-feb8-47ce-b479-4fcb9d480e71, case-query-fallback-outcome-37278aa1-feb8-47ce-b479-4fcb9d480e71, case-query-fallback-action-37278aa1-feb8-47ce-b479-4fcb9d480e71, case-query-fallback-recipient-37278aa1-feb8-47ce-b479-4fcb9d480e..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/93]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:242:5
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:242:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 642, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-query-case-241eb202-d77e-42d0-9500-cb7308f1c7d6, 1, A case, when a curator needs a case to test read-case composition over, 2024-01-01 00:00:00+00, case-query-subject-241eb202-d77e-42d0-9500-cb7308f1c7d6, case-query-fallback-outcome-241eb202-d77e-42d0-9500-cb7308f1c7d6, case-query-fallback-action-241eb202-d77e-42d0-9500-cb7308f1c7d6, case-query-fallback-recipient-241eb202-d77e-42d0-9500-cb7308f1c7..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/93]⎯
+
+ FAIL  src/__tests__/integration/factories/case-query.factory.spec.ts > replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:264:5
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/case-query.factory.spec.ts:264:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 642, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-query-case-0d19f412-3e2e-4a49-905c-77a404b5ae14, 1, A case, when a curator needs a case to test read-case composition over, 2024-01-01 00:00:00+00, case-query-subject-0d19f412-3e2e-4a49-905c-77a404b5ae14, case-query-fallback-outcome-0d19f412-3e2e-4a49-905c-77a404b5ae14, case-query-fallback-action-0d19f412-3e2e-4a49-905c-77a404b5ae14, case-query-fallback-recipient-0d19f412-3e2e-4a49-905c-77a404b5ae..., null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/93]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > writes two independent investigation records for two calls sharing the same case, subject, narrative and requester
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:166:3
+    164|   );
+    165|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [voc…
+    166|   await pool.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ freshCase src/__tests__/integration/factories/production-diagnose.factory.spec.ts:206:3
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:225:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/93]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:166:3
+    164|   );
+    165|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [voc…
+    166|   await pool.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ freshCase src/__tests__/integration/factories/production-diagnose.factory.spec.ts:206:3
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:245:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/93]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > passes the given requester straight through to the observation source, substituting none of its own
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:166:3
+    164|   );
+    165|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [voc…
+    166|   await pool.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ freshCase src/__tests__/integration/factories/production-diagnose.factory.spec.ts:206:3
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:262:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/93]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:166:3
+    164|   );
+    165|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [voc…
+    166|   await pool.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ freshCase src/__tests__/integration/factories/production-diagnose.factory.spec.ts:206:3
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:278:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/93]⎯
+
+ FAIL  src/__tests__/integration/factories/production-diagnose.factory.spec.ts > sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertVocabulary src/__tests__/integration/factories/production-diagnose.factory.spec.ts:166:3
+    164|   );
+    165|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [voc…
+    166|   await pool.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ freshCase src/__tests__/integration/factories/production-diagnose.factory.spec.ts:206:3
+ ❯ src/__tests__/integration/factories/production-diagnose.factory.spec.ts:291:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/93]⎯
+
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts:151:5
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts:151:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 632, severity: 'ERROR', code: '23502', detail: 'Failing row contains (store-wiring-case-9a19b909-85e8-4968-bb7f-e60337a37811, 1, A case proving the connection is shared, when proving store-wiring criterion 5, 2024-01-01 00:00:00+00, store-wiring-subject-9a19b909-85e8-4968-bb7f-e60337a37811, store-wiring-outcome-9a19b909-85e8-4968-bb7f-e60337a37811, store-wiring-action-9a19b909-85e8-4968-bb7f-e60337a37811, store-wiring-recipient-9a19b909-85e8-4968-bb7f-e60337a37811, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/93]⎯
+
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupFixture src/__tests__/integration/factories/store-wiring.spec.ts:94:3
+     92| 
+     93| async function cleanupFixture(fixture: IFixture): Promise<void> {
+     94|   await connection.query('DELETE FROM public.hypothesis_collects WHERE…
+       |   ^
+     95|   await connection.query('DELETE FROM public.hypotheses WHERE case_slu…
+     96|   await connection.query('DELETE FROM public.case_versions WHERE slug …
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts:120:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/93]⎯
+
+ FAIL  src/__tests__/integration/factories/store-wiring.spec.ts > answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertPinnedCaseVersion src/__tests__/integration/factories/store-wiring.spec.ts:166:3
+    164| async function insertPinnedCaseVersion(fixture: IFixture): Promise<voi…
+    165|   await connection.query('INSERT INTO public.cases (slug) VALUES ($1)'…
+    166|   await connection.query(
+       |   ^
+    167|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    168|      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
+ ❯ src/__tests__/integration/factories/store-wiring.spec.ts:199:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/isolated-connection.spec.ts > lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ seedInvestigationPrerequisites src/__tests__/integration/persistence/isolated-connection.spec.ts:99:3
+     97|   await target.query('INSERT INTO recipients (name) VALUES ($1)', [GLO…
+     98|   await insertCase(target, PINNED_CASE_SLUG);
+     99|   await target.query(
+       |   ^
+    100|     `INSERT INTO case_versions (slug, version, title, when_to_use, aut…
+    101|      VALUES ($1, $2, 'A title', 'A use', now(), $3, $4, $5, $6)`,
+ ❯ writesTheSharedInvestigationIdAndSucceeds src/__tests__/integration/persistence/isolated-connection.spec.ts:140:5
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts:188:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/isolated-connection.spec.ts > lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ seedInvestigationPrerequisites src/__tests__/integration/persistence/isolated-connection.spec.ts:99:3
+     97|   await target.query('INSERT INTO recipients (name) VALUES ($1)', [GLO…
+     98|   await insertCase(target, PINNED_CASE_SLUG);
+     99|   await target.query(
+       |   ^
+    100|     `INSERT INTO case_versions (slug, version, title, when_to_use, aut…
+    101|      VALUES ($1, $2, 'A title', 'A use', now(), $3, $4, $5, $6)`,
+ ❯ writesTheSharedInvestigationIdAndSucceeds src/__tests__/integration/persistence/isolated-connection.spec.ts:140:5
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts:192:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > reads back a case's root together with its hypotheses and their resolutions and referrals, exactly as written
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:197:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:197:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 563, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-roundtrip-c3566ef7-3e5c-4ebf-b986-0ea782e676c7, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-0a1009ff-0538-469d-aa6c-48d19e3e94fa, case-store-outcome-18d57f76-65da-4dd1-bcc4-abb1901d236a, case-store-action-717fc6c9-9569-4163-8bbd-416180483129, case-store-recipient-b5ffbb5b-bc2f-4363-a7c3-934a2d123fa6, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > reads back a case's root together with its hypotheses and their resolutions and referrals, exactly as written
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > orders hypotheses by their own declared position, and each hypothesis's own collects by concept name, regardless of the order they were written in
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > answers absence, not a rejection, for a slug and version nothing was ever written under
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > refuses a second write to the same slug and version through this store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store's own CaseVersionAlreadyStoredError
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > does not refuse a write for a slug and version not already stored
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > keeps an earlier version readable, and lists every version ever written under one slug, after later versions are written
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > keeps exactly one row in cases for one slug after two versions are written under it, never creating a second case
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a later hypothesis in the same write violates a real constraint
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a hypothesis's own collects reference a concept that violates a real foreign key
+error: relation "public.hypothesis_collects" does not exist
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ cleanupWrittenCases src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:143:3
+    141| async function cleanupWrittenCases(): Promise<void> {
+    142|   if (slugsWrittenByThisTest.length === 0) return;
+    143|   await pool.query('DELETE FROM public.hypothesis_collects WHERE case_…
+       |   ^
+    144|   await pool.query('DELETE FROM public.hypotheses WHERE case_slug = AN…
+    145|   await pool.query('DELETE FROM public.case_versions WHERE slug = ANY(…
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:175:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > orders hypotheses by their own declared position, and each hypothesis's own collects by concept name, regardless of the order they were written in
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:222:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:222:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 562, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-ordering-7ab026c5-63ff-47b4-b83c-815e8761a208, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-2295a536-4987-4f80-8f05-ff9468595665, case-store-outcome-5131739a-c25e-47a8-922b-60da5fd6383e, case-store-action-60cdd8e2-6a97-412f-a143-adb792b86b3e, case-store-recipient-9da08409-6bb5-4733-b9d1-1742ed4995cd, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > refuses a second write to the same slug and version through this store's own CaseVersionAlreadyStoredError, and leaves the stored version exactly as it was
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:253:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:253:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 564, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-write-once-360bea42-c124-4b98-a430-966be1734632, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-ea1a9210-c66f-45a1-bd45-34eaf9fe1424, case-store-outcome-bb4fc5e2-2c21-4c7e-ae7d-521d7a2fb4dd, case-store-action-1d9d4bcf-8dfb-4a35-93c6-c868a9f121f1, case-store-recipient-cef7aa92-5ee0-4d34-bf30-ddbc6d6def3a, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > lets only one of two concurrent writes to the same slug and version succeed, the other refused through this store's own CaseVersionAlreadyStoredError
+AssertionError: expected [] to have a length of 1 but got +0
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 0[39m
+
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:274:69
+    272|   const results = await Promise.allSettled([store.writeVersion(slug, 1…
+    273| 
+    274|   expect(results.filter((result) => result.status === 'fulfilled')).to…
+       |                                                                     ^
+    275|   const rejected = results.find((result) => result.status === 'rejecte…
+    276|   expect(rejected?.reason).toBeInstanceOf(CaseVersionAlreadyStoredErro…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > does not refuse a write for a slug and version not already stored
+AssertionError: promise rejected "CaseStoreError: a write against the case … { context: { operation: '…' } }" instead of resolving
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:289:52
+    287|   const store = new RelationalCaseStore(pool);
+    288| 
+    289|   await expect(store.writeVersion(slug, 1, theCase)).resolves.toBeUnde…
+       |                                                    ^
+    290| });
+    291| 
+
+Caused by: CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:289:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { operation: 'write' } }
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:289:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 565, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-new-version-31c203ca-d405-4976-994d-4d61a3b32c96, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-52df514f-d61e-4081-b0af-a12a2159063e, case-store-outcome-b56242bc-4ddb-4f67-809e-486aa77382b9, case-store-action-001d344f-05e0-42f9-a07b-677face91de0, case-store-recipient-3ab018e7-b7e9-474e-ad58-249b191d1b82, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > keeps an earlier version readable, and lists every version ever written under one slug, after later versions are written
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:301:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:301:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 562, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-versions-6b2be3e4-bfe1-447d-bd62-f3a05489d566, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-54cde0e1-bd39-431d-b92f-3e76bff36ce9, case-store-outcome-fb3a7f88-9ab9-425d-8745-9764855c9add, case-store-action-45f5ccf6-d53a-4608-b621-120bee223799, case-store-recipient-1978ff4a-54a2-4f4d-a8db-dbecf84cc581, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > keeps exactly one row in cases for one slug after two versions are written under it, never creating a second case
+CaseStoreError: a write against the case store failed
+ ❯ raiseWriteFailure src/persistence/relational-case-store.repository.ts:451:10
+    449| /** Builds this store's own typed error for a failed write, carrying t…
+    450| function raiseWriteFailure(cause: unknown): Error {
+    451|   return new CaseStoreError('a write against the case store failed', {…
+       |          ^
+    452| }
+    453| 
+ ❯ src/persistence/relational-case-store.repository.ts:441:91
+ ❯ runStatement src/persistence/database-access.ts:90:11
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:321:3
+
+Caused by: error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ runStatement src/persistence/database-access.ts:87:22
+ ❯ runAllStatements src/persistence/relational-case-store.repository.ts:214:3
+ ❯ runInTransaction src/persistence/database-access.ts:126:20
+ ❯ RelationalCaseStore.writeVersion src/persistence/relational-case-store.repository.ts:141:5
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:321:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 562, severity: 'ERROR', code: '23502', detail: 'Failing row contains (case-store-one-case-03b7e239-b9a7-4ea7-90a6-1778aa795fc7, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-e5e22112-bcd1-401b-9c7f-972f1824b3ff, case-store-outcome-95c6c3cc-76c1-41ac-abce-0f2a480a4826, case-store-action-ac576051-9f04-409b-8ecd-9b0b387ce3c4, case-store-recipient-1c3a29f7-2874-4b1e-9ebe-6e951f8280ff, null, null, null).', hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: 'public', table: 'case_versions', dataType: undefined, constraint: undefined, file: 'execMain.c', routine: 'ReportNotNullViolationError' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a later hypothesis in the same write violates a real constraint
+AssertionError: expected CaseStoreError: a write against the case … { context: { operation: '…' } } to match object { cause: { code: '23505' } }
+(3 matching properties omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- {[39m
+[32m-   "cause": {[39m
+[32m-     "code": "23505",[39m
+[31m+ CaseStoreError {[39m
+[31m+   "message": "a write against the case store failed",[39m
+[31m+   "cause": error {[39m
+[31m+     "message": "null value in column \"state\" of relation \"case_versions\" violates not-null constraint",[39m
+[31m+     "length": 569,[39m
+[31m+     "name": "error",[39m
+[31m+     "severity": "ERROR",[39m
+[31m+     "code": "23502",[39m
+[31m+     "detail": "Failing row contains (case-store-atomic-position-06ab997b-f7a8-4686-b09b-bd5c01409a24, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-ab6df1c5-226b-4552-820f-a4c138e8fda2, case-store-outcome-b3f26ced-30ef-4e3f-ac24-52c50aa6e8cc, case-store-action-d160ef2c-f859-4f40-bb84-286b9874509a, case-store-recipient-31d9bcec-8fe0-40eb-8c73-aa9a872ae244, null, null, null).",[39m
+[31m+     "hint": undefined,[39m
+[31m+     "position": undefined,[39m
+[31m+     "internalPosition": undefined,[39m
+[31m+     "internalQuery": undefined,[39m
+[31m+     "where": undefined,[39m
+[31m+     "schema": "public",[39m
+[31m+     "table": "case_versions",[39m
+[31m+     "column": "state",[39m
+[31m+     "dataType": undefined,[39m
+[31m+     "constraint": undefined,[39m
+[31m+     "file": "execMain.c",[39m
+[31m+     "line": "2223",[39m
+[31m+     "routine": "ReportNotNullViolationError",[39m
+[31m+   },[39m
+[31m+   "context": {[39m
+[31m+     "operation": "write",[39m
+[2m    },[22m
+[31m+   "name": "CaseStoreError",[39m
+[2m  }[22m
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves nothing behind — no case_versions row, no hypothesis row, no collect row — when a hypothesis's own collects reference a concept that violates a real foreign key
+AssertionError: expected CaseStoreError: a write against the case … { context: { operation: '…' } } to match object { cause: { code: '23503' } }
+(3 matching properties omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- {[39m
+[32m-   "cause": {[39m
+[32m-     "code": "23503",[39m
+[31m+ CaseStoreError {[39m
+[31m+   "message": "a write against the case store failed",[39m
+[31m+   "cause": error {[39m
+[31m+     "message": "null value in column \"state\" of relation \"case_versions\" violates not-null constraint",[39m
+[31m+     "length": 563,[39m
+[31m+     "name": "error",[39m
+[31m+     "severity": "ERROR",[39m
+[31m+     "code": "23502",[39m
+[31m+     "detail": "Failing row contains (case-store-atomic-fk-687cf22a-1df6-47f7-88a4-5f945c78f7d3, 1, A title, A use, 2024-01-01 00:00:00+00, case-store-subject-0271f471-e268-4e7d-b84a-70373e11c7cf, case-store-outcome-3954239b-ef6d-4ef7-9121-f573dfc03fb2, case-store-action-495f5255-8045-411d-a22c-3fbf2126604c, case-store-recipient-53d54d6d-7dad-4526-9fc5-4993aec46790, null, null, null).",[39m
+[31m+     "hint": undefined,[39m
+[31m+     "position": undefined,[39m
+[31m+     "internalPosition": undefined,[39m
+[31m+     "internalQuery": undefined,[39m
+[31m+     "where": undefined,[39m
+[31m+     "schema": "public",[39m
+[31m+     "table": "case_versions",[39m
+[31m+     "column": "state",[39m
+[31m+     "dataType": undefined,[39m
+[31m+     "constraint": undefined,[39m
+[31m+     "file": "execMain.c",[39m
+[31m+     "line": "2223",[39m
+[31m+     "routine": "ReportNotNullViolationError",[39m
+[31m+   },[39m
+[31m+   "context": {[39m
+[31m+     "operation": "write",[39m
+[2m    },[22m
+[31m+   "name": "CaseStoreError",[39m
+[2m  }[22m
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:218:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:243:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:262:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:282:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > does not refuse a write for an id not already stored
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:300:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:323:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > reads back an evidence item exactly as written when its result is not ok and it carries a result detail
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:359:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > reads back an assessment with no determining_hypothesis when the fallback answered and none was named
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:382:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:402:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ insertFixtureRows src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:113:3
+    111|   );
+    112|   await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [nam…
+    113|   await pool.query(
+       |   ^
+    114|     `INSERT INTO public.case_versions (slug, version, title, when_to_u…
+    115|      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+ ❯ freshFixtures src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:123:3
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:434:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > applies the five scripts, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not
+AssertionError: expected [ 'actions', 'capabilities', …(19) ] to deeply equal [ 'actions', 'capabilities', …(17) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,15 +1,17 @@[39m
+[2m  [[22m
+[2m    "actions",[22m
+[2m    "capabilities",[22m
+[31m+   "case_version_hypotheses",[39m
+[2m    "case_versions",[22m
+[2m    "cases",[22m
+[2m    "concept_accepts",[22m
+[2m    "concepts",[22m
+[2m    "connector_configurations",[22m
+[2m    "hypotheses",[22m
+[32m-   "hypothesis_collects",[39m
+[31m+   "hypothesis_revision_collects",[39m
+[31m+   "hypothesis_revisions",[39m
+[2m    "investigation_evaluation_citations",[22m
+[2m    "investigation_evaluations",[22m
+[2m    "investigation_evidence",[22m
+[2m    "investigation_subject_attribute_values",[22m
+[2m    "investigations",[22m
+
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:331:45
+    329|     [freshSchema],
+    330|   );
+    331|   expect(rows.map((row) => row.table_name)).toEqual(EXPECTED_TABLES);
+       |                                             ^
+    332| });
+    333| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > persists and reads back a full case, hypothesis, resolution, referral and its collects
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:339:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:364:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > holds every domain column NOT NULL except exactly the five columns the model declares optional
+AssertionError: expected [ { …(2) }, { …(2) }, { …(2) }, …(3) ] to deeply equal [ { …(2) }, { …(2) }, { …(2) }, …(2) ]
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -2,10 +2,14 @@[39m
+[2m    {[22m
+[2m      "column_name": "consolidation_register",[22m
+[2m      "table_name": "case_versions",[22m
+[2m    },[22m
+[2m    {[22m
+[31m+     "column_name": "released_at",[39m
+[31m+     "table_name": "case_versions",[39m
+[31m+   },[39m
+[31m+   {[39m
+[2m      "column_name": "reason",[22m
+[2m      "table_name": "investigation_evaluations",[22m
+[2m    },[22m
+[2m    {[22m
+[2m      "column_name": "result_detail",[22m
+
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:413:16
+    411|   );
+    412| 
+    413|   expect(rows).toEqual([
+       |                ^
+    414|     { table_name: 'case_versions', column_name: 'consolidation_registe…
+    415|     { table_name: 'investigation_evaluations', column_name: 'reason' },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:430:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > accepts exactly the three values verdict declares and refuses one it does not
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:440:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > accepts exactly the four values evidence-result declares and refuses one it does not
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:453:29
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > accepts exactly the three values evaluation-reason declares and refuses one it does not
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:464:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[61/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:497:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[62/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses a case version whose subject names a subject type the glossary does not hold
+AssertionError: expected error: null value in column "state" of re… { …(15) } to match object { code: '23503' }
+(17 matching properties omitted from actual)
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- {[39m
+[32m-   "code": "23503",[39m
+[31m+ DatabaseError {[39m
+[31m+   "code": "23502",[39m
+[2m  }[22m
+
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:527:3
+    525|   await insertCase(client, slug);
+    526| 
+    527|   await expect(
+       |   ^
+    528|     client.query(
+    529|       `INSERT INTO case_versions (slug, version, title, when_to_use, a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[63/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses a second evidence row for one investigation under a concept it already collected
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:565:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[64/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses a second evaluation row for one investigation under a hypothesis already judged
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ aStoredInvestigation src/__tests__/integration/persistence/schema-migrations.spec.ts:266:3
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:574:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[65/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses storing the same case version a second time under its own slug and version
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:596:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[66/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses a second hypothesis of one case sharing an already-used position
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:606:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[67/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > refuses a second hypothesis of one case sharing an already-used name
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:619:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[68/93]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts > leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them
+error: null value in column "state" of relation "case_versions" violates not-null constraint
+ ❯ node_modules/pg/lib/client.js:694:17
+ ❯ insertCaseVersion src/__tests__/integration/persistence/schema-migrations.spec.ts:131:3
+    129|   const title = options.title === undefined ? 'A stored case title' : …
+    130|   const register = options.consolidationRegister === undefined ? null …
+    131|   await client.query(
+       |   ^
+    132|     `INSERT INTO case_versions
+    133|        (slug, version, title, when_to_use, authored_at, subject, fallb…
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:640:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[69/93]⎯
+
+
+ Test Files  14 failed | 68 passed (82)
+      Tests  61 failed | 732 passed | 36 skipped (829)
+   Start at  14:38:41
+   Duration  364.68s (transform 1.43s, setup 0ms, collect 4.04s, tests 342.42s, environment 25ms, prepare 5.15s)
+
+

@@ -1,33 +1,38 @@
 // Proof through the module's real wiring (task/case-store/read-case), against a real, externally
 // provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned): a case
 // written directly to the real, relational case store is readable at its very next read with no
-// publication step in between, pinned by the real store's own content-identity hash over what is
-// currently stored; a structural violation refuses through the real glossary and
+// publication step in between; a structural violation refuses through the real glossary and
 // capability-registry factories the same way the unit proof shows through fakes, and a coherence
 // violation refuses as the composed CaseNotValidError; a case that validated once is refused again
 // once the real glossary no longer accepts the subject type the case declares for a concept it
 // depends on, edited directly against the table bypassing every API; a case collecting a concept
-// the glossary never held is refused by the real store itself, at write time, through a real
-// foreign key — never reaching the coherence module's own identical, already-unit-tested check
-// (hypothesis_collects.concept_name → concepts.name is a real constraint the file-backed store this
-// task retired never enforced, so this scenario used to be a read-time discovery and is now a
-// write-time refusal instead); and replaying a pinned version through the real store answers it
-// unchanged even after the real capability registration the case depends on is deleted directly
-// against the table.
+// the glossary never held is refused by the real store itself, at write time, through a real foreign
+// key — never reaching the coherence module's own identical, already-unit-tested check; and
+// replaying a pinned version through the real store answers it unchanged even after the real
+// capability registration the case depends on is deleted directly against the table.
 //
-// Sibling fix, disclosed in this task's own proof record: this file used to seed three fresh temp
-// directories per test and write plain JSON files the way the file-backed stores used to persist
-// them; createCaseQuery now takes the one shared DatabaseConnection this task's own cutover wires
-// through createCaseStore, createGlossaryQuery and createCapabilityQuery alike, so this file seeds
-// a fresh vocabulary, concept and capability through the real database per test instead. The
-// former "routes each of the three dependencies to the directory named for it" inference test is
-// dropped rather than adapted: createCaseQuery no longer takes three independently routed
-// directories at all, so its own premise — that the three could differ — no longer exists under
-// this task's own single-connection signature. The "collected concept the glossary does not hold"
-// test is rewritten for the same underlying reason: hypothesis_collects' own real foreign key into
-// concepts refuses the write itself before a read could ever discover the absence, so what this
-// test proves moved from a read-time CaseNotValidError to a write-time CaseStoreError — the
-// coherence module's own identical check keeps its existing, unaffected unit-level proof.
+// Rewritten against RelationalCaseStore's own rebuilt shape (task/case-lifecycle-persistence/
+// relational-case-store-for-lifecycle): readVersion/writeVersion are gone, replaced below by
+// writeCase(), a fixture helper built over createDraft, insertHypothesisRevision, placeHypothesis
+// and release — the same lifecycle primitives task/case-lifecycle-operations' own author path calls
+// — since there is no longer a single call that writes a whole version. The store's own
+// content-identity hash is gone too (case-store.port.ts's own header comment), so this file no
+// longer reads one back through RelationalCaseStore.readVersion; assembleVersion is asserted defined
+// instead.
+//
+// Sibling fix, disclosed in the original task's own proof record and unaffected by this rewrite:
+// this file seeds a fresh vocabulary, concept and capability through the real database per test
+// (createCaseQuery takes the one shared DatabaseConnection this task's own cutover wires through);
+// the former "routes each of the three dependencies to the directory named for it" inference test
+// stays dropped for the same reason it was dropped there.
+//
+// writeCase() below calls the store's own release() for real on every case it writes, so
+// migrations/0009's own release-conditioned rules now make that released case_versions row (and its
+// own case_version_hypotheses entry) permanent — an ordinary DELETE against one is a silent no-op,
+// and a DELETE against whatever it still references (a hypothesis-revision, a glossary row) fails on
+// that surviving row's own foreign key. deleteTolerantly below runs every cleanup statement expecting
+// exactly that — the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already
+// establishes for this migration's consequence.
 //
 // Divergence disclosed here for the same reason every sibling integration proof already discloses
 // it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
@@ -36,6 +41,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { replayCase } from '../../../case/case-query.service.js';
+import type { Resolution } from '../../../case/case.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../../../errors/case-not-valid.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
@@ -43,7 +49,6 @@ import { createCapabilityRegistry } from '../../../factories/capability-registry
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
-import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
 function requireDatabaseUrl(): string {
   const url = process.env.DATABASE_URL;
@@ -52,8 +57,6 @@ function requireDatabaseUrl(): string {
   }
   return url;
 }
-
-const VERSION = 1;
 
 interface IVocabulary {
   readonly slug: string;
@@ -68,8 +71,24 @@ interface IVocabulary {
   readonly capabilityName: string;
 }
 
+const FOREIGN_KEY_VIOLATION = '23503';
+
 let pool: DatabaseConnection;
 let vocabulariesWrittenByThisTest: IVocabulary[] = [];
+
+/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
+function isForeignKeyViolation(error: unknown): boolean {
+  return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
+}
+
+/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
+async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
+  try {
+    await pool.query(text, params);
+  } catch (error) {
+    if (!isForeignKeyViolation(error)) throw error;
+  }
+}
 
 beforeAll(() => {
   pool = createDatabaseConnection(requireDatabaseUrl());
@@ -96,30 +115,38 @@ function freshVocabulary(): IVocabulary {
   };
 }
 
-/** A raw case document — every attribute parseCaseDocument requires — naming exactly the given vocabulary's own terms, for a test to depart from one attribute at a time. */
-function validCaseDocument(vocabulary: IVocabulary, overrides: Record<string, unknown> = {}): Record<string, unknown> {
+/** The one hypothesis writeCase() places unless a test names its own — collecting the given vocabulary's own concept, resolving to its own outcome/action/recipient. */
+function aHypothesis(vocabulary: IVocabulary, overrides: { collects?: readonly string[] } = {}) {
   return {
+    hypothesis_name: 'h1',
+    criterion: 'prose no check in this composition ever reads',
+    collects: overrides.collects ?? [vocabulary.concept],
+    resolution: { outcome: vocabulary.outcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } } satisfies Resolution,
+  };
+}
+
+/**
+ * Originates one case version through the store's own lifecycle primitives — createDraft, one
+ * insertHypothesisRevision plus one placeHypothesis per hypothesis, and release — answering the
+ * version number the store assigned. Replaces this file's own previous
+ * createCaseStore(pool).writeVersion(...) call: the new ICaseStore has no single write call.
+ */
+async function writeCase(vocabulary: IVocabulary, hypotheses: readonly ReturnType<typeof aHypothesis>[] = [aHypothesis(vocabulary)]): Promise<number> {
+  const store = createCaseStore(pool);
+  const version = await store.createDraft({
     slug: vocabulary.slug,
     title: 'A case',
     when_to_use: 'when a curator needs a case to test read-case composition over',
-    version: VERSION,
     authored_at: '2024-01-01T00:00:00.000Z',
     subject: vocabulary.subject,
-    fallback: {
-      outcome: vocabulary.fallbackOutcome,
-      referral: { action: vocabulary.fallbackAction, recipient: vocabulary.fallbackRecipient },
-    },
-    hypotheses: [
-      {
-        name: 'h1',
-        position: 1,
-        criterion: 'prose no check in this composition ever reads',
-        collects: [vocabulary.concept],
-        resolution: { outcome: vocabulary.outcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } },
-      },
-    ],
-    ...overrides,
-  };
+    fallback: { outcome: vocabulary.fallbackOutcome, referral: { action: vocabulary.fallbackAction, recipient: vocabulary.fallbackRecipient } },
+  });
+  for (const hypothesis of hypotheses) {
+    const revision = await store.insertHypothesisRevision({ slug: vocabulary.slug, ...hypothesis });
+    await store.placeHypothesis({ slug: vocabulary.slug, version, hypothesis_name: hypothesis.hypothesis_name, revision, position: 1 });
+  }
+  await store.release(vocabulary.slug, version);
+  return version;
 }
 
 /** Writes every vocabulary row and, unless told to skip it, the concept row this vocabulary's own case depends on, directly against the real tables — tracked for this file's own afterEach cleanup. */
@@ -156,17 +183,19 @@ async function registerCoherentCapability(vocabulary: IVocabulary): Promise<void
 
 /** Every row this file's own tests wrote for one vocabulary, deleted in an order that always satisfies their own foreign keys. */
 async function cleanupVocabulary(vocabulary: IVocabulary): Promise<void> {
-  await pool.query('DELETE FROM public.hypothesis_collects WHERE case_slug = $1', [vocabulary.slug]);
-  await pool.query('DELETE FROM public.hypotheses WHERE case_slug = $1', [vocabulary.slug]);
-  await pool.query('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.slug]);
-  await pool.query('DELETE FROM public.cases WHERE slug = $1', [vocabulary.slug]);
-  await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
-  await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
-  await pool.query('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
-  await pool.query('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subject]);
-  await pool.query('DELETE FROM public.outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
-  await pool.query('DELETE FROM public.actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
-  await pool.query('DELETE FROM public.recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
+  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subject]);
+  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
+  await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
+  await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
 }
 
 afterEach(async () => {
@@ -182,14 +211,20 @@ it('answers a case written directly to the real store, matching what is currentl
   const vocabulary = freshVocabulary();
   await persistCoherentGlossary(vocabulary);
   await registerCoherentCapability(vocabulary);
-  await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+  const version = await writeCase(vocabulary);
   const query = createCaseQuery(pool);
 
-  const result = await query.readCase(vocabulary.slug, VERSION);
+  const result = await query.readCase(vocabulary.slug, version);
 
-  const rawStored = await new RelationalCaseStore(pool).readVersion(vocabulary.slug, VERSION);
-  expect(rawStored).toBeDefined();
+  const assembled = await createCaseStore(pool).assembleVersion(vocabulary.slug, version);
+  expect(assembled).toBeDefined();
   expect(result.case).toMatchObject({ slug: vocabulary.slug, subject: vocabulary.subject });
+});
+
+it('refuses with CaseNotFoundError, through the real wiring, for a slug and version nothing was ever created for', async () => {
+  const query = createCaseQuery(pool);
+
+  await expect(query.readCase(`case-query-absent-${randomUUID()}`, 1)).rejects.toBeInstanceOf(CaseNotFoundError);
 });
 
 // -------------------------------------------------------------------------------- criterion 2
@@ -198,10 +233,10 @@ it('refuses through the real wiring a case document declaring no hypothesis, nam
   const vocabulary = freshVocabulary();
   await persistCoherentGlossary(vocabulary);
   await registerCoherentCapability(vocabulary);
-  await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary, { hypotheses: [] }));
+  const version = await writeCase(vocabulary, []);
   const query = createCaseQuery(pool);
 
-  const refusal = await query.readCase(vocabulary.slug, VERSION).catch((error: unknown) => error);
+  const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
 
   expect(refusal).toBeInstanceOf(CaseNotValidError);
   expect((refusal as CaseNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
@@ -209,24 +244,30 @@ it('refuses through the real wiring a case document declaring no hypothesis, nam
 
 it(
   'refuses through the real wiring, before the coherence module or CaseNotValidError ever runs, ' +
-    'a case document whose collected concept the glossary does not hold — the real store\'s own ' +
-    'foreign key from hypothesis_collects into concepts, never reachable through the fake store this ' +
-    'task retired',
+    "a hypothesis-revision whose collected concept the glossary does not hold — the real store's " +
+    'own foreign key from hypothesis_revision_collects into concepts, never reachable through the ' +
+    'fake store the unit-level proof stands in with',
   async () => {
     const vocabulary = freshVocabulary();
-    // The concept is deliberately never registered: hypothesis_collects.concept_name is a real
-    // foreign key into concepts under the real relational schema, so writing a case that collects an
-    // unregistered concept is refused here, at the store, rather than reaching a later read for the
-    // coherence module's own identical, already-unit-tested check
-    // (validate-case-coherence.spec.ts's "refuses a case collecting a concept the glossary does not
-    // hold, naming the concept") to discover — a stronger, real-effect guarantee the file-backed
-    // store this task retired never enforced.
+    // The concept is deliberately never registered: hypothesis_revision_collects.concept_name is a
+    // real foreign key into concepts under the real relational schema, so inserting a
+    // hypothesis-revision that collects an unregistered concept is refused here, at the store,
+    // rather than reaching a later read for the coherence module's own identical,
+    // already-unit-tested check (validate-case-coherence.spec.ts's "refuses a case collecting a
+    // concept the glossary does not hold, naming the concept") to discover.
     await persistCoherentGlossary(vocabulary, { withConcept: false });
 
-    const rejection = createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+    const rejection = writeCase(vocabulary);
 
     await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-    await expect(createCaseQuery(pool).readCase(vocabulary.slug, VERSION)).rejects.toBeInstanceOf(CaseNotFoundError);
+    // createDraft is its own primitive, already committed before insertHypothesisRevision's own
+    // failure — unlike the file-backed store this port replaced, which wrote a whole version as one
+    // atomic call, the lifecycle store's own primitives are not one another's transaction. The
+    // version this call started therefore still exists, in draft state with an empty manifest, so
+    // read-case answers the structural refusal its own empty manifest states rather than an absence.
+    const refusal = await createCaseQuery(pool).readCase(vocabulary.slug, 1).catch((error: unknown) => error);
+    expect(refusal).toBeInstanceOf(CaseNotValidError);
+    expect((refusal as CaseNotValidError).context.violations).toEqual(['the case declares no hypothesis']);
   },
 );
 
@@ -239,14 +280,14 @@ it(
     const vocabulary = freshVocabulary();
     await persistCoherentGlossary(vocabulary);
     await registerCoherentCapability(vocabulary);
-    await createCaseStore(pool).writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+    const version = await writeCase(vocabulary);
     const query = createCaseQuery(pool);
-    await expect(query.readCase(vocabulary.slug, VERSION)).resolves.toMatchObject({ case: { slug: vocabulary.slug } });
+    await expect(query.readCase(vocabulary.slug, version)).resolves.toMatchObject({ case: { slug: vocabulary.slug } });
 
     // Edits the concept's own accepted subject types away directly against the table, bypassing every API.
     await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
 
-    const refusal = await query.readCase(vocabulary.slug, VERSION).catch((error: unknown) => error);
+    const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
     expect(refusal).toBeInstanceOf(CaseNotValidError);
   },
 );
@@ -260,16 +301,15 @@ it(
     const vocabulary = freshVocabulary();
     await persistCoherentGlossary(vocabulary);
     await registerCoherentCapability(vocabulary);
-    const store = createCaseStore(pool);
-    await store.writeVersion(vocabulary.slug, VERSION, validCaseDocument(vocabulary));
+    const version = await writeCase(vocabulary);
     const query = createCaseQuery(pool);
-    const read = await query.readCase(vocabulary.slug, VERSION);
+    const read = await query.readCase(vocabulary.slug, version);
 
     // Deletes the registration directly against the capabilities table, bypassing every API.
     await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
-    await expect(query.readCase(vocabulary.slug, VERSION)).rejects.toBeInstanceOf(CaseNotValidError);
+    await expect(query.readCase(vocabulary.slug, version)).rejects.toBeInstanceOf(CaseNotValidError);
 
-    const replayed = await replayCase(vocabulary.slug, VERSION, store);
+    const replayed = await replayCase(vocabulary.slug, version, createCaseStore(pool));
 
     expect(replayed).toEqual(read.case);
   },

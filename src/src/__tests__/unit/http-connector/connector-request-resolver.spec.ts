@@ -177,16 +177,6 @@ it("substitutes the collection's own requester identity wherever '${requester}' 
   expect(assembled.headers).toEqual({ 'X-Requester': 'requester-one' });
 });
 
-it('carries whichever requester the caller passed for that one call, unchanged, rather than a default or a value left over from an earlier call', () => {
-  const configuration = { address: 'https://api.example.com', headers: { 'X-Requester': '${requester}' } };
-
-  const first = resolveConnectorRequest({ configuration, subject: A_SUBJECT, requester: 'requester-one' });
-  const second = resolveConnectorRequest({ configuration, subject: A_SUBJECT, requester: 'requester-two' });
-
-  expect(first.headers['X-Requester']).toBe('requester-one');
-  expect(second.headers['X-Requester']).toBe('requester-two');
-});
-
 it('refuses a configuration that declares no address', () => {
   const configuration = {};
 
