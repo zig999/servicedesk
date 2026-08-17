@@ -33,7 +33,7 @@
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { HypothesisRevisionListItem } from '../case/case-store.port.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
-import type { ListHypothesisRevisionsQueryDto } from './dto/list-hypothesis-revisions.dto.js';
+import type { ListHypothesisRevisionsParamsDto, ListHypothesisRevisionsQueryDto } from './dto/list-hypothesis-revisions.dto.js';
 
 /**
  * Everything the controller needs beyond one request's own path and query
@@ -62,12 +62,11 @@ export type ListHypothesisRevisionsControllerDependencies = {
  */
 export async function handleListHypothesisRevisionsRequest(
   dependencies: ListHypothesisRevisionsControllerDependencies,
-  slug: string,
-  hypothesisName: string,
+  params: ListHypothesisRevisionsParamsDto,
   query: ListHypothesisRevisionsQueryDto,
 ): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
   const pagination = resolvePagination(query, dependencies);
-  return dependencies.caseQuery.listHypothesisRevisions(slug, hypothesisName, pagination);
+  return dependencies.caseQuery.listHypothesisRevisions(params.slug, params.name, pagination);
 }
 
 /**

@@ -77,11 +77,6 @@ async function listHypothesisRevisionsHandler(
     const issues = parsedQuery.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
     return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request query failed validation', details: issues } });
   }
-  const page = await handleListHypothesisRevisionsRequest(
-    dependencies,
-    parsedParams.data.slug,
-    parsedParams.data.name,
-    parsedQuery.data,
-  );
+  const page = await handleListHypothesisRevisionsRequest(dependencies, parsedParams.data, parsedQuery.data);
   return reply.code(200).send(page);
 }
