@@ -46,6 +46,7 @@ import type {
   ICaseStore,
   ManifestEntry,
   PlaceHypothesisInput,
+  UpdateDraftInput,
 } from '../../../case/case-store.port.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
@@ -282,6 +283,16 @@ class FakeCaseStore implements ICaseStore {
     if (record?.draftVersion === version) {
       record.draftVersion = undefined;
     }
+  }
+
+  /**
+   * A minimal stand-in for updateDraft: no test in this file exercises it at all, so this fake
+   * takes no action — sufficient only to keep FakeCaseStore satisfying ICaseStore in full, the same
+   * reason every list* stub above already gives (this delivery's own inference — the task that adds
+   * updateDraft did not touch this file's own fixture).
+   */
+  public async updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> {
+    return;
   }
 }
 

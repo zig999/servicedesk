@@ -119,6 +119,34 @@
 // listing is already scoped to one named hypothesis by its own parameter,
 // the same convention CaseVersionListItem already keeps by omitting slug
 // and HypothesisIdentity by omitting slug.
+//
+// updateDraft is this file's next later addition
+// (task/case-lifecycle-http/update-draft-store-extension), answering the
+// same read-whole-then-guard-then-write pattern discard.operation.ts's own
+// header already documents: it reads the named version's own current state
+// first, refuses through CaseNotFoundError where the slug/version is not
+// stored at all, refuses through CaseVersionNotDraftError where the state
+// is not draft (rules/knowledge/a-case-version-is-written-once), and only
+// then writes exactly the five attributes this task scopes it to — title,
+// when_to_use, subject, fallback, consolidation_register — never its
+// manifest (place-hypothesis/remove-hypothesis's own concern) and never a
+// released case's own revision (create-draft's own concern, governed by
+// this same rule's "revising a case's content composes the next draft
+// version instead" clause). Unlike release()/discard() below, whose own
+// guard sits in a separate operation file one level up while the store
+// primitive itself writes unconditionally, updateDraft carries its own
+// guard directly in this port's implementation: no separate operation file
+// exists yet for this write (task/case-lifecycle-http/update-draft-route is
+// what consumes it directly), so the explicit-refusal-before-any-write
+// discipline discard.operation.ts's own header argues for — a silent no-op
+// at the database level is not the same as an operation naming its refusal
+// to the caller — has nowhere else to sit for this one operation. This is
+// this task's own inference, disclosed in its delivery record.
+// UpdateDraftInput bundles the five attributes together (MNT-01); it
+// answers void, mirroring release()/discard()'s own convention rather than
+// assembleVersion()'s, since neither of those two sibling lifecycle
+// mutations answers its own updated row either — this port's own
+// inference, disclosed the same way.
 
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -217,6 +245,23 @@ export type HypothesisRevisionInput = {
   readonly criterion: string;
   readonly collects: readonly string[];
   readonly resolution: Resolution;
+};
+
+/**
+ * What updateDraft needs to correct a draft version's own declared
+ * attributes (domain/knowledge/case-version): exactly the five
+ * this task scopes it to, never its manifest and never authored_at, its
+ * own identity-adjacent attribute AssembledCaseVersion carries but this
+ * write does not touch. Bundled as one object because the field count
+ * already exceeds the standard's three-positional-parameter limit (MNT-01),
+ * the same convention CreateDraftInput already keeps.
+ */
+export type UpdateDraftInput = {
+  readonly title: string;
+  readonly when_to_use: string;
+  readonly subject: string;
+  readonly fallback: Resolution;
+  readonly consolidation_register?: ConsolidationRegister;
 };
 
 /**
@@ -442,4 +487,25 @@ export interface ICaseStore {
    * release-conditioned delete rules, not re-checked here.
    */
   discard(slug: string, version: number): Promise<void>;
+
+  /**
+   * Corrects a draft version's own five declared attributes — title,
+   * when_to_use, subject, fallback and consolidation_register — never its
+   * manifest (place-hypothesis/remove-hypothesis's own concern) and never a
+   * released case's own revision, which composes the next draft version
+   * instead (create-draft's own concern,
+   * rules/knowledge/a-case-version-is-written-once). Reads the named
+   * version's own current state first, the same
+   * read-whole-then-guard-then-write pattern discard.operation.ts already
+   * applies: refused, through CaseNotFoundError, where the named
+   * slug/version is not stored at all; refused, through
+   * CaseVersionNotDraftError, where its state is not draft
+   * (rules/knowledge/a-case-version-is-written-once) — checked here,
+   * explicitly, before any write is attempted, rather than left to the
+   * schema's own case_versions_no_update trigger to silently take no
+   * effect. Answers void, mirroring release()/discard()'s own convention
+   * rather than assembleVersion()'s (this port's own inference, disclosed
+   * in this task's delivery record).
+   */
+  updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void>;
 }

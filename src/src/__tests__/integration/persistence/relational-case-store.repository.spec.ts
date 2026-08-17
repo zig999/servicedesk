@@ -56,6 +56,7 @@ import type { Resolution } from '../../../case/case.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
+import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
@@ -1031,6 +1032,145 @@ it(
     expect(assembled).toBeDefined();
     expect(assembled?.state).toBe('released');
     expect(assembled?.manifest).toHaveLength(1);
+  },
+);
+
+// ------------------------------------------ task/case-lifecycle-http/update-draft-store-extension
+//
+// updateDraft carries its own guard directly in the store, unlike release()/discard() above whose
+// own guard sits one level up in a separate operation file (this file's own header comment on
+// updateDraftVersion explains why) — so criterion 2 below asserts not just that the released-version
+// call rejects, but that the version's own five attributes read back unchanged afterward, proving the
+// guard runs before any write reaches the store rather than after a write that happened to no-op.
+
+it(
+  'persists the corrected title, when_to_use, subject, fallback and consolidation_register attributes against a version in draft state',
+  async () => {
+    const slug = `case-lifecycle-store-update-draft-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const newGlossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary, { consolidation_register: 'plain' }));
+
+    await store.updateDraft(slug, version, {
+      title: 'A corrected title',
+      when_to_use: 'A corrected use',
+      subject: newGlossary.subjectType,
+      fallback: aResolution(newGlossary),
+      consolidation_register: 'formal',
+    });
+
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled).toMatchObject({
+      title: 'A corrected title',
+      when_to_use: 'A corrected use',
+      subject: newGlossary.subjectType,
+      fallback: aResolution(newGlossary),
+      consolidation_register: 'formal',
+    });
+  },
+);
+
+it(
+  "leaves everything beyond its own five declared attributes untouched — the manifest, the version number and the draft state itself",
+  async () => {
+    const slug = `case-lifecycle-store-update-draft-boundary-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const newGlossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'a criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+
+    await store.updateDraft(slug, version, {
+      title: 'A corrected title',
+      when_to_use: 'A corrected use',
+      subject: newGlossary.subjectType,
+      fallback: aResolution(newGlossary),
+    });
+
+    const assembled = await store.assembleVersion(slug, version);
+    expect(assembled?.version).toBe(version);
+    expect(assembled?.state).toBe('draft');
+    expect(assembled?.manifest).toEqual([
+      { position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: 'a-hypothesis', revision }) },
+    ]);
+  },
+);
+
+it(
+  'refuses a version already released, through CaseVersionNotDraftError, and leaves its five attributes exactly as they were — the guard runs before any write is attempted',
+  async () => {
+    const slug = `case-lifecycle-store-update-draft-released-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const newGlossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version);
+    const beforeAttempt = await store.assembleVersion(slug, version);
+
+    const rejection = store.updateDraft(slug, version, {
+      title: 'A corrected title',
+      when_to_use: 'A corrected use',
+      subject: newGlossary.subjectType,
+      fallback: aResolution(newGlossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseVersionNotDraftError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
+    const afterAttempt = await store.assembleVersion(slug, version);
+    expect(afterAttempt).toMatchObject({
+      title: beforeAttempt?.title,
+      when_to_use: beforeAttempt?.when_to_use,
+      subject: beforeAttempt?.subject,
+      fallback: beforeAttempt?.fallback,
+    });
+  },
+);
+
+it('refuses, through CaseNotFoundError naming the slug, a slug that names no case at all', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-update-draft-absent-slug-${randomUUID()}`;
+
+  const rejection = store.updateDraft(slug, 1, {
+    title: 'A corrected title',
+    when_to_use: 'A corrected use',
+    subject: 'irrelevant-subject',
+    fallback: { outcome: 'irrelevant-outcome', referral: { action: 'irrelevant-action', recipient: 'irrelevant-recipient' } },
+  });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 1 } });
+});
+
+it(
+  'refuses, through CaseNotFoundError naming both the slug and the version, a known case that never held the given version number',
+  async () => {
+    const slug = `case-lifecycle-store-update-draft-absent-version-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const neverHeldVersion = version + 1;
+
+    const rejection = store.updateDraft(slug, neverHeldVersion, {
+      title: 'A corrected title',
+      when_to_use: 'A corrected use',
+      subject: glossary.subjectType,
+      fallback: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+    await expect(rejection).rejects.toMatchObject({ context: { slug, version: neverHeldVersion } });
   },
 );
 

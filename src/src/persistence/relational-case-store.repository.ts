@@ -119,6 +119,28 @@
 // rather than introducing an array-parameter query this file names nowhere
 // else.
 //
+// updateDraft is this file's next later addition
+// (task/case-lifecycle-http/update-draft-store-extension): unlike
+// release() and discard() above, whose own state guard sits one level up
+// in a separate operation file while these two store primitives write
+// unconditionally, updateDraft carries its own guard directly here — no
+// separate operation file exists yet for this write
+// (task/case-lifecycle-http/update-draft-route is what consumes it
+// directly) — so it runs the same read-whole-then-guard-then-write pattern
+// discard.operation.ts's own header already argues for, inside its own
+// transaction: reads case_versions' own state column for the named
+// (slug, version) first, refuses through CaseNotFoundError where no such
+// row exists, refuses through CaseVersionNotDraftError where the state is
+// not draft (rules/knowledge/a-case-version-is-written-once), and only then
+// runs the UPDATE against exactly the five named columns this task scopes
+// it to — never case_version_hypotheses, and never a second row. This
+// task's own inference, disclosed in its delivery record, since this port's
+// own header comment states no other operation re-decides a business rule
+// the schema does not already decide; this one does, for the same reason
+// discard.operation.ts's own header gives for not leaving its own refusal
+// to a silent database no-op — and there is nowhere else for that
+// discipline to sit while no operation file exists yet for this write.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -145,11 +167,13 @@ import type {
   ICaseStore,
   ManifestEntry,
   PlaceHypothesisInput,
+  UpdateDraftInput,
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import { CaseAlreadyHasDraftError } from '../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
+import { CaseVersionNotDraftError } from '../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register.js';
@@ -301,6 +325,10 @@ export class RelationalCaseStore implements ICaseStore {
 
   public async discard(slug: string, version: number): Promise<void> {
     await runInTransaction(this.connection, raiseWriteFailure, (tx) => discardDraft(tx, { slug, version }));
+  }
+
+  public async updateDraft(slug: string, version: number, attributes: UpdateDraftInput): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => updateDraftVersion(tx, { slug, version }, attributes));
   }
 }
 
@@ -824,6 +852,58 @@ function deleteManifestEntriesStatement(key: ICaseVersionKey): IStatement {
 
 function deleteCaseVersionStatement(key: ICaseVersionKey): IStatement {
   return { text: `DELETE FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND version = $2`, params: [key.slug, key.version] };
+}
+
+// ---------------------------------------------------------------- updateDraft
+
+/**
+ * Corrects a draft version's own five declared attributes, guarded the same
+ * read-whole-then-guard-then-write way discard.operation.ts's own pattern
+ * already applies: reads the version's own current state first, refuses
+ * through CaseNotFoundError where no such row exists and through
+ * CaseVersionNotDraftError where its state is not draft
+ * (rules/knowledge/a-case-version-is-written-once), and only then runs the
+ * UPDATE — before any write is attempted, rather than leaving it to the
+ * schema's own case_versions_no_update trigger to silently take no effect.
+ */
+async function updateDraftVersion(tx: IQueryable, key: ICaseVersionKey, attributes: UpdateDraftInput): Promise<void> {
+  const row = await queryOneOrAbsent<{ state: string }>(tx, caseVersionStateSelect(key), raiseReadFailure);
+  if (row === undefined) {
+    throw new CaseNotFoundError(key.slug, key.version);
+  }
+  const state = caseVersionStateOf(row.state);
+  if (state !== DRAFT_STATE) {
+    throw new CaseVersionNotDraftError(key.slug, key.version, state);
+  }
+  await runStatement(tx, updateDraftStatement(key, attributes), raiseWriteFailure);
+}
+
+/** The one column this task's guard reads before any write is attempted. */
+function caseVersionStateSelect(key: ICaseVersionKey): IStatement {
+  return { text: `SELECT state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND version = $2`, params: [key.slug, key.version] };
+}
+
+/** Writes exactly the five attributes this task scopes updateDraft to — never the manifest, never any other version's own row. */
+function updateDraftStatement(key: ICaseVersionKey, attributes: UpdateDraftInput): IStatement {
+  const [fallbackOutcome, fallbackAction, fallbackRecipient] = referralColumns(attributes.fallback);
+  return {
+    text: `UPDATE ${CASE_VERSIONS_TABLE}
+           SET title = $3, when_to_use = $4, subject = $5,
+               fallback_outcome = $6, fallback_action = $7, fallback_recipient = $8,
+               consolidation_register = $9
+           WHERE slug = $1 AND version = $2`,
+    params: [
+      key.slug,
+      key.version,
+      attributes.title,
+      attributes.when_to_use,
+      attributes.subject,
+      fallbackOutcome,
+      fallbackAction,
+      fallbackRecipient,
+      attributes.consolidation_register ?? null,
+    ],
+  };
 }
 
 // ---------------------------------------------------------------- shared helpers
