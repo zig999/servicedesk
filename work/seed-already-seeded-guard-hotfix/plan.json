@@ -1,0 +1,88 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/seed-already-seeded-guard-hotfix",
+      "kind": "epic",
+      "file": "epic/seed-already-seeded-guard-hotfix.md",
+      "title": "seed.ts's own reseeding survives the case it seeds becoming permanent",
+      "summary": "The one corrective task that stops seed.ts's alreadySeeded() guard from permanently skipping concept/capability/vocabulary reseeding once the case it gates on can never be wiped again."
+    },
+    {
+      "id": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "kind": "task",
+      "file": "task/seed-already-seeded-guard-hotfix/narrow-the-guard.md",
+      "title": "seed.ts reseeds vocabularies, concepts and capabilities every run, gating only the case write on alreadySeeded()",
+      "summary": "Fixes seed.ts skipping concept_accepts and capability reseeding forever once the case it gates on becomes permanently released, by making seedOutcomes/seedRemainingVocabularies additive (like ensure-non-conclusion-outcomes-hotfix's own insertMissingTerms) and narrowing alreadySeeded()'s own gate to cover only seedCase.",
+      "epic": "seed-already-seeded-guard-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/seed-already-seeded-guard-hotfix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
