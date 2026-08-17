@@ -12,8 +12,8 @@
       "id": "task/seed-fixture-isolation/tolerate-released-fixture",
       "kind": "task",
       "file": "task/seed-fixture-isolation/tolerate-released-fixture.md",
-      "title": "seed.spec.ts tolerates an already-released fixture case",
-      "summary": "Fixes seed.spec.ts's own beforeAll throwing when the shared fixture case already stands released from an earlier, legitimate run of another test file.",
+      "title": "seed.spec.ts tolerates release-immutability already having made rows permanent",
+      "summary": "Fixes seed.spec.ts's own beforeAll throwing when either the shared fixture case, or one of the two non-conclusion outcomes, already stands permanently referenced by an earlier, legitimate release elsewhere in this persistent database.",
       "epic": "seed-fixture-isolation"
     }
   ],
@@ -31,6 +31,24 @@
       "at": "covers[1]"
     },
     {
+      "from": "epic/seed-fixture-isolation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/seed-fixture-isolation",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/seed-fixture-isolation",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
       "from": "task/seed-fixture-isolation/tolerate-released-fixture",
       "to": "domain/knowledge/case-version",
       "kind": "implements",
@@ -41,6 +59,12 @@
       "to": "rules/knowledge/a-case-version-is-written-once",
       "kind": "implements",
       "at": "implements[1]"
+    },
+    {
+      "from": "task/seed-fixture-isolation/tolerate-released-fixture",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
     }
   ]
 }
