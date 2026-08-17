@@ -660,6 +660,10 @@
           "digest": "sha256:8d612ada9a1997153cb0da3af9ec41be862bea26ff251df5ffd1355a2abe08ce"
         },
         {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
+        },
+        {
           "path": "src/src/factories/case-query.factory.ts",
           "digest": "sha256:0d7882cce3747b0250d0f0f12f42e5b5310bcdececf6cd513d4e52a0711465b6"
         },
@@ -674,6 +678,10 @@
         {
           "path": "src/src/http/read-case.routes.ts",
           "digest": "sha256:5bb5fe6e9d397c71b60032428098a319de61710c85c75f45a143357168d7608a"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:39676dca5d7131d24b233efaa2a7cc5441f6fabd3c71d2dcfc9c5331b739016c"
         }
       ]
     },
@@ -1441,7 +1449,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1477,7 +1485,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+          "digest": "sha256:39676dca5d7131d24b233efaa2a7cc5441f6fabd3c71d2dcfc9c5331b739016c"
         }
       ]
     },
@@ -1495,7 +1503,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:2e0e440c24bb0e8d94c27ccaf3c216f457105eace5c6582b493a15dccf0b9c2f"
+          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1531,7 +1539,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:addd757cb8c11f406a47d544345a4d2cb182ac90a2bd00aea39088fc2ba602d9"
+          "digest": "sha256:39676dca5d7131d24b233efaa2a7cc5441f6fabd3c71d2dcfc9c5331b739016c"
         }
       ]
     },
@@ -1613,7 +1621,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1641,7 +1649,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+          "digest": "sha256:39676dca5d7131d24b233efaa2a7cc5441f6fabd3c71d2dcfc9c5331b739016c"
         }
       ]
     },
@@ -1659,7 +1667,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
+          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1679,7 +1687,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+          "digest": "sha256:39676dca5d7131d24b233efaa2a7cc5441f6fabd3c71d2dcfc9c5331b739016c"
         },
         {
           "path": "src/src/vitest-global-setup.ts",

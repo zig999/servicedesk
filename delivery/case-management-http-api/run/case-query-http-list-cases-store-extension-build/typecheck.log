@@ -1,0 +1,52 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(103,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(414,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(443,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(454,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(462,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(475,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(490,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(505,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(524,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(545,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(563,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(574,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(587,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(601,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(604,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(614,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(617,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(625,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(631,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(634,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(645,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(675,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(685,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(698,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCases' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.

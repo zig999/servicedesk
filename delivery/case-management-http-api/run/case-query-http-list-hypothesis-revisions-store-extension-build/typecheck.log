@@ -1,0 +1,52 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(107,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(460,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(489,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(500,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(508,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(521,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(536,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(551,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(570,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(591,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(609,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(620,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(633,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(647,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(650,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(660,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(663,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(671,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(677,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(680,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(691,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(721,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(731,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(744,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listHypothesisRevisions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.

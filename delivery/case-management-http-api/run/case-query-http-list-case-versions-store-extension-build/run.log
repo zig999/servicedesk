@@ -1,0 +1,58 @@
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(105,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(436,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(465,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(476,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(484,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(497,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(512,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(527,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(546,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(567,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(585,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(596,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(609,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(623,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(626,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(636,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(639,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(647,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(653,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(656,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(667,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(697,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(707,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(720,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'listCaseVersions' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
