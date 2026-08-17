@@ -10,12 +10,28 @@
       "task": "task/case-lifecycle-http/status-map"
     },
     {
+      "id": "implementation/case-query-http/pagination-types",
+      "kind": "implementation",
+      "file": "implementation/case-query-http/pagination-types.md",
+      "title": "Shared pagination request and response types",
+      "summary": "Adds src/types/pagination.ts, exporting PaginationRequest (offset, limit) and the generic PaginatedResponse<T> envelope every listing operation and route will share.",
+      "task": "task/case-query-http/pagination-types"
+    },
+    {
       "id": "proof/case-lifecycle-http/status-map",
       "kind": "proof",
       "file": "proof/case-lifecycle-http/status-map.md",
       "title": "Status-map resolves seven typed domain errors to non-500 statuses",
       "summary": "statusForError() maps each of seven typed domain errors to its assigned status and returns undefined for anything else, and error-handler.middleware.ts consults it before its unchanged 500 fallback.",
       "task": "task/case-lifecycle-http/status-map"
+    },
+    {
+      "id": "proof/case-query-http/pagination-types",
+      "kind": "proof",
+      "file": "proof/case-query-http/pagination-types.md",
+      "title": "Compile-time proof for the shared pagination types",
+      "summary": "Proves PaginationRequest and PaginatedResponse<T> in src/types/pagination.ts carry exactly the fields the task's two criteria and the implementation's two disclosed inferences state, using vitest's built-in expectTypeOf and @ts-expect-error rather than any runtime assertion, since the module is pure types with nothing that executes.",
+      "task": "task/case-query-http/pagination-types"
     }
   ],
   "edges": [
@@ -26,8 +42,20 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-query-http/pagination-types",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-lifecycle-http/status-map",
       "to": "implementation/case-lifecycle-http/status-map",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-query-http/pagination-types",
+      "to": "implementation/case-query-http/pagination-types",
       "kind": "proves",
       "at": "the path"
     }
