@@ -1,0 +1,3 @@
+The human asked to close the case-lifecycle initiative.
+Escopo suficiente entregue por ora: o núcleo do ciclo de vida draft/released do caso está implementado e validado (9 de 10 tasks, cada uma com registro de implementação, delivery.json derivado limpo, trace vinculado).
+What remains — proof records for the 9 delivered tasks, task/diagnosis-refuses-a-draft-pin's own delivery, and the two structural findings disclosed in wire-and-retire-author-case-version's own implementation record (the shared fixture-case-identity collision across several pre-existing test files, and RelationalGlossaryStore.writeTerms()'s incompatibility with permanently-released rows) — is left for a future initiative to pick up as surveyed inventory, never as a continuation of this plan.
