@@ -51,11 +51,12 @@ function buildTestApp(bounds: { defaultLimit?: number; maxLimit?: number } = {})
   listCaseVersions: ListCaseVersionsMock;
 } {
   const listCaseVersions: ListCaseVersionsMock = vi.fn();
-  // readCase and listCases are no part of what this file proves (list-case-versions-route's own
-  // ICaseQuery seam is listCaseVersions alone) — stubbed only so this fake keeps satisfying
-  // ICaseQuery, which still declares both.
+  // readCase, listCases and listHypotheses are no part of what this file proves
+  // (list-case-versions-route's own ICaseQuery seam is listCaseVersions alone) — stubbed only so
+  // this fake keeps satisfying ICaseQuery, which still declares all three, and now listHypotheses
+  // too (task/case-query-http/list-hypotheses-route).
   const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();
-  const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions };
+  const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions, listHypotheses: vi.fn() };
   const dependencies: ListCaseVersionsControllerDependencies = {
     caseQuery,
     defaultLimit: bounds.defaultLimit ?? 20,
