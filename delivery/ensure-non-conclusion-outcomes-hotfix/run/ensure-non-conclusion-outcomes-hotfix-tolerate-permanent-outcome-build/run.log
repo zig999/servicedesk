@@ -1,0 +1,38 @@
+===== typecheck :: npm run typecheck :: failed =====
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/glossary/glossary-query.port.spec.ts(17,7): error TS2420: Class 'MutableGlossaryStore' incorrectly implements interface 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'MutableGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary-query.port.spec.ts(55,30): error TS2345: Argument of type 'MutableGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'MutableGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(20,7): error TS2420: Class 'InMemoryGlossaryStore' incorrectly implements interface 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(56,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(70,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(83,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(95,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(107,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(118,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(129,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(138,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(150,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(161,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(174,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'insertMissingTerms' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

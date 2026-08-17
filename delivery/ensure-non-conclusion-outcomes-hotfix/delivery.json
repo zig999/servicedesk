@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "kind": "implementation",
+      "file": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome.md",
+      "title": "withNonConclusionOutcomes ensures the two non-conclusion outcomes through an additive insert, never a whole-table replace",
+      "summary": "Adds insertMissingTerms to the glossary store port and its relational adapter, and switches withNonConclusionOutcomes to it, so ensuring the two non-conclusion outcomes exist never deletes or rewrites an outcome a released case version or hypothesis revision now permanently references.",
+      "task": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome"
+    },
+    {
+      "id": "proof/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "kind": "proof",
+      "file": "proof/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome.md",
+      "title": "Proof for tolerate-permanent-outcome",
+      "summary": "Fixes the two hand-written IGlossaryStore stand-ins to typecheck against the new insertMissingTerms member, then adds unit tests proving GlossaryService.withNonConclusionOutcomes no longer throws when some other outcome is permanently referenced and behaves exactly as before in the ordinary cases, plus one integration test proving RelationalGlossaryStore.insertMissingTerms itself tolerates the real permanently-referenced rows this shared database already holds.",
+      "task": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "implementation/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -795,7 +795,7 @@
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+          "digest": "sha256:4087bfcf35a6686d96de2957b0719e929fa19abd0632b3b4b49880093c217239"
         },
         {
           "path": "src/src/glossary/terms.ts",
@@ -803,7 +803,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
+          "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
         }
       ]
     },
@@ -1659,19 +1659,27 @@
     },
     {
       "node": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
-      "digest": "sha256:70529f0caed943dc9da4e6cff0179a84d4c4fd69ebc4b39397a8fc102bc0a133",
+      "digest": "sha256:a58c74646fda1c1f3d80ac9a4cd91fd4b128ed5eb87a7819735e09f9bc1e0727",
       "files": [
         {
           "path": "src/src/fixtures/glossary/outcome.json",
           "digest": "sha256:42a57350103c44958e6efe9f5fb9fd6a4b10974543180564a268829f486a9505"
         },
         {
+          "path": "src/src/glossary/glossary-store.port.ts",
+          "digest": "sha256:87d8de903d17e4b7988303083c15985033fbe8900c5aea76b1c80e50f6519995"
+        },
+        {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+          "digest": "sha256:4087bfcf35a6686d96de2957b0719e929fa19abd0632b3b4b49880093c217239"
         },
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
         },
         {
           "path": "src/src/seed.ts",
