@@ -1562,6 +1562,10 @@
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
         {
+          "path": "src/migrations/0010-protect-released-hypothesis-revision-collects.sql",
+          "digest": "sha256:9c0ed0853331ad3917669e0ecf7cffa955865dcb0474250f53fdd30f2700d93a"
+        },
+        {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:d88c79b51ee545e362378a1c54a3d78e9f82fa6a7109f2dc3d4735dad364a5bc"
         },
@@ -1580,6 +1584,10 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+        },
+        {
+          "path": "src/src/vitest-global-setup.ts",
+          "digest": "sha256:d1d9f350fb67c4049913c6ccddc1a659459b917c74ab7abeae642862f22b6969"
         }
       ]
     },
@@ -2262,6 +2270,10 @@
       "digest": "sha256:35e49c53f6f1c973e5afbab204a5c804369fdaa1c6b8889166926b800a55ba04",
       "files": [
         {
+          "path": "src/migrations/0010-protect-released-hypothesis-revision-collects.sql",
+          "digest": "sha256:9c0ed0853331ad3917669e0ecf7cffa955865dcb0474250f53fdd30f2700d93a"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
         },
@@ -2276,6 +2288,10 @@
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
+        },
+        {
+          "path": "src/src/vitest-global-setup.ts",
+          "digest": "sha256:d1d9f350fb67c4049913c6ccddc1a659459b917c74ab7abeae642862f22b6969"
         }
       ]
     },

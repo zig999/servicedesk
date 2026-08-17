@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/manifest-collects-hotfix/fix-collects-readback",
+      "kind": "implementation",
+      "file": "implementation/manifest-collects-hotfix/fix-collects-readback.md",
+      "title": "Protects a released hypothesis-revision's own collects from deletion, and restores the fixture's own two collects the gap already destroyed",
+      "summary": "Adds a migration (0010) protecting hypothesis_revision_collects from UPDATE and from DELETE once released, and repairs the two collects rows an earlier suite run already destroyed through that gap via a new global-setup step that ensures the needed concepts exist first.",
+      "task": "task/manifest-collects-hotfix/fix-collects-readback"
+    },
+    {
+      "id": "proof/manifest-collects-hotfix/fix-collects-readback",
+      "kind": "proof",
+      "file": "proof/manifest-collects-hotfix/fix-collects-readback.md",
+      "title": "Proof for fix-collects-readback, corrected again: diagnose-server.factory.spec.ts's own afterAll hook timeout raised",
+      "summary": "Holds the same six tests against migration 0010 and the global-setup repair step, and additionally rewrites seed.spec.ts's own cleanupSeededRows to route every DELETE through the file's own already-established deleteTolerantly helper, closing a real, reproduced foreign-key violation on hypothesis_revisions that the no_delete_when_released rule now causes there, and raises diagnose-server.factory.spec.ts's own afterAll hookTimeout to give its teardown headroom under the full suite's accumulated load.",
+      "task": "task/manifest-collects-hotfix/fix-collects-readback"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/manifest-collects-hotfix/fix-collects-readback",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-collects-hotfix/fix-collects-readback",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-collects-hotfix/fix-collects-readback",
+      "to": "task/manifest-collects-hotfix/fix-collects-readback",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-collects-hotfix/fix-collects-readback",
+      "to": "implementation/manifest-collects-hotfix/fix-collects-readback",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

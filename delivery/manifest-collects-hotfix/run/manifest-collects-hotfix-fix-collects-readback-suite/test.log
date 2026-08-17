@@ -1,0 +1,60 @@
+
+> backend@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/siegardtest/src
+
+(node:2496037) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+No test files found, exiting with code 0
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+MigrationStepError: migration 0010-protect-released-hypothesis-revision-collects.sql could not be applied
+ ❯ applyMigrationFile src/persistence/migration-runner.ts:39:11
+     37| const BOOKKEEPING_TABLE = 'public.schema_migrations';
+     38| 
+     39| interface IFilenameRow {
+       |           ^
+     40|   filename: string;
+     41| }
+ ❯ process.processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ applyPendingMigrations src/persistence/migration-runner.ts:13:5
+ ❯ Object.setup src/vitest-global-setup.ts:28:5
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:21
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+ ❯ startVitest node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:10520:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { filename: '0010-protect-released-hypothesis-revision-collects.sql' } }
+Caused by: error: INSERT with ON CONFLICT clause cannot be used with table that has INSERT or UPDATE rules
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ process.processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ applyMigrationFile src/persistence/migration-runner.ts:36:5
+ ❯ applyPendingMigrations src/persistence/migration-runner.ts:13:5
+ ❯ Object.setup src/vitest-global-setup.ts:28:5
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:21
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { length: 154, severity: 'ERROR', code: '0A000', detail: undefined, hint: undefined, position: undefined, internalPosition: undefined, internalQuery: undefined, where: undefined, schema: undefined, table: undefined, dataType: undefined, constraint: undefined, file: 'rewriteHandler.c', routine: 'RewriteQuery' }
+
+
+
