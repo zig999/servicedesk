@@ -1,0 +1,1358 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-registry-http",
+      "kind": "epic",
+      "file": "epic/capability-registry-http.md",
+      "title": "Capability registry HTTP surface",
+      "summary": "The one new listing extension to ICapabilityQuery and the two HTTP routes that resolve or list a registered capability."
+    },
+    {
+      "id": "epic/case-lifecycle-http",
+      "kind": "epic",
+      "file": "epic/case-lifecycle-http.md",
+      "title": "Case lifecycle HTTP surface",
+      "summary": "The port extension, the shared error-status mapping, and the seven HTTP routes that let a curator create, revise, place, remove, correct, release and discard a case version."
+    },
+    {
+      "id": "epic/case-query-http",
+      "kind": "epic",
+      "file": "epic/case-query-http.md",
+      "title": "Case query HTTP surface",
+      "summary": "The four new listing extensions to ICaseStore, the shared pagination type they and other listings need, and the five HTTP routes that read a case, its versions, its hypotheses and their revisions."
+    },
+    {
+      "id": "epic/glossary-query-http",
+      "kind": "epic",
+      "file": "epic/glossary-query-http.md",
+      "title": "Glossary query HTTP surface",
+      "summary": "The two new listing extensions to IGlossaryQuery and the four HTTP routes that resolve or list a vocabulary term or a concept."
+    },
+    {
+      "id": "inventory/case-management-http-api",
+      "kind": "inventory",
+      "file": "inventory/case-management-http-api.md",
+      "title": "Case management HTTP administration surface",
+      "summary": "One HTTP route file and controller exist today (POST /v1/diagnose); the 18-endpoint admin surface, three port extensions, and the pagination/status-map infrastructure the standard requires are all new."
+    },
+    {
+      "id": "task/capability-registry-http/list-capabilities-query-extension",
+      "kind": "task",
+      "file": "task/capability-registry-http/list-capabilities-query-extension.md",
+      "title": "ICapabilityQuery gains listCapabilities",
+      "summary": "A new query operation returning every capability currently registered.",
+      "epic": "capability-registry-http"
+    },
+    {
+      "id": "task/capability-registry-http/list-capabilities-route",
+      "kind": "task",
+      "file": "task/capability-registry-http/list-capabilities-route.md",
+      "title": "GET /v1/capabilities",
+      "summary": "The HTTP route exposing the new listCapabilities query operation.",
+      "epic": "capability-registry-http"
+    },
+    {
+      "id": "task/capability-registry-http/read-capability-route",
+      "kind": "task",
+      "file": "task/capability-registry-http/read-capability-route.md",
+      "title": "GET /v1/capabilities/{concept}",
+      "summary": "The HTTP route exposing the existing read-capability domain operation.",
+      "epic": "capability-registry-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/create-draft-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/create-draft-route.md",
+      "title": "POST /v1/cases",
+      "summary": "The HTTP route exposing the existing create-draft domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/discard-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/discard-route.md",
+      "title": "DELETE /v1/cases/{slug}/versions/{version}",
+      "summary": "The HTTP route exposing the existing discard domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/place-hypothesis-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/place-hypothesis-route.md",
+      "title": "PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "The HTTP route exposing the existing place-hypothesis domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/release-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/release-route.md",
+      "title": "POST /v1/cases/{slug}/versions/{version}/release",
+      "summary": "The HTTP route exposing the existing release domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/remove-hypothesis-route.md",
+      "title": "DELETE /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "The HTTP route exposing the existing remove-hypothesis domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/revise-hypothesis-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/revise-hypothesis-route.md",
+      "title": "POST /v1/cases/{slug}/hypotheses",
+      "summary": "The HTTP route exposing the existing revise-hypothesis domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/status-map",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/status-map.md",
+      "title": "Domain errors resolve to HTTP status",
+      "summary": "A status-map module that lets error-handler.middleware.ts answer a typed domain error with something other than 500.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/update-draft-route",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/update-draft-route.md",
+      "title": "PATCH /v1/cases/{slug}/versions/{version}",
+      "summary": "The HTTP route exposing the new update-draft domain operation.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-lifecycle-http/update-draft-store-extension",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/update-draft-store-extension.md",
+      "title": "ICaseStore gains updateDraft, guarded by draft state",
+      "summary": "A new store operation that corrects a case version's own declared attributes only while it stands in draft.",
+      "epic": "case-lifecycle-http"
+    },
+    {
+      "id": "task/case-query-http/list-case-versions-route",
+      "kind": "task",
+      "file": "task/case-query-http/list-case-versions-route.md",
+      "title": "GET /v1/cases/{slug}/versions",
+      "summary": "The HTTP route exposing the new listCaseVersions store operation.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-case-versions-store-extension",
+      "kind": "task",
+      "file": "task/case-query-http/list-case-versions-store-extension.md",
+      "title": "ICaseStore gains listCaseVersions",
+      "summary": "A new store operation returning every version one named case holds.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-cases-route",
+      "kind": "task",
+      "file": "task/case-query-http/list-cases-route.md",
+      "title": "GET /v1/cases",
+      "summary": "The HTTP route exposing the new listCases store operation.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-cases-store-extension",
+      "kind": "task",
+      "file": "task/case-query-http/list-cases-store-extension.md",
+      "title": "ICaseStore gains listCases",
+      "summary": "A new store operation returning every case's identity.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-hypotheses-route",
+      "kind": "task",
+      "file": "task/case-query-http/list-hypotheses-route.md",
+      "title": "GET /v1/cases/{slug}/hypotheses",
+      "summary": "The HTTP route exposing the new listHypotheses store operation.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-hypotheses-store-extension",
+      "kind": "task",
+      "file": "task/case-query-http/list-hypotheses-store-extension.md",
+      "title": "ICaseStore gains listHypotheses",
+      "summary": "A new store operation returning every hypothesis one named case holds.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-hypothesis-revisions-route",
+      "kind": "task",
+      "file": "task/case-query-http/list-hypothesis-revisions-route.md",
+      "title": "GET /v1/cases/{slug}/hypotheses/{name}/revisions",
+      "summary": "The HTTP route exposing the new listHypothesisRevisions store operation.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "kind": "task",
+      "file": "task/case-query-http/list-hypothesis-revisions-store-extension.md",
+      "title": "ICaseStore gains listHypothesisRevisions",
+      "summary": "A new store operation returning every revision one named hypothesis holds.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/pagination-types",
+      "kind": "task",
+      "file": "task/case-query-http/pagination-types.md",
+      "title": "Shared pagination type",
+      "summary": "A src/types/pagination.ts module defining the request and response shape every listing endpoint follows.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/case-query-http/read-case-route",
+      "kind": "task",
+      "file": "task/case-query-http/read-case-route.md",
+      "title": "GET /v1/cases/{slug}/versions/{version}",
+      "summary": "The HTTP route exposing the existing read-case domain operation.",
+      "epic": "case-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/list-concepts-query-extension",
+      "kind": "task",
+      "file": "task/glossary-query-http/list-concepts-query-extension.md",
+      "title": "IGlossaryQuery gains listConcepts",
+      "summary": "A new query operation returning every concept currently registered.",
+      "epic": "glossary-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/list-concepts-route",
+      "kind": "task",
+      "file": "task/glossary-query-http/list-concepts-route.md",
+      "title": "GET /v1/glossary/concepts",
+      "summary": "The HTTP route exposing the new listConcepts query operation.",
+      "epic": "glossary-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "kind": "task",
+      "file": "task/glossary-query-http/list-vocabulary-terms-query-extension.md",
+      "title": "IGlossaryQuery gains listVocabularyTerms",
+      "summary": "A new query operation returning every term one named vocabulary currently holds.",
+      "epic": "glossary-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/list-vocabulary-terms-route",
+      "kind": "task",
+      "file": "task/glossary-query-http/list-vocabulary-terms-route.md",
+      "title": "GET /v1/glossary/{vocabulary}",
+      "summary": "The HTTP route exposing the new listVocabularyTerms query operation.",
+      "epic": "glossary-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/read-concept-route",
+      "kind": "task",
+      "file": "task/glossary-query-http/read-concept-route.md",
+      "title": "GET /v1/glossary/concepts/{name}",
+      "summary": "The HTTP route exposing the existing read-concept domain operation.",
+      "epic": "glossary-query-http"
+    },
+    {
+      "id": "task/glossary-query-http/read-vocabulary-term-route",
+      "kind": "task",
+      "file": "task/glossary-query-http/read-vocabulary-term-route.md",
+      "title": "GET /v1/glossary/{vocabulary}/{name}",
+      "summary": "The HTTP route exposing the existing read-vocabulary-term domain operation.",
+      "epic": "glossary-query-http"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-registry-http",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-registry-http",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-registry-http",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-registry-http",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-registry-http",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-lifecycle-http",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-query-http",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/glossary-query-http",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-query-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-query-extension",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-query-extension",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-route",
+      "to": "task/capability-registry-http/list-capabilities-query-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/capability-registry-http/list-capabilities-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry-http/read-capability-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-registry-http/read-capability-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry-http/read-capability-route",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry-http/read-capability-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-registry-http/read-capability-route",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/create-draft-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/create-draft-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/create-draft-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/create-draft-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/create-draft-route",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/discard-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-lifecycle-http/place-hypothesis-route",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-lifecycle-http/release-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/release-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/release-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/release-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/release-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/remove-hypothesis-route",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "task/case-lifecycle-http/update-draft-store-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-store-extension",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-store-extension",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-store-extension",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/update-draft-store-extension",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "task/case-query-http/list-case-versions-store-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-store-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-store-extension",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-store-extension",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-case-versions-store-extension",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-route",
+      "to": "task/case-query-http/list-cases-store-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-store-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-store-extension",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-cases-store-extension",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "task/case-query-http/list-hypotheses-store-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-route",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-store-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-store-extension",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-store-extension",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-store-extension",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypotheses-store-extension",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-route",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-query-http/read-case-route",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-query-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-query-extension",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-query-extension",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-route",
+      "to": "task/glossary-query-http/list-concepts-query-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-concepts-route",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/glossary-query-http/list-vocabulary-terms-route",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/glossary-query-http/read-concept-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/read-concept-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/read-concept-route",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/glossary-query-http/read-vocabulary-term-route",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[5]"
+    }
+  ]
+}
