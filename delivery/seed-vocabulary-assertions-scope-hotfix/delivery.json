@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "kind": "implementation",
+      "file": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names.md",
+      "title": "Scope seed.spec.ts's five vocabulary assertions to the fixture's own declared names",
+      "summary": "Five it() blocks in seed.spec.ts now select from public.outcomes, subject_types, actions, recipients, concepts and concept_accepts filtered by WHERE name = ANY($1) (concept_name = ANY($1) for concept_accepts), using each test's own already-computed expected fixture names, instead of reading the whole shared table.",
+      "task": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names"
+    },
+    {
+      "id": "proof/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "kind": "proof",
+      "file": "proof/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names.md",
+      "title": "Proof for scope-to-fixture-names",
+      "summary": "The five rescoped it() blocks themselves, confirmed passing against the real database — including its own real, permanent leftover rows from store-wiring.spec.ts — by a comprehensive install-through-suite run.",
+      "task": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "task/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "to": "implementation/seed-vocabulary-assertions-scope-hotfix/scope-to-fixture-names",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
