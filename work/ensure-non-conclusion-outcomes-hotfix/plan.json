@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/ensure-non-conclusion-outcomes-hotfix",
+      "kind": "epic",
+      "file": "epic/ensure-non-conclusion-outcomes-hotfix.md",
+      "title": "withNonConclusionOutcomes survives a permanently-referenced outcome",
+      "summary": "The one corrective task that stops GlossaryService.withNonConclusionOutcomes crashing when writeTerms's own whole-table replace hits an outcome release-immutability has made permanent."
+    },
+    {
+      "id": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "kind": "task",
+      "file": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome.md",
+      "title": "withNonConclusionOutcomes no longer replaces the whole outcomes table to add what is missing",
+      "summary": "Fixes GlossaryService.withNonConclusionOutcomes crashing with a GlossaryStoreError whenever writeTerms's own whole-table replace hits an outcome release-immutability elsewhere in this database has already made permanent.",
+      "epic": "ensure-non-conclusion-outcomes-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/ensure-non-conclusion-outcomes-hotfix",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/ensure-non-conclusion-outcomes-hotfix",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/ensure-non-conclusion-outcomes-hotfix",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/ensure-non-conclusion-outcomes-hotfix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
