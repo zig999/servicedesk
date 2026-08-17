@@ -52,6 +52,7 @@ import type {
   CaseIdentity,
   CaseVersionListItem,
   HypothesisIdentity,
+  HypothesisRevisionListItem,
   ICaseStore,
   ManifestEntry as StoredManifestEntry,
 } from './case-store.port.js';
@@ -130,6 +131,34 @@ export class CaseQueryService implements ICaseQuery {
     pagination: PaginationRequest,
   ): Promise<PaginatedResponse<HypothesisIdentity>> {
     return this.caseStore.listHypotheses(slug, pagination);
+  }
+
+  /**
+   * list-hypothesis-revisions: a direct pass-through onto the case store's
+   * own listHypothesisRevisions (case-store.port.ts) — a full-content
+   * listing scoped to one already-named hypothesis carries no structural or
+   * coherence rule to run, unlike readCase's own assembled version, so
+   * nothing here composes the glossary or the capability registry either.
+   * The store itself raises CaseNotFoundError where the named slug or the
+   * named hypothesis (or both) name nothing this case has originated
+   * (case-store.port.ts's own header comment); this method neither catches
+   * nor re-raises it, since it is already the exact typed error this
+   * contract's own consumers expect. This is this task's own inference,
+   * disclosed here rather than left silent: CaseNotFoundError collapses two
+   * distinct absences into one refusal — an unknown slug, and a known slug
+   * that never originated a hypothesis of this name — because the store's
+   * own existence check reads the hypotheses identity row for
+   * (case_slug, name) alone, and a row there can only exist for a slug the
+   * cases table already holds; no specification node states a separate
+   * "hypothesis not found under this case" outcome for this method to
+   * distinguish, and none is invented here.
+   */
+  public async listHypothesisRevisions(
+    slug: string,
+    hypothesisName: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
+    return this.caseStore.listHypothesisRevisions(slug, hypothesisName, pagination);
   }
 
   /** Refuses a coherence violation, naming every one together, joining the same error type the structural refusal raises. */

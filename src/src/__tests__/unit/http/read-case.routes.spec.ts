@@ -81,11 +81,18 @@ function heldDraftCase(): Case {
 /** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors what build-app.ts wires for diagnose, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; readCase: ReadCaseMock } {
   const readCase: ReadCaseMock = vi.fn();
-  // listCases, listCaseVersions and listHypotheses are no part of what this file proves
-  // (read-case-route's own ICaseQuery seam is readCase alone) — stubbed only so this fake keeps
-  // satisfying ICaseQuery now that task/case-query-http/list-cases-route,
-  // list-case-versions-route and list-hypotheses-route added them to it.
-  const caseQuery: ICaseQuery = { readCase, listCases: vi.fn(), listCaseVersions: vi.fn(), listHypotheses: vi.fn() };
+  // listCases, listCaseVersions, listHypotheses and listHypothesisRevisions are no part of what
+  // this file proves (read-case-route's own ICaseQuery seam is readCase alone) — stubbed only so
+  // this fake keeps satisfying ICaseQuery now that task/case-query-http/list-cases-route,
+  // list-case-versions-route, list-hypotheses-route and list-hypothesis-revisions-route added them
+  // to it.
+  const caseQuery: ICaseQuery = {
+    readCase,
+    listCases: vi.fn(),
+    listCaseVersions: vi.fn(),
+    listHypotheses: vi.fn(),
+    listHypothesisRevisions: vi.fn(),
+  };
   const dependencies: ReadCaseControllerDependencies = { caseQuery };
   const app = Fastify();
   app.setErrorHandler(handleUnexpectedError);

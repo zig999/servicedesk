@@ -40,15 +40,17 @@ function minimalCase(): Case {
 
 /** Answers minimalCase() unconditionally, regardless of the slug/version given — this file's own tests only assert on the HTTP surface, never on which case was requested. The `hash` answered here is read-case's own store-level content pin (ReadCaseResult.hash — sha256 of the stored document's bytes), never a field of Case itself, which carries no hash at all; a fixed placeholder serves since no test in this file reads it. */
 function stubCaseQuery(theCase: Case): ICaseQuery {
-  // listCases, listCaseVersions and listHypotheses are no part of what this file proves (this
-  // file's own routes never reach any of them) — stubbed only so this fake keeps satisfying
-  // ICaseQuery now that task/case-query-http/list-cases-route, list-case-versions-route and
-  // list-hypotheses-route added them to it.
+  // listCases, listCaseVersions, listHypotheses and listHypothesisRevisions are no part of what
+  // this file proves (this file's own routes never reach any of them) — stubbed only so this fake
+  // keeps satisfying ICaseQuery now that task/case-query-http/list-cases-route,
+  // list-case-versions-route, list-hypotheses-route and list-hypothesis-revisions-route added them
+  // to it.
   return {
     readCase: async () => ({ case: theCase, hash: 'a-hash' }),
     listCases: vi.fn(),
     listCaseVersions: vi.fn(),
     listHypotheses: vi.fn(),
+    listHypothesisRevisions: vi.fn(),
   };
 }
 

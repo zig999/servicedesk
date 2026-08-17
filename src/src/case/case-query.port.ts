@@ -1,6 +1,11 @@
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { Case } from './case.js';
-import type { CaseIdentity, CaseVersionListItem, HypothesisIdentity } from './case-store.port.js';
+import type {
+  CaseIdentity,
+  CaseVersionListItem,
+  HypothesisIdentity,
+  HypothesisRevisionListItem,
+} from './case-store.port.js';
 
 /**
  * What read-case answers: the case whole, validated at this reading
@@ -28,11 +33,16 @@ export type ReadCaseResult = {
  * case at all (task/case-query-http/list-case-versions-route); and
  * list-hypotheses, every hypothesis one named case has ever originated, by
  * its own bare name, refused the same way (task/case-query-http/
- * list-hypotheses-route). A consumer — this task's own HTTP controller among
- * them — depends on this interface, never on the case store, the glossary or
- * the capability registry behind it, so a consumer of list-cases,
- * list-case-versions or list-hypotheses reaches the case store only through
- * this same published seam rather than a second one opened just for it.
+ * list-hypotheses-route); and list-hypothesis-revisions, every revision one
+ * named hypothesis (case slug plus hypothesis name) currently holds, by its
+ * own full content, refused where either half of that pair names nothing
+ * this case has originated (task/case-query-http/
+ * list-hypothesis-revisions-route). A consumer — this task's own HTTP
+ * controller among them — depends on this interface, never on the case
+ * store, the glossary or the capability registry behind it, so a consumer
+ * of list-cases, list-case-versions, list-hypotheses or
+ * list-hypothesis-revisions reaches the case store only through this same
+ * published seam rather than a second one opened just for it.
  */
 export interface ICaseQuery {
   /**
@@ -87,4 +97,25 @@ export interface ICaseQuery {
    * unchanged from what the store itself already guarantees.
    */
   listHypotheses(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>>;
+
+  /**
+   * list-hypothesis-revisions: answers every revision the named hypothesis
+   * (case slug plus hypothesis name) currently holds, by its own full
+   * content, paginated per src/types/pagination.ts. Runs no validation of
+   * its own — the same bare-listing reasoning listCases's own header
+   * comment already states — so this is a direct pass-through onto the
+   * case store's own listHypothesisRevisions (case-store.port.ts), kept
+   * behind this interface rather than exposing the store directly to this
+   * contract's own consumers. Refused, through CaseNotFoundError, where the
+   * slug or the hypothesis name (or both) names nothing this case has
+   * originated — raised by the store itself rather than re-checked here,
+   * and covering both absences with the same error since no separate
+   * "hypothesis not found under this case" distinction exists
+   * (case-store.port.ts's own header comment).
+   */
+  listHypothesisRevisions(
+    slug: string,
+    hypothesisName: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<HypothesisRevisionListItem>>;
 }
