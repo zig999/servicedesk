@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/manifest-collects-hotfix",
+      "kind": "epic",
+      "file": "epic/manifest-collects-hotfix.md",
+      "title": "Manifest-collects readback hotfix",
+      "summary": "The one corrective task that fixes a manifest entry's collects reading back empty from the real store."
+    },
+    {
+      "id": "task/manifest-collects-hotfix/fix-collects-readback",
+      "kind": "task",
+      "file": "task/manifest-collects-hotfix/fix-collects-readback.md",
+      "title": "Manifest entries read back with their own collects, not empty",
+      "summary": "Fixes a defect where reading a case version's manifest through the real store answers every entry's collects as empty, though the revision was originated with a non-empty list.",
+      "epic": "manifest-collects-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/manifest-collects-hotfix",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/manifest-collects-hotfix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/manifest-collects-hotfix",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/manifest-collects-hotfix",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/manifest-collects-hotfix",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/manifest-collects-hotfix/fix-collects-readback",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-collects-hotfix/fix-collects-readback",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-collects-hotfix/fix-collects-readback",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-collects-hotfix/fix-collects-readback",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-collects-hotfix/fix-collects-readback",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
