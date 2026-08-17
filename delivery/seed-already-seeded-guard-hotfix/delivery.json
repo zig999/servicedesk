@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "kind": "implementation",
+      "file": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard.md",
+      "title": "Narrow seed.ts's alreadySeeded() gate to seedCase alone; make vocabulary reseeding additive",
+      "summary": "seedOutcomes and seedRemainingVocabularies now write through the additive insertMissingTerms instead of the whole-replace writeTerms, and alreadySeeded()'s own gate wraps only seedCase, so vocabularies, concepts and capabilities reseed on every run regardless of the case's own permanent-released state.",
+      "task": "task/seed-already-seeded-guard-hotfix/narrow-the-guard"
+    },
+    {
+      "id": "proof/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "kind": "proof",
+      "file": "proof/seed-already-seeded-guard-hotfix/narrow-the-guard.md",
+      "title": "Proof for task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "summary": "Holds seed.spec.ts's own existing tests, plus one new assertion added to that same file, up to the task's four criteria — reseeding concept_accepts/capabilities regardless of case state, preserving the fully-seeded and freshly-empty paths, and guarding only the case write against a second run.",
+      "task": "task/seed-already-seeded-guard-hotfix/narrow-the-guard"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "task/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "to": "implementation/seed-already-seeded-guard-hotfix/narrow-the-guard",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

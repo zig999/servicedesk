@@ -804,6 +804,10 @@
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:51aec0456df8345be41842182b40116807e514fe4501b901ef40483a25a10c86"
         }
       ]
     },
@@ -1683,7 +1687,7 @@
         },
         {
           "path": "src/src/seed.ts",
-          "digest": "sha256:863f7140baf76ef030754e1a786250f5fae203a880d0d7a79d840eb69a553e46"
+          "digest": "sha256:51aec0456df8345be41842182b40116807e514fe4501b901ef40483a25a10c86"
         }
       ]
     },
@@ -2134,6 +2138,10 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
+        },
+        {
+          "path": "src/src/seed.ts",
+          "digest": "sha256:51aec0456df8345be41842182b40116807e514fe4501b901ef40483a25a10c86"
         }
       ]
     },
