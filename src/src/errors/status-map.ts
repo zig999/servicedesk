@@ -8,22 +8,23 @@
 // inline.
 //
 // Grouped by what the refusal means for the caller: a resource that plainly
-// does not exist answers 404 (CaseNotFoundError); an operation the named
-// resource's own current state forbids — a second open draft, an already
-// occupied manifest position, a mutation against anything but a draft
-// version — answers 409 Conflict; a request that is well-formed but would
-// violate a business invariant were it applied — a release whose validator
-// rules did not all pass, a removal that would leave a manifest holding no
-// hypothesis — answers 422 Unprocessable Entity. An error class this table
-// does not name is left unmapped, and error-handler.middleware.ts keeps
-// answering it with 500, exactly as it does today (COR-04's own note that
-// none of this codebase's errors is mapped to a status yet).
+// does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError); an
+// operation the named resource's own current state forbids — a second open
+// draft, an already occupied manifest position, a mutation against anything
+// but a draft version — answers 409 Conflict; a request that is well-formed
+// but would violate a business invariant were it applied — a release whose
+// validator rules did not all pass, a removal that would leave a manifest
+// holding no hypothesis — answers 422 Unprocessable Entity. An error class
+// this table does not name is left unmapped, and error-handler.middleware.ts
+// keeps answering it with 500, exactly as it does today (COR-04's own note
+// that none of this codebase's errors is mapped to a status yet).
 
 import { CaseAlreadyHasDraftError } from './case-already-has-draft.error.js';
 import { CaseNotFoundError } from './case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from './case-version-not-releasable.error.js';
+import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
 
@@ -31,14 +32,15 @@ import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hyp
 type DomainErrorClass = new (...args: never[]) => Error;
 
 /**
- * The status map itself: every typed domain error this HTTP surface's case
- * operations raise, keyed to the transport status it resolves to. Iteration
+ * The status map itself: every typed domain error this HTTP surface's
+ * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
- * here would be found by the base class's entry first — none of these seven
+ * here would be found by the base class's entry first — none of these eight
  * extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
+  [ConceptNotAnsweredError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],

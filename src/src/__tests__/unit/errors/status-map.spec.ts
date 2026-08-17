@@ -11,6 +11,7 @@ import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
+import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
@@ -20,6 +21,17 @@ import { statusForError } from '../../../errors/status-map.js';
 
 it('resolves CaseNotFoundError to 404', () => {
   const error = new CaseNotFoundError('a-slug', 1);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(404);
+});
+
+// Added for task/capability-registry-http/read-capability-route, whose own criterion 2 depends
+// on this exact entry: "a request naming a concept no capability currently answers is refused
+// with the status status-map assigns".
+it('resolves ConceptNotAnsweredError to 404', () => {
+  const error = new ConceptNotAnsweredError('a-concept');
 
   const status = statusForError(error);
 
