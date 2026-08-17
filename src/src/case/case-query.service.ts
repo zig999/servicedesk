@@ -44,9 +44,15 @@ import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseNotValidError } from '../errors/case-not-valid.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import { CASE_DOCUMENT_ENDING, type Case, type Hypothesis, type ManifestEntry } from './case.js';
 import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
-import type { AssembledCaseVersion, ICaseStore, ManifestEntry as StoredManifestEntry } from './case-store.port.js';
+import type {
+  AssembledCaseVersion,
+  CaseIdentity,
+  ICaseStore,
+  ManifestEntry as StoredManifestEntry,
+} from './case-store.port.js';
 import { parseCaseDocument } from './parse-case-document.js';
 import { caseCoherenceViolations } from './validate-case-coherence.js';
 
@@ -76,6 +82,17 @@ export class CaseQueryService implements ICaseQuery {
     const theCase = structuralCase(assembled, slug, version);
     await this.refuseIncoherence(theCase, version);
     return { case: theCase };
+  }
+
+  /**
+   * list-cases: a direct pass-through onto the case store's own listCases
+   * (case-store.port.ts) — a bare identity listing carries no structural or
+   * coherence rule to run, unlike readCase's own assembled version, so
+   * nothing here composes the glossary or the capability registry the way
+   * readCase does.
+   */
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+    return this.caseStore.listCases(pagination);
   }
 
   /** Refuses a coherence violation, naming every one together, joining the same error type the structural refusal raises. */
