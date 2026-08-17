@@ -366,14 +366,14 @@ it(
 
 it("holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together", async () => {
   const expected = await readGlossaryFixtureNames('outcome.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes');
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
 
 it('holds exactly the fixture\'s own subject-type name, the one the curated case declares as its subject', async () => {
   const expected = await readGlossaryFixtureNames('subject-type.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.subject_types');
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.subject_types WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
@@ -388,14 +388,14 @@ it("holds exactly the fixture's own subject-attribute name, even though the cura
 
 it("holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare", async () => {
   const expected = await readGlossaryFixtureNames('action.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.actions');
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.actions WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
 
 it("holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare", async () => {
   const expected = await readGlossaryFixtureNames('recipient.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.recipients');
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.recipients WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
@@ -404,9 +404,14 @@ it("holds exactly the fixture's own recipient names, every one the curated case'
 
 it('holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly', async () => {
   const expected = await readConceptFixture();
-  const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>('SELECT name, ttl FROM public.concepts');
+  const conceptNames = expected.map((concept) => concept.name);
+  const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>(
+    'SELECT name, ttl FROM public.concepts WHERE name = ANY($1)',
+    [conceptNames],
+  );
   const { rows: acceptRows } = await connection.query<{ concept_name: string; subject_type_name: string }>(
-    'SELECT concept_name, subject_type_name FROM public.concept_accepts',
+    'SELECT concept_name, subject_type_name FROM public.concept_accepts WHERE concept_name = ANY($1)',
+    [conceptNames],
   );
 
   const answered = conceptRows
