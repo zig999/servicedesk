@@ -85,6 +85,14 @@
       "epic": "case-lifecycle-http"
     },
     {
+      "id": "task/case-lifecycle-http/register-routes-in-build-app",
+      "kind": "task",
+      "file": "task/case-lifecycle-http/register-routes-in-build-app.md",
+      "title": "build-app.ts registers every route this initiative delivers",
+      "summary": "Establishes one aggregation convention in build-app.ts and registers each of the eighteen route plugins this initiative delivers, so every one of them is actually reachable through the running server.",
+      "epic": "case-lifecycle-http"
+    },
+    {
       "id": "task/case-lifecycle-http/release-route",
       "kind": "task",
       "file": "task/case-lifecycle-http/release-route.md",
@@ -657,6 +665,114 @@
       "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
       "kind": "implements",
       "at": "implements[7]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/capability-registry-http/read-capability-route",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-query-http/list-cases-route",
+      "kind": "depends_on",
+      "at": "depends_on[10]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-query-http/list-case-versions-route",
+      "kind": "depends_on",
+      "at": "depends_on[11]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-query-http/list-hypotheses-route",
+      "kind": "depends_on",
+      "at": "depends_on[12]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-query-http/list-hypothesis-revisions-route",
+      "kind": "depends_on",
+      "at": "depends_on[13]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/glossary-query-http/read-vocabulary-term-route",
+      "kind": "depends_on",
+      "at": "depends_on[14]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/glossary-query-http/list-vocabulary-terms-route",
+      "kind": "depends_on",
+      "at": "depends_on[15]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/glossary-query-http/read-concept-route",
+      "kind": "depends_on",
+      "at": "depends_on[16]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/glossary-query-http/list-concepts-route",
+      "kind": "depends_on",
+      "at": "depends_on[17]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/capability-registry-http/list-capabilities-route",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/create-draft-route",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/update-draft-route",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/release-route",
+      "kind": "depends_on",
+      "at": "depends_on[4]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/discard-route",
+      "kind": "depends_on",
+      "at": "depends_on[5]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/revise-hypothesis-route",
+      "kind": "depends_on",
+      "at": "depends_on[6]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/place-hypothesis-route",
+      "kind": "depends_on",
+      "at": "depends_on[7]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "depends_on",
+      "at": "depends_on[8]"
+    },
+    {
+      "from": "task/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-query-http/read-case-route",
+      "kind": "depends_on",
+      "at": "depends_on[9]"
     },
     {
       "from": "task/case-lifecycle-http/release-route",

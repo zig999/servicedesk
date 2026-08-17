@@ -33,4 +33,4 @@ Each route follows the diagnose.routes.ts / diagnose.controller.ts / dto pattern
 
 ## Notes
 
-None.
+Gained an eighth task mid-delivery, task/case-lifecycle-http/register-routes-in-build-app: the inventory's own risk about build-app.ts having no route-aggregation convention was never covered by any task's own scope, and the gap surfaced live once capability-registry-http/read-capability-route's own delivery disclosed it as deferred. Placed here rather than in a new epic, mirroring how status-map already sits in this epic despite implementing no node itself — the task's own dependencies span all four epics' route tasks equally.
