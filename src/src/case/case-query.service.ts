@@ -50,6 +50,7 @@ import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
 import type {
   AssembledCaseVersion,
   CaseIdentity,
+  CaseVersionListItem,
   ICaseStore,
   ManifestEntry as StoredManifestEntry,
 } from './case-store.port.js';
@@ -93,6 +94,24 @@ export class CaseQueryService implements ICaseQuery {
    */
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
     return this.caseStore.listCases(pagination);
+  }
+
+  /**
+   * list-case-versions: a direct pass-through onto the case store's own
+   * listCaseVersions (case-store.port.ts) — a bare number-and-state listing
+   * carries no structural or coherence rule to run, unlike readCase's own
+   * assembled version, so nothing here composes the glossary or the
+   * capability registry either. The store itself raises CaseNotFoundError
+   * where the named slug names no case at all (case-store.port.ts's own
+   * header comment); this method neither catches nor re-raises it, since
+   * it is already the exact typed error this contract's own consumers
+   * expect.
+   */
+  public async listCaseVersions(
+    slug: string,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<CaseVersionListItem>> {
+    return this.caseStore.listCaseVersions(slug, pagination);
   }
 
   /** Refuses a coherence violation, naming every one together, joining the same error type the structural refusal raises. */
