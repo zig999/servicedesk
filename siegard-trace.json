@@ -411,7 +411,7 @@
     },
     {
       "node": "contracts/glossary/glossary-query",
-      "digest": "sha256:2c7c3030e0d986ef7fb64e34d190b319de91d40db4d88a7f610d2a505e759095",
+      "digest": "sha256:1c1bc05c2d40b57007898c78a106f09c34fb5035df963e779b8e8f1b9c402439",
       "files": [
         {
           "path": "src/src/factories/glossary.factory.ts",
@@ -424,13 +424,45 @@
         {
           "path": "src/src/glossary/glossary.service.ts",
           "digest": "sha256:27a414b5c072f1114baf8cbd663e8f2e3e201d10fb18ad688e627a9e7c1267d8"
+        },
+        {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
+        },
+        {
+          "path": "src/src/http/read-concept.controller.ts",
+          "digest": "sha256:f2da04dcf7ce60a39cb1d2eb313ab37661e74a1667ec6f3b080b23ddfa93ea93"
+        },
+        {
+          "path": "src/src/http/read-concept.routes.ts",
+          "digest": "sha256:7ddbfa35382dd5306f12eeb5086f64642ae7a46c53a68ebd8b113b3d136ca7c8"
+        },
+        {
+          "path": "src/src/http/read-vocabulary-term.controller.ts",
+          "digest": "sha256:bd29783cd5d422ce20df6029e13cc3bbedc1004f0d3663f26e65651766401b1e"
+        },
+        {
+          "path": "src/src/http/read-vocabulary-term.routes.ts",
+          "digest": "sha256:b665972cd8c3b4966a13cb8202e4939c6e37b3743bbfc7a65e8119a99b927f9d"
         }
       ]
     },
     {
       "node": "contracts/integration/capability-registry",
-      "digest": "sha256:fd4734ffbe8f1b14ac2527875fb20ef6854d71725bf095001f122e9081bfa265",
+      "digest": "sha256:749480c6e36b33f287c542fd73eabde7d94b2de1f1a7a3b15b51d5105f1f728d",
       "files": [
+        {
+          "path": "src/src/http/dto/read-capability.dto.ts",
+          "digest": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261"
+        },
+        {
+          "path": "src/src/http/read-capability.controller.ts",
+          "digest": "sha256:ccefe195e0bab09d970de14ab0432877d22572c2fcb5fb7467e7ec1c487344fd"
+        },
+        {
+          "path": "src/src/http/read-capability.routes.ts",
+          "digest": "sha256:9c7c34dd54d3103483bf0f0e806de0abefd6fe60008ca177cfdda6b4085c5170"
+        },
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
@@ -617,7 +649,7 @@
     },
     {
       "node": "contracts/knowledge/case-query",
-      "digest": "sha256:9aafeee8640ae4c4c5fde074337ee5414bff4c2b36d24e33374bf008a1ed749d",
+      "digest": "sha256:fadeb7489f7cb0a8560f305e7c9afda7de7ef65891314c53cd5f486652feca44",
       "files": [
         {
           "path": "src/src/case/case-query.port.ts",
@@ -630,6 +662,18 @@
         {
           "path": "src/src/factories/case-query.factory.ts",
           "digest": "sha256:0d7882cce3747b0250d0f0f12f42e5b5310bcdececf6cd513d4e52a0711465b6"
+        },
+        {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
+          "path": "src/src/http/read-case.controller.ts",
+          "digest": "sha256:b6cf20b66eb847a05a8a50bc140ff4fd31e9cacb8faae042635257adc6edb681"
+        },
+        {
+          "path": "src/src/http/read-case.routes.ts",
+          "digest": "sha256:5bb5fe6e9d397c71b60032428098a319de61710c85c75f45a143357168d7608a"
         }
       ]
     },
@@ -746,6 +790,10 @@
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
+        },
+        {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
@@ -780,6 +828,10 @@
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
+          "path": "src/src/http/dto/read-concept.dto.ts",
+          "digest": "sha256:a68422d689635559704488c4a434b1eba158d8cf038d607be22b8f2c9dee2f25"
+        },
+        {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
@@ -812,6 +864,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -852,6 +908,10 @@
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
+        },
+        {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:846f2de964856f8f85f8116b450d163f643f2576baa7497788df422792c4d4d7"
         }
@@ -868,6 +928,10 @@
         {
           "path": "src/src/glossary/terms.ts",
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+        },
+        {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -908,6 +972,10 @@
           "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
         },
         {
+          "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
+          "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
+        },
+        {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         },
@@ -944,6 +1012,10 @@
         {
           "path": "src/src/fixtures/capability/capability.json",
           "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
+        },
+        {
+          "path": "src/src/http/dto/read-capability.dto.ts",
+          "digest": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
@@ -988,6 +1060,10 @@
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:1e6d8fd6596d83bb21bc15df712a213905dc281e48d216b0fd289c018133e4be"
+        },
+        {
+          "path": "src/src/http/read-capability.controller.ts",
+          "digest": "sha256:ccefe195e0bab09d970de14ab0432877d22572c2fcb5fb7467e7ec1c487344fd"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -1388,6 +1464,14 @@
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
         },
         {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
+          "path": "src/src/http/read-case.controller.ts",
+          "digest": "sha256:b6cf20b66eb847a05a8a50bc140ff4fd31e9cacb8faae042635257adc6edb681"
+        },
+        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
         },
@@ -1436,6 +1520,14 @@
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
           "digest": "sha256:a2d8c7700b39e22d11f796eb462c8453ad00baed4a545f5fa29687a5e3358062"
+        },
+        {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
+          "path": "src/src/http/read-case.controller.ts",
+          "digest": "sha256:b6cf20b66eb847a05a8a50bc140ff4fd31e9cacb8faae042635257adc6edb681"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -1582,6 +1674,10 @@
           "digest": "sha256:7b32a0a80dc347a631b28d751b68322f8d6378d6fe28993286924ce2b0381b00"
         },
         {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
         },
@@ -1618,6 +1714,10 @@
         {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
+        },
+        {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -1686,6 +1786,10 @@
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
+        },
+        {
+          "path": "src/src/http/dto/read-case.dto.ts",
+          "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
         }
       ]
     },

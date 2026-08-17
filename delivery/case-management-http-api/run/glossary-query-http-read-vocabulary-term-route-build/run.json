@@ -1,0 +1,32 @@
+{
+  "contract_version": "siegard-run/1",
+  "run": "run/glossary-query-http-read-vocabulary-term-route-build",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/src",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log"
+    }
+  ],
+  "combined_output": "run.log"
+}
