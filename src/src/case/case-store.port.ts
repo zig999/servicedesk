@@ -45,6 +45,26 @@
 // refusal — an empty store answers an empty page, never an error or
 // undefined, the same absence-as-data rule every other read in this port
 // already keeps.
+//
+// listCaseVersions is this file's next later addition
+// (task/case-query-http/list-case-versions-store-extension), answering
+// contracts/knowledge/case-query's own list-case-versions operation: every
+// version a named case currently holds, paginated the same way listCases
+// already is. Refused, through CaseNotFoundError, only where the named slug
+// names no case at all — the same typed error assembleVersion's own callers
+// already raise for the matching absence (case-query.service.ts,
+// release.operation.ts, discard.operation.ts, manifest-composition.operations.ts),
+// raised here directly by the store itself instead, since this is the one
+// place that already knows whether the case's own identity row exists
+// before any version is ever read. A case currently holding no version — every
+// one of its own discarded and none yet drafted or released — answers an
+// empty page instead, never this refusal: domain/knowledge/case's own
+// next_version is a fact of the case's identity that survives every one of
+// its versions being discarded, so the case itself does not stop existing
+// just because it currently holds none. CaseVersionListItem is this port's
+// own inference for what a listing item carries, disclosed in this task's
+// delivery record: the version number and its own declared state alone,
+// lighter than assembleVersion's own whole-version read.
 
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -172,6 +192,21 @@ export type CaseIdentity = {
 };
 
 /**
+ * One version of a case as listCaseVersions answers it: its own number and
+ * declared lifecycle state alone (domain/knowledge/case-version's own
+ * "version" and "state" attributes) — every heavier attribute the same node
+ * declares (title, when_to_use, authored_at, subject, fallback,
+ * consolidation_register, released_at, manifest) is what assembleVersion's
+ * own whole read answers, not what a listing of a case's versions states
+ * about each one. No node names a shape for this listing item, so this is
+ * this port's own inference, disclosed in this task's delivery record.
+ */
+export type CaseVersionListItem = {
+  readonly version: number;
+  readonly state: CaseVersionState;
+};
+
+/**
  * The port through which every case-lifecycle fact reaches its persistence:
  * one whole read, and one storage primitive per lifecycle mutation. Every
  * refusal this port's implementation raises is what a schema constraint the
@@ -209,6 +244,18 @@ export interface ICaseStore {
    * never an error or undefined.
    */
   listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>>;
+
+  /**
+   * Lists every version the named case currently holds, by its own bare
+   * number and declared state, paginated per src/types/pagination.ts
+   * (contracts/knowledge/case-query's own list-case-versions operation).
+   * Refused, through CaseNotFoundError, where the named slug names no case
+   * at all — never where the case exists but currently holds no version
+   * (every one of its versions discarded and none yet drafted or released),
+   * which answers an empty page instead, the same absence-as-data rule
+   * listCases already keeps for an empty store.
+   */
+  listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
 
   /**
    * Originates a new draft version: assigns the case's next version number

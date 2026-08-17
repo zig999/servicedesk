@@ -36,6 +36,7 @@ import { CaseQueryService, replayCase } from '../../../case/case-query.service.j
 import type {
   AssembledCaseVersion,
   CaseIdentity,
+  CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
   HypothesisRevisionContent,
@@ -147,6 +148,17 @@ class FakeCaseStore implements ICaseStore {
       offset: pagination.offset,
       pageCount: pagination.limit > 0 ? Math.ceil(total / pagination.limit) : 0,
     };
+  }
+
+  /**
+   * A minimal stand-in for listCaseVersions: no test in this file exercises it at all, so this
+   * fake answers an empty page unconditionally — sufficient only to keep FakeCaseStore satisfying
+   * ICaseStore in full, the same reason the listCases stub just above already gives (this
+   * delivery's own inference — the task that adds listCaseVersions did not touch this file's own
+   * fixture).
+   */
+  public async listCaseVersions(_slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
+    return { data: [], total: 0, limit: pagination.limit, offset: pagination.offset, pageCount: 0 };
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {

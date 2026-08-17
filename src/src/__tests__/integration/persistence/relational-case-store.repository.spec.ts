@@ -54,6 +54,7 @@ import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { CreateDraftInput } from '../../../case/case-store.port.js';
 import type { Resolution } from '../../../case/case.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -330,6 +331,102 @@ it('answers an empty page — data: [] — rather than an error or an absent val
   expect(page).toBeDefined();
   expect(page.data).toEqual([]);
 });
+
+// -------------------------------------------- task/case-query-http/list-case-versions-store-extension
+//
+// Unlike "cases" above, "case_versions" is queried scoped to one slug at a time (WHERE slug = $1
+// in every statement listCaseVersionsPage runs), so a page answered for one slug can never include
+// a row this suite wrote under a different one — every assertion below compares the page's own
+// data array by full equality rather than arrayContaining, since nothing this file's other tests
+// ever write can leak into a query scoped this way.
+
+it(
+  "returns every version the named case currently holds, by its own number and lifecycle state, " +
+    'ordered by version regardless of how many of them have since been released',
+  async () => {
+    const slug = `case-lifecycle-store-list-versions-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version1 = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version1);
+    const version2 = await store.createDraft(aCreateDraftInput(slug, glossary));
+
+    const page = await store.listCaseVersions(slug, { offset: 0, limit: 20 });
+
+    expect(page.data).toEqual([
+      { version: version1, state: 'released' },
+      { version: version2, state: 'draft' },
+    ]);
+  },
+);
+
+it("excludes another case's own versions from the page, naming only the slug it was asked for", async () => {
+  const slug = `case-lifecycle-store-list-versions-isolated-${randomUUID()}`;
+  const otherSlug = `case-lifecycle-store-list-versions-isolated-other-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug, otherSlug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+  await store.createDraft(aCreateDraftInput(otherSlug, glossary));
+
+  const page = await store.listCaseVersions(slug, { offset: 0, limit: 20 });
+
+  expect(page.data).toEqual([{ version, state: 'draft' }]);
+});
+
+it(
+  'answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named ' +
+    "case's own versions — the given limit and offset echoed back, the page itself held to that " +
+    'limit even though the case holds more versions, and pageCount computed from total and limit',
+  async () => {
+    const slug = `case-lifecycle-store-list-versions-page-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version1 = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version1);
+    const version2 = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.release(slug, version2);
+    await store.createDraft(aCreateDraftInput(slug, glossary));
+
+    const page = await store.listCaseVersions(slug, { offset: 0, limit: 1 });
+
+    expect(page.limit).toBe(1);
+    expect(page.offset).toBe(0);
+    expect(page.data).toHaveLength(1);
+    expect(page.total).toBe(3);
+    expect(page.pageCount).toBe(3);
+  },
+);
+
+it('refuses, through CaseNotFoundError naming the slug, a slug that names no case at all', async () => {
+  const store = new RelationalCaseStore(pool);
+  const slug = `case-lifecycle-store-list-versions-absent-${randomUUID()}`;
+
+  const rejection = store.listCaseVersions(slug, { offset: 0, limit: 20 });
+
+  await expect(rejection).rejects.toBeInstanceOf(CaseNotFoundError);
+  await expect(rejection).rejects.toMatchObject({ context: { slug, version: 0 } });
+});
+
+it(
+  'answers an empty page, never CaseNotFoundError, for a case that currently holds no version at ' +
+    'all because the only one it ever held was discarded — its own identity row survives that, ' +
+    'told apart here from a slug naming no case at all',
+  async () => {
+    const slug = `case-lifecycle-store-list-versions-zero-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    await store.discard(slug, version);
+
+    const page = await store.listCaseVersions(slug, { offset: 0, limit: 20 });
+
+    expect(page).toEqual({ data: [], total: 0, limit: 20, offset: 0, pageCount: 0 });
+  },
+);
 
 // ---------------------------------------------------------------- criterion 3
 

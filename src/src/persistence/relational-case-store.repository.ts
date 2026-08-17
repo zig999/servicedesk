@@ -59,6 +59,24 @@
 // empty "cases" table answers total: 0 and data: [], never an error or
 // undefined.
 //
+// listCaseVersions is this file's next later addition
+// (task/case-query-http/list-case-versions-store-extension): every row of
+// "case_versions" for one named slug, by its own version and state alone
+// (CaseVersionListItem), paginated the same way listCasesPage already is —
+// one transaction running the case-identity check, the total and the page
+// together so none of the three can disagree about what was held at the
+// instant any of them ran. The case-identity check is what tells an unknown
+// slug (refused, through CaseNotFoundError) apart from a known one currently
+// holding no version (answered as an empty page, never a refusal) — a case
+// row survives the discarding of every version it ever held, since
+// cases.next_version is a durable counter, not a fact derived from
+// case_versions' own rows. CaseNotFoundError's constructor requires a
+// version number that has no referent here — no particular version is ever
+// named by this refusal — so NO_VERSION_NAMED below stands in for it, this
+// task's own inference, disclosed in its delivery record, since 0 is a
+// version cases.next_version's own DEFAULT 1 (migrations/0009-case-version-
+// lifecycle-schema.sql) guarantees no case version is ever assigned.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -75,6 +93,7 @@
 import type {
   AssembledCaseVersion,
   CaseIdentity,
+  CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
   HypothesisRevisionContent,
@@ -85,6 +104,7 @@ import type {
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
 import { CaseAlreadyHasDraftError } from '../errors/case-already-has-draft.error.js';
+import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
@@ -170,6 +190,9 @@ const UNIQUE_VIOLATION_CODE = '23505';
 const ONE_DRAFT_PER_CASE_CONSTRAINT = 'case_versions_one_draft_per_case';
 const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
+/** Stands in for CaseNotFoundError's own required version number where listCaseVersions refuses a slug naming no case at all (TYP-04) — no particular version is ever named by that refusal, and 0 is one cases.next_version's own DEFAULT 1 guarantees no case version is ever assigned (migrations/0009-case-version-lifecycle-schema.sql), so it can never be mistaken for a real one. This task's own inference, disclosed in its delivery record. */
+const NO_VERSION_NAMED = 0;
+
 /**
  * The relational adapter of the case module's rebuilt store port: assembles
  * one version whole (criterion 1, criterion 2), originates a draft
@@ -192,6 +215,10 @@ export class RelationalCaseStore implements ICaseStore {
 
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => listCasesPage(tx, pagination));
+  }
+
+  public async listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) => listCaseVersionsPage(tx, slug, pagination));
   }
 
   public async createDraft(input: CreateDraftInput): Promise<number> {
@@ -359,6 +386,52 @@ function manifestCollectsSelect(key: ICaseVersionKey): IStatement {
            WHERE cvh.case_slug = $1 AND cvh.case_version = $2
            ORDER BY cvh.hypothesis_name, hrc.concept_name`,
     params: [key.slug, key.version],
+  };
+}
+
+// ---------------------------------------------------------------- listCaseVersions
+
+/** Every version the named case currently holds, by its own number and state alone, paginated — refused through CaseNotFoundError where the slug names no case at all (criterion 2), the identity check, the total and the page all read through the same transaction so none of the three can disagree about what "case_versions" held at the instant any of them ran. */
+async function listCaseVersionsPage(tx: IQueryable, slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
+  await requireCaseIdentity(tx, slug);
+  const total = await countCaseVersions(tx, slug);
+  const rows = await runStatement<{ version: number; state: string }>(tx, caseVersionsPageSelect(slug, pagination), raiseReadFailure);
+  return {
+    data: rows.map((row) => ({ version: row.version, state: caseVersionStateOf(row.state) })),
+    total,
+    limit: pagination.limit,
+    offset: pagination.offset,
+    pageCount: pageCountOf(total, pagination.limit),
+  };
+}
+
+/** Refuses, through CaseNotFoundError, a slug the "cases" table holds no row for at all (criterion 2) — the one check that tells an unknown case apart from a known one currently holding no version. */
+async function requireCaseIdentity(tx: IQueryable, slug: string): Promise<void> {
+  const row = await queryOneOrAbsent<{ slug: string }>(tx, caseIdentitySelect(slug), raiseReadFailure);
+  if (row === undefined) {
+    throw new CaseNotFoundError(slug, NO_VERSION_NAMED);
+  }
+}
+
+function caseIdentitySelect(slug: string): IStatement {
+  return { text: `SELECT slug FROM ${CASES_TABLE} WHERE slug = $1`, params: [slug] };
+}
+
+/** How many versions the named case holds in total, across every page — 0 where it currently holds none (every one discarded, or none yet drafted or released). */
+async function countCaseVersions(tx: IQueryable, slug: string): Promise<number> {
+  const row = await queryOneOrAbsent<{ count: string }>(tx, caseVersionsCountSelect(slug), raiseReadFailure);
+  return row === undefined ? 0 : Number(row.count);
+}
+
+function caseVersionsCountSelect(slug: string): IStatement {
+  return { text: `SELECT COUNT(*) AS count FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1`, params: [slug] };
+}
+
+/** One page of the named case's own versions, ordered by version so a stable page boundary means the same rows on a repeated call between two writes. */
+function caseVersionsPageSelect(slug: string, pagination: PaginationRequest): IStatement {
+  return {
+    text: `SELECT version, state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 ORDER BY version LIMIT $2 OFFSET $3`,
+    params: [slug, pagination.limit, pagination.offset],
   };
 }
 
