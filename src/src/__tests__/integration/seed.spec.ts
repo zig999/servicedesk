@@ -498,3 +498,11 @@ it(
 it('resolves without rejecting when seed.ts is run a second time against a database it has already seeded', async () => {
   await expect(runSeedScript(2)).resolves.toBeUndefined();
 });
+
+// ---------------------------------------------------------------- task/seed-already-seeded-guard-hotfix/narrow-the-guard's own criterion 4: the second run above must not have drafted a new version behind that resolved promise
+
+it('holds no second case version, having run seed.ts a second time in a row against the version it already released', async () => {
+  const secondVersion = await createCaseStore(connection).assembleVersion(SLUG, VERSION + 1);
+
+  expect(secondVersion).toBeUndefined();
+});
