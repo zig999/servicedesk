@@ -370,4 +370,29 @@ entries:
     unstated: An earlier entry in this same log decided the case identity carries no attribute beyond slug, reasoning that a durable version-number counter was technical bookkeeping with no domain home. /plan-work's own execution-contract-binder later found this in direct conflict with a task built from the human-authored implementation scope, which requires exactly such a counter to satisfy a-case-version-number-is-never-reused (a version number, once issued, is never reused even after its draft is discarded — which a counter derived only from currently-existing rows cannot guarantee). The conflict was reported as a BLOCKING note, and the human explicitly chose to settle it by extending the specification rather than loosening the scope's own criterion.
     decided: The case identity gains a required attribute, next_version, an integer — the counter that assigns each new draft's version number, always greater than every version number the case has ever held, including one later discarded. This reverses the earlier "slug alone" entry rather than replacing it, since that entry is not itself wrong about anything the material stated in analysis, only insufficient once a-case-version-number-is-never-reused's own guarantee needed a durable, unambiguous home the analysis had not yet been asked to consider.
     why: The human's own explicit instruction, given the two paths a BLOCKING note offers (loosen the scope's criterion, or extend the specification) — this is the "extend the specification" path, chosen over asking whoever authors the scope to retract a criterion that is itself sound engineering, just previously homeless in the domain model.
+  - location: domain/knowledge/case-version.md
+    field: operations
+    unstated: The human, reviewing a gap analysis of the HTTP surface an administration front-end needs, decided a curator must be able to correct a draft's own declared attributes (title, when_to_use, subject, fallback, consolidation_register) after create-draft, without naming the operation itself.
+    decided: update-draft, added to case-version's own declared operations.
+    why: Mirrors create-draft's own naming — a verb naming the lifecycle action — and sits beside place-hypothesis and remove-hypothesis as a third kind of in-draft composition, this one over the version's own attributes rather than its manifest; a-case-version-is-written-once already refuses it once released, so no new rule is needed to bound it.
+  - location: contracts/knowledge/case-lifecycle.md
+    field: operations
+    unstated: The same review decided update-draft belongs to the curator's published entrance, without naming where it is exposed.
+    decided: update-draft, added alongside create-draft, revise-hypothesis, place-hypothesis and remove-hypothesis in case-lifecycle's own operations.
+    why: case-lifecycle already publishes every other in-draft composition action and the two terminal transitions (release, discard); update-draft is the same kind of action over the version's own attributes, so it belongs beside them rather than under a new api.
+  - location: contracts/knowledge/case-query.md
+    field: operations
+    unstated: The same review decided that cases, the versions of a case, the hypotheses of a case and the revisions of a hypothesis each need a listing a curator browses by, without naming the operations or which api exposes them.
+    decided: list-cases, list-case-versions, list-hypotheses and list-hypothesis-revisions, added to case-query's own operations, alongside read-case.
+    why: case-query is already the one published api for every synchronous read the knowledge context offers; a listing is the same kind of read as read-case — validated, never file-backed — at a different cardinality, so it belongs beside read-case rather than splitting the context's one read surface into a second api. constraints/a-case-is-read-whole already anticipates independent reads of a hypothesis and its revisions apart from a whole case-version read, so this introduces no new tension with it.
+  - location: contracts/glossary/glossary-query.md
+    field: operations
+    unstated: The same review decided the glossary's vocabularies and its concepts both need a listing, without naming the operations.
+    decided: list-vocabulary-terms and list-concepts, added to glossary-query's own operations, alongside read-vocabulary-term and read-concept.
+    why: Mirrors this api's own existing pairing of a term read and a concept read — one more operation per existing read, exposed through the one published-language interface a consumer already depends on, never a second interface.
+  - location: contracts/integration/capability-registry.md
+    field: operations
+    unstated: The same review decided registered capabilities need a listing, without naming the operation.
+    decided: list-capabilities, added to capability-registry's own operations, alongside read-capability.
+    why: The registry already publishes the one synchronous read a consumer depends on; a listing is the same read at a different cardinality, so it belongs beside read-capability rather than a second api.
 ---
