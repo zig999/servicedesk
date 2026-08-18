@@ -469,6 +469,23 @@
       "task": "task/glossary-query-http/read-vocabulary-term-route"
     },
     {
+      "id": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "kind": "review",
+      "file": "review/case-lifecycle-and-case-query-and-glossary-capability-reads.md",
+      "title": "case-management-http-api — case-lifecycle, case-query and glossary/capability read routes",
+      "summary": "Reviews the twenty-two tasks delivered before this session (status-map, the case-lifecycle mutation routes, the case-query read/store-extension pairs, pagination-types, and the read-capability/read-concept/read-vocabulary-term routes) — the remainder of this initiative not covered by the prior review.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A release request against a version whose validator rules do not all answer returns every applicable refusal together, not only the first.",
+        "A request naming a case slug that does not exist is refused with the status status-map assigns CaseNotFoundError."
+      ],
+      "findings": 8
+    },
+    {
       "id": "review/list-query-extensions-and-routes",
       "kind": "review",
       "file": "review/list-query-extensions-and-routes.md",
@@ -1421,6 +1438,138 @@
       "to": "implementation/glossary-query-http/read-vocabulary-term-route",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/capability-registry-http/read-capability-route",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-case-versions-route",
+      "kind": "reviews",
+      "at": "tasks[10]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-case-versions-store-extension",
+      "kind": "reviews",
+      "at": "tasks[11]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-cases-route",
+      "kind": "reviews",
+      "at": "tasks[12]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-cases-store-extension",
+      "kind": "reviews",
+      "at": "tasks[13]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-hypotheses-route",
+      "kind": "reviews",
+      "at": "tasks[14]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-hypotheses-store-extension",
+      "kind": "reviews",
+      "at": "tasks[15]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-hypothesis-revisions-route",
+      "kind": "reviews",
+      "at": "tasks[16]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/list-hypothesis-revisions-store-extension",
+      "kind": "reviews",
+      "at": "tasks[17]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/pagination-types",
+      "kind": "reviews",
+      "at": "tasks[18]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-query-http/read-case-route",
+      "kind": "reviews",
+      "at": "tasks[19]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/create-draft-route",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/glossary-query-http/read-concept-route",
+      "kind": "reviews",
+      "at": "tasks[20]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/glossary-query-http/read-vocabulary-term-route",
+      "kind": "reviews",
+      "at": "tasks[21]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/discard-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/place-hypothesis-route",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/release-route",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/revise-hypothesis-route",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/status-map",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/update-draft-route",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/case-lifecycle-and-case-query-and-glossary-capability-reads",
+      "to": "task/case-lifecycle-http/update-draft-store-extension",
+      "kind": "reviews",
+      "at": "tasks[9]"
     },
     {
       "from": "review/list-query-extensions-and-routes",
