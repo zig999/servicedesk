@@ -436,6 +436,13 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     const capability = this.capabilities.get(concept);
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
+
+  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
+  // (task/capability-registry-http/list-capabilities-query-extension): this
+  // file's own scenarios never call listCapabilities.
+  public async listCapabilities(): Promise<never> {
+    throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
+  }
 }
 
 /** A glossary holding every term and the one concept the fixture case names, accepting only contract. */

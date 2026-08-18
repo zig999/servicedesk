@@ -38,7 +38,15 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
 /** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors what build-app.ts wires for diagnose, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; readCapability: ReadCapabilityMock } {
   const readCapability: ReadCapabilityMock = vi.fn();
-  const capabilityQuery: ICapabilityQuery = { readCapability };
+  // listCapabilities is a minimal stub kept only to satisfy the widened
+  // ICapabilityQuery interface (task/capability-registry-http/list-capabilities-query-extension):
+  // this route under test never calls it.
+  const capabilityQuery: ICapabilityQuery = {
+    readCapability,
+    listCapabilities: () => {
+      throw new Error('listCapabilities is not scripted for this file');
+    },
+  };
   const dependencies: ReadCapabilityControllerDependencies = { capabilityQuery };
   const app = Fastify();
   app.setErrorHandler(handleUnexpectedError);

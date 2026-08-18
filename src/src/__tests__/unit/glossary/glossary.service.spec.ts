@@ -269,3 +269,102 @@ it('leaves a vocabulary other than outcome unseeded and answers it empty', async
   expect(answered).toEqual([]);
   expect(store.held('recipient')).toEqual([]);
 });
+
+// -------------------- task/glossary-query-http/list-vocabulary-terms-query-extension
+
+it('answers a page of a vocabulary with the full pagination envelope, its page count computed from the total and the limit (API-03)', async () => {
+  const store = new InMemoryGlossaryStore();
+  const held = ['term-a', 'term-b', 'term-c', 'term-d', 'term-e'].map((name) => ({ name }));
+  await store.writeTerms('subject-type', held);
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('subject-type', { offset: 0, limit: 2 });
+
+  expect(page).toEqual({
+    data: [{ name: 'term-a' }, { name: 'term-b' }],
+    total: 5,
+    limit: 2,
+    offset: 0,
+    pageCount: 3,
+  });
+});
+
+it('answers a page from the middle of a larger vocabulary, windowed by offset and limit rather than always starting at the first term', async () => {
+  const store = new InMemoryGlossaryStore();
+  const held = ['action-a', 'action-b', 'action-c', 'action-d', 'action-e'].map((name) => ({ name }));
+  await store.writeTerms('action', held);
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('action', { offset: 2, limit: 2 });
+
+  expect(page).toEqual({
+    data: [{ name: 'action-c' }, { name: 'action-d' }],
+    total: 5,
+    limit: 2,
+    offset: 2,
+    pageCount: 3,
+  });
+});
+
+it('answers an empty data array, never an error, for a vocabulary with no terms held (API-02)', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('recipient', { offset: 0, limit: 10 });
+
+  expect(page).toEqual({ data: [], total: 0, limit: 10, offset: 0, pageCount: 0 });
+});
+
+it('answers an empty data array, never an error, when the offset falls past the end of a non-empty vocabulary (API-02)', async () => {
+  const store = new InMemoryGlossaryStore();
+  await store.writeTerms('action', [{ name: 'only-action' }]);
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('action', { offset: 5, limit: 2 });
+
+  expect(page).toEqual({ data: [], total: 1, limit: 2, offset: 5, pageCount: 1 });
+});
+
+it('includes both non-conclusion outcomes in the returned page when listing the outcome vocabulary, exactly as terms() already seeds them', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('outcome', { offset: 0, limit: 10 });
+
+  expect(page.data.map((term) => term.name).sort()).toEqual([
+    'inconclusive-hypotheses-exhausted',
+    'inconclusive-no-data',
+  ]);
+});
+
+it("counts the seeded non-conclusion outcomes toward the outcome vocabulary's total and page count, not only toward its returned page (API-03)", async () => {
+  const store = new InMemoryGlossaryStore();
+  await store.writeTerms('outcome', [{ name: 'a-conclusion' }]);
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('outcome', { offset: 0, limit: 1 });
+
+  expect(page.total).toBe(3);
+  expect(page.pageCount).toBe(3);
+});
+
+it('refuses listing a vocabulary whose records hold one name twice, the same typed error reading a single term already raises', async () => {
+  const store = new InMemoryGlossaryStore();
+  await store.writeTerms('action', [{ name: 'repeated-term' }, { name: 'repeated-term' }]);
+  const glossary = new GlossaryService(store);
+
+  const refusal = await rejectionOf(glossary.listVocabularyTerms('action', { offset: 0, limit: 10 }));
+
+  expect(refusal).toBeInstanceOf(DuplicateGlossaryNameError);
+  expect(refusal).toMatchObject({ context: { vocabulary: 'action', name: 'repeated-term' } });
+});
+
+it('answers a page count of zero for a non-positive limit, rather than dividing by it (API-03)', async () => {
+  const store = new InMemoryGlossaryStore();
+  await store.writeTerms('subject-attribute', [{ name: 'attr-a' }, { name: 'attr-b' }]);
+  const glossary = new GlossaryService(store);
+
+  const page = await glossary.listVocabularyTerms('subject-attribute', { offset: 0, limit: 0 });
+
+  expect(page.pageCount).toBe(0);
+});

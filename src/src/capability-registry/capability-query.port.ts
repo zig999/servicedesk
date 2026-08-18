@@ -1,3 +1,4 @@
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { Capability } from './capability.js';
 
 /**
@@ -29,4 +30,12 @@ export interface ICapabilityQuery {
    * the store on every call, never remembered.
    */
   readCapability(concept: string): Promise<CapabilityResolution>;
+
+  /**
+   * list-capabilities: every capability currently registered, whole — name,
+   * version, nature, both schemas, timeout and connector, exactly as
+   * registered, nothing narrowed — paginated per src/types/pagination.ts.
+   * Read through the store on every call, never remembered.
+   */
+  listCapabilities(pagination: PaginationRequest): Promise<PaginatedResponse<Capability>>;
 }

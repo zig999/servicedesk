@@ -1,4 +1,5 @@
 import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { ConceptResolution, IGlossaryQuery, TermResolution } from './glossary-query.port.js';
 import type { IGlossaryStore } from './glossary-store.port.js';
 import {
@@ -80,6 +81,61 @@ export class GlossaryService implements IGlossaryQuery {
   }
 
   /**
+   * list-vocabulary-terms (contracts/glossary/glossary-query): answers every
+   * term the named vocabulary currently holds, paginated per
+   * src/types/pagination.ts. Reads the vocabulary's whole current holding
+   * through this.terms — the same private helper readVocabularyTerm already
+   * reuses (MNT-03), so the outcome vocabulary's two non-conclusion outcomes
+   * and the duplicate-name check apply here exactly as they do there — and
+   * then windows that in-memory array by offset and limit: the store itself
+   * (IGlossaryStore.readTerms) always answers the whole vocabulary and has no
+   * paged read of its own, unlike the case store's listCases and its
+   * siblings, which page at the SQL layer. An offset past the end of the
+   * held array answers an empty page rather than an error (API-02), and the
+   * page count is always computed from the full array's own length and the
+   * given limit, never hardcoded (API-03).
+   */
+  public async listVocabularyTerms(
+    vocabulary: TermVocabulary,
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<GlossaryTerm>> {
+    const held = await this.terms(vocabulary);
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data,
+      total: held.length,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pageCountOf(held.length, pagination.limit),
+    };
+  }
+
+  /**
+   * list-concepts (contracts/glossary/glossary-query): answers every concept
+   * currently registered, paginated per src/types/pagination.ts. Reads the
+   * whole current holding through this.concepts — the same private helper
+   * readConcept already reuses (MNT-03), so the ttl-defaulting and the
+   * duplicate-name check apply here exactly as they do there — and then
+   * windows that in-memory array by offset and limit: the store itself
+   * (IGlossaryStore.readConcepts) always answers every concept and has no
+   * paged read of its own. An offset past the end of the held array answers
+   * an empty page rather than an error (API-02), and the page count is
+   * always computed from the full array's own length and the given limit,
+   * never hardcoded (API-03).
+   */
+  public async listConcepts(pagination: PaginationRequest): Promise<PaginatedResponse<Concept>> {
+    const held = await this.concepts();
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data,
+      total: held.length,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pageCountOf(held.length, pagination.limit),
+    };
+  }
+
+  /**
    * Ensures the two non-conclusion outcomes exist by adding only what is
    * missing, through insertMissingTerms — never writeTerms's own
    * whole-replace, which would delete every outcome row first and fail the
@@ -99,6 +155,20 @@ export class GlossaryService implements IGlossaryQuery {
     await this.store.insertMissingTerms('outcome', missing);
     return [...held, ...missing];
   }
+}
+
+/**
+ * The page count this limit divides total into (API-03) — 0 for a
+ * non-positive limit, since dividing by it would answer no page count at all
+ * rather than one a caller could page through; the same defensive floor
+ * relational-case-store.repository.ts's own pageCountOf already applies to
+ * every SQL-paged listing, restated here rather than imported because that
+ * one is a private, unexported helper of an unrelated persistence module
+ * (MNT-03 reaches a block of logic this project already calls from
+ * elsewhere, not a private one-line formula sitting in a different layer).
+ */
+function pageCountOf(total: number, limit: number): number {
+  return limit > 0 ? Math.ceil(total / limit) : 0;
 }
 
 /**

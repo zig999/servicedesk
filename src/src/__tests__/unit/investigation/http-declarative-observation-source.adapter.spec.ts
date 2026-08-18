@@ -81,6 +81,13 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     const capability = this.held.get(concept);
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
+
+  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
+  // (task/capability-registry-http/list-capabilities-query-extension): this
+  // file's own scenarios never call listCapabilities.
+  public async listCapabilities(): Promise<never> {
+    throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
+  }
 }
 
 /** Holds whatever connector configurations a test registers, resolving every other connector as unheld — standing in for the connector-configuration registry. */

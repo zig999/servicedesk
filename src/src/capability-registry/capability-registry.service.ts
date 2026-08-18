@@ -2,6 +2,7 @@ import { CapabilityNotReadOnlyError } from '../errors/capability-not-read-only.e
 import { ConceptAlreadyAnsweredError } from '../errors/concept-already-answered.error.js';
 import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { IncompleteCapabilityContractError } from '../errors/incomplete-capability-contract.error.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { CapabilityResolution, ICapabilityQuery } from './capability-query.port.js';
 import type { ICapabilityStore } from './capability-store.port.js';
 import {
@@ -66,6 +67,32 @@ export class CapabilityRegistryService implements ICapabilityQuery {
     const capability = answers[0];
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
+
+  /**
+   * list-capabilities (contracts/integration/capability-registry): every
+   * capability currently registered, whole — read through the store on
+   * every call, never remembered — paginated per src/types/pagination.ts.
+   * The store answers every registration it holds in one read with no
+   * pagination of its own (capability-store.port.ts's own readCapabilities),
+   * so the offset/limit window and the total are both computed here, in
+   * memory, over that full array — the same approach
+   * list-vocabulary-terms-query-extension takes for the glossary's own
+   * stores, which paginate no differently. A registry holding no
+   * capabilities answers the same way: slicing an empty array yields an
+   * empty page (data: [], total: 0), never an error.
+   */
+  public async listCapabilities(pagination: PaginationRequest): Promise<PaginatedResponse<Capability>> {
+    const held = await this.store.readCapabilities();
+    const total = held.length;
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data,
+      total,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pageCountOf(total, pagination.limit),
+    };
+  }
 }
 
 /** A registration that declared every required attribute, as the type then knows it. */
@@ -128,6 +155,19 @@ function contractProblems(registration: CapabilityRegistration): string[] {
 /** Whether one attribute of a registration was left undeclared — absent and empty alike, since an empty attribute declares nothing. */
 function isUndeclared(value: string | undefined): boolean {
   return value === undefined || value === '';
+}
+
+/**
+ * The page count this limit divides total into (API-03) — 0 for a
+ * non-positive limit, since dividing by it would answer no page count a
+ * caller could page through at all; neither this task's own criteria nor
+ * src/types/pagination.ts states what a non-positive limit answers, so this
+ * is this service's own defensive floor, the same inference
+ * relational-case-store.repository.ts's own pageCountOf already made for
+ * the store-paginated listings, rather than a documented behavior.
+ */
+function pageCountOf(total: number, limit: number): number {
+  return limit > 0 ? Math.ceil(total / limit) : 0;
 }
 
 /** Whether two registrations name one capability, identified by name and version (domain/integration/capability). */

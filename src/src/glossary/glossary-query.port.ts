@@ -1,3 +1,4 @@
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { Concept, GlossaryTerm, TermVocabulary } from './terms.js';
 
 /**
@@ -24,12 +25,13 @@ export type ConceptResolution =
  * The published glossary-query contract (contracts/glossary/glossary-query):
  * the synchronous in-process read its consumers — every case-validation term
  * check among them — resolve a vocabulary term or a concept through, exactly
- * as the glossary currently holds it. A consumer depends on this interface,
- * never on the store or on the service that answers it.
+ * as the glossary currently holds it; or list every term one named vocabulary
+ * currently holds, or every concept currently registered. A consumer depends
+ * on this interface, never on the store or on the service that answers it.
  */
 export interface IGlossaryQuery {
   /**
-   * read-vocabulary-term: resolves one term of one of the four term
+   * read-vocabulary-term: resolves one term of one of the five term
    * vocabularies by its name, against the glossary's current holding —
    * read through the store on every call, never remembered.
    */
@@ -40,4 +42,25 @@ export interface IGlossaryQuery {
    * current holding — read through the store on every call, never remembered.
    */
   readConcept(name: string): Promise<ConceptResolution>;
+
+  /**
+   * list-vocabulary-terms: answers every term one named vocabulary currently
+   * holds, paginated per src/types/pagination.ts. Carries no filter and runs
+   * no validation of its own beyond what assembling the vocabulary already
+   * does — a bare-name listing has nothing structural or coherent to check —
+   * so this is read through the same holding readVocabularyTerm resolves
+   * against on every call, never remembered. Which vocabulary names exist at
+   * all is TermVocabulary's own closed set (terms.ts); a name outside it is
+   * not a value this parameter accepts.
+   */
+  listVocabularyTerms(vocabulary: TermVocabulary, pagination: PaginationRequest): Promise<PaginatedResponse<GlossaryTerm>>;
+
+  /**
+   * list-concepts: answers every concept currently registered, paginated per
+   * src/types/pagination.ts. Carries no filter and runs no validation of its
+   * own beyond what assembling the concept list already does, so this is
+   * read through the same holding readConcept resolves against on every
+   * call, never remembered.
+   */
+  listConcepts(pagination: PaginationRequest): Promise<PaginatedResponse<Concept>>;
 }

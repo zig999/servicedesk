@@ -253,3 +253,101 @@ it('holds two versions of one capability name as two registrations', async () =>
 
   expect(store.held().map((held) => held.version).sort()).toEqual(['1.0.0', '2.0.0']);
 });
+
+// ------------------------------------------------------------------ list-capabilities
+// Proof for task/capability-registry-http/list-capabilities-query-extension:
+// every capability currently registered, whole with its full declared
+// contract, paginated per src/types/pagination.ts and
+// standards/backend-node-service.yaml's API-01 through API-03 — the store's
+// own readCapabilities answers no pagination of its own, so the offset/limit
+// window, the total and the page count are all computed here, in memory.
+
+it('returns every capability currently registered, whole with its full declared contract, in one page', async () => {
+  const first = heldCapability();
+  const second = heldCapability({
+    name: 'another-capability',
+    version: '2.0.0',
+    input_schema: 'another-input-schema',
+    output_schema: 'another-output-schema',
+    connector: 'another-connector',
+    concept: 'another-concept',
+  });
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore([first, second]));
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 10 });
+
+  expect(page).toEqual({
+    data: [first, second],
+    total: 2,
+    limit: 10,
+    offset: 0,
+    pageCount: 1,
+  });
+});
+
+it('answers a registry holding no capabilities with an empty page rather than an error', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore([]));
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 10 });
+
+  expect(page).toEqual({ data: [], total: 0, limit: 10, offset: 0, pageCount: 0 });
+});
+
+it('windows a page from the middle of a larger set, not just the first page', async () => {
+  const capabilities = [0, 1, 2, 3, 4].map((index) =>
+    heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),
+  );
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(capabilities));
+
+  const page = await registry.listCapabilities({ offset: 2, limit: 2 });
+
+  expect(page.data).toEqual([capabilities[2], capabilities[3]]);
+  expect(page.total).toBe(5);
+});
+
+it('computes the page count as the ceiling of total over limit when they do not divide evenly', async () => {
+  const capabilities = [0, 1, 2, 3, 4].map((index) =>
+    heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),
+  );
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(capabilities));
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 2 });
+
+  expect(page.pageCount).toBe(3);
+});
+
+it('computes the page count exactly when total divides evenly by limit, adding no spurious page', async () => {
+  const capabilities = [0, 1, 2, 3].map((index) =>
+    heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),
+  );
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(capabilities));
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 2 });
+
+  expect(page.pageCount).toBe(2);
+});
+
+it('answers a page count of zero for a non-positive limit rather than dividing by it', async () => {
+  const capabilities = [0, 1, 2].map((index) =>
+    heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),
+  );
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(capabilities));
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 0 });
+
+  expect(page).toEqual({ data: [], total: 3, limit: 0, offset: 0, pageCount: 0 });
+});
+
+it('reads the store on every call, answering a capability registered since the previous list rather than a remembered one', async () => {
+  const store = new InMemoryCapabilityStore([heldCapability()]);
+  const registry = new CapabilityRegistryService(store);
+  await registry.listCapabilities({ offset: 0, limit: 10 }); // answers one capability, baiting a memory
+  await store.writeCapabilities([
+    heldCapability(),
+    heldCapability({ name: 'another-capability', concept: 'another-concept' }),
+  ]);
+
+  const page = await registry.listCapabilities({ offset: 0, limit: 10 });
+
+  expect(page.total).toBe(2);
+});

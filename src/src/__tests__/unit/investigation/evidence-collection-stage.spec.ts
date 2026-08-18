@@ -102,6 +102,13 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     const capability = this.held.get(concept);
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
+
+  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
+  // (task/capability-registry-http/list-capabilities-query-extension): this
+  // file's own scenarios never call listCapabilities.
+  public async listCapabilities(): Promise<never> {
+    throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
+  }
 }
 
 /** Holds every capability in the map and seeds the fake observation source to answer ok with `observed-${concept}` for each — for a test whose whole plan is expected to succeed. */
@@ -126,6 +133,13 @@ class DelayedCapabilityQuery implements ICapabilityQuery {
   public async readCapability(_concept: string): Promise<CapabilityResolution> {
     await new Promise<void>((resolve) => setTimeout(resolve, this.delayMs));
     return { held: true, capability: this.capability };
+  }
+
+  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
+  // (task/capability-registry-http/list-capabilities-query-extension): this
+  // file's own scenarios never call listCapabilities.
+  public async listCapabilities(): Promise<never> {
+    throw new Error('DelayedCapabilityQuery.listCapabilities is not scripted for this file');
   }
 }
 
