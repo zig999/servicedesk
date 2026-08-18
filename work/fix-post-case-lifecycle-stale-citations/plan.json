@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/fix-post-case-lifecycle-stale-citations",
+      "kind": "epic",
+      "file": "epic/fix-post-case-lifecycle-stale-citations.md",
+      "title": "Fix post-case-lifecycle stale citations",
+      "summary": "Corrects four doc-comment citations in already-delivered code that still attribute facts to the case/hypothesis identities after the case-lifecycle initiative moved those facts to case-version/hypothesis-revision."
+    },
+    {
+      "id": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "task",
+      "file": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
+      "title": "Fix post-case-lifecycle stale citations",
+      "summary": "Corrects four doc-comment citations in already-delivered code that still attribute facts to the case/hypothesis identities after the case-lifecycle initiative moved those facts to case-version/hypothesis-revision.",
+      "epic": "fix-post-case-lifecycle-stale-citations"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
