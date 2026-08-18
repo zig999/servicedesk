@@ -27,7 +27,7 @@ type CannedObservation = {
 async function loadFixtureCase(): Promise<Case> {
   const file = join(FIXTURES_ROOT, 'case', SLUG, '1.json');
   const raw = JSON.parse(await readFile(file, 'utf8')) as unknown;
-  return parseCaseDocument(raw, `${SLUG}.json`);
+  return parseCaseDocument(raw, SLUG);
 }
 
 async function loadCannedObservations(): Promise<readonly CannedObservation[]> {

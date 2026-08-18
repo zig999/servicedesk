@@ -4,7 +4,6 @@ import {
   type ConsolidationRegister,
 } from '../investigation/consolidation-register.js';
 import {
-  CASE_DOCUMENT_ENDING,
   CASE_VERSION_STATES,
   type Case,
   type CaseVersionState,
@@ -55,12 +54,10 @@ type CaseDocument = {
 };
 
 /**
- * Parses one case-version JSON document into the whole aggregate — the
- * manifest, its own hypothesis-revisions and their resolutions and
- * referrals, all read from the one document, never from a second store
- * (constraints/a-case-is-stored-as-one-json-document). The document arrives
- * as its parsed JSON data plus the name of the file that holds it, which the
- * slug is held to (rules/knowledge/the-slug-matches-the-file-name); a
+ * Parses one case-version document into the whole aggregate — the manifest,
+ * its own hypothesis-revisions and their resolutions and referrals, all read
+ * from the one document. The document arrives as its parsed data plus the
+ * case's own already-known slug, used only to identify it in a refusal; a
  * document violating any structural rule is refused once, with every
  * violation named, and no missing part is ever defaulted or coerced. What
  * the structural rules do not decide — a term existing in the glossary, a
@@ -73,8 +70,8 @@ type CaseDocument = {
  * value set (domain/knowledge/consolidation-register), itself free of any
  * import (constraints/the-domain-depends-on-no-infrastructure).
  */
-export function parseCaseDocument(document: unknown, fileName: string): Case {
-  refuseStructuralViolations(document, fileName);
+export function parseCaseDocument(document: unknown, slug: string): Case {
+  refuseStructuralViolations(document, slug);
   return heldCase(document);
 }
 
@@ -83,21 +80,20 @@ export function parseCaseDocument(document: unknown, fileName: string): Case {
  * violation named (domain/knowledge/case-version) — the checks below are the
  * whole of what this assertion claims.
  */
-function refuseStructuralViolations(document: unknown, fileName: string): asserts document is CaseDocument {
-  const problems = documentProblems(document, fileName);
+function refuseStructuralViolations(document: unknown, slug: string): asserts document is CaseDocument {
+  const problems = documentProblems(document);
   if (problems.length > 0) {
-    throw new InvalidCaseDocumentError(fileName, problems);
+    throw new InvalidCaseDocumentError(slug, problems);
   }
 }
 
 /** Every way one document violates the structural rules, collected in one pass. */
-function documentProblems(document: unknown, fileName: string): string[] {
+function documentProblems(document: unknown): string[] {
   if (!isRecord(document)) {
     return ['the document is not one JSON object'];
   }
   return [
     ...stringProblems(document['slug'], 'slug'),
-    ...slugProblems(document['slug'], fileName),
     ...stringProblems(document['title'], 'title'),
     ...stringProblems(document['when_to_use'], 'when_to_use'),
     ...versionProblems(document['version']),
@@ -149,33 +145,6 @@ function stateProblems(value: unknown): string[] {
 /** Whether the given value is one of the two closed values domain/knowledge/case-version-state admits. */
 function isCaseVersionState(value: unknown): value is CaseVersionState {
   return CASE_VERSION_STATES.some((state) => state === value);
-}
-
-/**
- * Whether the slug equals the name of the file that holds it
- * (rules/knowledge/the-slug-matches-the-file-name) — judged only once the
- * slug is declared at all, so one absence is not reported twice.
- */
-function slugProblems(slug: unknown, fileName: string): string[] {
-  if (typeof slug !== 'string' || slug === '') {
-    return [];
-  }
-  const name = heldFileName(fileName);
-  return slug === name
-    ? []
-    : [`the slug "${slug}" does not equal the name "${name}" of the file that holds it`];
-}
-
-/**
- * The name of the file as the slug rule reads it: the `.json` ending the
- * one-document constraint gives the medium
- * (constraints/a-case-is-stored-as-one-json-document) is not part of the
- * name, so a caller may state the file with or without it.
- */
-function heldFileName(fileName: string): string {
-  return fileName.endsWith(CASE_DOCUMENT_ENDING)
-    ? fileName.slice(0, -CASE_DOCUMENT_ENDING.length)
-    : fileName;
 }
 
 /**

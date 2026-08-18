@@ -1,14 +1,13 @@
 // An audit over the case document model's modules — everything under
 // src/case and the typed refusals beside them under src/errors: they import no
 // framework, no driver and no provider client, and nothing but one another
-// at all, so no second store is reachable from the model and every part of
-// a case can only arrive from the one document
-// (constraints/the-domain-depends-on-no-infrastructure,
-// constraints/a-case-is-stored-as-one-json-document).
+// at all, so no second store is reachable from the model
+// (constraints/the-domain-depends-on-no-infrastructure).
 import { readdir, readFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
+import * as caseModule from '../../../case/case.js';
 
 const CASE_DIRECTORY = fileURLToPath(new URL('../../../case/', import.meta.url));
 
@@ -115,4 +114,10 @@ it("the document model's modules import nothing but one another, so no second st
   const offenders = offendersAmong(imports, reachesOutsideTheModel);
 
   expect(offenders).toEqual([]);
+});
+
+it('case.ts exports no CASE_DOCUMENT_ENDING or any other file-name-medium constant, CASE_VERSION_STATES the only runtime value it declares', () => {
+  const runtimeExports = Object.keys(caseModule).sort();
+
+  expect(runtimeExports).toEqual(['CASE_VERSION_STATES']);
 });

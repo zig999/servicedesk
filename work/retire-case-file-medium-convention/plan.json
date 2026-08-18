@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/retire-case-file-medium-convention",
+      "kind": "epic",
+      "file": "epic/retire-case-file-medium-convention.md",
+      "title": "Retire the case's file-medium slug convention",
+      "summary": "The one corrective task that removes the file-name-matching check and the JSON-document framing case.ts, parse-case-document.ts and case-query.service.ts still carry from before persistence moved to one relational store."
+    },
+    {
+      "id": "task/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "kind": "task",
+      "file": "task/retire-case-file-medium-convention/remove-file-medium-slug-check.md",
+      "title": "Retire the case's file-medium slug convention",
+      "summary": "Removes the file-name-matching structural check and the JSON-document framing that case.ts, parse-case-document.ts, case-query.service.ts and release.operation.ts still carry from before persistence moved to one relational store.",
+      "epic": "retire-case-file-medium-convention"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/retire-case-file-medium-convention",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/retire-case-file-medium-convention",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

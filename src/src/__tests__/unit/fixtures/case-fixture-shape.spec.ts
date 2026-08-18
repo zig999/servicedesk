@@ -7,10 +7,13 @@
 // (rules/knowledge/a-hypothesis-name-is-unique-within-its-case); the declared array order functioning as
 // the case's own precedence (rules/knowledge/hypotheses-are-ordered-by-precedence); a fallback resolution
 // distinct from every hypothesis's own (domain/knowledge/case); an explicit consolidation register
-// (domain/knowledge/consolidation-register); and the document sitting as exactly one file, its slug equal
-// to the directory that holds it (constraints/a-case-is-stored-as-one-json-document,
-// rules/knowledge/the-slug-matches-the-file-name). Every check runs the real parseCaseDocument and
-// case-resolution modules over the fixture's own JSON, never a value this test derives on its own.
+// (domain/knowledge/consolidation-register). The fixture also sits as exactly one file, named 1.json,
+// under a directory named for its own slug — the test suite's own fixture-layout convention, not a
+// citation against any specification node: the constraint and rule this once cited
+// (constraints/a-case-is-stored-as-one-json-document, rules/knowledge/the-slug-matches-the-file-name)
+// are retired, and no node states a slug-to-file-name relationship any longer. Every check runs the
+// real parseCaseDocument and case-resolution modules over the fixture's own JSON, never a value this
+// test derives on its own.
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,7 +34,7 @@ const SINGLE_SENTENCE = /^[^.!?]+[.!?]$/;
 async function loadFixtureCase(): Promise<Case> {
   const file = join(FIXTURES_ROOT, 'case', SLUG, '1.json');
   const raw = JSON.parse(await readFile(file, 'utf8')) as unknown;
-  return parseCaseDocument(raw, `${SLUG}.json`);
+  return parseCaseDocument(raw, SLUG);
 }
 
 it(

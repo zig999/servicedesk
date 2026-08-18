@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "kind": "implementation",
+      "file": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check.md",
+      "title": "Retire the case's file-medium slug convention",
+      "summary": "Removes the fileName-based slug-equals-file-name structural check and the CASE_DOCUMENT_ENDING JSON-document-medium constant from parse-case-document.ts, case.ts, case-query.service.ts and release.operation.ts, so parseCaseDocument's second parameter is the case's own already-known slug used only to identify a refusal.",
+      "task": "task/retire-case-file-medium-convention/remove-file-medium-slug-check"
+    },
+    {
+      "id": "proof/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "kind": "proof",
+      "file": "proof/retire-case-file-medium-convention/remove-file-medium-slug-check.md",
+      "title": "Test fallout from retiring the case file-medium slug convention",
+      "summary": "Fixes the five test files broken by parseCaseDocument's fileName-to-slug signature change and CASE_DOCUMENT_ENDING's removal, removes the one test that exercised the retired slug-equals-file-name refusal, repurposes another into a genuine proof of the new no-equality-check behavior, and adds one test closing criterion 2's previously untested claim.",
+      "task": "task/retire-case-file-medium-convention/remove-file-medium-slug-check"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "task/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "to": "implementation/retire-case-file-medium-convention/remove-file-medium-slug-check",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

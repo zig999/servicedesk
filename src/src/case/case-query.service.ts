@@ -45,7 +45,7 @@ import { CaseNotValidError } from '../errors/case-not-valid.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
-import { CASE_DOCUMENT_ENDING, type Case, type Hypothesis, type ManifestEntry } from './case.js';
+import type { Case, Hypothesis, ManifestEntry } from './case.js';
 import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
 import type {
   AssembledCaseVersion,
@@ -271,7 +271,7 @@ async function heldVersion(store: ICaseStore, slug: string, version: number): Pr
  */
 function structuralCase(assembled: AssembledCaseVersion, slug: string, version: number): Case {
   try {
-    return parseCaseDocument(assembledAsRawDocument(assembled), `${slug}${CASE_DOCUMENT_ENDING}`);
+    return parseCaseDocument(assembledAsRawDocument(assembled), slug);
   } catch (error) {
     if (error instanceof InvalidCaseDocumentError) {
       throw new CaseNotValidError(slug, version, error.context.problems);

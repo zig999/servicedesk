@@ -25,8 +25,8 @@ import { InvalidCaseDocumentError } from '../../../errors/invalid-case-document.
 /** One case document as parsed JSON: the shape the parser receives. */
 type Document = Record<string, unknown>;
 
-/** The name of the file the worked example sits in, stated with the ending the medium carries. */
-const FILE_NAME = 'cliente-sem-internet.json';
+/** The worked example's own slug, passed as parseCaseDocument's second argument — used only to identify a refusal, never checked against any file name. */
+const SLUG = 'cliente-sem-internet';
 
 /** One resolution as a document declares it: an outcome paired with a referral. */
 function resolutionOf(outcome: string, action: string, recipient: string): Document {
@@ -158,10 +158,10 @@ function expectedCase(overrides: Document = {}): Document {
 }
 
 /** Every violation one document is refused with; fails the test where the document parses instead. */
-function problemsOf(document: unknown, fileName: string = FILE_NAME): readonly string[] {
+function problemsOf(document: unknown, slug: string = SLUG): readonly string[] {
   let refusal: unknown;
   try {
-    parseCaseDocument(document, fileName);
+    parseCaseDocument(document, slug);
   } catch (error) {
     refusal = error;
   }
@@ -176,7 +176,7 @@ function problemsOf(document: unknown, fileName: string = FILE_NAME): readonly s
 it('parses a document declaring every attribute into the one case aggregate, splitting each manifest entry into its own position and nested hypothesis-revision', () => {
   const document = completeDocument();
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed).toEqual(expectedCase());
 });
@@ -184,16 +184,16 @@ it('parses a document declaring every attribute into the one case aggregate, spl
 it('parses a case declaring exactly one manifest entry', () => {
   const document = completeDocument({ manifest: [completeManifestEntry()] });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.manifest).toHaveLength(1);
   expect(parsed.hypotheses).toHaveLength(1);
 });
 
-it('reads the file name stated without its ending as the same name the slug is held to', () => {
+it('parses a document whose declared slug shares nothing with the second argument, since no equality check runs between them any longer', () => {
   const document = completeDocument();
 
-  const parsed = parseCaseDocument(document, 'cliente-sem-internet');
+  const parsed = parseCaseDocument(document, 'totally-unrelated-name');
 
   expect(parsed.slug).toBe('cliente-sem-internet');
 });
@@ -201,7 +201,7 @@ it('reads the file name stated without its ending as the same name the slug is h
 it('carries nothing into the aggregate that the model does not declare', () => {
   const document = completeDocument({ curador: 'prosa que pertence ao corpo, não ao modelo' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed).not.toHaveProperty('curador');
 });
@@ -209,7 +209,7 @@ it('carries nothing into the aggregate that the model does not declare', () => {
 it('carries the document\'s declared authored_at unchanged, as the case\'s own datetime', () => {
   const document = completeDocument({ authored_at: '2030-12-25T18:30:00.000Z' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.authored_at).toBe('2030-12-25T18:30:00.000Z');
 });
@@ -219,7 +219,7 @@ it('carries the document\'s declared authored_at unchanged, as the case\'s own d
 it('parses a document declaring state draft, carrying no released_at at all', () => {
   const document = completeDocument({ state: 'draft' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.state).toBe('draft');
   expect('released_at' in parsed).toBe(false);
@@ -228,7 +228,7 @@ it('parses a document declaring state draft, carrying no released_at at all', ()
 it('parses a document declaring state released together with released_at, carrying both unchanged', () => {
   const document = completeDocument({ state: 'released', released_at: '2024-03-02T10:00:00.000Z' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.state).toBe('released');
   expect(parsed.released_at).toBe('2024-03-02T10:00:00.000Z');
@@ -578,20 +578,12 @@ it('refuses a referral missing its recipient', () => {
   expect(problems).toEqual([expect.stringContaining('recipient is undeclared')]);
 });
 
-it('refuses an empty slug once, not also as a mismatch against the file name', () => {
+it('refuses an empty slug with exactly one problem', () => {
   const document = completeDocument({ slug: '' });
 
   const problems = problemsOf(document);
 
   expect(problems).toEqual([expect.stringContaining('slug is empty')]);
-});
-
-it('refuses a case whose slug differs from the name of the file that holds it', () => {
-  const document = completeDocument();
-
-  const problems = problemsOf(document, 'outro-case.json');
-
-  expect(problems).toEqual([expect.stringContaining('does not equal the name "outro-case"')]);
 });
 
 // ---------------------------------------------------------------- documents with no shape at all
@@ -613,7 +605,7 @@ it('refuses a document that is a JSON array', () => {
 it('parses a document declaring consolidation_register formal into a case carrying it', () => {
   const document = completeDocument({ consolidation_register: 'formal' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.consolidation_register).toBe('formal');
 });
@@ -621,7 +613,7 @@ it('parses a document declaring consolidation_register formal into a case carryi
 it('parses a document declaring consolidation_register plain into a case carrying it', () => {
   const document = completeDocument({ consolidation_register: 'plain' });
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect(parsed.consolidation_register).toBe('plain');
 });
@@ -629,7 +621,7 @@ it('parses a document declaring consolidation_register plain into a case carryin
 it('parses a document that omits consolidation_register without refusing it, and leaves the key off the returned case', () => {
   const document = completeDocument();
 
-  const parsed = parseCaseDocument(document, FILE_NAME);
+  const parsed = parseCaseDocument(document, SLUG);
 
   expect('consolidation_register' in parsed).toBe(false);
 });
@@ -676,12 +668,11 @@ it('refuses a document violating several structural rules once, naming every vio
     ],
   });
 
-  const problems = problemsOf(document, 'outro-case.json');
+  const problems = problemsOf(document);
 
-  expect(problems).toHaveLength(6);
+  expect(problems).toHaveLength(5);
   expect(problems).toEqual(
     expect.arrayContaining([
-      expect.stringContaining('does not equal the name "outro-case"'),
       expect.stringContaining('title is undeclared'),
       expect.stringContaining("manifest entry 1's criterion is empty"),
       expect.stringContaining('manifest entry 2 collects no concept'),

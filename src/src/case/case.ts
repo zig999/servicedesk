@@ -31,7 +31,7 @@
 // evidence-collection-stage.ts all import this exact name, and none of them
 // is this task's to touch. It now also declares state, released_at (present
 // only once released) and manifest, alongside its own already-declared
-// attributes (constraints/a-case-is-stored-as-one-json-document).
+// attributes.
 //
 // The one import this module carries is the consolidation-register
 // vocabulary's own plain type (domain/knowledge/consolidation-register),
@@ -198,10 +198,3 @@ export type Case = {
   /** manifest, flattened for this aggregate's own out-of-scope consumers (this module's own header comment); never independently declared. */
   readonly hypotheses: readonly Hypothesis[];
 };
-
-/**
- * The ending a case's one JSON document carries
- * (constraints/a-case-is-stored-as-one-json-document) — the medium's, not
- * the name's, so the slug rule reads the file's name without it.
- */
-export const CASE_DOCUMENT_ENDING = '.json';

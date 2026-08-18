@@ -28,11 +28,11 @@
 // on the entry itself — the same flattening case-store.port.ts's own header
 // comment already notes for this exact fact. assembledAsDocument below is
 // the minimal projection that closes that gap; no node names this shape, so
-// it is this task's own inference, disclosed in its delivery record. release
-// has no file either, so the file-name parameter parseCaseDocument's own
-// slug rule reads is built from the assembled version's own already-known
-// slug, the same way author-case-version.service.ts's own parsedCase()
-// stands one in for a submission that has no file.
+// it is this task's own inference, disclosed in its delivery record.
+// parseCaseDocument's own second parameter is the case's own already-known
+// slug, passed here from the assembled version's own slug field, used only
+// to identify the document in a refusal — no file-name convention governs
+// it any longer (rules/knowledge/a-slug-identifies-one-case).
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
@@ -40,7 +40,7 @@ import { CaseVersionNotDraftAtReleaseError } from '../errors/case-version-not-dr
 import { CaseVersionNotReleasableError } from '../errors/case-version-not-releasable.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
-import { CASE_DOCUMENT_ENDING, type Case } from './case.js';
+import type { Case } from './case.js';
 import type { AssembledCaseVersion, ICaseStore } from './case-store.port.js';
 import { parseCaseDocument } from './parse-case-document.js';
 import { caseCoherenceViolations } from './validate-case-coherence.js';
@@ -149,10 +149,7 @@ async function releaseViolations(
  */
 function structuralOutcome(assembled: AssembledCaseVersion): StructuralOutcome {
   try {
-    const theCase = parseCaseDocument(
-      assembledAsDocument(assembled),
-      `${assembled.slug}${CASE_DOCUMENT_ENDING}`,
-    );
+    const theCase = parseCaseDocument(assembledAsDocument(assembled), assembled.slug);
     return { kind: 'parsed', theCase };
   } catch (error) {
     if (error instanceof InvalidCaseDocumentError) {
