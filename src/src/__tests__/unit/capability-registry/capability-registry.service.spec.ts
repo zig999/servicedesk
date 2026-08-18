@@ -305,6 +305,17 @@ it('windows a page from the middle of a larger set, not just the first page', as
   expect(page.total).toBe(5);
 });
 
+it('answers an empty data array, never an error, when the offset falls past the end of the registered capabilities', async () => {
+  const capabilities = [0, 1, 2].map((index) =>
+    heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),
+  );
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(capabilities));
+
+  const page = await registry.listCapabilities({ offset: 10, limit: 2 });
+
+  expect(page).toEqual({ data: [], total: 3, limit: 2, offset: 10, pageCount: 2 });
+});
+
 it('computes the page count as the ceiling of total over limit when they do not divide evenly', async () => {
   const capabilities = [0, 1, 2, 3, 4].map((index) =>
     heldCapability({ name: `capability-${index}`, concept: `concept-${index}` }),

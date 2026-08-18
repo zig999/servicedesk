@@ -1,0 +1,91 @@
+
+> backend@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(378,7): error TS2420: Class 'FakeGlossaryQuery' incorrectly implements interface 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(494,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(523,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(534,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(542,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(555,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(570,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(585,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(604,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(625,49): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(643,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(654,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(667,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(681,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(694,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(711,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/case-query.service.spec.ts(778,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(67,7): error TS2420: Class 'FakeGlossaryQuery' incorrectly implements interface 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(265,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(275,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(285,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(295,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(308,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(323,63): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(335,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(346,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(357,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(368,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(380,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(386,47): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(398,56): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(419,36): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(433,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(446,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(465,61): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/case/validate-case-coherence.spec.ts(488,49): error TS2345: Argument of type 'FakeGlossaryQuery' is not assignable to parameter of type 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/http/read-concept.routes.spec.ts(37,9): error TS2739: Type '{ readVocabularyTerm: () => Promise<TermResolution>; readConcept: Mock<(name: string) => Promise<ConceptResolution>>; }' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts(32,9): error TS2739: Type '{ readVocabularyTerm: Mock<(vocabulary: "subject-type" | "subject-attribute" | "outcome" | "action" | "recipient", name: string) => Promise<TermResolution>>; readConcept: () => Promise<...>; }' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(61,7): error TS2420: Class 'FakeGlossaryQuery' incorrectly implements interface 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(197,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(287,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(305,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(322,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(339,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(347,9): error TS2739: Type '{ readVocabularyTerm: () => Promise<TermResolution>; readConcept: () => Promise<{ held: false; name: string; }>; }' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(364,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/investigation-factory.spec.ts(384,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(141,7): error TS2420: Class 'FakeGlossaryQuery' incorrectly implements interface 'IGlossaryQuery'.
+  Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(344,5): error TS2739: Type 'FakeGlossaryQuery' is missing the following properties from type 'IGlossaryQuery': listVocabularyTerms, listConcepts

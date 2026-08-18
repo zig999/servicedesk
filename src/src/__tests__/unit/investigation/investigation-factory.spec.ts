@@ -74,6 +74,18 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   public async readConcept(name: string): Promise<ConceptResolution> {
     return { held: false, name };
   }
+
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+  // task/glossary-query-http/list-concepts-query-extension): this file's own
+  // scenarios never call either.
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+
+  public async listConcepts(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
+  }
 }
 
 /** A glossary holding exactly the given subject-attribute names, none other. */
@@ -347,6 +359,12 @@ it('lets a failure from the glossary port reach the caller rather than becoming 
   const glossary: IGlossaryQuery = {
     readVocabularyTerm: () => Promise.reject(failure),
     readConcept: () => Promise.resolve({ held: false, name: 'unused' }),
+    // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+    // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+    // task/glossary-query-http/list-concepts-query-extension): this scenario
+    // never calls either.
+    listVocabularyTerms: () => Promise.reject(new Error('listVocabularyTerms is not scripted for this file')),
+    listConcepts: () => Promise.reject(new Error('listConcepts is not scripted for this file')),
   };
   const options = validOptions({ glossary });
 

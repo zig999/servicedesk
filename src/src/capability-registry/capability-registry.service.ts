@@ -165,6 +165,14 @@ function isUndeclared(value: string | undefined): boolean {
  * is this service's own defensive floor, the same inference
  * relational-case-store.repository.ts's own pageCountOf already made for
  * the store-paginated listings, rather than a documented behavior.
+ *
+ * Restated here rather than imported (MNT-03 divergence, disclosed): that
+ * pageCountOf is a private, unexported function of an unrelated persistence
+ * module, and glossary.service.ts's own listVocabularyTerms/listConcepts
+ * already made the identical choice for the identical reason — exporting it
+ * across a persistence-to-domain boundary, or lifting it into a new shared
+ * module, is a change this task's own file set does not reach and would
+ * widen it beyond what list-capabilities-query-extension was cut to do.
  */
 function pageCountOf(total: number, limit: number): number {
   return limit > 0 ? Math.ceil(total / limit) : 0;

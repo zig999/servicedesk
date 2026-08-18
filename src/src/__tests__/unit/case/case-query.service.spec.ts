@@ -405,6 +405,18 @@ class FakeGlossaryQuery implements IGlossaryQuery {
     const concept = this.concepts.get(name);
     return concept === undefined ? { held: false, name } : { held: true, concept };
   }
+
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+  // task/glossary-query-http/list-concepts-query-extension): this file's own
+  // scenarios never call either.
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+
+  public async listConcepts(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
+  }
 }
 
 function termKey(vocabulary: TermVocabulary, name: string): string {

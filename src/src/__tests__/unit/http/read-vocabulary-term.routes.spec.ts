@@ -32,6 +32,12 @@ function buildTestApp(): { app: FastifyInstance; readVocabularyTerm: ReadVocabul
   const glossaryQuery: IGlossaryQuery = {
     readVocabularyTerm,
     readConcept: () => Promise.reject(new Error('read-vocabulary-term.routes.spec.ts never exercises readConcept')),
+    // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+    // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+    // task/glossary-query-http/list-concepts-query-extension): this route
+    // under test never calls either.
+    listVocabularyTerms: () => Promise.reject(new Error('listVocabularyTerms is not scripted for this file')),
+    listConcepts: () => Promise.reject(new Error('listConcepts is not scripted for this file')),
   };
   const dependencies: ReadVocabularyTermControllerDependencies = { glossaryQuery };
   const app = Fastify();
