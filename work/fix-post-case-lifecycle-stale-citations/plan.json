@@ -9,6 +9,14 @@
       "summary": "Corrects four doc-comment citations in already-delivered code that still attribute facts to the case/hypothesis identities after the case-lifecycle initiative moved those facts to case-version/hypothesis-revision."
     },
     {
+      "id": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "task",
+      "file": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation.md",
+      "title": "Fix draft-assessment-text.ts's stale case citation",
+      "summary": "Corrects one doc-comment citation in already-delivered code that still attributes consolidation_register to the case identity instead of the case version.",
+      "epic": "fix-post-case-lifecycle-stale-citations"
+    },
+    {
       "id": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "task",
       "file": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
@@ -41,6 +49,18 @@
       "to": "domain/knowledge/hypothesis-revision",
       "kind": "covers",
       "at": "covers[3]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
