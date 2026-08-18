@@ -11,4 +11,4 @@ The rule it applies is not in code but in the case's prose, so the tension betwe
 
 ## Responsibility
 
-Given one hypothesis's criterion and its evidence only, return an evaluation that is cited and complete, never inferred.
+Given one hypothesis's criterion, its own evidence, and the pinned case's title and when_to_use, return an evaluation that is cited and complete, never inferred.
