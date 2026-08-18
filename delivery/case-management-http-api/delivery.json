@@ -26,12 +26,39 @@
       "task": "task/case-lifecycle-http/discard-route"
     },
     {
+      "id": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/place-hypothesis-route.md",
+      "title": "PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "A thin Fastify plugin, controller and Zod DTO exposing the existing placeHypothesis case-lifecycle operation over HTTP, answering 204 with no body since the operation itself answers void.",
+      "task": "task/case-lifecycle-http/place-hypothesis-route"
+    },
+    {
       "id": "implementation/case-lifecycle-http/release-route",
       "kind": "implementation",
       "file": "implementation/case-lifecycle-http/release-route.md",
       "title": "POST /v1/cases/{slug}/versions/{version}/release",
       "summary": "A thin Fastify plugin, controller and Zod DTO wired to the existing release case-lifecycle operation, reading the released version back through the published case-query contract — the write-then-read pattern update-draft-route established.",
       "task": "task/case-lifecycle-http/release-route"
+    },
+    {
+      "id": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/remove-hypothesis-route.md",
+      "title": "DELETE /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "A thin Fastify plugin, controller and Zod DTO exposing the existing removeHypothesis case-lifecycle operation over HTTP, mirroring discard-route's own empty-body convention.",
+      "task": "task/case-lifecycle-http/remove-hypothesis-route"
+    },
+    {
+      "id": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/revise-hypothesis-route.md",
+      "title": "POST /v1/cases/{slug}/hypotheses",
+      "summary": "A thin Fastify plugin, controller and Zod DTO exposing the existing ReviseHypothesisOperation over HTTP, narrowed to CaseLifecycleOperations['reviseHypothesis'] — with a genuine defect in already-delivered domain code discovered and disclosed rather than papered over (see criterion 3).",
+      "task": "task/case-lifecycle-http/revise-hypothesis-route",
+      "unmet": [
+        "A request naming a case slug that does not exist is refused with the status status-map assigns CaseNotFoundError."
+      ]
     },
     {
       "id": "implementation/case-lifecycle-http/status-map",
@@ -178,12 +205,36 @@
       "task": "task/case-lifecycle-http/discard-route"
     },
     {
+      "id": "proof/case-lifecycle-http/place-hypothesis-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/place-hypothesis-route.md",
+      "title": "Proof for PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createPlaceHypothesisRoutesPlugin plus the shared error handler, that a valid placement answers a wholly empty 204, that both named refusals resolve to the status status-map assigns, and that path/body validation boundaries and the generic-500 fallback behave as disclosed.",
+      "task": "task/case-lifecycle-http/place-hypothesis-route"
+    },
+    {
       "id": "proof/case-lifecycle-http/release-route",
       "kind": "proof",
       "file": "proof/case-lifecycle-http/release-route.md",
       "title": "Proof for POST /v1/cases/{slug}/versions/{version}/release",
       "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createReleaseRoutesPlugin plus the shared error handler, that a valid release writes then reads back the released version, that the write-then-read ordering holds, that an already-released version and an unreleasable manifest are each refused with every violated rule reported together, and that an unknown slug/version and validation boundaries behave as disclosed.",
       "task": "task/case-lifecycle-http/release-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/remove-hypothesis-route.md",
+      "title": "Proof for DELETE /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createRemoveHypothesisRoutesPlugin plus the shared error handler, that a valid removal answers a wholly empty 204, that both named refusals resolve to the status status-map assigns, and that path validation and the generic-500 fallback behave as disclosed.",
+      "task": "task/case-lifecycle-http/remove-hypothesis-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/revise-hypothesis-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/revise-hypothesis-route.md",
+      "title": "Proof for POST /v1/cases/{slug}/hypotheses",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createReviseHypothesisRoutesPlugin plus the shared error handler, that a valid request calls reviseHypothesis with exactly the parsed path slug merged onto the parsed body and answers 201 with the originated {hypothesis_name, revision}, that a body failing Zod validation never reaches reviseHypothesis, that an empty collects array is passed through rather than refused at the DTO layer, and that a generic non-domain rejection falls through to the fixed 500 envelope — with criterion 3's CaseNotFoundError refusal left unproven and disclosed as a real defect rather than forced.",
+      "task": "task/case-lifecycle-http/revise-hypothesis-route"
     },
     {
       "id": "proof/case-lifecycle-http/status-map",
@@ -398,6 +449,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "to": "task/case-lifecycle-http/place-hypothesis-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/case-lifecycle-http/release-route",
       "to": "contracts/knowledge/case-lifecycle",
       "kind": "encodes",
@@ -424,6 +529,84 @@
     {
       "from": "implementation/case-lifecycle-http/release-route",
       "to": "task/case-lifecycle-http/release-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "to": "task/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/revise-hypothesis-route",
+      "to": "task/case-lifecycle-http/revise-hypothesis-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -830,8 +1013,26 @@
       "at": "the path"
     },
     {
+      "from": "proof/case-lifecycle-http/place-hypothesis-route",
+      "to": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-lifecycle-http/release-route",
       "to": "implementation/case-lifecycle-http/release-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/remove-hypothesis-route",
+      "to": "implementation/case-lifecycle-http/remove-hypothesis-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/revise-hypothesis-route",
+      "to": "implementation/case-lifecycle-http/revise-hypothesis-route",
       "kind": "proves",
       "at": "the path"
     },
