@@ -426,8 +426,28 @@
           "digest": "sha256:89f190b7e99bc0e554f96efbb6efb5011229a09e72094ea81d6cb5c6be1047a6"
         },
         {
+          "path": "src/src/http/dto/list-vocabulary-terms.dto.ts",
+          "digest": "sha256:5af2cd037f61375d89ca7764437f99d7e3fa9f41ca1f54663cc53f234138bb1f"
+        },
+        {
           "path": "src/src/http/dto/read-vocabulary-term.dto.ts",
           "digest": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b"
+        },
+        {
+          "path": "src/src/http/list-concepts.controller.ts",
+          "digest": "sha256:15f869ab7a7229cc4d4ca97ca9aa77811e8521681603bdc7e9295f4565cd0692"
+        },
+        {
+          "path": "src/src/http/list-concepts.routes.ts",
+          "digest": "sha256:40aa6350852d976b1d267ee49aa1ff60b9dc4cf0180dac36b50a2279ff53b273"
+        },
+        {
+          "path": "src/src/http/list-vocabulary-terms.controller.ts",
+          "digest": "sha256:2e9b79ba35c25d7015308a0d272e79992e1bb484c4c8e0348f323aa393702d29"
+        },
+        {
+          "path": "src/src/http/list-vocabulary-terms.routes.ts",
+          "digest": "sha256:b1bdbd20bcd5a64898ade128d52c49c8dd48665a106b362b034db69757a6e1f0"
         },
         {
           "path": "src/src/http/read-concept.controller.ts",
@@ -460,8 +480,20 @@
           "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
         },
         {
+          "path": "src/src/http/dto/list-capabilities.dto.ts",
+          "digest": "sha256:c910690f717db95f40ae1ae5b8df7313ad0aafabab1e119e25ce2bda9d32b544"
+        },
+        {
           "path": "src/src/http/dto/read-capability.dto.ts",
           "digest": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261"
+        },
+        {
+          "path": "src/src/http/list-capabilities.controller.ts",
+          "digest": "sha256:62011d396ff589677df1c917a3f4547d3e205a949c38371e7667998e281ee731"
+        },
+        {
+          "path": "src/src/http/list-capabilities.routes.ts",
+          "digest": "sha256:c437a210cbb0744d301cb2cff4e9cefb7f7f5dbc5d187f408f3f5c6e5719c6f4"
         },
         {
           "path": "src/src/http/read-capability.controller.ts",
@@ -982,6 +1014,10 @@
         {
           "path": "src/src/http/dto/read-concept.dto.ts",
           "digest": "sha256:a68422d689635559704488c4a434b1eba158d8cf038d607be22b8f2c9dee2f25"
+        },
+        {
+          "path": "src/src/http/list-concepts.controller.ts",
+          "digest": "sha256:15f869ab7a7229cc4d4ca97ca9aa77811e8521681603bdc7e9295f4565cd0692"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",

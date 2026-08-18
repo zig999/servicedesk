@@ -10,6 +10,14 @@
       "task": "task/capability-registry-http/list-capabilities-query-extension"
     },
     {
+      "id": "implementation/capability-registry-http/list-capabilities-route",
+      "kind": "implementation",
+      "file": "implementation/capability-registry-http/list-capabilities-route.md",
+      "title": "GET /v1/capabilities — the list-capabilities HTTP route",
+      "summary": "A new Fastify plugin, controller and Zod query DTO exposing ICapabilityQuery.listCapabilities over HTTP, mirroring list-cases-route's own three-file pattern exactly.",
+      "task": "task/capability-registry-http/list-capabilities-route"
+    },
+    {
       "id": "implementation/capability-registry-http/read-capability-route",
       "kind": "implementation",
       "file": "implementation/capability-registry-http/read-capability-route.md",
@@ -181,12 +189,28 @@
       "task": "task/glossary-query-http/list-concepts-query-extension"
     },
     {
+      "id": "implementation/glossary-query-http/list-concepts-route",
+      "kind": "implementation",
+      "file": "implementation/glossary-query-http/list-concepts-route.md",
+      "title": "GET /v1/glossary/concepts route",
+      "summary": "Adds the thin Fastify plugin, controller and Zod DTO exposing IGlossaryQuery.listConcepts over HTTP, mirroring list-cases-route's already-delivered pattern.",
+      "task": "task/glossary-query-http/list-concepts-route"
+    },
+    {
       "id": "implementation/glossary-query-http/list-vocabulary-terms-query-extension",
       "kind": "implementation",
       "file": "implementation/glossary-query-http/list-vocabulary-terms-query-extension.md",
       "title": "IGlossaryQuery gains listVocabularyTerms",
       "summary": "IGlossaryQuery and GlossaryService gain a paginated listVocabularyTerms operation that windows one vocabulary's whole in-memory holding by offset and limit, typed over the same closed TermVocabulary union readVocabularyTerm already relies on for its only refusal.",
       "task": "task/glossary-query-http/list-vocabulary-terms-query-extension"
+    },
+    {
+      "id": "implementation/glossary-query-http/list-vocabulary-terms-route",
+      "kind": "implementation",
+      "file": "implementation/glossary-query-http/list-vocabulary-terms-route.md",
+      "title": "GET /v1/glossary/{vocabulary}",
+      "summary": "A thin Fastify plugin, controller and Zod DTO expose IGlossaryQuery.listVocabularyTerms over HTTP, refusing an unrecognized vocabulary segment at the DTO boundary alone.",
+      "task": "task/glossary-query-http/list-vocabulary-terms-route"
     },
     {
       "id": "implementation/glossary-query-http/read-concept-route",
@@ -211,6 +235,14 @@
       "title": "Proof for ICapabilityQuery.listCapabilities",
       "summary": "Tests establishing that listCapabilities returns every registered capability with its full contract, paginated, and answers an empty page rather than an error when the registry holds nothing, plus the pagination-envelope edge cases the criteria's pagination clause implies.",
       "task": "task/capability-registry-http/list-capabilities-query-extension"
+    },
+    {
+      "id": "proof/capability-registry-http/list-capabilities-route",
+      "kind": "proof",
+      "file": "proof/capability-registry-http/list-capabilities-route.md",
+      "title": "GET /v1/capabilities route proof",
+      "summary": "Fastify-injection tests over createListCapabilitiesRoutesPlugin proving both criteria and the controller's disclosed pagination-bound inferences.",
+      "task": "task/capability-registry-http/list-capabilities-route"
     },
     {
       "id": "proof/capability-registry-http/read-capability-route",
@@ -381,12 +413,28 @@
       "task": "task/glossary-query-http/list-concepts-query-extension"
     },
     {
+      "id": "proof/glossary-query-http/list-concepts-route",
+      "kind": "proof",
+      "file": "proof/glossary-query-http/list-concepts-route.md",
+      "title": "Proof for glossary-query-http/list-concepts-route",
+      "summary": "Fastify-level tests proving GET /v1/glossary/concepts answers 200 with the resolved PaginatedResponse<Concept>, resolves pagination bounds the way list-cases.routes.ts's own inference does, and refuses malformed offset/limit with 400 before ever reaching the glossary query.",
+      "task": "task/glossary-query-http/list-concepts-route"
+    },
+    {
       "id": "proof/glossary-query-http/list-vocabulary-terms-query-extension",
       "kind": "proof",
       "file": "proof/glossary-query-http/list-vocabulary-terms-query-extension.md",
       "title": "Proof for IGlossaryQuery.listVocabularyTerms",
       "summary": "Eight tests over GlossaryService.listVocabularyTerms prove criterion 1 in full; criterion 2 is a compile-time guarantee of TermVocabulary's closed union with no runtime path to exercise.",
       "task": "task/glossary-query-http/list-vocabulary-terms-query-extension"
+    },
+    {
+      "id": "proof/glossary-query-http/list-vocabulary-terms-route",
+      "kind": "proof",
+      "file": "proof/glossary-query-http/list-vocabulary-terms-route.md",
+      "title": "GET /v1/glossary/{vocabulary} — proof",
+      "summary": "Proves the list-vocabulary-terms route answers a paginated page for a recognized vocabulary and refuses an unrecognized one with a 400 validation envelope, never reaching the glossary query.",
+      "task": "task/glossary-query-http/list-vocabulary-terms-route"
     },
     {
       "id": "proof/glossary-query-http/read-concept-route",
@@ -421,6 +469,18 @@
     {
       "from": "implementation/capability-registry-http/list-capabilities-query-extension",
       "to": "task/capability-registry-http/list-capabilities-query-extension",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-registry-http/list-capabilities-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-registry-http/list-capabilities-route",
+      "to": "task/capability-registry-http/list-capabilities-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -1019,6 +1079,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/glossary-query-http/list-concepts-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-query-http/list-concepts-route",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-query-http/list-concepts-route",
+      "to": "task/glossary-query-http/list-concepts-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/glossary-query-http/list-vocabulary-terms-query-extension",
       "to": "contracts/glossary/glossary-query",
       "kind": "encodes",
@@ -1057,6 +1135,18 @@
     {
       "from": "implementation/glossary-query-http/list-vocabulary-terms-query-extension",
       "to": "task/glossary-query-http/list-vocabulary-terms-query-extension",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/glossary-query-http/list-vocabulary-terms-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-query-http/list-vocabulary-terms-route",
+      "to": "task/glossary-query-http/list-vocabulary-terms-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -1123,6 +1213,12 @@
     {
       "from": "proof/capability-registry-http/list-capabilities-query-extension",
       "to": "implementation/capability-registry-http/list-capabilities-query-extension",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-registry-http/list-capabilities-route",
+      "to": "implementation/capability-registry-http/list-capabilities-route",
       "kind": "proves",
       "at": "the path"
     },
@@ -1253,8 +1349,20 @@
       "at": "the path"
     },
     {
+      "from": "proof/glossary-query-http/list-concepts-route",
+      "to": "implementation/glossary-query-http/list-concepts-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/glossary-query-http/list-vocabulary-terms-query-extension",
       "to": "implementation/glossary-query-http/list-vocabulary-terms-query-extension",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-query-http/list-vocabulary-terms-route",
+      "to": "implementation/glossary-query-http/list-vocabulary-terms-route",
       "kind": "proves",
       "at": "the path"
     },
