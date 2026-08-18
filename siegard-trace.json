@@ -619,8 +619,12 @@
     },
     {
       "node": "contracts/knowledge/case-lifecycle",
-      "digest": "sha256:a0dbf5b339e4001e3c90efb2bcea0221a37f0593658a58bfeb59cbe0334ce2b8",
+      "digest": "sha256:d9b5568ba3e0b6a94006cf81c96647fd003f4cdbfad5e477b874bc7c8af248cd",
       "files": [
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:28c03cb8c7d20c1281fe21e5ba3f1624166d9b67fea825552895122a5ff5f075"
+        },
         {
           "path": "src/src/case/create-draft.operation.ts",
           "digest": "sha256:8d2912bb9cf387d39f547de799401ea75199be303381ab3819a82be4ac45167a"
@@ -644,6 +648,22 @@
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
           "digest": "sha256:579d840a3597aa508bc2a6a6b90fc3262dd4dfc0c1c59e69ce7e3230902dd88e"
+        },
+        {
+          "path": "src/src/http/dto/update-draft.dto.ts",
+          "digest": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f"
+        },
+        {
+          "path": "src/src/http/update-draft.controller.ts",
+          "digest": "sha256:ea9451aa5b546156203e3654bfdf9cdebf79842941f0e8fb11cb05b8a68a0e68"
+        },
+        {
+          "path": "src/src/http/update-draft.routes.ts",
+          "digest": "sha256:35e91689a9ffd111eca330d86b3be9b4cc01608e4b3711b9b07102184e7c1734"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:0634607f900aa06805daa6c466558249683b167256f6a1b2468b4d41a7488905"
         }
       ]
     },
@@ -1571,7 +1591,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:73e71346616ffdca671c8a017d92f6785f2f8e6e363fd75b034fa652f32eeff0"
+          "digest": "sha256:28c03cb8c7d20c1281fe21e5ba3f1624166d9b67fea825552895122a5ff5f075"
         },
         {
           "path": "src/src/case/case.ts",
@@ -1600,6 +1620,10 @@
         {
           "path": "src/src/http/dto/read-case.dto.ts",
           "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
+          "path": "src/src/http/dto/update-draft.dto.ts",
+          "digest": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f"
         },
         {
           "path": "src/src/http/read-case.controller.ts",
@@ -1632,8 +1656,12 @@
           "digest": "sha256:e46ff9f33eef81efe51222fbea043ed042fdec8e8f0960b08c8623d679ebd6dc"
         },
         {
+          "path": "src/src/http/update-draft.routes.ts",
+          "digest": "sha256:35e91689a9ffd111eca330d86b3be9b4cc01608e4b3711b9b07102184e7c1734"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:44442b200a64531f74385a598368b30648bbe08fcf910653ca32b6362cf4ac16"
+          "digest": "sha256:0634607f900aa06805daa6c466558249683b167256f6a1b2468b4d41a7488905"
         }
       ]
     },
@@ -1656,6 +1684,10 @@
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:3d6295ff7c1a68003016dd827db544b40fb010fbff615311393b15df425698bf"
+        },
+        {
+          "path": "src/src/http/dto/update-draft.dto.ts",
+          "digest": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f"
         },
         {
           "path": "src/src/investigation/consolidation-register.ts",
@@ -1878,6 +1910,10 @@
         {
           "path": "src/src/http/dto/read-case.dto.ts",
           "digest": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4"
+        },
+        {
+          "path": "src/src/http/dto/update-draft.dto.ts",
+          "digest": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f"
         }
       ]
     },
@@ -2353,11 +2389,15 @@
         },
         {
           "path": "src/src/errors/case-version-not-draft.error.ts",
-          "digest": "sha256:7320d6eed3f31d0a558f630963876b96af3712864d10fb4527475c81bf33208d"
+          "digest": "sha256:b9bf07cd4b9b0ffb8279863a4173a04527971010c7c569718eee3c7a6d189370"
+        },
+        {
+          "path": "src/src/http/update-draft.routes.ts",
+          "digest": "sha256:35e91689a9ffd111eca330d86b3be9b4cc01608e4b3711b9b07102184e7c1734"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:6a7bc4f74a4f18406b3d471e6b6b0d7e01d089ee78c1c1b16a2d6ce7b88a587a"
+          "digest": "sha256:0634607f900aa06805daa6c466558249683b167256f6a1b2468b4d41a7488905"
         },
         {
           "path": "src/src/seed.ts",

@@ -18,6 +18,22 @@
       "task": "task/case-lifecycle-http/status-map"
     },
     {
+      "id": "implementation/case-lifecycle-http/update-draft-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/update-draft-route.md",
+      "title": "PATCH /v1/cases/{slug}/versions/{version}",
+      "summary": "A thin Fastify plugin, controller and Zod DTO wired to the new updateDraft store operation, reading the corrected version back through the published case-query contract — the first write route of this initiative.",
+      "task": "task/case-lifecycle-http/update-draft-route"
+    },
+    {
+      "id": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/update-draft-store-extension.md",
+      "title": "ICaseStore gains updateDraft, guarded by draft state",
+      "summary": "A new store operation that corrects a case version's own declared attributes only while it stands in draft, following discard.operation.ts's own read-whole-then-guard-then-write pattern.",
+      "task": "task/case-lifecycle-http/update-draft-store-extension"
+    },
+    {
       "id": "implementation/case-query-http/list-case-versions-route",
       "kind": "implementation",
       "file": "implementation/case-query-http/list-case-versions-route.md",
@@ -128,6 +144,22 @@
       "title": "Status-map resolves seven typed domain errors to non-500 statuses",
       "summary": "statusForError() maps each of seven typed domain errors to its assigned status and returns undefined for anything else, and error-handler.middleware.ts consults it before its unchanged 500 fallback.",
       "task": "task/case-lifecycle-http/status-map"
+    },
+    {
+      "id": "proof/case-lifecycle-http/update-draft-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/update-draft-route.md",
+      "title": "Proof for PATCH /v1/cases/{slug}/versions/{version}",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createUpdateDraftRoutesPlugin plus the shared error handler, that a valid request against a draft version writes then reads back the corrected version, that a released version is refused before any read-back is attempted, that an unknown slug or version is refused the same way, and that the controller's own write-then-read ordering and optional-field handling behave as disclosed.",
+      "task": "task/case-lifecycle-http/update-draft-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/update-draft-store-extension",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/update-draft-store-extension.md",
+      "title": "Proof for ICaseStore.updateDraft (task/case-lifecycle-http/update-draft-store-extension)",
+      "summary": "Five integration tests against the real database prove RelationalCaseStore.updateDraft persists the five declared attributes only while a version stands in draft, refuses a released version through CaseVersionNotDraftError before any write, refuses an absent slug or version through CaseNotFoundError, and leaves everything beyond its own five attributes untouched.",
+      "task": "task/case-lifecycle-http/update-draft-store-extension"
     },
     {
       "id": "proof/case-query-http/list-case-versions-route",
@@ -254,6 +286,78 @@
     {
       "from": "implementation/case-lifecycle-http/status-map",
       "to": "task/case-lifecycle-http/status-map",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-route",
+      "to": "task/case-lifecycle-http/update-draft-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/update-draft-store-extension",
+      "to": "task/case-lifecycle-http/update-draft-store-extension",
       "kind": "implements",
       "at": "the path"
     },
@@ -572,6 +676,18 @@
     {
       "from": "proof/case-lifecycle-http/status-map",
       "to": "implementation/case-lifecycle-http/status-map",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/update-draft-route",
+      "to": "implementation/case-lifecycle-http/update-draft-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/update-draft-store-extension",
+      "to": "implementation/case-lifecycle-http/update-draft-store-extension",
       "kind": "proves",
       "at": "the path"
     },
