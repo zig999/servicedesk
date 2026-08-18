@@ -11,6 +11,8 @@
 // citations the same way, keeping only the accepted ones in the order they
 // were proposed. Pure and synchronous throughout, so no fake timers or async
 // handling is needed here.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { Citation } from '../../../investigation/citation.js';
 import {
@@ -173,4 +175,46 @@ it('filters a proposed set of citations to only those accepted, keeping the acce
   const result = acceptedCitations(options);
 
   expect(result).toEqual([options.citations[0], options.citations[3]]);
+});
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
+
+/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
+async function moduleSource(): Promise<string> {
+  return readFile(fileURLToPath(new URL('../../../investigation/citation-validation.ts', import.meta.url)), 'utf8');
+}
+
+/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
+function docCommentBefore(source: string, marker: string): string {
+  const markerIndex = source.indexOf(marker);
+  if (markerIndex === -1) {
+    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
+  }
+  const before = source.slice(0, markerIndex);
+  const commentEnd = before.lastIndexOf('*/');
+  const commentStart = before.lastIndexOf('/**', commentEnd);
+  return before.slice(commentStart, commentEnd + 2);
+}
+
+/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a citation the source wraps across lines is still matched as one continuous string. */
+function normalizedProse(commentBlock: string): string {
+  return commentBlock
+    .split('\n')
+    .map((line) =>
+      line
+        .replace(/^\s*\/\*\*\s?/, '')
+        .replace(/^\s*\*\/\s*$/, '')
+        .replace(/^\s*\*\s?/, '')
+        .replace(/\s*\*\/\s*$/, '')
+        .trim(),
+    )
+    .filter((line) => line.length > 0)
+    .join(' ');
+}
+
+it("HypothesisCitationContext's doc comment cites domain/knowledge/hypothesis-revision for collects, not domain/knowledge/hypothesis", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'export type HypothesisCitationContext'));
+
+  expect(comment).toContain('domain/knowledge/hypothesis-revision');
+  expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
 });

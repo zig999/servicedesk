@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "implementation",
+      "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
+      "title": "Fix post-case-lifecycle stale citations in four investigation/case doc comments",
+      "summary": "Corrects doc-comment attributions in validate-case-coherence.ts, judgment-stage.ts, citation-validation.ts and resolve-and-narrow-input.ts so title, when_to_use, subject, fallback, collects, resolution and criterion cite domain/knowledge/case-version and domain/knowledge/hypothesis-revision instead of the now-stale domain/knowledge/case and domain/knowledge/hypothesis, with no change to any file's runtime behavior.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations"
+    },
+    {
+      "id": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "proof",
+      "file": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
+      "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "summary": "Tests that read each of the four corrected files' own raw source text and assert that the named doc comment now cites domain/knowledge/case-version and domain/knowledge/hypothesis-revision exactly where the criteria require, and no longer cites domain/knowledge/case or domain/knowledge/hypothesis for those facts; criterion 5's \"no runtime behavior changed\" rests on the four files' own pre-existing, unmodified behavioral suites rather than on a new test.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

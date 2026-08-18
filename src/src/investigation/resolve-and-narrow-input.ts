@@ -16,9 +16,10 @@
 // implemented an earlier version of the-writing-input-is-narrowed and is
 // removed. NarrowedInput's own shape is the structural guarantee behind the
 // current rule: it declares no field that could hold a hypothesis's own
-// criterion or the case's when_to_use (domain/knowledge/hypothesis,
-// domain/knowledge/case), and requiresEvaluationOf(theCase) alone decides
-// which hypotheses it may carry, so a caller cannot smuggle in a hypothesis
+// criterion or the case version's when_to_use
+// (domain/knowledge/hypothesis-revision, domain/knowledge/case-version),
+// and requiresEvaluationOf(theCase) alone decides which hypotheses it may
+// carry, so a caller cannot smuggle in a hypothesis
 // the case does not require evaluation of. Pure and synchronous, importing
 // nothing but the case, case-resolution, evaluation, citation and evidence
 // modules' own plain-data types — the same discipline case-resolution.ts

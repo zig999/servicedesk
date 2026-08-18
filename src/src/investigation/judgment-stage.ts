@@ -13,11 +13,12 @@
 // stage's own absolute deadline, is inconclusive with reason
 // deadline-exceeded, never no-data or judgment-failure
 // (scenarios/investigation/a-queued-judgment-is-deadline-exceeded,
-// rules/investigation/no-stage-aborts-on-its-deadline). The pinned case's
-// own CaseContext — its title and when_to_use — is computed once from the
-// case this call was given and travels unchanged into every evaluate()
-// call and retry this stage makes, the same as any other hypothesis's own
-// criterion and evidence (constraints/the-judgment-prompt-is-closed).
+// rules/investigation/no-stage-aborts-on-its-deadline). The pinned case
+// version's own CaseContext — its title and when_to_use — is computed once
+// from the case version this call was given and travels unchanged into
+// every evaluate() call and retry this stage makes, the same as any other
+// hypothesis's own criterion and evidence
+// (constraints/the-judgment-prompt-is-closed).
 // `now` and `deadline`
 // arrive as explicit parameters, never a system clock read internally, the
 // same discipline evidence-collection-stage.ts and idempotency-lease-store.ts
@@ -139,8 +140,8 @@ type RunIsolatedCallOptions = {
  * unchanged (rules/investigation/judgment-does-not-infer's own domain has
  * nothing more for this stage to add to it), and hands a decided answer to
  * citation validation, retrying through retryOrFail on a structurally
- * invalid one. The pinned case's own caseContext rides along unchanged on
- * this first call, the same one retryOrFail passes to a retry. The output
+ * invalid one. The pinned case version's own caseContext rides along
+ * unchanged on this first call, the same one retryOrFail passes to a retry. The output
  * schemas are resolved before this hypothesis's own first call, never after
  * it: constraints/the-judgment-prompt-is-closed's own fifth permitted entry
  * puts each evidence item's declared field names inside the very prompt this
@@ -353,7 +354,7 @@ function toEvidenceItems(evidence: readonly Evidence[], outputSchemas: Capabilit
   });
 }
 
-/** The hypothesis named within the pinned case — requiresEvaluationOf(theCase) names come from theCase.hypotheses itself, so this always finds one; a miss is a caller-contract fault, not a domain outcome, thrown the same way FakeHypothesisEvaluator throws for a fixture nobody seeded. */
+/** The hypothesis named within the pinned case version — requiresEvaluationOf(theCase) names come from theCase.hypotheses itself, so this always finds one; a miss is a caller-contract fault, not a domain outcome, thrown the same way FakeHypothesisEvaluator throws for a fixture nobody seeded. */
 function hypothesisNamed(theCase: Case, name: string): Hypothesis {
   const hypothesis = theCase.hypotheses.find((candidate) => candidate.name === name);
   if (hypothesis === undefined) {

@@ -107,10 +107,11 @@ async function vocabularyViolations(theCase: Case, glossary: IGlossaryQuery): Pr
 
 /**
  * Every term the case names against the four term vocabularies, each
- * distinct name once: the declared subject, and every outcome, action and
- * recipient of every declared resolution — the hypotheses' and the
- * fallback's alike (domain/knowledge/case, domain/knowledge/hypothesis,
- * domain/knowledge/resolution, domain/knowledge/referral).
+ * distinct name once: the declared subject and the fallback's own
+ * resolution (domain/knowledge/case-version), and every outcome, action and
+ * recipient of every hypothesis's own resolution
+ * (domain/knowledge/hypothesis-revision, domain/knowledge/resolution,
+ * domain/knowledge/referral).
  */
 function namedVocabularyTerms(theCase: Case): readonly NamedTerm[] {
   const resolutions = declaredResolutions(theCase);
@@ -135,8 +136,9 @@ function termsOf(vocabulary: TermVocabulary, names: readonly string[]): readonly
 /**
  * How the case's collected concepts depart from the glossary, each distinct
  * concept read once through the port's read-concept — deduplicated the way
- * the case's own collection plan deduplicates them (domain/knowledge/case):
- * a concept the glossary does not hold is named
+ * the case's own collection plan deduplicates them
+ * (domain/knowledge/case-version): a concept the glossary does not hold is
+ * named
  * (rules/knowledge/case-terms-exist-in-the-glossary), and a held concept
  * whose accepts does not carry the declared subject type is named with both
  * disagreeing terms

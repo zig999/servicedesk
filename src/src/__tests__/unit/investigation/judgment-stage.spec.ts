@@ -11,6 +11,8 @@
 // same discipline evidence-collection-stage.spec.ts already establishes for
 // its own race, including its settled-flag-between-advances technique for
 // observing an in-flight state before a later advance resolves it.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
@@ -593,6 +595,68 @@ it('passes an inconclusive first answer through unchanged, with no retry attempt
     citations: [{ concept: 'concept-a', field: 'a-field' }],
   }]);
   expect(evaluator.calls).toHaveLength(1);
+});
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
+
+/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
+async function moduleSource(): Promise<string> {
+  return readFile(fileURLToPath(new URL('../../../investigation/judgment-stage.ts', import.meta.url)), 'utf8');
+}
+
+/** This module's leading `//` header comment, everything before its first import. */
+function moduleHeaderOf(source: string): string {
+  return source.slice(0, source.indexOf('\nimport'));
+}
+
+/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
+function docCommentBefore(source: string, marker: string): string {
+  const markerIndex = source.indexOf(marker);
+  if (markerIndex === -1) {
+    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
+  }
+  const before = source.slice(0, markerIndex);
+  const commentEnd = before.lastIndexOf('*/');
+  const commentStart = before.lastIndexOf('/**', commentEnd);
+  return before.slice(commentStart, commentEnd + 2);
+}
+
+/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a phrase the source wraps across lines is still matched as one continuous string. */
+function normalizedProse(commentBlock: string): string {
+  return commentBlock
+    .split('\n')
+    .map((line) =>
+      line
+        .replace(/^\s*\/\*\*\s?/, '')
+        .replace(/^\s*\*\/\s*$/, '')
+        .replace(/^\s*\*\s?/, '')
+        .replace(/^\s*\/\/\s?/, '')
+        .replace(/\s*\*\/\s*$/, '')
+        .trim(),
+    )
+    .filter((line) => line.length > 0)
+    .join(' ');
+}
+
+it("the module header attributes the CaseContext's title and when_to_use to the pinned case version, never to the case identity", async () => {
+  const header = normalizedProse(moduleHeaderOf(await moduleSource()));
+
+  expect(header).toContain("The pinned case version's own CaseContext");
+  expect(header).not.toMatch(/pinned case's own CaseContext/i);
+});
+
+it("runIsolatedCall()'s doc comment attributes the caseContext that rides along unchanged to the pinned case version, not the case identity", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
+
+  expect(comment).toContain("The pinned case version's own caseContext");
+  expect(comment).not.toMatch(/pinned case's own caseContext/i);
+});
+
+it("hypothesisNamed()'s doc comment attributes the lookup to the pinned case version, not the case identity", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function hypothesisNamed'));
+
+  expect(comment).toContain('the pinned case version');
+  expect(comment).not.toMatch(/the pinned case(?! version)/i);
 });
 
 it('passes an inconclusive retry answer through unchanged', async () => {

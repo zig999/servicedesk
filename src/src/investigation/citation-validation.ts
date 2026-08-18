@@ -42,8 +42,8 @@ export function capabilityOutputSchemaKey(capabilityName: string, capabilityVers
 
 /**
  * Everything one hypothesis's citations are checked against: its own
- * collects (or just that array, per domain/knowledge/hypothesis — this
- * check takes the plain array, never the Hypothesis or Case type, so it
+ * collects (or just that array, per domain/knowledge/hypothesis-revision —
+ * this check takes the plain array, never the Hypothesis or Case type, so it
  * models neither), its own evidence (task/evidence-collection/evidence-collection-stage's
  * Evidence, reused as delivered rather than reduced to a parallel shape),
  * and the output schemas of whichever capabilities produced that evidence.

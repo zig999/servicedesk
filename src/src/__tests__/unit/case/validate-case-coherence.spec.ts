@@ -18,6 +18,8 @@
 // contracts/knowledge/capability-check) — never the glossary or capability
 // registry services — so the checks are proven against the published reads
 // alone.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type {
   CapabilityResolution,
@@ -498,4 +500,60 @@ it('lets a duplicate-concept-answer failure from the capability port reach the c
   capabilities.failOn(CONCEPT, failure);
 
   await expect(caseCoherenceViolations(theCase, glossary, capabilities)).rejects.toBe(failure);
+});
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
+
+/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
+async function moduleSource(): Promise<string> {
+  return readFile(fileURLToPath(new URL('../../../case/validate-case-coherence.ts', import.meta.url)), 'utf8');
+}
+
+/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
+function docCommentBefore(source: string, marker: string): string {
+  const markerIndex = source.indexOf(marker);
+  if (markerIndex === -1) {
+    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
+  }
+  const before = source.slice(0, markerIndex);
+  const commentEnd = before.lastIndexOf('*/');
+  const commentStart = before.lastIndexOf('/**', commentEnd);
+  return before.slice(commentStart, commentEnd + 2);
+}
+
+/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a phrase or citation the source wraps across lines is still matched as one continuous string. */
+function normalizedProse(commentBlock: string): string {
+  return commentBlock
+    .split('\n')
+    .map((line) =>
+      line
+        .replace(/^\s*\/\*\*\s?/, '')
+        .replace(/^\s*\*\/\s*$/, '')
+        .replace(/^\s*\*\s?/, '')
+        .replace(/\s*\*\/\s*$/, '')
+        .trim(),
+    )
+    .filter((line) => line.length > 0)
+    .join(' ');
+}
+
+it("namedVocabularyTerms()'s doc comment cites domain/knowledge/case-version for the declared subject and the fallback's own resolution, not domain/knowledge/case", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function namedVocabularyTerms'));
+
+  expect(comment).toContain('domain/knowledge/case-version');
+  expect(comment).not.toMatch(/domain\/knowledge\/case(?!-version)/);
+});
+
+it("namedVocabularyTerms()'s doc comment cites domain/knowledge/hypothesis-revision for every hypothesis's own resolution, not domain/knowledge/hypothesis", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function namedVocabularyTerms'));
+
+  expect(comment).toContain('domain/knowledge/hypothesis-revision');
+  expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
+});
+
+it("conceptViolations()'s doc comment cites domain/knowledge/case-version for the case's own collection plan, not domain/knowledge/case", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function conceptViolations'));
+
+  expect(comment).toContain('domain/knowledge/case-version');
+  expect(comment).not.toMatch(/domain\/knowledge\/case(?!-version)/);
 });

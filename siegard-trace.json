@@ -1768,6 +1768,10 @@
           "digest": "sha256:7b32a0a80dc347a631b28d751b68322f8d6378d6fe28993286924ce2b0381b00"
         },
         {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
+        },
+        {
           "path": "src/src/http/discard.controller.ts",
           "digest": "sha256:0ab0c61763b81940478fd8cda9580f05896ae9f8449a11469c54a0b2a842e354"
         },
@@ -1798,6 +1802,14 @@
         {
           "path": "src/src/http/remove-hypothesis.controller.ts",
           "digest": "sha256:266ab4c644f63101b0c40c4fa9eb1ae1f61de748de07effbb69ca033bb4596f9"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:d3d75d3786338d2e8dc42bf0710008808fd90d629beb000f0f1fe901d8fb54ae"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:8312416238897f64d0aa33b4f4a740e48d5a51d88d83a0967bb7672f65d1ec92"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -1992,6 +2004,10 @@
           "digest": "sha256:7b32a0a80dc347a631b28d751b68322f8d6378d6fe28993286924ce2b0381b00"
         },
         {
+          "path": "src/src/case/validate-case-coherence.ts",
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
+        },
+        {
           "path": "src/src/http/dto/place-hypothesis.dto.ts",
           "digest": "sha256:45609c5e1ea749517b0f1649e7206cc54f8afbbc76192675d530364ae16bf205"
         },
@@ -2002,6 +2018,14 @@
         {
           "path": "src/src/http/dto/revise-hypothesis.dto.ts",
           "digest": "sha256:1dbb68763074d2fc62899aa1e4143762dca6f66a630d664daef6a0d4233373b8"
+        },
+        {
+          "path": "src/src/investigation/citation-validation.ts",
+          "digest": "sha256:5d367f5c24cba4b0ddd73cbd47b525bda4f7168bb40c0363e112e07edc7a4400"
+        },
+        {
+          "path": "src/src/investigation/resolve-and-narrow-input.ts",
+          "digest": "sha256:8312416238897f64d0aa33b4f4a740e48d5a51d88d83a0967bb7672f65d1ec92"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
