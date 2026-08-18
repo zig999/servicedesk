@@ -10,6 +10,30 @@
       "task": "task/capability-registry-http/read-capability-route"
     },
     {
+      "id": "implementation/case-lifecycle-http/create-draft-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/create-draft-route.md",
+      "title": "POST /v1/cases",
+      "summary": "A thin Fastify plugin, controller and Zod DTO wired to the existing createDraft case-lifecycle operation — the first route in this initiative to originate a new resource rather than read or correct one already stored.",
+      "task": "task/case-lifecycle-http/create-draft-route"
+    },
+    {
+      "id": "implementation/case-lifecycle-http/discard-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/discard-route.md",
+      "title": "DELETE /v1/cases/{slug}/versions/{version}",
+      "summary": "A thin Fastify plugin, controller and Zod DTO wired to the existing discard case-lifecycle operation — the first use of HTTP 204 No Content in this codebase's HTTP surface.",
+      "task": "task/case-lifecycle-http/discard-route"
+    },
+    {
+      "id": "implementation/case-lifecycle-http/release-route",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/release-route.md",
+      "title": "POST /v1/cases/{slug}/versions/{version}/release",
+      "summary": "A thin Fastify plugin, controller and Zod DTO wired to the existing release case-lifecycle operation, reading the released version back through the published case-query contract — the write-then-read pattern update-draft-route established.",
+      "task": "task/case-lifecycle-http/release-route"
+    },
+    {
       "id": "implementation/case-lifecycle-http/status-map",
       "kind": "implementation",
       "file": "implementation/case-lifecycle-http/status-map.md",
@@ -136,6 +160,30 @@
       "title": "Proof for GET /v1/capabilities/{concept}",
       "summary": "HTTP-layer tests exercising read-capability.routes.ts, read-capability.controller.ts, dto/read-capability.dto.ts and the new ConceptNotAnsweredError status-map entry through a locally-assembled Fastify instance (build-app.ts does not yet register this route), proving both stated criteria and the pass-through, error-mapping and generic-failure behavior the implementation states.",
       "task": "task/capability-registry-http/read-capability-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/create-draft-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/create-draft-route.md",
+      "title": "Proof for POST /v1/cases",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createCreateDraftRoutesPlugin plus the shared error handler, that a valid request originates a draft and answers 201, that the UNDERDETERMINED reading is excluded, that an already-drafted case is refused, and that body validation runs before createDraft.",
+      "task": "task/case-lifecycle-http/create-draft-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/discard-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/discard-route.md",
+      "title": "Proof for DELETE /v1/cases/{slug}/versions/{version}",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createDiscardRoutesPlugin plus the shared error handler, that a valid delete removes a draft version and answers a wholly empty 204, that an already-released version and an unknown slug/version are each refused with the status status-map assigns, and that path validation runs before discard.",
+      "task": "task/case-lifecycle-http/discard-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/release-route",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/release-route.md",
+      "title": "Proof for POST /v1/cases/{slug}/versions/{version}/release",
+      "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createReleaseRoutesPlugin plus the shared error handler, that a valid release writes then reads back the released version, that the write-then-read ordering holds, that an already-released version and an unreleasable manifest are each refused with every violated rule reported together, and that an unknown slug/version and validation boundaries behave as disclosed.",
+      "task": "task/case-lifecycle-http/release-route"
     },
     {
       "id": "proof/case-lifecycle-http/status-map",
@@ -280,6 +328,102 @@
     {
       "from": "implementation/capability-registry-http/read-capability-route",
       "to": "task/capability-registry-http/read-capability-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/create-draft-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/create-draft-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/create-draft-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/create-draft-route",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/create-draft-route",
+      "to": "task/case-lifecycle-http/create-draft-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/discard-route",
+      "to": "task/case-lifecycle-http/discard-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/release-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/release-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/release-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/release-route",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/release-route",
+      "to": "task/case-lifecycle-http/release-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -670,6 +814,24 @@
     {
       "from": "proof/capability-registry-http/read-capability-route",
       "to": "implementation/capability-registry-http/read-capability-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/create-draft-route",
+      "to": "implementation/case-lifecycle-http/create-draft-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/discard-route",
+      "to": "implementation/case-lifecycle-http/discard-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/release-route",
+      "to": "implementation/case-lifecycle-http/release-route",
       "kind": "proves",
       "at": "the path"
     },
