@@ -17,13 +17,25 @@
 // — no production code path here seeds or reads observations.json any
 // longer. Never listens itself: buildApp's own instance is handed back
 // unstarted, so only src/index.ts calls .listen().
+//
+// task/case-lifecycle-http/register-routes-in-build-app: createDiagnoseHttpServer
+// keeps its own exported name and one-parameter signature exactly as
+// store-wiring.spec.ts already asserts them — this task changes only what
+// it hands to buildApp, from the diagnose route's own dependencies alone to
+// every one of the nineteen routes' dependencies (BuildAppDependencies).
+// Composing the other eighteen routes' own dependencies from this same
+// connection is build-app.factory.ts's own job (ARC-03 — one factory per
+// module), kept out of this file's body so createDiagnoseHttpServer stays
+// exactly the size store-wiring.spec.ts already found it.
 
 import type { FastifyInstance } from 'fastify';
 import type { Env } from '../config/env.js';
 import { buildApp } from '../http/build-app.js';
+import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
 import { HttpDeclarativeObservationSource } from '../investigation/http-declarative-observation-source.adapter.js';
 import type { IObservationSource } from '../investigation/observation-source.port.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../persistence/database-connection.js';
+import { buildAppDependencies } from './build-app.factory.js';
 import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createCaseQuery } from './case-query.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
@@ -35,7 +47,8 @@ import { createProductionDiagnoseRunner, type ProductionDiagnoseDependencies } f
  * production diagnose runner wired from that same connection, and the HTTP
  * declarative observation-source adapter built from the capability query
  * and connector-configuration registry this same connection backs, all
- * handed to buildApp already built.
+ * handed to buildApp already built alongside every other route's own
+ * dependencies (build-app.factory.ts's own buildAppDependencies).
  */
 export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstance> {
   const connection = createDatabaseConnection(env.DATABASE_URL);
@@ -45,7 +58,8 @@ export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstanc
   });
   const caseQuery = createCaseQuery(connection);
   const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, connection, observationSource));
-  return buildApp({ caseQuery, runDiagnose, model: env.EVALUATOR_MODEL, promptVersion: env.PROMPT_VERSION });
+  const diagnose: DiagnoseControllerDependencies = { caseQuery, runDiagnose, model: env.EVALUATOR_MODEL, promptVersion: env.PROMPT_VERSION };
+  return buildApp(buildAppDependencies({ env, connection, caseQuery, diagnose }));
 }
 
 /** ProductionDiagnoseDependencies assembled from the given env, the shared connection and the already-built observation source, kept out of createDiagnoseHttpServer's own body to stay inside MNT-01's line bound. */

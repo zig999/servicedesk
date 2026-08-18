@@ -361,7 +361,18 @@ async function cleanupInvestigationsFor(connection: DatabaseConnection, requeste
   await connection.query('DELETE FROM public.investigations WHERE id = ANY($1)', [ids]);
 }
 
-/** The Env every test below builds createDiagnoseHttpServer from, absent OBSERVATIONS_FIXTURE_FILE now that env.ts no longer declares it (task/http-observation-runtime/production-wiring-swap) — named once so a test needing its own separate app (the corrupted-fixture criterion-3 test below) never redeclares this literal (MNT-03). */
+/**
+ * The Env every test below builds createDiagnoseHttpServer from, absent OBSERVATIONS_FIXTURE_FILE
+ * now that env.ts no longer declares it (task/http-observation-runtime/production-wiring-swap) —
+ * named once so a test needing its own separate app (the corrupted-fixture criterion-3 test below)
+ * never redeclares this literal (MNT-03).
+ *
+ * Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+ * record: envSchema now also requires PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT (both
+ * coerced positive integers) — createDiagnoseHttpServer now threads both through to every listing
+ * route's own dependencies via build-app.factory.ts's own buildAppDependencies — so both are named
+ * here too, even though no test in this file exercises any of those other eighteen routes directly.
+ */
 function baseEnv(): Env {
   return {
     PORT: 3000,
@@ -372,6 +383,8 @@ function baseEnv(): Env {
     POOL_SIZE: 2,
     DEFAULT_CONSOLIDATION_REGISTER: 'plain',
     PROMPT_VERSION: 'prompt-v1',
+    PAGINATION_DEFAULT_LIMIT: 20,
+    PAGINATION_MAX_LIMIT: 100,
   };
 }
 

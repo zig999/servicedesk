@@ -21,7 +21,14 @@ const PERSISTENCE_DIRECTORY = join(SRC_ROOT, 'persistence');
 const FACTORIES_DIRECTORY = join(SRC_ROOT, 'factories');
 const CONFIG_DIRECTORY = join(SRC_ROOT, 'config');
 
-/** Every variable envSchema requires besides the four retired data-directory ones, so loadEnv accepts this source without refusing on an unrelated missing field. */
+/**
+ * Every variable envSchema requires besides the four retired data-directory ones, so loadEnv
+ * accepts this source without refusing on an unrelated missing field.
+ *
+ * Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+ * record: envSchema now also requires PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT (both
+ * coerced positive integers), so both are named here too.
+ */
 const A_VALID_ENV_SOURCE: NodeJS.ProcessEnv = {
   DATABASE_URL: 'postgres://a-placeholder-connection-url',
   OBSERVATIONS_FIXTURE_FILE: 'an-observations-file',
@@ -31,6 +38,8 @@ const A_VALID_ENV_SOURCE: NodeJS.ProcessEnv = {
   POOL_SIZE: '3',
   DEFAULT_CONSOLIDATION_REGISTER: 'plain',
   PROMPT_VERSION: 'prompt-v1',
+  PAGINATION_DEFAULT_LIMIT: '20',
+  PAGINATION_MAX_LIMIT: '100',
 };
 
 /** The five modules this task removes from the tree — the four file repositories and the file helper they shared. */

@@ -299,7 +299,16 @@ async function cleanupSeededRows(connection: DatabaseConnection): Promise<void> 
   await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
-/** Every application variable seed.ts's own loadEnv() call requires besides DATABASE_URL, set to the same kind of placeholder value diagnose-server.factory.spec.ts's own Env object already uses — seed.ts never reads any of these itself, only env.DATABASE_URL. */
+/**
+ * Every application variable seed.ts's own loadEnv() call requires besides DATABASE_URL, set to the
+ * same kind of placeholder value diagnose-server.factory.spec.ts's own Env object already uses —
+ * seed.ts never reads any of these itself, only env.DATABASE_URL.
+ *
+ * Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+ * record: envSchema now also requires PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT (both
+ * coerced positive integers) for seed.ts's own loadEnv() call to keep succeeding, so both are named
+ * here too.
+ */
 const PLACEHOLDER_ENV: Readonly<Record<string, string>> = {
   OBSERVATIONS_FIXTURE_FILE: join(FIXTURES_ROOT, 'observations.json'),
   EVALUATOR_MODEL: 'a-test-evaluator-model',
@@ -308,6 +317,8 @@ const PLACEHOLDER_ENV: Readonly<Record<string, string>> = {
   POOL_SIZE: '2',
   DEFAULT_CONSOLIDATION_REGISTER: 'plain',
   PROMPT_VERSION: 'prompt-v1',
+  PAGINATION_DEFAULT_LIMIT: '20',
+  PAGINATION_MAX_LIMIT: '100',
 };
 
 const savedEnv = new Map<string, string | undefined>();

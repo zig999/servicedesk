@@ -9,7 +9,17 @@
 // from the one DATABASE_URL connection below, built once and threaded
 // through every factory that used to receive a directory of its own — no
 // data path for any of those four is written in source or read from this
-// schema. Carries no credential of any kind — both Anthropic-backed adapters
+// schema. Carries PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT
+// (task/case-lifecycle-http/register-routes-in-build-app): the standard's
+// own API-04 forbids writing either a listing's default or maximum page
+// size in source, and src/types/pagination.ts's own header comment assigns
+// resolving a request's own limit against that bound to "a controller/route
+// concern" — so the one configured pair every listing route's own
+// dependencies type declares (defaultLimit, maxLimit) is read here, exactly
+// once, the same way EVALUATOR_MODEL and PROMPT_VERSION already are, and
+// threaded through by whichever factory wires that route rather than
+// written as a literal anywhere downstream. Carries no credential of any
+// kind — both Anthropic-backed adapters
 // already resolve ANTHROPIC_API_KEY from the environment on their own
 // (STK-11), and this module introduces no second place that reads it.
 // Carries DATABASE_URL, the one URL this process reaches its database
@@ -40,6 +50,8 @@ const envSchema = z.object({
   POOL_SIZE: z.coerce.number().int().positive(),
   DEFAULT_CONSOLIDATION_REGISTER: z.enum(CONSOLIDATION_REGISTERS),
   PROMPT_VERSION: z.string().min(1),
+  PAGINATION_DEFAULT_LIMIT: z.coerce.number().int().positive(),
+  PAGINATION_MAX_LIMIT: z.coerce.number().int().positive(),
 });
 
 export type Env = z.infer<typeof envSchema>;

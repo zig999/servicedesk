@@ -50,6 +50,14 @@
       "task": "task/case-lifecycle-http/place-hypothesis-route"
     },
     {
+      "id": "implementation/case-lifecycle-http/register-routes-in-build-app",
+      "kind": "implementation",
+      "file": "implementation/case-lifecycle-http/register-routes-in-build-app.md",
+      "title": "build-app.ts registers all nineteen HTTP routes through one convention",
+      "summary": "build-app.ts now declares a single BuildAppDependencies aggregate and a one-loop registration convention covering the pre-existing diagnose route plus this initiative's eighteen new routes, wired for real by a new build-app.factory.ts and env.ts's two new configured pagination fields, with createDiagnoseHttpServer's own name, signature and diagnose-route behavior left exactly as they were.",
+      "task": "task/case-lifecycle-http/register-routes-in-build-app"
+    },
+    {
       "id": "implementation/case-lifecycle-http/release-route",
       "kind": "implementation",
       "file": "implementation/case-lifecycle-http/release-route.md",
@@ -275,6 +283,14 @@
       "title": "Proof for PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name}",
       "summary": "Fastify inject()-driven proof, over a locally-assembled app registering createPlaceHypothesisRoutesPlugin plus the shared error handler, that a valid placement answers a wholly empty 204, that both named refusals resolve to the status status-map assigns, and that path/body validation boundaries and the generic-500 fallback behave as disclosed.",
       "task": "task/case-lifecycle-http/place-hypothesis-route"
+    },
+    {
+      "id": "proof/case-lifecycle-http/register-routes-in-build-app",
+      "kind": "proof",
+      "file": "proof/case-lifecycle-http/register-routes-in-build-app.md",
+      "title": "build-app.ts registers every route this initiative delivers — proof",
+      "summary": "Proves build-app.ts's one registration convention and that all eighteen non-diagnose route plugins are reachable through it, fixes the six pre-existing test files buildApp()'s widened BuildAppDependencies parameter and env.ts's two new required fields broke, and confirms every pre-existing diagnose test keeps proving criterion 3 unmodified.",
+      "task": "task/case-lifecycle-http/register-routes-in-build-app"
     },
     {
       "id": "proof/case-lifecycle-http/release-route",
@@ -625,6 +641,12 @@
     {
       "from": "implementation/case-lifecycle-http/place-hypothesis-route",
       "to": "task/case-lifecycle-http/place-hypothesis-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-lifecycle-http/register-routes-in-build-app",
+      "to": "task/case-lifecycle-http/register-routes-in-build-app",
       "kind": "implements",
       "at": "the path"
     },
@@ -1243,6 +1265,12 @@
     {
       "from": "proof/case-lifecycle-http/place-hypothesis-route",
       "to": "implementation/case-lifecycle-http/place-hypothesis-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-lifecycle-http/register-routes-in-build-app",
+      "to": "implementation/case-lifecycle-http/register-routes-in-build-app",
       "kind": "proves",
       "at": "the path"
     },

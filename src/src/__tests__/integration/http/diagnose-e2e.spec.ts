@@ -31,11 +31,23 @@
 // it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
 // config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
 // configured too, which this file has no use for.
+//
+// Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+// record: buildApp() now takes a BuildAppDependencies value — one field per route this initiative
+// registers, nineteen in all — rather than a DiagnoseControllerDependencies-shaped object alone.
+// buildTestApp() below still names only diagnose's own dependencies, since every test in this file
+// exercises only the diagnose route; the other eighteen routes' own dependencies are composed for
+// real from this file's own connection through build-app.factory.ts's own buildAppDependencies
+// (MNT-03 — reused rather than re-stubbed), with placeholderEnv() below supplying the handful of
+// Env fields that composition reads (the configured pagination bound among them) — none of those
+// eighteen routes is ever exercised by a test in this file, only diagnose is.
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { FastifyInstance } from 'fastify';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import type { Env } from '../../../config/env.js';
+import { buildAppDependencies } from '../../../factories/build-app.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
@@ -95,13 +107,28 @@ const EXPECTED_ASSESSMENT: Assessment = {
   text: CONSOLIDATED_TEXT,
 };
 
-/** Exactly the files this test's own wiring reaches, scanned by the second test below for an '@anthropic-ai/sdk' import specifier — production-diagnose.factory.ts, the only file in this tree that imports it, is deliberately absent from this list and from every import above. */
+/**
+ * Exactly the files this test's own wiring reaches, scanned by the second test below for an
+ * '@anthropic-ai/sdk' import specifier — production-diagnose.factory.ts, the only file in this tree
+ * that imports it, is deliberately absent from this list and from every import above.
+ *
+ * Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+ * record: build-app.factory.ts joins this list, since buildTestApp() above now reaches it (and, in
+ * turn, the leaf factories it composes for this initiative's other eighteen routes) to satisfy
+ * buildApp()'s wider BuildAppDependencies parameter — none of them imports '@anthropic-ai/sdk'
+ * either.
+ */
 const COMPOSITION_FILES_UNDER_TEST = [
   '../../../http/build-app.ts',
   '../../../http/diagnose.controller.ts',
   '../../../http/diagnose.routes.ts',
+  '../../../factories/build-app.factory.ts',
   '../../../factories/diagnose.factory.ts',
   '../../../factories/case-query.factory.ts',
+  '../../../factories/case-store.factory.ts',
+  '../../../factories/case-lifecycle.factory.ts',
+  '../../../factories/capability-registry.factory.ts',
+  '../../../factories/glossary.factory.ts',
   '../../../factories/investigation-store.factory.ts',
   '../../../investigation/run-diagnosis.ts',
   '../../../investigation/fake-hypothesis-evaluator.adapter.ts',
@@ -355,6 +382,22 @@ function buildRunDiagnose(connection: DatabaseConnection): WiredRunner {
   return { runDiagnose, capturedId: () => capturedId };
 }
 
+/** The Env buildAppDependencies() reads beyond DATABASE_URL — the configured pagination bound among them — set to the same kind of placeholder value diagnose-server.factory.spec.ts's own baseEnv() already uses: none of the eighteen other routes this composes is ever exercised by a test in this file, only diagnose is, so nothing here needs to be a "real" value, only type-valid. */
+function placeholderEnv(): Env {
+  return {
+    PORT: 3000,
+    DATABASE_URL: requireDatabaseUrl(),
+    EVALUATOR_MODEL: 'a-placeholder-evaluator-model',
+    CONSOLIDATOR_MODEL: 'a-placeholder-consolidator-model',
+    CONSOLIDATOR_MAX_TOKENS: 256,
+    POOL_SIZE: 2,
+    DEFAULT_CONSOLIDATION_REGISTER: 'plain',
+    PROMPT_VERSION: 'prompt-v1',
+    PAGINATION_DEFAULT_LIMIT: 20,
+    PAGINATION_MAX_LIMIT: 100,
+  };
+}
+
 function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; capturedId: () => string | undefined } {
   const { runDiagnose, capturedId } = buildRunDiagnose(connection);
   const dependencies: DiagnoseControllerDependencies = {
@@ -363,7 +406,8 @@ function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; c
     model: 'an-end-to-end-test-model',
     promptVersion: 'an-end-to-end-test-prompt-version',
   };
-  return { app: buildApp(dependencies), capturedId };
+  const fullDependencies = buildAppDependencies({ env: placeholderEnv(), connection, caseQuery: dependencies.caseQuery, diagnose: dependencies });
+  return { app: buildApp(fullDependencies), capturedId };
 }
 
 let connection: DatabaseConnection;

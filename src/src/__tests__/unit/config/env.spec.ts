@@ -28,6 +28,11 @@
 // reads. Removed from the base object below, and named explicitly instead in
 // the one new test that proves it is still accepted but silently dropped
 // rather than carried onto Env.
+//
+// Third sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+// record: envSchema now requires PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT (both coerced
+// positive integers) — the configured pagination bound every listing route's own dependencies now
+// read from Env rather than a literal — so validEnvSource() below now names both.
 import { expect, it } from 'vitest';
 import { loadEnv } from '../../../config/env.js';
 import { InvalidEnvironmentError } from '../../../errors/invalid-environment.error.js';
@@ -42,6 +47,8 @@ function validEnvSource(overrides: Record<string, string | undefined> = {}): Nod
     POOL_SIZE: '3',
     DEFAULT_CONSOLIDATION_REGISTER: 'plain',
     PROMPT_VERSION: 'prompt-v1',
+    PAGINATION_DEFAULT_LIMIT: '20',
+    PAGINATION_MAX_LIMIT: '100',
     ...overrides,
   };
 }

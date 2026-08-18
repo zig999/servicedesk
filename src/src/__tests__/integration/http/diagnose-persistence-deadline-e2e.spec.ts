@@ -35,10 +35,22 @@
 // already discloses it: (STK-08) DATABASE_URL is read directly from process.env below rather than
 // through config/env.ts's loadEnv, because loadEnv refuses unless every other application variable
 // is configured too, which this file has no use for.
+//
+// Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+// record: buildApp() now takes a BuildAppDependencies value — one field per route this initiative
+// registers, nineteen in all — rather than a DiagnoseControllerDependencies-shaped object alone.
+// buildDelayedTestApp() below still names only diagnose's own dependencies, since the one test in
+// this file exercises only the diagnose route; the other eighteen routes' own dependencies are
+// composed for real from this file's own (delaying) connection through build-app.factory.ts's own
+// buildAppDependencies (MNT-03 — reused rather than re-stubbed), with placeholderEnv() below
+// supplying the handful of Env fields that composition reads — none of those eighteen routes is
+// ever exercised by the test in this file, only diagnose is.
 import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, expect, it } from 'vitest';
+import type { Env } from '../../../config/env.js';
+import { buildAppDependencies } from '../../../factories/build-app.factory.js';
 import { createCaseLifecycle } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
@@ -283,6 +295,22 @@ type IBuiltApp = {
   readonly capturedId: () => string | undefined;
 };
 
+/** The Env buildAppDependencies() reads beyond DATABASE_URL — the configured pagination bound among them — set to the same kind of placeholder value diagnose-server.factory.spec.ts's own baseEnv() already uses: none of the eighteen other routes this composes is ever exercised by the test in this file, only diagnose is, so nothing here needs to be a "real" value, only type-valid. */
+function placeholderEnv(): Env {
+  return {
+    PORT: 3000,
+    DATABASE_URL: requireDatabaseUrl(),
+    EVALUATOR_MODEL: 'a-placeholder-evaluator-model',
+    CONSOLIDATOR_MODEL: 'a-placeholder-consolidator-model',
+    CONSOLIDATOR_MAX_TOKENS: 256,
+    POOL_SIZE: 2,
+    DEFAULT_CONSOLIDATION_REGISTER: 'plain',
+    PROMPT_VERSION: 'prompt-v1',
+    PAGINATION_DEFAULT_LIMIT: 20,
+    PAGINATION_MAX_LIMIT: 100,
+  };
+}
+
 /** Composes createDiagnoseRunner and buildApp against the given (already delaying) connection, capturing the id the controller generates for this one call so the test can read it back afterward. */
 function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IFixture): IBuiltApp {
   const runner = createDiagnoseRunner({ connection: delayingConnection, poolSize: 1, defaultConsolidationRegister: 'plain', ...buildFakes(fixture) });
@@ -298,7 +326,13 @@ function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IF
     model: 'a-persistence-deadline-test-model',
     promptVersion: 'a-persistence-deadline-test-prompt-version',
   };
-  return { app: buildApp(dependencies), capturedId: () => capturedId };
+  const fullDependencies = buildAppDependencies({
+    env: placeholderEnv(),
+    connection: delayingConnection,
+    caseQuery: dependencies.caseQuery,
+    diagnose: dependencies,
+  });
+  return { app: buildApp(fullDependencies), capturedId: () => capturedId };
 }
 
 type ITrackedDelayingConnection = {

@@ -9,16 +9,37 @@
 // logic this task does not own). The real pipeline, run end to end against
 // the real fixture case and a mocked Anthropic client, is proven separately
 // in __tests__/integration/factories/diagnose-server.factory.spec.ts.
+//
+// Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
+// record: buildApp() now takes a BuildAppDependencies value — one field per route this initiative
+// registers, nineteen in all — rather than a DiagnoseControllerDependencies-shaped object alone.
+// buildTestApp() below still names only diagnose's own dependencies, since every test above and
+// below it exercises only the diagnose route; stubBuildAppDependencies() wraps that one value into
+// the full shape buildApp() now requires, stubbing every other route's own dependencies minimally
+// (TST-03 — a stand-in replaces a boundary; every one of those eighteen fields is exactly that, a
+// boundary this file's own scenarios never exercise).
+//
+// This file's own new tests, added for that same task, sit in their own two sections below: one
+// proving build-app.ts's own criterion 1 (one stated registration convention rather than one
+// registered call site per route), and one proving criterion 2 (every one of the eighteen other
+// route plugins is actually reachable — a request against each one reaches its own controller
+// rather than 404). Criterion 3 (the diagnose route's own registration preserved exactly as it
+// already answers) is what every test already in this file proves by continuing to pass unmodified
+// in behavior — only buildTestApp()'s own call site changed, never what it asserts.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
+import type { ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import type { ICaseQuery } from '../../../case/case-query.port.js';
+import type { ICaseStore } from '../../../case/case-store.port.js';
 import type { Case } from '../../../case/case.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
-import { buildApp } from '../../../http/build-app.js';
+import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
+import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
+import type { PaginatedResponse } from '../../../types/pagination.js';
 
 /** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed; manifest stays empty for the same reason (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function minimalCase(): Case {
@@ -67,7 +88,89 @@ function validRequestBody(overrides: Record<string, unknown> = {}): Record<strin
 
 type RunDiagnoseMock = ReturnType<typeof vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>>;
 
-/** One Fastify instance built against buildApp() itself, plus the runDiagnose stand-in it was wired with — the one seam this whole file's tests drive and observe. */
+/** An empty page of T, shaped exactly as src/types/pagination.ts's own PaginatedResponse requires — sufficient for any of this file's own stubbed listing dependencies to resolve without throwing, never asserted on for its own content by any test in this file. */
+function emptyPage<T>(): PaginatedResponse<T> {
+  return { data: [], total: 0, limit: 10, offset: 0, pageCount: 0 };
+}
+
+/** A minimally valid ICaseStore stand-in (TST-03): every write resolves void (or, where the port declares one, the smallest valid answer), so a route reaches its own controller and completes without throwing before ever reaching the shared error handler — never asserted on for its own returned content by any test in this file. */
+function stubCaseStore(): ICaseStore {
+  return {
+    assembleVersion: async () => undefined,
+    findDraftVersion: async () => undefined,
+    listCases: async () => emptyPage(),
+    listCaseVersions: async () => emptyPage(),
+    listHypotheses: async () => emptyPage(),
+    listHypothesisRevisions: async () => emptyPage(),
+    createDraft: async () => 1,
+    insertHypothesisRevision: async () => 1,
+    placeHypothesis: async () => undefined,
+    removeManifestEntry: async () => undefined,
+    release: async () => undefined,
+    discard: async () => undefined,
+    updateDraft: async () => undefined,
+  };
+}
+
+/** A minimally valid ICapabilityQuery stand-in (TST-03): readCapability answers a held capability so read-capability-route's own controller never raises ConceptNotAnsweredError (mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubCapabilityQuery(): ICapabilityQuery {
+  return {
+    readCapability: async (concept) => ({
+      held: true,
+      capability: { name: concept, version: '1.0.0', nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept },
+    }),
+    listCapabilities: async () => emptyPage(),
+  };
+}
+
+/** A minimally valid IGlossaryQuery stand-in (TST-03): both reads answer a held term/concept so read-vocabulary-term-route's and read-concept-route's own controllers never raise their own typed not-held errors (both mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubGlossaryQuery(): IGlossaryQuery {
+  return {
+    readVocabularyTerm: async (_vocabulary, name) => ({ held: true, term: { name } }),
+    readConcept: async (name) => ({ held: true, concept: { name, accepts: ['a-subject-type'], ttl: 60 } }),
+    listVocabularyTerms: async () => emptyPage(),
+    listConcepts: async () => emptyPage(),
+  };
+}
+
+/**
+ * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
+ * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
+ * route, so every other field only needs to let its own route reach its own controller and resolve
+ * without throwing before ever reaching the shared error handler (TST-03) — never asserted on for
+ * its own returned content by any test in this file except the reachability tests criterion 2 owns
+ * below, which assert only on the response's status code.
+ */
+function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): BuildAppDependencies {
+  const caseQuery = stubCaseQuery(minimalCase());
+  const caseStore = stubCaseStore();
+  const capabilityQuery = stubCapabilityQuery();
+  const glossaryQuery = stubGlossaryQuery();
+  const pagination = { defaultLimit: 10, maxLimit: 100 };
+  return {
+    diagnose,
+    readCapability: { capabilityQuery },
+    listCapabilities: { capabilityQuery, ...pagination },
+    createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
+    updateDraft: { caseStore, caseQuery },
+    release: { release: async () => undefined, caseQuery },
+    discard: { discard: async () => undefined },
+    reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
+    placeHypothesis: { placeHypothesis: async () => undefined },
+    removeHypothesis: { removeHypothesis: async () => undefined },
+    readCase: { caseQuery },
+    listCases: { caseQuery, ...pagination },
+    listCaseVersions: { caseQuery, ...pagination },
+    listHypotheses: { caseQuery, ...pagination },
+    listHypothesisRevisions: { caseQuery, ...pagination },
+    readVocabularyTerm: { glossaryQuery },
+    listVocabularyTerms: { glossaryQuery, ...pagination },
+    readConcept: { glossaryQuery },
+    listConcepts: { glossaryQuery, ...pagination },
+  };
+}
+
+/** One Fastify instance built against buildApp() itself, plus the runDiagnose stand-in it was wired with — the one seam this whole file's tests drive and observe. Wraps the given diagnose dependencies into the full BuildAppDependencies buildApp() now requires (register-routes-in-build-app's own sibling fix, disclosed above); every field beyond diagnose is stubBuildAppDependencies()'s own concern, never this function's. */
 function buildTestApp(): { app: FastifyInstance; runDiagnose: RunDiagnoseMock } {
   const runDiagnose = vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>();
   const dependencies: DiagnoseControllerDependencies = {
@@ -76,7 +179,7 @@ function buildTestApp(): { app: FastifyInstance; runDiagnose: RunDiagnoseMock } 
     model: 'a-model',
     promptVersion: 'a-prompt-version',
   };
-  return { app: buildApp(dependencies), runDiagnose };
+  return { app: buildApp(stubBuildAppDependencies(dependencies)), runDiagnose };
 }
 
 let app: FastifyInstance | undefined;
@@ -252,6 +355,83 @@ it("imports fastify, and no second HTTP or router framework, across build-app, t
   const forbidden = allSpecifiers.filter((specifier) => FORBIDDEN_HTTP_FRAMEWORKS.includes(specifier));
   expect(forbidden).toEqual([]);
 });
+
+// ------------------------------------------------------- register-routes-in-build-app, criterion 1
+
+it('registers every route plugin through one shared app.register() call site, never one repeated per route', async () => {
+  const file = fileURLToPath(new URL('../../../http/build-app.ts', import.meta.url));
+  const source = await readFile(file, 'utf8');
+  // Comment lines are stripped first: this file's own header comment mentions "app.register()" in
+  // prose, and counting that occurrence alongside the real call site would pass this assertion
+  // regardless of whether the source actually registers through one call site or nineteen.
+  const codeOnly = source
+    .split('\n')
+    .filter((line) => !line.trim().startsWith('//'))
+    .join('\n');
+
+  const registerCallSites = codeOnly.match(/app\.register\(/g) ?? [];
+
+  expect(registerCallSites).toHaveLength(1);
+});
+
+// ------------------------------------------------------- register-routes-in-build-app, criterion 2
+
+type RegisteredRouteRequest = {
+  readonly description: string;
+  readonly method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+  readonly url: string;
+  readonly payload?: Record<string, unknown>;
+};
+
+/** One validly-shaped request against each of the eighteen route plugins this task registers besides diagnose (already proven reachable by every test above), so a 404 answered here could only mean the route was never registered by build-app.ts's own loop — never a 400 raised by this route's own DTO validation over a request this file shaped wrong. */
+const A_RESOLUTION = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } };
+const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
+  { description: 'read-capability', method: 'GET', url: '/v1/capabilities/a-concept' },
+  { description: 'list-capabilities', method: 'GET', url: '/v1/capabilities' },
+  {
+    description: 'create-draft',
+    method: 'POST',
+    url: '/v1/cases',
+    payload: { slug: 'a-slug', title: 'a title', when_to_use: 'a when-to-use', authored_at: '2024-01-01T00:00:00.000Z', subject: 'a-subject-type', fallback: A_RESOLUTION },
+  },
+  {
+    description: 'update-draft',
+    method: 'PATCH',
+    url: '/v1/cases/a-slug/versions/1',
+    payload: { title: 'a title', when_to_use: 'a when-to-use', subject: 'a-subject-type', fallback: A_RESOLUTION },
+  },
+  { description: 'release', method: 'POST', url: '/v1/cases/a-slug/versions/1/release' },
+  { description: 'discard', method: 'DELETE', url: '/v1/cases/a-slug/versions/1' },
+  {
+    description: 'revise-hypothesis',
+    method: 'POST',
+    url: '/v1/cases/a-slug/hypotheses',
+    payload: { hypothesis_name: 'a-hypothesis', criterion: 'a criterion', collects: ['a-concept'], resolution: A_RESOLUTION, subject: 'a-subject-type' },
+  },
+  { description: 'place-hypothesis', method: 'PUT', url: '/v1/cases/a-slug/versions/1/manifest/a-hypothesis', payload: { revision: 1, position: 1 } },
+  { description: 'remove-hypothesis', method: 'DELETE', url: '/v1/cases/a-slug/versions/1/manifest/a-hypothesis' },
+  { description: 'read-case', method: 'GET', url: '/v1/cases/a-slug/versions/1' },
+  { description: 'list-cases', method: 'GET', url: '/v1/cases' },
+  { description: 'list-case-versions', method: 'GET', url: '/v1/cases/a-slug/versions' },
+  { description: 'list-hypotheses', method: 'GET', url: '/v1/cases/a-slug/hypotheses' },
+  { description: 'list-hypothesis-revisions', method: 'GET', url: '/v1/cases/a-slug/hypotheses/a-hypothesis/revisions' },
+  { description: 'read-vocabulary-term', method: 'GET', url: '/v1/glossary/outcome/an-outcome' },
+  { description: 'list-vocabulary-terms', method: 'GET', url: '/v1/glossary/outcome' },
+  { description: 'read-concept', method: 'GET', url: '/v1/glossary/concepts/a-concept' },
+  { description: 'list-concepts', method: 'GET', url: '/v1/glossary/concepts' },
+];
+
+it.each(REGISTERED_ROUTE_REQUESTS)(
+  'reaches its own controller rather than answering 404, for the $description route',
+  async ({ method, url, payload }) => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const response = await app.inject({ method, url, payload });
+
+    expect(response.statusCode).not.toBe(404);
+  },
+);
 
 // ------------------------------------------------------------------ edge cases
 
