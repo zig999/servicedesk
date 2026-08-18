@@ -630,32 +630,6 @@
       ]
     },
     {
-      "node": "contracts/knowledge/author-case-version",
-      "digest": "sha256:3d68e7bdf52eea65288f25346d5da57d82ed2359cee0abc0732d531681ad3816",
-      "files": [
-        {
-          "path": "src/src/case/author-case-version.port.ts",
-          "digest": "sha256:eae8a295b51b7fe946e554443c2f7d0e89b52bb41406c46f207af59d0cd8b4f9"
-        },
-        {
-          "path": "src/src/case/author-case-version.service.ts",
-          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
-        },
-        {
-          "path": "src/src/case/parse-case-document.ts",
-          "digest": "sha256:7aa2249cdd48e41d51f789f154c3823d6c7a5d49759134179c38f46ee173b6bc"
-        },
-        {
-          "path": "src/src/factories/author-case-version.factory.ts",
-          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
-        },
-        {
-          "path": "src/src/seed.ts",
-          "digest": "sha256:863f7140baf76ef030754e1a786250f5fae203a880d0d7a79d840eb69a553e46"
-        }
-      ]
-    },
-    {
       "node": "contracts/knowledge/capability-check",
       "digest": "sha256:e87c4d2a7660d387eb50f83c1157d3cea0ed22f0d0f47bb5726451525f1cb076",
       "files": [
