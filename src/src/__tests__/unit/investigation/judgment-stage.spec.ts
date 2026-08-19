@@ -745,3 +745,14 @@ it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing conseq
   );
   expect(comment).not.toMatch(/hypotheses-are-judged-in-isolated-parallel-calls'\s+own\s+"/);
 });
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution: doc-comment ordinal
+
+it("runIsolatedCall()'s doc comment states field names as constraints/the-judgment-prompt-is-closed's own third permitted prompt entry, not its fifth", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
+
+  expect(comment).toContain(
+    "constraints/the-judgment-prompt-is-closed's own third permitted entry puts each evidence item's declared field names inside the very prompt this call sends",
+  );
+  expect(comment).not.toMatch(/the-judgment-prompt-is-closed's own fifth permitted entry/);
+});

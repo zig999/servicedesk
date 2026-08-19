@@ -271,7 +271,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2521,7 +2521,7 @@
     },
     {
       "node": "rules/investigation/the-outcome-comes-from-the-case",
-      "digest": "sha256:2a127cb3e1ac14beb82ae523e087467b7ae957713b315638c700d0309624ecc7",
+      "digest": "sha256:37f2a43b74b15fe7383acc0521e6265439e71352c9f907e9b0f984f2f479f36d",
       "files": [
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
@@ -2537,7 +2537,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:b90fe8d386afc77a5624ea6e1f6414f0145213a14b529938e766ec460a5bf08f"
         }
       ]
     },
@@ -2565,7 +2565,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:b90fe8d386afc77a5624ea6e1f6414f0145213a14b529938e766ec460a5bf08f"
         }
       ]
     },

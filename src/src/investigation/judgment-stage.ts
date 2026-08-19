@@ -143,7 +143,7 @@ type RunIsolatedCallOptions = {
  * invalid one. The pinned case version's own caseContext rides along
  * unchanged on this first call, the same one retryOrFail passes to a retry. The output
  * schemas are resolved before this hypothesis's own first call, never after
- * it: constraints/the-judgment-prompt-is-closed's own fifth permitted entry
+ * it: constraints/the-judgment-prompt-is-closed's own third permitted entry
  * puts each evidence item's declared field names inside the very prompt this
  * call sends, so the resolution that citation validation already needed for
  * a decided answer now also feeds toEvidenceItems, one resolution serving

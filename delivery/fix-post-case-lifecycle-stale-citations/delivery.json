@@ -18,6 +18,14 @@
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint"
     },
     {
+      "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "kind": "implementation",
+      "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution.md",
+      "title": "Fix the field-names ordinal and the scenario misattribution in two doc comments",
+      "summary": "Corrects judgment-stage.ts's runIsolatedCall doc comment to say field names is the third (not fifth) permitted entry of constraints/the-judgment-prompt-is-closed, and corrects resolve-and-narrow-input.ts's module header to attribute the removed confirmed/fallback split's two scenarios to rules/investigation/the-outcome-comes-from-the-case rather than to the-writing-input-is-narrowed.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution"
+    },
+    {
       "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "implementation",
       "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
@@ -40,6 +48,14 @@
       "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
       "summary": "One test reads judgment-stage.ts's own raw source, extracts the JSDoc block immediately preceding judgeOneHypothesis, and asserts it now states the denied-slot-costs-nothing consequence in its own voice with a plain citation of constraints/hypotheses-are-judged-in-isolated-parallel-calls, and no longer carries the node's-own-quoted-text pattern for that sentence; criterion 2's \"no runtime behavior changed\" rests on this file's own pre-existing, unmodified behavioral suite rather than on a new test.",
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint"
+    },
+    {
+      "id": "proof/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "kind": "proof",
+      "file": "proof/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution.md",
+      "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "summary": "Two tests read judgment-stage.ts's and resolve-and-narrow-input.ts's own raw source text — one asserting runIsolatedCall's doc comment now cites the judgment-prompt-is-closed node's third (not fifth) permitted entry for field names, the other asserting the module header now attributes the removed confirmed/fallback split's two scenarios to an earlier version of rules/investigation/the-outcome-comes-from-the-case rather than the-writing-input-is-narrowed; criterion 3's \"no runtime behavior changed\" rests on this task's own unmodified behavioral tests rather than on a new one.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution"
     },
     {
       "id": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
@@ -76,6 +92,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "to": "domain/knowledge/case-version",
       "kind": "encodes",
@@ -102,6 +142,12 @@
     {
       "from": "proof/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
       "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
       "kind": "proves",
       "at": "the path"
     },
