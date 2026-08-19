@@ -24,8 +24,8 @@
 //
 // consolidationRegister reaches this function as an explicit field of its
 // options, read from the pinned case's own consolidation_register
-// (domain/knowledge/case) by whoever calls draftAssessment — never by this
-// module importing the case document module itself. This file therefore
+// (domain/knowledge/case-version) by whoever calls draftAssessment — never by
+// this module importing the case document module itself. This file therefore
 // still imports nothing at all from the case module, preserving the
 // zero-import guarantee draft-assessment-text-modules.spec.ts already
 // asserts for it.

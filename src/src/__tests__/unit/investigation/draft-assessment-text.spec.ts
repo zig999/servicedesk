@@ -25,6 +25,8 @@
 // fixture and reject, rather than silently answering the wrong text — this
 // is what makes "the text equals the consolidator's answer for the same
 // narrowed input and register" a claim these tests can actually break.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { ResolvedOutcome } from '../../../case/case-resolution.js';
 import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
@@ -199,4 +201,32 @@ it("propagates the consolidator's rejection rather than swallowing it into a def
   await expect(
     draftAssessment(draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'formal', consolidator })),
   ).rejects.toThrow(/no fixture seeded/);
+});
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation: doc-comment citation
+
+/** This module's own raw source, read fresh so a citation test reads exactly what ships. */
+async function moduleSource(): Promise<string> {
+  return readFile(fileURLToPath(new URL('../../../investigation/draft-assessment-text.ts', import.meta.url)), 'utf8');
+}
+
+/** This module's leading `//` header comment, everything before its first import. */
+function moduleHeaderOf(source: string): string {
+  return source.slice(0, source.indexOf('\nimport'));
+}
+
+/** The header's prose, its `//` comment markers stripped and its wrapped lines joined with single spaces, so a phrase or citation the source wraps across lines is still matched as one continuous string. */
+function normalizedProse(commentBlock: string): string {
+  return commentBlock
+    .split('\n')
+    .map((line) => line.replace(/^\s*\/\/\s?/, '').trim())
+    .filter((line) => line.length > 0)
+    .join(' ');
+}
+
+it("the module header attributes consolidationRegister's own consolidation_register to the pinned case version, not the case identity", async () => {
+  const header = normalizedProse(moduleHeaderOf(await moduleSource()));
+
+  expect(header).toContain("own consolidation_register (domain/knowledge/case-version) by whoever calls draftAssessment");
+  expect(header).not.toMatch(/domain\/knowledge\/case(?!-version)/);
 });

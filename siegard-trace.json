@@ -1804,6 +1804,10 @@
           "digest": "sha256:266ab4c644f63101b0c40c4fa9eb1ae1f61de748de07effbb69ca033bb4596f9"
         },
         {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
+        },
+        {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:d3d75d3786338d2e8dc42bf0710008808fd90d629beb000f0f1fe901d8fb54ae"
         },

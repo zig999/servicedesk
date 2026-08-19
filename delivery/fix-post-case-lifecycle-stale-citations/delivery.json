@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "implementation",
+      "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation.md",
+      "title": "Fix draft-assessment-text.ts's stale case citation",
+      "summary": "Corrects the doc-comment citation for consolidationRegister in draft-assessment-text.ts from domain/knowledge/case to domain/knowledge/case-version, with no runtime change.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation"
+    },
+    {
       "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "implementation",
       "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
       "title": "Fix post-case-lifecycle stale citations in four investigation/case doc comments",
       "summary": "Corrects doc-comment attributions in validate-case-coherence.ts, judgment-stage.ts, citation-validation.ts and resolve-and-narrow-input.ts so title, when_to_use, subject, fallback, collects, resolution and criterion cite domain/knowledge/case-version and domain/knowledge/hypothesis-revision instead of the now-stale domain/knowledge/case and domain/knowledge/hypothesis, with no change to any file's runtime behavior.",
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations"
+    },
+    {
+      "id": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "proof",
+      "file": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation.md",
+      "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "summary": "One test reads draft-assessment-text.ts's own raw module header and asserts it now cites domain/knowledge/case-version for consolidationRegister's consolidation_register, and no longer cites domain/knowledge/case; criterion 2's \"no runtime behavior changed\" rests on this file's own pre-existing, unmodified behavioral suite rather than on a new test.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation"
     },
     {
       "id": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
@@ -19,6 +35,18 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "to": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "to": "domain/knowledge/case-version",
@@ -35,6 +63,12 @@
       "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "to": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "proves",
       "at": "the path"
     },
     {
