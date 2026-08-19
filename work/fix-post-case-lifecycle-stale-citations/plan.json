@@ -17,6 +17,14 @@
       "epic": "fix-post-case-lifecycle-stale-citations"
     },
     {
+      "id": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "kind": "task",
+      "file": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint.md",
+      "title": "Fix judgment-stage.ts's misattributed constraint quotation",
+      "summary": "Corrects one doc comment in already-delivered code that presents invented text as a verbatim quotation from a specification constraint node, when the node holds no such sentence.",
+      "epic": "fix-post-case-lifecycle-stale-citations"
+    },
+    {
       "id": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "task",
       "file": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
@@ -51,6 +59,12 @@
       "at": "covers[3]"
     },
     {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
       "from": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "to": "domain/knowledge/case",
       "kind": "implements",
@@ -61,6 +75,12 @@
       "to": "domain/knowledge/case-version",
       "kind": "implements",
       "at": "implements[1]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",

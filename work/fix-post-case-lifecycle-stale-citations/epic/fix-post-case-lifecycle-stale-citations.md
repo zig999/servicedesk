@@ -6,6 +6,7 @@ covers:
   - domain/knowledge/hypothesis
   - domain/knowledge/case-version
   - domain/knowledge/hypothesis-revision
+  - constraints/hypotheses-are-judged-in-isolated-parallel-calls
 sources:
   - intake/scope.md
 ---
