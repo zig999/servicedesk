@@ -39,6 +39,14 @@
       "title": "Fix post-case-lifecycle stale citations",
       "summary": "Corrects four doc-comment citations in already-delivered code that still attribute facts to the case/hypothesis identities after the case-lifecycle initiative moved those facts to case-version/hypothesis-revision.",
       "epic": "fix-post-case-lifecycle-stale-citations"
+    },
+    {
+      "id": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "kind": "task",
+      "file": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution.md",
+      "title": "Revert resolve-and-narrow-input.ts's historical citation back to the-writing-input-is-narrowed",
+      "summary": "Reverts a prior corrective delivery's own miscorrection -- the historical claim about the removed confirmed/fallback split should cite rules/investigation/the-writing-input-is-narrowed, per that node's own decision-log entry, not rules/investigation/the-outcome-comes-from-the-case.",
+      "epic": "fix-post-case-lifecycle-stale-citations"
     }
   ],
   "edges": [
@@ -173,6 +181,18 @@
       "to": "domain/knowledge/hypothesis-revision",
       "kind": "implements",
       "at": "implements[3]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[1]"
     }
   ]
 }
