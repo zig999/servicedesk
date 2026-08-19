@@ -33,7 +33,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -79,7 +79,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:ca7d4bbae62afbc99aa57ba1836114a2c9f8e1ac908c91f73634a3f468919f13"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -101,7 +101,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -155,7 +155,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -245,7 +245,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -517,7 +517,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -635,7 +635,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/factories/author-case-version.factory.ts",
@@ -853,7 +853,7 @@
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/factories/author-case-version.factory.ts",
@@ -883,7 +883,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/errors/case-not-found.error.ts",
@@ -1295,11 +1295,11 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1321,7 +1321,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -1339,7 +1339,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1401,7 +1401,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1423,7 +1423,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1453,7 +1453,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -1497,7 +1497,7 @@
     },
     {
       "node": "domain/investigation/hypothesis-evaluator",
-      "digest": "sha256:9b2f7b62cdd04fa46fe7cc73b068346136b99527912a865d8830f129a841cb42",
+      "digest": "sha256:e29c8b5323e3378f83d0c1df98a0ce175e03e24ab1528eb92a9e9aa9e48b1242",
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -1509,7 +1509,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -1613,7 +1613,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         },
         {
           "path": "src/src/investigation/verdict.ts",
@@ -1667,7 +1667,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1715,7 +1715,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -1809,11 +1809,11 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:d3d75d3786338d2e8dc42bf0710008808fd90d629beb000f0f1fe901d8fb54ae"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:8312416238897f64d0aa33b4f4a740e48d5a51d88d83a0967bb7672f65d1ec92"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -1901,7 +1901,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         }
       ]
     },
@@ -1947,7 +1947,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -1967,7 +1967,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -2029,7 +2029,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:8312416238897f64d0aa33b4f4a740e48d5a51d88d83a0967bb7672f65d1ec92"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -2113,7 +2113,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -2143,7 +2143,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -2259,15 +2259,15 @@
     },
     {
       "node": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
-      "digest": "sha256:7794ecb239edaf48968f14b348ebb640ac477f34ac2e2df0c3ce3da75bdcb346",
+      "digest": "sha256:45a9f209d94bd5088ea798b6de27f3dabf538fbe0413f7bd2d85f4335df5d766",
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:73d1e3a9c72e05735fea54226a07b6d2732f1e22aef0ac799344a2fceaa5dedc"
+          "digest": "sha256:5d367f5c24cba4b0ddd73cbd47b525bda4f7168bb40c0363e112e07edc7a4400"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2277,11 +2277,11 @@
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:73d1e3a9c72e05735fea54226a07b6d2732f1e22aef0ac799344a2fceaa5dedc"
+          "digest": "sha256:5d367f5c24cba4b0ddd73cbd47b525bda4f7168bb40c0363e112e07edc7a4400"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2303,7 +2303,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2371,7 +2371,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2457,7 +2457,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -2475,7 +2475,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -2529,7 +2529,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -2561,7 +2561,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:1c15b1bd45d175e50be5e274f2ff34dd64e9f958474cba9eb9453b36da91c8d1"
+          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -2751,7 +2751,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/errors/concept-refuses-subject-type.error.ts",
@@ -2979,7 +2979,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/errors/concept-not-in-glossary.error.ts",
@@ -3027,11 +3027,11 @@
     },
     {
       "node": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
-      "digest": "sha256:74f8af87d3d0b9945af2289e4930af559cd66603475fd87a70e74ae94ce32bad",
+      "digest": "sha256:d8243fe2be3e80cdd0b121793872e22b6dcbae19a8a751a81052352ea04bc4d5",
       "files": [
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
@@ -3129,7 +3129,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         }
       ]
     },
@@ -3169,7 +3169,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -3179,7 +3179,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -3189,7 +3189,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:827a46a3c71479d4eb82d87ecdaafc2aa6d7a7ca4ad3ee65ac2893e0d129bd26"
+          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
         }
       ]
     },
@@ -3229,7 +3229,7 @@
     },
     {
       "node": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
-      "digest": "sha256:31354b5056568c224fcf633811de627027b820b6b866dd5a61ebe645ec74aa6c",
+      "digest": "sha256:852bddaee0e2ce41fd1c89b16f67aff0d1a08df281565afc747970724fea6e4f",
       "files": [
         {
           "path": "src/src/case/author-case-version.service.ts",
@@ -3237,7 +3237,7 @@
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
-          "digest": "sha256:929f21943e27fdd22fcd9389231b14a47277690c0847dedb9bcef37d1cd00a46"
+          "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
         }
       ]
     },
@@ -3251,7 +3251,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         }
       ]
     },
@@ -3265,7 +3265,7 @@
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
-          "digest": "sha256:4784a663b2bf9bc3c7c41675583381de5e5b516ccfc3b9f2208f9d2d8d438dc9"
+          "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         }
       ]
     }
