@@ -34,6 +34,14 @@
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations"
     },
     {
+      "id": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "kind": "implementation",
+      "file": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution.md",
+      "title": "Revert resolve-and-narrow-input.ts's historical citation to the-writing-input-is-narrowed",
+      "summary": "Reverted a prior corrective task's own miscorrection in the module header of resolve-and-narrow-input.ts, restoring the citation for the removed confirmed/fallback split's historical implementation to rules/investigation/the-writing-input-is-narrowed, matching that node's own decision-log entry.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution"
+    },
+    {
       "id": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "kind": "proof",
       "file": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation.md",
@@ -64,6 +72,14 @@
       "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "summary": "Tests that read each of the four corrected files' own raw source text and assert that the named doc comment now cites domain/knowledge/case-version and domain/knowledge/hypothesis-revision exactly where the criteria require, and no longer cites domain/knowledge/case or domain/knowledge/hypothesis for those facts; criterion 5's \"no runtime behavior changed\" rests on the four files' own pre-existing, unmodified behavioral suites rather than on a new test.",
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations"
+    },
+    {
+      "id": "proof/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "kind": "proof",
+      "file": "proof/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution.md",
+      "title": "Proof for fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "summary": "Corrects, in place, a pre-existing test in resolve-and-narrow-input.spec.ts that a sibling task's own proof had written to assert the miscorrected (pre-revert) state of the module header's historical citation; the corrected assertions now match the reverted text. Criterion 2's \"no runtime behavior changed\" rests on this file's own remaining, unmodified behavioral tests rather than on a new one.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution"
     }
   ],
   "edges": [
@@ -134,6 +150,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "task/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "kind": "proves",
@@ -154,6 +188,12 @@
     {
       "from": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
+      "to": "implementation/fix-post-case-lifecycle-stale-citations/revert-outcome-comes-from-case-misattribution",
       "kind": "proves",
       "at": "the path"
     }

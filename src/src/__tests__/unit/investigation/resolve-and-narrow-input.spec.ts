@@ -447,11 +447,11 @@ it("the module header's citation for NarrowedInput's own shape cites domain/know
 
 // ---------- task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution: historical scenario citation
 
-it("the module header attributes the removed confirmed/fallback split, illustrated by scenarios/knowledge/no-confirmation-falls-back and scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome, to an earlier version of rules/investigation/the-outcome-comes-from-the-case, not the-writing-input-is-narrowed", async () => {
+it("the module header attributes the removed confirmed/fallback split, illustrated by scenarios/knowledge/no-confirmation-falls-back and scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome, to an earlier version of rules/investigation/the-writing-input-is-narrowed, not the-outcome-comes-from-the-case", async () => {
   const header = normalizedProse(await moduleHeader());
 
   expect(header).toContain('scenarios/knowledge/no-confirmation-falls-back');
   expect(header).toContain('scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome');
-  expect(header).toContain('implemented an earlier version of rules/investigation/the-outcome-comes-from-the-case and is removed');
-  expect(header).not.toMatch(/implemented an earlier version of\s+rules\/investigation\/the-writing-input-is-narrowed/);
+  expect(header).toContain('implemented an earlier version of rules/investigation/the-writing-input-is-narrowed and is removed');
+  expect(header).not.toMatch(/implemented an earlier version of\s+rules\/investigation\/the-outcome-comes-from-the-case/);
 });

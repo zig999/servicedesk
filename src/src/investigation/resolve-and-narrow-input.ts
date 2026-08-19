@@ -14,7 +14,7 @@
 // scenarios/knowledge/no-confirmation-falls-back,
 // scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome)
 // implemented an earlier version of
-// rules/investigation/the-outcome-comes-from-the-case and is removed.
+// rules/investigation/the-writing-input-is-narrowed and is removed.
 // NarrowedInput's own shape is the structural guarantee behind the
 // current rule: it declares no field that could hold a hypothesis's own
 // criterion or the case version's when_to_use
