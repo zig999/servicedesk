@@ -734,3 +734,14 @@ it("throws naming the hypothesis when a required name is not found among the cas
     judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000 }),
   ).rejects.toThrow(/h1/);
 });
+
+// ---------- task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint: doc-comment citation
+
+it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing consequence in its own voice, citing constraints/hypotheses-are-judged-in-isolated-parallel-calls plainly rather than quoting it for text the node does not hold", async () => {
+  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function judgeOneHypothesis'));
+
+  expect(comment).toContain(
+    'a hypothesis denied a slot makes no call, so it costs nothing (constraints/hypotheses-are-judged-in-isolated-parallel-calls)',
+  );
+  expect(comment).not.toMatch(/hypotheses-are-judged-in-isolated-parallel-calls'\s+own\s+"/);
+});

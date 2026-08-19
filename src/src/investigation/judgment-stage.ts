@@ -104,9 +104,9 @@ type JudgeOneHypothesisOptions = {
  * One hypothesis's whole path: an immediate no-data where its evidence is
  * not all ok (never touching the pool), otherwise a pool slot and one
  * isolated call — or, missing the slot before the deadline, deadline-exceeded
- * without ever calling evaluate()
- * (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "a
- * hypothesis denied a slot makes no call, so it costs nothing").
+ * without ever calling evaluate(): a hypothesis denied a slot makes no call,
+ * so it costs nothing
+ * (constraints/hypotheses-are-judged-in-isolated-parallel-calls).
  */
 async function judgeOneHypothesis(options: JudgeOneHypothesisOptions): Promise<Evaluation> {
   const { name, hypothesis, evidence, evaluator, capabilities, pool, deadlineGuard, caseContext } = options;

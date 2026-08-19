@@ -10,6 +10,14 @@
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation"
     },
     {
+      "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "kind": "implementation",
+      "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint.md",
+      "title": "Fix judgment-stage.ts's misattributed constraint quotation",
+      "summary": "Corrects the doc comment on judgeOneHypothesis so it no longer presents invented text as a verbatim quotation of constraints/hypotheses-are-judged-in-isolated-parallel-calls, with no runtime change.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint"
+    },
+    {
       "id": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "implementation",
       "file": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
@@ -24,6 +32,14 @@
       "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "summary": "One test reads draft-assessment-text.ts's own raw module header and asserts it now cites domain/knowledge/case-version for consolidationRegister's consolidation_register, and no longer cites domain/knowledge/case; criterion 2's \"no runtime behavior changed\" rests on this file's own pre-existing, unmodified behavioral suite rather than on a new test.",
       "task": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation"
+    },
+    {
+      "id": "proof/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "kind": "proof",
+      "file": "proof/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint.md",
+      "title": "Proof for fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "summary": "One test reads judgment-stage.ts's own raw source, extracts the JSDoc block immediately preceding judgeOneHypothesis, and asserts it now states the denied-slot-costs-nothing consequence in its own voice with a plain citation of constraints/hypotheses-are-judged-in-isolated-parallel-calls, and no longer carries the node's-own-quoted-text pattern for that sentence; criterion 2's \"no runtime behavior changed\" rests on this file's own pre-existing, unmodified behavioral suite rather than on a new test.",
+      "task": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint"
     },
     {
       "id": "proof/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
@@ -48,6 +64,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "to": "task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "to": "domain/knowledge/case-version",
       "kind": "encodes",
@@ -68,6 +96,12 @@
     {
       "from": "proof/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
+      "to": "implementation/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint",
       "kind": "proves",
       "at": "the path"
     },
