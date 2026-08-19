@@ -7,6 +7,11 @@ covers:
   - domain/knowledge/case-version
   - domain/knowledge/hypothesis-revision
   - constraints/hypotheses-are-judged-in-isolated-parallel-calls
+  - constraints/the-judgment-prompt-is-closed
+  - scenarios/knowledge/no-confirmation-falls-back
+  - scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome
+  - rules/investigation/the-outcome-comes-from-the-case
+  - rules/investigation/the-writing-input-is-narrowed
 sources:
   - intake/scope.md
 ---

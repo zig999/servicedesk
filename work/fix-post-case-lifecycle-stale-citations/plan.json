@@ -25,6 +25,14 @@
       "epic": "fix-post-case-lifecycle-stale-citations"
     },
     {
+      "id": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "kind": "task",
+      "file": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution.md",
+      "title": "Fix two more doc-comment precision issues in judgment-stage.ts and resolve-and-narrow-input.ts",
+      "summary": "Corrects an ordinal-position error citing constraints/the-judgment-prompt-is-closed, and a historical comment misattributing two scenarios to the wrong rule as what they once implemented.",
+      "epic": "fix-post-case-lifecycle-stale-citations"
+    },
+    {
       "id": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
       "kind": "task",
       "file": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations.md",
@@ -65,6 +73,36 @@
       "at": "covers[4]"
     },
     {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/fix-post-case-lifecycle-stale-citations",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "task/fix-post-case-lifecycle-stale-citations/fix-draft-assessment-citation",
       "to": "domain/knowledge/case",
       "kind": "implements",
@@ -81,6 +119,36 @@
       "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
       "kind": "implements",
       "at": "implements[0]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "scenarios/knowledge/no-confirmation-falls-back",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "rules/investigation/the-outcome-comes-from-the-case",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "implements",
+      "at": "implements[4]"
     },
     {
       "from": "task/fix-post-case-lifecycle-stale-citations/fix-stale-citations",
