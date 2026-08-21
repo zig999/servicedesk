@@ -910,6 +910,20 @@ dependencies:
       is unreachable without it.
     rules: [ARC-01]
 
+  - package: tailwindcss
+    why: >-
+      ARC-05 requires the app's tokens to come from TUI's own theme.css, and that file is
+      Tailwind v4 CSS-first -- it opens with @import "tailwindcss" and declares every token in
+      an @theme block. Without this package's own compiler, that block generates no CSS at
+      all: ARC-05's reuse is unreachable without it, the same as ARC-01's is without clsx.
+    rules: [ARC-05]
+
+  - package: "@tailwindcss/vite"
+    why: The Vite plugin half of the same admission -- what actually runs the compiler
+      tailwindcss ships during the build and the dev server, mirroring how TUI's own
+      vite.config.ts wires it.
+    rules: [ARC-05]
+
 commands:
 
   - step: install
