@@ -1,0 +1,10 @@
+{
+  "name": "filas-de-transacao-falhadas-reader",
+  "version": "1.0.0",
+  "nature": "read-only",
+  "input_schema": "user-id: o usuario corporativo do tecnico, sem domínio, na grafia que o store do FSM guarda (o IFS nao normaliza a caixa). Nenhuma janela de tempo: o IFS responde a fila inteira como o store a guarda, limitada apenas pelo seu proprio row cap",
+  "output_schema": "{\"type\":\"object\",\"properties\":{\"failedTransactions\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"queue\":{\"type\":\"string\",\"enum\":[\"failed\",\"deleted\",\"ignored\"]},\"methodName\":{\"type\":\"string\"},\"projection\":{\"type\":\"string\"},\"transactionAt\":{\"type\":\"string\"},\"device\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"model\":{\"type\":\"string\"},\"os\":{\"type\":\"string\"},\"platform\":{\"type\":\"string\"}}}}}}}}",
+  "timeout": 7000,
+  "connector": "ifs-fsm-tech-sync-status-connector",
+  "concept": "filas-de-transacao-falhadas"
+}

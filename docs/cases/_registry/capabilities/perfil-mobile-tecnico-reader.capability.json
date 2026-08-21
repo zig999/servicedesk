@@ -1,0 +1,10 @@
+{
+  "name": "perfil-mobile-tecnico-reader",
+  "version": "1.0.0",
+  "nature": "read-only",
+  "input_schema": "user-id: o usuario corporativo do tecnico, sem domínio, na grafia que o store do FSM guarda (o IFS nao normaliza a caixa)",
+  "output_schema": "{\"type\":\"object\",\"properties\":{\"login\":{\"type\":\"string\"},\"installations\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"appName\":{\"type\":\"string\"},\"clientVersion\":{\"type\":\"string\"},\"state\":{\"type\":\"string\",\"enum\":[\"active\",\"disabled\",\"inactive\",\"init-required\",\"activated\",\"initializing\"]},\"pushEnabled\":{\"type\":\"boolean\"},\"gpsEnabled\":{\"type\":\"boolean\"},\"lastAccess\":{\"type\":\"string\"},\"device\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"model\":{\"type\":\"string\"},\"os\":{\"type\":\"string\"},\"platform\":{\"type\":\"string\"}}}}}}}}",
+  "timeout": 5000,
+  "connector": "ifs-fsm-tech-profile-connector",
+  "concept": "perfil-mobile-tecnico"
+}

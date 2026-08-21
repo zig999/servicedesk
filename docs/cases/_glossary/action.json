@@ -1,0 +1,9 @@
+[
+  { "name": "orientar-runbook-de-hardware" },
+  { "name": "solicitar-reprocesso-de-transacao" },
+  { "name": "orientar-runbook-de-push" },
+  { "name": "orientar-regras-de-ouro-do-mwo" },
+  { "name": "escalar-fornecedor-ifs" },
+  { "name": "orientar-logout-login-sem-inicializar" },
+  { "name": "remover-devices-obsoletos" }
+]

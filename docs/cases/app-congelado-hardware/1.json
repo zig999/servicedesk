@@ -1,0 +1,61 @@
+{
+  "slug": "app-congelado-hardware",
+  "title": "App congelado / ANR / limitação de hardware",
+  "when_to_use": "Quando o técnico relata que o app trava, congela, fecha sozinho, fica lento ou perde o que estava preenchendo durante o uso — inclusive quando o relato cita o aparelho (modelo de entrada, bateria, economia de energia) ou a mensagem de que o serviço do app não está respondendo.",
+  "version": 1,
+  "authored_at": "2026-08-21T00:00:00.000Z",
+  "subject": "technician",
+  "consolidation_register": "plain",
+  "state": "draft",
+  "fallback": {
+    "outcome": "inconclusive-hypotheses-exhausted",
+    "referral": {
+      "action": "orientar-regras-de-ouro-do-mwo",
+      "recipient": "fila-suporte-mwo"
+    }
+  },
+  "manifest": [
+    {
+      "position": 1,
+      "hypothesis_name": "limitacao-de-hardware",
+      "revision": 1,
+      "criterion": "Alguma instalação do técnico está vinculada a um aparelho de linha de entrada — um Samsung Galaxy A04, A15 ou A16, ou qualquer aparelho da linha G — com histórico documentado de encerramento do app por falta de memória. O modelo é o texto livre que a origem guarda, e ocorre com ou sem o nome do fabricante à frente; um aparelho cuja instalação não traz modelo algum não confirma esta hipótese.",
+      "collects": ["perfil-mobile-tecnico"],
+      "resolution": {
+        "outcome": "issue-limitacao-de-hardware",
+        "referral": {
+          "action": "orientar-runbook-de-hardware",
+          "recipient": "fila-ti-unifique"
+        }
+      }
+    },
+    {
+      "position": 2,
+      "hypothesis_name": "transacao-falha-viva",
+      "revision": 1,
+      "criterion": "As filas de transação do técnico registram ao menos uma entrada na fila `failed` — a única das três cujas transações permanecem reprocessáveis no servidor, distinta de `deleted`, que é perda irreversível, e de `ignored`, que nunca será reprocessada. Basta a presença de uma entrada; não há limiar de quantidade.",
+      "collects": ["filas-de-transacao-falhadas"],
+      "resolution": {
+        "outcome": "issue-transacao-falha-viva",
+        "referral": {
+          "action": "solicitar-reprocesso-de-transacao",
+          "recipient": "fila-backoffice"
+        }
+      }
+    },
+    {
+      "position": 3,
+      "hypothesis_name": "push-desabilitado",
+      "revision": 1,
+      "criterion": "Uma mesma instalação do técnico está com estado `active` e com o envio de notificações desabilitado. Uma instalação que não traz o campo de notificações não confirma esta hipótese: o campo ausente significa que a origem guardou ali um valor que não é nenhum dos dois que ela codifica, e não que o envio esteja desligado.",
+      "collects": ["perfil-mobile-tecnico"],
+      "resolution": {
+        "outcome": "issue-push-desabilitado",
+        "referral": {
+          "action": "orientar-runbook-de-push",
+          "recipient": "fila-suporte-mwo"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "serie-de-inits-do-device-reader",
+  "version": "1.0.0",
+  "nature": "read-only",
+  "input_schema": "user-id: o usuario corporativo do tecnico, sem domínio, na grafia que o store do FSM guarda (o IFS nao normaliza a caixa). Nenhuma janela de tempo: o row cap do IFS se aplica por tipo de sync-task, de modo que batches nunca deslocam inicializacoes da resposta",
+  "output_schema": "{\"type\":\"object\",\"properties\":{\"syncEvents\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"taskType\":{\"type\":\"string\",\"enum\":[\"init\",\"init-entity-data\",\"batch\"]},\"state\":{\"type\":\"string\"},\"postedAt\":{\"type\":\"string\"},\"resultMessage\":{\"type\":\"string\"}}}}}}",
+  "timeout": 7000,
+  "connector": "ifs-fsm-tech-sync-status-connector",
+  "concept": "serie-de-inits-do-device"
+}

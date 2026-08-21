@@ -1,0 +1,18 @@
+{
+  "connector": "ifs-fsm-tech-profile-connector",
+  "configuration": {
+    "address": "http://127.0.0.1:8787/v1/technicians/${subject:user-id}/profile",
+    "method": "GET",
+    "responseMap": {
+      "login": "data.id",
+      "installations": "data.installations"
+    },
+    "statusMap": {
+      "200": "ok",
+      "400": "denied",
+      "403": "denied",
+      "500": "unavailable",
+      "503": "unavailable"
+    }
+  }
+}

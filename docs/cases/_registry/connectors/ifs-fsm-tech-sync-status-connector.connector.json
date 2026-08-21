@@ -1,0 +1,18 @@
+{
+  "connector": "ifs-fsm-tech-sync-status-connector",
+  "configuration": {
+    "address": "http://127.0.0.1:8787/v1/technicians/${subject:user-id}/sync-status",
+    "method": "GET",
+    "responseMap": {
+      "failedTransactions": "data.failedTransactions",
+      "syncEvents": "data.syncEvents"
+    },
+    "statusMap": {
+      "200": "ok",
+      "400": "denied",
+      "403": "denied",
+      "500": "unavailable",
+      "503": "unavailable"
+    }
+  }
+}

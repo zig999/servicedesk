@@ -1,0 +1,8 @@
+[
+  { "name": "issue-limitacao-de-hardware" },
+  { "name": "issue-transacao-falha-viva" },
+  { "name": "issue-push-desabilitado" },
+  { "name": "issue-descarte-por-inicializacao" },
+  { "name": "issue-re-inits-em-serie" },
+  { "name": "issue-multiplos-devices-vinculados" }
+]

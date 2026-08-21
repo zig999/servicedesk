@@ -1,0 +1,5 @@
+[
+  { "name": "perfil-mobile-tecnico", "accepts": ["technician"], "ttl": 300 },
+  { "name": "filas-de-transacao-falhadas", "accepts": ["technician"], "ttl": 60 },
+  { "name": "serie-de-inits-do-device", "accepts": ["technician"], "ttl": 60 }
+]

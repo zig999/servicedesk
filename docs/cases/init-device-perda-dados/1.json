@@ -1,0 +1,61 @@
+{
+  "slug": "init-device-perda-dados",
+  "title": "Inicialização de device e perda de dados",
+  "when_to_use": "Quando o técnico relata perda do que já havia preenchido no app (fotos, formulário, apontamento) ou erro pedindo nova inicialização, em contexto de inicialização forçada, limpeza de dados ou desvinculação do app.",
+  "version": 1,
+  "authored_at": "2026-08-21T00:00:00.000Z",
+  "subject": "technician",
+  "consolidation_register": "plain",
+  "state": "draft",
+  "fallback": {
+    "outcome": "inconclusive-hypotheses-exhausted",
+    "referral": {
+      "action": "orientar-regras-de-ouro-do-mwo",
+      "recipient": "fila-suporte-mwo"
+    }
+  },
+  "manifest": [
+    {
+      "position": 1,
+      "hypothesis_name": "descarte-por-inicializacao",
+      "revision": 1,
+      "criterion": "As filas de transação do técnico registram ao menos uma entrada na fila `deleted` — a fila cujas transações foram descartadas por uma inicialização e caracterizam perda irreversível do que não havia sincronizado, ao contrário de `failed`, que segue reprocessável.",
+      "collects": ["filas-de-transacao-falhadas"],
+      "resolution": {
+        "outcome": "issue-descarte-por-inicializacao",
+        "referral": {
+          "action": "escalar-fornecedor-ifs",
+          "recipient": "fila-fornecedor-ifs"
+        }
+      }
+    },
+    {
+      "position": 2,
+      "hypothesis_name": "re-inits-em-serie",
+      "revision": 1,
+      "criterion": "O histórico de sincronização do técnico registra três ou mais tentativas de inicialização — as de tipo `init` ou `init-entity-data` — nos últimos 14 dias, cadência que caracteriza re-inits em série e interrompe os downloads pela metade. Uma tentativa conta mesmo tendo falhado: o que caracteriza a série é o volume de tentativas, não o de conclusões. O histórico vem sem recorte de tempo, então a janela é contada sobre a data que cada tentativa carrega.",
+      "collects": ["serie-de-inits-do-device"],
+      "resolution": {
+        "outcome": "issue-re-inits-em-serie",
+        "referral": {
+          "action": "orientar-logout-login-sem-inicializar",
+          "recipient": "fila-suporte-mwo"
+        }
+      }
+    },
+    {
+      "position": 3,
+      "hypothesis_name": "multiplos-devices-vinculados",
+      "revision": 1,
+      "criterion": "O técnico tem duas ou mais instalações do app vinculadas ao seu usuário, cada uma em um aparelho distinto, independentemente do estado de cada instalação.",
+      "collects": ["perfil-mobile-tecnico"],
+      "resolution": {
+        "outcome": "issue-multiplos-devices-vinculados",
+        "referral": {
+          "action": "remover-devices-obsoletos",
+          "recipient": "fila-suporte-mwo"
+        }
+      }
+    }
+  ]
+}
