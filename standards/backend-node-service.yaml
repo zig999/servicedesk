@@ -1,38 +1,23 @@
-# A third example project standard: the two registries beside this one, merged into one file.
+# An example project standard: everything one Node/TypeScript service's source answers to, in one
+# registry — what it is built on and how it is arranged, together.
 #
-# Like both of them, this is NOT part of the distribution. It sits under src/standards/ rather than
-# src/claude/, so no assembly ships it: Siegard ships the slot a standard fits into, never its
-# content. A consumer project owns its own registry.
+# This is NOT part of the distribution. It sits under src/standards/ rather than src/claude/, so no
+# assembly ships it: Siegard ships the slot a standard fits into, never its content. A consumer
+# project owns its own registry.
 #
 # It exists because one registry per project is a legitimate shape and a consumer will want to see
 # it. What it is NOT is a recommendation. The contract's own `standard` field says "One project may
-# hold several — a backend's rules are not a frontend's — and each is named where it is used", and
-# the two files beside this one are that split: `backend-node-stack` holds what the service is built
-# on, `backend-typescript` holds how it is arranged. They are separate because they change for
-# different reasons and at different rates, and merging them, as here, gives that up: a dependency
-# reconsidered now puts every layering rule in the same file up for reading.
+# hold several — a backend's rules are not a frontend's — and each is named where it is used"; a
+# project whose backend and frontend genuinely differ still wants two files, one per concern, for
+# the reason stated there. What this file demonstrates is the other legitimate shape: one project,
+# one stack, one registry answering for all of it — what it runs on and how its own source is laid
+# out, together, because here they change at a pace close enough that a second file would only be
+# a second place to look.
 #
-# The merge is not a concatenation, and the difference is the thing worth learning from this file.
-# The rules concatenate cleanly — 12 plus 47, and the id prefixes never collide. Two `elsewhere`
-# entries of `backend-node-stack` do not survive, because each described a boundary that merging
-# erases:
-#
-#   - "How modules are layered, named and wired to each other → the project's arrangement standard,
-#     `backend-typescript`, named beside this one". That is now inside this file, so the entry would
-#     point a reader out of the document that answers it.
-#   - "Rules a linter would decide → Nowhere. This service configures no linter; its suite is
-#     `typecheck` and `test`". This file carries 23 rules decided by a tool, naming `lint` and
-#     `secret-scan`, so the entry would deny what the rules beside it declare.
-#
-# A merged registry whose `elsewhere` had been copied along with its rules would therefore have
-# stated two falsehoods about itself, and nothing in the contract would have caught either: the
-# validator holds ids, scopes and the reading/tool split, and it does not read prose for whether a
-# boundary still stands. That is the cost of the merge, stated where a reader meets it.
-#
-# One entry of `backend-node-stack` does survive and is kept below — the embeddings non-goal, which
-# is owned by the specification and unaffected by which file the rules live in. The other, on which
-# status an outcome answers with, is dropped as a duplicate: `backend-typescript` states the same
-# boundary in two more precise entries, which are kept.
+# Its `elsewhere` states two boundaries this registry does not hold, each with where it actually
+# lives: an error's identity, which is the specification's; and which transport status an error
+# maps to, which is this file's own COR-04, stating where the mapping lives without stating the
+# mapping itself. Read them there rather than assumed from a lineage this file does not carry.
 
 contract_version: siegard-standard/1
 standard: backend-node-service
@@ -380,7 +365,7 @@ rules:
       - { under: src, suffix: .ts, nested: true }
 
   - id: COR-02
-    statement: A failure raises a typed error class carrying a name, a message, its status and a
+    statement: A failure raises a typed error class carrying a name, a message and a
       context field, never a generic error with a sentence in it.
     because: A generic error cannot be mapped to a response or handled by a caller, so every layer
       above has to match on its message.
@@ -631,32 +616,13 @@ rules:
     applies_to:
       - { under: src, suffix: .ts, nested: true }
 
-  # ---------------------------------------------------------------- how the schema is changed
-
-  - id: MIG-01
-    statement: A migration's file name begins with a zero-padded sequence number, unique among the
-      scripts beside it.
-    because: The order the scripts are applied in is the only thing that decides what schema they
-      produce, and a directory whose order is the file system's is a directory that replays
-      differently on a machine that sorts differently.
-    decided_by: reading
-    applies_to:
-      - { under: migrations, suffix: .sql }
-
-  - id: MIG-02
-    statement: A script that has been applied is never edited; a correction is the next script.
-    because: An edited script stops describing the sequence that actually produced any environment
-      already running it, so the history reads as one thing and the databases are another.
-    decided_by: reading
-    applies_to:
-      - { under: migrations, suffix: .sql }
-
-  - id: MIG-03
+  - id: PRH-04
     statement: A migration that destroys or alters data ships with a reverse migration beside it.
     because: A migration you cannot reverse turns a bad deploy into a restore from backup.
-    decided_by: reading
+    decided_by: tool
+    tool: lint
     applies_to:
-      - { under: migrations, suffix: .sql }
+      - { under: src/migrations, suffix: .ts, nested: true }
 
   # ---------------------------------------------------------------- how tests are written here
 
@@ -717,7 +683,7 @@ presupposes:
       by needs no artifact of its own and this one carries it.
     rules: [STK-01, STK-02, STK-03, STK-04, STK-05, STK-07, STK-08, STK-09, STK-10, STK-11, STK-12,
             ARC-02, ARC-03, ARC-05, DTO-02, DTO-03, DTO-04, API-01, API-06, COR-01, SEC-02, SEC-03,
-            TYP-01, TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03,
+            TYP-01, TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04,
             TST-04]
 
   - path: tsconfig.json
@@ -731,11 +697,11 @@ presupposes:
       The flat configuration the `lint` step reads its parser and its rule set from. Absent, eslint
       has not been told how to parse the TypeScript every scope below names, and the step fails on
       the first type annotation it meets; present but naming no rule, it exits 0 having decided
-      none of the nineteen below. A `lint` script in the manifest is a step that runs — this is what
+      none of the twenty below. A `lint` script in the manifest is a step that runs — this is what
       makes it a step that decides.
     rules: [ARC-02, ARC-03, ARC-05, DTO-02, DTO-03, DTO-04, API-01, API-06, COR-01,
             TYP-02, TYP-03, TYP-04, CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03,
-            TST-04]
+            PRH-04, TST-04]
 
 # What a delivery may install, and how this project is installed and checked — the two registries'
 # lists merged the way their rules were. The merge is clean here, and the reason is worth reading
@@ -785,23 +751,8 @@ dependencies:
     rules: [STK-01, TYP-01, TYP-02, TYP-03, TYP-04]
 
   - package: eslint
-    why: the `lint` step is it, and nineteen of the rules above are decided by that step.
-    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, TST-04]
-
-  - package: typescript-eslint
-    why: >-
-      the `lint` step's flat configuration parses TypeScript through it — eslint's own parser
-      cannot read the files the nineteen lint-decided rules scope to, so without this package the
-      step fails on the first type annotation it meets and decides nothing.
-    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, TST-04]
-
-  - package: "@types/node"
-    why: >-
-      the `typecheck` step is strict and the persistence this project's constraints demand is
-      plain files reached through Node's own builtins — without these declarations the compiler
-      refuses the first `node:fs` import it meets, so the step could never pass over the very
-      modules the no-database constraint requires.
-    rules: [STK-01, TYP-01]
+    why: the `lint` step is it, and twenty of the rules above are decided by that step.
+    rules: [CON-01, MNT-01, MNT-02, PRH-01, PRH-02, PRH-03, PRH-04, TST-04]
 
   - package: secretlint
     why: the `secret-scan` step is it, and it decides the two rules about credentials in source.
@@ -916,17 +867,3 @@ elsewhere:
       It is a decision about what the product does, not about which dependency implements it.
       Recorded here it would read as a constraint a later version could lift by adding a library,
       which is exactly the reading the specification refuses.
-
-  - what: That the schema is reconstructible on an empty database by applying the scripts in the
-      order they are numbered, and that everything the system records persists in one transactional
-      relational store rather than in files.
-    lives_in: The specification, as the architecture constraints
-      the-schema-replays-from-its-scripts and the-system-persists-to-one-relational-database.
-    why: >-
-      Both bound the solution as a whole, which this registry excludes by contract, and restating
-      either here would leave one decision in two files with nothing holding them to agree. The
-      division is worth reading in full, because the three rules above look like the same subject:
-      replayability is the property, and MIG-01 is one project's way of achieving it — the numeric
-      prefix is arrangement, and another project ordering by timestamp would satisfy the constraint
-      without satisfying MIG-01. STK-12 and STK-05 stand in the same relation to the store: which
-      engine and which driver are this project's, that the records are not in files is not.

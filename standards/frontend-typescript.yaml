@@ -1,44 +1,96 @@
 # An example project standard, for a React + TypeScript frontend.
 #
-# This file is NOT part of the distribution. It sits under src/standards/ rather than
-# src/claude/, so no assembly ships it: Siegard ships the slot a standard fits into and the
-# enforcement that holds code to it, never the content. A consumer project owns its own
-# registry, in its own repository, and names it when invoking the review.
+# This file is a sample and is not distributed with the framework: Siegard ships the slot a
+# standard fits into and the enforcement that holds code to it, never the content. A consumer
+# project owns its own registry, in its own repository, and names it when invoking the review.
+# Nothing below cites a path outside the tree it governs -- a registry copied into a project
+# must resolve entirely within that project, and one pointing at framework internals goes stale
+# the day they move, silently, because nothing validates a destination.
 #
 # Two lines run through it, and both are the point.
 #
 # `decided_by` splits the registry in half. A rule a linter, a compiler, a style checker or a
-# secret scanner decides exactly is a step of the project's own suite -- it runs through
-# bin/run.py, its failures arrive as a captured run, and the failures pass reads what the tool
-# printed. Only a rule whose application is a reading reaches the standard pass. A model
+# secret scanner decides exactly is a step of the project's own suite -- it runs through the
+# framework's runner, its failures arrive as a captured run, and the failures pass reads what
+# the tool printed. Only a rule whose application is a reading reaches the standard pass. A model
 # applying `no-explicit-any` to a five-hundred-line file has strictly worse recall than tsc and
-# costs more. Where an automated check would need a rendered, computed value this registry has
-# no way to presuppose -- a contrast ratio, a touch target's actual size on screen -- the rule
-# stays `reading` rather than claiming a tool decides what nothing here runs.
+# costs more.
+#
+# The split moved once, deliberately, and the reasoning is worth keeping because it is the
+# reasoning any project adopting `edits_freely` will have to repeat. This registry used to leave
+# contrast and touch-target size as readings, on the grounds that deciding them needs a rendered
+# page and a registry should not claim a tool decides what nothing here runs. That was right
+# while every change arrived through a task, because a reading still ran on every one of them.
+# It stops being right on a target where a person edits the source directly: there a reading is
+# scheduled by nothing, and a colour or a spacing change -- exactly what breaks those two rules
+# -- reaches production having been read by no one. So the answer was not to relax the rule but
+# to pay for the step: `a11y` renders the pages and axe decides both, and `playwright.config.ts`
+# is presupposed because a touch-target rule decided at a desktop width decides nothing.
+#
+# Eight rules moved that way. Two of them were split rather than converted, because a tool
+# decided part of each and the rest was judgment: ACC-01 keeps the reachable-and-activatable
+# half a linter sees and hands Escape-dismisses-and-returns-focus to ACC-11, and SEC-02 keeps the
+# evaluates-a-string constructs and hands the built-from-input address to SEC-05. A rule half
+# decided by a step is worse than one nobody automated -- the step exits 0 over the half it never
+# looked at, and the report calls the whole rule answered.
 #
 # `elsewhere` says what this registry does not hold, and where each of those lives instead.
 # What a screen tells the user for a given outcome is what the business decided, so it belongs
 # to the specification; how the screen is wired to reach that outcome is this project's own
 # arrangement, and belongs here.
 #
-# A companion file, frontend-design-tokens.example.css, sits beside this one. It gives concrete
-# shape to the token declarations MNT-02 requires source to reference -- without it,
-# `presupposes` would name a file whose form nobody had shown.
+# This sample names its stack -- React and TypeScript, built by Vite, tested by Vitest -- and
+# that is a change from a registry that named only roles. It is not decoration. Two of the rules
+# below could not be written at all until the bundler was known: ENV-01 exists because Vite's
+# browser bundle has no process.env in it, and ENV-02 because Vite inlines every VITE_-prefixed
+# variable into a file every visitor downloads. Naming a stack is what lets a registry hold the
+# failures that belong to that stack and to no other. What it must not do is turn into a rule --
+# "use Vite" is not a statement about how this project's source is arranged, and no rule below
+# says it. The tool appears where a tool belongs: in `dependencies`, in `commands`, and in the
+# `presupposes` entry for the configuration those steps read.
+#
+# The VIS rules and ACC-12 came from an earlier framework this one replaced, which carried about
+# twenty visual rules as prose in an agent's prompt, each with a severity attached and none of
+# them citable. Six survived the crossing, and the filter was one question asked of every rule:
+# does a stylesheet carry the fact needed to decide it? Line-height, font-size, easing values,
+# transition targets, background-clip and the reduced-motion query are all declared values, so a
+# ruleset decides them exactly. Axis sharing, baseline alignment, padding proportional to a
+# container, line length in characters -- those need a rendered layout, which no CSS file holds
+# and no `applies_to` reaches. They are in `elsewhere` as a declared gap rather than written as
+# rules a step would exit 0 over having never looked.
+#
+# MNT-02 requires source to reference a token rather than a literal, and the token file it
+# presupposes is the project's own: a set of custom-property declarations, one per named color,
+# spacing step and duration the design uses. The registry states that the file must stand and
+# what its rules get from it; what any one token should be worth is a decision with a human
+# owner, and `elsewhere` says so.
+#
+# This project draws its component catalog and its tokens from an external design system, TUI,
+# vendored as a git submodule at frontend/tui rather than copied in. ARC-01, ARC-04 and ARC-05
+# state that reuse as three separable facts -- compose the catalog before reimplementing,
+# propose a new shared primitive upstream instead of growing a second local catalog, and read
+# visual tokens from one file instead of a second one. None of the three is a tool's to decide:
+# a linter has no notion of "this markup duplicates that primitive" or "this custom property
+# means the same color as that one" -- both need a reader who knows what TUI already holds, so
+# all three stay `decided_by: reading` rather than claiming a step nothing here runs.
 
 contract_version: siegard-standard/1
 standard: frontend-typescript
-summary: How this project's React + TypeScript frontend is composed, wired, styled and named.
+summary: How this project's React and TypeScript frontend, built by Vite and tested by
+  Vitest, is composed, wired, styled and named.
 
 rules:
 
   # ---------------------------------------------------------------- component composition and layering
 
   - id: ARC-01
-    statement: A component composes an existing primitive from the shared UI layer under
-      src/components/ui/ rather than reimplementing its markup by hand.
-    because: A hand-rolled equivalent of a cataloged primitive is a second implementation that
-      drifts from the first the day either one is fixed, and a reader has no way to know which
-      one is canonical.
+    statement: A component composes an existing primitive from TUI's shared catalog --
+      frontend/tui/frontend/src/shared/components/ui/, imported through the @tui/ui/* alias --
+      rather than reimplementing its markup by hand. A bespoke primitive under
+      src/components/ui/ is written only where that catalog holds no equivalent.
+    because: A hand-rolled equivalent of a primitive TUI already ships is a second
+      implementation that drifts from the canonical one the day either is fixed, and a reader
+      has no way to know which one this product actually renders.
     decided_by: reading
     applies_to:
       - { under: src, suffix: .tsx, nested: true }
@@ -65,14 +117,25 @@ rules:
       - { under: src, suffix: .tsx, nested: true }
 
   - id: ARC-04
-    statement: A component built to serve one feature sits under that feature's own directory;
-      promoting it to the shared primitive layer under src/components/ui/ is a deliberate
-      catalog change, never an ad hoc placement.
-    because: A shared layer that gains entries silently is a layer nobody can trust to be
-      exactly what every other feature already depends on.
+    statement: A component built to serve one feature sits under that feature's own directory.
+      A component meant as a new shared primitive is proposed to TUI's own catalog; it is
+      never added to src/components/ui/ as a second shared layer.
+    because: A second "shared" layer growing beside TUI's is exactly the drift TUI exists to
+      prevent -- two catalogs are two canonical answers to "which button", and nothing here
+      says which one a reader should trust.
     decided_by: reading
     applies_to:
       - { under: src, suffix: .tsx, nested: true }
+
+  - id: ARC-05
+    statement: The app's visual tokens -- color, spacing, radius, typography, motion -- are
+      read from TUI's theme.css, imported once at the app's stylesheet root; no second
+      palette, spacing scale or duration set is declared anywhere under src.
+    because: Two token sources are two visual languages, and "the same visual style" stops
+      being true the day only one of them gets updated without the other.
+    decided_by: reading
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
 
   # ---------------------------------------------------------------- state management
 
@@ -190,11 +253,13 @@ rules:
   # ---------------------------------------------------------------- accessibility
 
   - id: ACC-01
-    statement: Every interactive element is operable by keyboard alone -- Tab to reach it,
-      Enter or Space to activate it, Escape to dismiss what it opened.
+    statement: An element carrying a click handler is a real control, or carries the role,
+      tabindex and key handlers that make it one -- so Tab reaches it and Enter or Space
+      activates it.
     because: A control reachable only by pointer excludes every user, and every automated agent,
       that does not have one.
-    decided_by: reading
+    decided_by: tool
+    tool: lint
     applies_to:
       - { under: src, suffix: .tsx, nested: true }
 
@@ -232,10 +297,33 @@ rules:
       without a replacement style.
     because: A user navigating by keyboard with no visible focus has no way to know where they
       are on the page.
-    decided_by: reading
+    decided_by: tool
+    tool: style
     applies_to:
       - { under: src, suffix: .tsx, nested: true }
       - { under: src, suffix: .css, nested: true }
+
+  - id: ACC-12
+    statement: >-
+      An animation or a transition is declared inside a `prefers-reduced-motion: no-preference`
+      query, so a reader who asked for less motion gets none of it.
+    because: >-
+      Motion a user did not ask for is nausea or vertigo for some of them, and the operating
+      system already carries their answer -- a stylesheet that never reads it overrides a
+      preference the user stated once and expects everywhere.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  - id: ACC-11
+    statement: What a control opens -- a dialog, a menu, a popover -- is dismissed by Escape, and
+      focus returns to the control that opened it.
+    because: A keyboard user who opened something they cannot close is a user trapped in it, and
+      the way out of a modal is the one path a pointer user never has to find.
+    decided_by: reading
+    applies_to:
+      - { under: src, suffix: .tsx, nested: true }
 
   - id: ACC-06
     statement: An overlay, sticky header, or newly added content never fully obscures the
@@ -269,7 +357,8 @@ rules:
       large text and interactive components.
     because: Text below the ratio a reader can resolve is text some users cannot read at all,
       whatever the font size.
-    decided_by: reading
+    decided_by: tool
+    tool: a11y
     applies_to:
       - { under: src, suffix: .css, nested: true }
 
@@ -277,8 +366,93 @@ rules:
     statement: An interactive target measures at least 44 by 44 CSS pixels on a touch viewport.
     because: A target smaller than a fingertip is a target some users cannot reliably hit, and
       the nearest miss activates a neighbor instead.
+    decided_by: tool
+    tool: a11y
+    applies_to:
+      - { under: src, suffix: .tsx, nested: true }
+
+  # ---------------------------------------------------------------- visual presentation
+
+  - id: VIS-01
+    statement: A transition or animation names the properties it targets, and those are transform
+      and opacity -- never `all`, and never a property that changes layout.
+    because: >-
+      A transition on `all` animates whatever a later declaration happens to add, including
+      properties nobody meant to move. Animating width, height, padding or margin re-lays out the
+      page on every frame, which is the one animation cost a device cannot absorb.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  - id: VIS-02
+    statement: A cubic-bezier easing keeps both control-point y values inside the range 0 to 1.
+    because: >-
+      A y value outside the range makes the animation overshoot and settle back, which reads as a
+      bounce. It is a deliberate effect in a few places and an accident everywhere else, and the
+      accident is what a reader cannot tell from the intent.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  - id: VIS-03
+    statement: A declared line-height is at least 1.3.
+    because: >-
+      Lines set tighter than that run into each other once the text wraps, and the reader loses
+      which line they were on -- the cost lands on long text, which is exactly where nobody checks.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  - id: VIS-04
+    statement: A literal font-size is at least 12px, or the equivalent in the unit used.
+    because: >-
+      Text below that is text some readers cannot resolve at all, and it is usually reached by
+      shrinking something to fit rather than by anybody deciding the size.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  - id: VIS-05
+    statement: Text is painted with a solid color; background-clip is never used to fill glyphs
+      with a gradient.
+    because: >-
+      Gradient-clipped text has no computable contrast ratio against its background, so ACC-09
+      cannot be decided over it at all -- and where it renders unsupported it falls back to
+      invisible.
+    decided_by: tool
+    tool: style
+    applies_to:
+      - { under: src, suffix: .css, nested: true }
+
+  # ---------------------------------------------------------------- build-time configuration
+
+  - id: ENV-01
+    statement: Client source reads configuration through import.meta.env, never through
+      process.env.
+    because: >-
+      process.env does not exist in the browser bundle Vite produces, so a value read from it is
+      undefined at runtime rather than wrong at build time -- and the screen that depended on it
+      fails in production having passed every check here.
+    decided_by: tool
+    tool: lint
+    applies_to:
+      - { under: src, suffix: .ts, nested: true }
+      - { under: src, suffix: .tsx, nested: true }
+
+  - id: ENV-02
+    statement: A value that must not reach a browser is never exposed through a VITE_-prefixed
+      variable, whatever the environment it is defined in.
+    because: >-
+      Vite inlines every VITE_-prefixed variable into the client bundle at build time, so the
+      value ships to every visitor as a literal in a downloaded file. It is not hidden by the
+      server never sending it, and no runtime check can take it back.
     decided_by: reading
     applies_to:
+      - { under: src, suffix: .ts, nested: true }
       - { under: src, suffix: .tsx, nested: true }
 
   # ---------------------------------------------------------------- security
@@ -294,12 +468,23 @@ rules:
       - { under: src, suffix: .tsx, nested: true }
 
   - id: SEC-02
-    statement: User-controlled input is never interpolated directly into a URL, an
-      event-handler string, or a value evaluated as code.
+    statement: No construct evaluates a string as code or navigates to one -- eval, its implied
+      forms, a URL in the javascript scheme, or raw markup rendered without sanitising.
     because: An address or handler built by concatenating unchecked input is a place a crafted
       value redirects, executes, or exfiltrates.
+    decided_by: tool
+    tool: lint
+    applies_to:
+      - { under: src, suffix: .tsx, nested: true }
+
+  - id: SEC-05
+    statement: A URL, a redirect target or a storage key built from user-controlled input is
+      validated against a known set before it is used, never concatenated and trusted.
+    because: An address assembled from an unchecked value is a place a crafted value sends a
+      user, and the check that would have caught it is the one nobody wrote.
     decided_by: reading
     applies_to:
+      - { under: src, suffix: .ts, nested: true }
       - { under: src, suffix: .tsx, nested: true }
 
   - id: SEC-03
@@ -318,7 +503,8 @@ rules:
       script unless the project's own decision records why.
     because: A token any script on the page can read is a token any successful injection
       anywhere on the page can steal.
-    decided_by: reading
+    decided_by: tool
+    tool: lint
     applies_to:
       - { under: src, suffix: .ts, nested: true }
 
@@ -481,8 +667,10 @@ rules:
     statement: A route's page component is loaded lazily; it is not imported eagerly at the
       router root.
     because: Every page imported eagerly is weight every visitor downloads before they reach
-      any one of them.
-    decided_by: reading
+      any one of them -- a dynamic import is what Vite splits a chunk at, and a static one is
+      what folds the page into the entry bundle.
+    decided_by: tool
+    tool: lint
     applies_to:
       - { under: src/pages, suffix: .tsx, nested: true }
 
@@ -522,7 +710,8 @@ rules:
       focus change -- never a component's internal state or a private method.
     because: A test bound to internal state fails the moment the internal shape changes,
       whether or not the observable behavior did.
-    decided_by: reading
+    decided_by: tool
+    tool: lint
     applies_to:
       - { under: src, suffix: .spec.tsx, nested: true }
       - { under: src, suffix: .spec.ts, nested: true }
@@ -564,11 +753,13 @@ presupposes:
 
   - path: package.json
     provides: >-
-      The typecheck, lint, style and secret-scan steps this registry's eighteen tool-decided
-      rules are run as. Without it none of them is decided by anything, and a review reporting
-      only what a reading found reads as a review of the whole registry.
-    rules: [ACC-02, ACC-03, CON-01, MNT-01, MNT-02, MNT-04, MNT-05, PRF-03, PRH-01, PRH-02,
-            PRH-03, PRH-04, SEC-01, SEC-03, TST-04, TYP-01, TYP-02, TYP-03]
+      The typecheck, lint, style, build, a11y and secret-scan steps this registry's
+      thirty-three tool-decided rules are run as. Without it none of them is decided by anything, and a review
+      reporting only what a reading found reads as a review of the whole registry.
+    rules: [ACC-01, ACC-02, ACC-03, ACC-05, ACC-09, ACC-10, ACC-12, CON-01, ENV-01, MNT-01,
+            MNT-02, MNT-04, MNT-05, PRF-01, PRF-03, PRH-01, PRH-02, PRH-03, PRH-04, SEC-01,
+            SEC-02, SEC-03, SEC-04, TST-01, TST-04, TYP-01, TYP-02, TYP-03, VIS-01, VIS-02,
+            VIS-03, VIS-04, VIS-05]
 
   - path: tsconfig.json
     provides: >-
@@ -578,31 +769,55 @@ presupposes:
 
   - path: eslint.config.js
     provides: >-
-      The flat configuration the lint step reads its parser, its accessibility plugin and its
-      rule set from. Absent, eslint has not been told how to parse the TypeScript and JSX every
-      scope below names, and the step fails on the first annotation or element it meets;
-      present but naming no rule, it exits 0 having decided none of the fifteen rules below.
-    rules: [ACC-02, ACC-03, CON-01, MNT-01, MNT-04, MNT-05, PRF-03, PRH-01, PRH-02, PRH-03,
-            PRH-04, SEC-01, TST-04, TYP-02, TYP-03]
+      The flat configuration the lint step reads its parser, its accessibility plugin, its
+      testing-library plugin and its rule set from. Absent, eslint has not been told how to parse
+      the TypeScript and JSX every scope below names, and the step fails on the first annotation
+      or element it meets; present but naming no rule, it exits 0 having decided none of the
+      twenty-one rules below.
+    rules: [ACC-01, ACC-02, ACC-03, CON-01, ENV-01, MNT-01, MNT-04, MNT-05, PRF-01, PRF-03,
+            PRH-01, PRH-02, PRH-03, PRH-04, SEC-01, SEC-02, SEC-04, TST-01, TST-04, TYP-02,
+            TYP-03]
+
+  - path: vite.config.ts
+    provides: >-
+      The build the `build` step runs and the test environment the `test` step reads -- Vitest
+      takes its configuration from this file, so the globs TST-04 is answerable against and the
+      DOM environment every .spec.tsx needs are both here. It also holds the React plugin that
+      compiles the JSX every scope in this registry names.
+    rules: [ENV-01, ENV-02, PRF-01, TST-04]
+
+  - path: playwright.config.ts
+    provides: >-
+      The pages the a11y step renders and the viewport it renders them at. ACC-10 is a rule about
+      a touch viewport, so a run at a desktop width decides it over a layout no touch user sees;
+      ACC-09 needs the rendered page for the same reason -- a contrast ratio is a fact about what
+      ends up behind the text, which no file states.
+    rules: [ACC-09, ACC-10]
 
   - path: stylelint.config.js
     provides: >-
-      The ruleset the style step decides MNT-02 by -- a custom rule forbidding a literal color,
-      spacing or duration value outside a token declaration.
-    rules: [MNT-02]
+      The ruleset the style step decides eight rules by, most of them through custom rules over
+      declared values: a literal color, spacing or duration outside a token declaration (MNT-02);
+      an outline suppressed with nothing in its place (ACC-05); an animation outside a
+      reduced-motion query (ACC-12); a transition naming `all` or a layout property (VIS-01); a
+      cubic-bezier control point outside 0 to 1 (VIS-02); a line-height under 1.3 (VIS-03); a
+      font-size under 12px (VIS-04); and background-clip used to fill glyphs (VIS-05). Present but
+      naming none of them, the step exits 0 having decided none of them either.
+    rules: [ACC-05, ACC-12, MNT-02, VIS-01, VIS-02, VIS-03, VIS-04, VIS-05]
 
   - path: src/design-system/tokens.css
     provides: >-
-      The token declarations MNT-02 requires source to reference instead of a literal value. A
-      worked shape of this file -- the custom-property declarations a project's own design
-      system would hold -- sits beside this standard at frontend-design-tokens.example.css.
+      The token declarations MNT-02 requires source to reference instead of a literal value --
+      one custom property per named color, spacing step and duration this project's design uses.
+      Whether the file exists is what a script decides here; what any token is worth is not this
+      registry's to hold.
     rules: [MNT-02]
 
 # How the tool-decided rules above are decided, and what decides them. This registry declares
 # no install: it owns the steps its own rules are decided by, and a consumer project's own
 # stack registry -- the manifest, the framework, the bundler -- is a separate concern from how
-# its source is laid out, the same split backend-node-stack.yaml and backend-typescript.yaml
-# already draw.
+# its source is laid out. A project holding both keeps them as two registries, each naming the
+# steps its own rules rest on.
 dependencies:
 
   - package: typescript
@@ -622,6 +837,12 @@ dependencies:
       style) are its rules.
     rules: [MNT-04, SEC-01, PRH-04]
 
+  - package: stylelint-a11y
+    why: >-
+      The style step decides ACC-12 by it -- whether an animation sits inside a reduced-motion
+      query is a question about the cascade, and this is the plugin that asks it.
+    rules: [ACC-12]
+
   - package: stylelint
     why: the style step is it, and MNT-02 is decided by that step.
     rules: [MNT-02]
@@ -629,6 +850,46 @@ dependencies:
   - package: secretlint
     why: the secret-scan step is it, and it decides SEC-03.
     rules: [SEC-03]
+
+  - package: vite
+    why: >-
+      The build step runs it, and it is what ENV-01 is a rule about -- the bundle it produces has
+      no process.env in it, and PRF-01's lazy route is a chunk it splits.
+    rules: [ENV-01, ENV-02, PRF-01]
+
+  - package: "@vitejs/plugin-react"
+    why: What compiles the JSX every scope in this registry names. Without it the build reads a
+      .tsx file and stops at the first element.
+
+  - package: vitest
+    why: >-
+      The suite step runs it. TST-04 is a rule about where a test file sits, which is only
+      answerable against the globs a runner is configured with.
+    rules: [TST-04]
+
+  - package: "@testing-library/react"
+    why: >-
+      TST-01 requires a test to assert what a user would observe, and this is what queries a
+      rendered component that way; the lint plugin above decides the rule by refusing the
+      alternatives it offers.
+    rules: [TST-01]
+
+  - package: eslint-plugin-testing-library
+    why: >-
+      The lint step decides TST-01 by it -- reaching into the DOM or the container instead of
+      querying the way a user would is exactly what its rules refuse.
+    rules: [TST-01]
+
+  - package: "@playwright/test"
+    why: The a11y step runs through it, over pages this project actually renders.
+    rules: [ACC-09, ACC-10]
+
+  - package: "@axe-core/playwright"
+    why: >-
+      The a11y step decides ACC-09 and ACC-10 by it. Both are computed values -- a contrast ratio
+      against whatever actually sits behind the text, a target's size once laid out -- and neither
+      exists until something renders.
+    rules: [ACC-09, ACC-10]
 
   - package: dompurify
     why: SEC-01 permits raw HTML only once it is sanitized through this package; it is the
@@ -653,6 +914,14 @@ commands:
   - step: style
     command: npm run lint:css
     timeout_seconds: 120
+
+  - step: build
+    command: npm run build
+    timeout_seconds: 300
+
+  - step: a11y
+    command: npm run test:a11y
+    timeout_seconds: 600
 
   - step: secret-scan
     command: npm run secret-scan
@@ -680,6 +949,30 @@ elsewhere:
       requires the mapping to live in one place without stating any mapping itself, the same
       way a backend registry's error-to-status rule requires a map without naming one.
 
+  - what: >-
+      Whether a composition is well laid out -- elements sharing an axis, text blocks starting on
+      one edge, a row of mixed type sizes aligned on its baseline, padding scaled to the container
+      it sits in, a line of body text kept near 65 to 75 characters.
+    lives_in: >-
+      Nowhere yet -- a declared gap. These are the visual rules a stylesheet cannot answer, and
+      they are named here rather than left out because the reason is specific rather than an
+      omission.
+    why: >-
+      Each needs a fact CSS does not carry. A stylesheet does not know which element holds body
+      text, how wide a container rendered, or what sits beside what -- and `applies_to` reaches a
+      file by path and suffix, never a computed layout. The VIS rules above are exactly the
+      subset that needed none of that, and this entry is the remainder, kept visible so nobody
+      reads eight visual rules as the whole of visual correctness.
+
+  - what: >-
+      A palette, a type scale, or which token a surface uses -- what the product should look
+      like, as opposed to how a stylesheet is arranged to get there.
+    lives_in: The project's own design decision, and its token file.
+    why: >-
+      MNT-02 requires a value to come from a token and says nothing about what the token should
+      be; that is a decision with a human owner, and a rule here stating it would make this
+      registry the place a palette lives.
+
   - what: Whether a change looks correct pixel by pixel against an approved baseline.
     lives_in: A dedicated visual-regression tool, named as this registry's own commands step,
       if the project adopts one.
@@ -693,25 +986,26 @@ elsewhere:
 
   - what: Which tests must exist for a task, by the kind of work it is -- a new behavior, a
       change, a rearrangement, a defect.
-    lives_in: The framework, in agents/test-author.md.
+    lives_in: The framework, in the judgment that authors a task's tests.
     why: It is the same question in every language and every layer, so it is not this
       project's to answer.
 
   - what: That a test asserts observable behavior rather than an internal call, fails for one
       reason, cannot pass vacuously, and tears down what it sets up.
-    lives_in: The framework, in agents/test-author.md and agents/coverage-auditor.md.
+    lives_in: The framework, in the judgments that author a task's tests and audit their
+      coverage.
     why: Universal, and already enforced by the passes that read the tests. The TST rules above
       add only what is this project's own taste -- how a test is named, what a stand-in may
       replace, where the file sits.
 
   - what: Which edge cases a task must account for, and the requirement to say why a
       dismissed one does not apply.
-    lives_in: The framework, in agents/test-author.md.
+    lives_in: The framework, in the judgment that authors a task's tests.
     why: The checklist is behavior-shaped and universal; the EDG and ACC rules above add only
       where each one is handled in this stack.
 
   - what: Whether every acceptance criterion has a test that would fail if it stopped holding.
-    lives_in: The framework, in agents/coverage-auditor.md.
+    lives_in: The framework, in the judgment that audits a task's coverage.
     why: It is judged against the task's criteria, which live in the plan, not against a rule
       here.
 
