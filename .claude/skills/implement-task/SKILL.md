@@ -175,17 +175,18 @@ One of its lines is a refusal, and it is settled before anything is written:
   known, because no status field exists to ask.
 - **The named task is not in the plan.** Stop — and hand over the door, not just the wall: the
   report ends with a `/plan-work` invocation filled with everything this invocation already knows
-  (the work root, the specification root, the target source root, the standard where one was named),
-  leaving only the scope for the human to state. A task the plan does not hold is planned into
+  in the terms that skill actually takes — the project root, the target by its key, and the
+  initiative's slug — leaving only the scope for the human to state. Do not fill it with roots:
+  `/plan-work` reads `specification_root`, `targets` and `work_root` from the project file, and
+  naming one in the invocation has no effect there. A task the plan does not hold is planned into
   it, never improvised past.
 
 A second refusal the report names and does not make. Open the task file here, before anything below
 is written, and read its `## Notes`: **an entry opening `BLOCKING, from the specification —` is a
 stop.** Quote the entries whole — from the file, which is what holds them, rather than from the
-report, which read the same file. That class is the binding's finding that a node states
-something the objective, or a criterion, contradicts or exceeds as written — a silence is not
-this class: a fact the specification did not state was decided into it during planning, by the
-plan's own route, and never reaches a task file. A task that arrives here still carrying one is
+report, which read the same file. What that class means is the binder's, defined in
+`agents/execution-contract-binder.md` and never re-derived here — what matters at this step is
+that it is a stop and whose settlement it waits on. A task that arrives here still carrying one is
 the scope-origin kind — the cut-origin kind is re-cut and re-implemented against before the
 task is ever written. What the plan said of it, in as many words, is that only the human
 settles it: through the scope, re-planned in `/plan-work`, or through `/analyse` amending the
@@ -210,8 +211,12 @@ it leave from this report, and a validator has nowhere to hand them over. What t
 code cannot embody; those are different acts and they get different answers.
 
 A third fact the report does not carry, because you can see it directly: **a record already at the
-path this task computes to.** That is a re-delivery, not a stop, and the report says so. Both
-records are rewritten whole rather than amended — a record amended across two acts of writing
+path this task computes to.** That is a re-delivery, not a stop, and the report says so. Every run
+name below is deterministic per task, and `bin/run.py` refuses a name that already exists — so a
+re-delivery names each of its runs with the next free `-N` suffix the delivery root's `run/`
+directory does not yet hold, exactly as a retry within one invocation does. `ls <delivery-root>/run`
+is how that is read; a name is never improvised past the refusal, and a phase is never retyped from
+prose to avoid it. Both records are rewritten whole rather than amended — a record amended across two acts of writing
 describes neither, and the proof's pin on the implementation refuses the pair if you rewrite one
 and leave the other. `git diff` over the two is then the history of the delivery.
 
@@ -224,11 +229,21 @@ whole — never amended — by a fresh test author reading the tree as it stands
 running and captured as ever. The pin the proof restamps is valid precisely because the
 implementation record did not move; what the validator refuses is the opposite direction, an
 implementation rewritten under a proof left behind. Two things hold the mode honest. Before
-anything is written, run `trace.py --check` over the target: the implementation's files are bound
-with digests, and one that moved since the bind is exactly what makes "the implementation stands"
-false — that drift is a stop, and the answer is a full re-delivery. And the reason the proof had
-to move goes in the record's `## Notes`, naming the task whose delivery falsified it, so the diff
-carries what only the conversation would otherwise hold.
+anything is written, run
+
+```
+python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/trace.py --check --all <target-source-root>
+```
+
+over the target: the implementation's files are
+bound with digests, and one that moved since the bind is exactly what makes "the implementation
+stands" false — that drift is a stop, and the answer is a full re-delivery. **`--all` is what
+makes this mode's premise checkable at all**, and it is the one place in this framework that
+needs it: a project may declare a target freely edited, and an ordinary check then holds that
+class back as noise a reader cannot act on — but here it is the whole question, so this call asks
+for the findings rather than the report. And the reason the proof had to move goes in the record's
+`## Notes`, naming the task whose delivery falsified it, so the diff carries what only the
+conversation would otherwise hold.
 
 Where a standard was named, take it in before anything is written. Which command depends on one
 field of the task file — already open from the note check above — read as a yes or a no:
@@ -246,7 +261,11 @@ Where it does, drop `--against` and run the registry check alone:
 python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/deliver.py --standard <the project's registry>
 ```
 
-Either way, anything but a clean pass is a stop, reported verbatim.
+Either way, anything but a clean pass is a stop, reported verbatim. A clean pass prints each
+delivery phase — setup, build, suite — composed for `bin/run.py`, timeout included: **keep those
+three lines; they are the step lists the runs below paste in**, and the validator holds each
+captured run to exactly that selection, so a phase retyped from prose is a transcription error
+waiting for the refusal.
 
 The first form carries two refusals. A registry that does not hold together answers to nothing, and
 fixing it belongs to whoever owns it. An artifact the registry presupposes and the tree does not
@@ -293,7 +312,7 @@ them — which is the whole difference between following a rule that names a lib
 what a rule that names a library sounds like:
 
 ```
-python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-setup --cwd <target-source-root> --timeout-seconds <the step's own> --step <its step>="<its command>"
+python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-setup --cwd <target-source-root> <the setup phase the situate step's registry check printed>
 ```
 
 Three cases skip it, and each is said in the report rather than worked around. The task
@@ -317,7 +336,18 @@ paths too: they are artifacts this delivery has to create rather than convention
 and the record is refused if `files` does not list every one of them. Where the standard authorizes
 dependencies, pass that list too, by name: it is what the agent may add to the manifest and the
 whole of it — a package outside it is the agent's refusal, not its judgment call, because the list
-is where a human's approval of a package survives the session it was given in. It reads the task and the nodes it implements, writes the source, and
+is where a human's approval of a package survives the session it was given in.
+
+**Where the task declares `reference`, resolve each path against the work root and pass them
+too** — and pass nothing the task did not name. These are artifacts the delivery reads to learn
+what the work should look like, ordinarily a layout under `intake/layout/`, and the task naming
+them is the whole of what makes them readable: an executor that went looking through `intake/` for
+something helpful would be reading the scope, which is the one document this whole route exists to
+keep out of the writing. A path that resolves to nothing is a stop, named — a task pointing at a
+layout nobody persisted is a task nobody can deliver as written, and guessing which file was meant
+is exactly the guess this field exists to remove.
+
+It reads the task and the nodes it implements, writes the source, and
 returns the record: every path it created or modified and what each now does, every criterion of
 the task answered, every node it implements accounted for, which authorized dependencies it added, and
 what it inferred, departed from, preserved and deferred.
@@ -336,9 +366,11 @@ them, with the install first so that whatever the implementer added to the manif
 anything reads it:
 
 ```
-python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-build --cwd <target-source-root> --timeout-seconds <the largest of those steps'> --step <name>="<command>" [--step ...]
+python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-build --cwd <target-source-root> <the build phase the situate step's registry check printed>
 ```
 
+The timeout and the step list are the registry check's `build:` line, verbatim — composed by the
+same function that will hold the captured run to them, never re-derived from this paragraph.
 `run.py` stops at the first step that does not pass, so a tree that did not install is never
 type-checked and the log says which one it was.
 
@@ -441,33 +473,56 @@ of the standard its tests depart from.
 Every step the registry declares, in order, ending with the one whose role is `suite`:
 
 ```
-python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-suite --cwd <target-source-root> --timeout-seconds <the largest of them> --step <name>="<command>" [--step ...]
+python3 -B ${CLAUDE_PLUGIN_ROOT}/bin/run.py <delivery-root> --run <epic>-<slug>-suite --cwd <target-source-root> <the suite phase the situate step's registry check printed>
 ```
 
+The timeout and the step list are the registry check's `suite:` line, verbatim, for the same
+reason the build's are.
 The checks run again here rather than only at the build, and the repetition is deliberate: a rule
 about where a test file sits or how it is named reaches files that did not exist when the build
 ran, so a build-only pass would leave every rule about tests decided by nothing. Each step that
 already passed passes again in seconds; the runner stops at the first that does not.
 
-**A red suite is a stop, and it has exactly three ways out.** Nothing further is written — the
-implementation record stands, because its own run passed, and no proof record is composed, so
-`deliver.py --outstanding` reports the task as implemented with no proof holding it up, which is
-true and is the state a person should meet. Report the run by path and the tests that failed. Then
-either the source is wrong, and the fix goes back to the `task-implementer` and the suite runs
-again under `<epic>-<slug>-suite-2`, with the first run keeping its name; or the two producers
-disagree and that disagreement is what the red is — the proof asserts what the criterion requires
-and the implementation does not satisfy it — and only a person settles that; or the failing test
-belongs to an earlier task, and what broke it is not a regression but this delivery's own
-legitimate files — the old assertion claimed more than its task's criteria establish, totality
-over ground the two tasks share, and this delivery falsified the excess. That test is not edited
-from here, whatever the temptation: the way out is the proof-only re-delivery the re-delivery
-paragraph names, over the task that owns the test, and it is the human's to invoke. The report
-hands that invocation ready to paste — the owning task by identifier, the assertion the run
-named, the file this delivery added — and says plainly that it runs only after the human commits
-this delivery's pending state, because that invocation's own clean-tree stop refuses a tree still
-carrying it.
+**A red suite is a stop, and which way out applies is diagnosed, never guessed.** Nothing further
+is written — the implementation record stands, because its own run passed, and no proof record is
+composed, so `deliver.py --outstanding` reports the task as implemented with no proof holding it
+up, which is true and is the state a person should meet. Report the run by path and the tests
+that failed.
 
-**A fourth way is forbidden and it is the one that is easy.** A test is never weakened, deleted,
+Where the step that failed is the one whose role is `suite`, spawn a `failure-diagnostician`
+subagent — its judgment lives at `${CLAUDE_PLUGIN_ROOT}/agents/failure-diagnostician.md` —
+passing the run's directory, the target source root, the task's specification nodes with the
+specification root, the delivery-node contract's path, and the file set: every path the
+implementation record's `files` and the tests just written name. Always, on every red of that
+step, and never your own reading of the log in its place: a session probing flakiness with
+commands of its own is composing commands the registry never declared, which this skill forbids
+below, and the diagnosis is the licit form of the same question. Where an earlier step of this
+run failed instead — a typecheck or a lint reaching the files just written — no diagnosis is
+owed: the log names the file, and that red goes back to the producer whose file it is, exactly
+as a red build does.
+
+**Four ways out, and the diagnosis's `cause` is what says which.** `code` — the source is wrong:
+the fix goes back to the `task-implementer` with the findings, and the suite runs again under
+`<epic>-<slug>-suite-2`, with the first run keeping its name. `test`, on a test this delivery
+wrote — the two producers disagree and that disagreement is what the red is: the proof asserts
+what the criterion requires and the implementation does not satisfy it, and only a person
+settles that. `test`, on a test an earlier task owns — what broke it is not a regression but
+this delivery's own legitimate files: the old assertion claimed more than its task's criteria
+establish, totality over ground the two tasks share, and this delivery falsified the excess.
+That test is not edited from here, whatever the temptation: the way out is the proof-only
+re-delivery the re-delivery paragraph names, over the task that owns the test, and it is the
+human's to invoke. The report hands that invocation ready to paste — the owning task by
+identifier, the assertion the run named, the file this delivery added — and says plainly that it
+runs only after the human commits this delivery's pending state, because that invocation's own
+clean-tree stop refuses a tree still carrying it. And `setup` — neither the code nor the test
+was reached, because the harness or the environment it needs did not stand up: that is not this
+delivery's defect and not its to fix, so nothing is sent to any producer. Run the suite again,
+once, under the next name. A second consecutive red the diagnosis reads the same way is a stop:
+infrastructure failing twice is a fact for a person, and the report quotes both diagnoses and
+hands the rerun invocation ready. The fourth way licenses exactly one thing — the same suite,
+again — and the run is what decides; a fix routed through it would be a fix nobody diagnosed.
+
+**A fifth way is forbidden and it is the one that is easy.** A test is never weakened, deleted,
 narrowed or rewritten to make the suite green. This invocation holds two producers precisely so
 that one cannot overrule the other, and a test edited until it passes is exactly that overruling,
 performed where nobody would see it. The third way above exists precisely so this one never looks
@@ -495,6 +550,11 @@ satisfies some other way.
 A disagreement the author recorded is not settled here. It stays recorded: this invocation holds
 two producers precisely so that one cannot overrule the other, and resolving it now would discard
 the signal.
+
+Where earlier suite attempts failed before this one passed, `## Notes` names each red run by path
+with the cause its diagnosis returned, one sentence per run. The diagnosis otherwise lives only in
+the conversation, and a reader meeting three run directories beside one proof deserves the
+sentence that says why.
 
 ### 7. Validate, and derive the delivery
 
@@ -581,7 +641,8 @@ Report, in this order:
   `/reconcile` invocation ready to paste — the project root and the target filled in, the file
   set being every path the receipt names, converted to the target source root's own anchor (the
   receipt spells paths from the git toplevel, and `/reconcile` reads them relative to the target
-  source root) — with the one sentence that makes the door real rather than decorative: it runs
+  source root), and a slug slot left for the human to name, since `/reconcile` requires one and
+  refuses a slug already taken — with the one sentence that makes the door real rather than decorative: it runs
   only after the human commits this delivery's pending state, because `/reconcile` refuses a
   named file the tree holds uncommitted. Never a stop, and never per file: one invocation, one
   file set, and taking it is the human's;
@@ -598,7 +659,8 @@ Report, in this order:
 - every run this invocation captured, by path and by outcome, including the ones that failed —
   those are not noise and they are not a draft: they are the only record of what it took, and a
   report naming only the run that passed describes a delivery that went right the first time
-  whether or not it did — and every step of the registry that did not run, with why. Where this
+  whether or not it did — with, for each red suite that was diagnosed, the `cause` the diagnosis
+  returned — and every step of the registry that did not run, with why. Where this
   delivery built the substrate, that is most of them, and saying which rules they own is what keeps
   a substrate record from reading as a project that builds;
 - every dependency this delivery installed, and that what those pulled in transitively is nobody's

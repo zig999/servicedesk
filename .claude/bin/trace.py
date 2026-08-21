@@ -13,7 +13,7 @@ a rebind. Either is drift, and this script is what says so without any plan's hi
 Six things this script does, and nobody else does any of them:
 
     trace.py <target-root>                                        read and validate the file
-    trace.py --check <target-root>                                the same, then report drift
+    trace.py --check <target-root> [--all]                        the same, then report drift
     trace.py --bind <target-root> <spec-root> <node> <file> ...    write or extend one binding
     trace.py --bind-record <target-root> <spec-root> <record>     every binding that record states
     trace.py --bind ... --replace                                 write it in full instead
@@ -35,6 +35,18 @@ Left unpruned, the orphaned class is what makes the other two unreadable. A tree
 stale entries reports eighty-three findings the day three files drift, and nobody reads the three:
 the report a caller stops reading is a report that says nothing, however true every line of it is.
 
+The same arithmetic is what `edits_freely` answers, one class over. A target whose surface changes
+for reasons no node governs — a label, a colour, a column's order — produces a `code` finding per
+edit, weekly, and buries `moved` and `orphaned` under a list nobody finishes. So a project may name
+those targets in `siegard.json`, and `--check` stops listing that class for files sitting under
+them. Three things this deliberately is not. It is not per-invocation: the declaration is read from
+the project file beside this one, so a check run from anywhere reports the same tree the same way,
+and a check over a traced target never loses a finding because a sibling target is exempt. It is
+not a change to what is bound — `--bind-record` still writes the link, `moved` still says the
+specification shifted under those files, `orphaned` still says the node is gone. And it is not
+silence: a receipt says how many findings were held back and `--all` lists them, which is what
+keeps a declaration a consumer can measure from becoming one it forgets it made.
+
 `--bind-record` is the form a delivery uses, and it exists because the older one made its caller
 retype what a record already says. An implementation record names every node the source encodes and
 every file each one reached; binding them one invocation at a time paid a full specification
@@ -45,6 +57,15 @@ The whole of it is refused before anything is written, because a delivery half b
 link nobody made while reading exactly like a complete one. A record naming no node with
 `encoded_at` is not a failure: the nodes it answers only by `how` reached no file, a bind with none
 is refused, and there is simply nothing to write.
+
+That refusal is over form — a node this specification does not hold, a file that is not there — and
+it is not the reconciliation route's per-node judgment. A reconciliation record answers node by
+node, and a node the judgment did not clear carries no `encoded_at`; the nodes that cleared are
+written and that one is not. Refusing the record over it would make a judgment that resolved
+thirty-eight of forty nodes worth exactly as much as one that resolved none, and buy nothing for
+it: the two nodes it could not write stay precisely as drifted as they were, which is what the
+next `--check` says. What the bind owes instead is a receipt naming them, so a partial bind never
+reads like a complete one.
 
 `--reconciliation` is the one form here that writes nothing. It holds a reconciliation record —
 source that changed outside any task, at `siegard-reconcile/<slug>.md` beside this file — to
@@ -60,7 +81,11 @@ A record that binds a file nobody declared would widen the reconciliation past w
 scoped, silently, and the trace would carry the result forever.
 
 `--bind` validates <spec-root> the way spec.py does, refuses a node it does not hold, reads that
-node's digest and each file's digest fresh, and writes the entry. By default it extends whatever
+node's digest and each file's digest fresh, and writes the entry. It is the one bind no record
+backs — every skill binds through `--bind-record`, where an implementation or reconciliation
+record holds the judgment — so every `--bind` prints a receipt saying the judgment behind this
+entry lives nowhere, because the trace it writes reads afterwards exactly like one a record
+justified. By default it extends whatever
 that node already held: a file this call does not name but an earlier bind of the same node did
 stays bound, at the digest that earlier bind recorded, because two tasks landing the same rule in
 two different files is not one of them undoing the other's work. A file this call does name is
@@ -87,11 +112,13 @@ Declared dependencies: PyYAML, jsonschema (this script also imports spec.py and 
 siblings under bin/).
 
 Usage:  trace.py <target-root>
-        trace.py --check <target-root>
+        trace.py --check <target-root> [--all]
         trace.py --bind <target-root> <spec-root> <node> <file> [<file> ...] [--replace]
         trace.py --bind-record <target-root> <spec-root> <implementation-record> [--replace]
         trace.py --prune <target-root>
         trace.py --reconciliation <reconciliation-record>
+        trace.py --help
+                print this text and stop
 Exit:   0 sound / drift-free / bound / pruned / the record holds
         1 problems: an invalid file, drift found, an unsound specification, an unknown node
           or file, a record its contract refuses
@@ -103,7 +130,8 @@ from __future__ import annotations
 import json
 import os
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+from typing import NoReturn
 
 CANNOT_RUN = 2
 
@@ -138,16 +166,82 @@ def home_of(target: Path) -> Path:
     return project.toplevel_of(target)
 
 
+def freely_edited(home: Path) -> list[str]:
+    """The path prefixes whose `code` findings this tree asked not to be listed, read from the
+    project file sitting beside the trace.
+
+    Read here rather than taken as a flag, because which targets those are is the consumer's
+    standing declaration and not a thing an invocation gets to answer differently each time. Read
+    defensively: a project file that does not parse, or does not declare the field, suppresses
+    nothing — `project.py` is what holds that file to its contract and says so properly, and a
+    drift report is the wrong place to learn the project file is broken.
+
+    The prefixes come back spelled from this file's own directory, which is the anchor every path
+    in the trace already uses, so the comparison below is a prefix test and never a pattern."""
+    declared_at = home / project.PROJECT_FILE
+    if not declared_at.is_file():
+        return []
+    try:
+        declared = json.loads(declared_at.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    if not isinstance(declared, dict):
+        return []
+    named = declared.get("edits_freely") or []
+    targets = declared.get("targets") or {}
+    if not isinstance(named, list) or not isinstance(targets, dict):
+        return []
+    prefixes = []
+    for key in named:
+        where = targets.get(key) if isinstance(key, str) else None
+        if isinstance(where, str) and where:
+            prefixes.append(PurePosixPath(where).as_posix().rstrip("/"))
+    return sorted(set(prefixes))
+
+
+def under(path: str, prefixes: list[str]) -> bool:
+    """Whether one path of the trace sits under any of those prefixes. A prefix of `.` — a target
+    that is the toplevel itself — reaches everything, which is what a project declaring its whole
+    tree freely edited asked for."""
+    parts = PurePosixPath(path).parts
+    for prefix in prefixes:
+        if prefix in (".", ""):
+            return True
+        if parts[:len(PurePosixPath(prefix).parts)] == PurePosixPath(prefix).parts:
+            return True
+    return False
+
+
+def cannot_run(message: str) -> NoReturn:
+    """Refuse and stop. A trace this script cannot read is never repaired into a default: the
+    file is the record, and a default would bind against a record nobody wrote."""
+    print(f"cannot run: {message}", file=sys.stderr)
+    raise SystemExit(CANNOT_RUN)
+
+
 def trace_path(target: Path) -> Path:
     return home_of(target) / TRACE_FILE
 
 
 def load(target: Path) -> dict | None:
-    """The trace declared at <target-root>, or None where none has been bound yet."""
+    """The trace declared at <target-root>, or None where none has been bound yet.
+
+    A trace that does not parse, or that parses to anything but a mapping, is refused here rather
+    than carried further. This is the one file the framework keeps after a plan is history, and
+    it is one of the two that conflict in a worktree batch — so a trace holding merge markers is
+    a state that happens, and every form of this script would otherwise end in a traceback over
+    it instead of saying which file to fix."""
     path = trace_path(target)
     if not path.is_file():
         return None
-    return json.loads(path.read_text(encoding="utf-8"))
+    try:
+        declared = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as broken:
+        cannot_run(f"{path} does not parse: {broken}")
+    if not isinstance(declared, dict):
+        cannot_run(f"{path} holds a {type(declared).__name__}, not a trace; a trace is an object "
+                   f"with a specification and its bindings")
+    return declared
 
 
 def problems_of(declared: dict) -> list[str]:
@@ -165,9 +259,14 @@ def problems_of(declared: dict) -> list[str]:
     return problems
 
 
-def drift_of(declared: dict, home: Path) -> tuple[list[tuple[str, str, str]], list[str]]:
+def drift_of(declared: dict,
+             home: Path) -> tuple[list[tuple[str, str, str | None, str]], list[str]]:
     """Every binding that no longer computes to what was recorded for it, each under the class its
     remedy belongs to — and, separately, whatever stopped the reading before any of that.
+
+    A finding carries the path it is about where it has one, so that a caller filtering by where
+    the file sits reads the path rather than the sentence. The classes about a node carry none:
+    a node moved or gone is not a fact about any one file.
 
     The classes are not three flavours of one fact, and a caller who cannot tell them apart cannot
     act on any of them. `orphaned` is the one nothing here could fix until `--prune` existed: the
@@ -191,27 +290,28 @@ def drift_of(declared: dict, home: Path) -> tuple[list[tuple[str, str, str]], li
     if node_problems:
         return [], [f"specification: {spec_root} is not sound; run spec.py against it directly"]
 
-    findings: list[tuple[str, str, str]] = []
+    findings: list[tuple[str, str, str | None, str]] = []
     for entry in declared.get("bindings") or []:
         node_id, digest = entry["node"], entry["digest"]
         current = nodes.get(node_id)
         if current is None:
-            findings.append((ORPHANED, node_id,
+            findings.append((ORPHANED, node_id, None,
                              f"{node_id}: no longer in the specification; the binding is stale"))
         elif current["digest"] != digest:
-            findings.append((MOVED, node_id,
+            findings.append((MOVED, node_id, None,
                              f"{node_id}: bound at {digest}, now {current['digest']}; "
                              f"the specification moved since this bind"))
         for file_entry in entry.get("files") or []:
-            path = home / file_entry["path"]
+            where = file_entry["path"]
+            path = home / where
             if not path.is_file():
-                findings.append((CODE, node_id,
-                                 f"{node_id}: {file_entry['path']} no longer exists"))
+                findings.append((CODE, node_id, where,
+                                 f"{node_id}: {where} no longer exists"))
                 continue
             now = spec.digest_of(path)
             if now != file_entry["digest"]:
-                findings.append((CODE, node_id,
-                                 f"{node_id}: {file_entry['path']} bound at "
+                findings.append((CODE, node_id, where,
+                                 f"{node_id}: {where} bound at "
                                  f"{file_entry['digest']}, now {now}; the file changed without "
                                  f"a rebind"))
     return findings, []
@@ -229,13 +329,29 @@ def traced_files_of(target: Path, home: Path, files: list[str]) -> tuple[list[di
     to be handed than the reason it happened."""
     offset = Path(os.path.relpath(target.resolve(), home.resolve()))
     entries, problems = [], []
+    claimed: set[str] = set()
     for given in files:
         source = target / given
         if not source.is_file():
             problems.append(f"{source} does not exist; a path is read relative to {target}, the "
                             f"target source root, never from the repository around it")
             continue
+        try:
+            source.resolve().relative_to(target.resolve())
+        except ValueError:
+            # The sentence above is the whole rule, and `../` is the one spelling that passes
+            # `is_file()` while breaking it. Stored unnormalised it would also alias: one file
+            # under two spellings is two entries no reader can tell apart.
+            problems.append(f"{given} climbs out of {target}, the target source root; a bound "
+                            f"path is read from inside it, never from the repository around it")
+            continue
         stored = given if str(offset) == "." else (offset / given).as_posix()
+        if stored in claimed:
+            problems.append(f"{stored} is named twice in one bind; a second entry for one path "
+                            f"carries nothing the first does not, and every later reading of the "
+                            f"trace would count the file twice")
+            continue
+        claimed.add(stored)
         entries.append({"path": stored, "digest": spec.digest_of(source)})
     return entries, problems
 
@@ -291,6 +407,21 @@ def released(node_id: str, dropped: list[str]) -> str:
             f"if anywhere")
 
 
+def unrecorded(node_id: str) -> str:
+    """The receipt for a bind no record backs. A statement, never a refusal: `--bind` is the
+    general form and stays open — it is the one door a tree with untraced code has — but every
+    other bind this framework writes rests on a record that says which node the source encodes
+    and why, and this one rests on the caller's say-so alone. The receipt is the only trace of
+    that difference, because the entry this bind writes reads afterwards exactly like one a
+    record justified — and how often this line shows up in reports is what will say whether the
+    raw form costs more than it serves."""
+    return (f"  this binding rests on no record: --bind wrote what the caller stated, and the "
+            f"judgment behind it lives nowhere a reader can reopen. A delivery's record or a "
+            f"reconciliation is the recorded route — for a hand edit over bound source, "
+            f"/reconcile writes the same binding with the judgment kept. The trace carries no "
+            f"mark of the difference on {node_id}; this line is the only one")
+
+
 def stale_after(declared: dict, home: Path, acted: dict[str, str],
                 bound: set[str]) -> list[tuple[str, str, str]]:
     """The bindings this act left stale, found at the one moment both sides are in hand.
@@ -321,6 +452,23 @@ def stale_after(declared: dict, home: Path, acted: dict[str, str],
     return sorted(stale)
 
 
+def suppressed(held: list[tuple[str, str, str | None, str]], prefixes: list[str]) -> str:
+    """The receipt for the `code` findings a declared target held back. A count, never silence,
+    and it follows the same discipline `released()` already sets for the trace's other loss: what
+    a report stops saying it says once, in a line, so the reader can tell a clean tree from a tree
+    whose findings were filed elsewhere. Without it the declaration would be the one thing in this
+    framework a consumer could turn on and never measure again.
+
+    The number is the point rather than the list, which is why the paths are behind `--all`: a
+    surface that moves weekly produces this count by the hundred, and reprinting them here would
+    rebuild exactly the unreadable report the declaration exists to prevent."""
+    files = sorted({finding[2] for finding in held})
+    return (f"  suppressed {len(held)} `code` finding(s) over {len(files)} file(s) under "
+            f"{', '.join(prefixes)} — declared freely edited in {project.PROJECT_FILE}. "
+            f"`--all` lists them, and that list is what /check-source reads to hold those files "
+            f"to the rules a reading decides")
+
+
 def left_stale(stale: list[tuple[str, str, str]]) -> str:
     """The receipt for the bindings a bind left stale. A statement, never a warning, the same as
     `released()`: nothing here is wrong yet — a bind restamps exactly the nodes it was handed,
@@ -341,6 +489,10 @@ def opened(target: Path, spec_root: Path,
     naming a different specification is refused rather than silently repointed."""
     spec_relative = Path(os.path.relpath(spec_root.resolve(), home.resolve())).as_posix()
     declared = load(target) or {"specification": spec_relative, "bindings": []}
+    if not isinstance(declared.get("specification"), str) or \
+            not isinstance(declared.get("bindings"), list):
+        return None, (f"{trace_path(target)} carries no specification and bindings; it is not a "
+                      f"trace this can fold into — validate it first")
     if declared["specification"] != spec_relative:
         return None, (f"{trace_path(target)} already traces against "
                       f"{declared['specification']}, not {spec_relative}; a trace names one "
@@ -404,6 +556,7 @@ def bind(target: Path, spec_root: Path, node_id: str, files: list[str],
     if write_trace(target, declared) != 0:
         return 1
     print(f"bound {node_id} to {held} file(s) at {trace_path(target)}")
+    print(unrecorded(node_id))
     if dropped:
         print(released(node_id, dropped))
     stale = stale_after(declared, home, {e["path"]: e["digest"] for e in traced}, {node_id})
@@ -419,7 +572,9 @@ def frontmatter_of(record: Path) -> tuple[dict | None, str | None]:
     saying it twice is how the two drift into disagreeing about what a record even is."""
     if not record.is_file():
         return None, f"{record} does not exist"
-    text = record.read_text(encoding="utf-8")
+    text, unreadable = spec.read_node(record)
+    if text is None:
+        return None, f"{record}: {unreadable}"
     match = spec.FENCE.match(text)
     if not match:
         return None, f"{record} carries no frontmatter fence; it is not a record this can read"
@@ -446,19 +601,19 @@ def accounted(front: dict) -> list[str]:
     problems = [f"files: {path} is named {named.count(path)} times; one entry per file"
                 for path in sorted(set(named)) if named.count(path) > 1]
 
-    seen: dict[str, list[str]] = {}
+    seen: dict[str, int] = {}
     claimed: set[str] = set()
     for entry in front["nodes"]:
         node_id = entry["node"]
-        seen.setdefault(node_id, []).append(node_id)
+        seen[node_id] = seen.get(node_id, 0) + 1
         where = "encoded_at" if entry["conforms"] else "observed_at"
         for path in entry[where]:
             claimed.add(path)
             if path not in named:
                 problems.append(f"{node_id}: {where} names {path}, which this record's file set "
                                 f"does not; a reconciliation reaches only what the human scoped")
-    problems += [f"nodes: {node_id} appears {len(hits)} times; one entry per node"
-                 for node_id, hits in sorted(seen.items()) if len(hits) > 1]
+    problems += [f"nodes: {node_id} appears {count} times; one entry per node"
+                 for node_id, count in sorted(seen.items()) if count > 1]
 
     unbound = front.get("unbound") or []
     for path in unbound:
@@ -554,13 +709,123 @@ def encoded_in(record: Path) -> tuple[list[tuple[str, list[str]]], list[str]]:
     return pairs, []
 
 
+def as_reconciliation(record: Path) -> dict | None:
+    """The record read as a reconciliation, or nothing where it is not one.
+
+    Two readers here need the same three-part guard — it sits under `siegard-reconcile/`, its
+    frontmatter parses, and it declares this contract — and a delivery record must fall through
+    every one of them, since `--bind-record` serves both forms. A record whose frontmatter is
+    unreadable falls through silently on purpose: `encoded_in` already refused it, and one refusal
+    per defect is enough."""
+    if record.parent.name != RECONCILE_DIR:
+        return None
+    front, _ = frontmatter_of(record)
+    if not isinstance(front, dict):
+        return None
+    version = front.get("contract_version")
+    if not isinstance(version, str) or not version.startswith("siegard-reconcile/"):
+        return None
+    return front
+
+
+def withheld(record: Path) -> list[str]:
+    """Every node a reconciliation record answered for and did not clear. Empty for a delivery
+    record, which has no such class.
+
+    A reconciliation is bound node by node — a node without `encoded_at` is one this form cannot
+    reach, which is the whole of the join between the judgment and the trace — so a record
+    carrying a finding writes the bindings that cleared and stops there. That is the right act:
+    every line it writes is one a judgment stands behind, and the node it could not write stays
+    exactly as drifted as it was, which is what the next `--check` reports.
+
+    What was missing was saying so here. `--reconciliation` names the held nodes before anything
+    is written, but the bind's own output listed what it bound and nothing else, so a partial bind
+    read exactly like a complete one at the only moment the person who ran it was still looking.
+    A bind that quietly reconciles thirty-eight of forty is the report this framework spends its
+    receipts preventing."""
+    front = as_reconciliation(record)
+    if front is None:
+        return []
+    return sorted({entry["node"] for entry in front.get("nodes") or []
+                   if isinstance(entry, dict) and isinstance(entry.get("node"), str)
+                   and entry.get("conforms") is False})
+
+
+def left_owed(held: list[str], record: Path) -> str:
+    """The receipt for the nodes a reconciliation did not clear, printed by the bind that wrote
+    the rest. The same discipline `left_stale()` sets one class over: nothing here is wrong — the
+    bind stated exactly what the judgment cleared — but each node below is still owed, and this is
+    the one moment the person who ran it is still holding the whole set."""
+    lines = [f"  {len(held)} node(s) of {record.name} the judgment did not clear, and this bind "
+             f"wrote none of them:"]
+    lines += [f"    {node}" for node in held]
+    lines.append("    each stays as it stood — its drift, where the file was bound before, is "
+                 "still a finding on the next --check, and the record says what was found "
+                 "against it")
+    return "\n".join(lines)
+
+
+def unaccounted(record: Path, declared: dict, nodes: dict[str, dict],
+                offset: Path) -> list[str]:
+    """Every node the trace binds to a file this reconciliation names and the record says nothing
+    about. Empty for a record that accounts for all of them, and for any record this does not apply
+    to.
+
+    `reconciliation.json` defines the node set as "every specification node the trace binds to a
+    named file", and the skill that writes one says it in as many words — "what you keep is every
+    node those findings name, and never a subset … reconciling a file against the part of the
+    specification that happens to agree with it is the failure this whole route exists to prevent".
+    Until this ran, nothing held a record to it: a record naming a file and answering for one of
+    the two nodes bound to it would rebind that one and leave the other asserting a link nobody
+    re-read, while reading exactly like a complete reconciliation.
+
+    An orphaned binding is excluded. Its node is gone from the specification, no bind can repair it
+    and `--prune` is the only thing that clears it, so demanding an answer for it would refuse a
+    record over ground the route explicitly hands elsewhere.
+
+    This is the one place this script reads a record as a reconciliation rather than as two field
+    names. It is not a second opinion about somebody else's contract: `schemas/reconciliation.json`
+    is trace.py's own, and `--reconciliation` is where it is enforced."""
+    front = as_reconciliation(record)
+    if front is None:
+        return []
+
+    named = {entry["path"] for entry in front.get("files") or []
+             if isinstance(entry, dict) and isinstance(entry.get("path"), str)}
+    if not named:
+        return []
+    # The record spells its paths from the target source root; the trace spells them from its own
+    # directory. Compare in the trace's spelling, the way a bind writes them.
+    anchored = named if str(offset) == "." else {(offset / p).as_posix() for p in named}
+
+    answered = {entry["node"] for entry in front.get("nodes") or []
+                if isinstance(entry, dict) and isinstance(entry.get("node"), str)}
+    problems = []
+    for entry in declared.get("bindings") or []:
+        node_id = entry.get("node")
+        if not isinstance(node_id, str) or node_id in answered or node_id not in nodes:
+            continue
+        for held in entry.get("files") or []:
+            if isinstance(held, dict) and held.get("path") in anchored:
+                problems.append(
+                    f"{node_id} is bound to {held['path']}, which this record names, and the "
+                    f"record answers for it nowhere; a reconciliation reads every node a named "
+                    f"file answers to, never the subset that happened to agree")
+                break
+    return sorted(problems)
+
+
 def bind_record(target: Path, spec_root: Path, record: Path, replace: bool = False) -> int:
     """Every binding one implementation record states, written as one act.
 
     Per node, the older form paid a full specification validation and a full read-and-rewrite of
     the trace. Here they are paid once, and the whole of it is refused before anything is written:
     a delivery half bound describes a link nobody made, and the file it would leave behind reads
-    exactly like a complete one."""
+    exactly like a complete one.
+
+    Refused means over form. What a reconciliation's judgment held back is a different thing and
+    is not refused here: those nodes carry no `encoded_at`, the rest are written, and `left_owed()`
+    is what keeps the partial act legible."""
     if not target.is_dir():
         print(f"cannot run: {target} is not a directory", file=sys.stderr)
         return CANNOT_RUN
@@ -597,6 +862,9 @@ def bind_record(target: Path, spec_root: Path, record: Path, replace: bool = Fal
     declared, refusal = opened(target, spec_root, home)
     if refusal is not None:
         refusals.append(refusal)
+    if declared is not None:
+        refusals += unaccounted(record, declared, nodes,
+                               Path(os.path.relpath(target.resolve(), home.resolve())))
     if refusals:
         for problem in refusals:
             print(f"cannot bind: {problem}")
@@ -623,6 +891,9 @@ def bind_record(target: Path, spec_root: Path, record: Path, replace: bool = Fal
     stale = stale_after(declared, home, acted, {node_id for node_id, _ in folded})
     if stale:
         print(left_stale(stale))
+    owed = withheld(record)
+    if owed:
+        print(left_owed(owed, record))
     return 0
 
 
@@ -669,15 +940,16 @@ def prune(target: Path) -> int:
               f"bindings it still holds")
         return 1
 
-    stale = sorted({node for cls, node, _ in findings if cls == ORPHANED})
+    stale = sorted({finding[1] for finding in findings if finding[0] == ORPHANED})
     if not stale:
         held = len(declared.get("bindings") or [])
         print(f"nothing to prune: every one of {held} binding(s) names a node the specification "
               f"still holds")
         return 0
 
+    gone = set(stale)
     declared["bindings"] = [entry for entry in declared["bindings"]
-                            if entry.get("node") not in set(stale)]
+                            if entry.get("node") not in gone]
     if write_trace(target, declared, act="prune") != 0:
         return 1
     for node_id in stale:
@@ -691,14 +963,20 @@ def prune(target: Path) -> int:
 
 def main() -> int:
     args = sys.argv[1:]
+    if "--help" in args:
+        # The docstring is this script's one home of what it does and how it is called,
+        # so `--help` prints that rather than a second copy of it that could drift.
+        print(__doc__.strip())
+        return 0
     check = "--check" in args
+    show_all = "--all" in args
     do_bind = "--bind" in args
     do_record = "--bind-record" in args
     do_prune = "--prune" in args
     do_reconciliation = "--reconciliation" in args
     replace = "--replace" in args
     args = [a for a in args
-            if a not in ("--check", "--bind", "--bind-record", "--replace", "--prune",
+            if a not in ("--check", "--all", "--bind", "--bind-record", "--replace", "--prune",
                          "--reconciliation")]
     named = [name for name, given in (("--check", check), ("--bind", do_bind),
                                       ("--bind-record", do_record),
@@ -709,6 +987,10 @@ def main() -> int:
         return CANNOT_RUN
     if replace and not (do_bind or do_record):
         print("cannot run: --replace only applies to --bind and --bind-record", file=sys.stderr)
+        return CANNOT_RUN
+    if show_all and not check:
+        print("cannot run: --all only applies to --check; it is what lists the findings a "
+              "declared target holds back", file=sys.stderr)
         return CANNOT_RUN
 
     if do_reconciliation:
@@ -744,7 +1026,7 @@ def main() -> int:
         return bind(Path(target), Path(spec_root), node_id, files, replace)
 
     if len(args) != 1 or args[0].startswith("--"):
-        print("cannot run: expected [--check] <target-root>", file=sys.stderr)
+        print("cannot run: expected [--check [--all]] <target-root>", file=sys.stderr)
         return CANNOT_RUN
 
     target = Path(args[0])
@@ -769,23 +1051,47 @@ def main() -> int:
         print(f"trace sound: {count} binding(s), traced against {declared['specification']}")
         return 0
 
-    findings, refusals = drift_of(declared, home_of(target))
+    home = home_of(target)
+    findings, refusals = drift_of(declared, home)
     if refusals:
         for refusal in refusals:
             print(refusal)
         return 1
-    if findings:
+
+    # What a target declared freely edited is held back from the listing, never from the reading:
+    # the finding was computed either way, and `--all` prints it. Suppression is a report's
+    # decision about what a reader can act on, so nothing above it knows this happened.
+    prefixes = [] if show_all else freely_edited(home)
+
+    def held_back(finding) -> bool:
+        return finding[0] == CODE and bool(finding[2]) and under(finding[2], prefixes)
+
+    # Partitioned by the predicate rather than by membership in `held`: two findings that compare
+    # equal would suppress each other, and the membership test walked `held` once per finding.
+    held = [f for f in findings if held_back(f)]
+    listed = [f for f in findings if not held_back(f)]
+
+    if listed:
         # Class by class rather than one flat list: the tally is what a reader acts on, and the
         # orphaned count is what says how much of this report no rebind will ever shorten.
         for cls in (ORPHANED, MOVED, CODE):
-            for _, _, said in [f for f in findings if f[0] == cls]:
-                print(said)
-        print(f"\n{len(findings)} drift finding(s) over {count} binding(s):")
+            for finding in [f for f in listed if f[0] == cls]:
+                print(finding[3])
+        print(f"\n{len(listed)} drift finding(s) over {count} binding(s):")
         for cls in (ORPHANED, MOVED, CODE):
-            print(f"  {sum(1 for f in findings if f[0] == cls)} {cls}: {CLASSES[cls]}")
-        return 1
-    print(f"no drift: {count} binding(s) match the specification and the code as both stand now")
-    return 0
+            # The suppressed count rides its own class's line rather than sitting under the tally:
+            # `0 code` printed above a receipt saying one was held back is a line a reader can
+            # finish and walk away from.
+            also = f" ({len(held)} suppressed)" if cls == CODE and held else ""
+            print(f"  {sum(1 for f in listed if f[0] == cls)} {cls}{also}: {CLASSES[cls]}")
+    else:
+        print(f"no drift: {count} binding(s) match the specification and the code as both stand "
+              f"now" if not held else
+              f"no drift to act on: {count} binding(s), and every difference found sits under a "
+              f"target this project declares freely edited")
+    if held:
+        print(suppressed(held, prefixes))
+    return 1 if listed else 0
 
 
 if __name__ == "__main__":

@@ -1,12 +1,29 @@
-# Siegard — Backend de Diagnóstico
+# ServiceDeskN1
 
-Serviço HTTP em Node.js/TypeScript que executa **um diagnóstico automatizado por vez**: dado um
-caso de troubleshooting já curado, um sujeito a investigar e uma narrativa, ele coleta observações
-externas, julga cada hipótese do caso de forma isolada, resolve o desfecho pela precedência
-declarada, redige a conclusão e grava tudo como um registro imutável — respondendo somente depois
-que esse registro foi escrito.
+**Um resolvedor de casos.** Você lhe entrega um caso curado e um sujeito; ele devolve o desfecho
+e para quem encaminhar.
+
+Serviço HTTP em Node.js/TypeScript que resolve **um caso por vez**. Um caso é uma ficha de
+troubleshooting escrita por quem conhece o problema: hipóteses em ordem de precedência, o que cada
+uma precisa observar para ser decidida, e o que fazer se ela se confirmar. O serviço não sabe nada
+sobre o domínio do caso — ele resolve qualquer caso que a ficha descreva:
+
+1. lê o caso, validando-o por inteiro no momento da leitura;
+2. coleta as observações que as hipóteses pedem, cada uma de um sistema externo por HTTP;
+3. julga cada hipótese isoladamente, contra a evidência e mais nada;
+4. resolve o desfecho pela primeira hipótese confirmada na ordem da ficha;
+5. redige a conclusão e grava a investigação inteira como registro imutável — respondendo somente
+   depois que esse registro foi escrito.
+
+**O conhecimento fica na ficha, não no código.** Cadastrar um caso novo, corrigir um critério ou
+apontar um conceito para outro sistema é curadoria de dados, não release: nenhuma dessas coisas
+recompila nada.
 
 O código-fonte do serviço vive em [`src/`](src/); este README descreve o que está implementado ali.
+
+> O nome anterior deste serviço era *Siegard — Backend de Diagnóstico*. **Siegard** segue sendo o
+> nome do processo de desenvolvimento que governa este repositório, descrito em
+> [`CLAUDE.md`](CLAUDE.md) — não o da aplicação.
 
 ## Sumário
 
@@ -67,7 +84,7 @@ Composição (factories)               src/factories/
       │
       └── runDiagnosis (pipeline)
               │
-              ├── collectEvidence ─────── IObservationSource  (hoje: FakeObservationSource)
+              ├── collectEvidence ─────── IObservationSource  (produção: HttpDeclarativeObservationSource)
               ├── judgeHypotheses ─────── IHypothesisEvaluator (produção: Anthropic)
               ├── resolveAndNarrow ────── (puro, sobre case-resolution.ts)
               ├── draftAssessment ──────── IAssessmentConsolidator (produção: Anthropic)
@@ -89,7 +106,7 @@ Contextos de domínio:
 
 ## Modelo de dados
 
-Persistência 100% relacional (Postgres), uma tabela por elemento do domínio, sete migrações em
+Persistência 100% relacional (Postgres), uma tabela por elemento do domínio, dez migrações em
 `migrations/` aplicadas em ordem:
 
 | Tabela(s) | Contexto | Guarda |
@@ -97,16 +114,20 @@ Persistência 100% relacional (Postgres), uma tabela por elemento do domínio, s
 | `subject_types`, `subject_attributes`, `outcomes`, `actions`, `recipients` | Glossário | Os cinco vocabulários de termos — nomes válidos, nunca valores |
 | `concepts`, `concept_accepts` | Glossário | Conceitos observáveis, seu `ttl` e quais tipos de sujeito cada um aceita |
 | `capabilities` | Integração | Capacidades read-only registradas, uma por conceito, com seus dois schemas, timeout e conector |
-| `cases`, `case_versions` | Conhecimento | Identidade do caso e cada versão escrita uma vez, nunca alterada |
-| `hypotheses`, `hypothesis_collects` | Conhecimento | Hipóteses de cada versão, sua precedência e os conceitos que cada uma coleta |
+| `connector_configurations` | Integração | A configuração de chamada de cada conector — endereço, método, mapeamento de resposta e de status — guardada como payload opaco que nenhum módulo de domínio interpreta |
+| `cases`, `case_versions` | Conhecimento | Identidade do caso, seu contador durável de versões, e cada versão com seu estado (`draft`/`released`) |
+| `hypotheses` | Conhecimento | A identidade da hipótese, única dentro do caso e sem conteúdo próprio |
+| `hypothesis_revisions`, `hypothesis_revision_collects` | Conhecimento | O conteúdo de cada revisão — critério, resolução e conceitos coletados — imutável depois que uma versão liberada a manifesta |
+| `case_version_hypotheses` | Conhecimento | O manifesto: qual revisão de qual hipótese cada versão usa, e em que posição de precedência |
 | `investigations` | Investigação | Uma investigação por pedido, imutável |
 | `investigation_evidence` | Investigação | Uma evidência por conceito coletado |
 | `investigation_evaluations`, `investigation_evaluation_citations` | Investigação | Um julgamento por hipótese exigida, com as citações que o fundamentam |
 | `investigation_subject_attribute_values` | Investigação | Os pares atributo-valor do sujeito de uma investigação |
 
-Toda leitura de um caso inteiro (raiz + hipóteses + coletas) roda numa única transação
-(`RelationalCaseStore.readVersion`); escrever uma versão já existente é recusado pela própria chave
-primária `(slug, version)`, nunca por uma leitura prévia.
+Toda leitura de um caso inteiro (raiz + manifesto + revisões + coletas) roda numa única transação
+(`RelationalCaseStore.assembleVersion`); escrever uma versão já existente é recusado pela própria
+chave primária `(slug, version)`, nunca por uma leitura prévia. Uma versão liberada é imutável por
+regras do próprio schema, não por checagem em código: `UPDATE` e `DELETE` sobre ela viram no-op.
 
 ## API HTTP
 
@@ -120,10 +141,10 @@ POST /v1/diagnose
 
 ```jsonc
 {
-  "case": { "slug": "device-init-data-loss", "version": 1 },
+  "case": { "slug": "perfil-mobile-tecnico-probe", "version": 1 },
   "subject": {
     "type": "technician",
-    "attributes": [{ "attribute": "contract-number", "value": "CTR-0001" }]
+    "attributes": [{ "attribute": "user-id", "value": "RODRIGO.MATIAS" }]
   },
   "narrative": "descrição livre do problema relatado",
   "requester": "identificador de quem está diagnosticando",
@@ -173,7 +194,6 @@ ausente ou malformada derruba o processo antes de aceitar qualquer requisição:
 |---|---|---|
 | `DATABASE_URL` | sim | A única URL de conexão ao Postgres; toda persistência do serviço passa por ela |
 | `PORT` | não (padrão `3000`) | Porta HTTP |
-| `OBSERVATIONS_FIXTURE_FILE` | sim | Arquivo de observações "enlatadas" que alimenta o `FakeObservationSource` — o serviço ainda não tem um conector real para sistemas externos, ver [limitações](#estado-atual-e-limitações-conhecidas) |
 | `EVALUATOR_MODEL` | sim | Modelo Anthropic usado para julgar cada hipótese |
 | `EVALUATOR_MAX_TOKENS` | não | Teto de tokens da resposta do avaliador |
 | `CONSOLIDATOR_MODEL` | sim | Modelo Anthropic usado para redigir a conclusão |
@@ -181,9 +201,12 @@ ausente ou malformada derruba o processo antes de aceitar qualquer requisição:
 | `POOL_SIZE` | sim | Quantos julgamentos de hipótese rodam em paralelo ao mesmo tempo |
 | `DEFAULT_CONSOLIDATION_REGISTER` | sim | Registro (`formal`/`plain`) usado quando o caso não declara um |
 | `PROMPT_VERSION` | sim | Versão do prompt pinada em cada investigação gravada |
+| `PAGINATION_DEFAULT_LIMIT` | sim | Limite padrão das consultas paginadas de caso |
+| `PAGINATION_MAX_LIMIT` | sim | Limite máximo que uma consulta paginada pode pedir |
 
 `ANTHROPIC_API_KEY` **não** faz parte desse schema — os dois adaptadores Anthropic
 (`src/investigation/anthropic-*.adapter.ts`) a lêem diretamente de `process.env` por conta própria.
+Os endereços dos sistemas externos também não: cada um vive na linha do seu conector, no banco.
 
 ## Scripts
 
@@ -222,15 +245,30 @@ src/
 
 ## Estado atual e limitações conhecidas
 
-- **Nenhum conector real de sistema externo existe ainda.** `IObservationSource`
-  (`src/investigation/observation-source.port.ts`) só tem uma implementação de teste,
-  `FakeObservationSource`, alimentada por um arquivo JSON estático — e é ela quem roda até no
-  servidor HTTP "de produção" (`src/factories/diagnose-server.factory.ts`). A especificação já
-  nomeia o que essa peça deveria consumir (`knowledge/contracts/integration/corporate-records-source.md`),
-  mas construí-la é um trabalho declarado como pendente.
-- **Avaliação de hipótese e redação da conclusão já usam a Anthropic API de verdade**
+- **O conector HTTP real existe e roda em produção.** `HttpDeclarativeObservationSource`
+  (`src/investigation/http-declarative-observation-source.adapter.ts`) é o que
+  `src/factories/diagnose-server.factory.ts` liga: ele lê a linha do conector no banco, resolve os
+  placeholders do endereço (`${subject:<atributo>}`, `${requester}`,
+  `${credential:<VARIÁVEL>}`), chama, e mapeia a resposta pelos campos que a capacidade declara.
+  Uma execução completa contra um sistema externo real está registrada passo a passo em
+  [`temp/debug-01/`](temp/debug-01/).
+- **Avaliação de hipótese e redação da conclusão usam a Anthropic API de verdade**
   (`AnthropicHypothesisEvaluator`, `AnthropicAssessmentConsolidator`), condicionadas apenas a
   `ANTHROPIC_API_KEY` estar configurada.
+- **Não há registro de conector por caminho de produção.** O serviço *lê* a linha do conector, mas
+  nada na árvore a *escreve* fora de teste: `registerConnector` só é chamado por especificações.
+  Hoje o registro é feito por um comando de pessoa
+  ([`docs/cases/_registry/register.mjs`](docs/cases/_registry/register.mjs)); um passo de seed é
+  trabalho pendente.
+- **Custo e duração são gravados em zero.** Nenhuma das portas reporta contagem de token nem
+  tempo de etapa, então a rota grava zero em vez de número inventado
+  (`src/http/diagnose.controller.ts`). Uma investigação real gasta e demora; o registro não diz
+  quanto.
+- **O `ttl` do conceito não chega à evidência.** O estágio de coleta grava um padrão fixo de 60 s
+  (`DEFAULT_EVIDENCE_TTL_SECONDS`), porque não tem caminho até o valor registrado do conceito —
+  declarado em `src/investigation/evidence.ts`.
+- **Nenhum logger está configurado.** O processo não imprime nada; observar uma execução exige
+  instrumentação externa, como a de [`temp/debug-01/`](temp/debug-01/).
 - O projeto segue um processo de desenvolvimento orientado por especificação, descrito em
   [`CLAUDE.md`](CLAUDE.md) — a especificação em `knowledge/` é a autoridade sobre o que o negócio
   decidiu; este README descreve apenas o que o código, hoje, implementa dela.

@@ -45,10 +45,19 @@ commands that do not print secrets.
 how many tests failed and why is read out of that output by whoever diagnoses it. Parsing a
 reporter's format is knowledge of a stack, and this holds none.
 
+**Each attempted step records when it started and when it ended.** Until siegard-run/2 the
+record carried no clock on purpose, so two records of one command differed only where the
+command did — and what that byte-comparability cost was that nobody, inside a session or after
+it, could say what any step of any run took. When a run happened and how long each step held
+the wall is the one fact that cannot be reconstructed once the run is over, so the record is
+where it lives. A step never attempted carries null for both: nothing happened, and a clock
+reading would claim something did.
+
 Declared dependencies: none beyond the standard library.
 
 Usage:  run.py <delivery-root> --run <slug> --cwd DIR --timeout-seconds N
                --step NAME="COMMAND" [--step NAME="COMMAND" ...]
+        run.py --help    print this text and stop
 Exit:   0 every step passed
         1 a step failed, timed out, or could not be found
         2 cannot run
@@ -62,19 +71,29 @@ import re
 import shlex
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import NoReturn
 
 CANNOT_RUN = 2
-CONTRACT = "siegard-run/1"
+CONTRACT = "siegard-run/2"
 RUN_DIR = "run"
+COMBINED_LOG = "run.log"
 SLUG = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
-def cannot_run(message: str) -> None:
+def cannot_run(message: str) -> NoReturn:
     """Refuse before anything is executed or created. A bad input is never repaired into a
     default."""
     print(f"cannot run: {message}", file=sys.stderr)
     raise SystemExit(CANNOT_RUN)
+
+
+def now() -> str:
+    """The wall clock, UTC, to the millisecond — the resolution a step's duration is read at.
+    UTC because a record is read on machines the run never saw, and an offset that moved with
+    the runner's locale would make two steps of one run appear to overlap."""
+    return datetime.now(timezone.utc).isoformat(timespec="milliseconds")
 
 
 def parse_steps(raw: list[str]) -> list[tuple[str, list[str]]]:
@@ -85,8 +104,12 @@ def parse_steps(raw: list[str]) -> list[tuple[str, list[str]]]:
         name, separator, command = item.partition("=")
         if not separator:
             cannot_run(f"step {item!r} is not NAME=COMMAND")
-        if not SLUG.match(name):
+        if not SLUG.fullmatch(name):
             cannot_run(f"step name {name!r} must be lowercase words joined by hyphens")
+        if f"{name}.log" == COMBINED_LOG:
+            cannot_run(f"step {name!r} would write {COMBINED_LOG}, which is the combined log of "
+                       f"every step; the run would overwrite this step's own output — name it "
+                       f"differently")
         if name in seen:
             cannot_run(f"step {name!r} is named twice; a run records one outcome per step")
         try:
@@ -108,6 +131,12 @@ def run_step(argv: list[str], cwd: Path, timeout: int, log: Path) -> tuple[str, 
     except FileNotFoundError:
         log.write_text(f"command not found: {argv[0]}\n", encoding="utf-8")
         return "not_found", None
+    except OSError as broken:
+        # The command exists and still could not be invoked: not executable, a directory, a
+        # binary this kernel cannot load. Letting it escape would end the run in a traceback
+        # after the run directory was created — burning the name for a run with no record.
+        log.write_text(f"cannot invoke {argv[0]}: {broken}\n", encoding="utf-8")
+        return "not_found", None
     except subprocess.TimeoutExpired as expired:
         log.write_bytes(expired.output or b"")
         with log.open("a", encoding="utf-8") as handle:
@@ -119,7 +148,12 @@ def run_step(argv: list[str], cwd: Path, timeout: int, log: Path) -> tuple[str, 
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(add_help=True)
+    # add_help was always here; the description is what makes `--help` answer with this
+    # script's own docstring, the same text its six siblings print, rather than a bare
+    # flag list that says nothing about what a run records or refuses.
+    parser = argparse.ArgumentParser(
+        add_help=True, description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("delivery_root")
     parser.add_argument("--run", required=True, metavar="SLUG")
     parser.add_argument("--timeout-seconds", required=True, type=int)
@@ -130,7 +164,7 @@ def main() -> int:
     root = Path(args.delivery_root)
     if not root.is_dir():
         cannot_run(f"delivery root {root} is not a directory")
-    if not SLUG.match(args.run):
+    if not SLUG.fullmatch(args.run):
         cannot_run(f"run name {args.run!r} must be lowercase words joined by hyphens; "
                    f"the path is the identity and this one computes to none")
     if args.timeout_seconds <= 0:
@@ -151,6 +185,11 @@ def main() -> int:
                    f"the evidence of the first — name this one differently")
     try:
         run_dir.mkdir(parents=True)
+    except FileExistsError:
+        # The check above is advisory; this is the guard. A dangling symlink slips past
+        # `exists()`, and two concurrent runs can both reach here — only one mkdir wins.
+        cannot_run(f"{run_dir} already exists; a second run under one name would overwrite "
+                   f"the evidence of the first — name this one differently")
     except OSError as broken:
         cannot_run(f"cannot create {run_dir}: {broken}")
 
@@ -159,22 +198,29 @@ def main() -> int:
     for name, argv in steps:
         if stopped:
             recorded.append({"name": name, "command": shlex.join(argv), "outcome": "not_run",
-                             "exit_code": None, "output": None})
+                             "exit_code": None, "output": None,
+                             "started_at": None, "ended_at": None})
             continue
         log = run_dir / f"{name}.log"
+        started = now()
         outcome, code = run_step(argv, cwd, args.timeout_seconds, log)
         recorded.append({"name": name, "command": shlex.join(argv), "outcome": outcome,
-                         "exit_code": code, "output": f"{name}.log"})
+                         "exit_code": code, "output": f"{name}.log",
+                         "started_at": started, "ended_at": now()})
         if outcome != "passed":
             stopped = True
 
-    combined = run_dir / "run.log"
+    combined = run_dir / COMBINED_LOG
     with combined.open("w", encoding="utf-8") as handle:
         for step in recorded:
             handle.write(f"===== {step['name']} :: {step['command']} :: "
                          f"{step['outcome']} =====\n")
             if step["output"]:
-                handle.write((run_dir / str(step["output"])).read_text(errors="replace"))
+                # The encoding is stated: a step log holds whatever bytes the command printed,
+                # and reading it under the machine's locale would make one run's combined log
+                # differ between two machines.
+                handle.write((run_dir / str(step["output"]))
+                             .read_text(encoding="utf-8", errors="replace"))
             handle.write("\n")
 
     failed = next((s for s in recorded if s["outcome"] not in ("passed", "not_run")), None)
@@ -186,7 +232,7 @@ def main() -> int:
         "outcome": "passed" if failed is None else str(failed["outcome"]),
         "failed_step": None if failed is None else failed["name"],
         "steps": recorded,
-        "combined_output": "run.log",
+        "combined_output": COMBINED_LOG,
     }
     (run_dir / "run.json").write_text(json.dumps(record, indent=2, ensure_ascii=False) + "\n",
                                       encoding="utf-8")
