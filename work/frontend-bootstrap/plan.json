@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-authoring-console",
+      "kind": "epic",
+      "file": "epic/case-authoring-console.md",
+      "title": "Frontend case-authoring console substrate",
+      "summary": "The build, lint, style, type and test tooling frontend/app needs before any case-authoring screen exists, under the epic that claims this initiative's territory in the case-authoring domain."
+    },
+    {
+      "id": "inventory/frontend-app-substrate",
+      "kind": "inventory",
+      "file": "inventory/frontend-app-substrate.md",
+      "title": "Frontend app substrate landing zone",
+      "summary": "frontend/app is an empty greenfield tree; the only relevant existing material is the vendored, read-only TUI submodule the scope requires composing through a @tui/ui/* alias."
+    },
+    {
+      "id": "task/case-authoring-console/build-substrate",
+      "kind": "task",
+      "file": "task/case-authoring-console/build-substrate.md",
+      "title": "Build frontend app substrate",
+      "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
+      "epic": "case-authoring-console"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[6]"
+    }
+  ]
+}
