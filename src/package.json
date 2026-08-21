@@ -1,6 +1,7 @@
 {
-  "name": "backend",
+  "name": "servicedeskn1",
   "version": "0.1.0",
+  "description": "ServiceDeskN1 — resolvedor de casos: recebe um caso curado e um sujeito, coleta as evidências que o caso pede, julga cada hipótese e devolve o desfecho com o encaminhamento.",
   "private": true,
   "type": "module",
   "scripts": {
