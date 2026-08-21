@@ -1,0 +1,3 @@
+[submodule "frontend/tui"]
+	path = frontend/tui
+	url = git@github.com:zig999/tui.git
