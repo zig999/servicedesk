@@ -3,7 +3,8 @@
   "specification_root": "knowledge",
   "standard": "standards/backend-node-service.yaml",
   "targets": {
-    "backend": "src"
+    "backend": "src",
+    "frontend": "frontend/app"
   },
   "work_root": "work"
 }
