@@ -837,11 +837,15 @@ dependencies:
       style) are its rules.
     rules: [MNT-04, SEC-01, PRH-04]
 
-  - package: stylelint-a11y
+  - package: "@double-great/stylelint-a11y"
     why: >-
-      The style step decides ACC-12 by it -- whether an animation sits inside a reduced-motion
-      query is a question about the cascade, and this is the plugin that asks it.
-    rules: [ACC-12]
+      The style step decides ACC-05 and ACC-12 by it -- an outline suppressed with nothing in
+      its place, and whether an animation sits inside a reduced-motion query, are both
+      questions about the cascade this plugin asks. Named this way rather than as
+      stylelint-a11y (its predecessor, abandoned since 2020 and incompatible with stylelint
+      16+ by peer dependency) because this fork is what actually installs against the stylelint
+      version this registry authorizes, under the same a11y/* rule names.
+    rules: [ACC-05, ACC-12]
 
   - package: stylelint
     why: the style step is it, and MNT-02 is decided by that step.
