@@ -896,6 +896,20 @@ dependencies:
       sanitizer the rule requires, not a rule the tool applies.
     rules: [SEC-01]
 
+  - package: clsx
+    why: >-
+      ARC-01 requires composing TUI's shared catalog rather than reimplementing it, and every
+      component in that catalog builds its class list through cn(), which this package
+      underlies. No catalog component can be imported at all without it -- this is not a rule a
+      tool decides, it is what the rule ARC-01 already states requires to be reachable.
+    rules: [ARC-01]
+
+  - package: tailwind-merge
+    why: >-
+      The other half of cn() alongside clsx -- same admission, same reason -- ARC-01's reuse
+      is unreachable without it.
+    rules: [ARC-01]
+
 commands:
 
   - step: install
