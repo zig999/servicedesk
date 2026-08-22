@@ -900,6 +900,51 @@ dependencies:
       sanitizer the rule requires, not a rule the tool applies.
     rules: [SEC-01]
 
+  - package: react
+    why: >-
+      The framework this registry's own summary names -- "How this project's React and
+      TypeScript frontend ... is composed" -- and what ARC-01's composed TUI catalog renders
+      into. No rule names it because it is the runtime every rule here presupposes rather than
+      a rule of its own.
+
+  - package: react-dom
+    why: React's own render target in a browser; the same admission as react, for the same reason.
+
+  - package: "@types/react"
+    why: >-
+      TYP-01's strict typecheck cannot resolve a single React type without it -- an untyped
+      react is exactly the "any" surface TYP-01 forbids everywhere else.
+    rules: [TYP-01]
+
+  - package: "@types/react-dom"
+    why: The same admission as "@types/react", for react-dom's own types.
+    rules: [TYP-01]
+
+  - package: "@types/node"
+    why: >-
+      TYP-01's strict typecheck needs Node's own ambient types the moment any config file
+      (vite.config.ts, playwright.config.ts) reads process.env or a Node built-in.
+    rules: [TYP-01]
+
+  - package: "@eslint/js"
+    why: >-
+      Flat-config eslint has no built-in rule set of its own; this is eslint's own
+      recommended base, which the lint step's rules build on rather than replace.
+    rules: [MNT-01]
+
+  - package: typescript-eslint
+    why: >-
+      The parser and plugin bundle that lets eslint's flat config parse TypeScript and JSX at
+      all -- TYP-02 and TYP-03 are its rules, decided through this package, not through eslint
+      itself.
+    rules: [TYP-02, TYP-03]
+
+  - package: globals
+    why: >-
+      The environment global sets (browser, node) eslint.config.js declares so
+      no-undef-adjacent checks know which identifiers are ambient rather than unbound.
+    rules: [MNT-01]
+
   - package: clsx
     why: >-
       ARC-01 requires composing TUI's shared catalog rather than reimplementing it, and every
