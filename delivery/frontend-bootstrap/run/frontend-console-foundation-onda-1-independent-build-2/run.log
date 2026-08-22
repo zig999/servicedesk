@@ -1,0 +1,47 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 530 packages, and audited 531 packages in 5s
+
+187 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/hooks/use-telemetry.ts
+   96:3  warning  Unused eslint-disable directive (no problems were reported from 'no-console')
+  100:3  error    Unexpected console statement                                                   no-console
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/services/api-client.ts
+   66:18  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+   71:23  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  108:10  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/shared/components/status-table.tsx
+  38:21  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 6 problems (5 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

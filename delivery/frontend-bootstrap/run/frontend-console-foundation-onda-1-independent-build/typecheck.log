@@ -1,0 +1,5 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+../tui/frontend/src/shared/components/ui/banner/banner.tsx(2,23): error TS2307: Cannot find module '@/shared/components/ui/panel' or its corresponding type declarations.

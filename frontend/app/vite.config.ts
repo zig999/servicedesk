@@ -25,18 +25,21 @@ export default defineConfig({
     alias: [
       { find: "@tui/ui", replacement: `${tuiSharedRoot}/components/ui` },
       { find: "@tui/lib", replacement: `${tuiSharedRoot}/lib` },
-      // TUI's own components (e.g. divider.tsx, kbd.tsx) import a `cn()`
-      // helper through TUI's own internal `@/shared/lib/cn` alias (see
+      // TUI's own components (e.g. divider.tsx, kbd.tsx, banner.tsx) import
+      // each other through TUI's own internal `@/shared/...` alias (see
       // frontend/tui/frontend/vite.config.ts and tsconfig.app.json, which
       // resolve `@` to their own src/). That vendored source cannot be
-      // edited, so the exact specifier it uses is aliased here too -- narrowly,
-      // rather than claiming the bare `@` prefix this app's own future source
-      // may want for its own src/ convention.
-      { find: "@/shared/lib/cn", replacement: `${tuiSharedRoot}/lib/cn` },
+      // edited, so the whole `@/shared/...` family it uses internally is
+      // aliased here too -- covering cn(), Panel and any other cross-reference
+      // TUI's components make among themselves, present or future -- rather
+      // than claiming the bare `@` prefix this app's own future source may
+      // want for its own src/ convention.
+      { find: "@/shared", replacement: `${tuiSharedRoot}` },
     ],
   },
   test: {
-    environment: "node",
+    globals: true,
+    environment: "jsdom",
     include: ["src/**/*.spec.{ts,tsx}"],
   },
 });

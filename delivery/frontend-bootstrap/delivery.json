@@ -13,6 +13,137 @@
       ]
     },
     {
+      "id": "implementation/frontend-console-foundation/app-shell",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/app-shell.md",
+      "title": "AppShell sidebar, topbar breadcrumb and no-auth indicator",
+      "summary": "AppShell composes a three-entry sidebar (Cases, Glossary, Capabilities), a topbar over TUI's StatusBar carrying a route-derived Breadcrumb and a fixed no-auth indicator, and wraps every route by becoming the root route's own component.",
+      "task": "task/frontend-console-foundation/app-shell"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/conflict-banner",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/conflict-banner.md",
+      "title": "Reusable conflict banner",
+      "summary": "Adds ConflictBanner, a shared component composed over TUI's Banner primitive at its default frame, taking a title and message; Banner's accent prop is not reused (see the unmet criterion and divergence below).",
+      "task": "task/frontend-console-foundation/conflict-banner",
+      "unmet": [
+        "ConflictBanner reuses Banner's existing accent prop to signal a conflict, rather than adding a parallel styling mechanism."
+      ]
+    },
+    {
+      "id": "implementation/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/error-to-ui-state-table.md",
+      "title": "Error class to UI-state mapping table",
+      "summary": "A new src/services/error-ui-state.ts module resolving an ApiError's code, keyed off the exact ten mapped and four unmapped class names in src/src/errors/status-map.ts, to a closed set of UI-state tags with no rendered wording.",
+      "task": "task/frontend-console-foundation/error-to-ui-state-table"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/query-client-and-toaster",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/query-client-and-toaster.md",
+      "title": "Global QueryClient and single Toaster mount",
+      "summary": "Adds a module-level @tanstack/react-query QueryClient that toasts on a background query failure through sonner, wraps the routed app in its QueryClientProvider, and mounts the one Toaster inside AppShell.",
+      "task": "task/frontend-console-foundation/query-client-and-toaster"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/reusable-status-table",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/reusable-status-table.md",
+      "title": "Reusable clickable-row status table",
+      "summary": "StatusTable, composed over TUI's compound Table primitives, generic over columns/rows, rendering any {color,label} cell as both together and wiring a caller-supplied onRowClick to click and keyboard activation alike.",
+      "task": "task/frontend-console-foundation/reusable-status-table"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/router-skeleton",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/router-skeleton.md",
+      "title": "Route tree skeleton for the ten proposal screens",
+      "summary": "A flat @tanstack/react-router route tree with one placeholder route per proposal screen 2.1 through 2.10, wired as the single RouterProvider at the app's entry point, with no layout composed around any of them yet.",
+      "task": "task/frontend-console-foundation/router-skeleton"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/telemetry-catalog-hook.md",
+      "title": "Telemetry event catalog hook",
+      "summary": "A hook exposing the eight-event telemetry catalog as typed callables, each sinking through one shared emit() to a namespaced console.info call, with the PRH-01 departure disclosed inline where console.info is actually called.",
+      "task": "task/frontend-console-foundation/telemetry-catalog-hook"
+    },
+    {
+      "id": "implementation/frontend-console-foundation/typed-api-client",
+      "kind": "implementation",
+      "file": "implementation/frontend-console-foundation/typed-api-client.md",
+      "title": "Typed fetch client over the backend's error envelope",
+      "summary": "apiFetch() wraps fetch(), parsing a non-2xx response's {error:{code,message,details?}} envelope into a typed ApiError, and passing a 2xx JSON body through unwrapped.",
+      "task": "task/frontend-console-foundation/typed-api-client"
+    },
+    {
+      "id": "proof/frontend-console-foundation/app-shell",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/app-shell.md",
+      "title": "Proof for AppShell's sidebar, topbar breadcrumb and no-auth indicator",
+      "summary": "A self-contained three-route test router exercises AppShell's sidebar, breadcrumb, no-auth indicator and content-wrapping behavior without depending on the production route tree.",
+      "task": "task/frontend-console-foundation/app-shell"
+    },
+    {
+      "id": "proof/frontend-console-foundation/conflict-banner",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/conflict-banner.md",
+      "title": "Proof for the reusable ConflictBanner component",
+      "summary": "Three render-based tests over a real jsdom tree confirm ConflictBanner's title, message and banner landmark; the accent criterion is not tested here because the implementation record already records it as genuinely unmet.",
+      "task": "task/frontend-console-foundation/conflict-banner"
+    },
+    {
+      "id": "proof/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/error-to-ui-state-table.md",
+      "title": "Proof for the error class to UI-state mapping table",
+      "summary": "Sixteen tests prove each of the ten mapped error classes resolves to its own distinct UI-state kind, the four unmapped classes and any unrecognized code collapse onto the shared generic-error fallback, and uiStateForApiError never throws.",
+      "task": "task/frontend-console-foundation/error-to-ui-state-table"
+    },
+    {
+      "id": "proof/frontend-console-foundation/query-client-and-toaster",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/query-client-and-toaster.md",
+      "title": "Proof for the global QueryClient and single Toaster mount",
+      "summary": "The QueryClient's shape, its onError toast handler, and the single Toaster mount are proved by query-client.spec.ts and toaster-mount.spec.ts.",
+      "task": "task/frontend-console-foundation/query-client-and-toaster"
+    },
+    {
+      "id": "proof/frontend-console-foundation/reusable-status-table",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/reusable-status-table.md",
+      "title": "Proof for the reusable StatusTable component",
+      "summary": "Twelve render-based tests over StatusTable cover header/row/cell projection, missing-field tolerance, click and keyboard activation scoped to the exact clicked row, inert-row semantics, and the status-value color indicator's presence and absence.",
+      "task": "task/frontend-console-foundation/reusable-status-table"
+    },
+    {
+      "id": "proof/frontend-console-foundation/router-skeleton",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/router-skeleton.md",
+      "title": "Route tree skeleton -- structural proof without rendering",
+      "summary": "Four tests over src/routes/route-tree.tsx's router instance, read through @tanstack/react-router's own synchronously-populated routesById, proving the ten leaf paths, their pairwise distinctness, and their one-to-one placeholder assignment -- with no render and no DOM.",
+      "task": "task/frontend-console-foundation/router-skeleton"
+    },
+    {
+      "id": "proof/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/telemetry-catalog-hook.md",
+      "title": "Proof for the telemetry event catalog hook",
+      "summary": "Tests over useTelemetry() proving the eight cataloged events are exposed, each sinks exactly once to a correctly-namespaced console.info call carrying its own payload, calling one never fires any of the other seven, and no callable ever reaches the network.",
+      "task": "task/frontend-console-foundation/telemetry-catalog-hook"
+    },
+    {
+      "id": "proof/frontend-console-foundation/typed-api-client",
+      "kind": "proof",
+      "file": "proof/frontend-console-foundation/typed-api-client.md",
+      "title": "Proof for the typed fetch client over the backend's error envelope",
+      "summary": "Tests apiFetch()'s 2xx pass-through and its parsing of a non-2xx response into a typed ApiError, including the malformed-body case the implementation record infers.",
+      "task": "task/frontend-console-foundation/typed-api-client"
+    },
+    {
       "id": "review/frontend-bootstrap",
       "kind": "review",
       "file": "review/frontend-bootstrap.md",
@@ -43,6 +174,108 @@
       "from": "implementation/case-authoring-console/build-substrate",
       "to": "task/case-authoring-console/build-substrate",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/app-shell",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/app-shell",
+      "to": "task/frontend-console-foundation/app-shell",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/conflict-banner",
+      "to": "task/frontend-console-foundation/conflict-banner",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/error-to-ui-state-table",
+      "to": "task/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/query-client-and-toaster",
+      "to": "task/frontend-console-foundation/query-client-and-toaster",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/reusable-status-table",
+      "to": "task/frontend-console-foundation/reusable-status-table",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/router-skeleton",
+      "to": "task/frontend-console-foundation/router-skeleton",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/telemetry-catalog-hook",
+      "to": "task/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/frontend-console-foundation/typed-api-client",
+      "to": "task/frontend-console-foundation/typed-api-client",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/app-shell",
+      "to": "implementation/frontend-console-foundation/app-shell",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/conflict-banner",
+      "to": "implementation/frontend-console-foundation/conflict-banner",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/error-to-ui-state-table",
+      "to": "implementation/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/query-client-and-toaster",
+      "to": "implementation/frontend-console-foundation/query-client-and-toaster",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/reusable-status-table",
+      "to": "implementation/frontend-console-foundation/reusable-status-table",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/router-skeleton",
+      "to": "implementation/frontend-console-foundation/router-skeleton",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/telemetry-catalog-hook",
+      "to": "implementation/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-console-foundation/typed-api-client",
+      "to": "implementation/frontend-console-foundation/typed-api-client",
+      "kind": "proves",
       "at": "the path"
     },
     {

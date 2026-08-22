@@ -1,0 +1,9 @@
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 530 packages, and audited 531 packages in 5s
+
+187 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities

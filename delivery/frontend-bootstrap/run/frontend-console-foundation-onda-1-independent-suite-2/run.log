@@ -1,0 +1,320 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 571 packages, and audited 572 packages in 6s
+
+192 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+===== style :: npm run lint:css :: passed =====
+
+> case-authoring-console@0.1.0 lint:css
+> stylelint "src/**/*.css"
+
+
+===== build :: npm run build :: passed =====
+
+> case-authoring-console@0.1.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 121 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:  0.28 kB
+dist/assets/index-DlOkDzzZ.css    6.95 kB │ gzip:  2.43 kB
+dist/assets/index-XbbQwJl4.js   278.22 kB │ gzip: 89.50 kB
+✓ built in 937ms
+
+===== a11y :: npm run test:a11y :: passed =====
+
+> case-authoring-console@0.1.0 test:a11y
+> playwright test --pass-with-no-tests
+
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> case-authoring-console@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> case-authoring-console@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v4.1.11 /home/siegfriedneto/projects/siegardtest/frontend/app
+
+ ❯ src/services/api-client.spec.ts (6 tests | 1 failed) 47ms
+     × leaves details absent as an own property when the response envelope carries none 6ms
+ ❯ src/shared/components/conflict-banner.spec.ts (3 tests | 2 failed) 86ms
+     × renders the given title as Banner's own heading 66ms
+     × renders through Banner's own markup, carrying the banner landmark, rather than bespoke conflict markup 13ms
+ ❯ src/shared/components/status-table.spec.ts (12 tests | 4 failed) 132ms
+     × calls onRowClick with exactly the clicked row's data, not another row's 7ms
+     × activates onRowClick when Enter is pressed on the row 4ms
+     × activates onRowClick when Space is pressed on the row 4ms
+     × does not activate onRowClick for a key other than Enter or Space 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/services/api-client.spec.ts > apiFetch > leaves details absent as an own property when the response envelope carries none
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/services/api-client.spec.ts:72:35
+     70|       throw apiError;
+     71|     }
+     72|     expect("details" in apiError).toBe(false);
+       |                                   ^
+     73|   });
+     74|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/shared/components/conflict-banner.spec.ts > ConflictBanner > renders the given title as Banner's own heading
+TestingLibraryElementError: Found multiple elements with the role "heading" and name "Version conflict"
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+[36m<h2[39m
+  [33mclass[39m=[32m"-mt-[0.6em] w-fit bg-surface px-2 text-sm font-medium text-destructive"[39m
+  [33mid[39m=[32m"_r_0_"[39m
+[36m>[39m
+  [0mVersion conflict[0m
+[36m</h2>[39m
+
+Ignored nodes: comments, script, style
+[36m<h1[39m
+  [33mclass[39m=[32m"text-4xl font-bold tracking-wider text-foreground"[39m
+[36m>[39m
+  [0mVersion conflict[0m
+[36m</h1>[39m
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-labelledby[39m=[32m"_r_0_"[39m
+      [33mclass[39m=[32m"border bg-surface p-4 border-destructive relative"[39m
+      [33mdata-slot[39m=[32m"panel"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"-mt-[0.6em] w-fit bg-surface px-2 text-sm font-medium text-destructive"[39m
+        [33mid[39m=[32m"_r_0_"[39m
+      [36m>[39m
+        [0mVersion conflict[0m
+      [36m</h2>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col items-center gap-1 text-center"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-4xl font-bold tracking-wider text-foreground"[39m
+        [36m>[39m
+          [0mVersion conflict[0m
+        [36m</h1>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mSomeone else already saved a newer version of this record.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getElementError node_modules/@testing-library/dom/dist/query-helpers.js:20:35
+ ❯ getMultipleElementsFoundError node_modules/@testing-library/dom/dist/query-helpers.js:23:10
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:55:13
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/shared/components/conflict-banner.spec.ts:13:28
+     11|     render(createElement(ConflictBanner, { title, message }));
+     12|
+     13|     const heading = screen.getByRole("heading", { name: title });
+       |                            ^
+     14|     expect(heading.textContent).toBe(title);
+     15|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/shared/components/conflict-banner.spec.ts > ConflictBanner > renders through Banner's own markup, carrying the banner landmark, rather than bespoke conflict markup
+TestingLibraryElementError: Unable to find an accessible element with the role "banner"
+
+Here are the accessible roles:
+
+  region:
+
+  Name "Version conflict":
+  [36m<section[39m
+    [33maria-labelledby[39m=[32m"_r_2_"[39m
+    [33mclass[39m=[32m"border bg-surface p-4 border-destructive relative"[39m
+    [33mdata-slot[39m=[32m"panel"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  heading:
+
+  Name "Version conflict":
+  [36m<h2[39m
+    [33mclass[39m=[32m"-mt-[0.6em] w-fit bg-surface px-2 text-sm font-medium text-destructive"[39m
+    [33mid[39m=[32m"_r_2_"[39m
+  [36m/>[39m
+
+  Name "Version conflict":
+  [36m<h1[39m
+    [33mclass[39m=[32m"text-4xl font-bold tracking-wider text-foreground"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33maria-labelledby[39m=[32m"_r_2_"[39m
+      [33mclass[39m=[32m"border bg-surface p-4 border-destructive relative"[39m
+      [33mdata-slot[39m=[32m"panel"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"-mt-[0.6em] w-fit bg-surface px-2 text-sm font-medium text-destructive"[39m
+        [33mid[39m=[32m"_r_2_"[39m
+      [36m>[39m
+        [0mVersion conflict[0m
+      [36m</h2>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col items-center gap-1 text-center"[39m
+      [36m>[39m
+        [36m<h1[39m
+          [33mclass[39m=[32m"text-4xl font-bold tracking-wider text-foreground"[39m
+        [36m>[39m
+          [0mVersion conflict[0m
+        [36m</h1>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mSomeone else already saved a newer version of this record.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/shared/components/conflict-banner.spec.ts:31:19
+     29|     // "banner" ARIA landmark. Bespoke conflict markup built by hand, …
+     30|     // <div> stack, would not produce this landmark at all.
+     31|     expect(screen.getByRole("banner")).not.toBeNull();
+       |                   ^
+     32|   });
+     33| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/shared/components/status-table.spec.ts > StatusTable > calls onRowClick with exactly the clicked row's data, not another row's
+Error: Unable to fire a "click" event - please provide a DOM element.
+ ❯ createEvent node_modules/@testing-library/dom/dist/events.js:27:11
+ ❯ Function.createEvent.<computed> [as click] node_modules/@testing-library/dom/dist/events.js:106:38
+ ❯ Function.fireEvent.<computed> [as click] node_modules/@testing-library/dom/dist/events.js:110:68
+ ❯ Function.fireEvent.<computed> [as click] node_modules/@testing-library/react/dist/fire-event.js:15:52
+ ❯ src/shared/components/status-table.spec.ts:77:15
+     75|     // Row 0 is the header row; data rows follow in order, so "Second"…
+     76|     const target = screen.getAllByRole("row")[2];
+     77|     fireEvent.click(target);
+       |               ^
+     78|
+     79|     expect(onRowClick).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/shared/components/status-table.spec.ts > StatusTable > activates onRowClick when Enter is pressed on the row
+Error: Unable to fire a "keydown" event - please provide a DOM element.
+ ❯ createEvent node_modules/@testing-library/dom/dist/events.js:27:11
+ ❯ Function.createEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:106:38
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:110:68
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/react/dist/fire-event.js:15:52
+ ❯ src/shared/components/status-table.spec.ts:100:15
+     98|
+     99|     const target = screen.getAllByRole("row")[1];
+    100|     fireEvent.keyDown(target, { key: "Enter" });
+       |               ^
+    101|
+    102|     expect(onRowClick).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/shared/components/status-table.spec.ts > StatusTable > activates onRowClick when Space is pressed on the row
+Error: Unable to fire a "keydown" event - please provide a DOM element.
+ ❯ createEvent node_modules/@testing-library/dom/dist/events.js:27:11
+ ❯ Function.createEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:106:38
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:110:68
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/react/dist/fire-event.js:15:52
+ ❯ src/shared/components/status-table.spec.ts:114:15
+    112|
+    113|     const target = screen.getAllByRole("row")[1];
+    114|     fireEvent.keyDown(target, { key: " " });
+       |               ^
+    115|
+    116|     expect(onRowClick).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  src/shared/components/status-table.spec.ts > StatusTable > does not activate onRowClick for a key other than Enter or Space
+Error: Unable to fire a "keydown" event - please provide a DOM element.
+ ❯ createEvent node_modules/@testing-library/dom/dist/events.js:27:11
+ ❯ Function.createEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:106:38
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/dom/dist/events.js:110:68
+ ❯ Function.fireEvent.<computed> [as keyDown] node_modules/@testing-library/react/dist/fire-event.js:15:52
+ ❯ src/shared/components/status-table.spec.ts:128:15
+    126|
+    127|     const target = screen.getAllByRole("row")[1];
+    128|     fireEvent.keyDown(target, { key: "a" });
+       |               ^
+    129|
+    130|     expect(onRowClick).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  7 failed | 37 passed (44)
+   Start at  03:24:55
+   Duration  1.02s (transform 363ms, setup 0ms, import 862ms, tests 291ms, environment 2.36s)
+
+

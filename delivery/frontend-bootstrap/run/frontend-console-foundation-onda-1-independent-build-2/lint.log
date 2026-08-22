@@ -1,0 +1,20 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/hooks/use-telemetry.ts
+   96:3  warning  Unused eslint-disable directive (no problems were reported from 'no-console')
+  100:3  error    Unexpected console statement                                                   no-console
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/services/api-client.ts
+   66:18  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+   71:23  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  108:10  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/shared/components/status-table.tsx
+  38:21  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 6 problems (5 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

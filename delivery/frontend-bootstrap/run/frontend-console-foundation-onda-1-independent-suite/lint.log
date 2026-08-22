@@ -1,0 +1,32 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/shared/components/conflict-banner.spec.ts
+  2:10  error  `cleanup` is performed automatically by your test runner, you don't need manual cleanups  testing-library/no-manual-cleanup
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/shared/components/status-table.spec.ts
+    3:10  error  `cleanup` is performed automatically by your test runner, you don't need manual cleanups             testing-library/no-manual-cleanup
+   73:47  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+   73:47  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+   99:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+   99:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  116:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  116:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  133:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  133:45  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  148:46  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  148:46  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  165:24  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  165:24  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  169:28  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  169:28  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  180:12  error  Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"  testing-library/no-container
+  180:22  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  189:41  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  189:41  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+  193:17  error  Avoid direct Node access. Prefer using the methods from Testing Library                              testing-library/no-node-access
+
+✖ 21 problems (21 errors, 0 warnings)
+
