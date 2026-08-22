@@ -296,6 +296,24 @@
         "Visiting each defined route renders that route's own placeholder component, distinct from every other route's placeholder."
       ],
       "findings": 2
+    },
+    {
+      "id": "review/version-editor-onda-3",
+      "kind": "review",
+      "file": "review/version-editor-onda-3.md",
+      "title": "Review of version-editor onda 3 (2 delivered tasks)",
+      "summary": "Four-pass review of the 2 delivered version-editor tasks: coverage over their 14 criteria, specification conformance, standard conformance, and the failures pass (which did not run -- the captured run passed cleanly).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A 201 response to that POST switches the form into the same edit-mode flow edit-draft-version delivers for an existing draft, addressed by the version number the response returns.",
+        "Clicking \"New draft\" opens the Version Editor with no version's content pre-loaded, and the subject field pre-set to the one subject-type value GET /v1/glossary/subject-type currently returns.",
+        "The form's own state moves clean to dirty on any field change, dirty to saving while the PATCH request is in flight, and saving to clean on a 200 response or saving to conflict on a 409 CaseVersionNotDraftError response."
+      ],
+      "findings": 5
     }
   ],
   "edges": [
@@ -730,6 +748,18 @@
       "to": "task/frontend-console-foundation/reusable-status-table",
       "kind": "reviews",
       "at": "tasks[7]"
+    },
+    {
+      "from": "review/version-editor-onda-3",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/version-editor-onda-3",
+      "to": "task/version-editor/new-draft-creation",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
