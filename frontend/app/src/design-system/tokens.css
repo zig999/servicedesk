@@ -1,1 +1,24 @@
 @import "../../../tui/frontend/src/theme.css";
+
+/*
+  frontend/tui is a separate git submodule (see .gitmodules). Tailwind v4's
+  automatic content-detection, triggered by the bare `@import "tailwindcss";`
+  inside theme.css above, walks outward from this file through @import
+  boundaries but never crosses into that submodule's own file tree to find
+  which of its classes are actually used -- so a utility class referenced
+  only inside a TUI component's own source (e.g. Checkbox's `sr-only`,
+  Select's `h-9`) never gets a compiled CSS rule here, even though the
+  component itself renders correctly (its class strings do reach the bundled
+  JS; only the CSS generation misses them).
+
+  This `@source` directive is Tailwind v4's own documented mechanism for
+  extending content detection to a path outside what it finds on its own:
+  it tells the scanner to also walk frontend/tui/frontend/src (relative to
+  this file, mirroring the @import above) for every class TUI's own
+  components use internally, so this app's compiled stylesheet always
+  matches what TUI's own Storybook renders. frontend/tui's own files are not
+  edited by this -- theme.css and shared/components/ui/ stay exactly as that
+  submodule owns them; this line lives entirely in tokens.css, the one file
+  this app owns for wiring TUI's design system in.
+*/
+@source "../../../tui/frontend/src";

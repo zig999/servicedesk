@@ -23,6 +23,13 @@
       "summary": "The app shell, router skeleton, typed API client, error-to-UI-state mapping, and the shared components (conflict banner, telemetry hook, reusable status table, query client and toaster) that this wave builds before any case-authoring, glossary or capabilities screen exists."
     },
     {
+      "id": "epic/glossary-and-capabilities-browser",
+      "kind": "epic",
+      "file": "epic/glossary-and-capabilities-browser.md",
+      "title": "Glossary and Capabilities Browsers",
+      "summary": "Two read-only screens over the published glossary and capability-registry reads — the six-tab Glossary Browser and the table-plus-client-side-detail Capabilities Browser — replacing GlossaryPlaceholder and CapabilitiesPlaceholder."
+    },
+    {
       "id": "epic/manifest-hypothesis-authoring",
       "kind": "epic",
       "file": "epic/manifest-hypothesis-authoring.md",
@@ -65,6 +72,13 @@
       "summary": "Onda 4's three surfaces share one target route/state area, on top of a typed API client, an error-to-UI-state table, a telemetry hook, and a Version Editor whose save-state and form conventions are the ones to extend rather than re-derive."
     },
     {
+      "id": "inventory/glossary-and-capabilities-browsers",
+      "kind": "inventory",
+      "file": "inventory/glossary-and-capabilities-browsers.md",
+      "title": "Glossary and Capabilities browsers — router, hooks, table/tabs primitives already in place",
+      "summary": "The router, sidebar, both glossary-reading hooks and the reusable row-click table already exist; this onda replaces two placeholders and adds one sibling hook plus new screens, with no established precedent yet for a click-row/detail-panel-below layout."
+    },
+    {
       "id": "inventory/version-editor-foundation",
       "kind": "inventory",
       "file": "inventory/version-editor-foundation.md",
@@ -84,6 +98,14 @@
       "file": "task/case-authoring-console/build-substrate.md",
       "title": "Build frontend app substrate",
       "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
+      "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "task",
+      "file": "task/case-authoring-console/tailwind-scans-the-tui-submodule.md",
+      "title": "Tailwind scans TUI's own submodule source, not only frontend/app's own files",
+      "summary": "Adds an explicit Tailwind v4 `@source` directive so frontend/app's own build generates a CSS rule for every utility class TUI's component source (frontend/tui/frontend/src, a separate git submodule) uses internally, even where frontend/app's own source never repeats that class name verbatim -- closing a gap a curator found by actually running the delivered system.",
       "epic": "case-authoring-console"
     },
     {
@@ -173,6 +195,30 @@
       "title": "Typed fetch client over the backend's error envelope",
       "summary": "A fetch wrapper that parses the backend's {error:{code,message,details?}} envelope into a typed ApiError, matching src/src/http/error-handler.middleware.ts.",
       "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "task",
+      "file": "task/glossary-and-capabilities-browser/capabilities-browser-screen.md",
+      "title": "Capabilities Browser screen",
+      "summary": "Replaces CapabilitiesPlaceholder with a table listing every registered capability and a client-side row-selection detail panel showing that same row's own schema, with no second network read.",
+      "epic": "glossary-and-capabilities-browser"
+    },
+    {
+      "id": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "task",
+      "file": "task/glossary-and-capabilities-browser/glossary-browser-screen.md",
+      "title": "Glossary Browser screen",
+      "summary": "Replaces GlossaryPlaceholder with a six-tab, read-only screen — Concepts, Subject types, Subject attributes, Outcomes, Actions, Recipients — each listing its own vocabulary or the concept catalog.",
+      "epic": "glossary-and-capabilities-browser"
+    },
+    {
+      "id": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "kind": "task",
+      "file": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union.md",
+      "title": "Extend GlossaryVocabulary to accept subject-attribute",
+      "summary": "The shared GlossaryVocabulary union type and its one hook, useGlossaryVocabularyOptions, accept \"subject-attribute\" as a fifth vocabulary, exactly as GET /v1/glossary/subject-attribute already answers.",
+      "epic": "glossary-and-capabilities-browser"
     },
     {
       "id": "task/manifest-hypothesis-authoring/hypotheses-tab",
@@ -423,6 +469,66 @@
       "to": "constraints/no-route-enforces-authentication",
       "kind": "covers",
       "at": "covers[7]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/action",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/outcome",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/recipient",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/glossary-and-capabilities-browser",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[9]"
     },
     {
       "from": "epic/manifest-hypothesis-authoring",
@@ -873,6 +979,84 @@
       "to": "task/frontend-console-foundation/app-shell",
       "kind": "depends_on",
       "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/manifest-hypothesis-authoring/hypotheses-tab",

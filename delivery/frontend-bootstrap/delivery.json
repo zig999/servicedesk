@@ -13,6 +13,14 @@
       ]
     },
     {
+      "id": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "implementation",
+      "file": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule.md",
+      "title": "Tailwind content-detection extended to TUI's own submodule source",
+      "summary": "Adds a Tailwind v4 @source directive to tokens.css so frontend/app's compiled stylesheet generates CSS rules for utility classes TUI's own component source uses internally, closing the submodule content-scanning gap that left Checkbox's sr-only and Select's h-9 (and every other TUI-internal-only class) without compiled CSS.",
+      "task": "task/case-authoring-console/tailwind-scans-the-tui-submodule"
+    },
+    {
       "id": "implementation/cases-list-and-detail/case-detail-timeline",
       "kind": "implementation",
       "file": "implementation/cases-list-and-detail/case-detail-timeline.md",
@@ -158,6 +166,14 @@
       "title": "Release a draft case version",
       "summary": "Adds a \"Release…\" control and its in-place confirmation Dialog to the Version Editor, with a client-computed pre-release checklist, a single POST .../release on confirm, and rendering for its 200/409/422 outcomes.",
       "task": "task/version-editor/release-draft-version"
+    },
+    {
+      "id": "proof/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "proof",
+      "file": "proof/case-authoring-console/tailwind-scans-the-tui-submodule.md",
+      "title": "Tailwind's compiled output for TUI's own utility classes",
+      "summary": "A single, dedicated real-build spec proves that frontend/app's compiled stylesheet declares sr-only, h-9, and a third TUI-only class (max-h-60) after tokens.css's added @source directive, and that the fix leaves frontend/app's own already-detected classes compiling unchanged.",
+      "task": "task/case-authoring-console/tailwind-scans-the-tui-submodule"
     },
     {
       "id": "proof/cases-list-and-detail/case-detail-timeline",
@@ -436,6 +452,12 @@
     {
       "from": "implementation/case-authoring-console/build-substrate",
       "to": "task/case-authoring-console/build-substrate",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "to": "task/case-authoring-console/tailwind-scans-the-tui-submodule",
       "kind": "implements",
       "at": "the path"
     },
@@ -1085,6 +1107,12 @@
       "from": "implementation/version-editor/release-draft-version",
       "to": "task/version-editor/release-draft-version",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "to": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "proves",
       "at": "the path"
     },
     {
