@@ -973,6 +973,41 @@ dependencies:
       vite.config.ts wires it.
     rules: [ARC-05]
 
+  - package: "@tanstack/react-router"
+    why: >-
+      A typed router is what lets ARC-02's route components read state and compose feature
+      components without owning navigation logic of their own; this project's routes nest
+      several levels deep (a case, one of its versions, that version's manifest, one of its
+      hypotheses), which a router with typed params is what keeps addressable rather than
+      assembled by hand at each screen. Same package TUI's own frontend already depends on.
+    rules: [ARC-02]
+
+  - package: "@tanstack/react-query"
+    why: >-
+      STA-01 requires server data read from a cache, never copied into a separate store; this
+      is the cache. It also gives every screen the same retry/staleness/refetch behavior for
+      one shared backend, so no two screens invent their own polling or invalidation logic.
+    rules: [STA-01]
+
+  - package: react-hook-form
+    why: >-
+      The Version Editor and the hypothesis-revision form are both full-replace submissions
+      against a strict backend contract; this is the form state manager every text field,
+      dirty flag and submission state in those two screens reads from, so no component hand-rolls
+      its own onChange bookkeeping.
+
+  - package: zod
+    why: >-
+      Client-side validation before a full-replace PATCH or a hypothesis POST, paired with
+      react-hook-form -- never the final authority (the backend still validates), but what
+      keeps an obviously-invalid submission from making a round trip only to be refused.
+
+  - package: sonner
+    why: >-
+      The toast mechanism the proposal's own wireframes call for on an expected race condition
+      (a second curator already opened a draft) and other transient confirmations -- one
+      shared toaster instance, not a bespoke one per screen.
+
 commands:
 
   - step: install
