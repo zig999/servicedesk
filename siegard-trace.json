@@ -1833,7 +1833,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -3207,7 +3207,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
         },
         {
           "path": "src/src/case/case-query.service.ts",
