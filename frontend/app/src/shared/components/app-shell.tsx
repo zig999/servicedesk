@@ -32,7 +32,11 @@ const SIDEBAR_ENTRIES: ReadonlyArray<{
  * Ten entries from the router skeleton task's own ten proposal screens, plus
  * "/cases/$slug/versions/new" (task/version-editor/new-draft-creation's own
  * blank-form entry point, added after that task's own scope required a route
- * distinct from the general Version Editor).
+ * distinct from the general Version Editor), plus "/cases/$slug/versions/
+ * $version/manifest/hypotheses/new" (task/manifest-hypothesis-authoring/
+ * revise-hypothesis-form's own distinct New-hypothesis entry point, added
+ * for the same reason -- a hypothesis literally named "new" must not
+ * collide with the create trigger).
  */
 const ROUTE_LABELS: Record<string, string> = {
   "/cases": "Cases List",
@@ -42,6 +46,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/cases/$slug/versions/$version/manifest": "Manifest Builder",
   "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName":
     "Revise Hypothesis",
+  "/cases/$slug/versions/$version/manifest/hypotheses/new": "New Hypothesis",
   "/cases/$slug/versions/$version/release": "Release",
   "/cases/$slug/versions/$version/discard": "Discard",
   "/cases/$slug/hypotheses": "Hypotheses",

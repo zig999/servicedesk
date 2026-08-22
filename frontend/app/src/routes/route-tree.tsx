@@ -4,13 +4,14 @@ import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
 import { NewCaseDraftScreen } from "./new-case-draft-screen";
+import { NewHypothesisScreen } from "./new-hypothesis-screen";
+import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
+import { VersionManifestScreen } from "./version-manifest-screen";
 import {
   CaseHypothesesPlaceholder,
   GlossaryPlaceholder,
   CapabilitiesPlaceholder,
-  ManifestHypothesisPlaceholder,
   VersionDiscardPlaceholder,
-  VersionManifestPlaceholder,
   VersionReleasePlaceholder,
 } from "./route-placeholders";
 
@@ -57,16 +58,32 @@ const newCaseVersionRoute = createRoute({
   component: NewCaseDraftScreen,
 });
 
+// task/manifest-hypothesis-authoring/manifest-builder's own screen: reorders
+// and prunes a draft's manifest, replacing VersionManifestPlaceholder.
 const versionManifestRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/versions/$version/manifest",
-  component: VersionManifestPlaceholder,
+  component: VersionManifestScreen,
 });
 
 const manifestHypothesisRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName",
-  component: ManifestHypothesisPlaceholder,
+  component: ReviseHypothesisScreen,
+});
+
+// task/manifest-hypothesis-authoring/revise-hypothesis-form's own criterion
+// 1: a distinct route for the blank "New hypothesis" entry point, so a
+// hypothesis literally named "new" is addressed by manifestHypothesisRoute
+// above rather than being captured here. A static "new" segment ranks over
+// the "$hypothesisName" param segment above regardless of declaration order
+// (TanStack Router sorts a route tree by specificity, not by registration
+// order), the same convention newCaseVersionRoute already establishes for
+// "/cases/$slug/versions/new" beside "/cases/$slug/versions/$version".
+const newManifestHypothesisRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/cases/$slug/versions/$version/manifest/hypotheses/new",
+  component: NewHypothesisScreen,
 });
 
 const versionReleaseRoute = createRoute({
@@ -106,6 +123,7 @@ const routeTree = rootRoute.addChildren([
   newCaseVersionRoute,
   versionManifestRoute,
   manifestHypothesisRoute,
+  newManifestHypothesisRoute,
   versionReleaseRoute,
   versionDiscardRoute,
   glossaryRoute,

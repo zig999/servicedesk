@@ -104,6 +104,30 @@
       "task": "task/frontend-console-foundation/typed-api-client"
     },
     {
+      "id": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "implementation",
+      "file": "implementation/manifest-hypothesis-authoring/hypotheses-tab.md",
+      "title": "Hypotheses tab on Case Detail — list, per-hypothesis revision history, Revise entry point",
+      "summary": "Adds a \"Hypotheses\" tab beside \"Versions\" on Case Detail, listing every hypothesis with its total revision count and, on selection, that hypothesis's own current/frozen revision history with a Revise-> link on the current revision.",
+      "task": "task/manifest-hypothesis-authoring/hypotheses-tab"
+    },
+    {
+      "id": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "kind": "implementation",
+      "file": "implementation/manifest-hypothesis-authoring/manifest-builder.md",
+      "title": "Manifest Builder screen — reorder and remove over the real manifest endpoints",
+      "summary": "Replaces VersionManifestPlaceholder with a screen and a hook that render a draft version's manifest in declared order and drive isolated PUT/DELETE mutations for reorder and removal, adding the one apiFetch fix (204-body handling) both mutations need to work at all, plus a vite.config.ts fix for a real dual-React-copy crash this task's own use of TUI's Tooltip/Dialog first exposed.",
+      "task": "task/manifest-hypothesis-authoring/manifest-builder"
+    },
+    {
+      "id": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "kind": "implementation",
+      "file": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form.md",
+      "title": "Revise/New-hypothesis form, over the real POST body shape",
+      "summary": "A shared form for both a blank \"New hypothesis\" route and a pre-loaded \"Revise\" route, filtering Collects client-side by the draft's own subject type, dispatching the real POST /v1/cases/{slug}/hypotheses, and showing one generic failure state for any of that endpoint's four unmapped domain errors.",
+      "task": "task/manifest-hypothesis-authoring/revise-hypothesis-form"
+    },
+    {
       "id": "implementation/version-editor/edit-draft-version",
       "kind": "implementation",
       "file": "implementation/version-editor/edit-draft-version.md",
@@ -206,6 +230,30 @@
       "title": "Proof for the typed fetch client over the backend's error envelope",
       "summary": "Tests apiFetch()'s 2xx pass-through and its parsing of a non-2xx response into a typed ApiError, including the malformed-body case the implementation record infers.",
       "task": "task/frontend-console-foundation/typed-api-client"
+    },
+    {
+      "id": "proof/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "proof",
+      "file": "proof/manifest-hypothesis-authoring/hypotheses-tab.md",
+      "title": "Proof for the Hypotheses tab and its revision-history view",
+      "summary": "Twenty tests across three new spec files (plus a shared test-support module) prove hypotheses-tab's seven criteria -- the new Hypotheses tab beside Versions, the hypothesis list and its total-derived Revisions count, the expand/collapse into a hypothesis's own revision history, and that history's current/frozen labeling with its Revise link -- while confirming the pre-existing case-detail-screen.spec.ts needed no changes because the Versions tab stays selected and mounted by default.",
+      "task": "task/manifest-hypothesis-authoring/hypotheses-tab"
+    },
+    {
+      "id": "proof/manifest-hypothesis-authoring/manifest-builder",
+      "kind": "proof",
+      "file": "proof/manifest-hypothesis-authoring/manifest-builder.md",
+      "title": "Proof for the Manifest Builder's reorder and remove screen",
+      "summary": "Nineteen tests over VersionManifestScreen, split across four spec files sharing one test-support module, plus one targeted addition to api-client.spec.ts, proving all ten criteria, the isBusy/confirmation-dialog inferences the implementation discloses, and the load/error and generic-failure edges those criteria do not name.",
+      "task": "task/manifest-hypothesis-authoring/manifest-builder"
+    },
+    {
+      "id": "proof/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "kind": "proof",
+      "file": "proof/manifest-hypothesis-authoring/revise-hypothesis-form.md",
+      "title": "Proof for the shared Revise/New-hypothesis form",
+      "summary": "Tests proving task/manifest-hypothesis-authoring/revise-hypothesis-form's eleven criteria, over the two new routes, the shared form's load/pre-population/submission state machine, its concept and glossary dropdowns, and its one generic failure state.",
+      "task": "task/manifest-hypothesis-authoring/revise-hypothesis-form"
     },
     {
       "id": "proof/version-editor/edit-draft-version",
@@ -450,6 +498,228 @@
       "at": "the path"
     },
     {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "task/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "to": "task/manifest-hypothesis-authoring/manifest-builder",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/a-hypothesis-declares-a-criterion",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "rules/knowledge/every-position-declares-a-resolution",
+      "kind": "encodes",
+      "at": "nodes[18]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "task/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/version-editor/edit-draft-version",
       "to": "domain/knowledge/case-version",
       "kind": "encodes",
@@ -662,6 +932,24 @@
     {
       "from": "proof/frontend-console-foundation/typed-api-client",
       "to": "implementation/frontend-console-foundation/typed-api-client",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-hypothesis-authoring/hypotheses-tab",
+      "to": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-hypothesis-authoring/manifest-builder",
+      "to": "implementation/manifest-hypothesis-authoring/manifest-builder",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "to": "implementation/manifest-hypothesis-authoring/revise-hypothesis-form",
       "kind": "proves",
       "at": "the path"
     },

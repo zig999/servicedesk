@@ -109,11 +109,25 @@ async function toApiError(response: Response): Promise<ApiError> {
  * caller unwrapped, exactly as the response carried it; a non-2xx response
  * is parsed into an ApiError and thrown, never returned as a raw Response
  * or a generic Error.
+ *
+ * A 204 is answered with no body at all (task/manifest-hypothesis-authoring/
+ * manifest-builder's own place-hypothesis/remove-hypothesis PUT and DELETE
+ * calls, confirmed directly against src/src/http/place-hypothesis.routes.ts
+ * and remove-hypothesis.routes.ts's own `reply.code(204).send()`): calling
+ * `response.json()` against an empty body throws a SyntaxError per the Fetch
+ * spec, which this branch avoids by never attempting to parse one. Every
+ * other status this wrapper already handled (a non-2xx response, or a 2xx
+ * response carrying a real JSON body) is unaffected -- this is additive, not
+ * a narrowing of what a 200/201 caller already received.
  */
 export async function apiFetch<T>(input: string, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
   if (!response.ok) {
     throw await toApiError(response);
+  }
+  if (response.status === 204) {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- guarded by the response.status === 204 check above (no body is ever sent for this status, confirmed against the routes named in the comment above this function); this project's rule flags every `as`, not only an unguarded one, and every caller of a 204 endpoint declares T as void for exactly this reason.
+    return undefined as T;
   }
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- guarded by the `!response.ok` check above, which routes every non-2xx response through toApiError() and leaves only a confirmed-successful response reaching this line; this project's rule flags every `as`, not only an unguarded one, and this cast narrows to the caller-declared T for that confirmed response rather than asserting past a check.
   return (await response.json()) as T;

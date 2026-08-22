@@ -20,6 +20,15 @@ describe("apiFetch", () => {
     expect(result).toEqual(body);
   });
 
+  it("resolves without throwing on a 204 response, never attempting to parse an empty body", async () => {
+    const response = new Response(null, { status: 204 });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
+
+    const result = await apiFetch<void>("/cases/case-1/manifest/H1");
+
+    expect(result).toBeUndefined();
+  });
+
   it("rejects with an ApiError carrying the envelope's own code and message for a non-2xx response", async () => {
     const response = new Response(
       JSON.stringify({ error: { code: "CaseNotFoundError", message: "case not found" } }),

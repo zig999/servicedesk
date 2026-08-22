@@ -1,54 +1,56 @@
 import type { JSX } from "react";
 import { Link, useParams } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { apiFetch } from "../services/api-client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
 import {
   StatusTable,
   type StatusTableColumn,
   type StatusTableRow,
 } from "../shared/components/status-table";
+import {
+  useCaseVersions,
+  type CaseVersionListItem,
+  type CaseVersionState,
+} from "../hooks/use-case-versions";
+import { CaseHypothesesTab } from "./case-hypotheses-tab";
 
 /**
- * The read-only half of Case Detail (task/cases-list-and-detail/
- * case-detail-timeline): a case's version timeline, read from
- * GET /v1/cases/:slug/versions (contracts/knowledge/case-query's own
- * list-case-versions operation), and a precondition-free "Continue editing"
- * navigation to whichever version is still in draft.
+ * Case Detail (task/cases-list-and-detail/case-detail-timeline, extended by
+ * task/manifest-hypothesis-authoring/hypotheses-tab): two tabs over one
+ * case, built with the existing tabs component (@tui/ui/tabs) rather than
+ * two separate routes or a top-level sidebar entry (this task's own
+ * criterion 1) --
  *
- * Renders every version the response's own `data` page carries
- * (domain/knowledge/case-version, domain/knowledge/case-version-state) --
- * never only the most recently opened one -- which is also this screen's
- * own read of rules/knowledge/every-case-version-remains-readable: the
- * store keeps every version, and this is the one screen that lists them
- * back rather than surfacing only the latest.
+ * - "Versions": a case's version timeline, read from GET
+ *   /v1/cases/:slug/versions (contracts/knowledge/case-query's own
+ *   list-case-versions operation), and a precondition-free "Continue
+ *   editing" navigation to whichever version is still in draft. Renders
+ *   every version the response's own `data` page carries
+ *   (domain/knowledge/case-version, domain/knowledge/case-version-state) --
+ *   never only the most recently opened one -- which is also this screen's
+ *   own read of rules/knowledge/every-case-version-remains-readable: the
+ *   store keeps every version, and this is the one screen that lists them
+ *   back rather than surfacing only the latest. Also renders the "New
+ *   draft" action (task/version-editor/new-draft-creation, criterion 1)
+ *   navigating to route-tree.tsx's own "/cases/$slug/versions/new" -- shown
+ *   only when none of this same version list is currently in draft state,
+ *   per rules/knowledge/a-case-has-at-most-one-draft.
+ * - "Hypotheses": delegates entirely to CaseHypothesesTab, this task's own
+ *   new component (case-hypotheses-tab.tsx).
  *
- * Also renders the "New draft" action (task/version-editor/
- * new-draft-creation, criterion 1) navigating to route-tree.tsx's own
- * "/cases/$slug/versions/new" -- shown only when none of this same version
- * list is currently in draft state, per rules/knowledge/
- * a-case-has-at-most-one-draft: a case already holding a draft has nowhere
- * for a second one to go, and case-detail-timeline's own "Continue editing"
- * link is that draft's own way back in.
+ * Both tabs read the same ["case-versions", slug] query (useCaseVersions,
+ * extracted out of this file for that reuse) but only the active one's
+ * subtree ever mounts: TabsContent renders null for an inactive value, so
+ * switching tabs is what actually triggers either fetch, never both at
+ * once on first render (PRF-04 -- an independently loadable section fetches
+ * its own data separately).
  *
- * Wired in as route-tree.tsx's "/cases/$slug" route's own `component`,
- * replacing CaseDetailPlaceholder.
+ * This is the first task to introduce the tabs component into this file
+ * (this task's own Notes): the Versions tab's own markup below is otherwise
+ * unchanged from what task/cases-list-and-detail/case-detail-timeline
+ * delivered and task/version-editor/new-draft-creation extended.
+ *
+ * Wired in as route-tree.tsx's "/cases/$slug" route's own `component`.
  */
-
-/** The shape list-case-versions answers with, confirmed against the real
- * backend (src/src/http/list-case-versions.controller.ts,
- * src/src/case/case-store.port.ts's own CaseVersionListItem) -- this task's
- * own binder note. Only `data` is read here; `total`/`limit`/`offset`/
- * `pageCount` describe a page this screen does not paginate through. */
-type CaseVersionState = "draft" | "released";
-
-type CaseVersionListItem = {
-  readonly version: number;
-  readonly state: CaseVersionState;
-};
-
-type CaseVersionsPage = {
-  readonly data: readonly CaseVersionListItem[];
-};
 
 const CASE_VERSIONS_COLUMNS: StatusTableColumn[] = [
   { key: "version", header: "Version" },
@@ -100,13 +102,13 @@ function toRow(slug: string, version: CaseVersionListItem): StatusTableRow {
   };
 }
 
-export function CaseDetailScreen(): JSX.Element {
-  const { slug } = useParams({ from: "/cases/$slug" });
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["case-versions", slug],
-    queryFn: () =>
-      apiFetch<CaseVersionsPage>(`/v1/cases/${encodeURIComponent(slug)}/versions`),
-  });
+/**
+ * The "Versions" tab's own body: unchanged from what this screen rendered
+ * before this task, other than being lifted out of the top-level return so
+ * it can sit inside a TabsContent (this task's own Notes).
+ */
+function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
+  const { data, isLoading, isError } = useCaseVersions(slug);
 
   if (isLoading) {
     return <p>Loading version timeline…</p>;
@@ -124,14 +126,35 @@ export function CaseDetailScreen(): JSX.Element {
   const hasDraft = data.data.some((version) => version.state === "draft");
 
   return (
-    <section>
-      <h1>Case {slug}</h1>
+    <>
       {!hasDraft && (
         <Link to="/cases/$slug/versions/new" params={{ slug }}>
           New draft
         </Link>
       )}
       <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
+    </>
+  );
+}
+
+export function CaseDetailScreen(): JSX.Element {
+  const { slug } = useParams({ from: "/cases/$slug" });
+
+  return (
+    <section>
+      <h1>Case {slug}</h1>
+      <Tabs defaultValue="versions">
+        <TabsList>
+          <TabsTrigger value="versions">Versions</TabsTrigger>
+          <TabsTrigger value="hypotheses">Hypotheses</TabsTrigger>
+        </TabsList>
+        <TabsContent value="versions">
+          <VersionsPanel slug={slug} />
+        </TabsContent>
+        <TabsContent value="hypotheses">
+          <CaseHypothesesTab slug={slug} />
+        </TabsContent>
+      </Tabs>
     </section>
   );
 }

@@ -35,12 +35,74 @@ export default defineConfig({
       // than claiming the bare `@` prefix this app's own future source may
       // want for its own src/ convention.
       { find: "@/shared", replacement: `${tuiSharedRoot}` },
+      // Because @tui/ui/* and @/shared resolve straight into TUI's own
+      // source tree (a sibling package with its own node_modules, not a
+      // built/bundled dependency of this app), a bare third-party import
+      // inside that source -- e.g. a TUI component pulling in
+      // @radix-ui/react-tooltip or @radix-ui/react-dialog -- resolves via
+      // ordinary Node module resolution starting from that file's own
+      // directory, which finds frontend/tui/frontend/node_modules first.
+      // Any such package that itself imports "react" then loads TUI's own
+      // separately-installed React copy rather than this app's, and
+      // React's hooks break across two live copies in one render tree with
+      // "Cannot read properties of null (reading 'useRef')" the moment a
+      // component from the duplicated copy renders -- first hit by
+      // task/manifest-hypothesis-authoring/manifest-builder's own use of
+      // TUI's Tooltip/Dialog (the first components in this app whose own
+      // dependencies reach for React internally; Select/Input/Checkbox do
+      // not). `resolve.dedupe` is Vite's own documented mechanism for
+      // exactly this monorepo shape, but it does not reach Vitest's own
+      // SSR-style module loading (confirmed: the crash persisted under
+      // `dedupe` alone, vite's own node_modules/.vite cache cleared). The
+      // explicit aliases below force every resolution of these two
+      // packages -- and their subpaths, e.g. react-dom/client,
+      // react/jsx-runtime -- to this app's own installed copies, the same
+      // forceful mechanism the @tui/ui/@/shared aliases above already use
+      // rather than a hint the resolver is free to skip.
+      {
+        find: /^react-dom$/,
+        replacement: fileURLToPath(new URL("./node_modules/react-dom", import.meta.url)),
+      },
+      {
+        find: /^react-dom\//,
+        replacement: `${fileURLToPath(new URL("./node_modules/react-dom/", import.meta.url))}`,
+      },
+      {
+        find: /^react$/,
+        replacement: fileURLToPath(new URL("./node_modules/react", import.meta.url)),
+      },
+      {
+        find: /^react\//,
+        replacement: `${fileURLToPath(new URL("./node_modules/react/", import.meta.url))}`,
+      },
     ],
   },
   test: {
     globals: true,
     environment: "jsdom",
     include: ["src/**/*.spec.{ts,tsx}"],
+    server: {
+      deps: {
+        // Vitest treats a node_modules package as an external SSR dependency
+        // by default, loading it via plain Node resolution and bypassing
+        // Vite's own resolver -- and with it, the react/react-dom aliases
+        // above -- entirely. Every package this pattern matches resolves
+        // from frontend/tui/frontend/node_modules (TUI's own
+        // separately-installed copy, reached through the @tui/ui alias):
+        // not just @radix-ui/* itself, but its own transitive dependencies
+        // (@floating-ui/react-dom, react-remove-scroll, aria-hidden, and
+        // whatever else a given primitive pulls in) -- any one of which
+        // resolves its own "react"/"react-dom" import to that copy instead
+        // of this app's if left external, which is the actual cause of the
+        // two-React-copies "Cannot read properties of null" crash the
+        // react/react-dom aliases alone do not reach. Matching the path
+        // rather than enumerating package names is what makes this hold for
+        // Radix's whole dependency chain, present or future, rather than
+        // the one or two packages that happened to be named when this was
+        // written.
+        inline: [/\/tui\/frontend\/node_modules\//],
+      },
+    },
   },
   server: {
     // Forwards any request path starting with /v1 to the real backend at
