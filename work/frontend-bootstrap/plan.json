@@ -13,7 +13,7 @@
       "kind": "epic",
       "file": "epic/cases-list-and-detail.md",
       "title": "Cases List and Case Detail",
-      "summary": "The two real, data-driven screens Onda 2 lands over Onda 1's foundation -- a searchable list of every case and a per-case version timeline with an at-most-one-draft creation flow -- replacing CasesListPlaceholder and CaseDetailPlaceholder."
+      "summary": "The two real, data-driven read screens Onda 2 lands over Onda 1's foundation -- a searchable list of every case and a per-case version timeline -- replacing CasesListPlaceholder and CaseDetailPlaceholder. Originating a new draft is deferred to Onda 3 (see Notes)."
     },
     {
       "id": "epic/frontend-console-foundation",
@@ -50,14 +50,6 @@
       "title": "Build frontend app substrate",
       "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
       "epic": "case-authoring-console"
-    },
-    {
-      "id": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "kind": "task",
-      "file": "task/cases-list-and-detail/case-detail-new-draft-action.md",
-      "title": "Case Detail new-draft action and 409 race handling",
-      "summary": "Adds the \"New draft\" action to Case Detail when no version is in draft state, posting to /v1/cases and treating a 409 CaseAlreadyHasDraftError response as an expected race -- a toast plus a redirect to the existing draft, never an error.",
-      "epic": "cases-list-and-detail"
     },
     {
       "id": "task/cases-list-and-detail/case-detail-timeline",
@@ -340,48 +332,6 @@
       "to": "constraints/no-route-enforces-authentication",
       "kind": "covers",
       "at": "covers[7]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "task/cases-list-and-detail/case-detail-timeline",
-      "kind": "depends_on",
-      "at": "depends_on[0]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "domain/knowledge/case",
-      "kind": "implements",
-      "at": "implements[0]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "domain/knowledge/case-version",
-      "kind": "implements",
-      "at": "implements[1]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "domain/knowledge/case-version-state",
-      "kind": "implements",
-      "at": "implements[2]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "contracts/knowledge/case-lifecycle",
-      "kind": "implements",
-      "at": "implements[3]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "contracts/knowledge/case-query",
-      "kind": "implements",
-      "at": "implements[4]"
-    },
-    {
-      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
-      "to": "rules/knowledge/a-case-has-at-most-one-draft",
-      "kind": "implements",
-      "at": "implements[5]"
     },
     {
       "from": "task/cases-list-and-detail/case-detail-timeline",

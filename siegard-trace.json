@@ -776,6 +776,14 @@
       "digest": "sha256:fadeb7489f7cb0a8560f305e7c9afda7de7ef65891314c53cd5f486652feca44",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+        },
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        },
+        {
           "path": "src/src/case/case-query.port.ts",
           "digest": "sha256:4c176803dd9f70a04fe1a2352e46a81e24bdeeb99df974bdd968f116fb25079a"
         },
@@ -1640,6 +1648,10 @@
       "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        },
+        {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
         },
@@ -1734,9 +1746,23 @@
       ]
     },
     {
+      "node": "domain/knowledge/case-summary",
+      "digest": "sha256:a27fe5a39d642343e1bfb8f0a55388a3f9760a43490dba4834ec9382731b697b",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        }
+      ]
+    },
+    {
       "node": "domain/knowledge/case-version",
       "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+        },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
@@ -1835,6 +1861,14 @@
       "node": "domain/knowledge/case-version-state",
       "digest": "sha256:003195adcf0d0674d592f8525264bbe9929617421bd91c391f35a01135742272",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+        },
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
@@ -2628,6 +2662,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "digest": "sha256:333f252e474aafd89546b46efbc7eb0499a1ec5806f9f50bea84dd130625ba6e",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/cases-list-screen.tsx",
+          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-version-is-written-once",
       "digest": "sha256:fa26580622354ffe96857211bc70edcecf3314fd2666ab81f02d80a29249da25",
       "files": [
@@ -3021,6 +3065,10 @@
       "node": "rules/knowledge/every-case-version-remains-readable",
       "digest": "sha256:d49d6081599eca6e61e07cd7abd5a937db406c63d1590f5eaeda349d3ea06a81",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"

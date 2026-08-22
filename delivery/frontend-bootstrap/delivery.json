@@ -192,6 +192,24 @@
       "task": "task/frontend-console-foundation/typed-api-client"
     },
     {
+      "id": "review/cases-list-and-detail-onda-2",
+      "kind": "review",
+      "file": "review/cases-list-and-detail-onda-2.md",
+      "title": "Review of cases-list-and-detail onda 2 (3 delivered tasks)",
+      "summary": "Four-pass review of the 3 delivered cases-list-and-detail tasks: coverage over their 12 criteria, specification conformance, standard conformance, and the failures pass (which did not run -- the captured run passed cleanly).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A request to http://localhost:5173/v1/cases, issued while the vite dev server and the real backend both run, returns the backend's own response body rather than a browser CORS error.",
+        "Clicking \"Continue editing\" navigates to that version's own route immediately, performing no additional request first.",
+        "No file under the backend's own source root is changed by this task."
+      ],
+      "findings": 7
+    },
+    {
       "id": "review/frontend-bootstrap",
       "kind": "review",
       "file": "review/frontend-bootstrap.md",
@@ -446,6 +464,24 @@
       "to": "implementation/frontend-console-foundation/typed-api-client",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/cases-list-and-detail-onda-2",
+      "to": "task/cases-list-and-detail/dev-proxy-for-backend-api",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/cases-list-and-detail-onda-2",
+      "to": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/cases-list-and-detail-onda-2",
+      "to": "task/cases-list-and-detail/cases-list-screen",
+      "kind": "reviews",
+      "at": "tasks[2]"
     },
     {
       "from": "review/frontend-bootstrap",
