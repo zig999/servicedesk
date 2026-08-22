@@ -22,6 +22,14 @@ import {
  * store keeps every version, and this is the one screen that lists them
  * back rather than surfacing only the latest.
  *
+ * Also renders the "New draft" action (task/version-editor/
+ * new-draft-creation, criterion 1) navigating to route-tree.tsx's own
+ * "/cases/$slug/versions/new" -- shown only when none of this same version
+ * list is currently in draft state, per rules/knowledge/
+ * a-case-has-at-most-one-draft: a case already holding a draft has nowhere
+ * for a second one to go, and case-detail-timeline's own "Continue editing"
+ * link is that draft's own way back in.
+ *
  * Wired in as route-tree.tsx's "/cases/$slug" route's own `component`,
  * replacing CaseDetailPlaceholder.
  */
@@ -113,10 +121,16 @@ export function CaseDetailScreen(): JSX.Element {
   }
 
   const rows = data.data.map((version) => toRow(slug, version));
+  const hasDraft = data.data.some((version) => version.state === "draft");
 
   return (
     <section>
       <h1>Case {slug}</h1>
+      {!hasDraft && (
+        <Link to="/cases/$slug/versions/new" params={{ slug }}>
+          New draft
+        </Link>
+      )}
       <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
     </section>
   );

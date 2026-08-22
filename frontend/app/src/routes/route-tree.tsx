@@ -2,9 +2,10 @@ import { createRootRoute, createRoute, createRouter } from "@tanstack/react-rout
 import { AppShell } from "../shared/components/app-shell";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
+import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+import { NewCaseDraftScreen } from "./new-case-draft-screen";
 import {
   CaseHypothesesPlaceholder,
-  CaseVersionPlaceholder,
   GlossaryPlaceholder,
   CapabilitiesPlaceholder,
   ManifestHypothesisPlaceholder,
@@ -42,7 +43,18 @@ const caseDetailRoute = createRoute({
 const caseVersionRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/versions/$version",
-  component: CaseVersionPlaceholder,
+  component: CaseVersionEditorScreen,
+});
+
+// task/version-editor/new-draft-creation's own blank-form entry point,
+// addressed from Case Detail's "New draft" action. A static "new" segment
+// ranks over the "$version" param segment above regardless of declaration
+// order (TanStack Router sorts a route tree by specificity, not by
+// registration order), so this never collides with a real version number.
+const newCaseVersionRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/cases/$slug/versions/new",
+  component: NewCaseDraftScreen,
 });
 
 const versionManifestRoute = createRoute({
@@ -91,6 +103,7 @@ const routeTree = rootRoute.addChildren([
   casesListRoute,
   caseDetailRoute,
   caseVersionRoute,
+  newCaseVersionRoute,
   versionManifestRoute,
   manifestHypothesisRoute,
   versionReleaseRoute,

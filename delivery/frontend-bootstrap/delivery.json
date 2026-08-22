@@ -104,6 +104,22 @@
       "task": "task/frontend-console-foundation/typed-api-client"
     },
     {
+      "id": "implementation/version-editor/edit-draft-version",
+      "kind": "implementation",
+      "file": "implementation/version-editor/edit-draft-version.md",
+      "title": "Version Editor over an existing draft — edit-draft-version",
+      "summary": "Replaces the Case Version route's placeholder with a full-replace PATCH form over an existing draft's title, when_to_use, fixed subject, consolidation_register and glossary-backed fallback outcome/referral, driven by a clean/dirty/saving/conflict save state machine.",
+      "task": "task/version-editor/edit-draft-version"
+    },
+    {
+      "id": "implementation/version-editor/new-draft-creation",
+      "kind": "implementation",
+      "file": "implementation/version-editor/new-draft-creation.md",
+      "title": "New Draft origination flow, over the Version Editor's shared form",
+      "summary": "Adds a \"New draft\" entry point to Case Detail that opens a blank instance of the Version Editor whose first Save issues POST /v1/cases, then switches in place into edit-draft-version's own PATCH-based edit-mode flow, and handles the 409 CaseAlreadyHasDraftError race with a toast plus a redirect to the case's existing draft.",
+      "task": "task/version-editor/new-draft-creation"
+    },
+    {
       "id": "proof/cases-list-and-detail/case-detail-timeline",
       "kind": "proof",
       "file": "proof/cases-list-and-detail/case-detail-timeline.md",
@@ -190,6 +206,22 @@
       "title": "Proof for the typed fetch client over the backend's error envelope",
       "summary": "Tests apiFetch()'s 2xx pass-through and its parsing of a non-2xx response into a typed ApiError, including the malformed-body case the implementation record infers.",
       "task": "task/frontend-console-foundation/typed-api-client"
+    },
+    {
+      "id": "proof/version-editor/edit-draft-version",
+      "kind": "proof",
+      "file": "proof/version-editor/edit-draft-version.md",
+      "title": "Proof for the Version Editor over an existing draft",
+      "summary": "Seventeen tests over CaseVersionEditorScreen, split across two files, rendered inside a self-contained test router and QueryClientProvider with a stubbed fetch, proving all eight criteria plus the loading/load-error placeholders, the absent-consolidation-register and empty-vocabulary edges, the blur-and-click double-submission guard, and the recovery path for a save failure the stated criteria do not name.",
+      "task": "task/version-editor/edit-draft-version"
+    },
+    {
+      "id": "proof/version-editor/new-draft-creation",
+      "kind": "proof",
+      "file": "proof/version-editor/new-draft-creation.md",
+      "title": "Proof for the New Draft origination flow",
+      "summary": "Twenty-one tests, across five files, proving Case Detail's \"New draft\" visibility rule, the blank form's subject pre-set, the POST /v1/cases request it issues, its switch into edit-draft-version's own PATCH flow addressed at the returned version with no follow-up GET, and the 409 CaseAlreadyHasDraftError toast-plus-redirect.",
+      "task": "task/version-editor/new-draft-creation"
     },
     {
       "id": "review/cases-list-and-detail-onda-2",
@@ -400,6 +432,156 @@
       "at": "the path"
     },
     {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/version-editor/edit-draft-version",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/version-editor/new-draft-creation",
+      "to": "task/version-editor/new-draft-creation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/cases-list-and-detail/case-detail-timeline",
       "to": "implementation/cases-list-and-detail/case-detail-timeline",
       "kind": "proves",
@@ -462,6 +644,18 @@
     {
       "from": "proof/frontend-console-foundation/typed-api-client",
       "to": "implementation/frontend-console-foundation/typed-api-client",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/version-editor/edit-draft-version",
+      "to": "implementation/version-editor/edit-draft-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/version-editor/new-draft-creation",
+      "to": "implementation/version-editor/new-draft-creation",
       "kind": "proves",
       "at": "the path"
     },

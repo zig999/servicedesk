@@ -1,0 +1,766 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 577 packages, and audited 578 packages in 7s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+===== style :: npm run lint:css :: passed =====
+
+> case-authoring-console@0.1.0 lint:css
+> stylelint "src/**/*.css"
+
+
+===== build :: npm run build :: passed =====
+
+> case-authoring-console@0.1.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1780 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:   0.27 kB
+dist/assets/index-C6ECJkps.css   13.18 kB │ gzip:   3.70 kB
+dist/assets/index-CuPexjrw.js   499.43 kB │ gzip: 153.74 kB
+✓ built in 2.25s
+
+===== a11y :: npm run test:a11y :: passed =====
+
+> case-authoring-console@0.1.0 test:a11y
+> playwright test --pass-with-no-tests
+
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> case-authoring-console@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: passed =====
+
+> case-authoring-console@0.1.0 test
+> vitest run --passWithNoTests
+
+
+ RUN  v4.1.11 /home/siegfriedneto/projects/siegardtest/frontend/app
+
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:943:46
+    at Router.batch (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/store/dist/esm/atom.js:39:5)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:936:10
+    at runClientTransaction (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:902:2)
+    at loadClientRoute (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:1034:2)
+    at RouterCore.load (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:489:4) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:943:46
+    at Router.batch (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/store/dist/esm/atom.js:39:5)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:936:10
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at processTimers (node:internal/timers:521:7) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:943:46
+    at Router.batch (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/store/dist/esm/atom.js:39:5)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:936:10
+    at runClientTransaction (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:902:2)
+    at loadClientRoute (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:1034:2)
+    at RouterCore.load (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:489:4) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:943:46
+    at Router.batch (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/store/dist/esm/atom.js:39:5)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:936:10
+    at runClientTransaction (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:902:2)
+    at loadClientRoute (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/load-client.js:1034:2)
+    at RouterCore.load (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:489:4) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+Error: Not implemented: window.scrollTo
+    at module.exports (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/not-implemented.js:9:17)
+    at /home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/jsdom/lib/jsdom/browser/Window.js:960:7
+    at Object.fn (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/scroll-restoration.js:180:27)
+    at RouterCore.emit (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/router-core/dist/esm/router.js:178:14)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:46:25
+    at settleOwner (file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Transitioner.js:10:10)
+    at file:///home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/@tanstack/react-router/dist/esm/Matches.js:38:39
+    at Object.react_stack_bottom_frame (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:25989:20)
+    at runWithFiberInDEV (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at commitHookEffectListMount (/home/siegfriedneto/projects/siegardtest/frontend/app/node_modules/react-dom/cjs/react-dom-client.development.js:13249:29) undefined
+
+ Test Files  17 passed (17)
+      Tests  125 passed (125)
+   Start at  11:31:09
+   Duration  4.21s (transform 2.85s, setup 0ms, import 10.93s, tests 7.70s, environment 17.09s)
+
+

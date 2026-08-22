@@ -46,7 +46,15 @@ function buildTestRouter(initialPath: string) {
     path: "/cases/$slug/versions/$version",
     component: () => null,
   });
-  const routeTree = rootRoute.addChildren([caseDetailRoute, caseVersionRoute]);
+  // task/version-editor/new-draft-creation's own "New draft" Link target --
+  // registered here the same way caseVersionRoute is above, so that Link
+  // resolves a real href rather than one this test router cannot match.
+  const newDraftRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/new",
+    component: () => null,
+  });
+  const routeTree = rootRoute.addChildren([caseDetailRoute, caseVersionRoute, newDraftRoute]);
   return createRouter({
     routeTree,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
@@ -180,6 +188,10 @@ describe("CaseDetailScreen", () => {
 
     expect(screen.getByText("Loading version timeline…")).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
+    // task/version-editor/new-draft-creation's own criterion 1: nothing
+    // decides yet whether a draft exists, so New draft does not render
+    // before the version list this decision depends on has even arrived.
+    expect(screen.queryByRole("link", { name: "New draft" })).toBeNull();
   });
 
   it("shows a failure placeholder when the version list request fails", async () => {
@@ -189,5 +201,43 @@ describe("CaseDetailScreen", () => {
 
     expect(await screen.findByText("Unable to load this case's version timeline.")).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
+    expect(screen.queryByRole("link", { name: "New draft" })).toBeNull();
+  });
+
+  // task/version-editor/new-draft-creation's own criterion 1: "New draft" is
+  // rendered in Case Detail only when none of that case's existing versions
+  // is currently in draft state.
+  it("renders New draft as a link to the case's own new-draft route when none of the case's versions is a draft", async () => {
+    const versions = [
+      { version: 1, state: "released" },
+      { version: 2, state: "released" },
+    ];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ data: versions })));
+
+    await renderCaseDetail("/cases/some-slug");
+
+    const link = await screen.findByRole("link", { name: "New draft" });
+    expect(link.getAttribute("href")).toBe("/cases/some-slug/versions/new");
+  });
+
+  it("does not render New draft when one of the case's versions is already a draft", async () => {
+    const versions = [
+      { version: 1, state: "released" },
+      { version: 2, state: "draft" },
+    ];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ data: versions })));
+
+    await renderCaseDetail("/cases/some-slug");
+
+    await screen.findByRole("table");
+    expect(screen.queryByRole("link", { name: "New draft" })).toBeNull();
+  });
+
+  it("renders New draft when the case currently holds no versions at all", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ data: [] })));
+
+    await renderCaseDetail("/cases/some-slug");
+
+    expect(await screen.findByRole("link", { name: "New draft" })).toBeTruthy();
   });
 });

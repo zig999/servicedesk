@@ -15,6 +15,11 @@ export function CaseDetailPlaceholder(): JSX.Element {
   return <p>Case Detail placeholder</p>;
 }
 
+// Left in place, unused, the same way CasesListPlaceholder and
+// CaseDetailPlaceholder above already were once their own routes moved to a
+// real screen (Onda 2) -- this file's own established precedent for this
+// exact kind of change, rather than a cleanup this task's own scope reaches
+// for on its own.
 export function CaseVersionPlaceholder(): JSX.Element {
   return <p>Case Version placeholder</p>;
 }

@@ -3,7 +3,6 @@ import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import {
   CaseHypothesesPlaceholder,
-  CaseVersionPlaceholder,
   GlossaryPlaceholder,
   CapabilitiesPlaceholder,
   ManifestHypothesisPlaceholder,
@@ -20,16 +19,24 @@ import {
  * any history, store or render exists), so reading it needs no navigation
  * and no jsdom.
  *
- * The ten expected paths and the path -> placeholder mapping below are
- * written independently of route-tree.tsx rather than derived from it --
- * an expectation copied from the file under test would hold no matter what
+ * The expected paths and the path -> placeholder mapping below are written
+ * independently of route-tree.tsx rather than derived from it -- an
+ * expectation copied from the file under test would hold no matter what
  * that file declared.
+ *
+ * "/cases/$slug/versions/new" is the eleventh route, added by
+ * task/version-editor/new-draft-creation: it is not one of the original ten
+ * proposal screens (2.1-2.10) route-tree.tsx first registered, but is
+ * architecturally required so the create flow and the edit flow mount as
+ * genuinely distinct component instances, per that task's own disclosed
+ * Notes.
  */
 
 const EXPECTED_PATHS = [
   "/cases",
   "/cases/$slug",
   "/cases/$slug/hypotheses",
+  "/cases/$slug/versions/new",
   "/cases/$slug/versions/$version",
   "/cases/$slug/versions/$version/manifest",
   "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName",
@@ -39,15 +46,15 @@ const EXPECTED_PATHS = [
   "/capabilities",
 ];
 
-// /cases and /cases/$slug are excluded from this map: both now render real
-// screens (CasesListScreen, CaseDetailScreen -- task/cases-list-and-detail/
-// cases-list-screen and .../case-detail-timeline), not a placeholder. Which
-// component each of those two renders is that task's own criterion and its
-// own proof's to test; this suite only answers for the eight routes that
+// /cases, /cases/$slug, /cases/$slug/versions/new and
+// /cases/$slug/versions/$version are excluded from this map: all four now
+// render real screens (CasesListScreen, CaseDetailScreen,
+// NewCaseDraftScreen, CaseVersionEditorScreen), not a placeholder. Which
+// component each of those four renders is that task's own criterion and its
+// own proof's to test; this suite only answers for the six routes that
 // still render a placeholder.
 const EXPECTED_COMPONENT_BY_PATH: Record<string, unknown> = {
   "/cases/$slug/hypotheses": CaseHypothesesPlaceholder,
-  "/cases/$slug/versions/$version": CaseVersionPlaceholder,
   "/cases/$slug/versions/$version/manifest": VersionManifestPlaceholder,
   "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName": ManifestHypothesisPlaceholder,
   "/cases/$slug/versions/$version/release": VersionReleasePlaceholder,
@@ -61,13 +68,13 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the ten proposal screens' paths, and no other", () => {
+  it("registers a route at each of the eleven proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
   });
 
-  it("assigns no two of the ten routes the same path", () => {
+  it("assigns no two of the eleven routes the same path", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect(new Set(actualPaths).size).toBe(actualPaths.length);

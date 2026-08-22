@@ -20,19 +20,25 @@ const SIDEBAR_ENTRIES: ReadonlyArray<{
 ];
 
 /**
- * A human label for each of the ten routes the router skeleton defines
- * (route-tree.tsx), keyed by a route's own id. Every one of those routes is
- * an unparented direct child of the root route, so a route's id is exactly
- * its literal path pattern (see @tanstack/router-core's route id/fullPath
- * derivation: an unparented child's id is its own path, unless a custom id
- * is given, which none of these routes do). This table is read only to give
- * the currently matched route a readable breadcrumb label -- which route is
- * current is decided by the match itself, never by this table.
+ * A human label for each route the router skeleton defines (route-tree.tsx),
+ * keyed by a route's own id. Every one of those routes is an unparented
+ * direct child of the root route, so a route's id is exactly its literal
+ * path pattern (see @tanstack/router-core's route id/fullPath derivation: an
+ * unparented child's id is its own path, unless a custom id is given, which
+ * none of these routes do). This table is read only to give the currently
+ * matched route a readable breadcrumb label -- which route is current is
+ * decided by the match itself, never by this table.
+ *
+ * Ten entries from the router skeleton task's own ten proposal screens, plus
+ * "/cases/$slug/versions/new" (task/version-editor/new-draft-creation's own
+ * blank-form entry point, added after that task's own scope required a route
+ * distinct from the general Version Editor).
  */
 const ROUTE_LABELS: Record<string, string> = {
   "/cases": "Cases List",
   "/cases/$slug": "Case Detail",
   "/cases/$slug/versions/$version": "Version Editor",
+  "/cases/$slug/versions/new": "New Draft",
   "/cases/$slug/versions/$version/manifest": "Manifest Builder",
   "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName":
     "Revise Hypothesis",

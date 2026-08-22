@@ -1012,6 +1012,14 @@ dependencies:
       react-hook-form -- never the final authority (the backend still validates), but what
       keeps an obviously-invalid submission from making a round trip only to be refused.
 
+  - package: "@hookform/resolvers"
+    why: >-
+      The bridge react-hook-form's own validation resolver slot expects to read a zod schema
+      through (zodResolver), so the client-side schema paired with react-hook-form's form state
+      is the one this app actually runs, rather than a second, hand-rolled validate function
+      duplicating what the zod schema already states. Same convention TUI's own package.json
+      already pins alongside react-hook-form and zod (v3, matching zod's own v3 pin here).
+
   - package: sonner
     why: >-
       The toast mechanism the proposal's own wireframes call for on an expected race condition

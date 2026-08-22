@@ -436,6 +436,14 @@
       "digest": "sha256:1c1bc05c2d40b57007898c78a106f09c34fb5035df963e779b8e8f1b9c402439",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
           "path": "src/src/factories/glossary.factory.ts",
           "digest": "sha256:6bd555ad42af4f9798167cbe12a6c68543f86297c290b9b6ebc8813721947fff"
         },
@@ -658,6 +666,14 @@
       "digest": "sha256:d9b5568ba3e0b6a94006cf81c96647fd003f4cdbfad5e477b874bc7c8af248cd",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
           "path": "src/src/case/case-store.port.ts",
           "digest": "sha256:28c03cb8c7d20c1281fe21e5ba3f1624166d9b67fea825552895122a5ff5f075"
         },
@@ -776,8 +792,16 @@
       "digest": "sha256:fadeb7489f7cb0a8560f305e7c9afda7de7ef65891314c53cd5f486652feca44",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -958,6 +982,14 @@
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
         },
@@ -1046,6 +1078,14 @@
       "digest": "sha256:ed6df017623951445ffc8259195aa7999eef3c2f5feae133f17e79cc59778290",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
         },
@@ -1087,6 +1127,14 @@
       "node": "domain/glossary/recipient",
       "digest": "sha256:e214071bc54a45d4e1b7591b418289d88dddb6a003931af68e07b09cf9d07814",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
@@ -1167,6 +1215,14 @@
       "node": "domain/glossary/subject-type",
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
@@ -1648,6 +1704,14 @@
       "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+        },
+        {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
         },
@@ -1760,8 +1824,24 @@
       "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
+          "path": "frontend/app/src/services/case-version-form-schema.ts",
+          "digest": "sha256:3bcb36f4d4ac1f820541dfca1b5430427dc8043466d3ed5b7bba4e904e160862"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -1862,8 +1942,16 @@
       "digest": "sha256:003195adcf0d0674d592f8525264bbe9929617421bd91c391f35a01135742272",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:8321c4700d5f71e9bf1c19959d9b3df96f1901fbe5ed188807f10fe79a3363ff"
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -1919,6 +2007,14 @@
       "node": "domain/knowledge/consolidation-register",
       "digest": "sha256:bade2dbfada1f8f4693d70014d7b6b19cc92d4833ff97df8e1a11aa0f33ca329",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
+          "path": "frontend/app/src/services/case-version-form-schema.ts",
+          "digest": "sha256:3bcb36f4d4ac1f820541dfca1b5430427dc8043466d3ed5b7bba4e904e160862"
+        },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
@@ -2136,6 +2232,18 @@
       "digest": "sha256:8d9fed071eb73f031be1d0062289d0af6fe0668fc4ec5d578fdd9851a5c9ca16",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
+          "path": "frontend/app/src/services/case-version-form-schema.ts",
+          "digest": "sha256:3bcb36f4d4ac1f820541dfca1b5430427dc8043466d3ed5b7bba4e904e160862"
+        },
+        {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
         },
@@ -2169,6 +2277,18 @@
       "node": "domain/knowledge/resolution",
       "digest": "sha256:6222afea54dfc1b74fb3cd7f9982c2e7035473c41e959edf57933f628d7ecc1b",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
+        {
+          "path": "frontend/app/src/services/case-version-form-schema.ts",
+          "digest": "sha256:3bcb36f4d4ac1f820541dfca1b5430427dc8043466d3ed5b7bba4e904e160862"
+        },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
@@ -2644,6 +2764,14 @@
       "digest": "sha256:e196af5a34201d65005cd9f56d23d3d31d0ff9163e7d66943f741ee61f2baefe",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+        },
+        {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
@@ -2675,6 +2803,10 @@
       "node": "rules/knowledge/a-case-version-is-written-once",
       "digest": "sha256:fa26580622354ffe96857211bc70edcecf3314fd2666ab81f02d80a29249da25",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+        },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
@@ -3027,6 +3159,14 @@
       "node": "rules/knowledge/case-terms-exist-in-the-glossary",
       "digest": "sha256:7c720043ce7f4d9a8b2ac658dfcd426e0b800642da15a5a3adabcf81e271239d",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
+          "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
+        },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
           "digest": "sha256:7b32a0a80dc347a631b28d751b68322f8d6378d6fe28993286924ce2b0381b00"
