@@ -11,6 +11,31 @@
       "unmet": [
         "playwright.config.ts declares the pages the a11y step renders and a touch-width viewport."
       ]
+    },
+    {
+      "id": "review/frontend-bootstrap",
+      "kind": "review",
+      "file": "review/frontend-bootstrap.md",
+      "title": "Frontend bootstrap, first review",
+      "summary": "What four passes found over the frontend/app substrate delivered for task/case-authoring-console/build-substrate.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A minimal shell under src/ (main.tsx, App.tsx) renders a component imported through the @tui/ui/* alias, so the alias and the tokens import chain are exercised rather than merely configured.",
+        "eslint.config.js is a flat config declaring the TypeScript parser, the jsx-a11y plugin, the testing-library plugin, and a non-empty rule set.",
+        "npm ci followed by each of the standard's declared typecheck, lint, style, build, a11y, secret-scan and test steps completes on the tree as produced.",
+        "package.json declares \"type\": \"module\" at its top level.",
+        "package.json declares every dependency those scripts require, each drawn from the standard's authorized dependency list.",
+        "package.json declares the typecheck, lint, lint:css, build, test:a11y, secret-scan and test scripts the standard's commands run as.",
+        "playwright.config.ts declares the pages the a11y step renders and a touch-width viewport.",
+        "src/design-system/tokens.css contains only an @import of frontend/tui/frontend/src/theme.css and declares no second color, spacing or duration value of its own.",
+        "stylelint.config.js declares a non-empty ruleset.",
+        "tsconfig.json declares strict mode and a module resolution setting compatible with Vite's bundler resolution.",
+        "vite.config.ts declares the React plugin, resolves @tui/ui/* and @tui/lib/* to frontend/tui/frontend/src/shared, and configures the Vitest test environment."
+      ]
     }
   ],
   "edges": [
@@ -19,6 +44,12 @@
       "to": "task/case-authoring-console/build-substrate",
       "kind": "implements",
       "at": "the path"
+    },
+    {
+      "from": "review/frontend-bootstrap",
+      "to": "task/case-authoring-console/build-substrate",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
