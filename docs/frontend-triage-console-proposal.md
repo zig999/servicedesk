@@ -21,12 +21,13 @@ por outra pessoa"**, porque o servidor não protege ninguém disso.
 ```
 ┌─ Cases (lista)
 │   └─ Case detail
-│        └─ Versions (timeline: draft | released)
-│             └─ Version editor (se draft)
-│                  ├─ Atributos do caso (title, when_to_use, subject, fallback, register)
-│                  └─ Manifest (hipóteses ordenadas por position)
-│                       └─ Hypothesis revision (criterion, collects, resolution)
-├─ Hypotheses (por caso — identidade + histórico de revisões, cross-version)
+│        ├─ Versions (timeline: draft | released)
+│        │    └─ Version editor (se draft)
+│        │         ├─ Atributos do caso (title, when_to_use, subject, fallback, register)
+│        │         └─ Manifest (hipóteses ordenadas por position)
+│        │              └─ Hypothesis revision (criterion, collects, resolution)
+│        └─ Hypotheses (aba do Case Detail — identidade + histórico de revisões do caso;
+│             ver 2.10 -- decisão de forma: não é item de topo, hypothesis pertence a um só case)
 ├─ Glossary
 │   ├─ Concepts (name, accepts[], ttl)
 │   └─ Vocabulary terms (5 abas: subject-type, subject-attribute, outcome, action, recipient)
@@ -45,8 +46,7 @@ tela para tela.
 │ Triage Console │  Cases                              [No auth in this build]  │
 │                │──────────────────────────────────────────────────────────────│
 │ ▸ Cases   (12) │                                                              │
-│   Hypotheses   │                     ← área de conteúdo muda aqui →           │
-│   Glossary     │                                                              │
+│   Glossary     │                     ← área de conteúdo muda aqui →           │
 │   Capabilities │                                                              │
 │                │                                                              │
 │ No sign-in     │                                                              │
@@ -162,34 +162,38 @@ Banner de conflito (evento `ui.stale_conflict_detected`, o mais importante do ca
 Cases ▸ intermittent-connection-outage ▸ v2 ▸ Manifest
 Manifest — v2                                  [ + Add hypothesis ]
 ────────────────────────────────────────────────────────────────────
-⠿ 1  customer-equipment-fault · rev 1                    [ Remove ]
-     The customer's registered equipment reports a fault status.
-     collects: equipment-status → issue-equipment-fault
+[▲][▼] 1  customer-equipment-fault · rev 1               [ Remove ]
+        The customer's registered equipment reports a fault status.
+        collects: equipment-status → issue-equipment-fault
 
-⠿ 2  area-network-outage · rev 1                         [ Remove ]
-     An active network outage is registered for the service area.
-     collects: network-outage-flag → issue-area-outage
+[▲][▼] 2  area-network-outage · rev 1                    [ Remove ]
+        An active network outage is registered for the service area.
+        collects: network-outage-flag → issue-area-outage
 
-  Drag ⠿ to reorder. Landing on a free position always succeeds;
+  Move with ▲/▼. Landing on a free position always succeeds;
   only a position another hypothesis already holds is refused.
   Removing the last entry is blocked here before it reaches the
   server.
 ```
 
-O handle de arraste (⠿) e o botão "Remove" por linha, não um menu de contexto: são as duas únicas ações
-desta tela e ambas precisam de affordance visível sem clique extra. O aviso abaixo da lista existe
-porque a regra de negócio ("mover é diferente de colidir") é contra-intuitiva o suficiente para merecer
-uma frase — sem isso, o primeiro curador que arrastar uma hipótese para uma posição livre vai esperar
-um erro que nunca vem.
+**Decisão de forma tomada nesta rodada**: botões `▲`/`▼` por linha, não drag-and-drop (a versão
+original desta proposta usava um handle `⠿` de arraste) — acessível por teclado e leitor de tela sem
+depender de uma lib de drag-and-drop. O botão "Remove" por linha, não um menu de contexto: são as
+únicas ações desta tela e todas precisam de affordance visível sem clique extra. O aviso abaixo da
+lista existe porque a regra de negócio ("mover é diferente de colidir") é contra-intuitiva o
+suficiente para merecer uma frase — sem isso, o primeiro curador que mover uma hipótese para uma
+posição livre vai esperar um erro que nunca vem.
 
 ```
-GATILHO: drag-and-drop, ou "Remove"
+GATILHO: ▲/▼, ou "Remove"
+PRÉ-CONDIÇÃO (▲/▼): desabilitado no topo da lista para ▲ e no fim da lista para ▼ (não há posição
+              anterior/seguinte pra mover)
 PRÉ-CONDIÇÃO (remove): se o manifest tem 1 entrada, o botão fica desabilitado com tooltip
               "A case must keep at least one hypothesis"
 PRÉ-CONDIÇÃO (place): mover a MESMA hipótese para outra posição é permitido (é um "move");
               só posições ocupadas por hipótese DIFERENTE bloqueiam
 AÇÃO: PUT/DELETE .../manifest/{hypothesis_name}
-FALHA 409 ManifestPositionOccupiedError: reverte o drag, shake da posição
+FALHA 409 ManifestPositionOccupiedError: reverte o movimento, mensagem inline na linha
 FALHA 422 ManifestWouldHoldNoHypothesisError: não deveria ocorrer se o botão foi
          desabilitado corretamente — se ocorrer, força reload do manifest
 ```
@@ -315,6 +319,63 @@ network-outage-flag-reader  read-only   corporate-records-netw-…    network-ou
 Clique na linha troca o painel de detalhe abaixo — evita abrir um modal para algo que é só leitura de
 referência.
 
+### 2.10 Hypotheses — histórico por caso
+
+**Nota de forma, decidida agora**: a seção 1 desenhou "Hypotheses" como item solto na sidebar
+global, mas `hypothesis` pertence a exatamente um `case` (`cardinality: "1"` no domínio) — não existe
+"todas as hipóteses de todos os casos" como conceito. Esta tela fica dentro do Case Detail, como uma
+segunda aba ao lado de "Versions", nunca na sidebar de topo. É decisão de forma (onde a tela mora),
+não de fato — o contrato `contracts/knowledge/case-query` já declara `list-hypotheses` e
+`list-hypothesis-revisions` como leituras escopadas a um caso e a uma hipótese, respectivamente.
+
+```
+Cases ▸ intermittent-connection-outage ▸ Hypotheses
+[ Versions ]  [ Hypotheses ]
+────────────────────────────────────────────────────────────────────
+Hypothesis                    Revisions   Referenced by
+customer-equipment-fault      2           v2 (draft) → rev 2
+area-network-outage           1           v1 (released) → rev 1 · v2 (draft) → rev 1
+router-firmware-outdated      1           — (not placed in any manifest)
+```
+
+Tabela, mesmo raciocínio de 2.1: o curador está comparando quantas revisões cada hipótese acumulou e
+qual versão ainda depende de qual — "Referenced by" existe porque uma revisão nunca é alterada depois
+de liberada (`a-released-hypothesis-revision-is-never-altered`); a única forma de mudar conteúdo é uma
+revisão nova, então saber quem ainda lê a antiga é a pergunta que este índice responde.
+
+```
+GATILHO: clique numa linha
+AÇÃO: expande (ou navega, se a lista crescer) para o histórico de revisões daquela hipótese:
+```
+
+```
+Cases ▸ intermittent-connection-outage ▸ Hypotheses ▸ customer-equipment-fault
+customer-equipment-fault — 2 revisions
+────────────────────────────────────────────────────────────────────
+rev 2  ● current                                     referenced by v2 (draft)
+       The customer's registered equipment reports a fault status,
+       confirmed twice within 5 minutes.
+       collects: equipment-status → issue-equipment-fault
+
+rev 1  frozen (a released version reads this)         referenced by v1 (released)
+       The customer's registered equipment reports a fault status.
+       collects: equipment-status → issue-equipment-fault
+                                                           [ Revise → ]
+```
+
+Cada revisão é um bloco fechado, nunca editável em linha — o texto "frozen" na rev 1 é a mesma lógica
+do "(fixed)" em 2.3: em vez de deixar o curador tentar editar e descobrir o refuse depois, a tela já
+mostra que aquele bloco é somente-leitura. "Revise" só aparece na revisão mais recente e abre o
+formulário de 2.5 pré-carregado com o conteúdo atual como ponto de partida.
+
+```
+GATILHO: "Revise →" na revisão mais recente
+AÇÃO: abre 2.5 (Nova hipótese / Revise) pré-carregado com criterion/collects/resolution
+      da revisão mostrada, sujeito à mesma pré-condição de 2.5: só contra o draft do caso
+ESTADO VAZIO: hipótese sem nenhuma revisão é impossível pelo domínio (toda hipótese nasce com
+      rev 1) — não há estado vazio a desenhar aqui
+```
+
 ## 3. Catálogo de eventos (telemetria/auditoria)
 
 | Evento | Payload | Disparado quando |
@@ -355,7 +416,7 @@ mudança, qual caminho ela percorre. Esta seção aplica as duas coisas a este d
 
 | Parte deste documento | Rota | Por quê |
 |---|---|---|
-| Telas 2.1–2.9, seus formulários e ações | **capability's surface** → `/plan-work` → `/implement-task` → `/review-change` | Cada tela expõe uma capacidade que a especificação já sustenta (case, hypothesis, manifest, glossário, capability já são nodes de domínio) — não é fato novo, é superfície nova sobre fato existente. |
+| Telas 2.1–2.10, seus formulários e ações | **capability's surface** → `/plan-work` → `/implement-task` → `/review-change` | Cada tela expõe uma capacidade que a especificação já sustenta (case, hypothesis, hypothesis-revision, manifest, glossário, capability já são nodes de domínio; `list-hypotheses`/`list-hypothesis-revisions` já são operações do contrato `case-query`) — não é fato novo, é superfície nova sobre fato existente. |
 | Textos de erro/aviso citados nas seções 2.3, 2.6, 2.7 (banner de conflito, checklist de release, aviso de discard) | **nenhuma** — já cobertos | Checamos linha a linha: nenhum inventa fato que a especificação não sustente. Todos reapresentam regras já existentes (`ManifestWouldHoldNoHypothesisError`, a preservação das hypothesis-revisions no discard). Se algum precisasse de uma wording que a especificação não sustenta, essa frase específica — nunca o documento inteiro — entraria por `/analyse`. |
 | Paleta, tipografia, ícones, espaçamento (não fixados neste documento — ver o artefato "Triage Console" publicado em sessão) | **the surface alone** → editado direto num target `edits_freely`, uma vez declarado | Cor e espaçamento não alteram o que alguém aprende ou faz no sistema — o critério exato que a tabela de rotas usa para separar "surface" do resto. |
 | A ordem/arraste do manifest, o comportamento de "mover vs. colidir", os estados de loading/erro/vazio | **capability's surface**, junto com as telas | Altera o que a pessoa pode aprender/fazer (ex.: reordenar é uma ação nova) — não é surface por definição, mesmo sendo "só" interação. |
@@ -405,10 +466,17 @@ reference decides form, never fact."* Prática recomendada:
 
 ## 7. Perguntas em aberto
 
-1. Vale o painel "Try it" (sandbox de diagnose) nesta v1, ou fica para depois?
-2. Reordenação do manifest: drag-and-drop ou lista com botões up/down (mais acessível, sem depender de
-   mouse)?
+1. ~~Vale o painel "Try it" (sandbox de diagnose) nesta v1, ou fica para depois?~~ **Decidido**: fica
+   para depois. Nenhuma onda deste plano inclui.
+2. ~~Reordenação do manifest: drag-and-drop ou lista com botões up/down?~~ **Decidido**: botões
+   up/down — acessível sem mouse, sem dependência de lib de drag-and-drop. O wireframe de 2.4 usa
+   `⠿` como ilustração; a implementação real usa `[ ▲ ]`/`[ ▼ ]` por linha.
 3. Nomenclatura do produto para o curador final — "Cases", "Hypotheses" são termos de domínio; mantém
-   ou traduz para linguagem de negócio na UI?
+   ou traduz para linguagem de negócio na UI? **Não bloqueia o planejamento**: rótulo de tela é
+   superfície (tabela de rotas, 6.1) — as ondas usam os termos de domínio como estão na especificação,
+   ajustável depois por `edits_freely` sem reabrir o plano.
 4. Quem escreve os arquivos de `intake/layout/` — este documento é convertido 1:1, ou alguém edita os
-   wireframes antes de congelá-los como "fotografia do que foi decidido"?
+   wireframes antes de congelá-los como "fotografia do que foi decidido"? **Decidido**: a extração é
+   1:1 a partir deste documento como ele está agora (incluindo 2.10, adicionado nesta rodada).
+5. ~~A tela "Hypotheses" citada na seção 1 nunca foi desenhada~~ **Resolvido**: desenhada em 2.10,
+   como aba do Case Detail em vez de item de topo (decisão de forma, não de fato).
