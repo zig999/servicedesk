@@ -34,7 +34,7 @@
       "kind": "epic",
       "file": "epic/version-editor.md",
       "title": "Version Editor",
-      "summary": "The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling) plus the New Draft origination flow deferred from Onda 2, sharing one field form that differs only in which verb Save dispatches."
+      "summary": "The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling), the New Draft origination flow, and the two terminal actions -- Release (POST, a client-side best-effort checklist before the click and every backend violation rendered verbatim after it) and Discard (DELETE, a slug-typed destructive confirmation) -- that close a draft's lifecycle from the same screen."
     },
     {
       "id": "inventory/frontend-app-bootstrap-onda-1",
@@ -70,6 +70,13 @@
       "file": "inventory/version-editor-foundation.md",
       "title": "Version Editor build surface, over the Onda 1/2 foundation and the real backend contract",
       "summary": "What the Version Editor (plus the folded-in New Draft form) can reuse from the delivered foundation, and the exact backend shapes, vocabularies and error bodies it must match."
+    },
+    {
+      "id": "inventory/version-editor-terminal-actions",
+      "kind": "inventory",
+      "file": "inventory/version-editor-terminal-actions.md",
+      "title": "Version Editor and its terminal-action surroundings",
+      "summary": "Where Onda 5's Release and Discard modals attach — the Version Editor screen/hook/schema, the shared error/telemetry/query/api substrate from Onda 1, the glossary reads from Onda 4, and the two placeholder routes and TUI Dialog convention this onda replaces or follows."
     },
     {
       "id": "task/case-authoring-console/build-substrate",
@@ -192,6 +199,14 @@
       "epic": "manifest-hypothesis-authoring"
     },
     {
+      "id": "task/version-editor/discard-draft-version",
+      "kind": "task",
+      "file": "task/version-editor/discard-draft-version.md",
+      "title": "Discard a draft case version",
+      "summary": "Adds the \"Discard draft\" control to the Version Editor, opening an in-place, slug-typed destructive confirmation Dialog that removes the draft and its manifest via DELETE, leaving its hypotheses and their revisions untouched, and lands the curator on Case Detail.",
+      "epic": "version-editor"
+    },
+    {
       "id": "task/version-editor/edit-draft-version",
       "kind": "task",
       "file": "task/version-editor/edit-draft-version.md",
@@ -205,6 +220,14 @@
       "file": "task/version-editor/new-draft-creation.md",
       "title": "Originate a new draft from Case Detail",
       "summary": "Adds the \"New draft\" entry point to Case Detail, opening the same field form in a blank state whose first Save calls POST /v1/cases rather than PATCH, handling the 409 CaseAlreadyHasDraftError race and the empty-manifest read-back gap.",
+      "epic": "version-editor"
+    },
+    {
+      "id": "task/version-editor/release-draft-version",
+      "kind": "task",
+      "file": "task/version-editor/release-draft-version.md",
+      "title": "Release a draft case version",
+      "summary": "Adds the \"Release…\" control to the Version Editor, opening an in-place confirmation Dialog with a client-computed pre-release checklist, then turning the draft permanently read-only via POST .../release or rendering every violation the backend's own 422 response names.",
       "epic": "version-editor"
     }
   ],
@@ -613,61 +636,61 @@
     },
     {
       "from": "epic/version-editor",
-      "to": "contracts/knowledge/case-lifecycle",
+      "to": "domain/glossary/action",
       "kind": "covers",
       "at": "covers[10]"
     },
     {
       "from": "epic/version-editor",
-      "to": "contracts/knowledge/case-query",
+      "to": "domain/glossary/recipient",
       "kind": "covers",
       "at": "covers[11]"
     },
     {
       "from": "epic/version-editor",
-      "to": "contracts/glossary/glossary-query",
+      "to": "contracts/knowledge/case-lifecycle",
       "kind": "covers",
       "at": "covers[12]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "to": "contracts/knowledge/case-query",
       "kind": "covers",
       "at": "covers[13]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/a-case-version-is-written-once",
+      "to": "contracts/glossary/glossary-query",
       "kind": "covers",
       "at": "covers[14]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
       "kind": "covers",
       "at": "covers[15]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
       "kind": "covers",
       "at": "covers[16]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "to": "rules/knowledge/a-case-version-is-written-once",
       "kind": "covers",
       "at": "covers[17]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/validation-runs-at-every-read",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
       "kind": "covers",
       "at": "covers[18]"
     },
     {
       "from": "epic/version-editor",
-      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
       "kind": "covers",
       "at": "covers[19]"
     },
@@ -676,6 +699,42 @@
       "to": "domain/knowledge/case-version",
       "kind": "covers",
       "at": "covers[1]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/version-editor",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[25]"
     },
     {
       "from": "epic/version-editor",
@@ -691,37 +750,37 @@
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/knowledge/resolution",
+      "to": "domain/knowledge/manifest-entry",
       "kind": "covers",
       "at": "covers[4]"
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/knowledge/referral",
+      "to": "domain/knowledge/resolution",
       "kind": "covers",
       "at": "covers[5]"
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/glossary/subject-type",
+      "to": "domain/knowledge/referral",
       "kind": "covers",
       "at": "covers[6]"
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/glossary/outcome",
+      "to": "domain/glossary/concept",
       "kind": "covers",
       "at": "covers[7]"
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/glossary/action",
+      "to": "domain/glossary/subject-type",
       "kind": "covers",
       "at": "covers[8]"
     },
     {
       "from": "epic/version-editor",
-      "to": "domain/glossary/recipient",
+      "to": "domain/glossary/outcome",
       "kind": "covers",
       "at": "covers[9]"
     },
@@ -1050,6 +1109,42 @@
       "at": "implements[9]"
     },
     {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/version-editor/discard-draft-version",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
       "from": "task/version-editor/edit-draft-version",
       "to": "task/cases-list-and-detail/dev-proxy-for-backend-api",
       "kind": "depends_on",
@@ -1202,6 +1297,120 @@
     {
       "from": "task/version-editor/new-draft-creation",
       "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/glossary/recipient",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/version-editor/release-draft-version",
+      "to": "domain/knowledge/case-version-state",
       "kind": "implements",
       "at": "implements[9]"
     }

@@ -128,6 +128,14 @@
       "task": "task/manifest-hypothesis-authoring/revise-hypothesis-form"
     },
     {
+      "id": "implementation/version-editor/discard-draft-version",
+      "kind": "implementation",
+      "file": "implementation/version-editor/discard-draft-version.md",
+      "title": "Discard a draft case version",
+      "summary": "Adds the client-gated \"Discard draft\" control and its slug-typed confirmation Dialog to the Version Editor, issuing DELETE /v1/cases/{slug}/versions/{version} on confirm and landing the curator on Case Detail on success.",
+      "task": "task/version-editor/discard-draft-version"
+    },
+    {
       "id": "implementation/version-editor/edit-draft-version",
       "kind": "implementation",
       "file": "implementation/version-editor/edit-draft-version.md",
@@ -142,6 +150,14 @@
       "title": "New Draft origination flow, over the Version Editor's shared form",
       "summary": "Adds a \"New draft\" entry point to Case Detail that opens a blank instance of the Version Editor whose first Save issues POST /v1/cases, then switches in place into edit-draft-version's own PATCH-based edit-mode flow, and handles the 409 CaseAlreadyHasDraftError race with a toast plus a redirect to the case's existing draft.",
       "task": "task/version-editor/new-draft-creation"
+    },
+    {
+      "id": "implementation/version-editor/release-draft-version",
+      "kind": "implementation",
+      "file": "implementation/version-editor/release-draft-version.md",
+      "title": "Release a draft case version",
+      "summary": "Adds a \"Release…\" control and its in-place confirmation Dialog to the Version Editor, with a client-computed pre-release checklist, a single POST .../release on confirm, and rendering for its 200/409/422 outcomes.",
+      "task": "task/version-editor/release-draft-version"
     },
     {
       "id": "proof/cases-list-and-detail/case-detail-timeline",
@@ -256,6 +272,14 @@
       "task": "task/manifest-hypothesis-authoring/revise-hypothesis-form"
     },
     {
+      "id": "proof/version-editor/discard-draft-version",
+      "kind": "proof",
+      "file": "proof/version-editor/discard-draft-version.md",
+      "title": "Discard a draft case version — proof",
+      "summary": "Sixteen behavioral tests over CaseVersionEditorScreen prove the Discard control's visibility gate, its slug-typed confirmation Dialog, the DELETE it issues, both terminal outcomes of that request, and the Dialog's own \"Keep draft\" control, against a self-contained router-and-fetch fixture confirming the slug prop threaded into CaseVersionEditorReadyView is live.",
+      "task": "task/version-editor/discard-draft-version"
+    },
+    {
       "id": "proof/version-editor/edit-draft-version",
       "kind": "proof",
       "file": "proof/version-editor/edit-draft-version.md",
@@ -270,6 +294,14 @@
       "title": "Proof for the New Draft origination flow",
       "summary": "Twenty-one tests, across five files, proving Case Detail's \"New draft\" visibility rule, the blank form's subject pre-set, the POST /v1/cases request it issues, its switch into edit-draft-version's own PATCH flow addressed at the returned version with no follow-up GET, and the 409 CaseAlreadyHasDraftError toast-plus-redirect.",
       "task": "task/version-editor/new-draft-creation"
+    },
+    {
+      "id": "proof/version-editor/release-draft-version",
+      "kind": "proof",
+      "file": "proof/version-editor/release-draft-version.md",
+      "title": "Release a draft case version — proof",
+      "summary": "Tests proving task/version-editor/release-draft-version's eight criteria and its disclosed inferences, written against use-edit-draft-version-form.ts and case-version-editor-ready-view.tsx without touching either.",
+      "task": "task/version-editor/release-draft-version"
     },
     {
       "id": "review/cases-list-and-detail-onda-2",
@@ -739,6 +771,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/version-editor/discard-draft-version",
+      "to": "task/version-editor/discard-draft-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/version-editor/edit-draft-version",
       "to": "domain/knowledge/case-version",
       "kind": "encodes",
@@ -889,6 +957,120 @@
       "at": "the path"
     },
     {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-has-at-least-one-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/version-editor/release-draft-version",
+      "to": "task/version-editor/release-draft-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/cases-list-and-detail/case-detail-timeline",
       "to": "implementation/cases-list-and-detail/case-detail-timeline",
       "kind": "proves",
@@ -973,6 +1155,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/version-editor/discard-draft-version",
+      "to": "implementation/version-editor/discard-draft-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/version-editor/edit-draft-version",
       "to": "implementation/version-editor/edit-draft-version",
       "kind": "proves",
@@ -981,6 +1169,12 @@
     {
       "from": "proof/version-editor/new-draft-creation",
       "to": "implementation/version-editor/new-draft-creation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/version-editor/release-draft-version",
+      "to": "implementation/version-editor/release-draft-version",
       "kind": "proves",
       "at": "the path"
     },

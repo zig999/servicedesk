@@ -29,6 +29,25 @@
  * screen.tsx, two arguments, no seed) is unaffected: `version` is always a
  * real number there and `seedRecord` is always `undefined`, so `enabled`
  * evaluates to exactly what it always did.
+ *
+ * task/version-editor/release-draft-version adds one more isolated mutation
+ * here, matching use-manifest-builder.ts's own established convention (one
+ * mutation per terminal action, its own onSuccess/onError branch, no
+ * client-side "dirty" flag spanning it and the save state machine above):
+ * POST .../release, exposed to a "ready"-phase caller as the optional
+ * `release` field below. Optional, rather than a required member of the
+ * "ready" variant, because use-new-draft-version-form.ts's own blank-form
+ * "ready" object (before a draft exists to release) is a second, independent
+ * literal of this same union that this task does not touch -- widening the
+ * variant with a *required* field would force that file to supply one too,
+ * which is not this task's own concern. `CaseVersionRecord` gains two
+ * optional fields for the same reason: `state` and `manifest`, both absent
+ * from that other file's own seed literal (a freshly created draft has never
+ * been read back through the real GET this record otherwise always comes
+ * from) -- absent, the release control simply does not render (`canRelease`
+ * below reads `record.state === "draft"` exactly, never treating "unknown"
+ * as "draft"), rather than the hook guessing a fact it does not actually
+ * hold for that one call site.
  */
 
 import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
@@ -48,23 +67,25 @@ import {
   useGlossaryVocabularyOptions,
   type GlossaryVocabularyOptions,
 } from "./use-glossary-vocabulary";
+import { useConceptOptions } from "./use-concept-options";
+import type { CaseVersionRecord } from "../services/case-version-record";
+import {
+  buildReleaseChecklist,
+  extractReleaseViolations,
+  type ReleaseDialogContent,
+  type ReleaseControlState,
+} from "../services/release-checklist";
+// Single-line by exception (every other import above wraps one symbol per
+// line): use-edit-draft-version-form.ts's own header comment on this file's
+// max-lines pressure -- every line spared here is one this task's own new
+// mutation and "ready"-phase field below do not have to find elsewhere.
+import { buildDiscardControlState, buildDiscardMutationOptions, type DiscardControlState } from "../services/discard-confirmation";
+
+/** Re-exported for use-new-draft-version-form.ts's own seed-record literal -- the shape itself moved to services/case-version-record.ts (task/version-editor/release-draft-version) so this file stays under this project's own max-lines rule. */
+export type { CaseVersionRecord };
 
 /** The form's own save state machine (proposal section 4): clean while nothing has changed since the last successful load or save, dirty after an edit, saving while the PATCH is in flight, and conflict once the backend refuses because someone else released the version first. */
 export type SaveStatus = "clean" | "dirty" | "saving" | "conflict";
-
-/**
- * The subset of GET/PATCH's read-case response this form reads or writes.
- * Exported so a caller seeding this hook from a just-created draft's own
- * submitted content (task/version-editor/new-draft-creation) can build one
- * without re-declaring the shape.
- */
-export type CaseVersionRecord = {
-  readonly title: string;
-  readonly when_to_use: string;
-  readonly subject: string;
-  readonly fallback: CaseVersionFormValues["fallback"];
-  readonly consolidation_register?: CaseVersionFormValues["consolidation_register"];
-};
 
 export type EditDraftVersionFormState =
   | { readonly phase: "loading" }
@@ -80,6 +101,10 @@ export type EditDraftVersionFormState =
       readonly recipientOptions: GlossaryVocabularyOptions;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
       readonly onFieldBlur: () => void;
+      /** Absent only for use-new-draft-version-form.ts's own blank-form "ready" object -- see this file's own header comment. */
+      readonly release?: ReleaseControlState;
+      /** Absent for the same reason as `release` above (task/version-editor/discard-draft-version). */
+      readonly discard?: DiscardControlState;
     };
 
 function resetFormFrom(
@@ -132,6 +157,27 @@ export function useEditDraftVersionForm(
   // call sees it before its own validation pass ever resolves.
   const isSubmittingRef = useRef(false);
 
+  // task/version-editor/release-draft-version's own local state: the
+  // Dialog's open/closed flag, whichever violations a 422 last left on it
+  // (null renders the checklist instead, criterion 6), and a sticky flag set
+  // the instant a 200 arrives (criterion 5) -- independent of whichever
+  // query below eventually refetches, so isBlocked further down does not
+  // wait on that refetch to disable every field.
+  const [isReleaseDialogOpen, setIsReleaseDialogOpen] = useState(false);
+  const [releaseViolations, setReleaseViolations] = useState<readonly string[] | null>(null);
+  const [isReleased, setIsReleased] = useState(false);
+
+  // task/version-editor/discard-draft-version's own local state: the
+  // Dialog's open/closed flag, the confirmation field's own typed value
+  // (criterion 3), and whichever error message a failed DELETE last left on
+  // it (criterion 6, null renders no message). No sticky "isDiscarded" flag
+  // alongside isReleased above -- a successful discard navigates the
+  // curator away entirely (criterion 5) rather than leaving this same
+  // version addressable read-only the way a successful release does.
+  // Same single-line exception as this file's own discard-confirmation
+  // import above, for the same max-lines reason.
+  const [isDiscardDialogOpen, setIsDiscardDialogOpen] = useState(false); const [discardSlugConfirmation, setDiscardSlugConfirmation] = useState(""); const [discardErrorText, setDiscardErrorText] = useState<string | null>(null);
+
   // Disabled and seeded from `initialData` once a caller supplies
   // `seedRecord` (new-draft-creation, right after its own 201) -- the GET
   // this query would otherwise issue never fires, satisfying that task's own
@@ -150,6 +196,14 @@ export function useEditDraftVersionForm(
   const outcomeOptions = useGlossaryVocabularyOptions("outcome");
   const actionOptions = useGlossaryVocabularyOptions("action");
   const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  // The pre-Release checklist's third item (criterion 2) re-reads this exact
+  // hook Onda 4 already established for this purpose (use-concept-options.ts's
+  // own header comment). Its own load or error state deliberately does not
+  // join isLoadingGlossary/isGlossaryError below -- the checklist is
+  // best-effort (this task's own Notes), never a promise, and gating the
+  // whole form's readiness on it would block Save over a read only the
+  // Release control needs.
+  const conceptOptions = useConceptOptions();
 
   const form = useForm<CaseVersionFormValues>({
     resolver: zodResolver(caseVersionFormSchema),
@@ -252,6 +306,80 @@ export function useEditDraftVersionForm(
     },
   });
 
+  const releaseMutation = useMutation({
+    mutationFn: () => {
+      // Mirrors patchMutation's own guard above: the release control (only
+      // ever exposed once the "ready" phase is reached) is never reachable
+      // while `version` is still null.
+      if (version === null) {
+        throw new Error("cannot release a draft version that has not been created yet");
+      }
+      return apiFetch<CaseVersionRecord>(
+        `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/release`,
+        { method: "POST" },
+      );
+    },
+    onSuccess: (data) => {
+      // 200 turns the version permanently read-only (criterion 5): the same
+      // re-hydration a successful PATCH already performs, plus the sticky
+      // local flag isBlocked reads below, and the two invalidations a state
+      // change already earns elsewhere in this app (use-manifest-builder.ts's
+      // own convention for every write that changes a version's own state).
+      resetFormFrom(form, data);
+      setIsReleased(true);
+      setIsReleaseDialogOpen(false);
+      if (version !== null) {
+        telemetry.caseReleased({ slug, version });
+      }
+      void queryClient.invalidateQueries({ queryKey: ["case-version", slug, version] });
+      void queryClient.invalidateQueries({ queryKey: ["case-versions", slug] });
+    },
+    onError: (error) => {
+      const kind = errorStateKind(error);
+      if (kind === "case-version-not-releasable") {
+        // 422: every violation the response's own array holds, verbatim, in
+        // place of the pre-click checklist (criterion 6) -- never the
+        // checklist's own fixed wording.
+        setReleaseViolations(extractReleaseViolations(error));
+        return;
+      }
+      if (kind === "case-version-not-draft-at-release") {
+        // 409: closes the Dialog and re-fetches rather than showing a
+        // violations list (criterion 7) -- someone else already moved this
+        // version out of draft.
+        setIsReleaseDialogOpen(false);
+        setReleaseViolations(null);
+        void queryClient.invalidateQueries({ queryKey: ["case-version", slug, version] });
+        return;
+      }
+      // Any other failure: no criterion of this task names wording for this
+      // case, mirroring patchMutation's own generic, non-domain fallback
+      // above rather than inventing a second one.
+      toast.error("Something went wrong while releasing. Try again.");
+    },
+  });
+
+  // task/version-editor/discard-draft-version's own isolated mutation
+  // (contracts/knowledge/case-lifecycle's own discard operation): built by
+  // services/discard-confirmation.ts's own buildDiscardMutationOptions
+  // rather than inline here, so this file stays under this project's own
+  // max-lines rule (that module's own header comment). `onDiscarded` and
+  // `onFailed` stay this hook's own closures because they touch telemetry,
+  // the query cache and navigation -- none of which a plain services module
+  // reaches; `onDiscarded` receives the discarded version number back from
+  // the mutation itself (rather than reading the outer `version` closure),
+  // so it needs no `version !== null` narrowing of its own -- criterion 5.
+  const discardMutation = useMutation(
+    buildDiscardMutationOptions({
+      slug, version, onFailed: setDiscardErrorText,
+      onDiscarded: (discardedVersion) => {
+        telemetry.caseDraftDiscarded({ slug, version: discardedVersion });
+        void queryClient.invalidateQueries({ queryKey: ["case-version", slug, discardedVersion] }); void queryClient.invalidateQueries({ queryKey: ["case-versions", slug] });
+        void navigate({ to: "/cases/$slug", params: { slug } });
+      },
+    }),
+  );
+
   const isLoadingGlossary =
     outcomeOptions.isLoading || actionOptions.isLoading || recipientOptions.isLoading;
   const isGlossaryError =
@@ -275,6 +403,36 @@ export function useEditDraftVersionForm(
   if (versionQuery.isLoading || isLoadingGlossary || !versionQuery.data) {
     return { phase: "loading" };
   }
+
+  const record = versionQuery.data;
+  if (version === null) {
+    // Structurally unreachable: this hook's own "ready" phase (guarded by
+    // `!versionQuery.data` above) is only ever produced once `version` is a
+    // real number (this file's own header comment on `enabled`/
+    // `initialData`) -- this guard exists only so `release.version` below
+    // can read it without a type assertion (TYP-02).
+    throw new Error("cannot expose a release control for a version that has not been created yet");
+  }
+
+  // criterion 1: the Release control renders only while the currently
+  // loaded version's own state is draft, and only until this session's own
+  // release succeeds (isReleased) -- record.state itself may still read
+  // "draft" for a moment after a 200, until the invalidated query above
+  // refetches.
+  const canRelease = record.state === "draft" && !isReleased;
+  const releaseDialog: ReleaseDialogContent =
+    releaseViolations !== null
+      ? { kind: "violations", violations: releaseViolations }
+      : {
+          kind: "checklist",
+          items: buildReleaseChecklist({
+            record,
+            outcomeOptions,
+            actionOptions,
+            recipientOptions,
+            concepts: conceptOptions.concepts,
+          }),
+        };
 
   // dirty -> saving happens only once the submitted content actually
   // validates (criterion 8 names the transition, not what happens to an
@@ -300,7 +458,15 @@ export function useEditDraftVersionForm(
     form,
     status,
     savedAt,
-    isBlocked: status === "saving" || status === "conflict",
+    // criterion 5: a released version (this session's own release, or one
+    // already released when loaded) disables every field and Save alongside
+    // the existing saving/conflict conditions -- one shared gate, rather
+    // than form-fields.tsx growing a second disabled condition of its own.
+    isBlocked:
+      status === "saving" ||
+      status === "conflict" ||
+      record.state === "released" ||
+      isReleased,
     outcomeOptions,
     actionOptions,
     recipientOptions,
@@ -310,5 +476,44 @@ export function useEditDraftVersionForm(
         void submit();
       }
     },
+    release: {
+      version,
+      canRelease,
+      isOpen: isReleaseDialogOpen,
+      onOpenChange: (open: boolean) => {
+        setIsReleaseDialogOpen(open);
+        if (open) {
+          // criterion 2: the checklist's own two glossary-backed items are
+          // computed "by re-reading" these four endpoints, not from
+          // whatever these four queries happened to hold since the form's
+          // own initial load -- opening the Dialog is what actually issues
+          // that re-read.
+          outcomeOptions.refetch();
+          actionOptions.refetch();
+          recipientOptions.refetch();
+          conceptOptions.refetch();
+        } else {
+          // Cancel, Escape, the overlay, or the 409 branch above -- the next
+          // open should always start from the checklist, never a stale
+          // violations list from a previous attempt.
+          setReleaseViolations(null);
+        }
+      },
+      dialog: releaseDialog,
+      isConfirming: releaseMutation.isPending,
+      onConfirm: () => releaseMutation.mutate(),
+    },
+    // task/version-editor/discard-draft-version, criterion 1: rendered only
+    // while the loaded version's own state is draft
+    // (rules/knowledge/only-a-draft-case-version-may-be-discarded). The three
+    // tuples below are this hook's own `useState` pairs, passed through
+    // unchanged (buildDiscardControlState's own header comment).
+    discard: buildDiscardControlState({
+      version, slug, canDiscard: record.state === "draft" && !isReleased,
+      dialogOpen: [isDiscardDialogOpen, setIsDiscardDialogOpen],
+      slugConfirmation: [discardSlugConfirmation, setDiscardSlugConfirmation],
+      errorMessage: [discardErrorText, setDiscardErrorText],
+      isConfirming: discardMutation.isPending, onConfirm: () => discardMutation.mutate(),
+    }),
   };
 }

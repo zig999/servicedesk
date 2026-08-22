@@ -46,7 +46,7 @@ export function CaseVersionEditorScreen(): JSX.Element {
       <h1>
         Case {slug} — Version {version}
       </h1>
-      <CaseVersionEditorReadyView state={state} />
+      <CaseVersionEditorReadyView state={state} slug={slug} />
     </section>
   );
 }

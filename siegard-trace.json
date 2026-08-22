@@ -440,6 +440,10 @@
           "digest": "sha256:0b41a4ba8976cb7247eb521575cd836bdbf31d4f32f68da4be078d880982e93a"
         },
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
         },
@@ -671,7 +675,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -684,6 +688,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/services/discard-confirmation.ts",
+          "digest": "sha256:c3e51ae1955e369e5150707959ba4ee13328b3033334cab44cd8435e01b8ee4d"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -813,7 +821,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1014,6 +1022,10 @@
       "digest": "sha256:a5a5a2bfcf5d8e6edf1200ec44a433610f342912d8e5def4f1900c9addfc1d8b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
         },
@@ -1076,6 +1088,10 @@
           "digest": "sha256:0b41a4ba8976cb7247eb521575cd836bdbf31d4f32f68da4be078d880982e93a"
         },
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:b04512985972feba5c212d219b0f18b77462b53e4baf1be855c302194c526b5e"
         },
@@ -1129,6 +1145,10 @@
       "node": "domain/glossary/outcome",
       "digest": "sha256:ed6df017623951445ffc8259195aa7999eef3c2f5feae133f17e79cc59778290",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
@@ -1187,6 +1207,10 @@
       "node": "domain/glossary/recipient",
       "digest": "sha256:e214071bc54a45d4e1b7591b418289d88dddb6a003931af68e07b09cf9d07814",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
@@ -1283,6 +1307,10 @@
       "node": "domain/glossary/subject-type",
       "digest": "sha256:40d3ebdf06c06fcb9c414ac8b9e2b623bac16d8c02cc4712106bda29287415d9",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
@@ -1780,6 +1808,10 @@
       "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
         },
@@ -1788,8 +1820,16 @@
           "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:85a0e74e4520e7620bf0d9520c67003921b609ca5f9dc8b597df644991ac85bd"
+        },
+        {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+        },
+        {
+          "path": "frontend/app/src/services/discard-confirmation.ts",
+          "digest": "sha256:c3e51ae1955e369e5150707959ba4ee13328b3033334cab44cd8435e01b8ee4d"
         },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
@@ -1901,7 +1941,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1924,8 +1964,16 @@
           "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
         },
         {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:85a0e74e4520e7620bf0d9520c67003921b609ca5f9dc8b597df644991ac85bd"
+        },
+        {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
           "digest": "sha256:3bcb36f4d4ac1f820541dfca1b5430427dc8043466d3ed5b7bba4e904e160862"
+        },
+        {
+          "path": "frontend/app/src/services/discard-confirmation.ts",
+          "digest": "sha256:c3e51ae1955e369e5150707959ba4ee13328b3033334cab44cd8435e01b8ee4d"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -2027,7 +2075,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -2326,6 +2374,10 @@
       "digest": "sha256:45cef39ec3b278f063a02dbaeeef62e8ba9a2a0e36e686f2ca69e1ae0e4820bf",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:376323e1832a4771297bc8e7ad1aed2c97ce8fe57b24cc720d9a1aaf48748e98"
         },
@@ -2380,6 +2432,10 @@
       "digest": "sha256:8d9fed071eb73f031be1d0062289d0af6fe0668fc4ec5d578fdd9851a5c9ca16",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
         },
@@ -2433,6 +2489,10 @@
       "node": "domain/knowledge/resolution",
       "digest": "sha256:6222afea54dfc1b74fb3cd7f9982c2e7035473c41e959edf57933f628d7ecc1b",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
           "digest": "sha256:bed7a13b76f11beb9eac3b033f32f64f073f03c2968a5faa7402b963b0dfa644"
@@ -2906,6 +2966,10 @@
       "digest": "sha256:5c038152a881af2ddfd301cb7e9362d94aedbabf4837094058f5f935fbd7c88f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
           "digest": "sha256:376323e1832a4771297bc8e7ad1aed2c97ce8fe57b24cc720d9a1aaf48748e98"
         },
@@ -2981,7 +3045,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:6779bbb77711d6f7e5516be7d3de74f255109216eaf692d30612473fc34d08af"
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -3050,6 +3114,10 @@
       "digest": "sha256:8a2a36366e87c09dbe0871e23ee385d39ba1b43f2f6f014a1da68a7db8f593cf",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
         },
@@ -3115,6 +3183,10 @@
       "node": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
       "digest": "sha256:4e88ca75f8d4f5251f424cb8113863e905eb477fbc72f228fbfd6f682c236ee1",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:b04512985972feba5c212d219b0f18b77462b53e4baf1be855c302194c526b5e"
@@ -3372,6 +3444,10 @@
           "digest": "sha256:0b41a4ba8976cb7247eb521575cd836bdbf31d4f32f68da4be078d880982e93a"
         },
         {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
           "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
         },
@@ -3531,6 +3607,14 @@
       "node": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
       "digest": "sha256:cae0bb16856d7598c4886764d902941b63927569a64b9acbd25fc96d61b07a06",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
+          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+        },
+        {
+          "path": "frontend/app/src/services/discard-confirmation.ts",
+          "digest": "sha256:c3e51ae1955e369e5150707959ba4ee13328b3033334cab44cd8435e01b8ee4d"
+        },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"

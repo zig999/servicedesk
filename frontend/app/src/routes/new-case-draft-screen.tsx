@@ -43,7 +43,7 @@ export function NewCaseDraftScreen(): JSX.Element {
   return (
     <section>
       <h1>Case {slug} — New draft</h1>
-      <CaseVersionEditorReadyView state={state} />
+      <CaseVersionEditorReadyView state={state} slug={slug} />
     </section>
   );
 }
