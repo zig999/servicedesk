@@ -46,6 +46,12 @@ classDiagram
             +Resolution resolution
         }
     }
+    class CaseSummary {
+        <<ValueObject>>
+        +CaseVersionState currentState
+        +integer versionCount
+        +datetime lastUpdated
+    }
     class CaseVersionState {
         <<Enumeration>>
         DRAFT

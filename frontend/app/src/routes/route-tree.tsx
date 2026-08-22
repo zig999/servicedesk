@@ -1,9 +1,9 @@
 import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 import { AppShell } from "../shared/components/app-shell";
+import { CaseDetailScreen } from "./case-detail-screen";
+import { CasesListScreen } from "./cases-list-screen";
 import {
-  CaseDetailPlaceholder,
   CaseHypothesesPlaceholder,
-  CasesListPlaceholder,
   CaseVersionPlaceholder,
   GlossaryPlaceholder,
   CapabilitiesPlaceholder,
@@ -30,13 +30,13 @@ const rootRoute = createRootRoute({ component: AppShell });
 const casesListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases",
-  component: CasesListPlaceholder,
+  component: CasesListScreen,
 });
 
 const caseDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug",
-  component: CaseDetailPlaceholder,
+  component: CaseDetailScreen,
 });
 
 const caseVersionRoute = createRoute({

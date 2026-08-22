@@ -42,4 +42,20 @@ export default defineConfig({
     environment: "jsdom",
     include: ["src/**/*.spec.{ts,tsx}"],
   },
+  server: {
+    // Forwards any request path starting with /v1 to the real backend at
+    // localhost:3000 during development. The backend sends no
+    // Access-Control-Allow-Origin header, so a browser-side apiFetch() call
+    // from this dev server (localhost:5173) would otherwise be blocked by
+    // CORS regardless of which screen makes it -- proxying keeps the
+    // request same-origin from the browser's point of view. A production
+    // CORS change on the backend is out of scope; this affects only the
+    // dev server.
+    proxy: {
+      "/v1": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
+  },
 });

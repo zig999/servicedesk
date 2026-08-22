@@ -2,9 +2,7 @@ import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import {
-  CaseDetailPlaceholder,
   CaseHypothesesPlaceholder,
-  CasesListPlaceholder,
   CaseVersionPlaceholder,
   GlossaryPlaceholder,
   CapabilitiesPlaceholder,
@@ -41,9 +39,13 @@ const EXPECTED_PATHS = [
   "/capabilities",
 ];
 
+// /cases and /cases/$slug are excluded from this map: both now render real
+// screens (CasesListScreen, CaseDetailScreen -- task/cases-list-and-detail/
+// cases-list-screen and .../case-detail-timeline), not a placeholder. Which
+// component each of those two renders is that task's own criterion and its
+// own proof's to test; this suite only answers for the eight routes that
+// still render a placeholder.
 const EXPECTED_COMPONENT_BY_PATH: Record<string, unknown> = {
-  "/cases": CasesListPlaceholder,
-  "/cases/$slug": CaseDetailPlaceholder,
   "/cases/$slug/hypotheses": CaseHypothesesPlaceholder,
   "/cases/$slug/versions/$version": CaseVersionPlaceholder,
   "/cases/$slug/versions/$version/manifest": VersionManifestPlaceholder,
@@ -71,9 +73,11 @@ describe("route-tree", () => {
     expect(new Set(actualPaths).size).toBe(actualPaths.length);
   });
 
-  it("renders each route through exactly its own placeholder, and no route through another's", () => {
+  it("renders each still-placeholder route through exactly its own placeholder, and no route through another's", () => {
     const actualComponentByPath = Object.fromEntries(
-      leafRoutes().map((route) => [route.fullPath, route.options.component]),
+      leafRoutes()
+        .filter((route) => route.fullPath in EXPECTED_COMPONENT_BY_PATH)
+        .map((route) => [route.fullPath, route.options.component]),
     );
 
     expect(actualComponentByPath).toEqual(EXPECTED_COMPONENT_BY_PATH);

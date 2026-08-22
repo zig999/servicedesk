@@ -1,5 +1,10 @@
 ---
 entries:
+  - location: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.md
+    field: statement
+    unstated: Whether a case has any derived "current state," "version count" or "last updated" concept, and if so how each is computed from the case's own case-versions — the case aggregate declares only slug and next_version, and each case-version separately declares its own state and authored_at.
+    decided: A case's summary is computed from its own existing versions — current_state is the state of the case's highest-numbered version, version_count is the number of versions the case currently holds, and last_updated is that same highest-numbered version's authored_at.
+    why: A discarded draft already leaves no version behind to read (a-case-version-number-is-never-reused), so version_count needs no separate policy on what to include or exclude — it counts exactly the rows the store still holds. Version numbers are assigned once, strictly increasing, and a version is only ever created after every version before it, so the highest-numbered version a case holds is always its most recently authored one regardless of whether it is draft or released — making that single version the natural source of both current_state and last_updated, rather than two independently-computed facts that could disagree.
   - location: domain/glossary/_context.md
     field: strategic
     unstated: The material's distillation table classifies knowledge, execution and corporate-system access, but never the glossary.

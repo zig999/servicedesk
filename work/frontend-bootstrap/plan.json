@@ -9,6 +9,13 @@
       "summary": "The build, lint, style, type and test tooling frontend/app needs before any case-authoring screen exists, under the epic that claims this initiative's territory in the case-authoring domain."
     },
     {
+      "id": "epic/cases-list-and-detail",
+      "kind": "epic",
+      "file": "epic/cases-list-and-detail.md",
+      "title": "Cases List and Case Detail",
+      "summary": "The two real, data-driven screens Onda 2 lands over Onda 1's foundation -- a searchable list of every case and a per-case version timeline with an at-most-one-draft creation flow -- replacing CasesListPlaceholder and CaseDetailPlaceholder."
+    },
+    {
       "id": "epic/frontend-console-foundation",
       "kind": "epic",
       "file": "epic/frontend-console-foundation.md",
@@ -30,12 +37,51 @@
       "summary": "frontend/app is an empty greenfield tree; the only relevant existing material is the vendored, read-only TUI submodule the scope requires composing through a @tui/ui/* alias."
     },
     {
+      "id": "inventory/frontend-cases-list-detail-foundation",
+      "kind": "inventory",
+      "file": "inventory/frontend-cases-list-detail-foundation.md",
+      "title": "Onda 1 foundation the Cases List and Case Detail screens land on",
+      "summary": "A router, an AppShell, a typed API client, an error-to-UI-state table, a reusable StatusTable, a QueryClient/Toaster, a telemetry hook and a ConflictBanner already exist under frontend/app/src; Onda 2 replaces two of the router's ten placeholder routes with real, data-driven screens on top of them."
+    },
+    {
       "id": "task/case-authoring-console/build-substrate",
       "kind": "task",
       "file": "task/case-authoring-console/build-substrate.md",
       "title": "Build frontend app substrate",
       "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
       "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "kind": "task",
+      "file": "task/cases-list-and-detail/case-detail-new-draft-action.md",
+      "title": "Case Detail new-draft action and 409 race handling",
+      "summary": "Adds the \"New draft\" action to Case Detail when no version is in draft state, posting to /v1/cases and treating a 409 CaseAlreadyHasDraftError response as an expected race -- a toast plus a redirect to the existing draft, never an error.",
+      "epic": "cases-list-and-detail"
+    },
+    {
+      "id": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "task",
+      "file": "task/cases-list-and-detail/case-detail-timeline.md",
+      "title": "Case Detail version timeline",
+      "summary": "Replaces CaseDetailPlaceholder with a read-only rendering of a case's version timeline from GET /v1/cases/:slug/versions, offering \"Continue editing\" on a draft version with no additional precondition.",
+      "epic": "cases-list-and-detail"
+    },
+    {
+      "id": "task/cases-list-and-detail/cases-list-screen",
+      "kind": "task",
+      "file": "task/cases-list-and-detail/cases-list-screen.md",
+      "title": "Cases List screen",
+      "summary": "Replaces CasesListPlaceholder with a table listing every case from GET /v1/cases, with a search/filter control, an empty state, and per-row navigation to Case Detail.",
+      "epic": "cases-list-and-detail"
+    },
+    {
+      "id": "task/cases-list-and-detail/dev-proxy-for-backend-api",
+      "kind": "task",
+      "file": "task/cases-list-and-detail/dev-proxy-for-backend-api.md",
+      "title": "Dev-server proxy to the real backend",
+      "summary": "A vite.config.ts server.proxy entry forwarding /v1/* to the real backend at http://localhost:3000, so a browser-side apiFetch call reaches it without a CORS rejection.",
+      "epic": "cases-list-and-detail"
     },
     {
       "id": "task/frontend-console-foundation/app-shell",
@@ -146,6 +192,108 @@
       "at": "covers[6]"
     },
     {
+      "from": "epic/cases-list-and-detail",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "epic/frontend-console-foundation",
       "to": "domain/knowledge/case",
       "kind": "covers",
@@ -192,6 +340,114 @@
       "to": "constraints/no-route-enforces-authentication",
       "kind": "covers",
       "at": "covers[7]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-new-draft-action",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-timeline",
+      "to": "task/cases-list-and-detail/dev-proxy-for-backend-api",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-timeline",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-timeline",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-timeline",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-detail-timeline",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "task/cases-list-and-detail/dev-proxy-for-backend-api",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "domain/knowledge/case-summary",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/cases-list-and-detail/cases-list-screen",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[4]"
     },
     {
       "from": "task/frontend-console-foundation/app-shell",

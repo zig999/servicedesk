@@ -1,4 +1,4 @@
-import type { JSX, KeyboardEvent, ReactNode } from "react";
+import { isValidElement, type JSX, type KeyboardEvent, type ReactNode } from "react";
 import {
   Table,
   TableBody,
@@ -58,6 +58,13 @@ function renderPlainValue(value: unknown): ReactNode {
  * `value.color` is composed as a class on the dot through `cn()` (this
  * catalog's own class-merge helper) rather than an inline style, so the
  * color and the word can never be shown one without the other.
+ *
+ * A value that is itself a React element (e.g. a caller-composed action
+ * such as a router `Link`) renders exactly as given, ahead of the plain-value
+ * fallback below -- that fallback stringifies anything that is not a
+ * primitive, which would turn an element into unreadable text instead of
+ * rendering it. This is additive: a value that already satisfied the status
+ * cell or the primitive branch never reaches this check.
  */
 function renderCellContent(value: unknown): ReactNode {
   if (isStatusCellValue(value)) {
@@ -70,6 +77,9 @@ function renderCellContent(value: unknown): ReactNode {
         <span>{value.label}</span>
       </span>
     );
+  }
+  if (typeof value === "object" && isValidElement(value)) {
+    return value;
   }
   return renderPlainValue(value);
 }
