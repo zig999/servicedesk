@@ -833,7 +833,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -1785,7 +1785,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -1917,7 +1917,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -2035,7 +2035,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
@@ -2945,7 +2945,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -3427,7 +3427,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:583cfd8c39d1129fae18ac34eed684f195c42d2bd12d41c8964a0da18a836129"
+          "digest": "sha256:e5a22c04f215e80bc96bf1ad901ec274c94ff20b8d9cf3a58df1a1ce0b1dc085"
         },
         {
           "path": "src/src/case/case-query.service.ts",
