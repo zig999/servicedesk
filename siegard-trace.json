@@ -106,6 +106,16 @@
       ]
     },
     {
+      "node": "constraints/no-route-enforces-authentication",
+      "digest": "sha256:6a6bbf9399f504a42cb96abe79d00793135ae491db8b3e81fda54819fa8d57b4",
+      "files": [
+        {
+          "path": "frontend/app/src/shared/components/app-shell.tsx",
+          "digest": "sha256:d20d98a0e48388f5316837f1825e3ff06ac7ad722f1bfcbac94ae34b5da86227"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-consolidation-prompt-is-closed",
       "digest": "sha256:c3ddbcc0cf1d4bbd09456fdfa4627f95f377361dfa1beb0afacb091a18b9ce4b",
       "files": [

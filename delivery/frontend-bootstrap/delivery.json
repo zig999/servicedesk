@@ -167,6 +167,37 @@
         "tsconfig.json declares strict mode and a module resolution setting compatible with Vite's bundler resolution.",
         "vite.config.ts declares the React plugin, resolves @tui/ui/* and @tui/lib/* to frontend/tui/frontend/src/shared, and configures the Vitest test environment."
       ]
+    },
+    {
+      "id": "review/frontend-console-foundation-onda-1",
+      "kind": "review",
+      "file": "review/frontend-console-foundation-onda-1.md",
+      "title": "Review of frontend-console-foundation onda 1 (8 tasks)",
+      "summary": "Four-pass review of the 8 frontend-console-foundation tasks: coverage over their 37 criteria, specification conformance, standard conformance, and the failures pass (which did not run -- the captured run passed cleanly).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A single module-level QueryClient instance is created with retry:1 and no staleTime set on the client itself.",
+        "Any status value rendered in the status column carries both a color and a word, never color alone or word alone.",
+        "ConflictBanner is exported from a shared location importable by any future screen, with no screen-specific code inside it.",
+        "ConflictBanner renders through TUI's Banner primitive rather than new banner markup.",
+        "ConflictBanner reuses Banner's existing accent prop to signal a conflict, rather than adding a parallel styling mechanism.",
+        "No network call or real telemetry endpoint is invoked -- the sink is console.info only, matching the decision recorded in temp/frontend-console-decisions.md.",
+        "No route composes a layout beyond its own placeholder content in this task.",
+        "The AppShell wraps every route the router skeleton defines, so no screen renders outside it.",
+        "The QueryClientProvider wraps the routed app so every screen shares the same QueryClient instance.",
+        "The client is the one fetch wrapper this wave's code calls the backend through; no second envelope-parsing path exists.",
+        "The installed @tanstack/react-query version matches TUI's pinned ^5.62.0.",
+        "The router is wired as the single RouterProvider mounted at the app's entry point, using @tanstack/react-router at the version TUI already pins (^1.95.0).",
+        "The table is composed over TUI's Table/TableHeader/TableBody/TableRow/TableHead/TableCell primitives rather than new markup.",
+        "The table's fourteen named keys match exactly the class names in src/src/errors/status-map.ts, with no re-derived or renamed key.",
+        "The topbar renders a breadcrumb through TUI's Breadcrumb primitive reflecting the currently matched route, not a hand-derived path string.",
+        "Visiting each defined route renders that route's own placeholder component, distinct from every other route's placeholder."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -283,6 +314,54 @@
       "to": "task/case-authoring-console/build-substrate",
       "kind": "reviews",
       "at": "tasks[0]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/router-skeleton",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/app-shell",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/query-client-and-toaster",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/typed-api-client",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/conflict-banner",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/frontend-console-foundation-onda-1",
+      "to": "task/frontend-console-foundation/reusable-status-table",
+      "kind": "reviews",
+      "at": "tasks[7]"
     }
   ]
 }
