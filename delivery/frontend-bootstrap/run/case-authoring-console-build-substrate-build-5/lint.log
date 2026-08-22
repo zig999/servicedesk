@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+Warning: React version not specified in eslint-plugin-react settings. See https://github.com/jsx-eslint/eslint-plugin-react#configuration .
+
+/home/siegfriedneto/projects/siegardtest/frontend/app/src/app.tsx
+  11:8  error  Missing return type on function  @typescript-eslint/explicit-module-boundary-types
+
+✖ 1 problem (1 error, 0 warnings)
+

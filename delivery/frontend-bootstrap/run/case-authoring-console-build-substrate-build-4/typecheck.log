@@ -1,0 +1,7 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+../tui/frontend/src/shared/components/ui/divider/divider.tsx(7,7): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/lib/cn.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+../tui/frontend/src/shared/lib/cn.ts(2,37): error TS2307: Cannot find module 'tailwind-merge' or its corresponding type declarations.

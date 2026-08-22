@@ -1,0 +1,24 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-authoring-console/build-substrate",
+      "kind": "implementation",
+      "file": "implementation/case-authoring-console/build-substrate.md",
+      "title": "Build frontend app substrate",
+      "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration standards/frontend-typescript.yaml presupposes and the empty frontend/app tree did not hold, plus a minimal shell proving the @tui/ui/* alias and TUI theme.css import chain resolve into real compiled CSS.",
+      "task": "task/case-authoring-console/build-substrate",
+      "unmet": [
+        "playwright.config.ts declares the pages the a11y step renders and a touch-width viewport."
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-authoring-console/build-substrate",
+      "to": "task/case-authoring-console/build-substrate",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}

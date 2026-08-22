@@ -1,0 +1,30 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 520 packages, and audited 521 packages in 5s
+
+182 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+../tui/frontend/src/shared/components/ui/divider/divider.tsx(7,7): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/lib/cn.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+../tui/frontend/src/shared/lib/cn.ts(2,37): error TS2307: Cannot find module 'tailwind-merge' or its corresponding type declarations.
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

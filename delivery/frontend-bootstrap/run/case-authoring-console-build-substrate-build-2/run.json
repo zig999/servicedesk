@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-authoring-console-build-substrate-build-2",
+  "cwd": "/home/siegfriedneto/projects/siegardtest/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "failed",
+  "failed_step": "install",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "install.log",
+      "started_at": "2026-08-22T00:09:36.934+00:00",
+      "ended_at": "2026-08-22T00:09:37.614+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
