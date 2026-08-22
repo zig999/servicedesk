@@ -878,6 +878,16 @@ dependencies:
       alternatives it offers.
     rules: [TST-01]
 
+  - package: jsdom
+    why: >-
+      @testing-library/react renders into a document; Vitest's own test.environment has no DOM
+      by default ("node"). Without this package configured as that environment, the tool
+      TST-01 already authorizes to query a rendered component has nothing to render into --
+      the authorization above presupposes this one, discovered when the first React component
+      in this codebase reached its proof and had nothing to test against but a callable-export
+      check.
+    rules: [TST-01]
+
   - package: eslint-plugin-testing-library
     why: >-
       The lint step decides TST-01 by it -- reaching into the DOM or the container instead of
