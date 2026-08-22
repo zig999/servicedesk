@@ -9,6 +9,20 @@
       "summary": "The build, lint, style, type and test tooling frontend/app needs before any case-authoring screen exists, under the epic that claims this initiative's territory in the case-authoring domain."
     },
     {
+      "id": "epic/frontend-console-foundation",
+      "kind": "epic",
+      "file": "epic/frontend-console-foundation.md",
+      "title": "Frontend console cross-cutting foundation",
+      "summary": "The app shell, router skeleton, typed API client, error-to-UI-state mapping, and the shared components (conflict banner, telemetry hook, reusable status table, query client and toaster) that this wave builds before any case-authoring, glossary or capabilities screen exists."
+    },
+    {
+      "id": "inventory/frontend-app-bootstrap-onda-1",
+      "kind": "inventory",
+      "file": "inventory/frontend-app-bootstrap-onda-1.md",
+      "title": "Frontend app substrate and TUI catalog before Onda 1's foundation",
+      "summary": "The target root builds, lints and renders one TUI component through the @tui/ui alias, but has no router, query layer, app shell, sidebar/nav, or screen; TUI's own catalog already ships the table, alert/banner and breadcrumb primitives this wave would otherwise rebuild, and the backend's error envelope and status map are the one contract the new API client must match."
+    },
+    {
       "id": "inventory/frontend-app-substrate",
       "kind": "inventory",
       "file": "inventory/frontend-app-substrate.md",
@@ -22,6 +36,70 @@
       "title": "Build frontend app substrate",
       "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
       "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/frontend-console-foundation/app-shell",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/app-shell.md",
+      "title": "AppShell sidebar, topbar breadcrumb and no-auth indicator",
+      "summary": "The persistent shell composing a sidebar (Cases, Glossary, Capabilities, no top-level Hypotheses) and a topbar with a route-derived breadcrumb through TUI's Breadcrumb primitive and a fixed \"No auth in this build\" indicator.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/conflict-banner",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/conflict-banner.md",
+      "title": "Reusable conflict banner",
+      "summary": "A reusable conflict banner composed over TUI's Banner primitive (frame, accent, titleLevel, action slots), distinct from Alert's inline role, for the proposal's section 2.3 conflict messaging.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/error-to-ui-state-table",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/error-to-ui-state-table.md",
+      "title": "Error class to UI-state mapping table",
+      "summary": "The API-02 table resolving each of the ten mapped backend error classes and the four unmapped classes' shared generic-500 fallback to a UI state, keyed off ApiError.code and src/src/errors/status-map.ts's class names.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/query-client-and-toaster",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/query-client-and-toaster.md",
+      "title": "Global query client and single toaster mount",
+      "summary": "A module-level @tanstack/react-query QueryClient (retry:1, a QueryCache-level onError that fires a sonner toast, staleTime left to each query) wrapping the app, and the one sonner Toaster mounted inside the AppShell.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/reusable-status-table",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/reusable-status-table.md",
+      "title": "Reusable clickable-row status table",
+      "summary": "A reusable table with a clickable row and a status column always rendered as color plus word, composed over TUI's Table primitive, for reuse by Cases List, Glossary and Capabilities.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/router-skeleton",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/router-skeleton.md",
+      "title": "Route tree skeleton for the ten proposal screens",
+      "summary": "An empty @tanstack/react-router route tree with one placeholder route per screen 2.1 through 2.10, with no layout composed yet.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/telemetry-catalog-hook",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/telemetry-catalog-hook.md",
+      "title": "Telemetry event catalog hook",
+      "summary": "A hook exposing the eight-event telemetry catalog from section 3 of the proposal, sinking each call to namespaced console.info per the decision recorded in temp/frontend-console-decisions.md.",
+      "epic": "frontend-console-foundation"
+    },
+    {
+      "id": "task/frontend-console-foundation/typed-api-client",
+      "kind": "task",
+      "file": "task/frontend-console-foundation/typed-api-client.md",
+      "title": "Typed fetch client over the backend's error envelope",
+      "summary": "A fetch wrapper that parses the backend's {error:{code,message,details?}} envelope into a typed ApiError, matching src/src/http/error-handler.middleware.ts.",
+      "epic": "frontend-console-foundation"
     }
   ],
   "edges": [
@@ -66,6 +144,78 @@
       "to": "contracts/system/case-authoring",
       "kind": "covers",
       "at": "covers[6]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/frontend-console-foundation",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "task/frontend-console-foundation/app-shell",
+      "to": "task/frontend-console-foundation/router-skeleton",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/frontend-console-foundation/app-shell",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/frontend-console-foundation/error-to-ui-state-table",
+      "to": "task/frontend-console-foundation/typed-api-client",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/frontend-console-foundation/query-client-and-toaster",
+      "to": "task/frontend-console-foundation/app-shell",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
     }
   ]
 }
