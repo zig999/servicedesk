@@ -24,12 +24,15 @@ import { apiFetch } from "../services/api-client";
  * domain/glossary/action, domain/glossary/recipient (edit-draft-version's own three), plus
  * domain/glossary/subject-type (task/version-editor/new-draft-creation's own blank-form
  * field, criterion 2: "the subject field pre-set to the one subject-type value GET
- * /v1/glossary/subject-type currently returns"). The route itself
- * (list-vocabulary-terms.dto.ts's own TERM_VOCABULARIES) also serves subject-attribute; a
- * later task reading it extends this union rather than this one guessing its shape ahead of
- * need.
+ * /v1/glossary/subject-type currently returns") and domain/glossary/subject-attribute, which
+ * the route itself (list-vocabulary-terms.dto.ts's own TERM_VOCABULARIES) already serves.
  */
-export type GlossaryVocabulary = "outcome" | "action" | "recipient" | "subject-type";
+export type GlossaryVocabulary =
+  | "outcome"
+  | "action"
+  | "recipient"
+  | "subject-type"
+  | "subject-attribute";
 
 /** The shape of one page of GET /v1/glossary/{vocabulary} -- only the field this hook reads. */
 type GlossaryTermsPage = {

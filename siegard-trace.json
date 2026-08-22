@@ -444,12 +444,20 @@
           "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:39c6763ce61a7cdcda79458f8c9c01b9c37e084a55088ebfdd590e651fe5ffcd"
+        },
+        {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
         },
         {
           "path": "src/src/factories/glossary.factory.ts",
@@ -509,6 +517,10 @@
       "node": "contracts/integration/capability-registry",
       "digest": "sha256:749480c6e36b33f287c542fd73eabde7d94b2de1f1a7a3b15b51d5105f1f728d",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capabilities.ts",
+          "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
+        },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
@@ -1038,6 +1050,10 @@
           "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
         },
         {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
+        },
+        {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
           "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
         },
@@ -1092,8 +1108,16 @@
           "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
+          "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
+          "digest": "sha256:39c6763ce61a7cdcda79458f8c9c01b9c37e084a55088ebfdd590e651fe5ffcd"
+        },
+        {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
           "digest": "sha256:b04512985972feba5c212d219b0f18b77462b53e4baf1be855c302194c526b5e"
+        },
+        {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -1162,6 +1186,10 @@
           "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
         },
         {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
+        },
+        {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
           "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
         },
@@ -1224,6 +1252,10 @@
           "digest": "sha256:5e0f67c9c98419a70bb35674127f146ed886fd89732bbdef22bbe5ad58194182"
         },
         {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
+        },
+        {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
           "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
         },
@@ -1269,6 +1301,14 @@
       "node": "domain/glossary/subject-attribute",
       "digest": "sha256:c2e70117fe4dbf4d9845c00cd659b7e09cd216563b3cfeef87f8858e77dfbc20",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
+        },
+        {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
+        },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
@@ -1324,6 +1364,10 @@
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
         },
         {
+          "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
+          "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
+        },
+        {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
           "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
         },
@@ -1374,6 +1418,14 @@
       "digest": "sha256:86ac935d0f415c8739d3e9464154c981a615b68d266786177948bc495f02dd4c",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capabilities.ts",
+          "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
+        },
+        {
+          "path": "frontend/app/src/routes/capabilities-browser-screen.tsx",
+          "digest": "sha256:5cd11bb23f8f02fda60a73915b70c7feb49bf90b1ad22b1df2373749d1848598"
+        },
+        {
           "path": "src/migrations/0003-capability-registry.sql",
           "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
         },
@@ -1415,6 +1467,10 @@
       "node": "domain/integration/capability-nature",
       "digest": "sha256:4113448fd9925bba81ed276bdf0c62f905929933d463f5ee40962b8df64dfa9c",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capabilities.ts",
+          "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
+        },
         {
           "path": "src/migrations/0003-capability-registry.sql",
           "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"

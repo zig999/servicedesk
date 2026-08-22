@@ -1,16 +1,16 @@
 import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 import { AppShell } from "../shared/components/app-shell";
+import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
+import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewCaseDraftScreen } from "./new-case-draft-screen";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
 import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
 import { VersionManifestScreen } from "./version-manifest-screen";
 import {
   CaseHypothesesPlaceholder,
-  GlossaryPlaceholder,
-  CapabilitiesPlaceholder,
   VersionDiscardPlaceholder,
   VersionReleasePlaceholder,
 } from "./route-placeholders";
@@ -101,13 +101,13 @@ const versionDiscardRoute = createRoute({
 const glossaryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/glossary",
-  component: GlossaryPlaceholder,
+  component: GlossaryBrowserScreen,
 });
 
 const capabilitiesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/capabilities",
-  component: CapabilitiesPlaceholder,
+  component: CapabilitiesBrowserScreen,
 });
 
 const caseHypothesesRoute = createRoute({

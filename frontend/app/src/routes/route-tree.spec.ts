@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
+import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
+import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
 import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
 import {
   CaseHypothesesPlaceholder,
-  GlossaryPlaceholder,
-  CapabilitiesPlaceholder,
   VersionDiscardPlaceholder,
   VersionReleasePlaceholder,
 } from "./route-placeholders";
@@ -60,18 +60,19 @@ const EXPECTED_PATHS = [
 ];
 
 // /cases, /cases/$slug, /cases/$slug/versions/new, /cases/$slug/versions/$version, this task's
-// own two hypothesis routes, and task/manifest-hypothesis-authoring/manifest-builder's own
-// "/cases/$slug/versions/$version/manifest" are excluded from this map: all seven now render real
-// screens (CasesListScreen, CaseDetailScreen, NewCaseDraftScreen, CaseVersionEditorScreen,
-// NewHypothesisScreen, ReviseHypothesisScreen, VersionManifestScreen), not a placeholder. Which
-// component each of those seven renders is that task's own criterion and its own proof's to test;
-// this suite only answers for the five routes that still render a placeholder.
+// own two hypothesis routes, task/manifest-hypothesis-authoring/manifest-builder's own
+// "/cases/$slug/versions/$version/manifest", task/glossary-and-capabilities-browser/
+// capabilities-browser-screen's own "/capabilities" and task/glossary-and-capabilities-browser/
+// glossary-browser-screen's own "/glossary" are excluded from this map: all nine now render
+// real screens (CasesListScreen, CaseDetailScreen, NewCaseDraftScreen, CaseVersionEditorScreen,
+// NewHypothesisScreen, ReviseHypothesisScreen, VersionManifestScreen, CapabilitiesBrowserScreen,
+// GlossaryBrowserScreen), not a placeholder. Which component each of those nine renders is that
+// task's own criterion and its own proof's to test; this suite only answers for the three
+// routes that still render a placeholder.
 const EXPECTED_COMPONENT_BY_PATH: Record<string, unknown> = {
   "/cases/$slug/hypotheses": CaseHypothesesPlaceholder,
   "/cases/$slug/versions/$version/release": VersionReleasePlaceholder,
   "/cases/$slug/versions/$version/discard": VersionDiscardPlaceholder,
-  "/glossary": GlossaryPlaceholder,
-  "/capabilities": CapabilitiesPlaceholder,
 };
 
 function leafRoutes() {
@@ -99,6 +100,18 @@ describe("route-tree", () => {
     );
 
     expect(actualComponentByPath).toEqual(EXPECTED_COMPONENT_BY_PATH);
+  });
+
+  it("renders the /capabilities route through CapabilitiesBrowserScreen (task/glossary-and-capabilities-browser/capabilities-browser-screen)", () => {
+    const capabilitiesRoute = leafRoutes().find((route) => route.fullPath === "/capabilities");
+
+    expect(capabilitiesRoute?.options.component).toBe(CapabilitiesBrowserScreen);
+  });
+
+  it("renders the /glossary route through GlossaryBrowserScreen (task/glossary-and-capabilities-browser/glossary-browser-screen)", () => {
+    const glossaryRoute = leafRoutes().find((route) => route.fullPath === "/glossary");
+
+    expect(glossaryRoute?.options.component).toBe(GlossaryBrowserScreen);
   });
 
   it("renders the New-hypothesis route and the Revise route through two distinct screens (criterion 1)", () => {

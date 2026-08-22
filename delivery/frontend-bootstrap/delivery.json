@@ -112,6 +112,30 @@
       "task": "task/frontend-console-foundation/typed-api-client"
     },
     {
+      "id": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "implementation",
+      "file": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen.md",
+      "title": "Capabilities Browser screen",
+      "summary": "Replaces CapabilitiesPlaceholder at /capabilities with a real, read-only screen listing every registered capability via a new use-capabilities.ts hook, plus a client-side row-selection detail panel built over StatusTable's onRowClick.",
+      "task": "task/glossary-and-capabilities-browser/capabilities-browser-screen"
+    },
+    {
+      "id": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "implementation",
+      "file": "implementation/glossary-and-capabilities-browser/glossary-browser-screen.md",
+      "title": "Glossary Browser screen",
+      "summary": "Replaces GlossaryPlaceholder with a six-tab, read-only Glossary Browser at /glossary -- Concepts (via a new ttl-preserving sibling hook) plus the five term vocabularies, each composing an existing or new hook and rendering through StatusTable inside TUI's Tabs.",
+      "task": "task/glossary-and-capabilities-browser/glossary-browser-screen"
+    },
+    {
+      "id": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "kind": "implementation",
+      "file": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union.md",
+      "title": "Widen GlossaryVocabulary to accept subject-attribute",
+      "summary": "GlossaryVocabulary gains \"subject-attribute\" as a fifth member, letting useGlossaryVocabularyOptions request GET /v1/glossary/subject-attribute through the same {value, label} mapping already used for the other four vocabularies, with no change to any existing call site.",
+      "task": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union"
+    },
+    {
       "id": "implementation/manifest-hypothesis-authoring/hypotheses-tab",
       "kind": "implementation",
       "file": "implementation/manifest-hypothesis-authoring/hypotheses-tab.md",
@@ -262,6 +286,30 @@
       "title": "Proof for the typed fetch client over the backend's error envelope",
       "summary": "Tests apiFetch()'s 2xx pass-through and its parsing of a non-2xx response into a typed ApiError, including the malformed-body case the implementation record infers.",
       "task": "task/frontend-console-foundation/typed-api-client"
+    },
+    {
+      "id": "proof/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "proof",
+      "file": "proof/glossary-and-capabilities-browser/capabilities-browser-screen.md",
+      "title": "Capabilities Browser screen proof",
+      "summary": "Tests for capabilities-browser-screen.tsx and its use-capabilities.ts hook, covering the listing, the loading/error/empty states, the row-selection detail panel, every disclosed inference, and a repair of route-tree.spec.ts's own now-stale route-to-component mapping.",
+      "task": "task/glossary-and-capabilities-browser/capabilities-browser-screen"
+    },
+    {
+      "id": "proof/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "proof",
+      "file": "proof/glossary-and-capabilities-browser/glossary-browser-screen.md",
+      "title": "Glossary Browser screen proof",
+      "summary": "Tests proving the six-tab, read-only Glossary Browser at /glossary — its listing, formatting, loading/error/empty and no-control criteria across all six tabs, tab-switching, the new use-glossary-concepts hook, and the repaired route-tree wiring.",
+      "task": "task/glossary-and-capabilities-browser/glossary-browser-screen"
+    },
+    {
+      "id": "proof/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "kind": "proof",
+      "file": "proof/glossary-and-capabilities-browser/widen-glossary-vocabulary-union.md",
+      "title": "Proof for widening GlossaryVocabulary's union",
+      "summary": "Direct renderHook tests against useGlossaryVocabularyOptions proving the subject-attribute request/mapping, the four pre-existing vocabularies' unchanged behavior, and the edge cases the widening raises.",
+      "task": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union"
     },
     {
       "id": "proof/manifest-hypothesis-authoring/hypotheses-tab",
@@ -584,6 +632,96 @@
     {
       "from": "implementation/frontend-console-foundation/typed-api-client",
       "to": "task/frontend-console-foundation/typed-api-client",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "domain/integration/capability-nature",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/action",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/outcome",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/recipient",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
       "kind": "implements",
       "at": "the path"
     },
@@ -1178,6 +1316,24 @@
     {
       "from": "proof/frontend-console-foundation/typed-api-client",
       "to": "implementation/frontend-console-foundation/typed-api-client",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "to": "implementation/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-and-capabilities-browser/glossary-browser-screen",
+      "to": "implementation/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "to": "implementation/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
       "kind": "proves",
       "at": "the path"
     },
