@@ -442,6 +442,23 @@
       "findings": 2
     },
     {
+      "id": "review/glossary-and-capabilities-browser-onda-6",
+      "kind": "review",
+      "file": "review/glossary-and-capabilities-browser-onda-6.md",
+      "title": "Review of glossary-and-capabilities-browser onda 6 (3 delivered tasks)",
+      "summary": "Four-pass review of the 3 delivered tasks -- widen-glossary-vocabulary-union, capabilities-browser-screen and glossary-browser-screen: coverage over their 18 criteria, specification conformance, standard conformance, and the failures pass (which did not run -- the captured run passed cleanly).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every existing call site of useGlossaryVocabularyOptions (\"outcome\", \"action\", \"recipient\", \"subject-type\") still compiles and behaves unchanged.",
+        "GlossaryVocabulary's type declaration includes \"subject-attribute\" as a fifth member, alongside the existing \"outcome\", \"action\", \"recipient\" and \"subject-type\"."
+      ],
+      "findings": 5
+    },
+    {
       "id": "review/manifest-hypothesis-authoring-onda-4",
       "kind": "review",
       "file": "review/manifest-hypothesis-authoring-onda-4.md",
@@ -1450,6 +1467,24 @@
       "to": "task/frontend-console-foundation/reusable-status-table",
       "kind": "reviews",
       "at": "tasks[7]"
+    },
+    {
+      "from": "review/glossary-and-capabilities-browser-onda-6",
+      "to": "task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/glossary-and-capabilities-browser-onda-6",
+      "to": "task/glossary-and-capabilities-browser/capabilities-browser-screen",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/glossary-and-capabilities-browser-onda-6",
+      "to": "task/glossary-and-capabilities-browser/glossary-browser-screen",
+      "kind": "reviews",
+      "at": "tasks[2]"
     },
     {
       "from": "review/manifest-hypothesis-authoring-onda-4",
