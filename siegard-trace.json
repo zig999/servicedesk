@@ -1039,7 +1039,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1175,7 +1175,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1241,7 +1241,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1353,7 +1353,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -3505,7 +3505,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-vocabulary.ts",
-          "digest": "sha256:fdbc7e1a9d2a628033c40217f84e6d45c2ba1f77d1ff596a58be734a86556490"
+          "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
