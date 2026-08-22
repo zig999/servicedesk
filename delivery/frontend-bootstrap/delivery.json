@@ -346,6 +346,25 @@
       "findings": 2
     },
     {
+      "id": "review/manifest-hypothesis-authoring-onda-4",
+      "kind": "review",
+      "file": "review/manifest-hypothesis-authoring-onda-4.md",
+      "title": "Review of manifest-hypothesis-authoring onda 4 (3 delivered tasks)",
+      "summary": "Four-pass review of the 3 delivered manifest-hypothesis-authoring tasks: coverage over their 28 criteria, specification conformance, standard conformance, and the failures pass (which did not run -- the captured run passed cleanly).",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "\"Revise ->\" is rendered only on the revision labeled \"current\", and clicking it navigates to the Revise route pre-loaded with that hypothesis's name and that revision's own criterion, collects and resolution.",
+        "Case Detail renders a \"Hypotheses\" tab beside \"Versions\", using the existing tabs component, never as a top-level sidebar entry.",
+        "Clicking an enabled up or down control issues PUT /v1/cases/{slug}/versions/{version}/manifest/{hypothesis_name} naming the target position, and a 204 response re-renders the list in the new order.",
+        "The \"New hypothesis\" entry point and the \"Revise\" entry point resolve to two distinct routes, so a hypothesis literally named \"new\" is addressed by the Revise route rather than being captured by the New-hypothesis route."
+      ],
+      "findings": 4
+    },
+    {
       "id": "review/version-editor-onda-3",
       "kind": "review",
       "file": "review/version-editor-onda-3.md",
@@ -1036,6 +1055,24 @@
       "to": "task/frontend-console-foundation/reusable-status-table",
       "kind": "reviews",
       "at": "tasks[7]"
+    },
+    {
+      "from": "review/manifest-hypothesis-authoring-onda-4",
+      "to": "task/manifest-hypothesis-authoring/revise-hypothesis-form",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/manifest-hypothesis-authoring-onda-4",
+      "to": "task/manifest-hypothesis-authoring/manifest-builder",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/manifest-hypothesis-authoring-onda-4",
+      "to": "task/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "reviews",
+      "at": "tasks[2]"
     },
     {
       "from": "review/version-editor-onda-3",
