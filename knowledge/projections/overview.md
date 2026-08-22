@@ -25,6 +25,7 @@ Derived by spec.py from the specification files; never edited.
 - evidence-normalization-is-an-anticorruption-layer (integration)
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
 - judgment-runs-behind-a-port (investigation)
+- no-route-enforces-authentication (system)
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
