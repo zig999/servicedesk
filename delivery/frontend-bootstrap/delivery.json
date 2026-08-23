@@ -574,6 +574,22 @@
       "findings": 4
     },
     {
+      "id": "review/onda-7",
+      "kind": "review",
+      "file": "review/onda-7.md",
+      "title": "Onda 7 -- case attribute management surface",
+      "summary": "What four passes found over the three onda-7 deliveries (view-released-version-read-only, seed-new-draft-from-latest-released, case-attributes-at-a-glance), merged into one integrated change over the version-editor and case-detail screens.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Opening \"New draft\" on a case with no released version yet leaves the form exactly as new-draft-creation already renders it -- blank, subject pre-set to the one glossary value -- with copy stating this is the case's first version."
+      ],
+      "findings": 3
+    },
+    {
       "id": "review/version-editor-onda-3",
       "kind": "review",
       "file": "review/version-editor-onda-3.md",
@@ -1843,6 +1859,24 @@
     {
       "from": "review/manifest-hypothesis-authoring-onda-4",
       "to": "task/manifest-hypothesis-authoring/hypotheses-tab",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/onda-7",
+      "to": "task/version-editor/view-released-version-read-only",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/onda-7",
+      "to": "task/version-editor/seed-new-draft-from-latest-released",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/onda-7",
+      "to": "task/cases-list-and-detail/case-attributes-at-a-glance",
       "kind": "reviews",
       "at": "tasks[2]"
     },
