@@ -82,9 +82,48 @@ export function baseHandlers(
     "GET /v1/glossary/outcome": () => jsonResponse(OUTCOME_TERMS),
     "GET /v1/glossary/action": () => jsonResponse(ACTION_TERMS),
     "GET /v1/glossary/recipient": () => jsonResponse(RECIPIENT_TERMS),
+    // task/version-editor/seed-new-draft-from-latest-released: useNewDraftVersionForm
+    // now reads the case's own version list unconditionally on every mount (to find
+    // its own latest released version to seed from), so every caller of baseHandlers()
+    // needs a default answer for this GET even where seeding itself is not what that
+    // test exercises -- "no released version yet" is exactly new-draft-creation's own
+    // preserved default behavior, so an empty page is the correct default rather than
+    // an arbitrary one. A test that does exercise seeding overrides this key.
+    [`GET ${VERSIONS_PATH}`]: () => jsonResponse({ data: [] }),
     ...overrides,
   };
 }
+
+/**
+ * A case's own latest released version's record, read through GET
+ * /v1/cases/{slug}/versions/{version} (task/version-editor/
+ * seed-new-draft-from-latest-released, criterion 1) -- shaped exactly like
+ * case-version-editor-screen.test-support.ts's own LOADED_RECORD, reusing
+ * this file's own glossary term fixtures so the seeded fallback/outcome
+ * values resolve to a real option rather than falling back to a Select's own
+ * placeholder.
+ */
+export const RELEASED_VERSION_RECORD = {
+  title: "Released title",
+  when_to_use: "Use this when the case reopens",
+  subject: SUBJECT_TYPE_TERMS.data[0].name,
+  fallback: {
+    outcome: OUTCOME_TERMS.data[0].name,
+    referral: {
+      action: ACTION_TERMS.data[0].name,
+      recipient: RECIPIENT_TERMS.data[0].name,
+    },
+  },
+  consolidation_register: "formal",
+};
+
+/** The same released version, but carrying no consolidation_register of its own -- mirrors RECORD_WITHOUT_REGISTER in case-version-editor-screen.test-support.ts. */
+export const RELEASED_VERSION_RECORD_WITHOUT_REGISTER = {
+  title: "Released title without a register",
+  when_to_use: RELEASED_VERSION_RECORD.when_to_use,
+  subject: RELEASED_VERSION_RECORD.subject,
+  fallback: RELEASED_VERSION_RECORD.fallback,
+};
 
 function buildTestRouter(initialPath: string) {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });

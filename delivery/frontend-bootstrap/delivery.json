@@ -216,6 +216,14 @@
       "task": "task/version-editor/release-draft-version"
     },
     {
+      "id": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "kind": "implementation",
+      "file": "implementation/version-editor/seed-new-draft-from-latest-released.md",
+      "title": "Seed New Draft's blank form from the case's latest released version",
+      "summary": "Widens the New Draft origination flow to pre-populate its blank form from the case's own latest released version (when one exists) and to name that version's own consolidation_register and source_version explicitly in the create-draft POST.",
+      "task": "task/version-editor/seed-new-draft-from-latest-released"
+    },
+    {
       "id": "proof/case-authoring-console/every-async-update-is-announced",
       "kind": "proof",
       "file": "proof/case-authoring-console/every-async-update-is-announced.md",
@@ -414,6 +422,14 @@
       "title": "Release a draft case version — proof",
       "summary": "Tests proving task/version-editor/release-draft-version's eight criteria and its disclosed inferences, written against use-edit-draft-version-form.ts and case-version-editor-ready-view.tsx without touching either.",
       "task": "task/version-editor/release-draft-version"
+    },
+    {
+      "id": "proof/version-editor/seed-new-draft-from-latest-released",
+      "kind": "proof",
+      "file": "proof/version-editor/seed-new-draft-from-latest-released.md",
+      "title": "Proof for seeding New Draft's blank form from the case's latest released version",
+      "summary": "Nine new tests across two spec files prove the four criteria of task/version-editor/seed-new-draft-from-latest-released and the delivery's own disclosed inferences (highest-numbered released version, no premature blank-form flash), plus a required compatibility fix -- a default \"no released version\" GET .../versions response added to new-case-draft-screen.test-support.ts's own baseHandlers(), and two pre-existing new-case-draft-screen-conflict.spec.ts fixtures updated to also answer the seeding read the widened hook now issues unconditionally on mount -- without which the pre-existing NewCaseDraftScreen suite (written for new-draft-creation, not touched by this task's own implementation record) would fail under the widened hook.",
+      "task": "task/version-editor/seed-new-draft-from-latest-released"
     },
     {
       "id": "review/cases-list-and-detail-onda-2",
@@ -1343,6 +1359,66 @@
       "at": "the path"
     },
     {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "to": "task/version-editor/seed-new-draft-from-latest-released",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-authoring-console/every-async-update-is-announced",
       "to": "implementation/case-authoring-console/every-async-update-is-announced",
       "kind": "proves",
@@ -1489,6 +1565,12 @@
     {
       "from": "proof/version-editor/release-draft-version",
       "to": "implementation/version-editor/release-draft-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/version-editor/seed-new-draft-from-latest-released",
+      "to": "implementation/version-editor/seed-new-draft-from-latest-released",
       "kind": "proves",
       "at": "the path"
     },
