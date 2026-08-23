@@ -4,8 +4,9 @@ direction: published
 operations:
   - read-capability
   - list-capabilities
+  - register-capability
 ---
 
 ## Description
 
-The synchronous read the registry offers: the capability currently answering a concept, with its declared contract; or every capability currently registered.
+The synchronous surface the registry offers: the capability currently answering a concept, with its declared contract; every capability currently registered; and, now that an operator authors these directly, register one — creating it at a new name and version, or replacing whatever already stood at that identity.

@@ -11,6 +11,9 @@ flowchart LR
     knowledge -->|case-query| investigation
     system -->|corporate-records| integration
     outside(["outside"])
+    glossary -.->|glossary-authoring| outside
+    integration -.->|connector-configuration-registry| outside
+    integration -.->|connector-diagnostics| outside
     investigation -.->|assessment-reviewed| outside
     investigation -.->|diagnosis| outside
     investigation -.->|investigation-completed| outside

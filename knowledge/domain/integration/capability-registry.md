@@ -12,4 +12,4 @@ The most generic piece of the system; nothing in it is for case curation to read
 
 ## Responsibility
 
-Refuse any registration that is not read-only or lacks its declared contract, and resolve each concept to exactly one capability as currently registered.
+Refuse any registration that is not read-only, lacks its declared contract, or declares a schema that is not valid JSON, and resolve each concept to exactly one capability as currently registered.

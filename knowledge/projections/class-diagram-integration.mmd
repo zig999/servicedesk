@@ -22,6 +22,15 @@ classDiagram
         +registerCapability()
         +resolveConcept()
     }
+    class ConnectorConfiguration {
+        <<ValueObject>>
+        +string connector
+        +string configuration
+    }
+    class ConnectorConfigurationRegistry {
+        <<Service>>
+        +registerConnector()
+    }
     class Concept {
         <<external: glossary>>
     }

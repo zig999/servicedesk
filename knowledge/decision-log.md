@@ -416,4 +416,19 @@ entries:
       holds; explicit disclosure is the smaller, strictly more informative statement and costs
       the domain nothing the aggregation mechanism (contracts/knowledge/case-lifecycle) does not
       already presuppose.
+  - location: domain/integration/connector-configuration.md
+    field: type
+    unstated: The material states a connector configuration's identity (its connector name) and that editing replaces the whole configuration, without stating which DDD construct records it.
+    decided: value-object
+    why: Editing replaces the whole record rather than modifying part of it — two configurations holding equal attributes are interchangeable — and nothing elsewhere in the specification ever needs to reference a past connector configuration by identity the way a citation pins to a specific capability registration, so no aggregate-root consistency boundary is needed; the same reasoning that already typed domain/glossary/concept a value object.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: The material proposed, without deciding outright, whether a connector configuration may be test-run before any capability names it, and asked the analysis to decide or record why it decided otherwise.
+    decided: Refused — a connector configuration is tested only through a specific, already-registered capability that names it as its connector; a bare, unattached configuration is not test-run against a real subject through this action.
+    why: The registry only ever holds a capability whose nature is read-only (a-capability-is-read-only); scoping the test through a registered capability is the only reading that inherits this existing invariant for free, so the diagnostic action never has to be trusted on its own to stay read-only. This is also the material's own stated recommendation.
+  - location: contracts/integration/connector-configuration-registry.md
+    field: operations
+    unstated: The material asked only for creating and editing a connector configuration, without stating whether the published surface also exposes reading one or listing all of them.
+    decided: read-connector-configuration and list-connector-configurations are published alongside register-connector.
+    why: Editing an existing connector configuration requires reading it first, exactly as capability-registry already publishes read-capability and list-capabilities alongside register-capability; this mirrors that sibling contract's own shape rather than introducing a new judgment about what an authoring surface needs.
 ---
