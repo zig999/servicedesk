@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type { JSX, ReactNode } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
 import { Button } from "@tui/ui/button";
@@ -35,7 +35,14 @@ import { CaseAttributesTab } from "./case-attributes-tab";
  *   draft" action (task/version-editor/new-draft-creation, criterion 1)
  *   navigating to route-tree.tsx's own "/cases/$slug/versions/new" -- shown
  *   only when none of this same version list is currently in draft state,
- *   per rules/knowledge/a-case-has-at-most-one-draft.
+ *   per rules/knowledge/a-case-has-at-most-one-draft. A released row's own
+ *   actions cell (task/version-editor/view-released-version-read-only,
+ *   criteria 1-3), previously empty, now carries a "View" action -- the same
+ *   client-side Link, to the same "/cases/$slug/versions/$version" route a
+ *   draft row's own "Continue editing" already targets, performing no
+ *   request of its own beyond the load that route itself triggers; that
+ *   route's own screen (case-version-editor-screen.tsx) renders whichever of
+ *   its two states the loaded version's own state calls for.
  * - "Hypotheses": delegates entirely to CaseHypothesesTab, this task's own
  *   new component (case-hypotheses-tab.tsx).
  * - "Attributes": task/cases-list-and-detail/case-attributes-at-a-glance's
@@ -85,29 +92,44 @@ const STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
 };
 
 /**
+ * The Versions tab's own actions cell (task/version-editor/
+ * view-released-version-read-only, criteria 1 and 2): a draft row renders
+ * "Continue editing"; a released row -- previously left empty, the inventory's
+ * own risk on this exact cell -- now renders "View" instead. Both are
+ * @tanstack/react-router's own `Link` to the identical route
+ * ("/cases/$slug/versions/$version", already registered in route-tree.tsx),
+ * differing only in label: a `Link` navigates client-side on click with no
+ * data fetch of its own, which is exactly what "performing no additional
+ * request beyond the load the route itself triggers" (criterion 3) asks
+ * for. domain/knowledge/case-version-state names exactly these two values,
+ * so this two-branch mapping is exhaustive with no further fallback needed.
+ */
+function actionsForRow(slug: string, version: CaseVersionListItem): ReactNode {
+  const params = { slug, version: String(version.version) };
+  if (version.state === "draft") {
+    return (
+      <Link to="/cases/$slug/versions/$version" params={params}>
+        Continue editing
+      </Link>
+    );
+  }
+  return (
+    <Link to="/cases/$slug/versions/$version" params={params}>
+      View
+    </Link>
+  );
+}
+
+/**
  * Builds one StatusTable row per version: the version number, its state as
- * a status cell, and -- only where the state is draft -- a "Continue
- * editing" action that is @tanstack/react-router's own `Link` to that
- * version's own route ("/cases/$slug/versions/$version", already registered
- * in route-tree.tsx). A `Link` navigates client-side on click with no data
- * fetch of its own, which is exactly what "performing no additional request
- * first" asks for; a released version's action cell is left empty rather
- * than carrying a second action nothing in this task's criteria describes.
+ * a status cell, and its own actions cell (actionsForRow above).
  */
 function toRow(slug: string, version: CaseVersionListItem): StatusTableRow {
   return {
     id: version.version,
     version: version.version,
     state: STATE_CELL[version.state],
-    actions:
-      version.state === "draft" ? (
-        <Link
-          to="/cases/$slug/versions/$version"
-          params={{ slug, version: String(version.version) }}
-        >
-          Continue editing
-        </Link>
-      ) : null,
+    actions: actionsForRow(slug, version),
   };
 }
 

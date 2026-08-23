@@ -15,6 +15,12 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { CaseVersionEditorFormFields } from "./case-version-editor-form-fields";
 import type { EditDraftVersionFormState } from "../hooks/use-edit-draft-version-form";
+import {
+  StatusTable,
+  type StatusTableColumn,
+  type StatusTableRow,
+} from "../shared/components/status-table";
+import type { CaseVersionManifestEntry } from "../services/case-version-record";
 
 /**
  * The Version Editor's "ready" phase markup -- the conflict banner, the
@@ -54,6 +60,23 @@ import type { EditDraftVersionFormState } from "../hooks/use-edit-draft-version-
  * only "the case's hypotheses keep their content", never particular names,
  * and neither this component nor the hook it reads from holds the loaded
  * manifest's own hypothesis names to interpolate one.
+ *
+ * task/version-editor/view-released-version-read-only, criteria 4-6: once
+ * `state.isReadOnly` is `true` (the loaded record's own state is released),
+ * this component passes it through to CaseVersionEditorFormFields (which
+ * that task's own header comment says omits its own Save control for
+ * exactly this flag) and additionally renders every manifest entry
+ * `state.manifest` carries, in the exact order the response returned them,
+ * each showing its own declared position, its hypothesis's own name, and
+ * its hypothesis-revision's own revision number and criterion
+ * (domain/knowledge/manifest-entry, domain/knowledge/hypothesis-revision) --
+ * composed over the same generic, data-driven StatusTable
+ * (shared/components/status-table.tsx) the Versions tab already renders
+ * through (case-detail-screen.tsx), rather than a second, hand-rolled table
+ * (ARC-01, must_not_duplicate). `release` and `discard` above already
+ * render nothing for a released record (`canRelease`/`canDiscard` both read
+ * `record.state === "draft"`), so this task adds no further gating around
+ * either -- only the Save control and the manifest listing are new here.
  */
 const CONFLICT_BANNER_TITLE = "This version was released by someone else";
 const CONFLICT_BANNER_MESSAGE =
@@ -64,6 +87,32 @@ const RELEASE_DIALOG_DESCRIPTION =
 
 const DISCARD_DIALOG_DESCRIPTION =
   "This case's own hypotheses keep their content — only this draft and its manifest are removed. This cannot be undone.";
+
+/** The read-only manifest listing's own columns (criterion 6): declared position, hypothesis name, revision number, criterion -- in that order. */
+const MANIFEST_COLUMNS: StatusTableColumn[] = [
+  { key: "position", header: "Position" },
+  { key: "hypothesis", header: "Hypothesis" },
+  { key: "revision", header: "Revision" },
+  { key: "criterion", header: "Criterion" },
+];
+
+/**
+ * One manifest entry as StatusTable's own generic row shape (ARC-03: the
+ * transformation lives in a top-level function, never inline in JSX, the
+ * same convention case-detail-screen.tsx's own toRow() already establishes
+ * for that same shared component). Keyed by `position` -- a manifest's own
+ * declared precedence position is unique within one version
+ * (domain/knowledge/manifest-entry) -- rather than by array index (MNT-04).
+ */
+function toManifestRow(entry: CaseVersionManifestEntry): StatusTableRow {
+  return {
+    id: entry.position,
+    position: entry.position,
+    hypothesis: entry.hypothesis_revision.hypothesis.name,
+    revision: entry.hypothesis_revision.revision,
+    criterion: entry.hypothesis_revision.criterion,
+  };
+}
 
 export type CaseVersionEditorReadyViewProps = {
   readonly state: Extract<EditDraftVersionFormState, { phase: "ready" }>;
@@ -77,6 +126,7 @@ export function CaseVersionEditorReadyView({
 }: CaseVersionEditorReadyViewProps): JSX.Element {
   const release = state.release;
   const discard = state.discard;
+  const isReadOnly = state.isReadOnly ?? false;
   return (
     <>
       {state.status === "conflict" && (
@@ -92,7 +142,29 @@ export function CaseVersionEditorReadyView({
         recipientOptions={state.recipientOptions}
         onSubmit={state.onSubmit}
         onFieldBlur={state.onFieldBlur}
+        isReadOnly={isReadOnly}
       />
+      {isReadOnly && (
+        // criterion 6: every manifest entry the loaded record's own read
+        // carries, in the exact order the response returned them -- API-04's
+        // own empty-collection convention (case-detail-screen.tsx's own
+        // Versions-tab precedent) covers the domain edge this task's own
+        // Notes already names as unreachable in practice (a released
+        // version has already passed read-case's own manifest.min(1)
+        // coherence check at release time), rather than leaving this
+        // section silently blank if it were ever reached.
+        <section className="flex flex-col gap-2">
+          <h2>Manifest</h2>
+          {(state.manifest ?? []).length === 0 ? (
+            <p>This version&apos;s manifest holds no entry.</p>
+          ) : (
+            <StatusTable
+              columns={MANIFEST_COLUMNS}
+              rows={(state.manifest ?? []).map(toManifestRow)}
+            />
+          )}
+        </section>
+      )}
       {release !== undefined && release.canRelease && (
         <Dialog open={release.isOpen} onOpenChange={release.onOpenChange}>
           <DialogTrigger asChild>

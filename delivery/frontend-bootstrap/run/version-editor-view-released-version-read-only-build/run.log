@@ -1,0 +1,38 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 577 packages, and audited 578 packages in 6s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/wt-view-released-v2/frontend/app/src/hooks/use-edit-draft-version-form.ts
+  580:1  error  File has too many lines (301). Maximum allowed is 300  max-lines
+
+✖ 1 problem (1 error, 0 warnings)
+
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
