@@ -19,7 +19,9 @@ import {
   jsonResponse,
   mountNewCaseDraft,
   NEW_DRAFT_PATH,
+  RELEASED_VERSION_RECORD,
   SLUG,
+  versionPath,
   VERSIONS_PATH,
 } from "./new-case-draft-screen.test-support";
 
@@ -48,6 +50,13 @@ describe("NewCaseDraftScreen — 409 CaseAlreadyHasDraftError", () => {
               { version: 5, state: "draft" },
             ],
           }),
+        // task/version-editor/seed-new-draft-from-latest-released: this list
+        // now also feeds useNewDraftVersionForm's own seeding read on mount
+        // (version 4 is its own latest released version), not only the 409
+        // redirect's later, separate read of this same endpoint -- both
+        // consumers share this fixture's version list, so this record must
+        // exist for the form to ever reach "ready" and be fillable at all.
+        [`GET ${versionPath(4)}`]: () => jsonResponse(RELEASED_VERSION_RECORD),
       }),
     );
     const router = await mountNewCaseDraft(fetchMock);
@@ -69,6 +78,10 @@ describe("NewCaseDraftScreen — 409 CaseAlreadyHasDraftError", () => {
           apiErrorResponse("CaseAlreadyHasDraftError", 409, "a draft already exists"),
         [`GET ${VERSIONS_PATH}`]: () =>
           jsonResponse({ data: [{ version: 4, state: "released" }] }),
+        // Same reason as the previous test's own added handler above: this
+        // list now also feeds the seeding read on mount, not only the 409
+        // redirect's later read.
+        [`GET ${versionPath(4)}`]: () => jsonResponse(RELEASED_VERSION_RECORD),
       }),
     );
     const router = await mountNewCaseDraft(fetchMock);
@@ -82,11 +95,23 @@ describe("NewCaseDraftScreen — 409 CaseAlreadyHasDraftError", () => {
   });
 
   it("stays on the New Draft screen without throwing when reading the version list for the redirect itself fails", async () => {
+    // This same endpoint now also feeds useNewDraftVersionForm's own seeding
+    // read on mount (task/version-editor/seed-new-draft-from-latest-released),
+    // which must succeed for the blank form to render and be fillable at all
+    // -- only the later, separate read the 409 redirect performs is what this
+    // test means to fail, so the handler answers the first call normally (no
+    // released version, matching this test's own pre-existing intent of a
+    // case whose seeding is irrelevant here) and only the second call throws.
+    let versionsCallCount = 0;
     const fetchMock = createFetchStub(
       baseHandlers({
         [`POST ${CREATE_PATH}`]: () =>
           apiErrorResponse("CaseAlreadyHasDraftError", 409, "a draft already exists"),
         [`GET ${VERSIONS_PATH}`]: () => {
+          versionsCallCount += 1;
+          if (versionsCallCount === 1) {
+            return jsonResponse({ data: [] });
+          }
           throw new Error("network down");
         },
       }),

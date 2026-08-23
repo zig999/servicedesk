@@ -105,9 +105,27 @@ export type EditDraftVersionFormState =
       readonly release?: ReleaseControlState;
       /** Absent for the same reason as `release` above (task/version-editor/discard-draft-version). */
       readonly discard?: DiscardControlState;
+      /**
+       * task/version-editor/seed-new-draft-from-latest-released's own flag:
+       * `true` only for use-new-draft-version-form.ts's own blank-form "ready"
+       * object, and only while the case it originates a draft for holds no
+       * released version to seed that form from (criterion 2) -- absent here
+       * (this hook's own "ready" phase) and absent once that same call site
+       * has seeded the form from a released version instead, for the same
+       * reason `release` and `discard` above stay absent at call sites that
+       * do not apply to them.
+       */
+      readonly isFirstVersion?: boolean;
     };
 
-function resetFormFrom(
+/**
+ * Re-hydrates `form` from a just-loaded or just-saved record's own five
+ * declared attributes -- exported so use-new-draft-version-form.ts's own
+ * seeding effect (task/version-editor/seed-new-draft-from-latest-released,
+ * criterion 1) reuses this exact mapping rather than a second, hand-copied
+ * one.
+ */
+export function resetFormFrom(
   form: UseFormReturn<CaseVersionFormValues>,
   record: CaseVersionRecord,
 ): void {

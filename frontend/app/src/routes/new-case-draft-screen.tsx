@@ -17,6 +17,14 @@ import { CaseVersionEditorReadyView } from "./case-version-editor-ready-view";
  * edit-mode save state machine -- lives in useNewDraftVersionForm (ARC-02,
  * ARC-03).
  *
+ * task/version-editor/seed-new-draft-from-latest-released's own criterion 2:
+ * while the hook's own "ready" state carries `isFirstVersion` (true only
+ * while the case holds no released version to pre-populate this form from),
+ * this screen states that fact in copy, next to the heading. Reading a flag
+ * the hook already computed rather than deriving it here again keeps this
+ * decision (what counts as "the case's own latest released version") in one
+ * place (ARC-03).
+ *
  * Wired in as route-tree.tsx's "/cases/$slug/versions/new" route's own
  * `component` -- a new route this task adds, addressed from Case Detail's
  * own "New draft" action (case-detail-screen.tsx).
@@ -43,6 +51,7 @@ export function NewCaseDraftScreen(): JSX.Element {
   return (
     <section>
       <h1>Case {slug} — New draft</h1>
+      {state.isFirstVersion && <p>This is the case&apos;s first version.</p>}
       <CaseVersionEditorReadyView state={state} slug={slug} />
     </section>
   );

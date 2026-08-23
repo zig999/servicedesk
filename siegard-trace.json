@@ -699,7 +699,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -849,7 +849,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -1869,7 +1869,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -1997,7 +1997,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
-          "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
+          "digest": "sha256:4a264872b75de6191d13fde35b1c774d5e8b167f9f3f1b681291903f3ef362e0"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -2009,7 +2009,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -2135,7 +2135,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -2195,6 +2195,10 @@
       "node": "domain/knowledge/consolidation-register",
       "digest": "sha256:bade2dbfada1f8f4693d70014d7b6b19cc92d4833ff97df8e1a11aa0f33ca329",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
           "digest": "sha256:99128104fc1f3e5a727dff42e29ffb7703898374e2e0a530e490e7c40f1d72af"
@@ -2493,7 +2497,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -2555,7 +2559,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
-          "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -3445,6 +3449,10 @@
       "node": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
       "digest": "sha256:3b24a3d2083259e99cdbba77feceafe343d23bd22ca628de5f177e3703be54b2",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
+          "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:0634607f900aa06805daa6c466558249683b167256f6a1b2468b4d41a7488905"
