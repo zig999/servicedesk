@@ -45,6 +45,14 @@
       "task": "task/case-authoring-console/tailwind-scans-the-tui-submodule"
     },
     {
+      "id": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "kind": "implementation",
+      "file": "implementation/cases-list-and-detail/case-attributes-at-a-glance.md",
+      "title": "Case attributes at a glance",
+      "summary": "Adds a third \"Attributes\" view to Case Detail that reads the case's current version whole through read-case and renders one state-sensitive action, including an explicit refusal state distinct from a generic load error.",
+      "task": "task/cases-list-and-detail/case-attributes-at-a-glance"
+    },
+    {
       "id": "implementation/cases-list-and-detail/case-detail-timeline",
       "kind": "implementation",
       "file": "implementation/cases-list-and-detail/case-detail-timeline.md",
@@ -246,6 +254,14 @@
       "title": "Tailwind's compiled output for TUI's own utility classes",
       "summary": "A single, dedicated real-build spec proves that frontend/app's compiled stylesheet declares sr-only, h-9, and a third TUI-only class (max-h-60) after tokens.css's added @source directive, and that the fix leaves frontend/app's own already-detected classes compiling unchanged.",
       "task": "task/case-authoring-console/tailwind-scans-the-tui-submodule"
+    },
+    {
+      "id": "proof/cases-list-and-detail/case-attributes-at-a-glance",
+      "kind": "proof",
+      "file": "proof/cases-list-and-detail/case-attributes-at-a-glance.md",
+      "title": "Case attributes at a glance, proof",
+      "summary": "Tests proving Case Detail's new Attributes view -- its current-version resolution, its one state-sensitive action, its explicit case-not-valid state, and the tab-strip and route-schema wiring that carry it -- against the implementation record for task/cases-list-and-detail/case-attributes-at-a-glance.",
+      "task": "task/cases-list-and-detail/case-attributes-at-a-glance"
     },
     {
       "id": "proof/cases-list-and-detail/case-detail-timeline",
@@ -601,6 +617,84 @@
     {
       "from": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
       "to": "task/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-summary",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "task/cases-list-and-detail/case-attributes-at-a-glance",
       "kind": "implements",
       "at": "the path"
     },
@@ -1363,6 +1457,12 @@
     {
       "from": "proof/case-authoring-console/tailwind-scans-the-tui-submodule",
       "to": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "implementation/cases-list-and-detail/case-attributes-at-a-glance",
       "kind": "proves",
       "at": "the path"
     },

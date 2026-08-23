@@ -6,6 +6,14 @@
       "digest": "sha256:61c4ee6500987751597f8af4459bd99939652f671412405418b17a15444007ff",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
         },
@@ -823,6 +831,10 @@
       "node": "contracts/knowledge/case-query",
       "digest": "sha256:fadeb7489f7cb0a8560f305e7c9afda7de7ef65891314c53cd5f486652feca44",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
         {
           "path": "frontend/app/src/hooks/use-case-hypotheses.ts",
           "digest": "sha256:07aa69262c8d44a0b6d04fdf9eea854e49eda86f47f599729eac5c2fc3bcf2ba"
@@ -1864,12 +1876,20 @@
       "digest": "sha256:6eed8c321a83ed7766bb565d2ada3905933b1f52076e372648a92417ef18965b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -1986,6 +2006,10 @@
       "digest": "sha256:a27fe5a39d642343e1bfb8f0a55388a3f9760a43490dba4834ec9382731b697b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
         }
@@ -1995,6 +2019,10 @@
       "node": "domain/knowledge/case-version",
       "digest": "sha256:ecc240f94dd4b0877e9d8870288c8167c5d54df3b4464c30d2c67c28fa4c31b6",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
@@ -2010,6 +2038,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -2130,12 +2162,20 @@
       "digest": "sha256:003195adcf0d0674d592f8525264bbe9929617421bd91c391f35a01135742272",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:7aec80d3adfee87fe9a814b6eca9369328b1bef8c7c1816b085c43172ea51320"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
@@ -2195,6 +2235,10 @@
       "node": "domain/knowledge/consolidation-register",
       "digest": "sha256:bade2dbfada1f8f4693d70014d7b6b19cc92d4833ff97df8e1a11aa0f33ca329",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
+        },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
           "digest": "sha256:99128104fc1f3e5a727dff42e29ffb7703898374e2e0a530e490e7c40f1d72af"
@@ -2496,6 +2540,10 @@
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
         },
         {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
           "digest": "sha256:99128104fc1f3e5a727dff42e29ffb7703898374e2e0a530e490e7c40f1d72af"
         },
@@ -2556,6 +2604,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:57bc3dd624c5ef1dc427fae408041819508fcecdf5c38056eb60df197996941c"
+        },
+        {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -3090,6 +3142,10 @@
       "digest": "sha256:333f252e474aafd89546b46efbc7eb0499a1ec5806f9f50bea84dd130625ba6e",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:5e22e6bffb65a69a3309cfa5ea3e7ef1e99342ab5a79cd047423b427d1495f50"
         }
@@ -3568,6 +3624,10 @@
       "digest": "sha256:d49d6081599eca6e61e07cd7abd5a937db406c63d1590f5eaeda349d3ea06a81",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-attributes-tab.tsx",
+          "digest": "sha256:58e72856c24abc5c17e83493b3f6748c0d66f1d75f2ff4d7894a98757e2257b4"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:418599e8ddd9c75d1559067ee46a66656c304dd8a13344693f9075abe78e64ab"
         },
@@ -3721,6 +3781,14 @@
       "node": "rules/knowledge/validation-runs-at-every-read",
       "digest": "sha256:d23c3ea3ac2b08f3c477641ff601f37f513c678160e0078cee69d95633eda8b7",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-attributes-at-a-glance.ts",
+          "digest": "sha256:13ecb7f8b873245f16bc44a1d0569c5eef269d5b433227ce12b48d1402b7e272"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:57a1d8b1434821468a0aa53278b8352d3aaa5665a581a0ae3928155d79029148"
+        },
         {
           "path": "src/src/case/author-case-version.service.ts",
           "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
