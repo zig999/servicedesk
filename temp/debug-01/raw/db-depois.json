@@ -1,0 +1,228 @@
+{
+  "investigations": [
+    {
+      "id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "requester": "siegfried.neto",
+      "ticket_ref": null,
+      "narrative": "Tecnico relata que o aplicativo MWO fecha sozinho durante o expediente.",
+      "subject_type": "technician",
+      "prompt_version": "v1",
+      "model": "claude-haiku-4-5-20251001",
+      "pinned_case_slug": "perfil-mobile-tecnico-probe",
+      "pinned_case_version": 1,
+      "assessment_outcome": "issue-multiplos-devices-vinculados",
+      "assessment_action": "remover-devices-obsoletos",
+      "assessment_recipient": "fila-suporte-mwo",
+      "assessment_determining_hypothesis": "multiplos-devices-vinculados",
+      "assessment_text": "# Avaliação da Investigação\n\n## Dados analisados\n\nA verificação baseou-se no perfil técnico móvel do usuário RODRIGO.MATIAS, consultado em 21/08/2026, que retornou duas instalações do aplicativo ServiceEngApp associadas à mesma conta:\n\n- **Dispositivo 1**: samsung SM-A176B (Android-Phone 16), estado **ativo**, push habilitado, último acesso em 21/08/2026.\n- **Dispositivo 2**: samsung SM-A146M (Android-Phone 15), estado **inativo**, push habilitado, último acesso em 26/06/2026.\n\n## Hipóteses avaliadas\n\n**Múltiplos dispositivos vinculados — CONFIRMADA**\nO registro mostra claramente duas instalações distintas do aplicativo vinculadas ao mesmo login, em dois aparelhos diferentes. Essa é a evidência direta que sustenta a confirmação da hipótese.\n\n**Push desabilitado — REFUTADA**\nAmbas as instalações apresentam o campo `pushEnabled` como verdadeiro. Não há indício de que o push esteja desativado em nenhum dos dispositivos, o que contraria essa hipótese.\n\n**Limitação de hardware — INCONCLUSIVA**\nEssa hipótese não pôde ser avaliada. Houve uma falha no processo de julgamento, sem geração de citações ou evidências que permitissem confirmar ou refutar a limitação de hardware. Os dados disponíveis (modelo e versão do sistema operacional dos aparelhos) não foram suficientes, ou não foram processados, para sustentar uma conclusão nessa frente.\n\n## Síntese\n\nA causa mais provável identificada é a existência de múltiplos dispositivos vinculados à mesma conta do técnico, com um aparelho ativo e outro inativo desde junho de 2026. A hipótese de push desabilitado foi descartada com base em evidência direta. A hipótese de limitação de hardware permanece em aberto por falha técnica na avaliação, não por ausência de indícios contrários — recomenda-se nova análise dessa frente caso seja relevante para o encerramento do caso.",
+      "cost_calls": 0,
+      "cost_input_tokens": 0,
+      "cost_output_tokens": 0,
+      "durations_collection": 0,
+      "durations_judgment": 0,
+      "durations_writing": 0,
+      "durations_total": 0,
+      "written_at": "2026-08-21T17:06:54.856Z"
+    },
+    {
+      "id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "requester": "siegfried.neto",
+      "ticket_ref": "DEBUG-01",
+      "narrative": "Tecnico relata que o aplicativo MWO fecha sozinho durante o expediente, e que ja perdeu apontamento por causa disso.",
+      "subject_type": "technician",
+      "prompt_version": "v1",
+      "model": "claude-haiku-4-5-20251001",
+      "pinned_case_slug": "perfil-mobile-tecnico-probe",
+      "pinned_case_version": 1,
+      "assessment_outcome": "issue-multiplos-devices-vinculados",
+      "assessment_action": "remover-devices-obsoletos",
+      "assessment_recipient": "fila-suporte-mwo",
+      "assessment_determining_hypothesis": "multiplos-devices-vinculados",
+      "assessment_text": "# Assessment\n\nThe technician profile for RODRIGO.MATIAS shows two device installations of the ServiceEngApp: an active one on a samsung SM-A176B (Android 16, client version 26.4.3834.0, last accessed 2026-08-21) and an inactive one on a samsung SM-A146M (Android 15, same client version, last accessed 2026-06-26).\n\n**Multiple devices linked to the account — confirmed.** The data shows two separate device registrations under the same login, one active and one inactive. This directly supports the hypothesis that more than one device has been associated with this technician's account.\n\n**Push notifications disabled — refuted.** Both installations show `pushEnabled: true`. There is no indication in the profile data that push has been turned off on either device, so this hypothesis does not hold.\n\n**Hardware limitation — inconclusive.** No determination could be reached on this hypothesis due to a failure in the evaluation process itself, not because of contradicting evidence. No citations were produced to support or refute it, so it remains open.\n\nOverall, the confirmed finding is the presence of two linked devices on the account, while the disabled-push explanation is ruled out by the data. The hardware-limitation hypothesis could not be assessed and requires a separate review.",
+      "cost_calls": 0,
+      "cost_input_tokens": 0,
+      "cost_output_tokens": 0,
+      "durations_collection": 0,
+      "durations_judgment": 0,
+      "durations_writing": 0,
+      "durations_total": 0,
+      "written_at": "2026-08-21T17:24:18.797Z"
+    },
+    {
+      "id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "requester": "siegfried.neto",
+      "ticket_ref": "DEBUG-01",
+      "narrative": "Tecnico relata que o aplicativo MWO fecha sozinho durante o expediente, e que ja perdeu apontamento por causa disso.",
+      "subject_type": "technician",
+      "prompt_version": "v1",
+      "model": "claude-haiku-4-5-20251001",
+      "pinned_case_slug": "perfil-mobile-tecnico-probe",
+      "pinned_case_version": 1,
+      "assessment_outcome": "issue-multiplos-devices-vinculados",
+      "assessment_action": "remover-devices-obsoletos",
+      "assessment_recipient": "fila-suporte-mwo",
+      "assessment_determining_hypothesis": "multiplos-devices-vinculados",
+      "assessment_text": "# Avaliação da Investigação\n\n## Resumo dos achados\n\nA investigação analisou o perfil móvel técnico do usuário RODRIGO.MATIAS, com base nos dados de instalações do aplicativo ServiceEngApp obtidos em 21/08/2026.\n\n## Hipóteses avaliadas\n\n**1. Limitação de hardware — inconclusivo**\nNão foi possível chegar a um veredito sobre esta hipótese devido a uma falha no processo de julgamento. Não há evidências citadas que sustentem ou refutem essa possibilidade.\n\n**2. Push desabilitado — refutado**\nOs dados de instalação mostram que o push está habilitado (`pushEnabled: true`) em ambos os registros de dispositivo associados ao usuário — tanto na instalação ativa (samsung SM-A176B, Android 16) quanto na instalação inativa (samsung SM-A146M, Android 15). Isso contradiz diretamente a hipótese de que o push estaria desabilitado.\n\n**3. Múltiplos dispositivos vinculados — confirmado**\nO mesmo conjunto de dados confirma esta hipótese: o perfil do usuário apresenta duas instalações distintas do aplicativo, em dispositivos diferentes (SM-A176B e SM-A146M), sendo uma ativa e outra inativa. Isso caracteriza a existência de múltiplos dispositivos vinculados ao mesmo login.\n\n## Observação\n\nAmbas as conclusões (refutação de push desabilitado e confirmação de múltiplos dispositivos) foram extraídas da mesma fonte de dados — o campo \"installations\" do perfil técnico —, o que garante consistência interna entre os dois vereditos, já que se baseiam na mesma evidência bruta.\n\nA hipótese de limitação de hardware permanece em aberto e não foi possível descartá-la ou confirmá-la com os dados disponíveis nesta consolidação.",
+      "cost_calls": 0,
+      "cost_input_tokens": 0,
+      "cost_output_tokens": 0,
+      "durations_collection": 0,
+      "durations_judgment": 0,
+      "durations_writing": 0,
+      "durations_total": 0,
+      "written_at": "2026-08-21T17:25:23.549Z"
+    }
+  ],
+  "evidence": [
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "concept": "perfil-mobile-tecnico",
+      "inputs": "{\"concept\":\"perfil-mobile-tecnico\",\"subject\":{\"type\":\"technician\",\"attributes\":[{\"attribute\":\"user-id\",\"value\":\"RODRIGO.MATIAS\"}]},\"requester\":\"siegfried.neto\"}",
+      "observation": "{\"login\":\"RODRIGO.MATIAS\",\"installations\":[{\"clientVersion\":\"26.4.3834.0\",\"state\":\"active\",\"pushEnabled\":true,\"lastAccess\":\"2026-08-21T14:06:47.000Z\",\"device\":{\"model\":\"samsung SM-A176B\",\"os\":\"Android-Phone 16\",\"platform\":\"Android\",\"id\":\"10002\"},\"appName\":\"ServiceEngApp\"},{\"clientVersion\":\"26.4.3834.0\",\"state\":\"inactive\",\"pushEnabled\":true,\"lastAccess\":\"2026-06-26T09:40:37.000Z\",\"device\":{\"model\":\"samsung SM-A146M\",\"os\":\"Android-Phone 15\",\"platform\":\"Android\",\"id\":\"3860\"},\"appName\":\"ServiceEngApp\"}]}",
+      "observed_at": "2026-08-21T17:06:54.856Z",
+      "ttl": 60,
+      "origin": "ifs-fsm-tech-profile-connector",
+      "result": "ok",
+      "result_detail": null,
+      "capability_name": "perfil-mobile-tecnico-reader",
+      "capability_version": "1.0.0"
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "concept": "perfil-mobile-tecnico",
+      "inputs": "{\"concept\":\"perfil-mobile-tecnico\",\"subject\":{\"type\":\"technician\",\"attributes\":[{\"attribute\":\"user-id\",\"value\":\"RODRIGO.MATIAS\"}]},\"requester\":\"siegfried.neto\"}",
+      "observation": "{\"login\":\"RODRIGO.MATIAS\",\"installations\":[{\"clientVersion\":\"26.4.3834.0\",\"state\":\"active\",\"pushEnabled\":true,\"lastAccess\":\"2026-08-21T14:23:59.000Z\",\"device\":{\"model\":\"samsung SM-A176B\",\"os\":\"Android-Phone 16\",\"platform\":\"Android\",\"id\":\"10002\"},\"appName\":\"ServiceEngApp\"},{\"clientVersion\":\"26.4.3834.0\",\"state\":\"inactive\",\"pushEnabled\":true,\"lastAccess\":\"2026-06-26T09:40:37.000Z\",\"device\":{\"model\":\"samsung SM-A146M\",\"os\":\"Android-Phone 15\",\"platform\":\"Android\",\"id\":\"3860\"},\"appName\":\"ServiceEngApp\"}]}",
+      "observed_at": "2026-08-21T17:24:18.797Z",
+      "ttl": 60,
+      "origin": "ifs-fsm-tech-profile-connector",
+      "result": "ok",
+      "result_detail": null,
+      "capability_name": "perfil-mobile-tecnico-reader",
+      "capability_version": "1.0.0"
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "concept": "perfil-mobile-tecnico",
+      "inputs": "{\"concept\":\"perfil-mobile-tecnico\",\"subject\":{\"type\":\"technician\",\"attributes\":[{\"attribute\":\"user-id\",\"value\":\"RODRIGO.MATIAS\"}]},\"requester\":\"siegfried.neto\"}",
+      "observation": "{\"login\":\"RODRIGO.MATIAS\",\"installations\":[{\"clientVersion\":\"26.4.3834.0\",\"state\":\"active\",\"pushEnabled\":true,\"lastAccess\":\"2026-08-21T14:25:00.000Z\",\"device\":{\"model\":\"samsung SM-A176B\",\"os\":\"Android-Phone 16\",\"platform\":\"Android\",\"id\":\"10002\"},\"appName\":\"ServiceEngApp\"},{\"clientVersion\":\"26.4.3834.0\",\"state\":\"inactive\",\"pushEnabled\":true,\"lastAccess\":\"2026-06-26T09:40:37.000Z\",\"device\":{\"model\":\"samsung SM-A146M\",\"os\":\"Android-Phone 15\",\"platform\":\"Android\",\"id\":\"3860\"},\"appName\":\"ServiceEngApp\"}]}",
+      "observed_at": "2026-08-21T17:25:23.549Z",
+      "ttl": 60,
+      "origin": "ifs-fsm-tech-profile-connector",
+      "result": "ok",
+      "result_detail": null,
+      "capability_name": "perfil-mobile-tecnico-reader",
+      "capability_version": "1.0.0"
+    }
+  ],
+  "evaluations": [
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "hypothesis": "limitacao-de-hardware",
+      "verdict": "inconclusive",
+      "reason": "judgment-failure"
+    },
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "hypothesis": "push-desabilitado",
+      "verdict": "refuted",
+      "reason": null
+    },
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "hypothesis": "multiplos-devices-vinculados",
+      "verdict": "confirmed",
+      "reason": null
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "hypothesis": "limitacao-de-hardware",
+      "verdict": "inconclusive",
+      "reason": "judgment-failure"
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "hypothesis": "push-desabilitado",
+      "verdict": "refuted",
+      "reason": null
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "hypothesis": "multiplos-devices-vinculados",
+      "verdict": "confirmed",
+      "reason": null
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "hypothesis": "limitacao-de-hardware",
+      "verdict": "inconclusive",
+      "reason": "judgment-failure"
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "hypothesis": "push-desabilitado",
+      "verdict": "refuted",
+      "reason": null
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "hypothesis": "multiplos-devices-vinculados",
+      "verdict": "confirmed",
+      "reason": null
+    }
+  ],
+  "citations": [
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "hypothesis": "push-desabilitado",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    },
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "hypothesis": "multiplos-devices-vinculados",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "hypothesis": "push-desabilitado",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "hypothesis": "multiplos-devices-vinculados",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "hypothesis": "push-desabilitado",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "hypothesis": "multiplos-devices-vinculados",
+      "concept": "perfil-mobile-tecnico",
+      "field": "installations"
+    }
+  ],
+  "subject_attribute_values": [
+    {
+      "investigation_id": "f29f2015-327a-40b1-94a1-0f38608ee16e",
+      "attribute": "user-id",
+      "value": "RODRIGO.MATIAS"
+    },
+    {
+      "investigation_id": "e0481212-f98f-4f79-9a19-ad979ae27eb9",
+      "attribute": "user-id",
+      "value": "RODRIGO.MATIAS"
+    },
+    {
+      "investigation_id": "6816975d-55ce-4ac5-a017-c1723ca5979a",
+      "attribute": "user-id",
+      "value": "RODRIGO.MATIAS"
+    }
+  ]
+}

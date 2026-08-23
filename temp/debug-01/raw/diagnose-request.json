@@ -1,0 +1,8 @@
+{
+  "case": { "slug": "perfil-mobile-tecnico-probe", "version": 1 },
+  "subject": { "type": "technician",
+               "attributes": [{ "attribute": "user-id", "value": "RODRIGO.MATIAS" }] },
+  "narrative": "Tecnico relata que o aplicativo MWO fecha sozinho durante o expediente, e que ja perdeu apontamento por causa disso.",
+  "requester": "siegfried.neto",
+  "ticket_ref": "DEBUG-01"
+}

@@ -1,7 +1,6 @@
 *:Zone.Identifier
 __pycache__/
 node_modules/
-temp/
 credentials.md
 .env
 .env.test
