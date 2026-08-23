@@ -13,6 +13,7 @@ import {
   type CaseVersionState,
 } from "../hooks/use-case-versions";
 import { CaseHypothesesTab } from "./case-hypotheses-tab";
+import { CaseAttributesTab } from "./case-attributes-tab";
 
 /**
  * Case Detail (task/cases-list-and-detail/case-detail-timeline, extended by
@@ -37,8 +38,15 @@ import { CaseHypothesesTab } from "./case-hypotheses-tab";
  *   per rules/knowledge/a-case-has-at-most-one-draft.
  * - "Hypotheses": delegates entirely to CaseHypothesesTab, this task's own
  *   new component (case-hypotheses-tab.tsx).
+ * - "Attributes": task/cases-list-and-detail/case-attributes-at-a-glance's
+ *   own new view, delegating entirely to CaseAttributesTab
+ *   (case-attributes-tab.tsx): the case's current version's own declared
+ *   attributes, read whole through read-case rather than only this same
+ *   Versions tab's own list-case-versions metadata, plus the one
+ *   state-sensitive action that version's own draft/released state calls
+ *   for.
  *
- * Both tabs read the same ["case-versions", slug] query (useCaseVersions,
+ * All three tabs read the same ["case-versions", slug] query (useCaseVersions,
  * extracted out of this file for that reuse) but only the active one's
  * subtree ever mounts: TabsContent renders null for an inactive value, so
  * switching tabs is what actually triggers either fetch, never both at
@@ -173,12 +181,16 @@ export function CaseDetailScreen(): JSX.Element {
         <TabsList>
           <TabsTrigger value="versions">Versions</TabsTrigger>
           <TabsTrigger value="hypotheses">Hypotheses</TabsTrigger>
+          <TabsTrigger value="attributes">Attributes</TabsTrigger>
         </TabsList>
         <TabsContent value="versions">
           <VersionsPanel slug={slug} />
         </TabsContent>
         <TabsContent value="hypotheses">
           <CaseHypothesesTab slug={slug} />
+        </TabsContent>
+        <TabsContent value="attributes">
+          <CaseAttributesTab slug={slug} />
         </TabsContent>
       </Tabs>
     </section>

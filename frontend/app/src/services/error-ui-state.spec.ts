@@ -94,9 +94,15 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("generic-error");
   });
 
-  it("resolves CaseNotValidError to the shared generic-error state", () => {
+  // task/cases-list-and-detail/case-attributes-at-a-glance's own criterion 5 needs this
+  // class told apart from the shared generic-error fallback (unlike the three genuinely
+  // unmapped classes above), so it resolves to its own distinct "case-not-valid" kind rather
+  // than the shared one this suite asserted before that task -- see this module's own header
+  // comment.
+  it("resolves CaseNotValidError to its own distinct case-not-valid state, no longer the shared generic-error fallback", () => {
     const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
-    expect(state.kind).toBe("generic-error");
+    expect(state.kind).toBe("case-not-valid");
+    expect(state.kind).not.toBe("generic-error");
   });
 
   it("resolves a code the table does not name to the generic-error state rather than throwing", () => {

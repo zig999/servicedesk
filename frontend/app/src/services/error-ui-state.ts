@@ -15,10 +15,14 @@
  * tasks that consume it (the task's own rationale: "states no UI wording... only that a
  * distinct state exists per error class"). What it states is only that a distinct `kind`
  * exists for each of the ten mapped classes, mirroring statusForError()'s own one-table,
- * keyed-by-identity shape; the four unmapped classes and any code this table does not
- * name at all collapse onto one shared "generic-error" kind, since the backend already
- * returns all four as the one indistinguishable INTERNAL_ERROR and there is no signal in
- * the response that would let two of them be told apart here.
+ * keyed-by-identity shape; three of the four unmapped classes, and any code this table
+ * does not name at all, collapse onto one shared "generic-error" kind, since the backend
+ * already returns them as the one indistinguishable INTERNAL_ERROR and there is no signal
+ * in the response that would let two of them be told apart here. The fourth,
+ * CaseNotValidError, resolves to its own distinct "case-not-valid" kind instead
+ * (task/cases-list-and-detail/case-attributes-at-a-glance, criterion 5): that task's own
+ * view needs read-case's own coherence refusal told apart from an unrelated 5xx, which
+ * this shared fallback could not do while both collapsed onto the same kind.
  */
 
 import type { ApiError } from "./api-client";
@@ -39,6 +43,7 @@ export type UiErrorStateKind =
   | "case-version-not-draft-at-release"
   | "case-version-not-releasable"
   | "manifest-would-hold-no-hypothesis"
+  | "case-not-valid"
   | "generic-error";
 
 /**
@@ -58,6 +63,8 @@ const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
  * inventory's confirmed list (the four unmapped classes) spell it. Iteration order
  * carries no meaning here -- unlike statusForError()'s Map, this is a plain lookup by
  * exact key, never by instanceof/subclass matching, so no entry can shadow another.
+ * CaseNotValidError is listed among the ten mapped, distinctly-stated classes below
+ * rather than the three still-unmapped ones -- see this module's own header comment.
  */
 const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   // 404-appropriate: a resource that plainly does not exist -- each its own state.
@@ -78,13 +85,20 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },
   ManifestWouldHoldNoHypothesisError: { kind: "manifest-would-hold-no-hypothesis" },
 
-  // Unmapped in status-map.ts -- the backend answers all four with the same
+  // Unmapped in status-map.ts -- the backend answers all three with the same
   // indistinguishable INTERNAL_ERROR, so they share the one fallback state rather than
   // each claiming a distinctness the response never carries.
   CaseHoldsNoDraftError: GENERIC_ERROR_STATE,
   ConceptNotInGlossaryError: GENERIC_ERROR_STATE,
   ConceptRefusesSubjectTypeError: GENERIC_ERROR_STATE,
-  CaseNotValidError: GENERIC_ERROR_STATE,
+  // Also unmapped in status-map.ts (the backend answers it as the same
+  // indistinguishable INTERNAL_ERROR too), but given its own distinct kind rather than
+  // folded into the fallback above: task/cases-list-and-detail/case-attributes-at-a-glance's
+  // own criterion 5 needs read-case's own coherence refusal (e.g. a draft whose manifest
+  // currently holds no hypothesis) told apart from an unrelated 5xx, which
+  // GENERIC_ERROR_STATE cannot do once two distinct classes share it (this module's own
+  // header comment).
+  CaseNotValidError: { kind: "case-not-valid" },
 };
 
 /**

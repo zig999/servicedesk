@@ -1,4 +1,5 @@
 import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+import { z } from "zod";
 import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
@@ -47,6 +48,22 @@ const caseVersionRoute = createRoute({
   component: CaseVersionEditorScreen,
 });
 
+// task/cases-list-and-detail/case-attributes-at-a-glance's own "New draft
+// from vX" action (criterion 4, released-current-version branch): the
+// source version number the curator originated the new draft from,
+// addressed through this route's own search state rather than a path
+// segment, since new-draft-creation's own blank-form entry point
+// (Case Detail's plain "New draft" action, no source version) still
+// addresses this exact same route with none. Optional so every existing
+// caller naming no search at all keeps resolving to the same route with the
+// same blank form -- this task's own Notes: "the criterion here is
+// navigation only ... independently demonstrable" of whichever task, if
+// any, ever reads this field back out (task/version-editor/seed-new-draft-
+// from-latest-released, a sibling task this one does not depend on).
+const newCaseVersionSearchSchema = z.object({
+  sourceVersion: z.coerce.number().int().positive().optional(),
+});
+
 // task/version-editor/new-draft-creation's own blank-form entry point,
 // addressed from Case Detail's "New draft" action. A static "new" segment
 // ranks over the "$version" param segment above regardless of declaration
@@ -55,6 +72,7 @@ const caseVersionRoute = createRoute({
 const newCaseVersionRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/versions/new",
+  validateSearch: newCaseVersionSearchSchema,
   component: NewCaseDraftScreen,
 });
 

@@ -131,3 +131,43 @@ describe("route-tree", () => {
     );
   });
 });
+
+/**
+ * task/cases-list-and-detail/case-attributes-at-a-glance's own inference: "New draft from vX"
+ * addresses the New Draft flow by adding an optional "sourceVersion" search field to this
+ * pre-existing route, rather than a new route or a required parameter. Read directly off the
+ * registered route's own `validateSearch` (a zod schema assigned as-is, exposing `.parse()`)
+ * rather than re-declaring an expectation independent of it -- the schema itself is this
+ * task's own new artifact, unlike EXPECTED_PATHS/EXPECTED_COMPONENT_BY_PATH above, which check
+ * route-tree.tsx against an independently-authored expectation.
+ */
+type ParsableSearchSchema = { parse: (input: unknown) => unknown };
+
+function newDraftSearchSchema(): ParsableSearchSchema {
+  const route = leafRoutes().find((route) => route.fullPath === "/cases/$slug/versions/new");
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- validateSearch's own declared type is a broad function/validator union TanStack Router accepts; this narrows it to the one shape (a zod-like object exposing .parse()) route-tree.tsx actually assigns, which every .parse() call below then exercises for real -- never trusted unchecked.
+  const schema = route?.options.validateSearch as ParsableSearchSchema | undefined;
+  if (!schema) {
+    throw new Error("no validateSearch is registered on /cases/$slug/versions/new");
+  }
+  return schema;
+}
+
+describe("the New Draft route's own 'sourceVersion' search field (task/cases-list-and-detail/case-attributes-at-a-glance)", () => {
+  it("parses an absent sourceVersion as {}, so the pre-existing blank 'New draft' entry point keeps resolving unaffected", () => {
+    expect(newDraftSearchSchema().parse({})).toEqual({});
+  });
+
+  it("coerces a numeric-string sourceVersion query value into a number, so 'New draft from vX' can address the flow by that version's own number", () => {
+    expect(newDraftSearchSchema().parse({ sourceVersion: "3" })).toEqual({ sourceVersion: 3 });
+  });
+
+  it("accepts the smallest valid sourceVersion, 1", () => {
+    expect(newDraftSearchSchema().parse({ sourceVersion: "1" })).toEqual({ sourceVersion: 1 });
+  });
+
+  it("refuses a sourceVersion of zero or below", () => {
+    expect(() => newDraftSearchSchema().parse({ sourceVersion: "0" })).toThrow();
+    expect(() => newDraftSearchSchema().parse({ sourceVersion: "-1" })).toThrow();
+  });
+});
