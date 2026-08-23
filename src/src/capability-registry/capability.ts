@@ -78,3 +78,11 @@ export const REQUIRED_REGISTRATION_ATTRIBUTES = [
   'connector',
   'concept',
 ] as const;
+
+/**
+ * The two attributes rules/integration/a-capability-declares-well-formed-schemas
+ * holds to JSON syntax: a malformed one is silently read as no fields at all
+ * wherever a citation is checked against it, so the registry refuses it at
+ * the door instead of ever writing it.
+ */
+export const SCHEMA_ATTRIBUTES = ['input_schema', 'output_schema'] as const;

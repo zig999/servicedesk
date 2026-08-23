@@ -38,6 +38,7 @@ import type { ProductionDiagnoseCall } from '../../../factories/production-diagn
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
@@ -133,6 +134,22 @@ function stubGlossaryQuery(): IGlossaryQuery {
   };
 }
 
+/** A minimally valid RegisterCapabilityControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed Capability so register-capability-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubRegisterCapability(): RegisterCapabilityControllerDependencies {
+  return {
+    registerCapability: async () => ({
+      name: 'a-name',
+      version: '1.0.0',
+      nature: 'read-only',
+      input_schema: 'a-schema',
+      output_schema: 'a-schema',
+      timeout: 1000,
+      connector: 'a-connector',
+      concept: 'a-concept',
+    }),
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -151,6 +168,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     diagnose,
     readCapability: { capabilityQuery },
     listCapabilities: { capabilityQuery, ...pagination },
+    registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
     updateDraft: { caseStore, caseQuery },
     release: { release: async () => undefined, caseQuery },

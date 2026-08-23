@@ -1,9 +1,10 @@
 // Wires buildApp's own BuildAppDependencies whole (ARC-03 — one module, one
-// factory function, named for the module it wires): the eighteen routes
+// factory function, named for the module it wires): the nineteen routes
 // this initiative's four HTTP epics deliver, reusing case-query.factory.ts's,
 // case-store.factory.ts's, glossary.factory.ts's, capability-registry.factory.ts's
 // and case-lifecycle.factory.ts's own already-existing composition roots
-// (task/case-lifecycle-http/register-routes-in-build-app) rather than
+// (task/case-lifecycle-http/register-routes-in-build-app,
+// task/capability-authoring/register-capability-route) rather than
 // rebuilding any of them — no new store, query or operation construction is
 // introduced here, only the fan-out from one shared connection into every
 // route's own slice of BuildAppDependencies. Kept out of
@@ -12,8 +13,17 @@
 // store-wiring.spec.ts already asserts (this task's own criterion 3, applied
 // to the diagnose route's own registration and, by the same reasoning, to
 // the factory that already built it).
+//
+// task/capability-authoring/register-capability-route: composeResources now
+// builds one CapabilityRegistryService instance
+// (capability-registry.factory.ts's own createCapabilityRegistry) and reuses
+// it for both capabilityQuery (the published read, unchanged in shape) and
+// the new registerCapability field, rather than building a second instance
+// through createCapabilityQuery — the same shared connection either way, so
+// this changes nothing any existing route can observe.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
+import type { CapabilityRegistryService } from '../capability-registry/capability-registry.service.js';
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ICaseStore } from '../case/case-store.port.js';
 import type { Env } from '../config/env.js';
@@ -21,7 +31,7 @@ import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
-import { createCapabilityQuery } from './capability-registry.factory.js';
+import { createCapabilityRegistry } from './capability-registry.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
 import { createCaseStore } from './case-store.factory.js';
 import { createGlossaryQuery } from './glossary.factory.js';
@@ -36,7 +46,7 @@ export type BuildAppDependenciesInputs = {
 
 /**
  * Every leaf query, store and operation surface this composition's other
- * eighteen routes read their own dependencies from, plus the configured
+ * nineteen routes read their own dependencies from, plus the configured
  * pagination bound (API-04) every listing route resolves its own request
  * against — read once from env here rather than written as a literal in
  * any route or controller.
@@ -45,17 +55,32 @@ type ComposedResources = {
   readonly caseQuery: ICaseQuery;
   readonly caseStore: ICaseStore;
   readonly capabilityQuery: ICapabilityQuery;
+  readonly registerCapability: CapabilityRegistryService['registerCapability'];
   readonly glossaryQuery: IGlossaryQuery;
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
 };
 
-/** Wires every leaf query, store and operation surface from the one given connection, reusing case-store.factory.ts's, glossary.factory.ts's, capability-registry.factory.ts's and case-lifecycle.factory.ts's own composition roots rather than rebuilding any of them; the given caseQuery is the same instance createDiagnoseHttpServer already built for the diagnose route, threaded through rather than rebuilt a second time. */
+/**
+ * Wires every leaf query, store and operation surface from the one given
+ * connection, reusing case-store.factory.ts's, glossary.factory.ts's,
+ * capability-registry.factory.ts's and case-lifecycle.factory.ts's own
+ * composition roots rather than rebuilding any of them; the given caseQuery
+ * is the same instance createDiagnoseHttpServer already built for the
+ * diagnose route, threaded through rather than rebuilt a second time. Builds
+ * one CapabilityRegistryService (capability-registry.factory.ts's own
+ * createCapabilityRegistry) and reuses that same instance for both
+ * capabilityQuery and registerCapability
+ * (task/capability-authoring/register-capability-route), rather than a
+ * second instance built through createCapabilityQuery.
+ */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
+  const capabilityRegistry = createCapabilityRegistry(connection);
   return {
     caseQuery,
     caseStore: createCaseStore(connection),
-    capabilityQuery: createCapabilityQuery(connection),
+    capabilityQuery: capabilityRegistry,
+    registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
     glossaryQuery: createGlossaryQuery(connection),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
@@ -100,6 +125,13 @@ function lifecycleDependencies(resources: ComposedResources): Pick<BuildAppDepen
   };
 }
 
+/** register-capability's own dependencies (task/capability-authoring/register-capability-route): the registerCapability operation alone. */
+function registrationDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'registerCapability'> {
+  return {
+    registerCapability: { registerCapability: resources.registerCapability },
+  };
+}
+
 /**
  * Assembles buildApp's own BuildAppDependencies whole: the diagnose route's
  * dependencies exactly as its own caller already built them, plus every
@@ -114,5 +146,6 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...readDependencies(resources),
     ...listDependencies(resources),
     ...lifecycleDependencies(resources),
+    ...registrationDependencies(resources),
   };
 }

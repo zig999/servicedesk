@@ -1,4 +1,5 @@
 import { CapabilityNotReadOnlyError } from '../errors/capability-not-read-only.error.js';
+import { CapabilitySchemaNotWellFormedError } from '../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../errors/concept-already-answered.error.js';
 import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { IncompleteCapabilityContractError } from '../errors/incomplete-capability-contract.error.js';
@@ -9,6 +10,7 @@ import {
   DEFAULT_CAPABILITY_TIMEOUT_MS,
   READ_ONLY_NATURE,
   REQUIRED_REGISTRATION_ATTRIBUTES,
+  SCHEMA_ATTRIBUTES,
   type Capability,
   type CapabilityRegistration,
 } from './capability.js';
@@ -17,7 +19,9 @@ import {
  * The registry's two operations (domain/integration/capability-registry):
  * register-capability holds every registration to the declared contract —
  * only read-only registers, a registration lacking its contract is refused,
- * and a concept a different capability already answers is refused
+ * a schema that is not syntactically valid JSON is refused
+ * (rules/integration/a-capability-declares-well-formed-schemas), and a
+ * concept a different capability already answers is refused
  * (rules/integration/one-capability-answers-one-concept) — before anything
  * is written; resolve-concept is the one lookup from a concept to the
  * capability that answers it, provided as the published capability-registry
@@ -32,7 +36,9 @@ export class CapabilityRegistryService implements ICapabilityQuery {
   /**
    * register-capability: refuses a registration that does not declare its
    * contract completely (rules/integration/a-capability-declares-its-contract),
-   * whose nature is not read-only (rules/integration/a-capability-is-read-only),
+   * whose input schema or output schema is not syntactically valid JSON
+   * (rules/integration/a-capability-declares-well-formed-schemas), whose
+   * nature is not read-only (rules/integration/a-capability-is-read-only),
    * or whose concept a different capability already answers
    * (rules/integration/one-capability-answers-one-concept) — every refusal
    * raised before any write. The rest is held — a re-registration under an
@@ -112,6 +118,7 @@ type DeclaredRegistration = CapabilityRegistration & {
  */
 function heldCapability(registration: CapabilityRegistration): Capability {
   refuseContractDepartures(registration);
+  refuseMalformedSchemas(registration);
   if (registration.nature !== READ_ONLY_NATURE) {
     throw new CapabilityNotReadOnlyError(registration.nature);
   }
@@ -155,6 +162,29 @@ function contractProblems(registration: CapabilityRegistration): string[] {
 /** Whether one attribute of a registration was left undeclared — absent and empty alike, since an empty attribute declares nothing. */
 function isUndeclared(value: string | undefined): boolean {
   return value === undefined || value === '';
+}
+
+/**
+ * Refuses a registration whose input schema or output schema is not
+ * syntactically valid JSON (rules/integration/a-capability-declares-well-formed-schemas),
+ * once the contract-completeness refusal above has already confirmed both
+ * are declared, non-empty strings.
+ */
+function refuseMalformedSchemas(registration: DeclaredRegistration): void {
+  const malformed = SCHEMA_ATTRIBUTES.filter((attribute) => !isWellFormedJson(registration[attribute]));
+  if (malformed.length > 0) {
+    throw new CapabilitySchemaNotWellFormedError(malformed);
+  }
+}
+
+/** Whether one schema attribute's declared value parses as syntactically valid JSON. */
+function isWellFormedJson(value: string): boolean {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**

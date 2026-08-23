@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/capability-authoring-register-capability-route-suite-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 900,
+  "outcome": "timed_out",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-23T19:59:19.927+00:00",
+      "ended_at": "2026-08-23T19:59:23.766+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-23T19:59:23.766+00:00",
+      "ended_at": "2026-08-23T19:59:26.791+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-23T19:59:26.791+00:00",
+      "ended_at": "2026-08-23T19:59:29.948+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-23T19:59:29.948+00:00",
+      "ended_at": "2026-08-23T19:59:30.331+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "timed_out",
+      "exit_code": null,
+      "output": "test.log",
+      "started_at": "2026-08-23T19:59:30.331+00:00",
+      "ended_at": "2026-08-23T20:14:30.355+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

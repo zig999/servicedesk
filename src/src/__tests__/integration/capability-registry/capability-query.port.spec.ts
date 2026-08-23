@@ -38,8 +38,8 @@ function completeRegistration(concept: string, overrides: CapabilityRegistration
     name: 'a-capability',
     version: '1.0.0',
     nature: 'read-only',
-    input_schema: 'an-input-schema',
-    output_schema: 'an-output-schema',
+    input_schema: '{}',
+    output_schema: '{}',
     timeout: 5000,
     connector: 'a-connector',
     concept,
@@ -103,7 +103,7 @@ it('refuses to resolve over a real holding with two rows answering one concept, 
   await pool.query(
     `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8), ($9, $2, $3, $4, $5, $6, $7, $8)`,
-    ['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', concept, 'another-capability'],
+    ['a-capability', '1.0.0', 'read-only', '{}', '{}', 5000, 'a-connector', concept, 'another-capability'],
   );
   const query = createCapabilityQuery(pool);
 

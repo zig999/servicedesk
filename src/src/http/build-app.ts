@@ -58,6 +58,8 @@ import type { ReadConceptControllerDependencies } from './read-concept.controlle
 import { createReadConceptRoutesPlugin } from './read-concept.routes.js';
 import type { ReadVocabularyTermControllerDependencies } from './read-vocabulary-term.controller.js';
 import { createReadVocabularyTermRoutesPlugin } from './read-vocabulary-term.routes.js';
+import type { RegisterCapabilityControllerDependencies } from './register-capability.controller.js';
+import { createRegisterCapabilityRoutesPlugin } from './register-capability.routes.js';
 import type { ReleaseControllerDependencies } from './release.controller.js';
 import { createReleaseRoutesPlugin } from './release.routes.js';
 import type { RemoveHypothesisControllerDependencies } from './remove-hypothesis.controller.js';
@@ -72,13 +74,16 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * Every route plugin this initiative's four HTTP epics deliver, plus the
  * pre-existing diagnose route: one named field per route, each carrying
  * exactly that route's own controller-dependencies type, so a caller must
- * hand this function a fully wired dependency for every one of the
- * nineteen routes it registers — no route here is optional.
+ * hand this function a fully wired dependency for every one of the twenty
+ * routes it registers — no route here is optional. registerCapability
+ * (task/capability-authoring/register-capability-route) is the twentieth,
+ * added on top of the nineteen register-routes-in-build-app already wired.
  */
 export type BuildAppDependencies = {
   readonly diagnose: DiagnoseControllerDependencies;
   readonly readCapability: ReadCapabilityControllerDependencies;
   readonly listCapabilities: ListCapabilitiesControllerDependencies;
+  readonly registerCapability: RegisterCapabilityControllerDependencies;
   readonly createDraft: CreateDraftControllerDependencies;
   readonly updateDraft: UpdateDraftControllerDependencies;
   readonly release: ReleaseControllerDependencies;
@@ -108,6 +113,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
     createDiagnoseRoutesPlugin(dependencies.diagnose),
     createReadCapabilityRoutesPlugin(dependencies.readCapability),
     createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+    createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
     createCreateDraftRoutesPlugin(dependencies.createDraft),
     createUpdateDraftRoutesPlugin(dependencies.updateDraft),
     createReleaseRoutesPlugin(dependencies.release),
@@ -129,7 +135,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
 
 /**
  * Assembles the whole HTTP surface this initiative exposes: one Fastify
- * instance with every one of the nineteen route plugins registered and the
+ * instance with every one of the twenty route plugins registered and the
  * one generic error handler set (COR-04, SEC-04). Constructs the Fastify
  * instance itself — this is the composition boundary ARC-02 expects, not a
  * service or a controller — but none of any route's own dependencies:

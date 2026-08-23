@@ -1,0 +1,5 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(150,3): error TS2741: Property 'registerCapability' is missing in type '{ diagnose: DiagnoseControllerDependencies; readCapability: { capabilityQuery: ICapabilityQuery; }; listCapabilities: { defaultLimit: number; maxLimit: number; capabilityQuery: ICapabilityQuery; }; ... 15 more ...; listConcepts: { ...; }; }' but required in type 'BuildAppDependencies'.

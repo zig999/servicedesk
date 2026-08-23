@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-authoring/register-capability-route",
+      "kind": "implementation",
+      "file": "implementation/capability-authoring/register-capability-route.md",
+      "title": "Expose register-capability as a write HTTP route",
+      "summary": "A PUT route that creates or replaces a capability, enacting the registry's contract-completeness, read-only-nature, one-concept-one-capability and new schema-well-formedness refusals.",
+      "task": "task/capability-authoring/register-capability-route"
+    },
+    {
+      "id": "proof/capability-authoring/register-capability-route",
+      "kind": "proof",
+      "file": "proof/capability-authoring/register-capability-route.md",
+      "title": "Proof for register-capability exposed as a write HTTP route",
+      "summary": "HTTP-level tests for PUT /v1/capabilities/{name}/{version} (wiring, status mapping, DTO boundary, no-auth) plus new service-level tests for the schema-well-formedness refusal this task added, together proving the task's seven criteria and excluding the omitted-schema-attribute reading the task's own Notes rules out.",
+      "task": "task/capability-authoring/register-capability-route"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/capability-authoring/register-capability-route",
+      "to": "task/capability-authoring/register-capability-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-authoring/register-capability-route",
+      "to": "implementation/capability-authoring/register-capability-route",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

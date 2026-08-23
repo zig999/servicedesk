@@ -11,21 +11,34 @@
 // does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError,
 // ConceptNotHeldError, VocabularyTermNotHeldError); an operation the named resource's own current state forbids — a second open
 // draft, an already occupied manifest position, a mutation against anything
-// but a draft version — answers 409 Conflict; a request that is well-formed
-// but would violate a business invariant were it applied — a release whose
-// validator rules did not all pass, a removal that would leave a manifest
-// holding no hypothesis — answers 422 Unprocessable Entity. An error class
-// this table does not name is left unmapped, and error-handler.middleware.ts
-// keeps answering it with 500, exactly as it does today (COR-04's own note
-// that none of this codebase's errors is mapped to a status yet).
+// but a draft version, a concept a different capability already answers
+// (ConceptAlreadyAnsweredError, rules/integration/one-capability-answers-one-concept)
+// — answers 409 Conflict; a request that is well-formed but would violate a
+// business invariant were it applied — a release whose validator rules did
+// not all pass, a removal that would leave a manifest holding no hypothesis,
+// a capability registration that does not declare its contract completely
+// (IncompleteCapabilityContractError), whose nature is not read-only
+// (CapabilityNotReadOnlyError), or whose schema is not syntactically valid
+// JSON (CapabilitySchemaNotWellFormedError) — answers 422 Unprocessable
+// Entity: each of these three reaches this table only now that
+// register-capability is exposed as a route (task/capability-authoring/register-capability-route),
+// since nothing before this task ever called registerCapability from HTTP.
+// An error class this table does not name is left unmapped, and
+// error-handler.middleware.ts keeps answering it with 500, exactly as it
+// does today (COR-04's own note that none of this codebase's errors is
+// mapped to a status yet).
 
+import { CapabilityNotReadOnlyError } from './capability-not-read-only.error.js';
+import { CapabilitySchemaNotWellFormedError } from './capability-schema-not-well-formed.error.js';
 import { CaseAlreadyHasDraftError } from './case-already-has-draft.error.js';
 import { CaseNotFoundError } from './case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from './case-version-not-releasable.error.js';
+import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
+import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
@@ -37,8 +50,8 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * The status map itself: every typed domain error this HTTP surface's
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
- * here would be found by the base class's entry first — none of these ten
- * extends another, so that never arises today.
+ * here would be found by the base class's entry first — none of these
+ * thirteen extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -49,8 +62,12 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],
   [CaseVersionNotDraftAtReleaseError, 409],
+  [ConceptAlreadyAnsweredError, 409],
   [CaseVersionNotReleasableError, 422],
   [ManifestWouldHoldNoHypothesisError, 422],
+  [IncompleteCapabilityContractError, 422],
+  [CapabilityNotReadOnlyError, 422],
+  [CapabilitySchemaNotWellFormedError, 422],
 ]);
 
 /**

@@ -9,6 +9,7 @@ import { CapabilityRegistryService } from '../../../capability-registry/capabili
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
 import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
+import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
 
 /**
@@ -49,8 +50,8 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
     name: 'a-capability',
     version: '1.0.0',
     nature: READ_ONLY,
-    input_schema: 'an-input-schema',
-    output_schema: 'an-output-schema',
+    input_schema: '{}',
+    output_schema: '{}',
     timeout: STATED_TIMEOUT_MS,
     connector: 'a-connector',
     concept: 'a-concept',
@@ -213,8 +214,8 @@ it('accepts a complete read-only contract and answers the capability as register
     name: 'a-capability',
     version: '1.0.0',
     nature: READ_ONLY,
-    input_schema: 'an-input-schema',
-    output_schema: 'an-output-schema',
+    input_schema: '{}',
+    output_schema: '{}',
     timeout: STATED_TIMEOUT_MS,
     connector: 'a-connector',
     concept: 'a-concept',
@@ -252,6 +253,82 @@ it('holds two versions of one capability name as two registrations', async () =>
   );
 
   expect(store.held().map((held) => held.version).sort()).toEqual(['1.0.0', '2.0.0']);
+});
+
+// ------------------------------------------------------------------ schema well-formedness
+// Proof for task/capability-authoring/register-capability-route (criterion 3,
+// rules/integration/a-capability-declares-well-formed-schemas): the registry
+// now refuses a registration whose input_schema or output_schema is not
+// syntactically valid JSON, before the concept-answered check and before any
+// write — added alongside the three refusals above. This fixture file's own
+// completeRegistration()/heldCapability() default input_schema and
+// output_schema to '{}', syntactically valid but semantically empty, so every
+// test below overrides both attributes explicitly to exercise the
+// well-formed/malformed distinction rather than relying on that default.
+
+/** A syntactically valid JSON document, minimal on purpose — well-formedness is JSON.parse succeeding, never a JSON Schema shape. */
+const WELL_FORMED_SCHEMA = '{"type":"object"}';
+
+it('refuses a registration whose input_schema is not syntactically valid JSON, naming the attribute', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ input_schema: '{not valid json', output_schema: WELL_FORMED_SCHEMA }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(CapabilitySchemaNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { attributes: ['input_schema'] } });
+});
+
+it('refuses a registration whose output_schema is not syntactically valid JSON, naming the attribute', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ input_schema: WELL_FORMED_SCHEMA, output_schema: '{not valid json' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(CapabilitySchemaNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { attributes: ['output_schema'] } });
+});
+
+it('refuses a registration whose input_schema and output_schema are both not syntactically valid JSON, naming both attributes', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ input_schema: '{not valid', output_schema: '{also not valid' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(CapabilitySchemaNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { attributes: ['input_schema', 'output_schema'] } });
+});
+
+it('writes nothing to the store when it refuses a registration for a malformed schema', async () => {
+  const alreadyHeld = heldCapability({ input_schema: WELL_FORMED_SCHEMA, output_schema: WELL_FORMED_SCHEMA });
+  const store = new InMemoryCapabilityStore([alreadyHeld]);
+  const registry = new CapabilityRegistryService(store);
+
+  await registry
+    .registerCapability(completeRegistration({ input_schema: '{not valid', output_schema: WELL_FORMED_SCHEMA }))
+    .catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+it('accepts a registration whose input_schema and output_schema are syntactically valid JSON, holding both unchanged', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ input_schema: WELL_FORMED_SCHEMA, output_schema: '{"type":"string"}' }),
+  );
+
+  expect(registered.input_schema).toBe(WELL_FORMED_SCHEMA);
+  expect(registered.output_schema).toBe('{"type":"string"}');
 });
 
 // ------------------------------------------------------------------ list-capabilities

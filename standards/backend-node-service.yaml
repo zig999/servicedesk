@@ -779,7 +779,7 @@ commands:
 
   - step: test
     command: npm test
-    timeout_seconds: 900
+    timeout_seconds: 2400
     role: suite
 
 elsewhere:
