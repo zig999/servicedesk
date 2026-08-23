@@ -164,18 +164,9 @@ describe("CaseDetailScreen", () => {
     // simply interpolating that decoded value back into the path would send
     // an unencoded "&", which is what this test would catch.
     await renderCaseDetail("/cases/foo%26bar");
-    await screen.findByRole("table");
+    await screen.findByText("This case currently holds no version.");
 
     expect(mockFetch.mock.calls[0]?.[0]).toBe("/v1/cases/foo%26bar/versions");
-  });
-
-  it("renders no data rows when the endpoint returns no versions", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ data: [] })));
-
-    await renderCaseDetail("/cases/some-slug");
-
-    const table = await screen.findByRole("table");
-    expect(within(table).getAllByRole("row")).toHaveLength(1);
   });
 
   it("shows a loading placeholder before the version list arrives", async () => {
@@ -239,5 +230,18 @@ describe("CaseDetailScreen", () => {
     await renderCaseDetail("/cases/some-slug");
 
     expect(await screen.findByRole("link", { name: "New draft" })).toBeTruthy();
+  });
+
+  // API-04: an explicit empty-state sentence replaces the header-only table
+  // when the case holds zero versions.
+  it("renders an explicit empty-state sentence instead of the versions table when the case holds no versions", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse({ data: [] })));
+
+    await renderCaseDetail("/cases/some-slug");
+
+    expect(
+      await screen.findByText("This case currently holds no version."),
+    ).toBeTruthy();
+    expect(screen.queryByRole("table")).toBeNull();
   });
 });

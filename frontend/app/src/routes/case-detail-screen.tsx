@@ -1,6 +1,7 @@
 import type { JSX } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
+import { Button } from "@tui/ui/button";
 import {
   StatusTable,
   type StatusTableColumn,
@@ -108,7 +109,7 @@ function toRow(slug: string, version: CaseVersionListItem): StatusTableRow {
  * it can sit inside a TabsContent (this task's own Notes).
  */
 function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
-  const { data, isLoading, isError } = useCaseVersions(slug);
+  const { data, isLoading, isError, refetch } = useCaseVersions(slug);
 
   if (isLoading) {
     return <p>Loading version timeline…</p>;
@@ -118,8 +119,18 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
     // own cache-level toast (services/query-client.ts); this generic
     // fallback keeps the screen from rendering an empty table underneath
     // it, without inventing a per-error-code message no criterion of this
-    // task states.
-    return <p>Unable to load this case&apos;s version timeline.</p>;
+    // task states. EDG-02 still asks for an explicit retry action rather
+    // than only that toast, matching this same file's own CaseHypothesesTab
+    // (case-hypotheses-tab.tsx) convention for a raw useQuery result: its
+    // own refetch, called directly.
+    return (
+      <section>
+        <p>Unable to load this case&apos;s version timeline.</p>
+        <Button type="button" onClick={() => void refetch()}>
+          Retry
+        </Button>
+      </section>
+    );
   }
 
   const rows = data.data.map((version) => toRow(slug, version));
@@ -132,7 +143,22 @@ function VersionsPanel({ slug }: { readonly slug: string }): JSX.Element {
           New draft
         </Link>
       )}
-      <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
+      {rows.length === 0 ? (
+        // API-04: an empty response renders its own explicit empty state,
+        // never a header-only table with nothing said about why -- matching
+        // this same file's own CaseHypothesesTab (case-hypotheses-tab.tsx)
+        // empty-state branch for the same list shape, and this route's own
+        // reading of scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
+        // (the discarded-only-draft case reads identically to a case that
+        // never held a version, so both are told the same explicit sentence
+        // here). "New draft" above still renders: an empty list trivially
+        // satisfies "none of the case's versions is currently in draft"
+        // (task/version-editor/new-draft-creation's own criterion), so this
+        // branch replaces only the table, never the surrounding chrome.
+        <p>This case currently holds no version.</p>
+      ) : (
+        <StatusTable columns={CASE_VERSIONS_COLUMNS} rows={rows} />
+      )}
     </>
   );
 }

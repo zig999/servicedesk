@@ -111,6 +111,41 @@ describe("CapabilitiesBrowserScreen — no second network read on selection (cri
   });
 });
 
+describe("CapabilitiesBrowserScreen — the detail-panel mount point announces itself (ACC-07, criterion 4)", () => {
+  it("renders an aria-live=\"polite\" mount point for the detail panel before any row is selected", async () => {
+    const fetchMock = createCapabilitiesFetchStub(() =>
+      jsonResponse(capabilitiesPage([capability()])),
+    );
+    await mountCapabilitiesScreen(fetchMock);
+
+    await screen.findAllByRole("button");
+
+    // The mount point is deliberately empty before a row is selected, so there is no
+    // accessible content (no role, no text) that an RTL query could reach it by;
+    // mirrors cases-list-screen.spec.ts's own precedent for a decorative/attribute-only
+    // target.
+    // eslint-disable-next-line testing-library/no-node-access
+    const liveRegion = document.querySelector('[aria-live="polite"]');
+    expect(liveRegion).not.toBeNull();
+  });
+
+  it("keeps the detail panel inside that same aria-live=\"polite\" mount point once a row is selected", async () => {
+    const fetchMock = createCapabilitiesFetchStub(() =>
+      jsonResponse(capabilitiesPage([capability()])),
+    );
+    await mountCapabilitiesScreen(fetchMock);
+
+    const rows = await screen.findAllByRole("button");
+    fireEvent.click(rows[0]);
+
+    const panel = await screen.findByRole("region", { name: "translate-text" });
+    // Confirming the panel's own aria-live ancestor is not itself surfaced through any
+    // role/text RTL query.
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(panel.closest('[aria-live="polite"]')).not.toBeNull();
+  });
+});
+
 describe("CapabilitiesBrowserScreen — composite name::version selection key (disclosed inference)", () => {
   it("disambiguates two capabilities sharing the same name by their own version, so selecting one never shows the other's own detail", async () => {
     const v1 = capability({

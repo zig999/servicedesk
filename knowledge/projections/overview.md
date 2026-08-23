@@ -9,7 +9,7 @@ Derived by spec.py from the specification files; never edited.
 | glossary | supporting | 6 | 4 | 1 | 0 |
 | integration | generic | 3 | 4 | 4 | 0 |
 | investigation | supporting | 14 | 20 | 6 | 6 |
-| knowledge | core | 10 | 26 | 4 | 4 |
+| knowledge | core | 10 | 27 | 4 | 5 |
 
 ## Capabilities
 
@@ -36,4 +36,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-80 decision(s) disclosed in the decision log.
+82 decision(s) disclosed in the decision log.

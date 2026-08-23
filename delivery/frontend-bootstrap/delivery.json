@@ -13,6 +13,30 @@
       ]
     },
     {
+      "id": "implementation/case-authoring-console/every-async-update-is-announced",
+      "kind": "implementation",
+      "file": "implementation/case-authoring-console/every-async-update-is-announced.md",
+      "title": "Every async UI update is announced to assistive technology (ACC-07)",
+      "summary": "Adds an aria-live or role=\"alert\" announcement to each of the four screens whose visible-only state change previously gave no signal to a screen-reader user, reusing this codebase's own established role=\"alert\" convention where a paragraph already existed and aria-live=\"polite\" where a region needed to be introduced.",
+      "task": "task/case-authoring-console/every-async-update-is-announced"
+    },
+    {
+      "id": "implementation/case-authoring-console/every-empty-collection-states-so",
+      "kind": "implementation",
+      "file": "implementation/case-authoring-console/every-empty-collection-states-so.md",
+      "title": "Empty Versions list and empty violations list each render an explicit sentence",
+      "summary": "Case Detail's Versions tab and the Release Dialog's violations view each gain an explicit empty-state branch, matching CaseHypothesesTab's existing pattern, so an empty collection is never rendered as a blank table or alert -- without suppressing the \"New draft\" link a different, already-delivered task's own criterion requires.",
+      "task": "task/case-authoring-console/every-empty-collection-states-so"
+    },
+    {
+      "id": "implementation/case-authoring-console/every-load-error-offers-retry",
+      "kind": "implementation",
+      "file": "implementation/case-authoring-console/every-load-error-offers-retry.md",
+      "title": "Retry control on every remaining load-error state (EDG-02)",
+      "summary": "Adds a Retry Button, wired to that screen's own already-exposed refetch, to Cases List's load-error state, Case Detail's VersionsPanel load-error state, and the Capabilities Browser's load-error state -- closing three standing EDG-02 findings.",
+      "task": "task/case-authoring-console/every-load-error-offers-retry"
+    },
+    {
       "id": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule",
       "kind": "implementation",
       "file": "implementation/case-authoring-console/tailwind-scans-the-tui-submodule.md",
@@ -190,6 +214,30 @@
       "title": "Release a draft case version",
       "summary": "Adds a \"Release…\" control and its in-place confirmation Dialog to the Version Editor, with a client-computed pre-release checklist, a single POST .../release on confirm, and rendering for its 200/409/422 outcomes.",
       "task": "task/version-editor/release-draft-version"
+    },
+    {
+      "id": "proof/case-authoring-console/every-async-update-is-announced",
+      "kind": "proof",
+      "file": "proof/case-authoring-console/every-async-update-is-announced.md",
+      "title": "Proof for every-async-update-is-announced",
+      "summary": "Five tests prove that a screen's own in-place update -- the Cases List filtered count, the Version Editor save-status text, the Manifest Builder reorder-error message, and the Capabilities Browser detail panel -- is exposed through an aria-live region or role=\"alert\" and reflects the change once it happens.",
+      "task": "task/case-authoring-console/every-async-update-is-announced"
+    },
+    {
+      "id": "proof/case-authoring-console/every-empty-collection-states-so",
+      "kind": "proof",
+      "file": "proof/case-authoring-console/every-empty-collection-states-so.md",
+      "title": "Every empty collection states so — proof",
+      "summary": "Proves that Case Detail's Versions tab renders an explicit empty-state sentence rather than a header-only table when the version list is empty, and that the Release Dialog's violations view renders an explicit sentence rather than a blank alert when a 422's own violations array is empty; two stale tests asserting the superseded header-only-table behavior were updated to match the new, specification-backed behavior.",
+      "task": "task/case-authoring-console/every-empty-collection-states-so"
+    },
+    {
+      "id": "proof/case-authoring-console/every-load-error-offers-retry",
+      "kind": "proof",
+      "file": "proof/case-authoring-console/every-load-error-offers-retry.md",
+      "title": "Every load-error state offers a retry control — proof",
+      "summary": "Twelve tests across three spec files prove that Cases List, Case Detail's Versions tab and the Capabilities Browser each render a retry control on load error that re-issues that same screen's own read, issues no other request, fires exactly once per click, and survives a repeated failure without getting the screen stuck.",
+      "task": "task/case-authoring-console/every-load-error-offers-retry"
     },
     {
       "id": "proof/case-authoring-console/tailwind-scans-the-tui-submodule",
@@ -517,6 +565,36 @@
     {
       "from": "implementation/case-authoring-console/build-substrate",
       "to": "task/case-authoring-console/build-substrate",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring-console/every-async-update-is-announced",
+      "to": "task/case-authoring-console/every-async-update-is-announced",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring-console/every-empty-collection-states-so",
+      "to": "scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-authoring-console/every-empty-collection-states-so",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-authoring-console/every-empty-collection-states-so",
+      "to": "task/case-authoring-console/every-empty-collection-states-so",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-authoring-console/every-load-error-offers-retry",
+      "to": "task/case-authoring-console/every-load-error-offers-retry",
       "kind": "implements",
       "at": "the path"
     },
@@ -1262,6 +1340,24 @@
       "from": "implementation/version-editor/release-draft-version",
       "to": "task/version-editor/release-draft-version",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring-console/every-async-update-is-announced",
+      "to": "implementation/case-authoring-console/every-async-update-is-announced",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring-console/every-empty-collection-states-so",
+      "to": "implementation/case-authoring-console/every-empty-collection-states-so",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-authoring-console/every-load-error-offers-retry",
+      "to": "implementation/case-authoring-console/every-load-error-offers-retry",
+      "kind": "proves",
       "at": "the path"
     },
     {

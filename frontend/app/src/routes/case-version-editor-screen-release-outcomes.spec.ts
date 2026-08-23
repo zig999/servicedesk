@@ -137,7 +137,9 @@ describe("CaseVersionEditorScreen — a 422 CaseVersionNotReleasableError respon
 
     const dialog = await screen.findByRole("dialog");
     await waitFor(() => expect(within(dialog).getByRole("alert")).toBeTruthy());
-    expect(within(within(dialog).getByRole("alert")).queryAllByRole("listitem")).toHaveLength(0);
+    const alert = within(dialog).getByRole("alert");
+    expect(within(alert).queryAllByRole("listitem")).toHaveLength(0);
+    expect(within(alert).getByText("No specific violation was returned.")).toBeTruthy();
     expect(within(dialog).queryByText(/Manifest holds at least one hypothesis/)).toBeNull();
   });
 });

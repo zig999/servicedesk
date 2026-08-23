@@ -3452,6 +3452,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "digest": "sha256:dff50b120f22135c5faeafb7f4266db9945293e551a1b97bf53c8a648467386a",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
+          "digest": "sha256:3f0003d6904e7882e1d857f836ab65182337de06a4a0e7983662b32939d61f2d"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
       "digest": "sha256:0073b04e2d9138395e4e8f89ce4c0cd83940982cc0e7d3a11b5c1b078ec07c8a",
       "files": [
@@ -3788,6 +3798,16 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly",
+      "digest": "sha256:70ce85741dd2ac1c588aa239d20c31855ad260281832cb73b9494f32b1e65b17",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:418599e8ddd9c75d1559067ee46a66656c304dd8a13344693f9075abe78e64ab"
         }
       ]
     },

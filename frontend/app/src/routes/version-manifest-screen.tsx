@@ -119,7 +119,14 @@ function RowActions({ row, disabled }: RowActionsProps): JSX.Element {
         </Dialog>
       </div>
       {row.moveErrorMessage !== null && (
-        <p className="text-sm text-destructive">{row.moveErrorMessage}</p>
+        // ACC-07: a rejected reorder changes this text with no page
+        // navigation, so it carries role="alert" -- this codebase's own
+        // established convention for a field-validation error paragraph
+        // (case-version-editor-form-fields.tsx's own FormField), reused here
+        // rather than a second convention for the same class of announcement.
+        <p role="alert" className="text-sm text-destructive">
+          {row.moveErrorMessage}
+        </p>
       )}
     </div>
   );

@@ -400,4 +400,20 @@ entries:
     unstated: The same review decided registered capabilities need a listing, without naming the operation.
     decided: list-capabilities, added to capability-registry's own operations, alongside read-capability.
     why: The registry already publishes the one synchronous read a consumer depends on; a listing is the same read at a different cardinality, so it belongs beside read-capability rather than a second api.
+  - location: scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly.md
+    field: then
+    unstated: Whether list-case-versions, when a case currently holds no version at all, reports that fact explicitly or simply returns an empty listing with nothing said about why.
+    decided: The read states explicitly that the case currently holds no version, never presenting an unexplained empty listing.
+    why: only-a-draft-case-version-may-be-discarded plus a-case-version-number-is-never-reused make zero-versions a real, standing state a case can reach (its sole draft discarded) rather than a transient one — the case's slug and next_version counter persist, so the case a curator names still resolves. An empty array is indistinguishable from a stalled read, a misnamed slug, or a case that legitimately holds nothing yet; only an explicit statement removes that ambiguity, and it costs the read no new field the case-query contract does not already have room to state through a scenario's own concrete case.
+  - location: rules/knowledge/a-release-refusal-with-no-named-violation-says-so.md
+    field: statement
+    unstated: Whether a release refusal that carries no specific violation must say so explicitly, or may instead surface as an empty, unexplained list.
+    decided: A curator refused a release is always told why; where release finds no rule specifically violated, it says so explicitly rather than leaving the curator with an unexplained, empty refusal.
+    why: >-
+      "What someone is told at an outcome is what the business decided" (a refusal's wording is
+      never surface) — an empty list with no text leaves the curator unable to tell a genuine
+      absence of findings from a broken response, so the specification must state which reading
+      holds; explicit disclosure is the smaller, strictly more informative statement and costs
+      the domain nothing the aggregation mechanism (contracts/knowledge/case-lifecycle) does not
+      already presuppose.
 ---

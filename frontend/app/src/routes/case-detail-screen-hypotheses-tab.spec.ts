@@ -29,7 +29,7 @@ describe("CaseDetailScreen's own tab strip (criterion 1)", () => {
     });
 
     await mountCaseDetailScreen(fetchMock);
-    await screen.findByRole("table");
+    await screen.findByText("This case currently holds no version.");
 
     const versionsTab = screen.getByRole("tab", { name: "Versions" });
     const hypothesesTab = screen.getByRole("tab", { name: "Hypotheses" });

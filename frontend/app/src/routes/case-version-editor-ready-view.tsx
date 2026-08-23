@@ -125,11 +125,23 @@ export function CaseVersionEditorReadyView({
               // case-version-editor-form-fields.tsx's own field error
               // paragraphs (FormField, same role, same reasoning).
               <div role="alert">
-                <ul className="flex flex-col gap-1 text-sm text-destructive">
-                  {release.dialog.violations.map((violation) => (
-                    <li key={violation}>! {violation}</li>
-                  ))}
-                </ul>
+                {release.dialog.violations.length === 0 ? (
+                  // a-release-refusal-with-no-named-violation-says-so: where
+                  // the 422's own `violations` array names nothing, this
+                  // region says so explicitly rather than rendering an empty
+                  // <ul>, matching this same file's own load-error /
+                  // empty-list convention (case-hypotheses-tab.tsx's own
+                  // empty-state branch) for the same "empty collection" shape.
+                  <p className="text-sm text-destructive">
+                    No specific violation was returned.
+                  </p>
+                ) : (
+                  <ul className="flex flex-col gap-1 text-sm text-destructive">
+                    {release.dialog.violations.map((violation) => (
+                      <li key={violation}>! {violation}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
             <DialogFooter>

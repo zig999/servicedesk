@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { screen, within } from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import {
+  CAPABILITIES_PATH,
   capabilitiesPage,
   capability,
   createCapabilitiesFetchStub,
@@ -137,5 +138,86 @@ describe("CapabilitiesBrowserScreen — no mutating controls (criterion 6)", () 
     expect(screen.queryAllByRole("textbox")).toHaveLength(0);
     expect(screen.queryAllByRole("combobox")).toHaveLength(0);
     expect(screen.queryByRole("button", { name: /create|edit|delete/i })).toBeNull();
+  });
+});
+
+// task/case-authoring-console/every-load-error-offers-retry's own criterion 3 (the
+// Capabilities Browser) plus the two cross-cutting behaviors this task's own record
+// asks every one of its three retry controls to satisfy: exactly one more request per
+// Retry click, and a second failure following Retry still leaving the Retry control in
+// place rather than getting the screen stuck. Added here rather than a new sibling file
+// -- this file stays well under this project's own three-hundred-line MNT-01 cap with
+// these four tests included, unlike cases-list-screen.spec.ts and
+// case-detail-screen.spec.ts, both of which needed a sibling file for the same task's
+// own coverage of their own two screens.
+
+describe("CapabilitiesBrowserScreen's retry control (criterion 3)", () => {
+  it("re-issues GET /v1/capabilities when Retry is clicked, rendering the capabilities once that retry succeeds", async () => {
+    let callCount = 0;
+    const fetchMock = createCapabilitiesFetchStub(() => {
+      callCount += 1;
+      if (callCount === 1) {
+        throw new Error("network down");
+      }
+      return jsonResponse(capabilitiesPage([capability()]));
+    });
+    await mountCapabilitiesScreen(fetchMock);
+
+    expect(await screen.findByText("Capabilities could not be loaded.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    expect(await screen.findByText("translate-text")).toBeTruthy();
+    expect(screen.queryByText("Capabilities could not be loaded.")).toBeNull();
+    expect(callCount).toBe(2);
+  });
+});
+
+describe("CapabilitiesBrowserScreen's retry control (criterion 4)", () => {
+  it("issues no request other than GET /v1/capabilities when Retry is clicked", async () => {
+    const fetchMock = createCapabilitiesFetchStub(() => {
+      throw new Error("network down");
+    });
+    await mountCapabilitiesScreen(fetchMock);
+    await screen.findByText("Capabilities could not be loaded.");
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    for (const call of fetchMock.mock.calls) {
+      const url = typeof call[0] === "string" ? call[0] : call[0].toString();
+      expect(url).toBe(CAPABILITIES_PATH);
+    }
+  });
+});
+
+describe("CapabilitiesBrowserScreen's retry control -- exactly one more request", () => {
+  it("issues exactly one more request per Retry click, never zero and never more than one", async () => {
+    const fetchMock = createCapabilitiesFetchStub(() => {
+      throw new Error("network down");
+    });
+    await mountCapabilitiesScreen(fetchMock);
+    await screen.findByText("Capabilities could not be loaded.");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+  });
+});
+
+describe("CapabilitiesBrowserScreen's retry control -- repeated failure", () => {
+  it("still shows the failure message and Retry control after a second failure following Retry, rather than getting stuck", async () => {
+    const fetchMock = createCapabilitiesFetchStub(() => {
+      throw new Error("network down");
+    });
+    await mountCapabilitiesScreen(fetchMock);
+    await screen.findByText("Capabilities could not be loaded.");
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+
+    expect(screen.getByText("Capabilities could not be loaded.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
+    expect(screen.queryByText("Loading capabilities…")).toBeNull();
   });
 });

@@ -1,5 +1,6 @@
 import { useState, type JSX } from "react";
 import { Panel } from "@tui/ui/panel";
+import { Button } from "@tui/ui/button";
 import {
   StatusTable,
   type StatusTableColumn,
@@ -105,7 +106,7 @@ function CapabilityDetailPanel({
 }
 
 export function CapabilitiesBrowserScreen(): JSX.Element {
-  const { capabilities, isLoading, isError } = useCapabilities();
+  const { capabilities, isLoading, isError, refetch } = useCapabilities();
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   function handleRowClick(row: StatusTableRow): void {
@@ -125,8 +126,19 @@ export function CapabilitiesBrowserScreen(): JSX.Element {
     // (this app's own inventory), so a load failure falls through to this
     // screen's own generic fallback -- the same convention cases-list-screen
     // and case-detail-screen's VersionsPanel already keep for their own
-    // listing reads.
-    return <p>Capabilities could not be loaded.</p>;
+    // listing reads. EDG-02 still asks for an explicit retry action rather
+    // than only useCapabilities' own toast-triggering error state, matching
+    // glossary-browser-screen.tsx's own convention for a hook that already
+    // wraps its refetch in a void-returning function: passed to onClick
+    // directly, with no extra wrapper here.
+    return (
+      <section>
+        <p>Capabilities could not be loaded.</p>
+        <Button type="button" onClick={refetch}>
+          Retry
+        </Button>
+      </section>
+    );
   }
 
   const hasNoCapabilities = capabilities.length === 0;
@@ -146,9 +158,18 @@ export function CapabilitiesBrowserScreen(): JSX.Element {
           onRowClick={handleRowClick}
         />
       )}
-      {selectedCapability !== undefined && (
-        <CapabilityDetailPanel capability={selectedCapability} />
-      )}
+      {/*
+        ACC-07: the detail panel mounts with no page navigation when a row is
+        clicked, so its own appearance is announced through aria-live rather
+        than left to a sighted user's own glance at the page -- the smaller,
+        more idiomatic fix here since this component is a plain function with
+        no existing ref/focus-management machinery to move focus through.
+      */}
+      <div aria-live="polite">
+        {selectedCapability !== undefined && (
+          <CapabilityDetailPanel capability={selectedCapability} />
+        )}
+      </div>
     </div>
   );
 }

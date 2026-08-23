@@ -254,4 +254,24 @@ describe("CaseVersionEditorScreen — save, conflict, 404 and the save state mac
     expect(await screen.findByText("Unable to load this version right now.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
   });
+
+  // task/case-authoring-console/every-async-update-is-announced's own criterion 2
+  // (ACC-07): the "Last saved" text changes with no page navigation when a save
+  // completes, so it is exposed through its own aria-live region.
+  it("exposes the 'Last saved' save-status text through an aria-live=\"polite\" region once a save completes", async () => {
+    const fetchMock = createFetchStub(
+      baseHandlers({
+        [`PATCH ${VERSION_PATH}`]: () =>
+          jsonResponse({ ...LOADED_RECORD, title: "Announced save" }),
+      }),
+    );
+    await mountCaseVersionEditor(fetchMock);
+
+    const titleInput = await screen.findByLabelText("Title");
+    fireEvent.change(titleInput, { target: { value: "Announced save" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+
+    const savedStatus = await screen.findByText(/^Last saved \d{2}:\d{2}$/);
+    expect(savedStatus.getAttribute("aria-live")).toBe("polite");
+  });
 });

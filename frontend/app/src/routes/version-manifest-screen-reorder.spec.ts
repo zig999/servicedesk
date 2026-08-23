@@ -123,6 +123,23 @@ describe("VersionManifestScreen — a blocked swap (criterion 5)", () => {
   });
 });
 
+describe("VersionManifestScreen — the reorder-error message is announced (ACC-07, criterion 3)", () => {
+  it("renders the reorder-error message with role=\"alert\" when a reorder is rejected", async () => {
+    const fetchMock = createFetchStub({
+      [`GET ${VERSION_PATH}`]: () => jsonResponse(TWO_ENTRY_MANIFEST),
+      [`PUT ${manifestPath("H2")}`]: () =>
+        apiErrorResponse("ManifestPositionOccupiedError", 409, "position already occupied"),
+    });
+    await mountManifestScreen(fetchMock);
+    await screen.findAllByText(/· rev/);
+
+    fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
+
+    const alert = await within(findRow("H2")).findByRole("alert");
+    expect(alert.textContent).toBe("Another hypothesis already holds that position. Try again.");
+  });
+});
+
 describe("VersionManifestScreen — a move in flight (this hook's own isBusy inference)", () => {
   it("disables every row's controls while a move is pending, so a second click cannot fire a second request, and re-enables them once it resolves", async () => {
     let resolvePut: ((response: Response) => void) | undefined;

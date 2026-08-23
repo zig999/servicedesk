@@ -232,7 +232,12 @@ export function CaseVersionEditorFormFields({
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-sm text-muted-foreground">
+        {/*
+          ACC-07: this text changes with no page navigation when a save
+          completes, so its own change is announced through aria-live rather
+          than left to a sighted user's own glance at the footer.
+        */}
+        <span aria-live="polite" className="text-sm text-muted-foreground">
           {savedAt != null ? `Last saved ${savedAt}` : null}
         </span>
         <Button type="submit" disabled={isBlocked || status === "clean"}>

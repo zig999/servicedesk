@@ -2,6 +2,7 @@ import type { ChangeEvent, JSX } from "react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { Button } from "@tui/ui/button";
 import { apiFetch } from "../services/api-client";
 import {
   StatusTable,
@@ -274,8 +275,18 @@ export function CasesListScreen(): JSX.Element {
 
   if (casesQuery.isError) {
     // The QueryCache-level onError handler (query-client.ts) already toasts
-    // this failure; this screen renders nothing further of its own for it.
-    return <p>Cases could not be loaded.</p>;
+    // this failure; EDG-02 still asks for an explicit retry action rather
+    // than only that toast, matching case-hypotheses-tab.tsx's own
+    // load-error convention for a raw useQuery result (its own refetch,
+    // called directly rather than through a hook that already wraps it).
+    return (
+      <section>
+        <p>Cases could not be loaded.</p>
+        <Button type="button" onClick={() => void casesQuery.refetch()}>
+          Retry
+        </Button>
+      </section>
+    );
   }
 
   const hasNoCasesAtAll = entries.length === 0;
@@ -284,14 +295,26 @@ export function CasesListScreen(): JSX.Element {
     <div className="flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-foreground">Cases</h1>
       {!hasNoCasesAtAll && (
-        <input
-          type="search"
-          value={searchText}
-          onChange={handleSearchChange}
-          placeholder="Search cases by slug"
-          aria-label="Search cases by slug"
-          className="w-full max-w-sm rounded border border-border bg-surface px-3 py-2 text-sm text-foreground"
-        />
+        <>
+          <input
+            type="search"
+            value={searchText}
+            onChange={handleSearchChange}
+            placeholder="Search cases by slug"
+            aria-label="Search cases by slug"
+            className="w-full max-w-sm rounded border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          />
+          {/*
+            ACC-07: the search-filtered row count changes with no page
+            navigation, so it is exposed through its own aria-live region --
+            this screen's own visible copy of the count, rather than a
+            visually-hidden duplicate, since StatusTable's own row count is
+            not otherwise stated in text anywhere on this screen.
+          */}
+          <p aria-live="polite" className="text-sm text-muted-foreground">
+            {filteredEntries.length} case{filteredEntries.length === 1 ? "" : "s"} found
+          </p>
+        </>
       )}
       {hasNoCasesAtAll ? (
         <div className="flex flex-col items-start gap-3 rounded border border-border bg-surface p-6">

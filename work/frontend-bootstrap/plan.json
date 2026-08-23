@@ -6,7 +6,7 @@
       "kind": "epic",
       "file": "epic/case-authoring-console.md",
       "title": "Frontend case-authoring console substrate",
-      "summary": "The build, lint, style, type and test tooling frontend/app needs before any case-authoring screen exists, under the epic that claims this initiative's territory in the case-authoring domain."
+      "summary": "The build, lint, style, type and test tooling frontend/app needs before any case-authoring screen exists, under the epic that claims this initiative's territory in the case-authoring domain -- grown to also hold cross-cutting corrective work no single feature epic owns."
     },
     {
       "id": "epic/cases-list-and-detail",
@@ -98,6 +98,30 @@
       "file": "task/case-authoring-console/build-substrate.md",
       "title": "Build frontend app substrate",
       "summary": "The manifest, compiler, lint, build, style and end-to-end test configuration the frontend standard presupposes and the empty frontend/app tree does not hold, plus the minimal shell that proves the TUI import chain resolves.",
+      "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/case-authoring-console/every-async-update-is-announced",
+      "kind": "task",
+      "file": "task/case-authoring-console/every-async-update-is-announced.md",
+      "title": "Every async UI update is announced to assistive technology (ACC-07)",
+      "summary": "Four in-place UI changes that happen with no page navigation -- Cases List's search-filtered row count, the Version Editor's save-status indicator, the Manifest Builder's reorder-error message, and the Capabilities Browser's row-selection detail panel -- currently give a screen-reader user no signal that anything changed; each gets an aria-live region or an explicit focus move.",
+      "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/case-authoring-console/every-empty-collection-states-so",
+      "kind": "task",
+      "file": "task/case-authoring-console/every-empty-collection-states-so.md",
+      "title": "Every empty collection renders an explicit message (API-04)",
+      "summary": "Case Detail's Versions tab renders a header-only table with no explanatory text when a case holds zero versions, and the Release Dialog's violations view renders a blank alert region when a 422 carries an empty violations array; each gets an explicit empty-state sentence, matching the pattern this same codebase's own Hypotheses tab already establishes.",
+      "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/case-authoring-console/every-load-error-offers-retry",
+      "kind": "task",
+      "file": "task/case-authoring-console/every-load-error-offers-retry.md",
+      "title": "Every load-error state offers a retry control (EDG-02)",
+      "summary": "Cases List, Case Detail's Versions tab, and the Capabilities Browser each render a fixed failure message on a load error with no way to try again short of leaving the screen; each gets a retry control wired to its own query's refetch, matching the pattern this same codebase's own Hypotheses tab, Manifest Builder, and every Glossary Browser tab already establish.",
       "epic": "case-authoring-console"
     },
     {
@@ -319,6 +343,18 @@
       "to": "contracts/system/case-authoring",
       "kind": "covers",
       "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-authoring-console",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "covers",
+      "at": "covers[8]"
     },
     {
       "from": "epic/cases-list-and-detail",
@@ -889,6 +925,18 @@
       "to": "domain/glossary/outcome",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "task/case-authoring-console/every-empty-collection-states-so",
+      "to": "scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-authoring-console/every-empty-collection-states-so",
+      "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/cases-list-and-detail/case-detail-timeline",
