@@ -29,6 +29,14 @@ import type { SaveStatus } from "../hooks/use-edit-draft-version-form";
  * (a real `<button>`, which Select's trigger is) as the label's target --
  * and it works identically for Input and Textarea, so every field uses it
  * rather than mixing two association styles for no functional reason.
+ *
+ * task/version-editor/view-released-version-read-only adds `isReadOnly`
+ * (optional, defaulting to `false`): every field here already renders
+ * `disabled` through `isBlocked` for a released version's own load, but that
+ * alone still mounted this same form's own Save control, merely inert --
+ * `isReadOnly` omits it outright instead, and its own onSubmit/onBlur wiring
+ * with it, so a released version's read-only render carries no control that
+ * could change it.
  */
 
 export type CaseVersionEditorFormFieldsProps = {
@@ -41,6 +49,20 @@ export type CaseVersionEditorFormFieldsProps = {
   readonly recipientOptions: GlossaryVocabularyOptions;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
   readonly onFieldBlur: () => void;
+  /**
+   * task/version-editor/view-released-version-read-only's own flag
+   * (useEditDraftVersionForm's own `isReadOnly`, "ready" phase): every field
+   * above already renders `disabled` once `isBlocked` is true, which a
+   * released version's own load already sets -- but that alone still mounts
+   * this form's own Save control, merely inert (this project's own inventory
+   * risk on this exact component: "no distinct 'read-only, no actions at
+   * all' rendering path"). `true` here omits the Save control and its own
+   * onSubmit/onBlur wiring outright, satisfying this task's own criterion
+   * ("shows no Save … control") rather than only disabling it. Defaults to
+   * `false` so every other caller (the draft-editing and blank-form call
+   * sites, neither of which sets it) renders exactly as before.
+   */
+  readonly isReadOnly?: boolean;
 };
 
 const CONSOLIDATION_REGISTER_OPTIONS: SelectOption[] = CONSOLIDATION_REGISTERS.map(
@@ -96,6 +118,7 @@ export function CaseVersionEditorFormFields({
   recipientOptions,
   onSubmit,
   onFieldBlur,
+  isReadOnly = false,
 }: CaseVersionEditorFormFieldsProps): JSX.Element {
   const {
     register,
@@ -104,7 +127,11 @@ export function CaseVersionEditorFormFields({
   } = form;
 
   return (
-    <form onSubmit={onSubmit} onBlur={onFieldBlur} noValidate>
+    <form
+      onSubmit={isReadOnly ? undefined : onSubmit}
+      onBlur={isReadOnly ? undefined : onFieldBlur}
+      noValidate
+    >
       <FormField label="Title" errorId="title-error" error={errors.title?.message}>
         <Input
           {...register("title")}
@@ -231,19 +258,21 @@ export function CaseVersionEditorFormFields({
         </FormField>
       </div>
 
-      <div className="flex items-center justify-between">
-        {/*
-          ACC-07: this text changes with no page navigation when a save
-          completes, so its own change is announced through aria-live rather
-          than left to a sighted user's own glance at the footer.
-        */}
-        <span aria-live="polite" className="text-sm text-muted-foreground">
-          {savedAt != null ? `Last saved ${savedAt}` : null}
-        </span>
-        <Button type="submit" disabled={isBlocked || status === "clean"}>
-          Save changes
-        </Button>
-      </div>
+      {!isReadOnly && (
+        <div className="flex items-center justify-between">
+          {/*
+            ACC-07: this text changes with no page navigation when a save
+            completes, so its own change is announced through aria-live
+            rather than left to a sighted user's own glance at the footer.
+          */}
+          <span aria-live="polite" className="text-sm text-muted-foreground">
+            {savedAt != null ? `Last saved ${savedAt}` : null}
+          </span>
+          <Button type="submit" disabled={isBlocked || status === "clean"}>
+            Save changes
+          </Button>
+        </div>
+      )}
     </form>
   );
 }

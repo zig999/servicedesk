@@ -13,16 +13,30 @@
 import type { CaseVersionFormValues } from "./case-version-form-schema";
 
 /**
- * The one field of read-case.dto.ts's own manifestEntrySchema the pre-Release
- * checklist needs (task/version-editor/release-draft-version, criterion 2):
- * each entry's own hypothesis-revision's collected concept names
- * (domain/knowledge/manifest-entry, domain/knowledge/hypothesis-revision).
- * Position and the revision's own criterion/resolution are left unread,
- * matching use-manifest-builder.ts's own narrower-than-the-full-DTO
- * projection convention for this same endpoint.
+ * The fields of read-case.dto.ts's own manifestEntrySchema this app's
+ * readers of a whole version's manifest need (domain/knowledge/manifest-entry,
+ * domain/knowledge/hypothesis-revision): the entry's own declared `position`,
+ * its hypothesis's own stable identity (`hypothesis.name`), the referenced
+ * revision's own `revision` number and `criterion`, and (task/version-editor/
+ * release-draft-version, criterion 2) that same revision's own collected
+ * concept names (`collects`). Widened from a `collects`-only projection
+ * (task/version-editor/view-released-version-read-only, this app's own
+ * inventory risk on this exact type) so the read-only render's own manifest
+ * listing (criterion 6: position, hypothesis name, revision, criterion) can
+ * read it from this one shared shape rather than a second, hand-declared
+ * type -- `resolution` stays unread, matching use-manifest-builder.ts's own
+ * independently declared, narrower-than-the-full-DTO projection for this
+ * same endpoint (that hook needs neither `criterion` nor `collects`, so it
+ * keeps its own smaller type rather than importing this wider one).
  */
 export type CaseVersionManifestEntry = {
+  readonly position: number;
   readonly hypothesis_revision: {
+    readonly hypothesis: {
+      readonly name: string;
+    };
+    readonly revision: number;
+    readonly criterion: string;
     readonly collects: readonly string[];
   };
 };

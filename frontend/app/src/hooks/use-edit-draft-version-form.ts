@@ -48,6 +48,15 @@
  * below reads `record.state === "draft"` exactly, never treating "unknown"
  * as "draft"), rather than the hook guessing a fact it does not actually
  * hold for that one call site.
+ *
+ * task/version-editor/view-released-version-read-only adds two more
+ * optional "ready"-phase fields, for the same reason `release`/`discard`
+ * above are optional (use-new-draft-version-form.ts's own blank-form
+ * literal supplies neither): `isReadOnly` (`record.state === "released"`)
+ * and `manifest` (`record.manifest`, unchanged) -- the fact and the data
+ * this hook's own callers now need to render a released version's entire
+ * stored content read-only, with no control that could change it, reusing
+ * the exact GET this hook already issues rather than a second call.
  */
 
 import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
@@ -68,7 +77,7 @@ import {
   type GlossaryVocabularyOptions,
 } from "./use-glossary-vocabulary";
 import { useConceptOptions } from "./use-concept-options";
-import type { CaseVersionRecord } from "../services/case-version-record";
+import type { CaseVersionManifestEntry, CaseVersionRecord } from "../services/case-version-record";
 import {
   buildReleaseChecklist,
   extractReleaseViolations,
@@ -116,6 +125,33 @@ export type EditDraftVersionFormState =
        * do not apply to them.
        */
       readonly isFirstVersion?: boolean;
+      /**
+       * task/version-editor/view-released-version-read-only's own flag:
+       * `true` only once the loaded record's own state is "released" --
+       * deliberately distinct from `isBlocked` above, which also reads
+       * `true` mid-save, mid-conflict, or the instant this same session's
+       * own Release mutation succeeds (isReleased), before the invalidated
+       * ["case-version", slug, version] query has necessarily refetched a
+       * record whose own `state` field agrees. A caller reads this flag to
+       * hide the Save control outright (this task's own criterion: "shows
+       * no Save … control") rather than merely disable it, which `isBlocked`
+       * already does for every one of those other cases. Absent for
+       * use-new-draft-version-form.ts's own blank-form "ready" object, for
+       * the same reason `release`/`discard`/`isFirstVersion` above stay
+       * absent there.
+       */
+      readonly isReadOnly?: boolean;
+      /**
+       * Every manifest entry the loaded record's own read carries, in the
+       * exact order GET .../versions/{version} returned them
+       * (domain/knowledge/manifest-entry) -- present only once the record
+       * was read back through the real GET (case-version-record.ts's own
+       * header comment on why `manifest` itself is optional there), so
+       * absent for the same call sites `isReadOnly` above is absent for.
+       * Read by the read-only render's own manifest listing
+       * (task/version-editor/view-released-version-read-only, criterion 6).
+       */
+      readonly manifest?: readonly CaseVersionManifestEntry[];
     };
 
 /**
@@ -181,9 +217,7 @@ export function useEditDraftVersionForm(
   // the instant a 200 arrives (criterion 5) -- independent of whichever
   // query below eventually refetches, so isBlocked further down does not
   // wait on that refetch to disable every field.
-  const [isReleaseDialogOpen, setIsReleaseDialogOpen] = useState(false);
-  const [releaseViolations, setReleaseViolations] = useState<readonly string[] | null>(null);
-  const [isReleased, setIsReleased] = useState(false);
+  const [isReleaseDialogOpen, setIsReleaseDialogOpen] = useState(false); const [releaseViolations, setReleaseViolations] = useState<readonly string[] | null>(null); const [isReleased, setIsReleased] = useState(false);
 
   // task/version-editor/discard-draft-version's own local state: the
   // Dialog's open/closed flag, the confirmation field's own typed value
@@ -211,9 +245,7 @@ export function useEditDraftVersionForm(
     enabled: version !== null && seedRecord === undefined,
     initialData: seedRecord,
   });
-  const outcomeOptions = useGlossaryVocabularyOptions("outcome");
-  const actionOptions = useGlossaryVocabularyOptions("action");
-  const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  const outcomeOptions = useGlossaryVocabularyOptions("outcome"); const actionOptions = useGlossaryVocabularyOptions("action"); const recipientOptions = useGlossaryVocabularyOptions("recipient");
   // The pre-Release checklist's third item (criterion 2) re-reads this exact
   // hook Onda 4 already established for this purpose (use-concept-options.ts's
   // own header comment). Its own load or error state deliberately does not
@@ -494,6 +526,13 @@ export function useEditDraftVersionForm(
         void submit();
       }
     },
+    // task/version-editor/view-released-version-read-only, criteria 4-6:
+    // the fact and the data its own read-only render composes CaseVersionEditorFormFields
+    // and its own manifest listing from -- `record.state` itself, never
+    // `isBlocked`/`isReleased`, is what this task's own criteria describe
+    // ("Loading a version whose state is released renders …").
+    isReadOnly: record.state === "released",
+    manifest: record.manifest,
     release: {
       version,
       canRelease,

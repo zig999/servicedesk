@@ -232,6 +232,14 @@
       "task": "task/version-editor/seed-new-draft-from-latest-released"
     },
     {
+      "id": "implementation/version-editor/view-released-version-read-only",
+      "kind": "implementation",
+      "file": "implementation/version-editor/view-released-version-read-only.md",
+      "title": "View a released case version read-only",
+      "summary": "Adds a \"View\" action to a released row on Case Detail's Versions tab and a distinct, control-free read-only render (fields plus manifest) to the Version Editor for a released version, reusing the exact GET the editor already issues.",
+      "task": "task/version-editor/view-released-version-read-only"
+    },
+    {
       "id": "proof/case-authoring-console/every-async-update-is-announced",
       "kind": "proof",
       "file": "proof/case-authoring-console/every-async-update-is-announced.md",
@@ -446,6 +454,14 @@
       "title": "Proof for seeding New Draft's blank form from the case's latest released version",
       "summary": "Nine new tests across two spec files prove the four criteria of task/version-editor/seed-new-draft-from-latest-released and the delivery's own disclosed inferences (highest-numbered released version, no premature blank-form flash), plus a required compatibility fix -- a default \"no released version\" GET .../versions response added to new-case-draft-screen.test-support.ts's own baseHandlers(), and two pre-existing new-case-draft-screen-conflict.spec.ts fixtures updated to also answer the seeding read the widened hook now issues unconditionally on mount -- without which the pre-existing NewCaseDraftScreen suite (written for new-draft-creation, not touched by this task's own implementation record) would fail under the widened hook.",
       "task": "task/version-editor/seed-new-draft-from-latest-released"
+    },
+    {
+      "id": "proof/version-editor/view-released-version-read-only",
+      "kind": "proof",
+      "file": "proof/version-editor/view-released-version-read-only.md",
+      "title": "Proof for viewing a released case version read-only",
+      "summary": "Tests the Versions tab's new \"View\" action on a released row, its absence-preserving behavior on a draft row, and the Version Editor's control-free read-only render of a released version's fields and manifest.",
+      "task": "task/version-editor/view-released-version-read-only"
     },
     {
       "id": "review/cases-list-and-detail-onda-2",
@@ -1513,6 +1529,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/version-editor/view-released-version-read-only",
+      "to": "task/version-editor/view-released-version-read-only",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/case-authoring-console/every-async-update-is-announced",
       "to": "implementation/case-authoring-console/every-async-update-is-announced",
       "kind": "proves",
@@ -1671,6 +1729,12 @@
     {
       "from": "proof/version-editor/seed-new-draft-from-latest-released",
       "to": "implementation/version-editor/seed-new-draft-from-latest-released",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/version-editor/view-released-version-read-only",
+      "to": "implementation/version-editor/view-released-version-read-only",
       "kind": "proves",
       "at": "the path"
     },
