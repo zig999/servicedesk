@@ -13,7 +13,7 @@
       "kind": "epic",
       "file": "epic/cases-list-and-detail.md",
       "title": "Cases List and Case Detail",
-      "summary": "The two real, data-driven read screens Onda 2 lands over Onda 1's foundation -- a searchable list of every case and a per-case version timeline -- replacing CasesListPlaceholder and CaseDetailPlaceholder. Originating a new draft is deferred to Onda 3 (see Notes)."
+      "summary": "The two real, data-driven read screens Onda 2 lands over Onda 1's foundation -- a searchable list of every case and a per-case version timeline -- plus a case-attributes-at-a-glance view reading the case's current version whole. Originating a new draft is deferred to Onda 3 (see Notes)."
     },
     {
       "id": "epic/frontend-console-foundation",
@@ -41,7 +41,14 @@
       "kind": "epic",
       "file": "epic/version-editor.md",
       "title": "Version Editor",
-      "summary": "The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling), the New Draft origination flow, and the two terminal actions -- Release (POST, a client-side best-effort checklist before the click and every backend violation rendered verbatim after it) and Discard (DELETE, a slug-typed destructive confirmation) -- that close a draft's lifecycle from the same screen."
+      "summary": "The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling), the New Draft origination flow, the two terminal actions -- Release and Discard -- that close a draft's lifecycle from the same screen, a read-only render of a released version, and seeding a new draft's blank form from the case's latest released version."
+    },
+    {
+      "id": "inventory/case-attribute-management-surface",
+      "kind": "inventory",
+      "file": "inventory/case-attribute-management-surface.md",
+      "title": "Case attribute management surface",
+      "summary": "The Version Editor, Case Detail and New Draft flows in frontend/app/src/routes and their supporting hooks/services, the area onda-7's three capabilities land in."
     },
     {
       "id": "inventory/frontend-app-bootstrap-onda-1",
@@ -131,6 +138,14 @@
       "title": "Tailwind scans TUI's own submodule source, not only frontend/app's own files",
       "summary": "Adds an explicit Tailwind v4 `@source` directive so frontend/app's own build generates a CSS rule for every utility class TUI's component source (frontend/tui/frontend/src, a separate git submodule) uses internally, even where frontend/app's own source never repeats that class name verbatim -- closing a gap a curator found by actually running the delivered system.",
       "epic": "case-authoring-console"
+    },
+    {
+      "id": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "kind": "task",
+      "file": "task/cases-list-and-detail/case-attributes-at-a-glance.md",
+      "title": "Case attributes at a glance",
+      "summary": "Adds a third view on Case Detail surfacing the case's current version's own declared attributes, with one state-sensitive action addressed to that version, and an explicit state for when that version's own whole read is refused.",
+      "epic": "cases-list-and-detail"
     },
     {
       "id": "task/cases-list-and-detail/case-detail-timeline",
@@ -299,6 +314,22 @@
       "title": "Release a draft case version",
       "summary": "Adds the \"Release…\" control to the Version Editor, opening an in-place confirmation Dialog with a client-computed pre-release checklist, then turning the draft permanently read-only via POST .../release or rendering every violation the backend's own 422 response names.",
       "epic": "version-editor"
+    },
+    {
+      "id": "task/version-editor/seed-new-draft-from-latest-released",
+      "kind": "task",
+      "file": "task/version-editor/seed-new-draft-from-latest-released.md",
+      "title": "Seed New Draft from the case's latest released version",
+      "summary": "Changes the New Draft flow to pre-populate its blank form from the case's latest released version's own title, when_to_use, subject, fallback and consolidation_register, and to pass consolidation_register plus source_version explicitly in the create-draft POST.",
+      "epic": "version-editor"
+    },
+    {
+      "id": "task/version-editor/view-released-version-read-only",
+      "kind": "task",
+      "file": "task/version-editor/view-released-version-read-only.md",
+      "title": "View a released case version read-only",
+      "summary": "Adds a \"View\" action to a released row on Case Detail's Versions tab and, on the Version Editor screen, renders a released version's entire stored content -- fields and manifest -- disabled with no Save, Release or Discard control.",
+      "epic": "version-editor"
     }
   ],
   "edges": [
@@ -364,45 +395,63 @@
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "to": "rules/knowledge/a-case-version-is-written-once",
       "kind": "covers",
       "at": "covers[10]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/every-case-version-remains-readable",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
       "kind": "covers",
       "at": "covers[11]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "constraints/a-case-is-read-whole",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
       "kind": "covers",
       "at": "covers[12]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/validation-runs-at-every-read",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
       "kind": "covers",
       "at": "covers[13]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "to": "rules/knowledge/every-case-version-remains-readable",
       "kind": "covers",
       "at": "covers[14]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "domain/knowledge/case-summary",
+      "to": "constraints/a-case-is-read-whole",
       "kind": "covers",
       "at": "covers[15]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "to": "rules/knowledge/validation-runs-at-every-read",
       "kind": "covers",
       "at": "covers[16]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/cases-list-and-detail",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[19]"
     },
     {
       "from": "epic/cases-list-and-detail",
@@ -418,43 +467,43 @@
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "contracts/knowledge/case-lifecycle",
+      "to": "domain/knowledge/consolidation-register",
       "kind": "covers",
       "at": "covers[3]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "contracts/knowledge/case-query",
+      "to": "domain/knowledge/resolution",
       "kind": "covers",
       "at": "covers[4]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "contracts/system/case-authoring",
+      "to": "domain/knowledge/referral",
       "kind": "covers",
       "at": "covers[5]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "to": "contracts/knowledge/case-lifecycle",
       "kind": "covers",
       "at": "covers[6]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-case-version-is-written-once",
+      "to": "contracts/knowledge/case-query",
       "kind": "covers",
       "at": "covers[7]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "to": "contracts/system/case-authoring",
       "kind": "covers",
       "at": "covers[8]"
     },
     {
       "from": "epic/cases-list-and-detail",
-      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
       "kind": "covers",
       "at": "covers[9]"
     },
@@ -880,6 +929,12 @@
     },
     {
       "from": "epic/version-editor",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/version-editor",
       "to": "domain/knowledge/case-version-state",
       "kind": "covers",
       "at": "covers[2]"
@@ -937,6 +992,96 @@
       "to": "rules/knowledge/a-release-refusal-with-no-named-violation-says-so",
       "kind": "implements",
       "at": "implements[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "task/version-editor/new-draft-creation",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-summary",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/cases-list-and-detail/case-attributes-at-a-glance",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[9]"
     },
     {
       "from": "task/cases-list-and-detail/case-detail-timeline",
@@ -1643,6 +1788,174 @@
     {
       "from": "task/version-editor/release-draft-version",
       "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "task/version-editor/new-draft-creation",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/version-editor/seed-new-draft-from-latest-released",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "task/cases-list-and-detail/case-detail-timeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "task/version-editor/edit-draft-version",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/glossary/outcome",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/glossary/action",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/version-editor/view-released-version-read-only",
+      "to": "domain/glossary/recipient",
       "kind": "implements",
       "at": "implements[9]"
     }

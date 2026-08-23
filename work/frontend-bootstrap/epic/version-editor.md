@@ -1,6 +1,6 @@
 ---
 title: Version Editor
-summary: The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling), the New Draft origination flow, and the two terminal actions -- Release (POST, a client-side best-effort checklist before the click and every backend violation rendered verbatim after it) and Discard (DELETE, a slug-typed destructive confirmation) -- that close a draft's lifecycle from the same screen.
+summary: The full-replace draft-editing form (PATCH, with its own clean/dirty/saving/conflict state machine and 404/409 handling), the New Draft origination flow, the two terminal actions -- Release and Discard -- that close a draft's lifecycle from the same screen, a read-only render of a released version, and seeding a new draft's blank form from the case's latest released version.
 rationale: >-
   I cut a new epic instead of evolving cases-list-and-detail or folding into
   case-authoring-console because this onda's territory -- resolution, referral and the four
@@ -44,6 +44,30 @@ rationale: >-
   own terms and the collected concepts' subject-acceptance (the scope's own finding #3), never a
   manifest entry's own resolution completeness, which authoring-time validation in the other epic
   already owns.
+
+  Onda 7 adds two tasks, both landing here rather than in a new epic: viewing a released version
+  read-only extends edit-draft-version's own screen and hook (its "ready" union already carries
+  release/discard as optional exactly so a read-only render can return the same literal without
+  them), and seeding New Draft from the case's latest released version extends new-draft-creation's
+  own blank-form flow -- neither introduces a domain this epic does not already claim. I bundled
+  each capability's entry-point change (the Versions-tab "View" action; the pre-populated form) and
+  its own destination behavior into one task apiece, the same way new-draft-creation already
+  bundled its own button-visibility, blank-form trigger and POST handling under one reason to
+  change ("how a curator starts a new version") -- here the reason is "how a curator views a
+  released version" and "what a new draft starts holding," respectively, each a single falsifiable
+  outcome spanning its own entry point and destination. rules/knowledge/a-new-drafts-manifest-is-
+  copied-from-an-existing-version newly joins this epic's covers: the seeding task is the first to
+  have the frontend itself name (or, for a case's first-ever draft, deliberately omit)
+  source_version in the create-draft POST body, exercising the rule's naming/defaulting clause
+  directly rather than leaving it entirely to the backend's own default. domain/knowledge/hypothesis,
+  domain/knowledge/hypothesis-revision and rules/knowledge/hypotheses-are-ordered-by-precedence stay
+  out even though the read-only render lists each manifest entry's hypothesis name, revision and
+  criterion: no criterion here tests a hypothesis's own name uniqueness, a revision's own numbering
+  or immutability, or that the declared order is the precedence the experts affirmed -- it renders
+  already-validated, already-ordered data exactly as the backend returns it, the same facts
+  manifest-hypothesis-authoring already fully covers with its own tasks. None of this onda's own
+  uncovered entries move: neither new task originates a case, contends over the case-version-number
+  counter, revalidates a read against every validator rule, or reads a capability's own registry.
 covers:
   - domain/knowledge/case
   - domain/knowledge/case-version
@@ -71,46 +95,45 @@ covers:
   - rules/knowledge/only-a-draft-case-version-may-be-discarded
   - rules/knowledge/validation-runs-at-every-read
   - rules/knowledge/a-slug-identifies-one-case
+  - rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
 uncovered:
   - node: rules/knowledge/a-case-version-number-is-never-reused
     why: >-
       Discard removes the draft version, but no criterion in this epic observes or asserts that its
       number is never reissued to a later draft -- proving that would require originating a
       subsequent draft afterward and inspecting the version number the backend assigns it, which no
-      task here does. The backend alone guarantees the invariant; nothing in this epic exercises it.
+      task here does, including Onda 7's own seeding task, whose own criteria stop at the POST body
+      it sends rather than the number the backend returns. The backend alone guarantees the
+      invariant; nothing in this epic exercises it.
   - node: rules/knowledge/validation-runs-at-every-read
     why: >-
-      No task's criteria assert or exercise read-time revalidation of a stored case version, in this
-      onda or the ones before it. Release's own reload-on-409 behavior re-fetches the version's
-      current state but asserts nothing about a stored version reading back as a case only while
-      every validator rule still holds.
+      No task's criteria assert or exercise read-time revalidation of a stored case version. Onda
+      7's read-only render loads only released versions, which stay valid forever once released, and
+      its own seeding task reads a released version for the same reason -- neither ever exercises the
+      refusal branch this rule names.
   - node: rules/knowledge/a-slug-identifies-one-case
     why: >-
-      Every task in this epic, including this onda's release and discard, acts against an existing
-      case's own already-known slug, read from the route -- discard's own typed-confirmation compares
-      that typed text to the same known slug, never asserting uniqueness against any other case. No
-      task in this epic originates a brand-new case identity.
+      Every task in this epic, including Onda 7's own two, acts against an existing case's own
+      already-known slug, read from the route. No task in this epic originates a brand-new case
+      identity.
   - node: rules/knowledge/every-collected-concept-has-a-read-only-capability
     why: >-
-      The scope's own finding #3 excludes this rule from the pre-release checklist by name: verifying
-      it would require reading GET /v1/capabilities, a domain (domain/integration/capability) no
-      task in this initiative has touched -- that is Onda 6's own territory. A real capability
-      failure surfaces only in the real POST's own 422 response, rendered the same generic way as
-      every other violation, never as a checklist item computed ahead of the click.
+      No task in this epic reads GET /v1/capabilities, a domain (domain/integration/capability) no
+      task in this initiative has touched -- Onda 6's own territory.
 sources:
   - intake/onda-3-scope.md
   - intake/onda-5-scope.md
+  - intake/onda-7-scope.md
 ---
 
 ## What it is
 The Version Editor screen that replaces CaseVersionPlaceholder, editing an existing draft's full content via full-replace PATCH.
-The New Draft origination flow, sharing the same field form the editor already offers for editing.
+The New Draft origination flow, sharing the same field form the editor already offers for editing, now seeded from the case's latest released version.
 The clean/dirty/saving/conflict UI state machine section 4 of the proposal describes, since the backend offers no optimistic concurrency of its own.
-The Release confirmation section 2.6 of the proposal describes: an in-place TUI Dialog listing a client-computed pre-release checklist, POST .../release, and every 422 violation the backend's own response names rendered verbatim on failure.
-The Discard confirmation section 2.7 of the proposal describes: an in-place TUI Dialog requiring the case's own slug typed to confirm before DELETE .../versions/{version}.
+The Release confirmation and Discard confirmation the earlier ondas describe.
+A read-only render of a released version, reached from a new "View" action on Case Detail's Versions tab.
 
 ## Notes
-Manifest Builder (the wireframe's "manifest holds N hypotheses [open →]" navigation link) stays out of this epic, delivered by manifest-hypothesis-authoring instead.
-The inventory's own risk on GET /v1/cases/:slug/versions/:version's manifest.min(1) response constraint is answered inside the new-draft-creation task, not here.
-Release and Discard, once deferred here to Onda 5, now ship in this same epic, closing both deferrals this epic's own earlier cut named.
-The two routes wired since Onda 1 ("/cases/$slug/versions/$version/release" and ".../discard", VersionReleasePlaceholder/VersionDiscardPlaceholder) stay exactly as unreachable as before: this epic's Dialog-in-place decision means neither task points a Link or a button at them.
+Manifest Builder stays out of this epic, delivered by manifest-hypothesis-authoring instead.
+Release and Discard, once deferred, now ship in this same epic.
+The two placeholder routes stay exactly as unreachable as before.
