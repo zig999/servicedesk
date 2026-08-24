@@ -41,6 +41,20 @@ export function putCallCount(fetchMock: Mock<FetchFn>): number {
   return requestsWithMethod(fetchMock, "PUT").length;
 }
 
+/**
+ * Every call this fetch stub recorded at exactly `path`, whatever method it carried --
+ * mirroring connector-test-panel.test-support.ts's own callsToPath. Scoping a count to one path
+ * is what lets a test over this screen's own list-read stay true once a sibling section mounted
+ * inside the same dialog (e.g. ConnectorTestPanel) issues its own, unrelated reads: the total
+ * call count across the whole dialog is no longer a fact this screen's own criteria state, but
+ * the call count at this screen's own CONNECTORS_PATH still is.
+ */
+export function callsToPath(fetchMock: Mock<FetchFn>, path: string): readonly RecordedCall[] {
+  return fetchMock.mock.calls
+    .filter(([input]) => (typeof input === "string" ? input : input.toString()) === path)
+    .map(([input, init]): RecordedCall => [input, init]);
+}
+
 /** The JSON body of the `index`-th PUT call this fetch stub recorded (0 by default -- the first one). */
 export function parsedPutBody(fetchMock: Mock<FetchFn>, index = 0): unknown {
   const rawBody = requestsWithMethod(fetchMock, "PUT")[index]?.[1]?.body;

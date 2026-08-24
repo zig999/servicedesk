@@ -70,7 +70,7 @@
       "kind": "proof",
       "file": "proof/connector-configuration-authoring/connector-configuration-create-edit-form.md",
       "title": "Connector configuration create/edit screen proof",
-      "summary": "Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's criteria and the implementation's own disclosed inferences.",
+      "summary": "Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's criteria and the implementation's own disclosed inferences; the row-Edit no-second-fetch test is now scoped to the connector-configurations list path itself, so it stays true once a sibling Test-panel section reads its own unrelated paths inside the same dialog.",
       "task": "task/connector-configuration-authoring/connector-configuration-create-edit-form"
     }
   ],

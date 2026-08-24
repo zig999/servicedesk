@@ -2,12 +2,14 @@
 title: Connector configuration create/edit screen proof
 summary: Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing
   spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's
-  criteria and the implementation's own disclosed inferences.
+  criteria and the implementation's own disclosed inferences; the row-Edit no-second-fetch test is now
+  scoped to the connector-configurations list path itself, so it stays true once a sibling Test-panel
+  section reads its own unrelated paths inside the same dialog.
 implementation: sha256:8eccafdc5253a79349ce8f520b6540ff7ff1eac6a6900f91caabf4d3106fe38b
 standard:
   at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09
-run: run/connector-configuration-authoring-connector-configuration-create-edit-form-suite
+run: run/connector-configuration-authoring-connector-configuration-create-edit-form-suite-2
 tests:
 - file: src/routes/connector-configurations-screen.spec.ts
   name: renders one row per connector configuration GET /v1/connectors returns, each showing its own connector
@@ -73,9 +75,12 @@ tests:
 - file: src/routes/connector-configurations-screen-form.spec.ts
   name: issues no second network request beyond the initial GET /v1/connectors when a row's own Edit action
     is opened
-  proves: opening Edit pre-fills from the already-loaded row rather than issuing a second fetch
-  fails_when: opening the Edit dialog causes the mocked fetch to be called more than the one time the
-    initial listing already made
+  proves: opening Edit pre-fills from the already-loaded row rather than issuing a second fetch to the
+    connector-configurations list path
+  fails_when: opening the Edit dialog causes the connector-configurations list path (CONNECTORS_PATH)
+    itself to be fetched more than the one time the initial listing already made, counted independently
+    of however many other, unrelated paths a sibling Test-section mounted inside the dialog may legitimately
+    read
 - file: src/routes/connector-configurations-screen-form.spec.ts
   name: renders the connector field disabled while editing, so its identity cannot be changed
   proves: the disclosed inference that connector is disabled (not merely pre-filled) in edit mode
@@ -127,8 +132,8 @@ tests:
 - file: src/routes/connector-configurations-screen-form-save.spec.ts
   name: shows ConnectorConfigurationNotWellFormedError's own message, distinguishable from the generic
     fallback, and keeps the Dialog open
-  proves: 'the disclosed inference: the exact wording of the one new save-failure message resolves to
-    its own distinct UI-state kind and message rather than a generic one'
+  proves: the disclosed inference that the exact wording of the one new save-failure message resolves
+    to its own distinct UI-state kind and message rather than a generic one
   fails_when: the specific message is not shown, the generic message is shown instead, or the Dialog closes
     on this failure
 - file: src/routes/connector-configurations-screen-form-save.spec.ts
@@ -206,4 +211,4 @@ Twenty-nine tests across three new spec files, a shared test-support module, and
 
 ## Notes
 
-None.
+Proof-only re-delivery: the implementation stands unchanged (same digest as before). Task/connector-configuration-authoring/test-connector-debug-panel's own legitimate delivery mounted a Test section inside this screen's own edit-mode Dialog, and that section issues its own two additional reads (capabilities, subject-type vocabulary) when the dialog opens — falsifying the prior proof's total-fetch-call-count assertion on the row-Edit no-second-fetch test. That one test now scopes its assertion to the connector-configurations list path itself (via a new callsToPath test-support helper), which is what this task's own criterion 3 actually requires; no other test in this delivery's file set made the same now-invalid assumption.

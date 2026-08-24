@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import {
   CONNECTORS_PATH,
+  callsToPath,
   connectorConfiguration,
   connectorConfigurationsPage,
   createConnectorConfigurationsFetchStub,
@@ -93,12 +94,12 @@ describe("ConnectorConfigurationsScreen — each row's own Edit action opens the
     });
     await mountConnectorConfigurationsScreen(fetchMock);
     await screen.findByText("deepl-connector");
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(callsToPath(fetchMock, CONNECTORS_PATH)).toHaveLength(1);
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
     await screen.findByRole("dialog");
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(callsToPath(fetchMock, CONNECTORS_PATH)).toHaveLength(1);
   });
 });
 
