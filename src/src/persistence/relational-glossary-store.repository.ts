@@ -38,8 +38,14 @@
 // vitest-global-setup.ts's own seedNonConclusionOutcomes already runs
 // against this exact table, which this task's own investigation found to be
 // this codebase's established way to add what is missing without touching
-// what already exists. The port declares no write operation for concepts,
-// so this store adds none of its own (this task's own ADVISORY note).
+// what already exists. writeConcepts (task/concept-authoring/glossary-store-
+// concept-write) replaces "concepts" and "concept_accepts" whole, the same
+// delete-then-insert-all shape writeTerms already runs for a term
+// vocabulary's own single table, extended here across the two tables one
+// concept spans: concept_accepts rows are deleted first and inserted last,
+// since every concept_accepts row's own foreign key
+// (migrations/0002-glossary-vocabulary.sql) requires the concepts row it
+// names to already exist.
 //
 // Names no import of 'pg': DatabaseConnection, database-connection.ts's own
 // exported type, and the runStatement/runInTransaction helpers
@@ -60,7 +66,7 @@
 // statement below reads the same way no matter which path runs it.
 import { GlossaryStoreError } from '../errors/glossary-store.error.js';
 import type { IGlossaryStore } from '../glossary/glossary-store.port.js';
-import type { ConceptRegistration, GlossaryTerm, TermVocabulary } from '../glossary/terms.js';
+import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../glossary/terms.js';
 import { runInTransaction, runStatement, type IQueryable, type IStatement } from './database-access.js';
 import type { DatabaseConnection } from './database-connection.js';
 
@@ -98,7 +104,9 @@ const CONCEPT_ACCEPTS_TABLE = 'public.concept_accepts';
  * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome);
  * every concept lives in one row of "concepts" plus one row of
  * "concept_accepts" per subject type it accepts, read fresh the same way
- * (criterion 2).
+ * (criterion 2); writeConcepts replaces every concept the two tables
+ * together hold with exactly the given set, inside one transaction
+ * (task/concept-authoring/glossary-store-concept-write's own criteria).
  */
 export class RelationalGlossaryStore implements IGlossaryStore {
   public constructor(private readonly connection: DatabaseConnection) {}
@@ -145,6 +153,32 @@ export class RelationalGlossaryStore implements IGlossaryStore {
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => readWholeConcepts(tx));
   }
+
+  /**
+   * Replaces every concept "concepts" and "concept_accepts" together hold
+   * with exactly the given set, as one unit of work: the existing rows are
+   * gone and the new ones are all present, or neither happened (EDG-05, the
+   * same all-or-nothing unit writeTerms already runs for a single table).
+   * concept_accepts is cleared before concepts, and concepts is repopulated
+   * before concept_accepts, since a concept_accepts row's own foreign key
+   * requires the concepts row it names to already exist
+   * (migrations/0002-glossary-vocabulary.sql). A given concept's name that
+   * the prior holding also carried is not a second entry afterward: the
+   * whole prior content of both tables is gone before any of the given set
+   * is inserted (criterion 1, criterion 2, criterion 3).
+   */
+  public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
+      await runStatement(tx, { text: `DELETE FROM ${CONCEPT_ACCEPTS_TABLE}` }, raiseWriteFailure);
+      await runStatement(tx, { text: `DELETE FROM ${CONCEPTS_TABLE}` }, raiseWriteFailure);
+      for (const concept of concepts) {
+        await runStatement(tx, insertConceptStatement(concept), raiseWriteFailure);
+        for (const subjectType of concept.accepts) {
+          await runStatement(tx, insertConceptAcceptStatement(concept.name, subjectType), raiseWriteFailure);
+        }
+      }
+    });
+  }
 }
 
 /** The one INSERT every kept and incoming term runs through writeTerms' own whole replace. */
@@ -155,6 +189,19 @@ function insertTermStatement(table: string, term: GlossaryTerm): IStatement {
 /** The one idempotent INSERT insertMissingTerms runs per given term: a no-op where the vocabulary's own primary key (name) already holds it, an ordinary insert otherwise. */
 function insertMissingTermStatement(table: string, term: GlossaryTerm): IStatement {
   return { text: `INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, params: [term.name] };
+}
+
+/** The one INSERT each given concept runs through writeConcepts' own whole replace, carrying every field the port method declares (criterion 3): its name and its ttl. */
+function insertConceptStatement(concept: Concept): IStatement {
+  return { text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl) VALUES ($1, $2)`, params: [concept.name, concept.ttl] };
+}
+
+/** The one INSERT each subject type a given concept accepts runs through writeConcepts' own whole replace, carrying the "accepts" field the port method declares (criterion 3). */
+function insertConceptAcceptStatement(conceptName: string, subjectTypeName: string): IStatement {
+  return {
+    text: `INSERT INTO ${CONCEPT_ACCEPTS_TABLE} (concept_name, subject_type_name) VALUES ($1, $2)`,
+    params: [conceptName, subjectTypeName],
+  };
 }
 
 /** Reads "concepts" and "concept_accepts" through the one connection the caller's own transaction checked out, and assembles them into the shape readConcepts promises. */

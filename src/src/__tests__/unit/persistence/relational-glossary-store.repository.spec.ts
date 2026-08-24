@@ -281,3 +281,37 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toBeInstanceOf(GlossaryStoreError);
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
+
+// ---------------------------------------------------------------- task/concept-authoring/glossary-store-concept-write, criterion 3
+
+it("inserts each given concept's own name and ttl into concepts, and no concept_accepts row where it accepts nothing", async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const { connection } = fakeTransactionConnection(async (text, params) => {
+    recorded.push({ text, params });
+    return { rows: [] };
+  });
+  const store = new RelationalGlossaryStore(connection);
+
+  await store.writeConcepts([{ name: 'a-concept', accepts: [], ttl: 120 }]);
+
+  const conceptInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.concepts'));
+  expect(conceptInsert?.params).toEqual(['a-concept', 120]);
+  expect(recorded.filter((entry) => entry.text.includes('INSERT INTO public.concept_accepts'))).toEqual([]);
+});
+
+it('inserts one concept_accepts row per subject type the given concept accepts, each carrying that concept\'s own name', async () => {
+  const recorded: { text: string; params?: readonly unknown[] }[] = [];
+  const { connection } = fakeTransactionConnection(async (text, params) => {
+    recorded.push({ text, params });
+    return { rows: [] };
+  });
+  const store = new RelationalGlossaryStore(connection);
+
+  await store.writeConcepts([{ name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 60 }]);
+
+  const acceptInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO public.concept_accepts'));
+  expect(acceptInserts.map((entry) => entry.params)).toEqual([
+    ['a-concept', 'a-subject-type'],
+    ['a-concept', 'another-subject-type'],
+  ]);
+});

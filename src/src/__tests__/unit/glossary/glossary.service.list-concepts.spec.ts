@@ -9,7 +9,7 @@ import { expect, it } from 'vitest';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
-import type { ConceptRegistration, GlossaryTerm } from '../../../glossary/terms.js';
+import type { Concept, ConceptRegistration, GlossaryTerm } from '../../../glossary/terms.js';
 
 /**
  * The default the criterion states in its own words — sixty seconds — spelled
@@ -42,6 +42,8 @@ class ConceptOnlyGlossaryStore implements IGlossaryStore {
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
     return this.concepts;
   }
+
+  public async writeConcepts(_concepts: readonly Concept[]): Promise<void> {}
 }
 
 /** Builds five distinct concept registrations, named a through e, each ttl-less. */

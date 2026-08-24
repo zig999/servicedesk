@@ -1,4 +1,4 @@
-import type { ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
+import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from './terms.js';
 
 /**
  * The port through which the glossary's records reach their persistence.
@@ -27,4 +27,22 @@ export interface IGlossaryStore {
 
   /** Answers every persisted concept registration — ttl absent where the registration stated none. */
   readConcepts(): Promise<readonly ConceptRegistration[]>;
+
+  /**
+   * Replaces the glossary's persisted concept registrations, whole: a
+   * concept named at a name none of the given concepts holds is gone after
+   * this call, and every given concept stands exactly as given — creating
+   * one at a name the glossary did not yet hold, or replacing one in place
+   * at a name it already held, according to whether the caller's own given
+   * set carries that name (domain/glossary/concept,
+   * contracts/glossary/glossary-authoring). Mirrors writeTerms' own
+   * whole-replace shape for the term vocabularies, and
+   * ICapabilityStore.writeCapabilities' and
+   * IConnectorConfigurationStore.writeConnectorConfigurations' own
+   * whole-replace shape for their registries, so a caller authoring one
+   * concept reads the currently held set, replaces the one entry sharing its
+   * name, and writes the whole resulting set back — never a second entry
+   * for the same name.
+   */
+  writeConcepts(concepts: readonly Concept[]): Promise<void>;
 }

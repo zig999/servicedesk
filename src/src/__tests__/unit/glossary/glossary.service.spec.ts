@@ -7,7 +7,7 @@ import { expect, it } from 'vitest';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
-import type { ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
+import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
 
 /**
  * The default the criterion states in its own words — sixty seconds — spelled
@@ -20,8 +20,11 @@ const SIXTY_SECONDS = 60;
 class InMemoryGlossaryStore implements IGlossaryStore {
   private readonly records = new Map<TermVocabulary, readonly GlossaryTerm[]>();
   private readonly writeTermsBlocked = new Set<TermVocabulary>();
+  private concepts: readonly ConceptRegistration[];
 
-  public constructor(private readonly concepts: readonly ConceptRegistration[] = []) {}
+  public constructor(concepts: readonly ConceptRegistration[] = []) {
+    this.concepts = concepts;
+  }
 
   public async readTerms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
     return this.held(vocabulary);
@@ -51,6 +54,17 @@ class InMemoryGlossaryStore implements IGlossaryStore {
 
   public async readConcepts(): Promise<readonly ConceptRegistration[]> {
     return this.concepts;
+  }
+
+  /**
+   * Replaces the whole held set of concept registrations with exactly the
+   * given concepts, the same whole-replace effect
+   * RelationalGlossaryStore.writeConcepts has for its own two tables —
+   * lets registerConcept's create-or-replace-in-place behavior be observed
+   * through a later readConcepts()/concepts() call, without any filesystem.
+   */
+  public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
+    this.concepts = concepts;
   }
 
   /** What the store now holds for one vocabulary, for asserting what a read persisted. */
@@ -153,6 +167,57 @@ it('holds the default of sixty seconds for a concept whose registration states n
   expect(answered).toEqual([
     { name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
   ]);
+});
+
+// -------------------- task/concept-authoring/glossary-store-concept-write
+
+it('creates a concept with its accepted subject types and its ttl, at a name the glossary does not yet hold', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const registered = await glossary.registerConcept({
+    name: 'a-new-concept',
+    accepts: ['a-subject-type', 'another-subject-type'],
+    ttl: 120,
+  });
+
+  expect(registered).toEqual({ name: 'a-new-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 120 });
+  expect(await store.readConcepts()).toEqual([
+    { name: 'a-new-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 120 },
+  ]);
+});
+
+it('defaults a newly created concept\'s ttl to sixty seconds when its registration states none, the same default a read already applies', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const registered = await glossary.registerConcept({ name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'] });
+
+  expect(registered).toEqual({ name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS });
+});
+
+it('replaces a concept in place at a name the glossary already holds, rather than creating a second entry for it', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-held-concept', accepts: ['an-old-subject-type'], ttl: 90 },
+    { name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60 },
+  ]);
+  const glossary = new GlossaryService(store);
+
+  const registered = await glossary.registerConcept({
+    name: 'a-held-concept',
+    accepts: ['a-new-subject-type'],
+    ttl: 240,
+  });
+
+  expect(registered).toEqual({ name: 'a-held-concept', accepts: ['a-new-subject-type'], ttl: 240 });
+  const persisted = await store.readConcepts();
+  expect(persisted).toHaveLength(2);
+  expect(persisted.filter((concept) => concept.name === 'a-held-concept')).toEqual([
+    { name: 'a-held-concept', accepts: ['a-new-subject-type'], ttl: 240 },
+  ]);
+  expect(persisted).toEqual(
+    expect.arrayContaining([{ name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60 }]),
+  );
 });
 
 it('answers no concepts as an empty list rather than an absence', async () => {

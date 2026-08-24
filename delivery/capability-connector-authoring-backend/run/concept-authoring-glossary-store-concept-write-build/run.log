@@ -1,0 +1,87 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/glossary/glossary-query.port.spec.ts(17,7): error TS2420: Class 'MutableGlossaryStore' incorrectly implements interface 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'MutableGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary-query.port.spec.ts(70,30): error TS2345: Argument of type 'MutableGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'MutableGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(27,7): error TS2420: Class 'ConceptOnlyGlossaryStore' incorrectly implements interface 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(57,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(75,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(93,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(102,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(113,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(127,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts(142,40): error TS2345: Argument of type 'ConceptOnlyGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'ConceptOnlyGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(20,7): error TS2420: Class 'InMemoryGlossaryStore' incorrectly implements interface 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(87,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(101,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(114,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(126,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(138,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(149,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(160,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(169,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(181,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(192,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(217,42): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(238,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(249,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(265,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(279,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(296,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(311,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(321,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(330,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(343,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(354,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+src/__tests__/unit/glossary/glossary.service.spec.ts(365,40): error TS2345: Argument of type 'InMemoryGlossaryStore' is not assignable to parameter of type 'IGlossaryStore'.
+  Property 'writeConcepts' is missing in type 'InMemoryGlossaryStore' but required in type 'IGlossaryStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

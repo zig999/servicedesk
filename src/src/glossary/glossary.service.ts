@@ -6,6 +6,7 @@ import {
   DEFAULT_CONCEPT_TTL_SECONDS,
   NON_CONCLUSION_OUTCOMES,
   type Concept,
+  type ConceptRegistration,
   type GlossaryTerm,
   type TermVocabulary,
 } from './terms.js';
@@ -54,6 +55,33 @@ export class GlossaryService implements IGlossaryQuery {
       accepts: registration.accepts,
       ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
     }));
+  }
+
+  /**
+   * register-concept (contracts/glossary/glossary-authoring): holds one
+   * concept at its own name — creating it where the glossary does not yet
+   * hold that name, or replacing whatever concept already stood at that
+   * name in place, never leaving a second entry for it
+   * (domain/glossary/concept) — its ttl defaulted the same way a read
+   * already defaults it where the registration states none
+   * (rules/knowledge/a-collected-concept-declares-a-ttl). Reads the
+   * currently held set through this.concepts (MNT-03, the same helper
+   * readConcept and listConcepts already reuse), excludes whatever entry
+   * already shares the registered name, and writes the whole resulting set
+   * back through the store's own whole-replace writeConcepts — the same
+   * replace-by-identity shape registerCapability and registerConnector
+   * already run for their own registries.
+   */
+  public async registerConcept(registration: ConceptRegistration): Promise<Concept> {
+    const concept: Concept = {
+      name: registration.name,
+      accepts: registration.accepts,
+      ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+    };
+    const held = await this.concepts();
+    const kept = held.filter((candidate) => candidate.name !== concept.name);
+    await this.store.writeConcepts([...kept, concept]);
+    return concept;
   }
 
   /**

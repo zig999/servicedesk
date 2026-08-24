@@ -10,12 +10,28 @@
       "task": "task/capability-authoring/register-capability-route"
     },
     {
+      "id": "implementation/concept-authoring/glossary-store-concept-write",
+      "kind": "implementation",
+      "file": "implementation/concept-authoring/glossary-store-concept-write.md",
+      "title": "Concept write path on the glossary store",
+      "summary": "Adds a whole-replace concept write method to IGlossaryStore, its RelationalGlossaryStore implementation, and a GlossaryService.registerConcept that authors a concept by name.",
+      "task": "task/concept-authoring/glossary-store-concept-write"
+    },
+    {
       "id": "proof/capability-authoring/register-capability-route",
       "kind": "proof",
       "file": "proof/capability-authoring/register-capability-route.md",
       "title": "Proof for register-capability exposed as a write HTTP route",
       "summary": "HTTP-level tests for PUT /v1/capabilities/{name}/{version} (wiring, status mapping, DTO boundary, no-auth) plus new service-level tests for the schema-well-formedness refusal this task added, together proving the task's seven criteria and excluding the omitted-schema-attribute reading the task's own Notes rules out.",
       "task": "task/capability-authoring/register-capability-route"
+    },
+    {
+      "id": "proof/concept-authoring/glossary-store-concept-write",
+      "kind": "proof",
+      "file": "proof/concept-authoring/glossary-store-concept-write.md",
+      "title": "Proof for the glossary store's concept write path",
+      "summary": "Unit tests for GlossaryService.registerConcept (create, default ttl, replace-in-place) and for RelationalGlossaryStore.writeConcepts' own persisted statements, together proving this task's three criteria.",
+      "task": "task/concept-authoring/glossary-store-concept-write"
     }
   ],
   "edges": [
@@ -74,8 +90,32 @@
       "at": "the path"
     },
     {
+      "from": "implementation/concept-authoring/glossary-store-concept-write",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-authoring/glossary-store-concept-write",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-authoring/glossary-store-concept-write",
+      "to": "task/concept-authoring/glossary-store-concept-write",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-authoring/register-capability-route",
       "to": "implementation/capability-authoring/register-capability-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-authoring/glossary-store-concept-write",
+      "to": "implementation/concept-authoring/glossary-store-concept-write",
       "kind": "proves",
       "at": "the path"
     }

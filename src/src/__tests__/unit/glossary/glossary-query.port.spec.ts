@@ -7,7 +7,7 @@ import { expect, it } from 'vitest';
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
-import type { ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
+import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
 
 /**
  * Stands in for the store boundary: a holding a test can change between two
@@ -62,6 +62,10 @@ class MutableGlossaryStore implements IGlossaryStore {
       throw this.failure;
     }
     return this.concepts;
+  }
+
+  public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
+    this.concepts = concepts;
   }
 }
 
