@@ -672,6 +672,14 @@
       "digest": "sha256:9dc64da49a3ed25dc5d5713971a1f01d8d7565fa2e9d5710f1c85a472889bc5d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configurations.ts",
+          "digest": "sha256:ea93034a5b187115cc9d81e737ba99c71b042f680dde8daf6ddfdf72615d098c"
+        },
+        {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:55f4a8d2d30b83fe370ba0872d8cde2bda4384b828d4a3dd3d9733881ff87a07"
         },
@@ -1718,6 +1726,18 @@
       "digest": "sha256:31857462e8f760445ae45b0f851761c07745195cfab341f38e56e326e3764971",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-connector-configurations.ts",
+          "digest": "sha256:ea93034a5b187115cc9d81e737ba99c71b042f680dde8daf6ddfdf72615d098c"
+        },
+        {
+          "path": "frontend/app/src/services/connector-configuration-form-schema.ts",
+          "digest": "sha256:d707cd7fc63e9b062d54a1fdba2e653f668c877cf4cc8f853378ed4df809d5c7"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:de4b6b6a1a0ff595e7bd19928b6505a43e94cf65fd9d8ccc86a8cc56cac677e9"
         },
@@ -1751,6 +1771,10 @@
       "node": "domain/integration/connector-configuration-registry",
       "digest": "sha256:28ffba3415b410c219dd54735ae3081ea79ef04c6253052f728af8d6321c8535",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:de4b6b6a1a0ff595e7bd19928b6505a43e94cf65fd9d8ccc86a8cc56cac677e9"
@@ -2997,6 +3021,18 @@
       "node": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "digest": "sha256:d5adc549fc025c4173babe3b595b49649109422e9a20e847fccaa5b8cdc6afef",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
+          "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",
+          "digest": "sha256:d439c10f138821125cf91fbb6ffbdaa28f32cd73614d18a546bc1dfce988646c"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:9d81995c552ff5a64509a063a7769c20e1616b30d05821ab9041a893c0110b38"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:fdf68347faa46c4b6014dc17e655fd91e51a33006dabf12a767811e8a1f8d046"

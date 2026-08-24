@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-authoring-connector-configuration-create-edit-form-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-24T15:39:45.021+00:00",
+      "ended_at": "2026-08-24T15:39:56.128+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -5,20 +5,23 @@
  *
  * Keyed by `ApiError.code` (./api-client.ts), which carries the backend's thrown domain
  * error's own class name verbatim (src/src/http/error-handler.middleware.ts's
- * domainEnvelope()). The eighteen keys below are the original ten class names
+ * domainEnvelope()). The nineteen keys below are the original ten class names
  * src/src/errors/status-map.ts mapped to a transport status when this table was first
  * written, plus the four it does not map (CaseHoldsNoDraftError, ConceptNotInGlossaryError,
  * ConceptRefusesSubjectTypeError, CaseNotValidError), plus four more status-map.ts has
  * since begun mapping for the capability registry's own register-capability surface
  * (IncompleteCapabilityContractError, CapabilityNotReadOnlyError,
  * CapabilitySchemaNotWellFormedError, ConceptAlreadyAnsweredError,
- * task/capability-authoring/capability-create-edit-form's own criterion 5) -- read from
- * that file and confirmed against it directly, never re-derived or renamed, so a reader
- * can hold the two tables side by side. Four further classes status-map.ts now also maps
- * (ConnectorConfigurationNotFoundError, CapabilityNotRegisteredForTestError,
- * CapabilityConnectorMismatchError, ConnectorConfigurationNotWellFormedError) are not yet
- * named here -- outside this task's own surface, deferred to whichever task next needs
- * one of them told apart from the generic fallback below.
+ * task/capability-authoring/capability-create-edit-form's own criterion 5), plus one more
+ * status-map.ts now also maps for the connector configuration registry's own
+ * register-connector surface (ConnectorConfigurationNotWellFormedError,
+ * task/connector-configuration-authoring/connector-configuration-create-edit-form's own
+ * criterion set) -- each read from that file and confirmed against it directly, never
+ * re-derived or renamed, so a reader can hold the two tables side by side. Three further
+ * classes status-map.ts now also maps (ConnectorConfigurationNotFoundError,
+ * CapabilityNotRegisteredForTestError, CapabilityConnectorMismatchError) are not yet named
+ * here -- outside this task's own surface, deferred to whichever task next needs one of
+ * them told apart from the generic fallback below.
  *
  * This table states no UI wording -- what each state displays is left to the screen
  * tasks that consume it (the task's own rationale: "states no UI wording... only that a
@@ -58,6 +61,7 @@ export type UiErrorStateKind =
   | "capability-not-read-only"
   | "capability-schema-not-well-formed"
   | "case-not-valid"
+  | "connector-configuration-not-well-formed"
   | "generic-error";
 
 /**
@@ -72,8 +76,8 @@ export type UiErrorState = {
 const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
 
 /**
- * The table itself: every one of the eighteen named error classes, keyed by its own
- * class name exactly as src/src/errors/status-map.ts (the fourteen mapped classes named
+ * The table itself: every one of the nineteen named error classes, keyed by its own
+ * class name exactly as src/src/errors/status-map.ts (the fifteen mapped classes named
  * here) and the inventory's confirmed list (the four originally-unmapped classes) spell
  * it. Iteration order carries no meaning here -- unlike statusForError()'s Map, this is a
  * plain lookup by exact key, never by instanceof/subclass matching, so no entry can
@@ -111,6 +115,12 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   IncompleteCapabilityContractError: { kind: "incomplete-capability-contract" },
   CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },
   CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },
+  // A connector configuration whose configuration is not syntactically valid JSON
+  // (rules/integration/a-connector-configuration-holds-a-well-formed-object) --
+  // task/connector-configuration-authoring/connector-configuration-create-edit-form's own
+  // criterion set, its own distinct state so the operator can tell it apart from an
+  // unrelated failure.
+  ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },
 
   // Unmapped in status-map.ts -- the backend answers all three with the same
   // indistinguishable INTERNAL_ERROR, so they share the one fallback state rather than

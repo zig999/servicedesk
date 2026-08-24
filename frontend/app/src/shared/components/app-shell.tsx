@@ -6,17 +6,21 @@ import { Toaster } from "sonner";
 
 /**
  * One top-level sidebar destination: a label and the route it links to.
- * Exactly three exist -- Cases, Glossary, Capabilities -- per the scope's
+ * Four exist -- Cases, Glossary, Capabilities, Connectors -- per the scope's
  * section 2.10 decision that Hypotheses is a Case Detail tab rather than a
- * top-level destination, so it has no entry here.
+ * top-level destination, so it has no entry here. Connectors was added by
+ * task/connector-configuration-authoring/connector-configuration-create-edit-form
+ * so its new "/connectors" route is reachable from the app's navigation
+ * (that task's own criterion 1).
  */
 const SIDEBAR_ENTRIES: ReadonlyArray<{
   label: string;
-  to: "/cases" | "/glossary" | "/capabilities";
+  to: "/cases" | "/glossary" | "/capabilities" | "/connectors";
 }> = [
   { label: "Cases", to: "/cases" },
   { label: "Glossary", to: "/glossary" },
   { label: "Capabilities", to: "/capabilities" },
+  { label: "Connectors", to: "/connectors" },
 ];
 
 /**
@@ -52,6 +56,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/cases/$slug/hypotheses": "Hypotheses",
   "/glossary": "Glossary Browser",
   "/capabilities": "Capabilities Browser",
+  "/connectors": "Connectors",
 };
 
 /**

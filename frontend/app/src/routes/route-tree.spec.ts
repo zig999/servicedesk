@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
+import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
 import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
@@ -42,6 +43,15 @@ import {
  * EXPECTED_COMPONENT_BY_PATH below for the same reason the four earlier
  * real-screen routes already are, and are instead checked by their own
  * dedicated test beneath it.
+ *
+ * "/connectors" is the thirteenth route, added by
+ * task/connector-configuration-authoring/connector-configuration-create-edit-form's
+ * own criterion 1: a new route listing every registered connector
+ * configuration, rendering ConnectorConfigurationsScreen. Excluded from
+ * EXPECTED_COMPONENT_BY_PATH below for the same reason "/capabilities" and
+ * "/glossary" already are -- it renders a real screen, not a placeholder --
+ * and checked by its own dedicated test beneath the capabilities/glossary
+ * ones instead.
  */
 
 const EXPECTED_PATHS = [
@@ -57,6 +67,7 @@ const EXPECTED_PATHS = [
   "/cases/$slug/versions/$version/discard",
   "/glossary",
   "/capabilities",
+  "/connectors",
 ];
 
 // /cases, /cases/$slug, /cases/$slug/versions/new, /cases/$slug/versions/$version, this task's
@@ -80,7 +91,7 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the twelve proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the thirteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
@@ -112,6 +123,12 @@ describe("route-tree", () => {
     const glossaryRoute = leafRoutes().find((route) => route.fullPath === "/glossary");
 
     expect(glossaryRoute?.options.component).toBe(GlossaryBrowserScreen);
+  });
+
+  it("renders the /connectors route through ConnectorConfigurationsScreen (task/connector-configuration-authoring/connector-configuration-create-edit-form, criterion 1)", () => {
+    const connectorsRoute = leafRoutes().find((route) => route.fullPath === "/connectors");
+
+    expect(connectorsRoute?.options.component).toBe(ConnectorConfigurationsScreen);
   });
 
   it("renders the New-hypothesis route and the Revise route through two distinct screens (criterion 1)", () => {

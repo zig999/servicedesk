@@ -2,6 +2,7 @@ import { createRootRoute, createRoute, createRouter } from "@tanstack/react-rout
 import { z } from "zod";
 import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
+import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
@@ -128,6 +129,15 @@ const capabilitiesRoute = createRoute({
   component: CapabilitiesBrowserScreen,
 });
 
+// task/connector-configuration-authoring/connector-configuration-create-edit-form's
+// own screen: lists every registered connector configuration and hosts its
+// create/edit form dialog.
+const connectorConfigurationsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/connectors",
+  component: ConnectorConfigurationsScreen,
+});
+
 const caseHypothesesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/hypotheses",
@@ -146,6 +156,7 @@ const routeTree = rootRoute.addChildren([
   versionDiscardRoute,
   glossaryRoute,
   capabilitiesRoute,
+  connectorConfigurationsRoute,
   caseHypothesesRoute,
 ]);
 

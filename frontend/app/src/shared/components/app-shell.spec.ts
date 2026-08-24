@@ -15,10 +15,19 @@ import { AppShell } from "./app-shell";
 // cannot render outside a real router context. Rather than reuse the
 // production ten-route router (route-tree.tsx), this builds a small,
 // self-contained test router -- AppShell as the root route's own component,
-// three leaf routes at the same three paths Sidebar's own links point to --
+// four leaf routes at the same four paths Sidebar's own links point to --
 // so each test controls exactly which route is "current" via
 // createMemoryHistory's initialEntries, without depending on the production
 // route tree's shape or on browser history.
+//
+// A fourth leaf route, "/connectors", was added by task/connector-configuration-
+// authoring/connector-configuration-create-edit-form's own criterion 1 ("a new
+// route reachable from the app's navigation"): SIDEBAR_ENTRIES now names a
+// fourth destination (app-shell.tsx's own header comment), so this file's own
+// test router has to register that path too -- Sidebar's own Link to
+// "/connectors" needs a real registered route to resolve against, the same
+// requirement the pre-existing three routes below already satisfy for Cases,
+// Glossary and Capabilities.
 
 function ScreenA() {
   return createElement("div", null, "Screen A content");
@@ -45,7 +54,17 @@ function buildTestRouter(initialPath: string) {
     path: "/capabilities",
     component: ScreenB,
   });
-  const routeTree = rootRoute.addChildren([casesRoute, glossaryRoute, capabilitiesRoute]);
+  const connectorsRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/connectors",
+    component: ScreenB,
+  });
+  const routeTree = rootRoute.addChildren([
+    casesRoute,
+    glossaryRoute,
+    capabilitiesRoute,
+    connectorsRoute,
+  ]);
   return createRouter({
     routeTree,
     history: createMemoryHistory({ initialEntries: [initialPath] }),
@@ -53,7 +72,7 @@ function buildTestRouter(initialPath: string) {
 }
 
 describe("AppShell", () => {
-  it("lists exactly the three sidebar entries Cases, Glossary and Capabilities, with no Hypotheses entry", async () => {
+  it("lists exactly the four sidebar entries Cases, Glossary, Capabilities and Connectors, with no Hypotheses entry", async () => {
     const router = buildTestRouter("/cases");
     await router.load();
     render(createElement(RouterProvider, { router }));
@@ -64,6 +83,7 @@ describe("AppShell", () => {
       "Cases",
       "Glossary",
       "Capabilities",
+      "Connectors",
     ]);
     expect(within(nav).queryByText(/hypothes/i)).toBeNull();
   });
@@ -83,6 +103,19 @@ describe("AppShell", () => {
     expect(
       within(nav).getByRole("link", { name: "Capabilities" }).getAttribute("href"),
     ).toBe("/capabilities");
+  });
+
+  // task/connector-configuration-authoring/connector-configuration-create-edit-form's own
+  // criterion 1: the new "/connectors" route is reachable from the app's navigation.
+  it("lists a Connectors entry linking to /connectors", async () => {
+    const router = buildTestRouter("/cases");
+    await router.load();
+    render(createElement(RouterProvider, { router }));
+
+    const nav = screen.getByRole("navigation", { name: "Primary" });
+    expect(
+      within(nav).getByRole("link", { name: "Connectors" }).getAttribute("href"),
+    ).toBe("/connectors");
   });
 
   it("renders the breadcrumb through TUI's Breadcrumb primitive, reflecting the currently matched route", async () => {

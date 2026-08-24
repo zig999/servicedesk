@@ -152,4 +152,19 @@ describe("uiStateForApiError", () => {
     expect(new Set(kinds).size).toBe(4);
     expect(kinds).not.toContain("generic-error");
   });
+
+  // task/connector-configuration-authoring/connector-configuration-create-edit-form's own
+  // criterion set -- a connector configuration whose configuration is not syntactically valid
+  // JSON (rules/integration/a-connector-configuration-holds-a-well-formed-object) needs its own
+  // distinct state so use-connector-configuration-form.ts's own
+  // SAVE_FAILURE_MESSAGE_BY_KIND can resolve it to a specific message rather than the shared
+  // generic-error fallback.
+
+  it("resolves ConnectorConfigurationNotWellFormedError to its own distinct connector-configuration-not-well-formed state, not the shared generic-error fallback", () => {
+    const state = uiStateForApiError(
+      new ApiError("ConnectorConfigurationNotWellFormedError", "not well-formed"),
+    );
+    expect(state.kind).toBe("connector-configuration-not-well-formed");
+    expect(state.kind).not.toBe("generic-error");
+  });
 });

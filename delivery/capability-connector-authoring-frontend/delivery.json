@@ -26,6 +26,14 @@
       "task": "task/concept-authoring/concept-create-edit-form"
     },
     {
+      "id": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form.md",
+      "title": "Connector Configuration create/edit screen",
+      "summary": "Adds a new Connectors screen (route /connectors, reachable from the sidebar) listing every registered connector configuration by name, with a New action and per-row Edit action sharing one create/edit Dialog over PUT /v1/connectors/{connector}.",
+      "task": "task/connector-configuration-authoring/connector-configuration-create-edit-form"
+    },
+    {
       "id": "proof/capability-authoring/capability-create-edit-form",
       "kind": "proof",
       "file": "proof/capability-authoring/capability-create-edit-form.md",
@@ -48,6 +56,14 @@
       "title": "Proof for the concept create/edit form on the Glossary screen's Concepts tab",
       "summary": "Three spec files mounting GlossaryBrowserScreen end to end prove the \"New concept\"/\"Edit\" actions, the required accepts multi-select, ttl's own client-side requirement, the register-concept PUT for both create and edit, and the disclosed inferences (name disabled while editing, no new error-ui-state entry, accepts as a Checkbox group, ttl required with no default).",
       "task": "task/concept-authoring/concept-create-edit-form"
+    },
+    {
+      "id": "proof/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "proof",
+      "file": "proof/connector-configuration-authoring/connector-configuration-create-edit-form.md",
+      "title": "Connector configuration create/edit screen proof",
+      "summary": "Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's criteria and the implementation's own disclosed inferences.",
+      "task": "task/connector-configuration-authoring/connector-configuration-create-edit-form"
     }
   ],
   "edges": [
@@ -136,6 +152,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-authoring/capability-create-edit-form",
       "to": "implementation/capability-authoring/capability-create-edit-form",
       "kind": "proves",
@@ -150,6 +196,12 @@
     {
       "from": "proof/concept-authoring/concept-create-edit-form",
       "to": "implementation/concept-authoring/concept-create-edit-form",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
       "kind": "proves",
       "at": "the path"
     }
