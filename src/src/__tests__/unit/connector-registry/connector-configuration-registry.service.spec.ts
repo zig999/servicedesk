@@ -12,6 +12,7 @@ import type {
   ConnectorConfiguration,
   ConnectorConfigurationRegistration,
 } from '../../../connector-registry/connector-configuration.js';
+import { ConnectorConfigurationNotWellFormedError } from '../../../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 
 /** Stands in for the store boundary, so the service is exercised without any relational database. */
@@ -171,4 +172,89 @@ it('resolves the connector configuration registered after an earlier resolution 
   const resolution = await registry.readConnectorConfiguration('a-connector');
 
   expect(resolution).toEqual({ held: true, configuration: registered });
+});
+
+// ------------------------------------------------------------------ configuration well-formedness
+// Proof for task/connector-configuration-authoring/register-connector-route (criterion 3,
+// rules/integration/a-connector-configuration-holds-a-well-formed-object): a configuration given
+// as a string is this route's own wire representation of configuration text — parsed as JSON here,
+// refused before any write where it fails JSON.parse or parses to something other than a plain
+// object, not an array, not a primitive. This fixture file's own completeRegistration()/
+// heldConfiguration() default configuration to a plain object already, so every test below
+// overrides configuration explicitly with a string to exercise the well-formed/malformed
+// distinction — mirroring capability-registry.service.spec.ts's own schema well-formedness block
+// for the identical class of check.
+
+it('refuses a registration whose configuration text is not syntactically valid JSON, naming the reason', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: '{not valid' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration is not syntactically valid JSON' } });
+});
+
+it('refuses a registration whose configuration text is valid JSON but a JSON array, naming the reason', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: '[1,2,3]' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
+});
+
+it('refuses a registration whose configuration text is valid JSON but a string primitive, naming the reason', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: '"a-string"' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
+});
+
+it('refuses a registration whose configuration text is valid JSON but the null primitive, naming the reason', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: 'null' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
+});
+
+it('writes nothing to the store when it refuses a registration for configuration text that is not syntactically valid JSON', async () => {
+  const alreadyHeld = heldConfiguration();
+  const store = new InMemoryConnectorConfigurationStore([alreadyHeld]);
+  const registry = new ConnectorConfigurationRegistryService(store);
+
+  await registry.registerConnector(completeRegistration({ configuration: '{not valid' })).catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+it('writes nothing to the store when it refuses a registration for configuration text that parses to something other than a JSON object', async () => {
+  const alreadyHeld = heldConfiguration();
+  const store = new InMemoryConnectorConfigurationStore([alreadyHeld]);
+  const registry = new ConnectorConfigurationRegistryService(store);
+
+  await registry.registerConnector(completeRegistration({ configuration: '[1,2,3]' })).catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+it('accepts a registration whose configuration text is valid JSON object text, holding the parsed object unchanged', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const registered = await registry.registerConnector(
+    completeRegistration({ configuration: '{"whatever":"the connector alone interprets this"}' }),
+  );
+
+  expect(registered.configuration).toEqual({ whatever: 'the connector alone interprets this' });
 });

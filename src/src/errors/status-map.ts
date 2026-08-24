@@ -19,10 +19,17 @@
 // a capability registration that does not declare its contract completely
 // (IncompleteCapabilityContractError), whose nature is not read-only
 // (CapabilityNotReadOnlyError), or whose schema is not syntactically valid
-// JSON (CapabilitySchemaNotWellFormedError) — answers 422 Unprocessable
-// Entity: each of these three reaches this table only now that
-// register-capability is exposed as a route (task/capability-authoring/register-capability-route),
-// since nothing before this task ever called registerCapability from HTTP.
+// JSON (CapabilitySchemaNotWellFormedError), or a connector-configuration
+// registration whose configuration text is not syntactically valid JSON
+// object text (ConnectorConfigurationNotWellFormedError,
+// rules/integration/a-connector-configuration-holds-a-well-formed-object,
+// task/connector-configuration-authoring/register-connector-route) — answers
+// 422 Unprocessable Entity: each of the first three reached this table only
+// once register-capability was exposed as a route
+// (task/capability-authoring/register-capability-route), since nothing
+// before that task ever called registerCapability from HTTP; the fourth
+// reaches it the same way, now that register-connector is exposed as a
+// route.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -38,6 +45,7 @@ import { CaseVersionNotReleasableError } from './case-version-not-releasable.err
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
+import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
@@ -68,6 +76,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [IncompleteCapabilityContractError, 422],
   [CapabilityNotReadOnlyError, 422],
   [CapabilitySchemaNotWellFormedError, 422],
+  [ConnectorConfigurationNotWellFormedError, 422],
 ]);
 
 /**

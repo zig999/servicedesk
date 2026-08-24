@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/__tests__/unit/http/build-app.spec.ts
+  184:1  error  Function 'stubBuildAppDependencies' has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+

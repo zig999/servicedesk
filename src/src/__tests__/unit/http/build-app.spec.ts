@@ -40,6 +40,7 @@ import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js'
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
+import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
@@ -162,6 +163,16 @@ function stubRegisterConcept(): RegisterConceptControllerDependencies {
   };
 }
 
+/** A minimally valid RegisterConnectorControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed ConnectorConfiguration so register-connector-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubRegisterConnector(): RegisterConnectorControllerDependencies {
+  return {
+    registerConnector: async () => ({
+      connector: 'a-connector',
+      configuration: {},
+    }),
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -172,7 +183,6 @@ function stubRegisterConcept(): RegisterConceptControllerDependencies {
  */
 function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): BuildAppDependencies {
   const caseQuery = stubCaseQuery(minimalCase());
-  const caseStore = stubCaseStore();
   const capabilityQuery = stubCapabilityQuery();
   const glossaryQuery = stubGlossaryQuery();
   const pagination = { defaultLimit: 10, maxLimit: 100 };
@@ -182,7 +192,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     listCapabilities: { capabilityQuery, ...pagination },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
-    updateDraft: { caseStore, caseQuery },
+    updateDraft: { caseStore: stubCaseStore(), caseQuery },
     release: { release: async () => undefined, caseQuery },
     discard: { discard: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
@@ -198,6 +208,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     readConcept: { glossaryQuery },
     listConcepts: { glossaryQuery, ...pagination },
     registerConcept: stubRegisterConcept(),
+    registerConnector: stubRegisterConnector(),
   };
 }
 

@@ -1,3 +1,4 @@
+import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../errors/incomplete-connector-configuration.error.js';
 import type {
   ConnectorConfiguration,
@@ -36,10 +37,13 @@ export class ConnectorConfigurationRegistryService {
 
   /**
    * register-connector: refuses a registration that departs from the
-   * minimum shape this registry requires, before any write. The rest is
-   * held — a re-registration under an already-held connector identity
-   * replaces the row it holds, since one connector configuration is
-   * identified by its connector value alone.
+   * minimum shape this registry requires, or whose configuration text is
+   * not well-formed
+   * (rules/integration/a-connector-configuration-holds-a-well-formed-object,
+   * task/connector-configuration-authoring/register-connector-route), before
+   * any write. The rest is held — a re-registration under an already-held
+   * connector identity replaces the row it holds, since one connector
+   * configuration is identified by its connector value alone.
    */
   public async registerConnector(
     registration: ConnectorConfigurationRegistration,
@@ -73,11 +77,51 @@ type DeclaredRegistration = ConnectorConfigurationRegistration & {
 /**
  * Holds one registration to the minimum shape this registry requires,
  * refusing what departs from it, and answers the configuration as the
- * registry will hold it.
+ * registry will hold it. The well-formedness check runs first
+ * (wellFormedConfiguration), since it is what turns this route's own
+ * configuration text into the plain object the completeness check below,
+ * and the registry itself, both expect.
  */
 function heldConfiguration(registration: ConnectorConfigurationRegistration): ConnectorConfiguration {
-  refuseRegistrationDepartures(registration);
-  return { connector: registration.connector, configuration: registration.configuration };
+  const resolved: ConnectorConfigurationRegistration = {
+    connector: registration.connector,
+    configuration: wellFormedConfiguration(registration.configuration),
+  };
+  refuseRegistrationDepartures(resolved);
+  return { connector: resolved.connector, configuration: resolved.configuration };
+}
+
+/**
+ * Resolves a registration's configuration to the plain object the
+ * completeness check below and the registry both expect, before that check
+ * ever runs. A value already given as an object — undeclared, null, an
+ * array, or a genuine plain object — passes through unchanged, exactly as
+ * this registry always held it. A value given as a string is this route's
+ * own wire representation of configuration text
+ * (task/connector-configuration-authoring/register-connector-route): parsed
+ * as JSON here, refusing it before any write where it fails JSON.parse or
+ * parses to something other than a plain object — not an array, not a
+ * primitive
+ * (rules/integration/a-connector-configuration-holds-a-well-formed-object)
+ * — the same discipline capability-registry.service.ts's own
+ * refuseMalformedSchemas holds for a capability's two schema strings,
+ * extended here with the object-shape check this rule additionally
+ * requires.
+ */
+function wellFormedConfiguration(configuration: unknown): unknown {
+  if (typeof configuration !== 'string') {
+    return configuration;
+  }
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(configuration);
+  } catch {
+    throw new ConnectorConfigurationNotWellFormedError('configuration is not syntactically valid JSON');
+  }
+  if (!isPlainObject(parsed)) {
+    throw new ConnectorConfigurationNotWellFormedError('configuration does not parse to a JSON object');
+  }
+  return parsed;
 }
 
 /**
