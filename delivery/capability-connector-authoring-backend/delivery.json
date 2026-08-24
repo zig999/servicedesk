@@ -50,6 +50,14 @@
       "task": "task/connector-configuration-authoring/register-connector-route"
     },
     {
+      "id": "implementation/connector-diagnostics/test-connector-route",
+      "kind": "implementation",
+      "file": "implementation/connector-diagnostics/test-connector-route.md",
+      "title": "Expose test-connector as a diagnostic HTTP route",
+      "summary": "Wires a new POST /v1/test-connector route, controller and DTO that resolves a named, already-registered capability, refuses it unregistered or connector-mismatched, assembles a subject from the request, issues the connector's real call through extracted HTTP-issuance logic, and returns the raw request and raw outcome — writing no evidence and no citation.",
+      "task": "task/connector-diagnostics/test-connector-route"
+    },
+    {
       "id": "proof/capability-authoring/register-capability-route",
       "kind": "proof",
       "file": "proof/capability-authoring/register-capability-route.md",
@@ -96,6 +104,14 @@
       "title": "Proof for register-connector exposed as a write HTTP route",
       "summary": "HTTP-level tests for PUT /v1/connectors/{connector} (wiring, status mapping, DTO boundary, no-auth) plus direct service-level tests for wellFormedConfiguration's real JSON-syntax and object-shape checks, together proving the task's five criteria.",
       "task": "task/connector-configuration-authoring/register-connector-route"
+    },
+    {
+      "id": "proof/connector-diagnostics/test-connector-route",
+      "kind": "proof",
+      "file": "proof/connector-diagnostics/test-connector-route.md",
+      "title": "Proof for the test-connector diagnostic route",
+      "summary": "app.inject tests against createTestConnectorRoutesPlugin() with mocked reads and a stubbed HTTP client, proving all seven criteria of task/connector-diagnostics/test-connector-route.",
+      "task": "task/connector-diagnostics/test-connector-route"
     }
   ],
   "edges": [
@@ -286,6 +302,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-diagnostics/test-connector-route",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-diagnostics/test-connector-route",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-diagnostics/test-connector-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-diagnostics/test-connector-route",
+      "to": "task/connector-diagnostics/test-connector-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-authoring/register-capability-route",
       "to": "implementation/capability-authoring/register-capability-route",
       "kind": "proves",
@@ -318,6 +358,12 @@
     {
       "from": "proof/connector-configuration-authoring/register-connector-route",
       "to": "implementation/connector-configuration-authoring/register-connector-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-diagnostics/test-connector-route",
+      "to": "implementation/connector-diagnostics/test-connector-route",
       "kind": "proves",
       "at": "the path"
     }

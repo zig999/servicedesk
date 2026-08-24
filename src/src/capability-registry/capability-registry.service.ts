@@ -30,6 +30,18 @@ import {
  * through the store port, so this module stays importable without any
  * infrastructure.
  */
+/**
+ * What resolving a capability by its own identity (name and version)
+ * answers (task/connector-diagnostics/test-connector-route): the capability
+ * currently held under that identity, whole, or its absence stated as
+ * data — never an invented capability and never an error — the same shape
+ * capability-query.port.ts's own CapabilityResolution already gives the
+ * concept-keyed read.
+ */
+export type CapabilityIdentityResolution =
+  | { readonly held: true; readonly capability: Capability }
+  | { readonly held: false; readonly name: string; readonly version: string };
+
 export class CapabilityRegistryService implements ICapabilityQuery {
   public constructor(private readonly store: ICapabilityStore) {}
 
@@ -72,6 +84,25 @@ export class CapabilityRegistryService implements ICapabilityQuery {
     }
     const capability = answers[0];
     return capability === undefined ? { held: false, concept } : { held: true, capability };
+  }
+
+  /**
+   * read-capability-by-identity
+   * (task/connector-diagnostics/test-connector-route): resolves one
+   * capability by its own identity — name and version
+   * (domain/integration/capability's own "identified by name and version")
+   * — read through the store on every call, never remembered. Not part of
+   * the published capability-registry contract
+   * (contracts/integration/capability-registry names only read-capability,
+   * by concept, and list-capabilities): this is a second read this service
+   * offers for a consumer that already holds a capability's own identity
+   * rather than the concept it answers, the same "absence stated as data,
+   * never an error" shape readCapability already gives.
+   */
+  public async readCapabilityByIdentity(name: string, version: string): Promise<CapabilityIdentityResolution> {
+    const held = await this.store.readCapabilities();
+    const capability = held.find((candidate) => candidate.name === name && candidate.version === version);
+    return capability === undefined ? { held: false, name, version } : { held: true, capability };
   }
 
   /**

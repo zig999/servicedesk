@@ -12,11 +12,17 @@
 // ConceptNotHeldError, VocabularyTermNotHeldError,
 // ConnectorConfigurationNotFoundError — the fifth, once
 // read-connector-configuration is exposed as a route,
-// task/connector-configuration-authoring/read-connector-configuration-route);
-// an operation the named resource's own current state forbids — a second open
-// draft, an already occupied manifest position, a mutation against anything
-// but a draft version, a concept a different capability already answers
-// (ConceptAlreadyAnsweredError, rules/integration/one-capability-answers-one-concept)
+// task/connector-configuration-authoring/read-connector-configuration-route;
+// CapabilityNotRegisteredForTestError — the sixth, once test-connector is
+// exposed as a route, task/connector-diagnostics/test-connector-route,
+// criterion 3); an operation the named resource's own current state forbids
+// — a second open draft, an already occupied manifest position, a mutation
+// against anything but a draft version, a concept a different capability
+// already answers (ConceptAlreadyAnsweredError,
+// rules/integration/one-capability-answers-one-concept), or a
+// test-connector request naming a connector the capability's own connector
+// does not match (CapabilityConnectorMismatchError,
+// task/connector-diagnostics/test-connector-route, criterion 4)
 // — answers 409 Conflict; a request that is well-formed but would violate a
 // business invariant were it applied — a release whose validator rules did
 // not all pass, a removal that would leave a manifest holding no hypothesis,
@@ -39,7 +45,9 @@
 // does today (COR-04's own note that none of this codebase's errors is
 // mapped to a status yet).
 
+import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';
 import { CapabilityNotReadOnlyError } from './capability-not-read-only.error.js';
+import { CapabilityNotRegisteredForTestError } from './capability-not-registered-for-test.error.js';
 import { CapabilitySchemaNotWellFormedError } from './capability-schema-not-well-formed.error.js';
 import { CaseAlreadyHasDraftError } from './case-already-has-draft.error.js';
 import { CaseNotFoundError } from './case-not-found.error.js';
@@ -72,11 +80,13 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConceptNotHeldError, 404],
   [VocabularyTermNotHeldError, 404],
   [ConnectorConfigurationNotFoundError, 404],
+  [CapabilityNotRegisteredForTestError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],
   [CaseVersionNotDraftAtReleaseError, 409],
   [ConceptAlreadyAnsweredError, 409],
+  [CapabilityConnectorMismatchError, 409],
   [CaseVersionNotReleasableError, 422],
   [ManifestWouldHoldNoHypothesisError, 422],
   [IncompleteCapabilityContractError, 422],

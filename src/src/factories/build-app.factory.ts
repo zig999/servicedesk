@@ -62,6 +62,7 @@ type ComposedResources = {
   readonly caseStore: ICaseStore;
   readonly capabilityQuery: ICapabilityQuery;
   readonly registerCapability: CapabilityRegistryService['registerCapability'];
+  readonly readCapabilityByIdentity: CapabilityRegistryService['readCapabilityByIdentity'];
   readonly glossaryQuery: IGlossaryQuery;
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
@@ -110,6 +111,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     caseStore: createCaseStore(connection),
     capabilityQuery: capabilityRegistry,
     registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
+    readCapabilityByIdentity: (name, version) => capabilityRegistry.readCapabilityByIdentity(name, version),
     glossaryQuery: glossary,
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
@@ -187,6 +189,27 @@ function registrationDependencies(resources: ComposedResources): Pick<BuildAppDe
 }
 
 /**
+ * test-connector's own dependencies
+ * (task/connector-diagnostics/test-connector-route): the same
+ * readCapabilityByIdentity and readConnectorConfiguration reads the
+ * capability and connector-configuration registries already share above,
+ * plus the platform's own global fetch as the HTTP client to issue the real
+ * call through — no HTTP client package is authorized for this project and
+ * Node's own runtime already exposes one, the same choice
+ * http-declarative-observation-source.adapter.ts's own default already
+ * makes for a real observation.
+ */
+function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'testConnector'> {
+  return {
+    testConnector: {
+      readCapabilityByIdentity: resources.readCapabilityByIdentity,
+      readConnectorConfiguration: resources.readConnectorConfiguration,
+      httpClient: fetch,
+    },
+  };
+}
+
+/**
  * Assembles buildApp's own BuildAppDependencies whole: the diagnose route's
  * dependencies exactly as its own caller already built them, plus every
  * other route's own slice of the shared resources composed from the same
@@ -201,5 +224,6 @@ export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildA
     ...listDependencies(resources),
     ...lifecycleDependencies(resources),
     ...registrationDependencies(resources),
+    ...testConnectorDependencies(resources),
   };
 }

@@ -39,6 +39,7 @@ import type { Capability } from '../capability-registry/capability.js';
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { ConnectorConfigurationResolution } from '../connector-registry/connector-configuration-registry.service.js';
 import type { AssembledConnectorRequest } from '../http-connector/connector-call-descriptor.js';
+import { issueConnectorHttpCall } from '../http-connector/connector-http-issuer.js';
 import { resolveConnectorRequest } from '../http-connector/connector-request-resolver.js';
 import {
   HTTP_METHODS,
@@ -166,50 +167,23 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
    * (rules/investigation/collection-has-its-own-budget-within-the-total):
    * a client-side abort once that bound elapses is reported as timed-out
    * rather than propagated as a fault (criterion 6), and any other
-   * rejection — a genuine network failure — propagates unmodified.
+   * rejection — a genuine network failure — propagates unmodified. Delegates
+   * to connector-http-issuer.ts's own issueConnectorHttpCall
+   * (task/connector-diagnostics/test-connector-route), the same HTTP-issuance
+   * mechanics this method always ran, extracted so the test-connector
+   * diagnostic route can issue an identical call directly — this method's
+   * own two-outcome CallResult and every behavior it produces are unchanged;
+   * the elapsed time the extracted function additionally reports is simply
+   * discarded here, since this adapter itself never reports timing.
    */
   private async issueRequest(
     method: HttpMethod,
     request: AssembledConnectorRequest,
     timeoutMs: number,
   ): Promise<CallResult> {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const response = await this.httpClient(requestUrl(request), requestInit(method, request, controller.signal));
-      return { kind: 'response', response };
-    } catch (error) {
-      if (controller.signal.aborted) {
-        return { kind: 'timed-out' };
-      }
-      throw error;
-    } finally {
-      clearTimeout(timer);
-    }
+    const issued = await issueConnectorHttpCall({ method, request, timeoutMs, httpClient: this.httpClient });
+    return issued.kind === 'timed-out' ? { kind: 'timed-out' } : { kind: 'response', response: issued.response };
   }
-}
-
-/** The URL one assembled request calls: the resolved address with every resolved query parameter appended. */
-function requestUrl(request: AssembledConnectorRequest): string {
-  const url = new URL(request.address);
-  for (const [key, value] of Object.entries(request.query)) {
-    url.searchParams.set(key, value);
-  }
-  return url.toString();
-}
-
-/**
- * The fetch call's own init: the connector's own declared method, its
- * resolved headers and its own AbortSignal, plus its resolved body where
- * the descriptor declared one — serialized as JSON text unless it already
- * is a plain string.
- */
-function requestInit(method: HttpMethod, request: AssembledConnectorRequest, signal: AbortSignal): RequestInit {
-  const init: RequestInit = { method, headers: { ...request.headers }, signal };
-  if (request.body === undefined) {
-    return init;
-  }
-  return { ...init, body: typeof request.body === 'string' ? request.body : JSON.stringify(request.body) };
 }
 
 /**
@@ -274,8 +248,16 @@ function observationOf(capability: Capability, responseMap: ResponseFieldPaths, 
 /** A connector's own opaque call configuration, narrowed to the minimum HTTP-specific shape this adapter requires, as the type then knows it — the same "declared configuration" narrowing shape connector-request-resolver.ts's own DeclaredConnectorCallDescriptor already establishes for its own sibling refusal. */
 type DeclaredHttpConnectorCallConfiguration = Readonly<Record<string, unknown>> & HttpConnectorCallConfiguration;
 
-/** Narrows a connector's own opaque configuration payload to this adapter's own HttpConnectorCallConfiguration, refusing what departs from the minimum shape this adapter requires before any request is assembled. */
-function asHttpConnectorCallConfiguration(
+/**
+ * Narrows a connector's own opaque configuration payload to this adapter's
+ * own HttpConnectorCallConfiguration, refusing what departs from the
+ * minimum shape this adapter requires before any request is assembled.
+ * Exported (task/connector-diagnostics/test-connector-route) so the
+ * test-connector diagnostic route can resolve the same HTTP method a real
+ * observation would issue, from the same configuration, rather than
+ * re-deriving this narrowing (MNT-03).
+ */
+export function asHttpConnectorCallConfiguration(
   connector: string,
   configuration: Readonly<Record<string, unknown>>,
 ): HttpConnectorCallConfiguration {

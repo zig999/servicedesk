@@ -43,6 +43,7 @@ import type { ReadConnectorConfigurationControllerDependencies } from '../../../
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
 import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
+import type { TestConnectorControllerDependencies } from '../../../http/test-connector.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
@@ -194,6 +195,18 @@ function stubListConnectorConfigurations(): ListConnectorConfigurationsControlle
   };
 }
 
+/** A minimally valid TestConnectorControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a held capability whose own connector matches the request's connector, a held connector configuration, and an httpClient stand-in resolving a minimal Response — so test-connector-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubTestConnector(): TestConnectorControllerDependencies {
+  return {
+    readCapabilityByIdentity: async (name, version) => ({
+      held: true,
+      capability: { name, version, nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept: 'a-concept' },
+    }),
+    readConnectorConfiguration: async (connector) => ({ held: true, configuration: { connector, configuration: {} } }),
+    httpClient: (async () => new Response('', { status: 200 })) as typeof fetch,
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -203,8 +216,7 @@ function stubListConnectorConfigurations(): ListConnectorConfigurationsControlle
  * below, which assert only on the response's status code.
  */
 function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): BuildAppDependencies {
-  const caseQuery = stubCaseQuery(minimalCase());
-  const glossaryQuery = stubGlossaryQuery();
+  const caseQuery = stubCaseQuery(minimalCase()); const glossaryQuery = stubGlossaryQuery();
   return {
     diagnose,
     readCapability: { capabilityQuery: stubCapabilityQuery() },
@@ -230,6 +242,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     registerConnector: stubRegisterConnector(),
     readConnectorConfiguration: stubReadConnectorConfiguration(),
     listConnectorConfigurations: stubListConnectorConfigurations(),
+    testConnector: stubTestConnector(),
   };
 }
 
