@@ -39,6 +39,7 @@ import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
+import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
@@ -150,6 +151,17 @@ function stubRegisterCapability(): RegisterCapabilityControllerDependencies {
   };
 }
 
+/** A minimally valid RegisterConceptControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed Concept so register-concept-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubRegisterConcept(): RegisterConceptControllerDependencies {
+  return {
+    registerConcept: async () => ({
+      name: 'a-concept',
+      accepts: ['a-subject-type'],
+      ttl: 60,
+    }),
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -185,6 +197,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     listVocabularyTerms: { glossaryQuery, ...pagination },
     readConcept: { glossaryQuery },
     listConcepts: { glossaryQuery, ...pagination },
+    registerConcept: stubRegisterConcept(),
   };
 }
 

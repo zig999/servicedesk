@@ -28,13 +28,14 @@ import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ICaseStore } from '../case/case-store.port.js';
 import type { Env } from '../config/env.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
 import { createCapabilityRegistry } from './capability-registry.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
 import { createCaseStore } from './case-store.factory.js';
-import { createGlossaryQuery } from './glossary.factory.js';
+import { createGlossary } from './glossary.factory.js';
 
 /** Everything buildAppDependencies needs, bundled as one object so it stays within MNT-01's parameter bound. */
 export type BuildAppDependenciesInputs = {
@@ -57,6 +58,7 @@ type ComposedResources = {
   readonly capabilityQuery: ICapabilityQuery;
   readonly registerCapability: CapabilityRegistryService['registerCapability'];
   readonly glossaryQuery: IGlossaryQuery;
+  readonly registerConcept: GlossaryService['registerConcept'];
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
 };
@@ -72,16 +74,22 @@ type ComposedResources = {
  * createCapabilityRegistry) and reuses that same instance for both
  * capabilityQuery and registerCapability
  * (task/capability-authoring/register-capability-route), rather than a
- * second instance built through createCapabilityQuery.
+ * second instance built through createCapabilityQuery. Builds one
+ * GlossaryService (glossary.factory.ts's own createGlossary) the same way,
+ * and reuses that same instance for both glossaryQuery and registerConcept
+ * (task/concept-authoring/register-concept-route), rather than a second
+ * instance built through createGlossaryQuery.
  */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
   const capabilityRegistry = createCapabilityRegistry(connection);
+  const glossary = createGlossary(connection);
   return {
     caseQuery,
     caseStore: createCaseStore(connection),
     capabilityQuery: capabilityRegistry,
     registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
-    glossaryQuery: createGlossaryQuery(connection),
+    glossaryQuery: glossary,
+    registerConcept: (registration) => glossary.registerConcept(registration),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
   };
@@ -125,10 +133,16 @@ function lifecycleDependencies(resources: ComposedResources): Pick<BuildAppDepen
   };
 }
 
-/** register-capability's own dependencies (task/capability-authoring/register-capability-route): the registerCapability operation alone. */
-function registrationDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'registerCapability'> {
+/**
+ * register-capability's and register-concept's own dependencies
+ * (task/capability-authoring/register-capability-route,
+ * task/concept-authoring/register-concept-route): the registerCapability and
+ * registerConcept operations, each alone.
+ */
+function registrationDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'registerCapability' | 'registerConcept'> {
   return {
     registerCapability: { registerCapability: resources.registerCapability },
+    registerConcept: { registerConcept: resources.registerConcept },
   };
 }
 

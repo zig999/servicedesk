@@ -18,6 +18,14 @@
       "task": "task/concept-authoring/glossary-store-concept-write"
     },
     {
+      "id": "implementation/concept-authoring/register-concept-route",
+      "kind": "implementation",
+      "file": "implementation/concept-authoring/register-concept-route.md",
+      "title": "Expose register-concept as a write HTTP route",
+      "summary": "Adds a PUT route, controller and DTO pair for register-concept, wired into the app the same way register-capability was, over GlossaryService.registerConcept.",
+      "task": "task/concept-authoring/register-concept-route"
+    },
+    {
       "id": "proof/capability-authoring/register-capability-route",
       "kind": "proof",
       "file": "proof/capability-authoring/register-capability-route.md",
@@ -32,6 +40,14 @@
       "title": "Proof for the glossary store's concept write path",
       "summary": "Unit tests for GlossaryService.registerConcept (create, default ttl, replace-in-place) and for RelationalGlossaryStore.writeConcepts' own persisted statements, together proving this task's three criteria.",
       "task": "task/concept-authoring/glossary-store-concept-write"
+    },
+    {
+      "id": "proof/concept-authoring/register-concept-route",
+      "kind": "proof",
+      "file": "proof/concept-authoring/register-concept-route.md",
+      "title": "register-concept route — proof for task/concept-authoring/register-concept-route",
+      "summary": "Eight app.inject() tests against createRegisterConceptRoutesPlugin() with a mocked registerConcept dependency, proving the route's create-or-replace pass-through, its silence on authentication, and its DTO-level validation refusals.",
+      "task": "task/concept-authoring/register-concept-route"
     }
   ],
   "edges": [
@@ -108,6 +124,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/concept-authoring/register-concept-route",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-authoring/register-concept-route",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-authoring/register-concept-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-authoring/register-concept-route",
+      "to": "task/concept-authoring/register-concept-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-authoring/register-capability-route",
       "to": "implementation/capability-authoring/register-capability-route",
       "kind": "proves",
@@ -116,6 +156,12 @@
     {
       "from": "proof/concept-authoring/glossary-store-concept-write",
       "to": "implementation/concept-authoring/glossary-store-concept-write",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-authoring/register-concept-route",
+      "to": "implementation/concept-authoring/register-concept-route",
       "kind": "proves",
       "at": "the path"
     }
