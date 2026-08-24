@@ -1,5 +1,6 @@
 import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../errors/incomplete-connector-configuration.error.js';
+import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type {
   ConnectorConfiguration,
   ConnectorConfigurationRegistration,
@@ -66,6 +67,61 @@ export class ConnectorConfigurationRegistryService {
     const configuration = held.find((candidate) => candidate.connector === connector);
     return configuration === undefined ? { held: false, connector } : { held: true, configuration };
   }
+
+  /**
+   * list-connector-configurations
+   * (contracts/integration/connector-configuration-registry): every
+   * connector configuration currently registered, whole — read through the
+   * store on every call, never remembered — paginated per
+   * src/types/pagination.ts. The store answers every registration it holds
+   * in one read with no pagination of its own
+   * (connector-configuration-store.port.ts's own readConnectorConfigurations,
+   * the same operation registerConnector and readConnectorConfiguration
+   * already call above), so the offset/limit window and the total are both
+   * computed here, in memory, over that full array — mirroring
+   * capability-registry.service.ts's own listCapabilities exactly, which
+   * takes the identical approach over its own store's identical
+   * read-everything method rather than adding a second store-port method
+   * that would answer the same question. A registry holding no
+   * configurations answers the same way: slicing an empty array yields an
+   * empty page (data: [], total: 0), never an error.
+   */
+  public async listConnectorConfigurations(
+    pagination: PaginationRequest,
+  ): Promise<PaginatedResponse<ConnectorConfiguration>> {
+    const held = await this.store.readConnectorConfigurations();
+    const total = held.length;
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data,
+      total,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pageCountOf(total, pagination.limit),
+    };
+  }
+}
+
+/**
+ * The page count this limit divides total into (API-03) — 0 for a
+ * non-positive limit, since dividing by it would answer no page count a
+ * caller could page through at all; neither this task's own criteria nor
+ * src/types/pagination.ts states what a non-positive limit answers, so this
+ * is this service's own defensive floor, the same inference
+ * capability-registry.service.ts's own pageCountOf already made for its
+ * identical listing shape.
+ *
+ * Restated here rather than imported (MNT-03 divergence, disclosed):
+ * capability-registry.service.ts's own pageCountOf is a private, unexported
+ * function of a sibling registry service, and that module's own header
+ * comment already discloses making the identical choice for the identical
+ * reason — exporting it across a service-to-service boundary, or lifting it
+ * into a new shared module, is a change this task's own file set does not
+ * reach and would widen it beyond what list-connector-configurations-route
+ * was cut to do.
+ */
+function pageCountOf(total: number, limit: number): number {
+  return limit > 0 ? Math.ceil(total / limit) : 0;
 }
 
 /** A registration that declared the minimum required shape, as the type then knows it. */

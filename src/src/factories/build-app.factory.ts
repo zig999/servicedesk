@@ -66,6 +66,7 @@ type ComposedResources = {
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
   readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
+  readonly listConnectorConfigurations: ConnectorConfigurationRegistryService['listConnectorConfigurations'];
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
 };
@@ -90,12 +91,15 @@ type ComposedResources = {
  * ConnectorConfigurationRegistryService
  * (connector-configuration-registry.factory.ts's own
  * createConnectorConfigurationRegistry) and reuses that same instance for
- * both registerConnector
- * (task/connector-configuration-authoring/register-connector-route) and
+ * registerConnector
+ * (task/connector-configuration-authoring/register-connector-route),
  * readConnectorConfiguration
- * (task/connector-configuration-authoring/read-connector-configuration-route),
+ * (task/connector-configuration-authoring/read-connector-configuration-route)
+ * and listConnectorConfigurations
+ * (task/connector-configuration-authoring/list-connector-configurations-route),
  * the same shared-instance convention the capability and glossary registries
- * already hold, rather than a second instance built for the read.
+ * already hold, rather than a second instance built for the read or the
+ * listing.
  */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
   const capabilityRegistry = createCapabilityRegistry(connection);
@@ -110,6 +114,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
     readConnectorConfiguration: (connector) => connectorConfigurationRegistry.readConnectorConfiguration(connector),
+    listConnectorConfigurations: (pagination) => connectorConfigurationRegistry.listConnectorConfigurations(pagination),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
   };
@@ -128,8 +133,16 @@ function readDependencies(
   };
 }
 
-/** The seven listing routes' own dependencies, each carrying the published read it resolves against plus the same configured pagination bound (API-04) rather than a bound of its own. */
-function listDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'listCapabilities' | 'listCases' | 'listCaseVersions' | 'listHypotheses' | 'listHypothesisRevisions' | 'listVocabularyTerms' | 'listConcepts'> {
+/**
+ * The eight listing routes' own dependencies, each carrying the published
+ * read it resolves against plus the same configured pagination bound
+ * (API-04) rather than a bound of its own. listConnectorConfigurations
+ * (task/connector-configuration-authoring/list-connector-configurations-route)
+ * carries the same published ConnectorConfigurationRegistryService instance's
+ * listConnectorConfigurations method registerConnector and
+ * readConnectorConfiguration already share, rather than a second instance.
+ */
+function listDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'listCapabilities' | 'listCases' | 'listCaseVersions' | 'listHypotheses' | 'listHypothesisRevisions' | 'listVocabularyTerms' | 'listConcepts' | 'listConnectorConfigurations'> {
   const { pagination } = resources;
   return {
     listCapabilities: { capabilityQuery: resources.capabilityQuery, ...pagination },
@@ -139,6 +152,7 @@ function listDependencies(resources: ComposedResources): Pick<BuildAppDependenci
     listHypothesisRevisions: { caseQuery: resources.caseQuery, ...pagination },
     listVocabularyTerms: { glossaryQuery: resources.glossaryQuery, ...pagination },
     listConcepts: { glossaryQuery: resources.glossaryQuery, ...pagination },
+    listConnectorConfigurations: { listConnectorConfigurations: resources.listConnectorConfigurations, ...pagination },
   };
 }
 

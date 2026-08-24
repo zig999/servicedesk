@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-authoring-list-connector-configurations-route-build-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-24T05:21:03.700+00:00",
+      "ended_at": "2026-08-24T05:21:07.451+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-24T05:21:07.451+00:00",
+      "ended_at": "2026-08-24T05:21:10.578+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-24T05:21:10.578+00:00",
+      "ended_at": "2026-08-24T05:21:13.505+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-24T05:21:13.505+00:00",
+      "ended_at": "2026-08-24T05:21:13.875+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

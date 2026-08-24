@@ -38,6 +38,7 @@ import type { ProductionDiagnoseCall } from '../../../factories/production-diagn
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { ListConnectorConfigurationsControllerDependencies } from '../../../http/list-connector-configurations.controller.js';
 import type { ReadConnectorConfigurationControllerDependencies } from '../../../http/read-connector-configuration.controller.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
@@ -184,6 +185,15 @@ function stubReadConnectorConfiguration(): ReadConnectorConfigurationControllerD
   };
 }
 
+/** A minimally valid ListConnectorConfigurationsControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves an empty page so list-connector-configurations-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubListConnectorConfigurations(): ListConnectorConfigurationsControllerDependencies {
+  return {
+    listConnectorConfigurations: async () => emptyPage(),
+    defaultLimit: 10,
+    maxLimit: 100,
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -195,11 +205,10 @@ function stubReadConnectorConfiguration(): ReadConnectorConfigurationControllerD
 function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): BuildAppDependencies {
   const caseQuery = stubCaseQuery(minimalCase());
   const glossaryQuery = stubGlossaryQuery();
-  const pagination = { defaultLimit: 10, maxLimit: 100 };
   return {
     diagnose,
     readCapability: { capabilityQuery: stubCapabilityQuery() },
-    listCapabilities: { capabilityQuery: stubCapabilityQuery(), ...pagination },
+    listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
     updateDraft: { caseStore: stubCaseStore(), caseQuery },
@@ -209,17 +218,18 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     placeHypothesis: { placeHypothesis: async () => undefined },
     removeHypothesis: { removeHypothesis: async () => undefined },
     readCase: { caseQuery },
-    listCases: { caseQuery, ...pagination },
-    listCaseVersions: { caseQuery, ...pagination },
-    listHypotheses: { caseQuery, ...pagination },
-    listHypothesisRevisions: { caseQuery, ...pagination },
+    listCases: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listCaseVersions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listHypotheses: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listHypothesisRevisions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
     readVocabularyTerm: { glossaryQuery },
-    listVocabularyTerms: { glossaryQuery, ...pagination },
+    listVocabularyTerms: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
     readConcept: { glossaryQuery },
-    listConcepts: { glossaryQuery, ...pagination },
+    listConcepts: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
     registerConcept: stubRegisterConcept(),
     registerConnector: stubRegisterConnector(),
     readConnectorConfiguration: stubReadConnectorConfiguration(),
+    listConnectorConfigurations: stubListConnectorConfigurations(),
   };
 }
 
