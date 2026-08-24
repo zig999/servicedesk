@@ -72,6 +72,14 @@
       "title": "Connector configuration create/edit screen proof",
       "summary": "Three new spec files plus a shared test-support module, and targeted extensions to three pre-existing spec files (error-ui-state.spec.ts, app-shell.spec.ts, route-tree.spec.ts), prove all five of connector-configuration-create-edit-form's criteria and the implementation's own disclosed inferences; the row-Edit no-second-fetch test is now scoped to the connector-configurations list path itself, so it stays true once a sibling Test-panel section reads its own unrelated paths inside the same dialog.",
       "task": "task/connector-configuration-authoring/connector-configuration-create-edit-form"
+    },
+    {
+      "id": "proof/connector-configuration-authoring/test-connector-debug-panel",
+      "kind": "proof",
+      "file": "proof/connector-configuration-authoring/test-connector-debug-panel.md",
+      "title": "Proof for the Test-connector debug panel on the Connector Configuration editor",
+      "summary": "Six new spec files (plus one shared test-support module) proving all seven of this task's criteria, its own disclosed inferences, the explicit edit-mode-only fact, and the edge cases its two dependent reads and its one-shot dispatch raise.",
+      "task": "task/connector-configuration-authoring/test-connector-debug-panel"
     }
   ],
   "edges": [
@@ -234,6 +242,12 @@
     {
       "from": "proof/connector-configuration-authoring/connector-configuration-create-edit-form",
       "to": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "implementation/connector-configuration-authoring/test-connector-debug-panel",
       "kind": "proves",
       "at": "the path"
     }
