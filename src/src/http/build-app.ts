@@ -54,6 +54,8 @@ import type { ReadCapabilityControllerDependencies } from './read-capability.con
 import { createReadCapabilityRoutesPlugin } from './read-capability.routes.js';
 import type { ReadCaseControllerDependencies } from './read-case.controller.js';
 import { createReadCaseRoutesPlugin } from './read-case.routes.js';
+import type { ReadConnectorConfigurationControllerDependencies } from './read-connector-configuration.controller.js';
+import { createReadConnectorConfigurationRoutesPlugin } from './read-connector-configuration.routes.js';
 import type { ReadConceptControllerDependencies } from './read-concept.controller.js';
 import { createReadConceptRoutesPlugin } from './read-concept.routes.js';
 import type { ReadVocabularyTermControllerDependencies } from './read-vocabulary-term.controller.js';
@@ -79,17 +81,20 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * pre-existing diagnose route: one named field per route, each carrying
  * exactly that route's own controller-dependencies type, so a caller must
  * hand this function a fully wired dependency for every one of the
- * twenty-two routes it registers — no route here is optional.
+ * twenty-three routes it registers — no route here is optional.
  * registerCapability (task/capability-authoring/register-capability-route)
  * was the twentieth; registerConcept
  * (task/concept-authoring/register-concept-route) was the twenty-first;
  * registerConnector
- * (task/connector-configuration-authoring/register-connector-route) is the
- * twenty-second, added on top of it.
+ * (task/connector-configuration-authoring/register-connector-route) was the
+ * twenty-second; readConnectorConfiguration
+ * (task/connector-configuration-authoring/read-connector-configuration-route)
+ * is the twenty-third, added on top of it.
  */
 export type BuildAppDependencies = {
   readonly diagnose: DiagnoseControllerDependencies;
   readonly readCapability: ReadCapabilityControllerDependencies;
+  readonly readConnectorConfiguration: ReadConnectorConfigurationControllerDependencies;
   readonly listCapabilities: ListCapabilitiesControllerDependencies;
   readonly registerCapability: RegisterCapabilityControllerDependencies;
   readonly createDraft: CreateDraftControllerDependencies;
@@ -122,6 +127,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
   return [
     createDiagnoseRoutesPlugin(dependencies.diagnose),
     createReadCapabilityRoutesPlugin(dependencies.readCapability),
+    createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
     createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
     createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
     createCreateDraftRoutesPlugin(dependencies.createDraft),
@@ -147,7 +153,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
 
 /**
  * Assembles the whole HTTP surface this initiative exposes: one Fastify
- * instance with every one of the twenty-two route plugins registered and the
+ * instance with every one of the twenty-three route plugins registered and the
  * one generic error handler set (COR-04, SEC-04). Constructs the Fastify
  * instance itself — this is the composition boundary ARC-02 expects, not a
  * service or a controller — but none of any route's own dependencies:

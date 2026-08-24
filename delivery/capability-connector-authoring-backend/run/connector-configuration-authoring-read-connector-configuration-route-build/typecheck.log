@@ -1,0 +1,5 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(189,3): error TS2741: Property 'readConnectorConfiguration' is missing in type '{ diagnose: DiagnoseControllerDependencies; readCapability: { capabilityQuery: ICapabilityQuery; }; listCapabilities: { defaultLimit: number; maxLimit: number; capabilityQuery: ICapabilityQuery; }; ... 18 more ...; registerConnector: RegisterConnectorControllerDependencies; }' but required in type 'BuildAppDependencies'.

@@ -26,6 +26,14 @@
       "task": "task/concept-authoring/register-concept-route"
     },
     {
+      "id": "implementation/connector-configuration-authoring/read-connector-configuration-route",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-authoring/read-connector-configuration-route.md",
+      "title": "Expose read-connector-configuration as a read HTTP route",
+      "summary": "Adds GET /v1/connectors/{connector}, backed by the existing ConnectorConfigurationRegistryService, completing the build-app wiring a prior task left incomplete.",
+      "task": "task/connector-configuration-authoring/read-connector-configuration-route"
+    },
+    {
       "id": "implementation/connector-configuration-authoring/register-connector-route",
       "kind": "implementation",
       "file": "implementation/connector-configuration-authoring/register-connector-route.md",
@@ -56,6 +64,14 @@
       "title": "register-concept route — proof for task/concept-authoring/register-concept-route",
       "summary": "Eight app.inject() tests against createRegisterConceptRoutesPlugin() with a mocked registerConcept dependency, proving the route's create-or-replace pass-through, its silence on authentication, and its DTO-level validation refusals.",
       "task": "task/concept-authoring/register-concept-route"
+    },
+    {
+      "id": "proof/connector-configuration-authoring/read-connector-configuration-route",
+      "kind": "proof",
+      "file": "proof/connector-configuration-authoring/read-connector-configuration-route.md",
+      "title": "GET /v1/connectors/{connector} read-connector-configuration route",
+      "summary": "Four app.inject() tests against createReadConnectorConfigurationRoutesPlugin with a stood-in readConnectorConfiguration, proving both stated criteria plus the route's own not-found mapping and empty-path validation.",
+      "task": "task/connector-configuration-authoring/read-connector-configuration-route"
     },
     {
       "id": "proof/connector-configuration-authoring/register-connector-route",
@@ -164,6 +180,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-authoring/register-connector-route",
       "to": "domain/integration/connector-configuration",
       "kind": "encodes",
@@ -214,6 +254,12 @@
     {
       "from": "proof/concept-authoring/register-concept-route",
       "to": "implementation/concept-authoring/register-concept-route",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "implementation/connector-configuration-authoring/read-connector-configuration-route",
       "kind": "proves",
       "at": "the path"
     },

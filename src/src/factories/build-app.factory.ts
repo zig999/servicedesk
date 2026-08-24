@@ -27,7 +27,10 @@ import type { CapabilityRegistryService } from '../capability-registry/capabilit
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ICaseStore } from '../case/case-store.port.js';
 import type { Env } from '../config/env.js';
-import type { ConnectorConfigurationRegistryService } from '../connector-registry/connector-configuration-registry.service.js';
+import type {
+  ConnectorConfigurationRegistryService,
+  ConnectorConfigurationResolution,
+} from '../connector-registry/connector-configuration-registry.service.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
@@ -62,6 +65,7 @@ type ComposedResources = {
   readonly glossaryQuery: IGlossaryQuery;
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
+  readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
 };
@@ -85,11 +89,13 @@ type ComposedResources = {
  * instance built through createGlossaryQuery. Builds one
  * ConnectorConfigurationRegistryService
  * (connector-configuration-registry.factory.ts's own
- * createConnectorConfigurationRegistry) for registerConnector
- * (task/connector-configuration-authoring/register-connector-route) — this
- * initiative exposes no read or list route over connector configurations
- * yet, so this is that service's only field here, unlike the capability and
- * glossary registries' own shared instance.
+ * createConnectorConfigurationRegistry) and reuses that same instance for
+ * both registerConnector
+ * (task/connector-configuration-authoring/register-connector-route) and
+ * readConnectorConfiguration
+ * (task/connector-configuration-authoring/read-connector-configuration-route),
+ * the same shared-instance convention the capability and glossary registries
+ * already hold, rather than a second instance built for the read.
  */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
   const capabilityRegistry = createCapabilityRegistry(connection);
@@ -103,18 +109,22 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     glossaryQuery: glossary,
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
+    readConnectorConfiguration: (connector) => connectorConfigurationRegistry.readConnectorConfiguration(connector),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
   };
 }
 
-/** The four read-one routes' own dependencies: read-capability, read-case, read-vocabulary-term and read-concept, each carrying only the published read it resolves against. */
-function readDependencies(resources: ComposedResources): Pick<BuildAppDependencies, 'readCapability' | 'readCase' | 'readVocabularyTerm' | 'readConcept'> {
+/** The five read-one routes' own dependencies: read-capability, read-case, read-vocabulary-term, read-concept and read-connector-configuration, each carrying only the published read it resolves against. */
+function readDependencies(
+  resources: ComposedResources,
+): Pick<BuildAppDependencies, 'readCapability' | 'readCase' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
   return {
     readCapability: { capabilityQuery: resources.capabilityQuery },
     readCase: { caseQuery: resources.caseQuery },
     readVocabularyTerm: { glossaryQuery: resources.glossaryQuery },
     readConcept: { glossaryQuery: resources.glossaryQuery },
+    readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfiguration },
   };
 }
 

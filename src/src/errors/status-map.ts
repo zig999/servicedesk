@@ -9,7 +9,11 @@
 //
 // Grouped by what the refusal means for the caller: a resource that plainly
 // does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError,
-// ConceptNotHeldError, VocabularyTermNotHeldError); an operation the named resource's own current state forbids — a second open
+// ConceptNotHeldError, VocabularyTermNotHeldError,
+// ConnectorConfigurationNotFoundError — the fifth, once
+// read-connector-configuration is exposed as a route,
+// task/connector-configuration-authoring/read-connector-configuration-route);
+// an operation the named resource's own current state forbids — a second open
 // draft, an already occupied manifest position, a mutation against anything
 // but a draft version, a concept a different capability already answers
 // (ConceptAlreadyAnsweredError, rules/integration/one-capability-answers-one-concept)
@@ -45,6 +49,7 @@ import { CaseVersionNotReleasableError } from './case-version-not-releasable.err
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
+import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
@@ -59,13 +64,14 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * thirteen extends another, so that never arises today.
+ * fourteen extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
   [ConceptNotAnsweredError, 404],
   [ConceptNotHeldError, 404],
   [VocabularyTermNotHeldError, 404],
+  [ConnectorConfigurationNotFoundError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],

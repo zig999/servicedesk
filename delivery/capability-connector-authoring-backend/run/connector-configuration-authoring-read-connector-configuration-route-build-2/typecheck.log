@@ -1,0 +1,7 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(180,45): error TS2322: Type 'Promise<{ connector: string; configuration: {}; }>' is not assignable to type 'Promise<ConnectorConfigurationResolution>'.
+  Type '{ connector: string; configuration: {}; }' is not assignable to type 'ConnectorConfigurationResolution'.
+    Property 'held' is missing in type '{ connector: string; configuration: {}; }' but required in type '{ readonly held: false; readonly connector: string; }'.
