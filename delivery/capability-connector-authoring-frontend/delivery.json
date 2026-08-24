@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-authoring/json-textarea-editor",
+      "kind": "implementation",
+      "file": "implementation/capability-authoring/json-textarea-editor.md",
+      "title": "Shared JSON beautify/minify textarea control",
+      "summary": "Adds a self-contained, reusable JSON-aware textarea field component that beautifies on demand, reports validity with every change, and exposes a pure minify function for submission.",
+      "task": "task/capability-authoring/json-textarea-editor"
+    },
+    {
+      "id": "proof/capability-authoring/json-textarea-editor",
+      "kind": "proof",
+      "file": "proof/capability-authoring/json-textarea-editor.md",
+      "title": "Proof for the shared JSON beautify/minify textarea control",
+      "summary": "Thirteen tests against JsonTextareaField and getJsonTextareaMinifiedValue, proving all five stated criteria plus the implementation's own disclosed inferences.",
+      "task": "task/capability-authoring/json-textarea-editor"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-authoring/json-textarea-editor",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-authoring/json-textarea-editor",
+      "to": "task/capability-authoring/json-textarea-editor",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-authoring/json-textarea-editor",
+      "to": "implementation/capability-authoring/json-textarea-editor",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

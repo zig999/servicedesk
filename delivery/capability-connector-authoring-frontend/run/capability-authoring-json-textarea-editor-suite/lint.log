@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/shared/components/json-textarea-field.spec.ts
+   57:28  error  Do not use any type assertions                                                                                                                  @typescript-eslint/consistent-type-assertions
+  118:11  error  `first` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+✖ 2 problems (2 errors, 0 warnings)
+

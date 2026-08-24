@@ -1,0 +1,74 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/capability-authoring-json-textarea-editor-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-24T07:36:00.860+00:00",
+      "ended_at": "2026-08-24T07:36:06.998+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-24T07:36:06.998+00:00",
+      "ended_at": "2026-08-24T07:36:10.837+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-24T07:36:10.837+00:00",
+      "ended_at": "2026-08-24T07:36:13.714+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-08-24T07:36:13.714+00:00",
+      "ended_at": "2026-08-24T07:36:14.036+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-08-24T07:36:14.036+00:00",
+      "ended_at": "2026-08-24T07:36:16.744+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-08-24T07:36:16.744+00:00",
+      "ended_at": "2026-08-24T07:36:21.039+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-24T07:36:21.039+00:00",
+      "ended_at": "2026-08-24T07:36:21.347+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
