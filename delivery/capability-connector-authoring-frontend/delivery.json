@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-authoring/connector-configuration-create-edit-form"
     },
     {
+      "id": "implementation/connector-configuration-authoring/test-connector-debug-panel",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-authoring/test-connector-debug-panel.md",
+      "title": "Test-connector debug panel on the Connector Configuration editor",
+      "summary": "A new Test section, rendered only in edit mode of the Connector Configuration dialog, that assembles a subject by hand through a registered capability naming the connector and shows the raw request sent and raw response received from one diagnostic POST /v1/test-connector call.",
+      "task": "task/connector-configuration-authoring/test-connector-debug-panel"
+    },
+    {
       "id": "proof/capability-authoring/capability-create-edit-form",
       "kind": "proof",
       "file": "proof/capability-authoring/capability-create-edit-form.md",
@@ -178,6 +186,30 @@
     {
       "from": "implementation/connector-configuration-authoring/connector-configuration-create-edit-form",
       "to": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "task/connector-configuration-authoring/test-connector-debug-panel",
       "kind": "implements",
       "at": "the path"
     },

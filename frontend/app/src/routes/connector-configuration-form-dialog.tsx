@@ -5,6 +5,7 @@ import {
   type ConnectorConfigurationFormTarget,
 } from "../hooks/use-connector-configuration-form";
 import { ConnectorConfigurationFormFields } from "./connector-configuration-form-fields";
+import { ConnectorTestPanel } from "./connector-test-panel";
 
 /**
  * The Connector Configuration create/edit form's own Dialog
@@ -25,6 +26,16 @@ import { ConnectorConfigurationFormFields } from "./connector-configuration-form
  * Unlike capability-form-dialog.tsx, this form needs no loading/load-error
  * phase of its own: it reads no dependent vocabulary, so
  * useConnectorConfigurationForm always returns a ready state.
+ *
+ * In edit mode this Dialog also renders ConnectorTestPanel
+ * (task/connector-configuration-authoring/test-connector-debug-panel),
+ * scoped to `target.connectorConfiguration.connector` -- a debug-style Test
+ * section reached from this same screen, cut apart from this create/edit
+ * task because issuing a live diagnostic call and rendering raw transport
+ * detail is a distinct falsifiable outcome from persisting a configuration.
+ * Never rendered in create mode: nothing yet names the connector being
+ * created as its own, so there is no registered capability to test through
+ * yet (rules/integration/a-connector-configuration-is-tested-through-a-registered-capability).
  */
 
 export type ConnectorConfigurationFormDialogProps = {
@@ -65,6 +76,9 @@ export function ConnectorConfigurationFormDialog({
           isSubmitting={state.isSubmitting}
           onSubmit={state.onSubmit}
         />
+        {target.mode === "edit" && (
+          <ConnectorTestPanel connector={target.connectorConfiguration.connector} />
+        )}
       </DialogContent>
     </Dialog>
   );

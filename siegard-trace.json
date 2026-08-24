@@ -718,6 +718,18 @@
       "digest": "sha256:d11eda4e606bb3fa2f1040aa715b430b82bdb895aed522f1c920a37a8c0d4292",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
+          "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:e6aa6e680b17148c23115ac497b844de6adce6b2542e7c9d43566b3a381479e6"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-result.tsx",
+          "digest": "sha256:e417c784b2f7c3509f5da01a602b4c3f008a5c95c319a4bb5ae4003762f3f140"
+        },
+        {
           "path": "src/src/http/dto/test-connector.dto.ts",
           "digest": "sha256:a71694baf6e6e9eb3ff63958e01710134e80a102c977ed1fbbb88fc29d1b59dc"
         },
@@ -1732,6 +1744,18 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configurations.ts",
           "digest": "sha256:ea93034a5b187115cc9d81e737ba99c71b042f680dde8daf6ddfdf72615d098c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
+          "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
+          "digest": "sha256:7a2dd7f450c449df3fb0a4e4adea790446a060d6bfdb93c64868f8e24f2a4677"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-test-panel.tsx",
+          "digest": "sha256:327c0cf48ba029d76a0b92c148ad408322d5f61666184481fdf6cd5c9976108e"
         },
         {
           "path": "frontend/app/src/services/connector-configuration-form-schema.ts",
@@ -3051,6 +3075,14 @@
       "node": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
       "digest": "sha256:02e9a879629b9915bcdf4734377dea99fd8dfe62e74a2decc61baf43621dbd7a",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
+          "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
+          "digest": "sha256:7a2dd7f450c449df3fb0a4e4adea790446a060d6bfdb93c64868f8e24f2a4677"
+        },
         {
           "path": "src/src/errors/capability-connector-mismatch.error.ts",
           "digest": "sha256:dadfa511e42a8f551e2894b3615bae0b99c996a1cff8f9e2b85acd6dc4ae0ed9"

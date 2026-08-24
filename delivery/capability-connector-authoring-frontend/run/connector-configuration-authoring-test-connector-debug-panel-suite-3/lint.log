@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-test-panel-sample-input.spec.ts
+  38:51  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  38:51  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 2 problems (2 errors, 0 warnings)
+

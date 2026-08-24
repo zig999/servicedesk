@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-authoring-test-connector-debug-panel-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-24T17:02:44.964+00:00",
+      "ended_at": "2026-08-24T17:02:52.694+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

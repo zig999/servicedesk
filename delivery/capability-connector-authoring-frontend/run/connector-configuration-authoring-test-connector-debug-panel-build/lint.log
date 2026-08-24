@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/hooks/use-test-connector-panel.ts
+  119:10  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-test-panel-fields.tsx
+  114:27  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 2 problems (2 errors, 0 warnings)
+
