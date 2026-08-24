@@ -112,6 +112,34 @@
         {
           "path": "frontend/app/src/shared/components/app-shell.tsx",
           "digest": "sha256:d20d98a0e48388f5316837f1825e3ff06ac7ad722f1bfcbac94ae34b5da86227"
+        },
+        {
+          "path": "src/src/http/list-connector-configurations.routes.ts",
+          "digest": "sha256:4fed3787c5d0de747989250b2f592188da6d6bb2fc8a2f1dd9943a00acc305cd"
+        },
+        {
+          "path": "src/src/http/read-connector-configuration.routes.ts",
+          "digest": "sha256:2ca2e764472bb015c8860b44b7a6630ff27f3a083fc3b622c3206391707646be"
+        },
+        {
+          "path": "src/src/http/register-capability.routes.ts",
+          "digest": "sha256:f1ee8bd008d4bff3c26358c91d543079e1ea98c76868b69d078178fa4d3fdec8"
+        },
+        {
+          "path": "src/src/http/register-concept.routes.ts",
+          "digest": "sha256:390f4120bdf6132b0804f85739b39572fa35131ad4c439c4cd442dc68ab6f8c3"
+        },
+        {
+          "path": "src/src/http/register-connector.routes.ts",
+          "digest": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:2fb7beefca97da0077bda4c78ee578583cfee2a0b370b661d7209550360e25ee"
+        },
+        {
+          "path": "src/src/http/test-connector.routes.ts",
+          "digest": "sha256:35ffe0e3a85fe2f3d577f05977a62787530a3e8224d3a0dde69c54a8a0983973"
         }
       ]
     },
@@ -432,6 +460,48 @@
       ]
     },
     {
+      "node": "contracts/glossary/glossary-authoring",
+      "digest": "sha256:0f497ac782b243eeb0f26f95468bc3f1f79afa7661b8c86490d3c38e73d723a9",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-concept-form.ts",
+          "digest": "sha256:5238d9fd2a4a68b48c1ab28b76ec839a606bbdb82f96996163967ba3b036739c"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:ce084876a1e7e504e967c62f759c78fcfb88308a6d85ac7a40291115e7f058dd"
+        },
+        {
+          "path": "src/src/glossary/glossary-store.port.ts",
+          "digest": "sha256:ae265f6976d8e9ad94dc851ea3526c6446cd1d2145acd62018743cc5097bed54"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:b0a43f894a03e8887b27c00671efea5476177032ff8ad9b0e5bce530622a3163"
+        },
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:2f4d28421766976a0aa9034dcf62695af7b6f9aab32e650884cc16e1d194f6d9"
+        },
+        {
+          "path": "src/src/http/dto/register-concept.dto.ts",
+          "digest": "sha256:2f4c4a06c9b9963aa38235bf6e6953a6b5cafcd7f26e640c79c2cd8d52ea50c2"
+        },
+        {
+          "path": "src/src/http/register-concept.controller.ts",
+          "digest": "sha256:7f17a7b898ca46d8b1245bc94db95510babc0ad00c1a3030b93bcb6e10bd23f5"
+        },
+        {
+          "path": "src/src/http/register-concept.routes.ts",
+          "digest": "sha256:390f4120bdf6132b0804f85739b39572fa35131ad4c439c4cd442dc68ab6f8c3"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:ce2a2e7fa2d9afc985f7fc48a64f67f74c5b522ba7b598cf7105a63fe9b1c8f6"
+        }
+      ]
+    },
+    {
       "node": "contracts/glossary/glossary-query",
       "digest": "sha256:1c1bc05c2d40b57007898c78a106f09c34fb5035df963e779b8e8f1b9c402439",
       "files": [
@@ -515,7 +585,7 @@
     },
     {
       "node": "contracts/integration/capability-registry",
-      "digest": "sha256:749480c6e36b33f287c542fd73eabde7d94b2de1f1a7a3b15b51d5105f1f728d",
+      "digest": "sha256:18860779585499ec3ed7e88fcdd69b805b0359c90de8efe5081fffec06f70afd",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -538,6 +608,10 @@
           "digest": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261"
         },
         {
+          "path": "src/src/http/dto/register-capability.dto.ts",
+          "digest": "sha256:2713cc131f7dd5948c129e73e5097c9ed11803c2579c49f0ebfe6af0ed987771"
+        },
+        {
           "path": "src/src/http/list-capabilities.controller.ts",
           "digest": "sha256:62011d396ff589677df1c917a3f4547d3e205a949c38371e7667998e281ee731"
         },
@@ -552,6 +626,14 @@
         {
           "path": "src/src/http/read-capability.routes.ts",
           "digest": "sha256:9c7c34dd54d3103483bf0f0e806de0abefd6fe60008ca177cfdda6b4085c5170"
+        },
+        {
+          "path": "src/src/http/register-capability.controller.ts",
+          "digest": "sha256:0c3327166b6aa2ae2924cb578c21c1cc8024d2deca281424ba66b9295c0edc9d"
+        },
+        {
+          "path": "src/src/http/register-capability.routes.ts",
+          "digest": "sha256:f1ee8bd008d4bff3c26358c91d543079e1ea98c76868b69d078178fa4d3fdec8"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -578,6 +660,62 @@
         {
           "path": "src/src/investigation/observation-source.port.ts",
           "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+        }
+      ]
+    },
+    {
+      "node": "contracts/integration/connector-configuration-registry",
+      "digest": "sha256:9dc64da49a3ed25dc5d5713971a1f01d8d7565fa2e9d5710f1c85a472889bc5d",
+      "files": [
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:55f4a8d2d30b83fe370ba0872d8cde2bda4384b828d4a3dd3d9733881ff87a07"
+        },
+        {
+          "path": "src/src/http/dto/list-connector-configurations.dto.ts",
+          "digest": "sha256:2f0bdbc64d687deb318b5817de21c6c1cc4288a6bf26b874d5acb50c7cd32c11"
+        },
+        {
+          "path": "src/src/http/dto/read-connector-configuration.dto.ts",
+          "digest": "sha256:43e1fa2761457f29840240ce58cbd844344d582e3486f2521336d3a4d1bbf8f6"
+        },
+        {
+          "path": "src/src/http/list-connector-configurations.controller.ts",
+          "digest": "sha256:f6080b7e2b64ef4c186326581ec0ada3cea68f4ff2abfe5934d6d8d0da33eff6"
+        },
+        {
+          "path": "src/src/http/list-connector-configurations.routes.ts",
+          "digest": "sha256:4fed3787c5d0de747989250b2f592188da6d6bb2fc8a2f1dd9943a00acc305cd"
+        },
+        {
+          "path": "src/src/http/read-connector-configuration.controller.ts",
+          "digest": "sha256:7766a08a2cd7c35e2ca224e3de0170f2067ec8a8dccc367ae956b802cf9d5162"
+        },
+        {
+          "path": "src/src/http/read-connector-configuration.routes.ts",
+          "digest": "sha256:2ca2e764472bb015c8860b44b7a6630ff27f3a083fc3b622c3206391707646be"
+        },
+        {
+          "path": "src/src/http/register-connector.routes.ts",
+          "digest": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b"
+        }
+      ]
+    },
+    {
+      "node": "contracts/integration/connector-diagnostics",
+      "digest": "sha256:d11eda4e606bb3fa2f1040aa715b430b82bdb895aed522f1c920a37a8c0d4292",
+      "files": [
+        {
+          "path": "src/src/http/dto/test-connector.dto.ts",
+          "digest": "sha256:a71694baf6e6e9eb3ff63958e01710134e80a102c977ed1fbbb88fc29d1b59dc"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:2fb7beefca97da0077bda4c78ee578583cfee2a0b370b661d7209550360e25ee"
+        },
+        {
+          "path": "src/src/http/test-connector.routes.ts",
+          "digest": "sha256:35ffe0e3a85fe2f3d577f05977a62787530a3e8224d3a0dde69c54a8a0983973"
         }
       ]
     },
@@ -1100,6 +1238,10 @@
       "digest": "sha256:bacfce81580dad7e4bd19448c8c7e1474f62f07d0bda54065cbc79cda121e37a",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-concept-form.ts",
+          "digest": "sha256:5238d9fd2a4a68b48c1ab28b76ec839a606bbdb82f96996163967ba3b036739c"
+        },
+        {
           "path": "frontend/app/src/hooks/use-concept-options.ts",
           "digest": "sha256:0b41a4ba8976cb7247eb521575cd836bdbf31d4f32f68da4be078d880982e93a"
         },
@@ -1116,12 +1258,20 @@
           "digest": "sha256:b04512985972feba5c212d219b0f18b77462b53e4baf1be855c302194c526b5e"
         },
         {
+          "path": "frontend/app/src/routes/concept-form-fields.tsx",
+          "digest": "sha256:eccc3a1ce190dd3a6ba0981a730c1e259ed88de0c4e0763b9a76908cbe84d9d3"
+        },
+        {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:024d05b3e4329686ef2e2666096f21002eafdb96e1b96c68c8f2d8d803b0e149"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
           "digest": "sha256:7a1bcac8c7933a9f276e152adc3caec78a6471dd3b1a3b2876bc5ea128d92154"
+        },
+        {
+          "path": "frontend/app/src/services/concept-form-schema.ts",
+          "digest": "sha256:a2fce50852ea588b376dad46d2f92e8f8fe5357870ee4bde177bf5ecff09384d"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -1144,8 +1294,12 @@
           "digest": "sha256:45043efe83cc0b2e0e6a2da8d1fad52bb30da04bc130d007badd6c2d3af73592"
         },
         {
+          "path": "src/src/glossary/glossary-store.port.ts",
+          "digest": "sha256:ae265f6976d8e9ad94dc851ea3526c6446cd1d2145acd62018743cc5097bed54"
+        },
+        {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:89f190b7e99bc0e554f96efbb6efb5011229a09e72094ea81d6cb5c6be1047a6"
+          "digest": "sha256:b0a43f894a03e8887b27c00671efea5476177032ff8ad9b0e5bce530622a3163"
         },
         {
           "path": "src/src/glossary/terms.ts",
@@ -1156,12 +1310,24 @@
           "digest": "sha256:a68422d689635559704488c4a434b1eba158d8cf038d607be22b8f2c9dee2f25"
         },
         {
+          "path": "src/src/http/dto/register-concept.dto.ts",
+          "digest": "sha256:2f4c4a06c9b9963aa38235bf6e6953a6b5cafcd7f26e640c79c2cd8d52ea50c2"
+        },
+        {
           "path": "src/src/http/list-concepts.controller.ts",
           "digest": "sha256:15f869ab7a7229cc4d4ca97ca9aa77811e8521681603bdc7e9295f4565cd0692"
         },
         {
+          "path": "src/src/http/register-concept.controller.ts",
+          "digest": "sha256:7f17a7b898ca46d8b1245bc94db95510babc0ad00c1a3030b93bcb6e10bd23f5"
+        },
+        {
+          "path": "src/src/http/register-concept.routes.ts",
+          "digest": "sha256:390f4120bdf6132b0804f85739b39572fa35131ad4c439c4cd442dc68ab6f8c3"
+        },
+        {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
+          "digest": "sha256:ce2a2e7fa2d9afc985f7fc48a64f67f74c5b522ba7b598cf7105a63fe9b1c8f6"
         }
       ]
     },
@@ -1439,11 +1605,11 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
-          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+          "digest": "sha256:fd6debc568e53c6741cdb8c8d0024ff9ed7f260e35db208967cf6e6c017155ee"
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
@@ -1491,7 +1657,7 @@
     },
     {
       "node": "domain/integration/capability-registry",
-      "digest": "sha256:6cedee97d1503dfb4d338bbf9bab53895d563d095f09b8cde1314468d7d4e5a7",
+      "digest": "sha256:b1817ae8b2ee4910b7789e107056dd0b3532d9039487b1690409c0e1772d58f2",
       "files": [
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -1499,15 +1665,75 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
         {
           "path": "src/src/http/read-capability.controller.ts",
           "digest": "sha256:ccefe195e0bab09d970de14ab0432877d22572c2fcb5fb7467e7ec1c487344fd"
         },
         {
+          "path": "src/src/http/register-capability.controller.ts",
+          "digest": "sha256:0c3327166b6aa2ae2924cb578c21c1cc8024d2deca281424ba66b9295c0edc9d"
+        },
+        {
+          "path": "src/src/http/register-capability.routes.ts",
+          "digest": "sha256:f1ee8bd008d4bff3c26358c91d543079e1ea98c76868b69d078178fa4d3fdec8"
+        },
+        {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
           "digest": "sha256:64c2d2348c43659dbdb7854e152cacbb244b5838aa43fe76360bcb5c849738cb"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration",
+      "digest": "sha256:31857462e8f760445ae45b0f851761c07745195cfab341f38e56e326e3764971",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:de4b6b6a1a0ff595e7bd19928b6505a43e94cf65fd9d8ccc86a8cc56cac677e9"
+        },
+        {
+          "path": "src/src/http/dto/read-connector-configuration.dto.ts",
+          "digest": "sha256:43e1fa2761457f29840240ce58cbd844344d582e3486f2521336d3a4d1bbf8f6"
+        },
+        {
+          "path": "src/src/http/dto/register-connector.dto.ts",
+          "digest": "sha256:d535a049d4f93f714411fbf8fbefae1b0f95c836af8d9ae6cbedf902c2badc95"
+        },
+        {
+          "path": "src/src/http/list-connector-configurations.controller.ts",
+          "digest": "sha256:f6080b7e2b64ef4c186326581ec0ada3cea68f4ff2abfe5934d6d8d0da33eff6"
+        },
+        {
+          "path": "src/src/http/read-connector-configuration.controller.ts",
+          "digest": "sha256:7766a08a2cd7c35e2ca224e3de0170f2067ec8a8dccc367ae956b802cf9d5162"
+        },
+        {
+          "path": "src/src/http/register-connector.controller.ts",
+          "digest": "sha256:a535b4e167696c8590cc71c5e79a452f5d2a57561d80308cf3d7980537d2da33"
+        },
+        {
+          "path": "src/src/http/register-connector.routes.ts",
+          "digest": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b"
+        }
+      ]
+    },
+    {
+      "node": "domain/integration/connector-configuration-registry",
+      "digest": "sha256:28ffba3415b410c219dd54735ae3081ea79ef04c6253052f728af8d6321c8535",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:de4b6b6a1a0ff595e7bd19928b6505a43e94cf65fd9d8ccc86a8cc56cac677e9"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:55f4a8d2d30b83fe370ba0872d8cde2bda4384b828d4a3dd3d9733881ff87a07"
+        },
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:2a096708578d61965b676319c431c67190b5a58c805e475df1a773ddba9d927b"
         }
       ]
     },
@@ -2663,15 +2889,33 @@
       "files": [
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
-          "digest": "sha256:f473e56a19c6fd54769dd0254977c84e8985332235b65859bbb23091a6f07302"
+          "digest": "sha256:fd6debc568e53c6741cdb8c8d0024ff9ed7f260e35db208967cf6e6c017155ee"
         },
         {
           "path": "src/src/errors/incomplete-capability-contract.error.ts",
           "digest": "sha256:669b4e23f0539519c89c6b361deb5d4d1d9132630e685a3e6ec713d9df4083f6"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-capability-declares-well-formed-schemas",
+      "digest": "sha256:c6847a232e175a96e787bd03ed2c54067e5829befe34a3d4ee213c8862aae7d1",
+      "files": [
+        {
+          "path": "frontend/app/src/shared/components/json-textarea-field.tsx",
+          "digest": "sha256:a560ba9a406dd3ad5d5ddbfb98b6cfddcda21d21c42d9be963eb1e382e0b6c11"
+        },
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
+        },
+        {
+          "path": "src/src/errors/capability-schema-not-well-formed.error.ts",
+          "digest": "sha256:ae7cb6d44e7d2b4401a823dd08261937c8a910b9c3c59d81e178d78af66c25d4"
         }
       ]
     },
@@ -2681,11 +2925,47 @@
       "files": [
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
         {
           "path": "src/src/errors/capability-not-read-only.error.ts",
           "digest": "sha256:c3820ed8117072ccd42447d48ec2a0dc514b88fc47df359495c85085600b139b"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "digest": "sha256:d5adc549fc025c4173babe3b595b49649109422e9a20e847fccaa5b8cdc6afef",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:fdf68347faa46c4b6014dc17e655fd91e51a33006dabf12a767811e8a1f8d046"
+        },
+        {
+          "path": "src/src/errors/connector-configuration-not-well-formed.error.ts",
+          "digest": "sha256:fd2816b4707124d40345ed6de32200d5c6cb979c445fbb5b8253ff5ca1c9cfd8"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:29b4ae08ea788d92a903c4f8804ec6e21f91bc7924102c1422cfb0f42220c8d0"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "digest": "sha256:02e9a879629b9915bcdf4734377dea99fd8dfe62e74a2decc61baf43621dbd7a",
+      "files": [
+        {
+          "path": "src/src/errors/capability-connector-mismatch.error.ts",
+          "digest": "sha256:dadfa511e42a8f551e2894b3615bae0b99c996a1cff8f9e2b85acd6dc4ae0ed9"
+        },
+        {
+          "path": "src/src/errors/capability-not-registered-for-test.error.ts",
+          "digest": "sha256:226f13044a70b5b2679a4c0c9813531b3ea5f6401a95fbeb672219778b9895d6"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:2fb7beefca97da0077bda4c78ee578583cfee2a0b370b661d7209550360e25ee"
         }
       ]
     },
@@ -2709,7 +2989,7 @@
       "files": [
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
         {
           "path": "src/src/errors/concept-already-answered.error.ts",

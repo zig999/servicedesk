@@ -18,6 +18,14 @@ import type { GlossaryConcept } from "../hooks/use-glossary-concepts";
 // confirmed by reading glossary-browser-screen.tsx in full), so unlike case-detail-screen's own
 // test-support modules this one needs no createMemoryHistory/RouterProvider scaffolding, only a
 // QueryClientProvider for its own six hook calls (one per tab).
+//
+// Extended for task/concept-authoring/concept-create-edit-form's own proof (three sibling files:
+// glossary-browser-screen-concept-form.spec.ts, glossary-browser-screen-concept-form-accepts.spec.ts
+// and glossary-browser-screen-concept-form-save.spec.ts), which mount this exact same screen --
+// FetchFn now carries `init` (mirroring case-version-editor-screen.test-support.ts's own
+// convention) so a PUT issued by useConceptForm's own mutation can be told apart from the six GETs
+// already keyed by URL alone, and `conceptPutPath`/`requestsWithMethod`/`putCallCount`/
+// `parsedPutBody` below are this task's own additions for reading that PUT back out.
 
 export const CONCEPTS_PATH = "/v1/glossary/concepts";
 export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
@@ -29,7 +37,52 @@ export const RECIPIENT_PATH = "/v1/glossary/recipient";
 export const CONCEPTS_EMPTY_MESSAGE = "The glossary currently holds no concepts.";
 export const CONCEPTS_ERROR_MESSAGE = "Unable to load the glossary's concepts.";
 
-type FetchFn = (input: string | URL | Request) => Promise<Response>;
+type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+
+/** The shape of one element of vitest's own `Mock<FetchFn>['mock']['calls']` -- structurally
+ * distinct from `Parameters<FetchFn>` because vitest's tuple carries the optional second
+ * parameter as a required-but-possibly-undefined element rather than an optional tail element. */
+type RecordedCall = [string | URL | Request, RequestInit | undefined];
+
+/** The PUT path register-concept dispatches at (contracts/glossary/glossary-authoring). */
+export function conceptPutPath(name: string): string {
+  return `/v1/glossary/concepts/${encodeURIComponent(name)}`;
+}
+
+/** Every call this fetch stub recorded whose own method matches (case-insensitively "GET" by default, since that is what `init` omits). */
+export function requestsWithMethod(
+  fetchMock: Mock<FetchFn>,
+  method: string,
+): readonly RecordedCall[] {
+  return fetchMock.mock.calls
+    .filter(([, init]) => (init?.method ?? "GET").toUpperCase() === method)
+    .map(([input, init]): RecordedCall => [input, init]);
+}
+
+export function putCallCount(fetchMock: Mock<FetchFn>): number {
+  return requestsWithMethod(fetchMock, "PUT").length;
+}
+
+/** The JSON body of the `index`-th PUT call this fetch stub recorded (0 by default -- the first one). */
+export function parsedPutBody(fetchMock: Mock<FetchFn>, index = 0): unknown {
+  const rawBody = requestsWithMethod(fetchMock, "PUT")[index]?.[1]?.body;
+  if (typeof rawBody !== "string") {
+    throw new Error(
+      "glossary-browser-screen.test-support.ts: expected a PUT call carrying a JSON string body",
+    );
+  }
+  return JSON.parse(rawBody);
+}
+
+/** The URL of the `index`-th PUT call this fetch stub recorded (0 by default). */
+export function putUrl(fetchMock: Mock<FetchFn>, index = 0): string | undefined {
+  const call = requestsWithMethod(fetchMock, "PUT")[index];
+  if (call === undefined) {
+    return undefined;
+  }
+  const [input] = call;
+  return typeof input === "string" ? input : input.toString();
+}
 
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
@@ -66,7 +119,7 @@ export function term(name: string): { readonly name: string } {
 export function createGlossaryFetchStub(
   handlers: Partial<Record<string, () => Response | Promise<Response>>>,
 ): Mock<FetchFn> {
-  return vi.fn(async (input: string | URL | Request): Promise<Response> => {
+  return vi.fn(async (input: string | URL | Request, _init?: RequestInit): Promise<Response> => {
     const url = typeof input === "string" ? input : input.toString();
     const handler = handlers[url];
     return (handler ?? (() => jsonResponse(page([]))))();

@@ -1,0 +1,33 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 577 packages, and audited 578 packages in 6s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/glossary-browser-screen.test-support.ts(57,3): error TS2322: Type '[input: string | URL | Request, init?: RequestInit | undefined][]' is not assignable to type 'readonly RecordedCall[]'.
+  Type '[input: string | URL | Request, init?: RequestInit | undefined]' is not assignable to type 'RecordedCall'.
+    Source provides no match for required element at position 1 in target.
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: npm test :: not_run =====
+

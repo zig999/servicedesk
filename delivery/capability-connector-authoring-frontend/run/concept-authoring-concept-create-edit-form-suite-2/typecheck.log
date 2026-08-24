@@ -1,0 +1,7 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/glossary-browser-screen.test-support.ts(57,3): error TS2322: Type '[input: string | URL | Request, init?: RequestInit | undefined][]' is not assignable to type 'readonly RecordedCall[]'.
+  Type '[input: string | URL | Request, init?: RequestInit | undefined]' is not assignable to type 'RecordedCall'.
+    Source provides no match for required element at position 1 in target.

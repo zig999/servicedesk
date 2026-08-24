@@ -10,12 +10,28 @@
       "task": "task/capability-authoring/json-textarea-editor"
     },
     {
+      "id": "implementation/concept-authoring/concept-create-edit-form",
+      "kind": "implementation",
+      "file": "implementation/concept-authoring/concept-create-edit-form.md",
+      "title": "Concept create and edit form on the Glossary screen's Concepts tab",
+      "summary": "Adds a shared create/edit Dialog for a concept's name, accepts and ttl to the Glossary screen's Concepts tab, dispatching PUT /v1/glossary/concepts/{name} for both modes and invalidating the tab's own query on success.",
+      "task": "task/concept-authoring/concept-create-edit-form"
+    },
+    {
       "id": "proof/capability-authoring/json-textarea-editor",
       "kind": "proof",
       "file": "proof/capability-authoring/json-textarea-editor.md",
       "title": "Proof for the shared JSON beautify/minify textarea control",
       "summary": "Thirteen tests against JsonTextareaField and getJsonTextareaMinifiedValue, proving all five stated criteria plus the implementation's own disclosed inferences.",
       "task": "task/capability-authoring/json-textarea-editor"
+    },
+    {
+      "id": "proof/concept-authoring/concept-create-edit-form",
+      "kind": "proof",
+      "file": "proof/concept-authoring/concept-create-edit-form.md",
+      "title": "Proof for the concept create/edit form on the Glossary screen's Concepts tab",
+      "summary": "Three spec files mounting GlossaryBrowserScreen end to end prove the \"New concept\"/\"Edit\" actions, the required accepts multi-select, ttl's own client-side requirement, the register-concept PUT for both create and edit, and the disclosed inferences (name disabled while editing, no new error-ui-state entry, accepts as a Checkbox group, ttl required with no default).",
+      "task": "task/concept-authoring/concept-create-edit-form"
     }
   ],
   "edges": [
@@ -32,8 +48,32 @@
       "at": "the path"
     },
     {
+      "from": "implementation/concept-authoring/concept-create-edit-form",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-authoring/concept-create-edit-form",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-authoring/concept-create-edit-form",
+      "to": "task/concept-authoring/concept-create-edit-form",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-authoring/json-textarea-editor",
       "to": "implementation/capability-authoring/json-textarea-editor",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-authoring/concept-create-edit-form",
+      "to": "implementation/concept-authoring/concept-create-edit-form",
       "kind": "proves",
       "at": "the path"
     }
