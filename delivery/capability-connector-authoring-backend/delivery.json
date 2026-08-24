@@ -112,6 +112,23 @@
       "title": "Proof for the test-connector diagnostic route",
       "summary": "app.inject tests against createTestConnectorRoutesPlugin() with mocked reads and a stubbed HTTP client, proving all seven criteria of task/connector-diagnostics/test-connector-route.",
       "task": "task/connector-diagnostics/test-connector-route"
+    },
+    {
+      "id": "review/capability-connector-authoring-backend",
+      "kind": "review",
+      "file": "review/capability-connector-authoring-backend.md",
+      "title": "Capability, concept and connector authoring — backend",
+      "summary": "What four passes found over the 7 backend tasks delivering capability, concept and connector-configuration authoring plus the test-connector diagnostic.",
+      "ran": [
+        "coverage",
+        "conformance"
+      ],
+      "unproven": [
+        "A registration naming a concept a different capability already answers is refused.",
+        "No evidence and no citation is written as a result of the operation.",
+        "Registering a connector configuration at a name that already exists replaces it whole rather than merging into what stood before."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -366,6 +383,48 @@
       "to": "implementation/connector-diagnostics/test-connector-route",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/capability-authoring/register-capability-route",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/concept-authoring/glossary-store-concept-write",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/concept-authoring/register-concept-route",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/connector-configuration-authoring/register-connector-route",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/capability-connector-authoring-backend",
+      "to": "task/connector-diagnostics/test-connector-route",
+      "kind": "reviews",
+      "at": "tasks[6]"
     }
   ]
 }

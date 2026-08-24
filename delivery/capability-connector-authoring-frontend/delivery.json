@@ -80,6 +80,23 @@
       "title": "Proof for the Test-connector debug panel on the Connector Configuration editor",
       "summary": "Six new spec files (plus one shared test-support module) proving all seven of this task's criteria, its own disclosed inferences, the explicit edit-mode-only fact, and the edge cases its two dependent reads and its one-shot dispatch raise.",
       "task": "task/connector-configuration-authoring/test-connector-debug-panel"
+    },
+    {
+      "id": "review/capability-connector-authoring-frontend",
+      "kind": "review",
+      "file": "review/capability-connector-authoring-frontend.md",
+      "title": "Capability, concept and connector authoring — frontend",
+      "summary": "What four passes found over the 5 delivered frontend tasks: the shared JSON beautify/minify textarea, capability create/edit, concept create/edit, the new Connector Configurations screen, and its Test-connector debug panel.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Nothing the Test section displays is persisted as evidence or reachable from any investigation screen.",
+        "input_schema and output_schema are edited through the shared JSON beautify/minify textarea, and the value persisted on save is the minified JSON."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -250,6 +267,36 @@
       "to": "implementation/connector-configuration-authoring/test-connector-debug-panel",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-connector-authoring-frontend",
+      "to": "task/capability-authoring/json-textarea-editor",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-connector-authoring-frontend",
+      "to": "task/capability-authoring/capability-create-edit-form",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/capability-connector-authoring-frontend",
+      "to": "task/concept-authoring/concept-create-edit-form",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/capability-connector-authoring-frontend",
+      "to": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/capability-connector-authoring-frontend",
+      "to": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }
