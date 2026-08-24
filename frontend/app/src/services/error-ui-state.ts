@@ -5,18 +5,28 @@
  *
  * Keyed by `ApiError.code` (./api-client.ts), which carries the backend's thrown domain
  * error's own class name verbatim (src/src/http/error-handler.middleware.ts's
- * domainEnvelope()). The fourteen keys below are exactly the ten class names
- * src/src/errors/status-map.ts maps to a transport status, plus the four it does not
- * (CaseHoldsNoDraftError, ConceptNotInGlossaryError, ConceptRefusesSubjectTypeError,
- * CaseNotValidError) -- read from that file and confirmed against it directly, never
- * re-derived or renamed, so a reader can hold the two tables side by side.
+ * domainEnvelope()). The eighteen keys below are the original ten class names
+ * src/src/errors/status-map.ts mapped to a transport status when this table was first
+ * written, plus the four it does not map (CaseHoldsNoDraftError, ConceptNotInGlossaryError,
+ * ConceptRefusesSubjectTypeError, CaseNotValidError), plus four more status-map.ts has
+ * since begun mapping for the capability registry's own register-capability surface
+ * (IncompleteCapabilityContractError, CapabilityNotReadOnlyError,
+ * CapabilitySchemaNotWellFormedError, ConceptAlreadyAnsweredError,
+ * task/capability-authoring/capability-create-edit-form's own criterion 5) -- read from
+ * that file and confirmed against it directly, never re-derived or renamed, so a reader
+ * can hold the two tables side by side. Four further classes status-map.ts now also maps
+ * (ConnectorConfigurationNotFoundError, CapabilityNotRegisteredForTestError,
+ * CapabilityConnectorMismatchError, ConnectorConfigurationNotWellFormedError) are not yet
+ * named here -- outside this task's own surface, deferred to whichever task next needs
+ * one of them told apart from the generic fallback below.
  *
  * This table states no UI wording -- what each state displays is left to the screen
  * tasks that consume it (the task's own rationale: "states no UI wording... only that a
  * distinct state exists per error class"). What it states is only that a distinct `kind`
- * exists for each of the ten mapped classes, mirroring statusForError()'s own one-table,
- * keyed-by-identity shape; three of the four unmapped classes, and any code this table
- * does not name at all, collapse onto one shared "generic-error" kind, since the backend
+ * exists for each of the mapped classes named below, mirroring statusForError()'s own
+ * one-table, keyed-by-identity shape; three of the four originally-unmapped classes, and
+ * any code this table does not name at all, collapse onto one shared "generic-error"
+ * kind, since the backend
  * already returns them as the one indistinguishable INTERNAL_ERROR and there is no signal
  * in the response that would let two of them be told apart here. The fourth,
  * CaseNotValidError, resolves to its own distinct "case-not-valid" kind instead
@@ -41,8 +51,12 @@ export type UiErrorStateKind =
   | "manifest-position-occupied"
   | "case-version-not-draft"
   | "case-version-not-draft-at-release"
+  | "concept-already-answered"
   | "case-version-not-releasable"
   | "manifest-would-hold-no-hypothesis"
+  | "incomplete-capability-contract"
+  | "capability-not-read-only"
+  | "capability-schema-not-well-formed"
   | "case-not-valid"
   | "generic-error";
 
@@ -58,13 +72,13 @@ export type UiErrorState = {
 const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
 
 /**
- * The table itself: every one of the fourteen named error classes, keyed by its own
- * class name exactly as src/src/errors/status-map.ts (the ten mapped classes) and the
- * inventory's confirmed list (the four unmapped classes) spell it. Iteration order
- * carries no meaning here -- unlike statusForError()'s Map, this is a plain lookup by
- * exact key, never by instanceof/subclass matching, so no entry can shadow another.
- * CaseNotValidError is listed among the ten mapped, distinctly-stated classes below
- * rather than the three still-unmapped ones -- see this module's own header comment.
+ * The table itself: every one of the eighteen named error classes, keyed by its own
+ * class name exactly as src/src/errors/status-map.ts (the fourteen mapped classes named
+ * here) and the inventory's confirmed list (the four originally-unmapped classes) spell
+ * it. Iteration order carries no meaning here -- unlike statusForError()'s Map, this is a
+ * plain lookup by exact key, never by instanceof/subclass matching, so no entry can
+ * shadow another. CaseNotValidError is listed among the mapped, distinctly-stated classes
+ * below rather than the three still-unmapped ones -- see this module's own header comment.
  */
 const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   // 404-appropriate: a resource that plainly does not exist -- each its own state.
@@ -79,11 +93,24 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   ManifestPositionOccupiedError: { kind: "manifest-position-occupied" },
   CaseVersionNotDraftError: { kind: "case-version-not-draft" },
   CaseVersionNotDraftAtReleaseError: { kind: "case-version-not-draft-at-release" },
+  // A concept a different capability already answers
+  // (rules/integration/one-capability-answers-one-concept) --
+  // task/capability-authoring/capability-create-edit-form's own criterion 5.
+  ConceptAlreadyAnsweredError: { kind: "concept-already-answered" },
 
   // 422-appropriate: well-formed but would violate a business invariant if applied --
   // each its own state.
   CaseVersionNotReleasableError: { kind: "case-version-not-releasable" },
   ManifestWouldHoldNoHypothesisError: { kind: "manifest-would-hold-no-hypothesis" },
+  // A capability registration that does not declare its contract completely
+  // (rules/integration/a-capability-declares-its-contract), whose nature is not
+  // read-only (rules/integration/a-capability-is-read-only), or whose schema is not
+  // syntactically valid JSON (rules/integration/a-capability-declares-well-formed-schemas)
+  // -- task/capability-authoring/capability-create-edit-form's own criterion 5, each its
+  // own state so the operator can tell the three refusals apart.
+  IncompleteCapabilityContractError: { kind: "incomplete-capability-contract" },
+  CapabilityNotReadOnlyError: { kind: "capability-not-read-only" },
+  CapabilitySchemaNotWellFormedError: { kind: "capability-schema-not-well-formed" },
 
   // Unmapped in status-map.ts -- the backend answers all three with the same
   // indistinguishable INTERNAL_ERROR, so they share the one fallback state rather than

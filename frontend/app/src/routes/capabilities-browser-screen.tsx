@@ -1,5 +1,4 @@
 import { useState, type JSX } from "react";
-import { Panel } from "@tui/ui/panel";
 import { Button } from "@tui/ui/button";
 import {
   StatusTable,
@@ -7,36 +6,47 @@ import {
   type StatusTableRow,
 } from "../shared/components/status-table";
 import { useCapabilities, type Capability } from "../hooks/use-capabilities";
+import type { CapabilityFormTarget } from "../hooks/use-capability-form";
+import { CapabilityFormDialog } from "./capability-form-dialog";
 
 /**
  * The Capabilities Browser screen (task/glossary-and-capabilities-browser/
  * capabilities-browser-screen, the scope's section 2.9): every capability
- * GET /v1/capabilities returns, one row each, and a client-side
- * row-selection detail panel showing that same row's own full contract.
+ * GET /v1/capabilities returns, one row each.
  *
- * StatusTable's own onRowClick composes this screen's row-selection
- * interaction (this codebase's first click-row/detail-panel-below
- * composition -- every existing onRowClick consumer instead navigates to
- * another route, per this app's own inventory). Selecting a row never
- * issues a second network request: GET /v1/capabilities/:concept looks up
- * by *concept* name, not capability name, and this task's own criterion 5
- * forbids issuing it at all -- the row already loaded (via useCapabilities)
- * carries every field the detail panel shows, so selection is pure
- * client-side state (`selectedKey`), derived against the already-fetched
- * list rather than a second fetch.
+ * task/capability-authoring/capability-create-edit-form widens this screen
+ * from read-only to one that also creates and edits a capability
+ * (contracts/integration/capability-registry's own register-capability
+ * operation, PUT /v1/capabilities/{name}/{version}) -- criterion 2 replaces
+ * this screen's own original row-selection detail panel
+ * (CapabilityDetailPanel, this screen's own prior delivery) with the same
+ * create/edit form (criterion 1's "New capability" action, criterion 2's
+ * per-row "Edit" action) pre-filled from that row's own already-loaded
+ * data, so selecting a row still issues no second network request -- the
+ * one property that panel's own header comment named as this screen's own
+ * inference, kept true here the same way: every field the form edits
+ * (criterion 1's full field list) is already present on the row
+ * useCapabilities returned.
+ *
+ * Mirrors glossary-browser-screen.tsx's own ConceptsPanel composition
+ * exactly: both actions open one shared Dialog, parametrized by
+ * `formTarget`'s own nullable-identity shape (CapabilityFormTarget: `null`
+ * closed, `{ mode: "create" }`, or `{ mode: "edit", capability }`) rather
+ * than each action owning its own trigger-adjacent Dialog.
  *
  * Wired in as route-tree.tsx's "/capabilities" route's own `component`,
- * replacing CapabilitiesPlaceholder (left in place, unused, in
- * route-placeholders.tsx -- that file's own established precedent for this
- * exact kind of change).
+ * unchanged from this screen's own prior delivery -- only this file's own
+ * body changed, not how it is reached.
  */
 
 const COLUMNS: StatusTableColumn[] = [
   { key: "name", header: "Name" },
+  { key: "version", header: "Version" },
   { key: "nature", header: "Nature" },
   { key: "connector", header: "Connector" },
   { key: "concept", header: "Concept" },
   { key: "timeout", header: "Timeout" },
+  { key: "actions", header: "" },
 ];
 
 /**
@@ -55,121 +65,110 @@ function formatTimeout(timeoutMs: number): string {
  * together, never name alone -- the registry's contract does not guarantee
  * only one version of a given name is ever registered at once. This
  * composite is used as the row's own `id` (StatusTable's own row-key
- * convention) and, doubling as this screen's selection key, is what a
- * click's row-selection matches against rather than name alone -- this
- * screen's own inference, disclosed in its delivery record, since no
- * criterion states what identifies one row among several sharing a name.
+ * convention) -- this screen's own inference, disclosed in its delivery
+ * record, since no criterion states what identifies one row among several
+ * sharing a name. `version` is also its own column now (this screen's own
+ * inference too): the prior read-only delivery showed it only inside the
+ * detail panel this task removes, and an operator opening the "Edit"
+ * action still needs to see which version a row names before choosing it.
  */
 function capabilityKey(capability: Capability): string {
   return `${capability.name}::${capability.version}`;
 }
 
-function toRow(capability: Capability): StatusTableRow {
+/**
+ * `onEdit` renders as this row's own "Edit" action cell (criterion 2),
+ * a plain Button element -- the same convention
+ * glossary-browser-screen.tsx's own toConceptRow already established for a
+ * cell holding a caller-composed action rather than plain text
+ * (status-table.tsx's own renderCellContent renders such a value exactly
+ * as given).
+ */
+function toRow(capability: Capability, onEdit: (capability: Capability) => void): StatusTableRow {
   return {
     id: capabilityKey(capability),
     name: capability.name,
+    version: capability.version,
     nature: capability.nature,
     connector: capability.connector,
     concept: capability.concept,
     timeout: formatTimeout(capability.timeout),
+    actions: (
+      <Button type="button" variant="secondary" onClick={() => onEdit(capability)}>
+        Edit
+      </Button>
+    ),
   };
-}
-
-/**
- * The detail panel for one selected capability: its own version,
- * input_schema and output_schema, exactly as GET /v1/capabilities already
- * returned them -- no field this app derives or re-labels.
- */
-function CapabilityDetailPanel({
-  capability,
-}: {
-  readonly capability: Capability;
-}): JSX.Element {
-  return (
-    <Panel title={capability.name}>
-      <dl className="flex flex-col gap-2 text-sm text-foreground">
-        <div>
-          <dt className="font-medium">Version</dt>
-          <dd>{capability.version}</dd>
-        </div>
-        <div>
-          <dt className="font-medium">Input schema</dt>
-          <dd>{capability.input_schema}</dd>
-        </div>
-        <div>
-          <dt className="font-medium">Output schema</dt>
-          <dd>{capability.output_schema}</dd>
-        </div>
-      </dl>
-    </Panel>
-  );
 }
 
 export function CapabilitiesBrowserScreen(): JSX.Element {
   const { capabilities, isLoading, isError, refetch } = useCapabilities();
-  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  const [formTarget, setFormTarget] = useState<CapabilityFormTarget | null>(null);
 
-  function handleRowClick(row: StatusTableRow): void {
-    const key = row.id;
-    if (typeof key !== "string") {
-      return;
+  function renderBody(): JSX.Element {
+    if (isLoading) {
+      return <p>Loading capabilities…</p>;
     }
-    setSelectedKey(key);
-  }
 
-  if (isLoading) {
-    return <p>Loading capabilities…</p>;
-  }
+    if (isError) {
+      // GET /v1/capabilities throws no domain error error-ui-state.ts
+      // names (this app's own inventory), so a load failure falls through
+      // to this screen's own generic fallback -- the same convention
+      // cases-list-screen and case-detail-screen's VersionsPanel already
+      // keep for their own listing reads. EDG-02 still asks for an
+      // explicit retry action rather than only useCapabilities' own
+      // toast-triggering error state, matching
+      // glossary-browser-screen.tsx's own convention for a hook that
+      // already wraps its refetch in a void-returning function: passed to
+      // onClick directly, with no extra wrapper here.
+      return (
+        <section>
+          <p>Capabilities could not be loaded.</p>
+          <Button type="button" onClick={refetch}>
+            Retry
+          </Button>
+        </section>
+      );
+    }
 
-  if (isError) {
-    // GET /v1/capabilities throws no domain error error-ui-state.ts names
-    // (this app's own inventory), so a load failure falls through to this
-    // screen's own generic fallback -- the same convention cases-list-screen
-    // and case-detail-screen's VersionsPanel already keep for their own
-    // listing reads. EDG-02 still asks for an explicit retry action rather
-    // than only useCapabilities' own toast-triggering error state, matching
-    // glossary-browser-screen.tsx's own convention for a hook that already
-    // wraps its refetch in a void-returning function: passed to onClick
-    // directly, with no extra wrapper here.
+    if (capabilities.length === 0) {
+      // API-04: an empty response renders its own explicit empty state,
+      // never treated as still loading or as a failure.
+      return <p>No capabilities are currently registered.</p>;
+    }
+
     return (
-      <section>
-        <p>Capabilities could not be loaded.</p>
-        <Button type="button" onClick={refetch}>
-          Retry
-        </Button>
-      </section>
+      <StatusTable
+        columns={COLUMNS}
+        rows={capabilities.map((capability) =>
+          toRow(capability, (target) => setFormTarget({ mode: "edit", capability: target })),
+        )}
+      />
     );
   }
 
-  const hasNoCapabilities = capabilities.length === 0;
-  const selectedCapability = capabilities.find(
-    (capability) => capabilityKey(capability) === selectedKey,
-  );
-
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-lg font-semibold text-foreground">Capabilities</h1>
-      {hasNoCapabilities ? (
-        <p>No capabilities are currently registered.</p>
-      ) : (
-        <StatusTable
-          columns={COLUMNS}
-          rows={capabilities.map(toRow)}
-          onRowClick={handleRowClick}
-        />
-      )}
-      {/*
-        ACC-07: the detail panel mounts with no page navigation when a row is
-        clicked, so its own appearance is announced through aria-live rather
-        than left to a sighted user's own glance at the page -- the smaller,
-        more idiomatic fix here since this component is a plain function with
-        no existing ref/focus-management machinery to move focus through.
-      */}
-      <div aria-live="polite">
-        {selectedCapability !== undefined && (
-          <CapabilityDetailPanel capability={selectedCapability} />
-        )}
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold text-foreground">Capabilities</h1>
+        {/*
+          "New capability" renders unconditionally, ahead of the
+          loading/error/empty branches above, so criterion 1 holds
+          regardless of whichever of those three states the capability list
+          itself is currently in -- this screen's own inference, disclosed
+          in its delivery record, mirroring glossary-browser-screen.tsx's
+          own "New concept" action for the same reason: hiding a create
+          action behind an unrelated read failure would block authoring a
+          capability for a reason that has nothing to do with it.
+        */}
+        <Button type="button" onClick={() => setFormTarget({ mode: "create" })}>
+          New capability
+        </Button>
       </div>
+      {renderBody()}
+      {formTarget !== null && (
+        <CapabilityFormDialog target={formTarget} onClose={() => setFormTarget(null)} />
+      )}
     </div>
   );
 }

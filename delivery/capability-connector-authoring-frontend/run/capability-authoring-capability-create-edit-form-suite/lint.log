@@ -1,0 +1,14 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capabilities-browser-screen-capability-form-save.spec.ts
+  113:13  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capabilities-browser-screen-capability-form-schema.spec.ts
+   71:18  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  139:18  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 3 problems (3 errors, 0 warnings)
+

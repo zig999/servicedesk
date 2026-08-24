@@ -592,6 +592,10 @@
           "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
         },
         {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
         },
@@ -1588,8 +1592,20 @@
           "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
         },
         {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
           "path": "frontend/app/src/routes/capabilities-browser-screen.tsx",
           "digest": "sha256:439e464416170c087db0044e622fdc50fec79ac8defd93f89c6f566037de272b"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/services/capability-form-schema.ts",
+          "digest": "sha256:f0271982865d0819c9a5c9a411c915f3c9612d7cd7c7a8d1aac30294ec1d7223"
         },
         {
           "path": "src/migrations/0003-capability-registry.sql",
@@ -1638,6 +1654,14 @@
           "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
         },
         {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/services/capability-form-schema.ts",
+          "digest": "sha256:f0271982865d0819c9a5c9a411c915f3c9612d7cd7c7a8d1aac30294ec1d7223"
+        },
+        {
           "path": "src/migrations/0003-capability-registry.sql",
           "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
         },
@@ -1659,6 +1683,10 @@
       "node": "domain/integration/capability-registry",
       "digest": "sha256:b1817ae8b2ee4910b7789e107056dd0b3532d9039487b1690409c0e1772d58f2",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
@@ -2888,6 +2916,14 @@
       "digest": "sha256:fc9117cf30dd9c75c89972e3505b320e1f1a564e069ffa15c36c90bbf20b9fa5",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
+          "path": "frontend/app/src/services/capability-form-schema.ts",
+          "digest": "sha256:f0271982865d0819c9a5c9a411c915f3c9612d7cd7c7a8d1aac30294ec1d7223"
+        },
+        {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
         },
@@ -2906,6 +2942,18 @@
       "digest": "sha256:c6847a232e175a96e787bd03ed2c54067e5829befe34a3d4ee213c8862aae7d1",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:882b9af9c7cb49ee9cf1bd0ab264372c30e55177b9512fc660230428dad20d30"
+        },
+        {
           "path": "frontend/app/src/shared/components/json-textarea-field.tsx",
           "digest": "sha256:a560ba9a406dd3ad5d5ddbfb98b6cfddcda21d21c42d9be963eb1e382e0b6c11"
         },
@@ -2923,6 +2971,18 @@
       "node": "rules/integration/a-capability-is-read-only",
       "digest": "sha256:cef39a9c1a06f9c705fa0bcb5cf4f36521032e3ff9e2273a9261693bc41b529d",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:882b9af9c7cb49ee9cf1bd0ab264372c30e55177b9512fc660230428dad20d30"
+        },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
@@ -2987,6 +3047,18 @@
       "node": "rules/integration/one-capability-answers-one-concept",
       "digest": "sha256:4a64f8f413778361a6410e6714e61b7308f56325a3e200709cdee34abe00251f",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-capability-form.ts",
+          "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:882b9af9c7cb49ee9cf1bd0ab264372c30e55177b9512fc660230428dad20d30"
+        },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"

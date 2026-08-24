@@ -12,20 +12,32 @@ import {
 // Listing, loading, error, empty-state and per-column formatting coverage for
 // task/glossary-and-capabilities-browser/capabilities-browser-screen (criteria 1 and 6, plus
 // the timeout-suffix and nature-plain-text inferences its own delivery record discloses).
-// Row-selection detail-panel coverage (criteria 2-5, plus the composite-key inference) lives
-// in the sibling capabilities-browser-screen-detail.spec.ts, to stay under this project's own
-// max-lines rule; both share capabilities-browser-screen.test-support.ts's own fixtures and
-// mounting helper.
+// Row-selection detail-panel coverage this file's own prior delivery held here
+// (criteria 2-5, plus the composite-key inference) moved to
+// capabilities-browser-screen-detail.spec.ts, task/capability-authoring/
+// capability-create-edit-form's own proof, when that task replaced the row-selection detail
+// panel entirely with per-row Edit actions opening a create/edit form -- this file's own
+// listing test below is updated to match (a "Version" column and a per-row "Edit" action
+// button now render; rows themselves no longer carry role="button", since StatusTable never
+// receives an onRowClick prop here any more). The old "no mutating controls" describe block
+// this file's own prior delivery held is removed outright rather than inverted: its own claim
+// (this screen renders no control that creates, edits or deletes a capability) is exactly what
+// task/capability-authoring/capability-create-edit-form's own criteria 1 and 2 now
+// contradict by design, and the positive replacement ("New capability" and "Edit" do exist) is
+// what that task's own capabilities-browser-screen-detail.spec.ts asserts instead.
+// Both this file and that one share capabilities-browser-screen.test-support.ts's own
+// fixtures and mounting helper.
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
 describe("CapabilitiesBrowserScreen — listing (criterion 1)", () => {
-  it("renders one row per capability GET /v1/capabilities returns, each showing its own name, nature, connector, concept and timeout", async () => {
+  it("renders one row per capability GET /v1/capabilities returns, each showing its own name, version, nature, connector, concept and timeout", async () => {
     const capabilities = [
       capability({
         name: "translate-text",
+        version: "1.0.0",
         nature: "read-only",
         connector: "deepl-connector",
         concept: "translation",
@@ -38,27 +50,37 @@ describe("CapabilitiesBrowserScreen — listing (criterion 1)", () => {
         connector: "imaging-connector",
         concept: "image-processing",
         timeout: 12000,
-        input_schema: "ResizeImageInput",
-        output_schema: "ResizeImageOutput",
+        input_schema: '{"kind":"ResizeImageInput"}',
+        output_schema: '{"kind":"ResizeImageOutput"}',
       }),
     ];
-    const fetchMock = createCapabilitiesFetchStub(() => jsonResponse(capabilitiesPage(capabilities)));
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage(capabilities)),
+    });
     await mountCapabilitiesScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("button");
-    expect(rows).toHaveLength(2);
+    // rows[0] is the header row (StatusTable's own TableHeader); one data row follows per
+    // capability -- native <tr> elements carry the implicit ARIA role "row" inside a table
+    // regardless of whether StatusTable was given an onRowClick (unlike this screen's own
+    // prior delivery, which overrode that role to "button" for its own row-selection
+    // behavior; task/capability-authoring/capability-create-edit-form removed that behavior
+    // entirely, so a row here is never a button).
+    const rows = await screen.findAllByRole("row");
+    expect(rows).toHaveLength(3);
 
-    expect(within(rows[0]).getByText("translate-text")).toBeTruthy();
-    expect(within(rows[0]).getByText("read-only")).toBeTruthy();
-    expect(within(rows[0]).getByText("deepl-connector")).toBeTruthy();
-    expect(within(rows[0]).getByText("translation")).toBeTruthy();
-    expect(within(rows[0]).getByText("5000 ms")).toBeTruthy();
+    expect(within(rows[1]).getByText("translate-text")).toBeTruthy();
+    expect(within(rows[1]).getByText("1.0.0")).toBeTruthy();
+    expect(within(rows[1]).getByText("read-only")).toBeTruthy();
+    expect(within(rows[1]).getByText("deepl-connector")).toBeTruthy();
+    expect(within(rows[1]).getByText("translation")).toBeTruthy();
+    expect(within(rows[1]).getByText("5000 ms")).toBeTruthy();
 
-    expect(within(rows[1]).getByText("resize-image")).toBeTruthy();
-    expect(within(rows[1]).getByText("mutating")).toBeTruthy();
-    expect(within(rows[1]).getByText("imaging-connector")).toBeTruthy();
-    expect(within(rows[1]).getByText("image-processing")).toBeTruthy();
-    expect(within(rows[1]).getByText("12000 ms")).toBeTruthy();
+    expect(within(rows[2]).getByText("resize-image")).toBeTruthy();
+    expect(within(rows[2]).getByText("2.0.0")).toBeTruthy();
+    expect(within(rows[2]).getByText("mutating")).toBeTruthy();
+    expect(within(rows[2]).getByText("imaging-connector")).toBeTruthy();
+    expect(within(rows[2]).getByText("image-processing")).toBeTruthy();
+    expect(within(rows[2]).getByText("12000 ms")).toBeTruthy();
   });
 });
 
@@ -72,8 +94,10 @@ describe("CapabilitiesBrowserScreen — loading and load-error placeholders", ()
   });
 
   it("shows a generic load-failure message when GET /v1/capabilities fails, rather than routing through a specific per-error message", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() => {
-      throw new Error("network down");
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => {
+        throw new Error("network down");
+      },
     });
     await mountCapabilitiesScreen(fetchMock);
 
@@ -83,61 +107,52 @@ describe("CapabilitiesBrowserScreen — loading and load-error placeholders", ()
 });
 
 describe("CapabilitiesBrowserScreen — empty state", () => {
-  it("renders an explicit empty-state message and no table when GET /v1/capabilities returns zero capabilities", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() => jsonResponse(capabilitiesPage([])));
+  it("renders an explicit empty-state message and no table when GET /v1/capabilities returns zero capabilities, still offering the New capability action", async () => {
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
+    });
     await mountCapabilitiesScreen(fetchMock);
 
     expect(await screen.findByText("No capabilities are currently registered.")).toBeTruthy();
     expect(screen.queryByRole("table")).toBeNull();
-    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    // "New capability" renders unconditionally (task/capability-authoring/
+    // capability-create-edit-form's own criterion 1 and its disclosed inference that this
+    // action is not hidden behind the empty state), so it is the one button this screen
+    // renders here -- no row exists yet for a per-row Edit action to attach to.
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "New capability" })).toBeTruthy();
   });
 });
 
 describe("CapabilitiesBrowserScreen — timeout and nature formatting (disclosed inferences)", () => {
   it("renders a capability's timeout with an explicit ' ms' unit suffix rather than a bare number", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() =>
-      jsonResponse(capabilitiesPage([capability({ timeout: 250 })])),
-    );
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([capability({ timeout: 250 })])),
+    });
     await mountCapabilitiesScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("button");
-    expect(within(rows[0]).getByText("250 ms")).toBeTruthy();
+    const rows = await screen.findAllByRole("row");
+    expect(within(rows[1]).getByText("250 ms")).toBeTruthy();
   });
 
   it("renders a capability's nature as plain text, never as a StatusTable {color,label} status cell", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() =>
-      jsonResponse(capabilitiesPage([capability({ nature: "mutating" })])),
-    );
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([capability({ nature: "mutating" })])),
+    });
     await mountCapabilitiesScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("button");
-    // The Nature column is the second of the five declared columns (name, nature, connector,
-    // concept, timeout). A {color,label} status cell would additionally render an
-    // aria-hidden color dot beside the label text (status-table.tsx's own
-    // renderCellContent); a plain string never does.
+    const rows = await screen.findAllByRole("row");
+    const dataRow = rows[1];
+    // The Nature column is the third of the seven declared columns (name, version, nature,
+    // connector, concept, timeout, actions -- "version" and "actions" are both
+    // task/capability-authoring/capability-create-edit-form's own additions). A {color,label}
+    // status cell would additionally render an aria-hidden color dot beside the label text
+    // (status-table.tsx's own renderCellContent); a plain string never does.
     // eslint-disable-next-line testing-library/no-node-access -- mirrors status-table.spec.ts's own precedent: a status cell's color dot is aria-hidden and decorative, so checking for its absence has no RTL role/text/label query to use.
-    const natureCell = rows[0].querySelectorAll("td")[1];
+    const natureCell = dataRow.querySelectorAll("td")[2];
     expect(natureCell.textContent).toBe("mutating");
     // eslint-disable-next-line testing-library/no-node-access -- see comment above
     expect(natureCell.querySelector('[aria-hidden="true"]')).toBeNull();
-  });
-});
-
-describe("CapabilitiesBrowserScreen — no mutating controls (criterion 6)", () => {
-  it("renders no control that creates, edits or deletes a capability, or changes a capability's nature", async () => {
-    const capabilities = [capability(), capability({ name: "resize-image", version: "2.0.0" })];
-    const fetchMock = createCapabilitiesFetchStub(() => jsonResponse(capabilitiesPage(capabilities)));
-    await mountCapabilitiesScreen(fetchMock);
-
-    const rows = await screen.findAllByRole("button");
-    expect(rows).toHaveLength(2);
-    // The two row-selection buttons above are the only interactive controls this screen
-    // renders at all: no separate Create/Edit/Delete action and no nature toggle exist for
-    // onRowClick's own selection behavior to be mistaken for one.
-    expect(screen.getAllByRole("button")).toHaveLength(2);
-    expect(screen.queryAllByRole("textbox")).toHaveLength(0);
-    expect(screen.queryAllByRole("combobox")).toHaveLength(0);
-    expect(screen.queryByRole("button", { name: /create|edit|delete/i })).toBeNull();
   });
 });
 
@@ -154,12 +169,14 @@ describe("CapabilitiesBrowserScreen — no mutating controls (criterion 6)", () 
 describe("CapabilitiesBrowserScreen's retry control (criterion 3)", () => {
   it("re-issues GET /v1/capabilities when Retry is clicked, rendering the capabilities once that retry succeeds", async () => {
     let callCount = 0;
-    const fetchMock = createCapabilitiesFetchStub(() => {
-      callCount += 1;
-      if (callCount === 1) {
-        throw new Error("network down");
-      }
-      return jsonResponse(capabilitiesPage([capability()]));
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => {
+        callCount += 1;
+        if (callCount === 1) {
+          throw new Error("network down");
+        }
+        return jsonResponse(capabilitiesPage([capability()]));
+      },
     });
     await mountCapabilitiesScreen(fetchMock);
 
@@ -174,8 +191,10 @@ describe("CapabilitiesBrowserScreen's retry control (criterion 3)", () => {
 
 describe("CapabilitiesBrowserScreen's retry control (criterion 4)", () => {
   it("issues no request other than GET /v1/capabilities when Retry is clicked", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() => {
-      throw new Error("network down");
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => {
+        throw new Error("network down");
+      },
     });
     await mountCapabilitiesScreen(fetchMock);
     await screen.findByText("Capabilities could not be loaded.");
@@ -192,8 +211,10 @@ describe("CapabilitiesBrowserScreen's retry control (criterion 4)", () => {
 
 describe("CapabilitiesBrowserScreen's retry control -- exactly one more request", () => {
   it("issues exactly one more request per Retry click, never zero and never more than one", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() => {
-      throw new Error("network down");
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => {
+        throw new Error("network down");
+      },
     });
     await mountCapabilitiesScreen(fetchMock);
     await screen.findByText("Capabilities could not be loaded.");
@@ -207,8 +228,10 @@ describe("CapabilitiesBrowserScreen's retry control -- exactly one more request"
 
 describe("CapabilitiesBrowserScreen's retry control -- repeated failure", () => {
   it("still shows the failure message and Retry control after a second failure following Retry, rather than getting stuck", async () => {
-    const fetchMock = createCapabilitiesFetchStub(() => {
-      throw new Error("network down");
+    const fetchMock = createCapabilitiesFetchStub({
+      [CAPABILITIES_PATH]: () => {
+        throw new Error("network down");
+      },
     });
     await mountCapabilitiesScreen(fetchMock);
     await screen.findByText("Capabilities could not be loaded.");

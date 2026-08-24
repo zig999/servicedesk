@@ -109,4 +109,47 @@ describe("uiStateForApiError", () => {
     const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "unrecognized"));
     expect(state.kind).toBe("generic-error");
   });
+
+  // task/capability-authoring/capability-create-edit-form's own criterion 5 -- the registry's
+  // four named refusals (a non-read-only nature and the other three) each need their own
+  // distinct state so use-capability-form.ts's own SAVE_FAILURE_MESSAGE_BY_KIND can resolve
+  // one to a specific message rather than the shared generic-error fallback.
+
+  it("resolves ConceptAlreadyAnsweredError to the concept-already-answered state", () => {
+    const state = uiStateForApiError(new ApiError("ConceptAlreadyAnsweredError", "already answered"));
+    expect(state.kind).toBe("concept-already-answered");
+  });
+
+  it("resolves IncompleteCapabilityContractError to the incomplete-capability-contract state", () => {
+    const state = uiStateForApiError(
+      new ApiError("IncompleteCapabilityContractError", "incomplete contract"),
+    );
+    expect(state.kind).toBe("incomplete-capability-contract");
+  });
+
+  it("resolves CapabilityNotReadOnlyError to the capability-not-read-only state", () => {
+    const state = uiStateForApiError(new ApiError("CapabilityNotReadOnlyError", "not read-only"));
+    expect(state.kind).toBe("capability-not-read-only");
+  });
+
+  it("resolves CapabilitySchemaNotWellFormedError to the capability-schema-not-well-formed state", () => {
+    const state = uiStateForApiError(
+      new ApiError("CapabilitySchemaNotWellFormedError", "not well-formed"),
+    );
+    expect(state.kind).toBe("capability-schema-not-well-formed");
+  });
+
+  it("gives each of these four newly mapped classes a kind distinct from the others and from the shared generic-error fallback", () => {
+    const codes = [
+      "ConceptAlreadyAnsweredError",
+      "IncompleteCapabilityContractError",
+      "CapabilityNotReadOnlyError",
+      "CapabilitySchemaNotWellFormedError",
+    ];
+
+    const kinds = codes.map((code) => uiStateForApiError(new ApiError(code, "message")).kind);
+
+    expect(new Set(kinds).size).toBe(4);
+    expect(kinds).not.toContain("generic-error");
+  });
 });

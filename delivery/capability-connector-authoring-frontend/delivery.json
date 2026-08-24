@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-authoring/capability-create-edit-form",
+      "kind": "implementation",
+      "file": "implementation/capability-authoring/capability-create-edit-form.md",
+      "title": "Capability create/edit form on the Capabilities Browser screen",
+      "summary": "Adds a New capability action, a per-row Edit action, and a shared create/edit form (name, version, nature, both JSON schemas, timeout, connector, concept) over PUT /v1/capabilities/{name}/{version}, replacing the screen's prior read-only detail panel.",
+      "task": "task/capability-authoring/capability-create-edit-form"
+    },
+    {
       "id": "implementation/capability-authoring/json-textarea-editor",
       "kind": "implementation",
       "file": "implementation/capability-authoring/json-textarea-editor.md",
@@ -16,6 +24,14 @@
       "title": "Concept create and edit form on the Glossary screen's Concepts tab",
       "summary": "Adds a shared create/edit Dialog for a concept's name, accepts and ttl to the Glossary screen's Concepts tab, dispatching PUT /v1/glossary/concepts/{name} for both modes and invalidating the tab's own query on success.",
       "task": "task/concept-authoring/concept-create-edit-form"
+    },
+    {
+      "id": "proof/capability-authoring/capability-create-edit-form",
+      "kind": "proof",
+      "file": "proof/capability-authoring/capability-create-edit-form.md",
+      "title": "Proof for the capability create/edit form on the Capabilities Browser screen",
+      "summary": "Two new spec files plus three realigned pre-existing ones and an extended error-ui-state.spec.ts prove all six of capability-create-edit-form's criteria, the new Edit-button screen shape, coverage for the four new error codes, and the implementation's own disclosed inferences.",
+      "task": "task/capability-authoring/capability-create-edit-form"
     },
     {
       "id": "proof/capability-authoring/json-textarea-editor",
@@ -35,6 +51,60 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability-nature",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/capability-authoring/capability-create-edit-form",
+      "to": "task/capability-authoring/capability-create-edit-form",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/capability-authoring/json-textarea-editor",
       "to": "rules/integration/a-capability-declares-well-formed-schemas",
@@ -63,6 +133,12 @@
       "from": "implementation/concept-authoring/concept-create-edit-form",
       "to": "task/concept-authoring/concept-create-edit-form",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-authoring/capability-create-edit-form",
+      "to": "implementation/capability-authoring/capability-create-edit-form",
+      "kind": "proves",
       "at": "the path"
     },
     {
