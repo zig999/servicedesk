@@ -1,5 +1,15 @@
 import type { JSX } from "react";
 import { Button } from "@tui/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@tui/ui/dialog";
 import { CapabilityFormFields } from "./capability-form-fields";
 import type { CapabilityDetailViewState } from "../hooks/use-capability-detail-view";
 
@@ -33,12 +43,29 @@ import type { CapabilityDetailViewState } from "../hooks/use-capability-detail-v
  * for input_schema and output_schema since a capability declares two
  * schemas rather than the connector configuration's one field. Disclosed as
  * this task's own inference in its delivery record.
+ *
+ * Discard now opens a confirmation Dialog first
+ * (task/detail-screen-corrections/discard-confirmation-dialog), mirroring
+ * connector-configuration-detail-ready-view.tsx's own identical treatment
+ * for the identical reason (that file's own header comment above states
+ * the full reasoning: the Release dialog's plain two-button shape from
+ * case-version-editor-ready-view.tsx rather than its typed-slug Discard
+ * variant; uncontrolled Dialog state, since state.onDiscard here is the
+ * same synchronous, always-succeeding form-state reset with no loading or
+ * failure branch to coordinate; the confirm button wrapped in its own
+ * DialogClose alongside Cancel's). Disclosed as this task's own inference
+ * in its delivery record. The trigger keeps the same disabled condition
+ * the un-confirmed Button carried (!state.isDirty || state.isSubmitting),
+ * per this task's own criterion 3 intent.
  */
 
 const INVALID_INPUT_SCHEMA_WARNING =
   "This capability's stored input schema is not valid JSON. Correct it before Save can succeed.";
 const INVALID_OUTPUT_SCHEMA_WARNING =
   "This capability's stored output schema is not valid JSON. Correct it before Save can succeed.";
+
+const DISCARD_DIALOG_DESCRIPTION =
+  "Every unsaved change to this capability will be lost. This cannot be undone.";
 
 export type CapabilityDetailReadyViewProps = {
   readonly state: Extract<CapabilityDetailViewState, { phase: "ready" }>;
@@ -78,16 +105,39 @@ export function CapabilityDetailReadyView({
           while there is nothing to discard or a save is already in flight,
           the same convention every other action in this app disables
           itself under (e.g. JsonTextareaField's own Beautify button,
-          disabled while there is nothing valid to beautify).
+          disabled while there is nothing valid to beautify). Confirmed
+          through a Dialog before it runs -- this file's own header comment
+          above.
         */}
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={state.onDiscard}
-          disabled={!state.isDirty || state.isSubmitting}
-        >
-          Discard changes
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={!state.isDirty || state.isSubmitting}
+            >
+              Discard changes
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Discard changes?</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Keep editing
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button type="button" variant="destructive" onClick={state.onDiscard}>
+                  Discard changes
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         {state.justSaved && (
           // criterion 7's success acknowledgement -- role="status" (an
           // implicit aria-live="polite" region) rather than a visual-only

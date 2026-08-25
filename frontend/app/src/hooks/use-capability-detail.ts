@@ -112,7 +112,7 @@
  *   one.
  */
 
-import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -248,6 +248,28 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
   const isLoadingConcepts = conceptOptions.isLoading;
   const isConceptsError = conceptOptions.isError;
 
+  // task/detail-screen-corrections/discard-confirmation-dialog's own correction: each of these
+  // is handed to JsonTextareaField as its own `onChange` prop, and that control's own
+  // load-detection effect (json-textarea-field.tsx) has `onChange` itself in its dependency
+  // array. An inline arrow recreated on every render gives that effect a fresh identity on a
+  // render neither field's own edit caused -- editing input_schema re-renders this hook and
+  // recreates output_schema's own inline onChange too, which reads to that effect exactly like
+  // a caller replacing the loaded value with a new one, silently pretty-printing the operator's
+  // still-unsaved raw text (confirmed empirically: console.log instrumentation across both
+  // schema fields, run in isolation, showed input_schema's own effect re-firing with its own
+  // selfInitiatedRef already consumed back to false on a run whose value never changed --
+  // triggered only by output_schema's own edit two lines below recreating this same closure).
+  // Each callback closes over nothing but its own `useState` setters (stable for the lifetime
+  // of the component) and the field's own name, so `[]` is the correct dependency array.
+  const handleInputSchemaChange = useCallback((value: string, isValid: boolean): void => {
+    setInputSchemaValue(value);
+    setInputSchemaValid(isValid);
+  }, []);
+  const handleOutputSchemaChange = useCallback((value: string, isValid: boolean): void => {
+    setOutputSchemaValue(value);
+    setOutputSchemaValid(isValid);
+  }, []);
+
   if (query.isError || isConceptsError) {
     return {
       phase: "load-error",
@@ -295,18 +317,12 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     inputSchema: {
       value: inputSchemaValue,
       isValid: inputSchemaValid,
-      onChange: (value, isValid) => {
-        setInputSchemaValue(value);
-        setInputSchemaValid(isValid);
-      },
+      onChange: handleInputSchemaChange,
     },
     outputSchema: {
       value: outputSchemaValue,
       isValid: outputSchemaValid,
-      onChange: (value, isValid) => {
-        setOutputSchemaValue(value);
-        setOutputSchemaValid(isValid);
-      },
+      onChange: handleOutputSchemaChange,
     },
     isDirty,
     isSubmitting: mutation.isPending,

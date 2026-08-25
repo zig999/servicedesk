@@ -1,0 +1,72 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/detail-screen-corrections/configuration-validity-check",
+      "kind": "implementation",
+      "file": "implementation/detail-screen-corrections/configuration-validity-check.md",
+      "title": "Reject non-object JSON in the connector-configuration validity check",
+      "summary": "use-connector-configuration-detail.ts's configurationValid derivation now requires the parsed value to be a plain object, not merely syntactically valid JSON, at both places within the hook where the flag is set.",
+      "task": "task/detail-screen-corrections/configuration-validity-check"
+    },
+    {
+      "id": "implementation/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "implementation",
+      "file": "implementation/detail-screen-corrections/discard-confirmation-dialog.md",
+      "title": "Confirm before Discard resets form state on both detail screens",
+      "summary": "Both connector-configuration-detail-ready-view.tsx and capability-detail-ready-view.tsx now require an explicit confirm step, via an uncontrolled Dialog composed from @tui/ui/dialog's own primitives, before Discard resets form state.",
+      "task": "task/detail-screen-corrections/discard-confirmation-dialog",
+      "unmet": [
+        "connector-configuration-detail-screen-discard.spec.ts and capability-detail-screen-discard.spec.ts no longer assert the removed one-click-no-confirmation behavior."
+      ]
+    },
+    {
+      "id": "proof/detail-screen-corrections/configuration-validity-check",
+      "kind": "proof",
+      "file": "proof/detail-screen-corrections/configuration-validity-check.md",
+      "title": "configurationValid rejects a non-object JSON value, both on load and on edit",
+      "summary": "New tests over use-connector-configuration-detail.ts prove configurationValid now reads false for every syntactically valid JSON shape that is not an object (array, bare string, number, true, null), at both the moment a record loads and the moment the operator edits the field, and continues to read true for a genuine object at both moments — with the Save-disable and warning-banner reactions to that flag, and the three untouched units, confirmed by reading rather than by new tests.",
+      "task": "task/detail-screen-corrections/configuration-validity-check"
+    },
+    {
+      "id": "proof/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "proof",
+      "file": "proof/detail-screen-corrections/discard-confirmation-dialog.md",
+      "title": "Discard confirmation dialog on both detail screens",
+      "summary": "Proves task/detail-screen-corrections/discard-confirmation-dialog's own seven behavioral criteria on both ready-views by updating the two pre-existing discard spec files to exercise the confirm-then-discard flow instead of the removed one-click reset (satisfying criterion 8), and fixes a test-timing race in both files' own mounting helper found while diagnosing the suite's own failures.",
+      "task": "task/detail-screen-corrections/discard-confirmation-dialog"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/detail-screen-corrections/configuration-validity-check",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/detail-screen-corrections/configuration-validity-check",
+      "to": "task/detail-screen-corrections/configuration-validity-check",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/detail-screen-corrections/discard-confirmation-dialog",
+      "to": "task/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/detail-screen-corrections/configuration-validity-check",
+      "to": "implementation/detail-screen-corrections/configuration-validity-check",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/detail-screen-corrections/discard-confirmation-dialog",
+      "to": "implementation/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

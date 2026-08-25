@@ -1,5 +1,15 @@
 import type { JSX } from "react";
 import { Button } from "@tui/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@tui/ui/dialog";
 import { ConnectorConfigurationFormFields } from "./connector-configuration-form-fields";
 import { ConnectorTestPanel } from "./connector-test-panel";
 import type { ConnectorConfigurationDetailViewState } from "../hooks/use-connector-configuration-detail-view";
@@ -31,10 +41,35 @@ import type { ConnectorConfigurationDetailViewState } from "../hooks/use-connect
  * message, since no criterion or node states this exact wording and no
  * such banner exists anywhere else in this app to reuse. Disclosed as this
  * task's own inference in its delivery record.
+ *
+ * Discard now opens a confirmation Dialog first
+ * (task/detail-screen-corrections/discard-confirmation-dialog), reusing
+ * @tui/ui/dialog's own primitives composed directly here -- the same
+ * Dialog/DialogTrigger/DialogContent/DialogHeader/DialogTitle/
+ * DialogDescription/DialogFooter/DialogClose set case-version-editor-
+ * ready-view.tsx's own Release dialog already composes, in that dialog's
+ * plain two-button shape (its own Discard dialog additionally requires
+ * typing the case's slug, a heavier precedent this task's own criterion 7
+ * explicitly says not to follow). Uncontrolled (no `open`/`onOpenChange`
+ * state on `Dialog` itself, unlike Release's): state.onDiscard is a
+ * synchronous form-state reset with no loading state, no server round trip
+ * and no failure branch to keep the dialog open over (unlike Release's
+ * checklist/violations or Discard's typed-slug validation), so the confirm
+ * button is wrapped in its own DialogClose the same way the Cancel button
+ * is -- clicking it both calls state.onDiscard and dismisses the dialog,
+ * and there is nothing left for controlled state to coordinate. Disclosed
+ * as this task's own inference in its delivery record. The trigger keeps
+ * the same disabled condition the un-confirmed Button carried
+ * (!state.isDirty || state.isSubmitting), per this task's own criterion 3
+ * intent: nothing to discard, or a save in flight, still disables opening
+ * the dialog the same way it always disabled the action itself.
  */
 
 const INVALID_CONFIGURATION_WARNING =
   "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.";
+
+const DISCARD_DIALOG_DESCRIPTION =
+  "Every unsaved change to this connector configuration will be lost. This cannot be undone.";
 
 export type ConnectorConfigurationDetailReadyViewProps = {
   readonly state: Extract<ConnectorConfigurationDetailViewState, { phase: "ready" }>;
@@ -70,15 +105,38 @@ export function ConnectorConfigurationDetailReadyView({
           in flight, the same convention every other action in this app
           disables itself under (e.g. JsonTextareaField's own Beautify
           button, disabled while there is nothing valid to beautify).
+          Confirmed through a Dialog before it runs -- this file's own
+          header comment above.
         */}
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={state.onDiscard}
-          disabled={!state.isDirty || state.isSubmitting}
-        >
-          Discard changes
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={!state.isDirty || state.isSubmitting}
+            >
+              Discard changes
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Discard changes?</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Keep editing
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button type="button" variant="destructive" onClick={state.onDiscard}>
+                  Discard changes
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         {state.justSaved && (
           // criterion 7's success acknowledgement -- role="status" (an
           // implicit aria-live="polite" region) rather than a visual-only

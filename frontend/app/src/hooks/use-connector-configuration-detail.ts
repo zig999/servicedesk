@@ -88,7 +88,7 @@
  *   home-grown one.
  */
 
-import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -232,6 +232,21 @@ export function useConnectorConfigurationDetail(
     },
   });
 
+  // task/detail-screen-corrections/discard-confirmation-dialog's own correction: handed to
+  // JsonTextareaField as its own `onChange` prop, and that control's own load-detection effect
+  // (json-textarea-field.tsx) has `onChange` itself in its dependency array -- an inline arrow
+  // recreated on every render reads to that effect exactly like a caller replacing the loaded
+  // value with a new one on a render this callback did not itself cause (the confirmation
+  // Dialog this task introduces opening, or a sibling field's own edit re-rendering this hook),
+  // silently pretty-printing the operator's still-unsaved raw text. Closes over nothing but its
+  // own `useState` setters (stable for the lifetime of the component) and
+  // isValidConfigurationObject (a module-level pure function), so `[]` is the correct
+  // dependency array.
+  const handleConfigurationChange = useCallback((value: string): void => {
+    setConfigurationValue(value);
+    setConfigurationValid(isValidConfigurationObject(value));
+  }, []);
+
   if (query.isError) {
     return {
       phase: "load-error",
@@ -282,10 +297,7 @@ export function useConnectorConfigurationDetail(
       // above instead of trusting that flag directly, so an edit to a
       // syntactically valid but non-object value (an array, a bare string, a
       // number, `true`, or `null`) reads as invalid the same as a load does.
-      onChange: (value) => {
-        setConfigurationValue(value);
-        setConfigurationValid(isValidConfigurationObject(value));
-      },
+      onChange: handleConfigurationChange,
     },
     isDirty,
     isSubmitting: mutation.isPending,
