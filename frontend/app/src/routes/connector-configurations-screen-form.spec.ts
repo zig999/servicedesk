@@ -82,9 +82,14 @@ describe("ConnectorConfigurationsScreen — each row's own Edit action opens the
     expect(
       (await within(dialog).findByLabelText<HTMLInputElement>("Connector")).value,
     ).toBe("deepl-connector");
+    // Pretty-printed rather than the raw minified fixture value: the shared JsonTextareaField's
+    // own mount-time load-normalization effect
+    // (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 3)
+    // reformats it before this assertion ever reads the field, mirroring that task's own
+    // dedicated describe block below rather than contradicting it.
     expect(
       within(dialog).getByLabelText<HTMLTextAreaElement>("Configuration").value,
-    ).toBe('{"apiKey":"secret"}');
+    ).toBe('{\n  "apiKey": "secret"\n}');
   });
 
   it("issues no second network request beyond the initial GET /v1/connectors when a row's own Edit action is opened", async () => {
@@ -141,6 +146,34 @@ describe("ConnectorConfigurationsScreen — the configuration field is the share
     expect(within(dialog).getByRole("button", { name: "Beautify" })).toBeTruthy();
   });
 });
+
+describe(
+  "ConnectorConfigurationsScreen — the configuration field shows its loaded value pretty-printed (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 3)",
+  () => {
+    it("renders the configuration field's loaded, minified value reformatted as indented JSON as soon as the Edit dialog opens", async () => {
+      const target = connectorConfiguration({
+        connector: "deepl-connector",
+        configuration: '{"apiKey":"secret","retries":3}',
+      });
+      const fetchMock = createConnectorConfigurationsFetchStub({
+        [CONNECTORS_PATH]: () => jsonResponse(connectorConfigurationsPage([target])),
+      });
+      await mountConnectorConfigurationsScreen(fetchMock);
+      await screen.findByText("deepl-connector");
+
+      fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+      const dialog = await screen.findByRole("dialog");
+      const configurationField = await within(dialog).findByLabelText<HTMLTextAreaElement>(
+        "Configuration",
+      );
+      // Hardcoded rather than computed from the fixture, so a wrong reformatting cannot agree
+      // with this assertion by coincidence, the same reasoning json-textarea-field.spec.ts's
+      // own Beautify test states in full.
+      expect(configurationField.value).toBe('{\n  "apiKey": "secret",\n  "retries": 3\n}');
+    });
+  },
+);
 
 describe("ConnectorConfigurationsScreen — connector is required (schema presupposition)", () => {
   it("blocks submission and issues no PUT when connector is left blank", async () => {

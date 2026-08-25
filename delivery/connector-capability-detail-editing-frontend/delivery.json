@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "kind": "implementation",
+      "file": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load.md",
+      "title": "JsonTextareaField pretty-prints a loaded value on mount and on load",
+      "summary": "JsonTextareaField now reformats a syntactically valid JSON value as indented text the moment it is mounted or replaced from outside, leaving typing, Beautify, the inline error and the minify-on-save helper untouched.",
+      "task": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load"
+    },
+    {
+      "id": "proof/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "kind": "proof",
+      "file": "proof/connector-capability-detail-editing/json-textarea-pretty-print-on-load.md",
+      "title": "Proof for JsonTextareaField's load-time pretty-print behavior",
+      "summary": "Unit tests over JsonTextareaField prove mount-time pretty-printing of a valid value, the unchanged as-is display of an invalid one, and the disclosed generic-load inference; the connector-configuration and capability dialogs' own specs gain dedicated tests plus corrected pre-existing assertions proving each dialog's own field shows its loaded value pretty-printed.",
+      "task": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "to": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "to": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

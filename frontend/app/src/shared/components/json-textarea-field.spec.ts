@@ -179,6 +179,111 @@ describe("JsonTextareaField", () => {
     expect(onChange).toHaveBeenCalledWith('{"a":', false);
   });
 
+  // Proof for task/connector-capability-detail-editing/json-textarea-pretty-print-on-load's
+  // own criteria 1 and 2: a syntactically valid loaded value is reformatted as indented text
+  // and reported through onChange immediately on mount (criterion 1), and a value that is not
+  // valid JSON is left exactly as passed, with the load effect never touching it at all
+  // (criterion 2). Also proves that record's own disclosed inference: a "load" is recognized
+  // generically, on any value transition this control did not itself produce, not only on its
+  // very first render -- since neither existing caller (both dialogs) ever exercises that
+  // second case today, it is provable only at this control's own level.
+
+  it("reports a compact valid JSON value reformatted as pretty-printed text and marked valid immediately on mount, before any interaction (criterion 1)", () => {
+    const onChange = vi.fn();
+    // Extra insignificant whitespace, the same reasoning as the Beautify test above: a value
+    // already in the pretty form would trivially "equal" its own reformatting even if the
+    // mount effect did nothing at all, so the fixture must be minified to prove the effect ran.
+    const compact = '{"z":1,"a":[1,2,3]}';
+
+    render(
+      createElement(JsonTextareaField, {
+        id: "schema",
+        label: "Schema",
+        value: compact,
+        onChange,
+      }),
+    );
+
+    // Hardcoded rather than computed, for the same reason as the Beautify test above.
+    const expected = '{\n  "z": 1,\n  "a": [\n    1,\n    2,\n    3\n  ]\n}';
+    expect(onChange).toHaveBeenCalledWith(expected, true);
+  });
+
+  it("never calls onChange on mount when the loaded value is already in its own pretty-printed form (edge case: a value at criterion 1's own boundary)", () => {
+    const onChange = vi.fn();
+    const alreadyPretty = '{\n  "a": 1\n}';
+
+    render(
+      createElement(JsonTextareaField, {
+        id: "schema",
+        label: "Schema",
+        value: alreadyPretty,
+        onChange,
+      }),
+    );
+
+    // A value already indistinguishable from its own reformatting is not itself "left in
+    // the minified form it was passed" (criterion 1's own condition), so there is nothing
+    // to report -- and a spurious call here would be exactly the kind of update a caller
+    // holding this text in its own state could loop on.
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("leaves the value exactly as passed and never calls onChange for it, when it is not valid JSON, on mount (criterion 2)", () => {
+    const onChange = vi.fn();
+    const raw = "{not valid json";
+
+    render(
+      createElement(JsonTextareaField, {
+        id: "schema",
+        label: "Schema",
+        value: raw,
+        onChange,
+      }),
+    );
+
+    const textarea = screen.getByRole("textbox");
+    if (!(textarea instanceof HTMLTextAreaElement)) {
+      throw new Error("expected the JSON field's own control to be a textarea element");
+    }
+    expect(textarea.value).toBe(raw);
+    // Never called at all, not merely "not called with a reformatted value" -- the load effect
+    // for an invalid value returns before reaching onChange, so nothing about this field is
+    // reported back to a caller on mount.
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("pretty-prints a second, externally-loaded value too, not only the component's very first render (disclosed inference)", () => {
+    const onChange = vi.fn();
+    function props(value: string) {
+      return { id: "schema", label: "Schema", value, onChange };
+    }
+
+    const { rerender } = render(createElement(JsonTextareaField, props('{"a":1}')));
+
+    // Completes the mount's own round trip exactly as a real controlled caller would --
+    // feeding the reformatted text this control just reported back in as its own `value`
+    // prop -- so the control settles into the same state it would be in inside a real
+    // dialog, rather than this test asserting anything about a caller nothing here builds.
+    const mountCall = onChange.mock.calls[0];
+    if (mountCall === undefined || typeof mountCall[0] !== "string") {
+      throw new Error(
+        "expected the mount-time load effect to have reported a pretty-printed string",
+      );
+    }
+    rerender(createElement(JsonTextareaField, props(mountCall[0])));
+    onChange.mockClear();
+
+    // A caller replacing the loaded value entirely from outside -- never through this
+    // control's own handleChange or handleBeautify -- is the second half of "on mount and
+    // whenever a new value is loaded into it" this task's own objective states, and the
+    // disclosed inference that such a transition is always treated as a load, whenever it
+    // is not self-produced, rather than only on the component's very first render.
+    rerender(createElement(JsonTextareaField, props('{"b":2}')));
+
+    expect(onChange).toHaveBeenCalledWith('{\n  "b": 2\n}', true);
+  });
+
   it("operates independently across two field instances sharing the same props shape, so editing one never reports through the other's onChange", () => {
     const onChangeA = vi.fn();
     const onChangeB = vi.fn();
@@ -207,15 +312,26 @@ describe("JsonTextareaField", () => {
     // `value` rather than sharing any state through the shared props shape.
     const alerts = screen.getAllByRole("alert");
     expect(alerts).toHaveLength(1);
+    // The first field's own value, '{"a": 1}', is valid JSON that is not itself
+    // pretty-printed, so task/connector-capability-detail-editing/json-textarea-pretty-print-on-load's
+    // own mount-time load-normalization effect already reported one onChange call for it
+    // before either textarea is touched (proved on its own terms above); the second field
+    // never parses, so that same effect never calls its own onChange at all.
+    expect(onChangeB).not.toHaveBeenCalled();
 
     const [firstTextarea, secondTextarea] = screen.getAllByRole("textbox");
     fireEvent.change(firstTextarea, { target: { value: '{"a": 2}' } });
     expect(onChangeA).toHaveBeenCalledWith('{"a": 2}', true);
     expect(onChangeB).not.toHaveBeenCalled();
 
+    // Captured immediately before touching the second field, rather than hardcoded, so this
+    // assertion stays about cross-instance independence -- no further call ever reaches
+    // onChangeA once only the second field changes -- without re-asserting, a second time and
+    // with a brittle literal, the mount-time call count already proved on its own above.
+    const onChangeACallsSoFar = onChangeA.mock.calls.length;
     fireEvent.change(secondTextarea, { target: { value: '{"b": 1}' } });
     expect(onChangeB).toHaveBeenCalledWith('{"b": 1}', true);
-    expect(onChangeA).toHaveBeenCalledTimes(1);
+    expect(onChangeA).toHaveBeenCalledTimes(onChangeACallsSoFar);
   });
 });
 

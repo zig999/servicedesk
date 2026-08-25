@@ -1,4 +1,4 @@
-import { useMemo, type ChangeEvent, type JSX } from "react";
+import { useEffect, useMemo, useRef, type ChangeEvent, type JSX } from "react";
 import { Textarea } from "@tui/ui/textarea";
 import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
@@ -84,7 +84,39 @@ export function JsonTextareaField({
   const parsed = useMemo(() => parseJsonText(value), [value]);
   const errorId = `${id}-error`;
 
+  /**
+   * A `value` transition this control did not itself produce -- the very
+   * first render, or a caller replacing what was there with a freshly
+   * loaded record -- is a "load", and a load whose text is syntactically
+   * valid JSON is shown pretty-printed rather than in whatever form it
+   * arrived in (this task's own criterion 1), without touching the existing
+   * invalid-JSON display (criterion 2). `selfInitiatedRef` is what tells a
+   * load apart from `handleChange` and `handleBeautify` reporting their own
+   * text back through `value`: both set it immediately before calling
+   * `onChange`, so the effect below skips exactly the transitions this
+   * control produced and treats every other one -- including mount -- as a
+   * load, reusing the same `parsed` the render body already computed rather
+   * than parsing `value` a second time.
+   */
+  const selfInitiatedRef = useRef(false);
+
+  useEffect(() => {
+    if (selfInitiatedRef.current) {
+      selfInitiatedRef.current = false;
+      return;
+    }
+    if (!parsed.ok) {
+      return;
+    }
+    const pretty = JSON.stringify(parsed.value, null, 2);
+    if (pretty !== value) {
+      selfInitiatedRef.current = true;
+      onChange(pretty, true);
+    }
+  }, [parsed, value, onChange]);
+
   function handleChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+    selfInitiatedRef.current = true;
     const next = event.target.value;
     onChange(next, parseJsonText(next).ok);
   }
@@ -93,6 +125,7 @@ export function JsonTextareaField({
     if (!parsed.ok) {
       return;
     }
+    selfInitiatedRef.current = true;
     onChange(JSON.stringify(parsed.value, null, 2), true);
   }
 

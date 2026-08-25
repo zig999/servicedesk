@@ -110,11 +110,16 @@ describe("CapabilitiesBrowserScreen — each row's own Edit action opens the sam
       "translate-text",
     );
     expect(within(dialog).getByLabelText<HTMLInputElement>("Version").value).toBe("3.2.1");
+    // Pretty-printed rather than the raw minified fixture values: the shared JsonTextareaField's
+    // own mount-time load-normalization effect
+    // (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 4)
+    // reformats both before this assertion ever reads either field, mirroring that task's own
+    // dedicated describe block below rather than contradicting it.
     expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Input schema").value).toBe(
-      '{"kind":"TranslateTextInputV3"}',
+      '{\n  "kind": "TranslateTextInputV3"\n}',
     );
     expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Output schema").value).toBe(
-      '{"kind":"TranslateTextOutputV3"}',
+      '{\n  "kind": "TranslateTextOutputV3"\n}',
     );
     expect(within(dialog).getByLabelText<HTMLInputElement>("Timeout (ms)").value).toBe("9000");
     expect(within(dialog).getByLabelText<HTMLInputElement>("Connector").value).toBe(
@@ -126,6 +131,41 @@ describe("CapabilitiesBrowserScreen — each row's own Edit action opens the sam
     expect(screen.queryByRole("region")).toBeNull();
   });
 });
+
+describe(
+  "CapabilitiesBrowserScreen — input_schema and output_schema show their loaded values pretty-printed (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 4)",
+  () => {
+    it("renders both schema fields' loaded, minified values reformatted as indented JSON as soon as the Edit dialog opens", async () => {
+      const target = capability({
+        name: "translate-text",
+        version: "1.0.0",
+        input_schema: '{"kind":"TranslateTextInput","fields":["text","target"]}',
+        output_schema: '{"kind":"TranslateTextOutput"}',
+      });
+      const fetchMock = createCapabilitiesFetchStub({
+        [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
+        [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
+      });
+      await mountCapabilitiesScreen(fetchMock);
+      await screen.findByText("translate-text");
+
+      fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+      const dialog = await screen.findByRole("dialog");
+      const inputSchemaField = await within(dialog).findByLabelText<HTMLTextAreaElement>(
+        "Input schema",
+      );
+      // Hardcoded rather than computed from the fixtures, the same reasoning
+      // json-textarea-field.spec.ts's own Beautify test states in full.
+      expect(inputSchemaField.value).toBe(
+        '{\n  "kind": "TranslateTextInput",\n  "fields": [\n    "text",\n    "target"\n  ]\n}',
+      );
+      expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Output schema").value).toBe(
+        '{\n  "kind": "TranslateTextOutput"\n}',
+      );
+    });
+  },
+);
 
 describe("CapabilitiesBrowserScreen — editing a capability disables name and version (disclosed inference)", () => {
   it("renders Name and Version disabled while editing, so neither can be changed", async () => {
