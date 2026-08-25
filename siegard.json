@@ -2,6 +2,7 @@
   "delivery_root": "delivery",
   "specification_root": "knowledge",
   "standard": {
+    "backend": "standards/backend-node-service.yaml",
     "frontend": "standards/frontend-typescript.yaml"
   },
   "targets": {
