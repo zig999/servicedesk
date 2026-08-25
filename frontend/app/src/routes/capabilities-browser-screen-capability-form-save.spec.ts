@@ -30,6 +30,20 @@ import {
 // or edit persists the capability's declared contract with the browser screen reflecting the
 // change afterward -- plus the delivery record's own disclosed inference that the four new
 // save-failure messages, and the shared generic fallback, are all mutually distinguishable.
+//
+// The former "a successful edit replaces the capability in place and the list reflects it
+// (criterion 6)" describe block is retired: task/connector-capability-detail-editing/
+// capability-detail-route (criteria 2 and 9) removed this screen's own per-row "Edit" button
+// and its in-page edit dialog entirely, replacing them with a row click that navigates to the
+// routed detail screen instead (capabilities-browser-screen.tsx's own header comment).
+// capability-detail-screen-save.spec.ts's own proof already covers the equivalent
+// PUT-with-edited-contract, reflected-afterward behavior for that routed screen. The four
+// describe blocks below that used the same removed "Edit" action only as a shortcut to a
+// pre-filled dialog -- the other-named-refusals loop, the five-mutually-distinct-messages
+// test, the unmapped-failure fallback, and the double-submit guard -- are none of them
+// specific to edit mode, so each is rewritten below to reach the dialog via the still-available
+// "New capability" action instead, through the local openFilledCreateDialog helper.
+//
 // Criteria 1, 2 and their own inferences live in capabilities-browser-screen-detail.spec.ts,
 // and criteria 3, 4 live in capabilities-browser-screen-capability-form-schema.spec.ts --
 // split this way to stay under this project's own max-lines rule (MNT-01). All three share
@@ -42,6 +56,37 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.mocked(toast.error).mockClear();
 });
+
+/**
+ * Opens "New capability" and fills every field capabilityFormSchema requires (name, version,
+ * connector, both JSON schemas as "{}", and the one available concept), leaving nature at its
+ * own "read-only" default -- the same minimal fill capabilities-browser-screen-capability-
+ * form-schema.spec.ts's own fillRequiredScalarFields/openNewCapabilityDialog pair uses, restated
+ * here rather than imported since each sibling spec file already keeps its own local fixture
+ * helpers. Reaches the four save-failure-handling tests below through the still-available
+ * create path now that the per-row "Edit" shortcut they used to reach the dialog through is
+ * gone.
+ */
+async function openFilledCreateDialog(
+  fetchMock: Parameters<typeof mountCapabilitiesScreen>[0],
+): Promise<HTMLElement> {
+  await mountCapabilitiesScreen(fetchMock);
+  await screen.findByText("No capabilities are currently registered.");
+
+  fireEvent.click(screen.getByRole("button", { name: "New capability" }));
+  const dialog = await screen.findByRole("dialog");
+  fireEvent.change(await within(dialog).findByLabelText("Name"), {
+    target: { value: "translate-text" },
+  });
+  fireEvent.change(within(dialog).getByLabelText("Version"), { target: { value: "1.0.0" } });
+  fireEvent.change(within(dialog).getByLabelText("Connector"), {
+    target: { value: "deepl-connector" },
+  });
+  fireEvent.change(within(dialog).getByLabelText("Input schema"), { target: { value: "{}" } });
+  fireEvent.change(within(dialog).getByLabelText("Output schema"), { target: { value: "{}" } });
+  selectOption("Concept", "translation");
+  return dialog;
+}
 
 describe("CapabilitiesBrowserScreen — a successful create persists the contract and the list reflects it (criterion 6)", () => {
   it("issues PUT /v1/capabilities/{name}/{version} with the full declared contract, closes the Dialog, and the list shows the new capability afterward", async () => {
@@ -85,34 +130,6 @@ describe("CapabilitiesBrowserScreen — a successful create persists the contrac
     });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(await screen.findByText("translate-text")).toBeTruthy();
-  });
-});
-
-describe("CapabilitiesBrowserScreen — a successful edit replaces the capability in place and the list reflects it (criterion 6)", () => {
-  it("issues PUT at the existing name and version with the edited contract, and the list shows the change afterward", async () => {
-    let capabilities = [capability({ name: "translate-text", version: "1.0.0", timeout: 5000 })];
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage(capabilities)),
-      [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
-      [capabilityPutPath("translate-text", "1.0.0")]: () => {
-        capabilities = [capability({ name: "translate-text", version: "1.0.0", timeout: 9000 })];
-        return jsonResponse(capabilities[0]);
-      },
-    });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-    const dialog = await screen.findByRole("dialog");
-    fireEvent.change(await within(dialog).findByLabelText("Timeout (ms)"), {
-      target: { value: "9000" },
-    });
-    fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
-
-    await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
-    expect(parsedPutBody(fetchMock)).toEqual(expect.objectContaining({ timeout: 9000 }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(await screen.findByText("9000 ms")).toBeTruthy();
   });
 });
 
@@ -175,19 +192,13 @@ const OTHER_REGISTRY_REFUSAL_CASES: readonly { readonly code: string; readonly m
 describe("CapabilitiesBrowserScreen — the registry's other named refusals each reach the operator as their own specific message too (criterion 5, disclosed inference)", () => {
   for (const { code, message } of OTHER_REGISTRY_REFUSAL_CASES) {
     it(`shows ${code}'s own distinct message rather than the generic fallback, and keeps the Dialog open`, async () => {
-      const target = capability({ name: "translate-text", version: "1.0.0" });
       const fetchMock = createCapabilitiesFetchStub({
-        [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
+        [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
         [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
         [capabilityPutPath("translate-text", "1.0.0")]: () =>
           jsonResponse({ error: { code, message: "backend message" } }, 422),
       });
-      await mountCapabilitiesScreen(fetchMock);
-      await screen.findByText("translate-text");
-
-      fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-      const dialog = await screen.findByRole("dialog");
-      await within(dialog).findByLabelText("Name");
+      const dialog = await openFilledCreateDialog(fetchMock);
       fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
       await waitFor(() => expect(toast.error).toHaveBeenCalledWith(message));
@@ -204,9 +215,8 @@ describe("CapabilitiesBrowserScreen — the registry's other named refusals each
       "ConceptAlreadyAnsweredError",
     ];
     let currentCode: string | null = codes[0];
-    const target = capability({ name: "translate-text", version: "1.0.0" });
     const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
       [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
       [capabilityPutPath("translate-text", "1.0.0")]: () => {
         if (currentCode === null) {
@@ -215,12 +225,7 @@ describe("CapabilitiesBrowserScreen — the registry's other named refusals each
         return jsonResponse({ error: { code: currentCode, message: "backend message" } }, 422);
       },
     });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-    const dialog = await screen.findByRole("dialog");
-    await within(dialog).findByLabelText("Name");
+    const dialog = await openFilledCreateDialog(fetchMock);
     const saveButton = within(dialog).getByRole("button", { name: "Save" });
 
     const observedMessages: unknown[] = [];
@@ -239,20 +244,14 @@ describe("CapabilitiesBrowserScreen — the registry's other named refusals each
 
 describe("CapabilitiesBrowserScreen — an unmapped save failure falls back to the generic message", () => {
   it("shows the shared generic save-failure toast for a failure error-ui-state.ts does not name", async () => {
-    const target = capability({ name: "translate-text", version: "1.0.0" });
     const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
       [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
       [capabilityPutPath("translate-text", "1.0.0")]: () => {
         throw new Error("network down");
       },
     });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-    const dialog = await screen.findByRole("dialog");
-    await within(dialog).findByLabelText("Name");
+    const dialog = await openFilledCreateDialog(fetchMock);
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => {
@@ -269,25 +268,20 @@ describe("CapabilitiesBrowserScreen — saving twice in quick succession (edge c
     const putPromise = new Promise<Response>((resolve) => {
       resolvePut = resolve;
     });
-    const target = capability({ name: "translate-text", version: "1.0.0" });
     const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
       [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
       [capabilityPutPath("translate-text", "1.0.0")]: () => putPromise,
     });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-    const dialog = await screen.findByRole("dialog");
-    const saveButton = await within(dialog).findByRole("button", { name: "Save" });
+    const dialog = await openFilledCreateDialog(fetchMock);
+    const saveButton = within(dialog).getByRole("button", { name: "Save" });
     fireEvent.click(saveButton);
     fireEvent.click(saveButton);
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
 
     await act(async () => {
-      resolvePut(jsonResponse(target));
+      resolvePut(jsonResponse(capability({ name: "translate-text", version: "1.0.0" })));
     });
   });
 });

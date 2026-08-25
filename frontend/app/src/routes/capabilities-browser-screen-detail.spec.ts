@@ -4,30 +4,41 @@ import {
   CAPABILITIES_PATH,
   CONCEPT_OPTIONS_PATH,
   capabilitiesPage,
-  capability,
   conceptOptionsPage,
   createCapabilitiesFetchStub,
   jsonResponse,
   mountCapabilitiesScreen,
 } from "./capabilities-browser-screen.test-support";
 
-// Proof for task/capability-authoring/capability-create-edit-form's own criteria 1 and 2 --
-// the "New capability" action opening a blank form, and each row's own "Edit" action opening
-// the same form pre-filled with that row's own current values -- replacing this screen's prior
-// read-only row-selection detail panel (CapabilityDetailPanel, the `selectedKey` state, this
-// file's own prior delivery: task/glossary-and-capabilities-browser/
-// capabilities-browser-screen's own criteria 2-5) entirely, plus the delivery record's own
-// disclosed inferences that name/version are disabled (not merely pre-filled) while editing,
-// that nature defaults to "read-only" in create mode, that a row itself is now inert (only its
-// own Edit button opens anything), and the dialog's own loading/load-error phases over the
-// concept single-select's own vocabulary (EDG-01/EDG-02, "a dependency that fails or answers
-// slowly"). This file replaces its own prior delivery's coverage of the now-removed detail
-// panel rather than sitting beside a still-relevant version of it, since that panel's own
-// describe blocks (region role, aria-live mount point, composite-key disambiguation) have
-// nothing left to assert once CapabilityDetailPanel and selectedKey are gone. Criteria 3, 4
-// live in the sibling capabilities-browser-screen-capability-form-schema.spec.ts, and criteria
-// 5, 6 live in capabilities-browser-screen-capability-form-save.spec.ts -- split this way to
-// stay under this project's own max-lines rule (MNT-01). All three share
+// Proof for task/capability-authoring/capability-create-edit-form's own criterion 1 -- the
+// "New capability" action opening a blank form -- replacing this screen's prior read-only
+// row-selection detail panel (CapabilityDetailPanel, the `selectedKey` state, this file's own
+// prior delivery: task/glossary-and-capabilities-browser/capabilities-browser-screen's own
+// criteria 2-5) entirely, plus the delivery record's own disclosed inferences that nature
+// defaults to "read-only" in create mode, and the dialog's own loading/load-error phases over
+// the concept single-select's own vocabulary (EDG-01/EDG-02, "a dependency that fails or
+// answers slowly"). This file replaces its own prior delivery's coverage of the now-removed
+// detail panel rather than sitting beside a still-relevant version of it, since that panel's
+// own describe blocks (region role, aria-live mount point, composite-key disambiguation) have
+// nothing left to assert once CapabilityDetailPanel and selectedKey are gone.
+//
+// Criterion 2 (each row's own Edit action opening the same form, pre-filled), the disclosed
+// inferences that name/version are disabled while editing and that a row itself was inert
+// (only its own Edit action opened anything), and the json-textarea-pretty-print-on-load
+// coverage reached through that same Edit dialog are all retired below --
+// task/connector-capability-detail-editing/capability-detail-route (criteria 2 and 9) removed
+// this screen's own per-row "Edit" button and its in-page edit dialog entirely, replacing them
+// with a row click that navigates to the routed detail screen instead
+// (capabilities-browser-screen.tsx's own header comment), mirroring
+// connector-configurations-screen.tsx's own identical convention. That routed screen's own
+// proof -- capability-detail-screen.spec.ts -- already covers the equivalent pre-filled,
+// disabled-identity and pretty-printed-on-load behavior this screen no longer has any UI left
+// to reach; the "a row itself is inert" assertion is not merely unreachable but now false (a
+// row click navigates instead of doing nothing), so it is retired rather than rewritten.
+//
+// Criteria 3, 4 live in the sibling capabilities-browser-screen-capability-form-schema.spec.ts,
+// and criteria 5, 6 live in capabilities-browser-screen-capability-form-save.spec.ts -- split
+// this way to stay under this project's own max-lines rule (MNT-01). All three share
 // capabilities-browser-screen.test-support.ts's own fixtures, mounting helper and
 // selectOption() helper.
 
@@ -79,129 +90,6 @@ describe('CapabilitiesBrowserScreen — "New capability" opens a blank form (cri
     const dialog = await screen.findByRole("dialog");
     const natureTrigger = await within(dialog).findByLabelText("Nature");
     expect(natureTrigger.textContent).toBe("read-only");
-  });
-});
-
-describe("CapabilitiesBrowserScreen — each row's own Edit action opens the same form, pre-filled (criterion 2)", () => {
-  it("opens a Dialog whose fields already hold that row's own current values, and no detail panel renders alongside it", async () => {
-    const target = capability({
-      name: "translate-text",
-      version: "3.2.1",
-      nature: "mutating",
-      input_schema: '{"kind":"TranslateTextInputV3"}',
-      output_schema: '{"kind":"TranslateTextOutputV3"}',
-      timeout: 9000,
-      connector: "deepl-connector",
-      concept: "translation",
-    });
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
-      [CONCEPT_OPTIONS_PATH]: () =>
-        jsonResponse(conceptOptionsPage(["translation", "image-processing"])),
-    });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-
-    const dialog = await screen.findByRole("dialog");
-    expect(await within(dialog).findByText('Edit capability "translate-text"')).toBeTruthy();
-    expect((await within(dialog).findByLabelText<HTMLInputElement>("Name")).value).toBe(
-      "translate-text",
-    );
-    expect(within(dialog).getByLabelText<HTMLInputElement>("Version").value).toBe("3.2.1");
-    // Pretty-printed rather than the raw minified fixture values: the shared JsonTextareaField's
-    // own mount-time load-normalization effect
-    // (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 4)
-    // reformats both before this assertion ever reads either field, mirroring that task's own
-    // dedicated describe block below rather than contradicting it.
-    expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Input schema").value).toBe(
-      '{\n  "kind": "TranslateTextInputV3"\n}',
-    );
-    expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Output schema").value).toBe(
-      '{\n  "kind": "TranslateTextOutputV3"\n}',
-    );
-    expect(within(dialog).getByLabelText<HTMLInputElement>("Timeout (ms)").value).toBe("9000");
-    expect(within(dialog).getByLabelText<HTMLInputElement>("Connector").value).toBe(
-      "deepl-connector",
-    );
-    expect(within(dialog).getByLabelText("Nature").textContent).toBe("mutating");
-    expect(within(dialog).getByLabelText("Concept").textContent).toBe("translation");
-
-    expect(screen.queryByRole("region")).toBeNull();
-  });
-});
-
-describe(
-  "CapabilitiesBrowserScreen — input_schema and output_schema show their loaded values pretty-printed (task/connector-capability-detail-editing/json-textarea-pretty-print-on-load, criterion 4)",
-  () => {
-    it("renders both schema fields' loaded, minified values reformatted as indented JSON as soon as the Edit dialog opens", async () => {
-      const target = capability({
-        name: "translate-text",
-        version: "1.0.0",
-        input_schema: '{"kind":"TranslateTextInput","fields":["text","target"]}',
-        output_schema: '{"kind":"TranslateTextOutput"}',
-      });
-      const fetchMock = createCapabilitiesFetchStub({
-        [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
-        [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
-      });
-      await mountCapabilitiesScreen(fetchMock);
-      await screen.findByText("translate-text");
-
-      fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-
-      const dialog = await screen.findByRole("dialog");
-      const inputSchemaField = await within(dialog).findByLabelText<HTMLTextAreaElement>(
-        "Input schema",
-      );
-      // Hardcoded rather than computed from the fixtures, the same reasoning
-      // json-textarea-field.spec.ts's own Beautify test states in full.
-      expect(inputSchemaField.value).toBe(
-        '{\n  "kind": "TranslateTextInput",\n  "fields": [\n    "text",\n    "target"\n  ]\n}',
-      );
-      expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Output schema").value).toBe(
-        '{\n  "kind": "TranslateTextOutput"\n}',
-      );
-    });
-  },
-);
-
-describe("CapabilitiesBrowserScreen — editing a capability disables name and version (disclosed inference)", () => {
-  it("renders Name and Version disabled while editing, so neither can be changed", async () => {
-    const target = capability({ name: "translate-text", version: "1.0.0" });
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([target])),
-      [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
-    });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("translate-text");
-
-    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-
-    const dialog = await screen.findByRole("dialog");
-    expect(
-      (await within(dialog).findByLabelText<HTMLInputElement>("Name")).hasAttribute("disabled"),
-    ).toBe(true);
-    expect(
-      within(dialog).getByLabelText<HTMLInputElement>("Version").hasAttribute("disabled"),
-    ).toBe(true);
-  });
-});
-
-describe("CapabilitiesBrowserScreen — a row itself is inert; only its own Edit action opens anything (disclosed inference)", () => {
-  it("opens no dialog and shows no detail panel when a row's own cell, rather than its Edit button, is clicked", async () => {
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([capability()])),
-      [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
-    });
-    await mountCapabilitiesScreen(fetchMock);
-
-    const nameCell = await screen.findByText("translate-text");
-    fireEvent.click(nameCell);
-
-    expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.queryByRole("region")).toBeNull();
   });
 });
 

@@ -4,6 +4,7 @@ import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+import { CapabilityDetailScreen } from "./capability-detail-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
@@ -130,6 +131,16 @@ const capabilitiesRoute = createRoute({
   component: CapabilitiesBrowserScreen,
 });
 
+// task/connector-capability-detail-editing/capability-detail-route's own
+// screen: shows and edits one capability in place of the popup dialog's
+// edit path (the popup's own "New capability" creation path is untouched,
+// still hosted on capabilitiesRoute above).
+const capabilityDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/capabilities/$name/$version",
+  component: CapabilityDetailScreen,
+});
+
 // task/connector-configuration-authoring/connector-configuration-create-edit-form's
 // own screen: lists every registered connector configuration and hosts its
 // create/edit form dialog.
@@ -168,6 +179,7 @@ const routeTree = rootRoute.addChildren([
   versionDiscardRoute,
   glossaryRoute,
   capabilitiesRoute,
+  capabilityDetailRoute,
   connectorConfigurationsRoute,
   connectorConfigurationDetailRoute,
   caseHypothesesRoute,

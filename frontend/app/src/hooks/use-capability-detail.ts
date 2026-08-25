@@ -78,6 +78,38 @@
  * gives for its own save path: this task's own criteria name no failure
  * wording, and showing the registry's refusal to the operator is the later
  * capability detail route task's own concern.
+ *
+ * Two corrections landed after this file's own first delivery, made by
+ * task/connector-capability-detail-editing/capability-detail-route (the
+ * sibling task whose own concern the paragraph above already names) by
+ * proactively checking for, and finding, the exact same two defects a
+ * failure-diagnostician already found once against this file's own sibling
+ * hook, use-connector-configuration-detail.ts -- disclosed as that route
+ * task's own divergence, since this file was delivered by the sibling
+ * capability-detail-hook task:
+ *
+ * - The load effect below used to hardcode both `inputSchemaValid` and
+ *   `outputSchemaValid` to `true` on every load, so a stored schema that
+ *   does not parse as JSON never showed the route task's own criterion 8
+ *   warning at the moment that criterion names -- right after load, before
+ *   any edit. Both now derive their validity the same way the isDirty
+ *   comparison below already does: through `getJsonTextareaMinifiedValue`,
+ *   which returns `null` for text that does not parse
+ *   (json-textarea-field.tsx's own `parseJsonText`), rather than duplicating
+ *   that check with a second, hand-written `JSON.parse`.
+ * - `isSubmitSuccessful` (react-query's own `mutation.isSuccess`) is a new
+ *   field on the "ready" phase. use-capability-detail-view.ts (that route
+ *   task's own composition hook) needs to tell "a save just succeeded"
+ *   apart from "nothing has happened" or "a save is pending", and comparing
+ *   `isSubmitting` across renders would never fire for a fast-resolving
+ *   mutation whose pending and settled states land in the same committed
+ *   render -- the exact failure-diagnostician finding
+ *   use-connector-configuration-detail.ts's own header comment already
+ *   documents in full. Nothing already exposed by this phase can answer
+ *   that from outside (`onSubmit` is `void`, not a promise a caller could
+ *   await), so the fix widens this phase by exactly the one fact
+ *   react-query itself already derived, rather than a second, home-grown
+ *   one.
  */
 
 import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
@@ -105,6 +137,13 @@ export type CapabilityDetailState =
       readonly outputSchema: JsonSchemaFieldState;
       readonly isDirty: boolean;
       readonly isSubmitting: boolean;
+      /**
+       * react-query's own `mutation.isSuccess` for the last submitted save
+       * (this file's own header comment) -- true from the instant that
+       * save's `onSuccess` runs until a subsequent `mutate` call starts a
+       * new one, false on load and false after a failed save.
+       */
+      readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
     };
 
@@ -164,10 +203,13 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
         concept: query.data.concept,
       });
       setInputSchemaValue(query.data.input_schema);
-      setInputSchemaValid(true);
+      // route task's own criterion 8: a loaded schema that does not parse as
+      // JSON must warn immediately, not read as valid until the operator
+      // edits it -- see this file's own header comment's first correction.
+      setInputSchemaValid(getJsonTextareaMinifiedValue(query.data.input_schema) !== null);
       setInputSchemaBaseline(query.data.input_schema);
       setOutputSchemaValue(query.data.output_schema);
-      setOutputSchemaValid(true);
+      setOutputSchemaValid(getJsonTextareaMinifiedValue(query.data.output_schema) !== null);
       setOutputSchemaBaseline(query.data.output_schema);
     }
   }, [query.data]);
@@ -268,6 +310,7 @@ export function useCapabilityDetail(name: string, version: string): CapabilityDe
     },
     isDirty,
     isSubmitting: mutation.isPending,
+    isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
   };
 }

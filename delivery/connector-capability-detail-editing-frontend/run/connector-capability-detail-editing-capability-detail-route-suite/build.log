@@ -1,0 +1,28 @@
+
+> case-authoring-console@0.1.0 build
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+Found 1 warning while optimizing generated CSS:
+
+[2m│   }[22m
+[2m│   .rounded-\[var\(--radius-\*\)\] {[22m
+[2m│[22m     border-radius: var(--radius-*);
+[2m┆[22m                                 [33m[2m^--[22m Unexpected token Delim('*')[39m
+[2m┆[22m
+[2m│   }[22m
+[2m│   .rounded-full {[22m
+
+✓ 1897 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.41 kB │ gzip:   0.27 kB
+dist/assets/index-XC6Zw4VB.css   28.69 kB │ gzip:   6.42 kB
+dist/assets/index-DhTFB0mA.js   636.31 kB │ gzip: 193.30 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.65s

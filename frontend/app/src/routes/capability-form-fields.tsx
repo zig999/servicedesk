@@ -37,6 +37,20 @@ import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
  * a Checkbox group (that composition belongs to concept-form-fields.tsx's
  * own multi-select `accepts` field, a different field on a different
  * form), so the form offers no way to pick more than one concept at once.
+ *
+ * `isDirty` (task/connector-capability-detail-editing/
+ * capability-detail-route, criterion 4) is optional and, left unset, never
+ * itself disables Save -- so capability-form-dialog.tsx's own existing call
+ * site (which never passes it) keeps exactly the disabling behavior it
+ * already had: that dialog's own hook (use-capability-form.ts) tracks no
+ * "differs from the loaded record" concept at all, and re-saving an
+ * unmodified record there was never refused. The routed detail screen is
+ * the one caller that does pass it, gating Save on top of the same
+ * isSubmitting/inputSchema.isValid/outputSchema.isValid conditions this
+ * component already applied -- the markup below is otherwise unchanged from
+ * this file's own prior delivery, mirroring
+ * connector-configuration-form-fields.tsx's own identical widening for its
+ * own sibling route task.
  */
 
 export type CapabilityFormFieldsProps = {
@@ -48,6 +62,8 @@ export type CapabilityFormFieldsProps = {
   readonly isEditingIdentity: boolean;
   readonly isSubmitting: boolean;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+  /** See this file's own header comment above. */
+  readonly isDirty?: boolean;
 };
 
 const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
@@ -90,6 +106,7 @@ export function CapabilityFormFields({
   isEditingIdentity,
   isSubmitting,
   onSubmit,
+  isDirty,
 }: CapabilityFormFieldsProps): JSX.Element {
   const {
     register,
@@ -102,7 +119,8 @@ export function CapabilityFormFields({
     label: concept.name,
   }));
 
-  const isSaveDisabled = isSubmitting || !inputSchema.isValid || !outputSchema.isValid;
+  const isSaveDisabled =
+    isSubmitting || !inputSchema.isValid || !outputSchema.isValid || isDirty === false;
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">

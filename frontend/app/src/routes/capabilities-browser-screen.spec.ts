@@ -16,17 +16,30 @@ import {
 // (criteria 2-5, plus the composite-key inference) moved to
 // capabilities-browser-screen-detail.spec.ts, task/capability-authoring/
 // capability-create-edit-form's own proof, when that task replaced the row-selection detail
-// panel entirely with per-row Edit actions opening a create/edit form -- this file's own
-// listing test below is updated to match (a "Version" column and a per-row "Edit" action
-// button now render; rows themselves no longer carry role="button", since StatusTable never
-// receives an onRowClick prop here any more). The old "no mutating controls" describe block
-// this file's own prior delivery held is removed outright rather than inverted: its own claim
-// (this screen renders no control that creates, edits or deletes a capability) is exactly what
-// task/capability-authoring/capability-create-edit-form's own criteria 1 and 2 now
-// contradict by design, and the positive replacement ("New capability" and "Edit" do exist) is
-// what that task's own capabilities-browser-screen-detail.spec.ts asserts instead.
-// Both this file and that one share capabilities-browser-screen.test-support.ts's own
-// fixtures and mounting helper.
+// panel entirely with a "New capability" action and (at that task's own delivery) each row's
+// own "Edit" action, both opening a shared create/edit form.
+//
+// task/connector-capability-detail-editing/capability-detail-route (criteria 2 and 9) then
+// removed that per-row "Edit" action and its in-page edit dialog entirely, replacing them with
+// a row click that navigates to the routed detail screen instead
+// (capabilities-browser-screen.tsx's own header comment) -- StatusTable gives every data row
+// role="button" rather than the implicit "row" once onRowClick is passed (see
+// status-table.spec.ts's own header row / data row distinction), so the header row keeps its
+// own implicit "row" role (never clickable) while findAllByRole("row") would now find only
+// that one row rather than one entry per capability. The three listing/formatting tests below
+// query data rows by their own "button" role, scoped to the table itself (so this screen's own
+// unrelated "New capability" button, also role="button", is never counted alongside them),
+// this file's own equivalent for what each always verified.
+//
+// The old "no mutating controls" describe block this file's own prior delivery held is removed
+// outright rather than inverted: its own claim (this screen renders no control that creates,
+// edits or deletes a capability) is exactly what task/capability-authoring/
+// capability-create-edit-form's own criteria 1 and 2 contradict by design, and the positive
+// replacement ("New capability" opening a form, a row click navigating to the routed detail
+// screen) is what capabilities-browser-screen-detail.spec.ts and the routed screen's own
+// capability-detail-screen.spec.ts assert instead.
+// Both this file and capabilities-browser-screen-detail.spec.ts share
+// capabilities-browser-screen.test-support.ts's own fixtures and mounting helper.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -59,28 +72,23 @@ describe("CapabilitiesBrowserScreen — listing (criterion 1)", () => {
     });
     await mountCapabilitiesScreen(fetchMock);
 
-    // rows[0] is the header row (StatusTable's own TableHeader); one data row follows per
-    // capability -- native <tr> elements carry the implicit ARIA role "row" inside a table
-    // regardless of whether StatusTable was given an onRowClick (unlike this screen's own
-    // prior delivery, which overrode that role to "button" for its own row-selection
-    // behavior; task/capability-authoring/capability-create-edit-form removed that behavior
-    // entirely, so a row here is never a button).
-    const rows = await screen.findAllByRole("row");
-    expect(rows).toHaveLength(3);
+    const table = await screen.findByRole("table");
+    const dataRows = within(table).getAllByRole("button");
+    expect(dataRows).toHaveLength(2);
 
-    expect(within(rows[1]).getByText("translate-text")).toBeTruthy();
-    expect(within(rows[1]).getByText("1.0.0")).toBeTruthy();
-    expect(within(rows[1]).getByText("read-only")).toBeTruthy();
-    expect(within(rows[1]).getByText("deepl-connector")).toBeTruthy();
-    expect(within(rows[1]).getByText("translation")).toBeTruthy();
-    expect(within(rows[1]).getByText("5000 ms")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("translate-text")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("1.0.0")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("read-only")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("deepl-connector")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("translation")).toBeTruthy();
+    expect(within(dataRows[0]).getByText("5000 ms")).toBeTruthy();
 
-    expect(within(rows[2]).getByText("resize-image")).toBeTruthy();
-    expect(within(rows[2]).getByText("2.0.0")).toBeTruthy();
-    expect(within(rows[2]).getByText("mutating")).toBeTruthy();
-    expect(within(rows[2]).getByText("imaging-connector")).toBeTruthy();
-    expect(within(rows[2]).getByText("image-processing")).toBeTruthy();
-    expect(within(rows[2]).getByText("12000 ms")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("resize-image")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("2.0.0")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("mutating")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("imaging-connector")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("image-processing")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("12000 ms")).toBeTruthy();
   });
 });
 
@@ -131,8 +139,9 @@ describe("CapabilitiesBrowserScreen — timeout and nature formatting (disclosed
     });
     await mountCapabilitiesScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("row");
-    expect(within(rows[1]).getByText("250 ms")).toBeTruthy();
+    const table = await screen.findByRole("table");
+    const dataRows = within(table).getAllByRole("button");
+    expect(within(dataRows[0]).getByText("250 ms")).toBeTruthy();
   });
 
   it("renders a capability's nature as plain text, never as a StatusTable {color,label} status cell", async () => {
@@ -141,12 +150,12 @@ describe("CapabilitiesBrowserScreen — timeout and nature formatting (disclosed
     });
     await mountCapabilitiesScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("row");
-    const dataRow = rows[1];
-    // The Nature column is the third of the seven declared columns (name, version, nature,
-    // connector, concept, timeout, actions -- "version" and "actions" are both
-    // task/capability-authoring/capability-create-edit-form's own additions). A {color,label}
-    // status cell would additionally render an aria-hidden color dot beside the label text
+    const table = await screen.findByRole("table");
+    const dataRow = within(table).getAllByRole("button")[0];
+    // The Nature column is the third of the six declared columns (name, version, nature,
+    // connector, concept, timeout -- "version" is task/capability-authoring/
+    // capability-create-edit-form's own addition). A {color,label} status cell would
+    // additionally render an aria-hidden color dot beside the label text
     // (status-table.tsx's own renderCellContent); a plain string never does.
     // eslint-disable-next-line testing-library/no-node-access -- mirrors status-table.spec.ts's own precedent: a status cell's color dot is aria-hidden and decorative, so checking for its absence has no RTL role/text/label query to use.
     const natureCell = dataRow.querySelectorAll("td")[2];

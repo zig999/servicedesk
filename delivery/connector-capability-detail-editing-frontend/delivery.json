@@ -10,6 +10,14 @@
       "task": "task/connector-capability-detail-editing/capability-detail-hook"
     },
     {
+      "id": "implementation/connector-capability-detail-editing/capability-detail-route",
+      "kind": "implementation",
+      "file": "implementation/connector-capability-detail-editing/capability-detail-route.md",
+      "title": "Capability detail/edit route",
+      "summary": "Adds a routed /capabilities/$name/$version detail-and-edit screen that replaces the popup dialog's edit path for an existing capability, with dirty-gated Save, discard, a save acknowledgement, and an invalid-loaded-JSON warning.",
+      "task": "task/connector-capability-detail-editing/capability-detail-route"
+    },
+    {
       "id": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
       "kind": "implementation",
       "file": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook.md",
@@ -40,6 +48,14 @@
       "title": "Proof for the capability single-record edit hook (useCapabilityDetail)",
       "summary": "Renders useCapabilityDetail directly through renderHook against a stubbed global fetch, proving all seven criteria, all three recorded inferences, and the double-submit edge case, split across three .spec.ts files plus one shared test-support.ts to stay under this project's own max-lines rule from the start.",
       "task": "task/connector-capability-detail-editing/capability-detail-hook"
+    },
+    {
+      "id": "proof/connector-capability-detail-editing/capability-detail-route",
+      "kind": "proof",
+      "file": "proof/connector-capability-detail-editing/capability-detail-route.md",
+      "title": "Capability detail/edit route, proven directly against the routed screen and its composing hooks",
+      "summary": "31 tests over the routed /capabilities/$name/$version screen, its ready-phase view, capability-form-fields.tsx's widened isDirty prop, the capabilities list's row-click navigation, and the use-capability-detail-view composition hook -- proving all nine of this task's criteria, split across five spec files to respect this project's own max-lines rule from the start.",
+      "task": "task/connector-capability-detail-editing/capability-detail-route"
     },
     {
       "id": "proof/connector-capability-detail-editing/connector-configuration-detail-hook",
@@ -82,6 +98,30 @@
     {
       "from": "implementation/connector-capability-detail-editing/capability-detail-hook",
       "to": "task/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-route",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-route",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-route",
+      "to": "task/connector-capability-detail-editing/capability-detail-route",
       "kind": "implements",
       "at": "the path"
     },
@@ -136,6 +176,12 @@
     {
       "from": "proof/connector-capability-detail-editing/capability-detail-hook",
       "to": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-capability-detail-editing/capability-detail-route",
+      "to": "implementation/connector-capability-detail-editing/capability-detail-route",
       "kind": "proves",
       "at": "the path"
     },

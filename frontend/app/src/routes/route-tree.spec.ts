@@ -59,6 +59,14 @@ import {
  * connector configurations list row now navigates to. Excluded from
  * EXPECTED_COMPONENT_BY_PATH for the same reason -- it renders a real
  * screen, not a placeholder.
+ *
+ * "/capabilities/$name/$version" is the fifteenth route, added by
+ * task/connector-capability-detail-editing/capability-detail-route's own
+ * criterion 1: the routed capability detail/edit screen a capabilities list
+ * row now navigates to, addressed by both identity fields
+ * (domain/integration/capability's own "identified by name and version")
+ * rather than name alone. Excluded from EXPECTED_COMPONENT_BY_PATH for the
+ * same reason -- it renders a real screen, not a placeholder.
  */
 
 const EXPECTED_PATHS = [
@@ -74,6 +82,7 @@ const EXPECTED_PATHS = [
   "/cases/$slug/versions/$version/discard",
   "/glossary",
   "/capabilities",
+  "/capabilities/$name/$version",
   "/connectors",
   "/connectors/$connector",
 ];
@@ -99,13 +108,13 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the fourteen proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the fifteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
   });
 
-  it("assigns no two of the fourteen routes the same path", () => {
+  it("assigns no two of the fifteen routes the same path", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect(new Set(actualPaths).size).toBe(actualPaths.length);

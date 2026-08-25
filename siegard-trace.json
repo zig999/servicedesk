@@ -597,7 +597,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:8f1a26b9636b8d6954cd3b31614af00f88e9fe0ebb5a5c9964e92be5c8f1c05d"
+          "digest": "sha256:35e78ff88190227055d6c63bd57052f8472355f21c7f727e2b3f1bb53b033a0d"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -1649,7 +1649,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-capability-detail.ts",
-          "digest": "sha256:8f1a26b9636b8d6954cd3b31614af00f88e9fe0ebb5a5c9964e92be5c8f1c05d"
+          "digest": "sha256:35e78ff88190227055d6c63bd57052f8472355f21c7f727e2b3f1bb53b033a0d"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -1657,11 +1657,19 @@
         },
         {
           "path": "frontend/app/src/routes/capabilities-browser-screen.tsx",
-          "digest": "sha256:439e464416170c087db0044e622fdc50fec79ac8defd93f89c6f566037de272b"
+          "digest": "sha256:884aa5ceaf0e18b4b9d79a5c590e93d031db9b0e714c488990618c79b24ec791"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-screen.tsx",
+          "digest": "sha256:99dc105421290b48292db37b6d87ded41f07f5a9ac30b3ce4f5313b9f7b90c01"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:df112e843e1ac34ebcb4f0a7408359d92b988689eaa6d6dddde72443a9b0d2dd"
+        },
+        {
+          "path": "frontend/app/src/routes/route-tree.tsx",
+          "digest": "sha256:29c1385a1076d05320da45afc4ec2c52dadc9ae6f558cdb664818f243e3cd43a"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -3058,8 +3066,16 @@
       "digest": "sha256:c6847a232e175a96e787bd03ed2c54067e5829befe34a3d4ee213c8862aae7d1",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:35e78ff88190227055d6c63bd57052f8472355f21c7f727e2b3f1bb53b033a0d"
+        },
+        {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-detail-ready-view.tsx",
+          "digest": "sha256:5064f74fce70ff2122c8330c07db4e1dd4c2ed150b5ee991b042f42e8d5bff94"
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",

@@ -1,4 +1,5 @@
 import { useState, type JSX } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
   StatusTable,
@@ -14,25 +15,34 @@ import { CapabilityFormDialog } from "./capability-form-dialog";
  * capabilities-browser-screen, the scope's section 2.9): every capability
  * GET /v1/capabilities returns, one row each.
  *
- * task/capability-authoring/capability-create-edit-form widens this screen
+ * task/capability-authoring/capability-create-edit-form widened this screen
  * from read-only to one that also creates and edits a capability
  * (contracts/integration/capability-registry's own register-capability
- * operation, PUT /v1/capabilities/{name}/{version}) -- criterion 2 replaces
- * this screen's own original row-selection detail panel
- * (CapabilityDetailPanel, this screen's own prior delivery) with the same
- * create/edit form (criterion 1's "New capability" action, criterion 2's
- * per-row "Edit" action) pre-filled from that row's own already-loaded
- * data, so selecting a row still issues no second network request -- the
- * one property that panel's own header comment named as this screen's own
- * inference, kept true here the same way: every field the form edits
- * (criterion 1's full field list) is already present on the row
- * useCapabilities returned.
+ * operation, PUT /v1/capabilities/{name}/{version}) -- replacing this
+ * screen's own original row-selection detail panel (CapabilityDetailPanel)
+ * with the shared create/edit form, opened either by the "New capability"
+ * action or (at that task's own delivery) each row's own "Edit" action,
+ * both parametrized by `formTarget`'s own nullable-identity shape
+ * (CapabilityFormTarget: `null` closed, `{ mode: "create" }`, or `{ mode:
+ * "edit", capability }`) rather than each action owning its own
+ * trigger-adjacent Dialog.
  *
- * Mirrors glossary-browser-screen.tsx's own ConceptsPanel composition
- * exactly: both actions open one shared Dialog, parametrized by
- * `formTarget`'s own nullable-identity shape (CapabilityFormTarget: `null`
- * closed, `{ mode: "create" }`, or `{ mode: "edit", capability }`) rather
- * than each action owning its own trigger-adjacent Dialog.
+ * task/connector-capability-detail-editing/capability-detail-route
+ * (criteria 2 and 9) replaces this screen's own former per-row "Edit"
+ * action -- which opened that same Dialog in edit mode -- with a row click
+ * that navigates to the new routed detail/edit screen instead
+ * (route-tree.tsx's own "/capabilities/$name/$version"), mirroring
+ * connector-configurations-screen.tsx's own identical row-click convention
+ * (StatusTable's own `onRowClick`, a plain function reading the clicked
+ * row's own identity fields and calling `navigate`) rather than a second,
+ * hand-rolled row-link pattern. The popup Dialog's own "New capability"
+ * creation path is untouched: that action still opens the Dialog in create
+ * mode exactly as before, and `CapabilityFormTarget`'s own `{ mode: "edit",
+ * ... }` variant stays part of that shared type for capability-form-dialog.tsx's
+ * own sake (this screen never constructs one anymore), the same convention
+ * connector-configuration-form-dialog.tsx and
+ * use-connector-configuration-form.ts were themselves left holding
+ * unreachable once their own sibling screen stopped constructing one.
  *
  * Wired in as route-tree.tsx's "/capabilities" route's own `component`,
  * unchanged from this screen's own prior delivery -- only this file's own
@@ -46,7 +56,6 @@ const COLUMNS: StatusTableColumn[] = [
   { key: "connector", header: "Connector" },
   { key: "concept", header: "Concept" },
   { key: "timeout", header: "Timeout" },
-  { key: "actions", header: "" },
 ];
 
 /**
@@ -77,14 +86,11 @@ function capabilityKey(capability: Capability): string {
 }
 
 /**
- * `onEdit` renders as this row's own "Edit" action cell (criterion 2),
- * a plain Button element -- the same convention
- * glossary-browser-screen.tsx's own toConceptRow already established for a
- * cell holding a caller-composed action rather than plain text
- * (status-table.tsx's own renderCellContent renders such a value exactly
- * as given).
+ * `id` is the row's own composite identity (capabilityKey above); `name`
+ * and `version` are also each their own column, read straight back out by
+ * handleRowClick below rather than re-parsed from the composite id.
  */
-function toRow(capability: Capability, onEdit: (capability: Capability) => void): StatusTableRow {
+function toRow(capability: Capability): StatusTableRow {
   return {
     id: capabilityKey(capability),
     name: capability.name,
@@ -93,17 +99,30 @@ function toRow(capability: Capability, onEdit: (capability: Capability) => void)
     connector: capability.connector,
     concept: capability.concept,
     timeout: formatTimeout(capability.timeout),
-    actions: (
-      <Button type="button" variant="secondary" onClick={() => onEdit(capability)}>
-        Edit
-      </Button>
-    ),
   };
 }
 
 export function CapabilitiesBrowserScreen(): JSX.Element {
+  const navigate = useNavigate();
   const { capabilities, isLoading, isError, refetch } = useCapabilities();
   const [formTarget, setFormTarget] = useState<CapabilityFormTarget | null>(null);
+
+  /**
+   * Clicking a row navigates to that capability's own detail/edit route
+   * (criterion 2) rather than opening the popup Dialog's edit mode
+   * (criterion 9) -- the same `typeof ... !== "string"` guard
+   * connector-configurations-screen.tsx's own handleRowClick already keeps
+   * before trusting a StatusTableRow's untyped `Record<string, unknown>`
+   * value.
+   */
+  function handleRowClick(row: StatusTableRow): void {
+    const name = row.name;
+    const version = row.version;
+    if (typeof name !== "string" || typeof version !== "string") {
+      return;
+    }
+    void navigate({ to: "/capabilities/$name/$version", params: { name, version } });
+  }
 
   function renderBody(): JSX.Element {
     if (isLoading) {
@@ -140,9 +159,8 @@ export function CapabilitiesBrowserScreen(): JSX.Element {
     return (
       <StatusTable
         columns={COLUMNS}
-        rows={capabilities.map((capability) =>
-          toRow(capability, (target) => setFormTarget({ mode: "edit", capability: target })),
-        )}
+        rows={capabilities.map(toRow)}
+        onRowClick={handleRowClick}
       />
     );
   }
