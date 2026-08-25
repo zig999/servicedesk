@@ -596,6 +596,10 @@
           "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
         },
         {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:8f1a26b9636b8d6954cd3b31614af00f88e9fe0ebb5a5c9964e92be5c8f1c05d"
+        },
+        {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
         },
@@ -1634,6 +1638,10 @@
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
           "digest": "sha256:b8087af1a33eddaea103519d4d5360c3713fdd607df886865f94cb957566f870"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-capability-detail.ts",
+          "digest": "sha256:8f1a26b9636b8d6954cd3b31614af00f88e9fe0ebb5a5c9964e92be5c8f1c05d"
         },
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",

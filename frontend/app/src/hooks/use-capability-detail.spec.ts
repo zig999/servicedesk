@@ -1,0 +1,186 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { useCapabilityDetail } from "./use-capability-detail";
+import {
+  CAPABILITY_PATH,
+  LOADED_CAPABILITY,
+  LOADED_INPUT_SCHEMA,
+  LOADED_OUTPUT_SCHEMA,
+  NAME,
+  UPDATED_INPUT_SCHEMA,
+  UPDATED_OUTPUT_SCHEMA,
+  VERSION,
+  createWrapper,
+  defaultHandlers,
+  jsonResponse,
+  readyState,
+  stubFetch,
+} from "./use-capability-detail.test-support";
+
+// task/connector-capability-detail-editing/capability-detail-hook, criteria 1-4. Proves the
+// hook's own contract directly through renderHook, mirroring
+// use-connector-configuration-detail.spec.ts's own established convention for a hook with no
+// view of its own: real Response objects through a stubbed global fetch (TST-03 -- only the
+// network boundary is replaced), and assertions on nothing but what the hook itself returns
+// (TST-01). Fixtures and helpers live in use-capability-detail.test-support.ts.
+// Split across use-capability-detail.spec.ts (this file), use-capability-detail-save.spec.ts and
+// use-capability-detail-load-error.spec.ts to stay under this project's own max-lines rule --
+// mirrors new-case-draft-screen.spec.ts's own established multi-file split for the same reason
+// (its own header comment cites the same rule); TST-04's divergence is disclosed in this proof's
+// own record.
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+describe("useCapabilityDetail -- issuing its own GET, independent of the list cache (criterion 1)", () => {
+  it("resolves the ready phase from its own direct GET, not from a capabilities list query the caller's cache already held for this same (name, version)", async () => {
+    const { Wrapper, queryClient } = createWrapper();
+    // Seeds exactly the key use-capabilities.ts's own list hook reads, with a different
+    // input_schema for this same (name, version) -- if this hook read from that cache instead
+    // of issuing (and consuming) its own GET, the ready phase below would carry this value.
+    queryClient.setQueryData(["capabilities"], {
+      data: [{ ...LOADED_CAPABILITY, input_schema: '{"from":"list-cache"}' }],
+    });
+    stubFetch(defaultHandlers());
+
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), { wrapper: Wrapper });
+
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).inputSchema.value).toBe(LOADED_INPUT_SCHEMA);
+  });
+});
+
+describe("useCapabilityDetail -- the loading | load-error | ready phase union (criterion 2)", () => {
+  it('reports "loading" before the GET resolves, then "ready" once it does', async () => {
+    let resolveGet!: (response: Response) => void;
+    const pending = new Promise<Response>((resolve) => {
+      resolveGet = resolve;
+    });
+    stubFetch(defaultHandlers({ [CAPABILITY_PATH]: () => pending }));
+
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    expect(result.current.phase).toBe("loading");
+    resolveGet(jsonResponse(LOADED_CAPABILITY));
+
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+  });
+});
+
+describe("useCapabilityDetail -- isDirty against the loaded-or-saved baseline (criterion 3)", () => {
+  it("is false immediately after load, before any edit", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+    expect(readyState(result.current).isDirty).toBe(false);
+  });
+
+  it("becomes true once the input_schema text is edited to a materially different value", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).inputSchema.onChange(UPDATED_INPUT_SCHEMA, true);
+    });
+
+    expect(readyState(result.current).isDirty).toBe(true);
+  });
+
+  it("becomes true once the output_schema text is edited to a materially different value", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).outputSchema.onChange(UPDATED_OUTPUT_SCHEMA, true);
+    });
+
+    expect(readyState(result.current).isDirty).toBe(true);
+  });
+
+  it("becomes true once a form field is edited away from its loaded value, even while both JSON fields stay unchanged -- proving isDirty also reads react-hook-form's own dirty tracking rather than only the two schema comparisons", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).form.setValue("connector", "a-different-connector", {
+        shouldDirty: true,
+      });
+    });
+
+    expect(readyState(result.current).isDirty).toBe(true);
+  });
+});
+
+describe("useCapabilityDetail -- returning to the baseline clears isDirty (criterion 4)", () => {
+  it("clears isDirty once the input_schema text is edited back to its exact loaded value", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).inputSchema.onChange(UPDATED_INPUT_SCHEMA, true);
+    });
+    expect(readyState(result.current).isDirty).toBe(true);
+
+    act(() => {
+      readyState(result.current).inputSchema.onChange(LOADED_INPUT_SCHEMA, true);
+    });
+    expect(readyState(result.current).isDirty).toBe(false);
+  });
+
+  it("clears isDirty once the output_schema text is edited back to its exact loaded value", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).outputSchema.onChange(UPDATED_OUTPUT_SCHEMA, true);
+    });
+    expect(readyState(result.current).isDirty).toBe(true);
+
+    act(() => {
+      readyState(result.current).outputSchema.onChange(LOADED_OUTPUT_SCHEMA, true);
+    });
+    expect(readyState(result.current).isDirty).toBe(false);
+  });
+
+  it("clears isDirty once a form field is edited back to its exact loaded value", async () => {
+    stubFetch(defaultHandlers());
+    const { result } = renderHook(() => useCapabilityDetail(NAME, VERSION), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).form.setValue("connector", "a-different-connector", {
+        shouldDirty: true,
+      });
+    });
+    expect(readyState(result.current).isDirty).toBe(true);
+
+    act(() => {
+      readyState(result.current).form.setValue("connector", LOADED_CAPABILITY.connector, {
+        shouldDirty: true,
+      });
+    });
+    expect(readyState(result.current).isDirty).toBe(false);
+  });
+});

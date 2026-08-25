@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "implementation",
+      "file": "implementation/connector-capability-detail-editing/capability-detail-hook.md",
+      "title": "Capability single-record edit hook (useCapabilityDetail)",
+      "summary": "A new hook, use-capability-detail.ts, loading one capability by its (name, version) identity through its own GET, tracking dirty/save state across every field plus both JSON schemas, exposed through a loading/load-error/ready phase union.",
+      "task": "task/connector-capability-detail-editing/capability-detail-hook"
+    },
+    {
       "id": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
       "kind": "implementation",
       "file": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook.md",
@@ -16,6 +24,14 @@
       "title": "JsonTextareaField pretty-prints a loaded value on mount and on load",
       "summary": "JsonTextareaField now reformats a syntactically valid JSON value as indented text the moment it is mounted or replaced from outside, leaving typing, Beautify, the inline error and the minify-on-save helper untouched.",
       "task": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load"
+    },
+    {
+      "id": "proof/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "proof",
+      "file": "proof/connector-capability-detail-editing/capability-detail-hook.md",
+      "title": "Proof for the capability single-record edit hook (useCapabilityDetail)",
+      "summary": "Renders useCapabilityDetail directly through renderHook against a stubbed global fetch, proving all seven criteria, all three recorded inferences, and the double-submit edge case, split across three .spec.ts files plus one shared test-support.ts to stay under this project's own max-lines rule from the start.",
+      "task": "task/connector-capability-detail-editing/capability-detail-hook"
     },
     {
       "id": "proof/connector-capability-detail-editing/connector-configuration-detail-hook",
@@ -35,6 +51,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "to": "task/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
       "to": "domain/integration/connector-configuration",
@@ -57,6 +91,12 @@
       "from": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "to": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-capability-detail-editing/capability-detail-hook",
+      "to": "implementation/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "proves",
       "at": "the path"
     },
     {
