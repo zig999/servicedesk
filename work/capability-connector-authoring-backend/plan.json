@@ -1,0 +1,392 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-authoring",
+      "kind": "epic",
+      "file": "epic/capability-authoring.md",
+      "title": "Capability authoring surface",
+      "summary": "The write HTTP route that lets an operator register a capability directly, enacting the registry's existing refusals plus the new schema-well-formedness check."
+    },
+    {
+      "id": "epic/concept-authoring",
+      "kind": "epic",
+      "file": "epic/concept-authoring.md",
+      "title": "Concept authoring surface",
+      "summary": "A write path for a concept, from a new glossary-store port method through the HTTP route that exposes register-concept."
+    },
+    {
+      "id": "epic/connector-configuration-authoring",
+      "kind": "epic",
+      "file": "epic/connector-configuration-authoring.md",
+      "title": "Connector configuration authoring surface",
+      "summary": "The read, list and write HTTP routes over connector configurations, including the list capability that does not exist anywhere in the code today."
+    },
+    {
+      "id": "epic/connector-diagnostics",
+      "kind": "epic",
+      "file": "epic/connector-diagnostics.md",
+      "title": "Connector diagnostics surface",
+      "summary": "The test-connector diagnostic route that exercises a connector configuration's real call through an already-registered capability, without writing evidence."
+    },
+    {
+      "id": "inventory/capability-connector-authoring-backend-surface",
+      "kind": "inventory",
+      "file": "inventory/capability-connector-authoring-backend-surface.md",
+      "title": "HTTP authoring surface for Capability, Connector Configuration, Concept and test-connector",
+      "summary": "The existing capability/connector-configuration/glossary registries, HTTP route conventions and connector-runtime pieces this backend authoring surface must extend, with no write path yet for any of the four operations the scope names."
+    },
+    {
+      "id": "task/capability-authoring/register-capability-route",
+      "kind": "task",
+      "file": "task/capability-authoring/register-capability-route.md",
+      "title": "Expose register-capability as a write HTTP route",
+      "summary": "A new HTTP route that creates or replaces a capability, enacting the registry's existing refusals plus a new schema-well-formedness check.",
+      "epic": "capability-authoring"
+    },
+    {
+      "id": "task/concept-authoring/glossary-store-concept-write",
+      "kind": "task",
+      "file": "task/concept-authoring/glossary-store-concept-write.md",
+      "title": "Add a concept write path to the glossary store",
+      "summary": "A new write method on the glossary store port and its relational implementation, letting a concept be created at a new name or replaced in place at an existing name.",
+      "epic": "concept-authoring"
+    },
+    {
+      "id": "task/concept-authoring/register-concept-route",
+      "kind": "task",
+      "file": "task/concept-authoring/register-concept-route.md",
+      "title": "Expose register-concept as a write HTTP route",
+      "summary": "A new HTTP route that creates or replaces a concept by name, built on the glossary store's new write path.",
+      "epic": "concept-authoring"
+    },
+    {
+      "id": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "kind": "task",
+      "file": "task/connector-configuration-authoring/list-connector-configurations-route.md",
+      "title": "Expose list-connector-configurations as a read HTTP route",
+      "summary": "A new HTTP route returning every connector configuration currently registered, requiring a new service and store-port method that does not exist today.",
+      "epic": "connector-configuration-authoring"
+    },
+    {
+      "id": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "kind": "task",
+      "file": "task/connector-configuration-authoring/read-connector-configuration-route.md",
+      "title": "Expose read-connector-configuration as a read HTTP route",
+      "summary": "A new HTTP route returning the connector configuration currently registered under a named connector.",
+      "epic": "connector-configuration-authoring"
+    },
+    {
+      "id": "task/connector-configuration-authoring/register-connector-route",
+      "kind": "task",
+      "file": "task/connector-configuration-authoring/register-connector-route.md",
+      "title": "Expose register-connector as a write HTTP route",
+      "summary": "A new HTTP route that creates or replaces a connector configuration, enacting the registry's existing refusals plus a new JSON-object well-formedness check.",
+      "epic": "connector-configuration-authoring"
+    },
+    {
+      "id": "task/connector-diagnostics/test-connector-route",
+      "kind": "task",
+      "file": "task/connector-diagnostics/test-connector-route.md",
+      "title": "Expose test-connector as a diagnostic HTTP route",
+      "summary": "A new HTTP route that issues a connector configuration's real call, through a specific already-registered capability, against a subject built from the request, and returns the raw request and response without writing evidence.",
+      "epic": "connector-diagnostics"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-authoring",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/concept-authoring",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-authoring",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-authoring",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-diagnostics",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-diagnostics",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-diagnostics",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/capability-authoring/register-capability-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/concept-authoring/glossary-store-concept-write",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-authoring/glossary-store-concept-write",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-authoring/register-concept-route",
+      "to": "task/concept-authoring/glossary-store-concept-write",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-authoring/register-concept-route",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-authoring/register-concept-route",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-authoring/register-concept-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/list-connector-configurations-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/read-connector-configuration-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/register-connector-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/register-connector-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/register-connector-route",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/register-connector-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/register-connector-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-diagnostics/test-connector-route",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-diagnostics/test-connector-route",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-diagnostics/test-connector-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

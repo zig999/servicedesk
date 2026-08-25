@@ -1,0 +1,303 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-authoring",
+      "kind": "epic",
+      "file": "epic/capability-authoring.md",
+      "title": "Capability authoring surface",
+      "summary": "Turns the capabilities browser screen from read-only into one that creates and edits a capability's full declared contract, including its two JSON schemas."
+    },
+    {
+      "id": "epic/concept-authoring",
+      "kind": "epic",
+      "file": "epic/concept-authoring.md",
+      "title": "Concept authoring surface",
+      "summary": "Turns the Glossary screen's Concepts tab from read-only into one that creates and edits a concept's name, accepted subject types and ttl."
+    },
+    {
+      "id": "epic/connector-configuration-authoring",
+      "kind": "epic",
+      "file": "epic/connector-configuration-authoring.md",
+      "title": "Connector configuration authoring and diagnostic testing",
+      "summary": "Introduces a new screen to create and edit a connector configuration by name, and a debug-style panel on that screen to exercise it once through a registered capability."
+    },
+    {
+      "id": "inventory/capability-connector-authoring-frontend-area",
+      "kind": "inventory",
+      "file": "inventory/capability-connector-authoring-frontend-area.md",
+      "title": "Frontend routes, hooks and shared form conventions for capability/connector/concept authoring",
+      "summary": "The existing read-only Capabilities and Glossary screens, the app's one create/edit form pair (Version Editor and Hypothesis Revision), and the shared services (api-client, error-ui-state, form-schema-with-zod) the new create/edit and test-connector screens must extend."
+    },
+    {
+      "id": "task/capability-authoring/capability-create-edit-form",
+      "kind": "task",
+      "file": "task/capability-authoring/capability-create-edit-form.md",
+      "title": "Capability create and edit form on the capabilities browser screen",
+      "summary": "Replaces the capabilities browser screen's read-only detail panel with a create/edit form covering a capability's full declared contract.",
+      "epic": "capability-authoring"
+    },
+    {
+      "id": "task/capability-authoring/json-textarea-editor",
+      "kind": "task",
+      "file": "task/capability-authoring/json-textarea-editor.md",
+      "title": "Shared JSON beautify/minify textarea control",
+      "summary": "One reusable textarea control for editing JSON text that formats for reading, blocks on malformed input, and hands back the minified value.",
+      "epic": "capability-authoring"
+    },
+    {
+      "id": "task/concept-authoring/concept-create-edit-form",
+      "kind": "task",
+      "file": "task/concept-authoring/concept-create-edit-form.md",
+      "title": "Concept create and edit form on the Glossary screen's Concepts tab",
+      "summary": "Adds create and edit to the Glossary screen's Concepts tab for a concept's name, accepted subject types and ttl.",
+      "epic": "concept-authoring"
+    },
+    {
+      "id": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "task",
+      "file": "task/connector-configuration-authoring/connector-configuration-create-edit-form.md",
+      "title": "Connector configuration create and edit screen",
+      "summary": "A new screen listing every registered connector configuration, with create and edit by name for its JSON configuration.",
+      "epic": "connector-configuration-authoring"
+    },
+    {
+      "id": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "kind": "task",
+      "file": "task/connector-configuration-authoring/test-connector-debug-panel.md",
+      "title": "Test-connector debug panel on the Connector Configuration editor",
+      "summary": "A debug-style Test section on the connector configuration editor that exercises it once, through a chosen registered capability, and shows the raw request and response.",
+      "epic": "connector-configuration-authoring"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-authoring",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-authoring",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/concept-authoring",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-authoring",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-authoring",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "task/capability-authoring/json-textarea-editor",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability-nature",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/capability-authoring/capability-create-edit-form",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/capability-authoring/json-textarea-editor",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-authoring/concept-create-edit-form",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-authoring/concept-create-edit-form",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "task/capability-authoring/json-textarea-editor",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "task/capability-authoring/json-textarea-editor",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "task/connector-configuration-authoring/connector-configuration-create-edit-form",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-authoring/test-connector-debug-panel",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}
