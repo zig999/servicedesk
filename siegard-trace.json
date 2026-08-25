@@ -483,7 +483,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
+          "digest": "sha256:ce2a2e7fa2d9afc985f7fc48a64f67f74c5b522ba7b598cf7105a63fe9b1c8f6"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -3267,7 +3267,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:24c172e2231cd867ac0efe4095072c0ae3f3572428f45341231c4ba3e073f001"
+          "digest": "sha256:0ad1c184cfc4c08f26ba59842956a2ab9a0965a9a0d4149ec41eb0ffb2d791cf"
         },
         {
           "path": "src/src/errors/concept-already-answered.error.ts",
