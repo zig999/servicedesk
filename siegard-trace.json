@@ -3204,6 +3204,24 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "digest": "sha256:f53596f1337236466201a8abb395af6b7ede034982414f873b0d658f16104f36",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:ab3f8d65483b5178b16daaf6264f1cb9ca10de58e3c059b70c992b2353ba4d9d"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+        },
+        {
+          "path": "src/src/http/read-connector-configuration.controller.ts",
+          "digest": "sha256:9d07fb978ef3f9e727a096544bb182b39426b946bcad4bd9f963482ccc8aaa77"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
       "digest": "sha256:b476b505a513da0b109d7afc39be94d3acecb33cfcbce40c43bdba9b088066b5",
       "files": [

@@ -189,10 +189,7 @@ function stubRegisterConnector(): RegisterConnectorControllerDependencies {
 /** A minimally valid ReadConnectorConfigurationControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed ConnectorConfiguration so read-connector-configuration-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubReadConnectorConfiguration(): ReadConnectorConfigurationControllerDependencies {
   return {
-    readConnectorConfiguration: async () => ({
-      held: true,
-      configuration: { connector: 'a-connector', configuration: {} },
-    }),
+    readConnectorConfiguration: async () => ({ connector: 'a-connector', configuration: {} }),
   };
 }
 

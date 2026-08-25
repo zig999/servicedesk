@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(192,45): error TS2322: Type 'Promise<{ held: boolean; configuration: { connector: string; configuration: {}; }; }>' is not assignable to type 'Promise<ConnectorConfiguration>'.
+  Property 'connector' is missing in type '{ held: boolean; configuration: { connector: string; configuration: {}; }; }' but required in type 'ConnectorConfiguration'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(36,76): error TS2322: Type 'Mock<(connector: string) => Promise<ConnectorConfigurationResolution>>' is not assignable to type '(connector: string) => Promise<ConnectorConfiguration>'.
+  Type 'Promise<ConnectorConfigurationResolution>' is not assignable to type 'Promise<ConnectorConfiguration>'.
+    Type 'ConnectorConfigurationResolution' is not assignable to type 'ConnectorConfiguration'.
+      Property 'connector' is missing in type '{ readonly held: true; readonly configuration: ConnectorConfiguration; }' but required in type 'ConnectorConfiguration'.

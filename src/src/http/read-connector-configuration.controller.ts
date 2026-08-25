@@ -9,7 +9,8 @@
 // wire's own JSON-string representation (toReadConnectorConfigurationResponse
 // below) rather than answered as the plain object the registry holds it as.
 // Receives its one dependency as a plain function type (ARC-01) — the
-// readConnectorConfiguration operation alone — rather than constructing
+// ConnectorConfigurationRegistryService's own
+// readConnectorConfigurationOrThrow wrapper — rather than constructing
 // ConnectorConfigurationRegistryService or its store itself (ARC-02), the
 // same shape register-connector.controller.ts's
 // own RegisterConnectorControllerDependencies already takes for this
@@ -18,17 +19,23 @@
 // ConnectorConfigurationRegistryService instance registerConnector already
 // shares.
 //
-// The one decision this controller does make is not a domain fact: the
-// domain's own read-connector-configuration answers an unregistered
-// connector as ordinary data (`{ held: false, connector }`, never a thrown
-// error — connector-configuration-registry.service.ts's own
-// ConnectorConfigurationResolution). Which transport status that ordinary
-// absence becomes is COR-04's concern, not this specification's, so this
-// controller raises ConnectorConfigurationNotFoundError once it has read
-// that held: false answer, letting the shared status map
-// (src/errors/status-map.ts) resolve it rather than choosing a status here —
-// mirroring read-capability.controller.ts's own handling of
-// ConceptNotAnsweredError for the sibling registry.
+// The held-check-and-throw this controller used to perform itself
+// (task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation)
+// now lives in ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow
+// — COR-03's own "a service raises business errors" — so this handler only
+// awaits that wrapper and projects whatever it resolves onto the wire
+// response; a miss reaches this module as a thrown
+// ConnectorConfigurationNotFoundError rather than a `held: false` value this
+// controller would otherwise branch on.
+// ConnectorConfigurationRegistryService.readConnectorConfiguration itself is
+// unaffected: it still answers an unregistered connector as ordinary data
+// (`{ held: false, connector }`), never a thrown error, for every other
+// consumer that reads it directly (the wrapper included, internally). Which
+// transport status the propagated ConnectorConfigurationNotFoundError
+// becomes is COR-04's concern, not this specification's: the shared status
+// map (src/errors/status-map.ts) resolves it — mirroring
+// read-capability.controller.ts's own handling of ConceptNotAnsweredError
+// for the sibling registry.
 //
 // toReadConnectorConfigurationResponse projects the domain's own
 // ConnectorConfiguration (connector-configuration.ts) — whose configuration
@@ -45,36 +52,34 @@
 // toReadCaseResponse being exported for release.controller.ts's and
 // update-draft.controller.ts's identical reuse.
 
-import type { ConnectorConfigurationResolution } from '../connector-registry/connector-configuration-registry.service.js';
 import type { ConnectorConfiguration } from '../connector-registry/connector-configuration.js';
-import { ConnectorConfigurationNotFoundError } from '../errors/connector-configuration-not-found.error.js';
 import type {
   ReadConnectorConfigurationParamsDto,
   ReadConnectorConfigurationResponseDto,
 } from './dto/read-connector-configuration.dto.js';
 
-/** Everything the controller needs beyond one request's own path parameter: the published readConnectorConfiguration read, alone. */
+/** Everything the controller needs beyond one request's own path parameter: ConnectorConfigurationRegistryService's own readConnectorConfigurationOrThrow wrapper, alone. */
 export type ReadConnectorConfigurationControllerDependencies = {
-  readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
+  readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfiguration>;
 };
 
 /**
  * Handles one read-connector-configuration request end to end: resolves the
- * named connector through the published connector-configuration-registry
- * read, answers with the held configuration projected onto the wire shape
+ * named connector through readConnectorConfigurationOrThrow, answering with
+ * the held configuration's whole projected wire shape
  * (toReadConnectorConfigurationResponse below) where one currently answers
- * that name, and raises ConnectorConfigurationNotFoundError — for the shared
- * status map to resolve — where the resolution answers `held: false`.
+ * that name, and leaving that wrapper's own thrown
+ * ConnectorConfigurationNotFoundError — for the shared status map to
+ * resolve — to propagate where it answers no configuration. No
+ * held-check-and-throw of its own: the resolution the wrapper already
+ * committed to is projected onto the wire as is.
  */
 export async function handleReadConnectorConfigurationRequest(
   dependencies: ReadConnectorConfigurationControllerDependencies,
   params: ReadConnectorConfigurationParamsDto,
 ): Promise<ReadConnectorConfigurationResponseDto> {
-  const resolution = await dependencies.readConnectorConfiguration(params.connector);
-  if (!resolution.held) {
-    throw new ConnectorConfigurationNotFoundError(resolution.connector);
-  }
-  return toReadConnectorConfigurationResponse(resolution.configuration);
+  const configuration = await dependencies.readConnectorConfiguration(params.connector);
+  return toReadConnectorConfigurationResponse(configuration);
 }
 
 /**

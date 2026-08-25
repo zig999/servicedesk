@@ -1,3 +1,4 @@
+import { ConnectorConfigurationNotFoundError } from '../errors/connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../errors/incomplete-connector-configuration.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -66,6 +67,32 @@ export class ConnectorConfigurationRegistryService {
     const held = await this.store.readConnectorConfigurations();
     const configuration = held.find((candidate) => candidate.connector === connector);
     return configuration === undefined ? { held: false, connector } : { held: true, configuration };
+  }
+
+  /**
+   * read-connector-configuration's own service-level wrapper
+   * (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused,
+   * task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation):
+   * resolves through readConnectorConfiguration above and raises
+   * ConnectorConfigurationNotFoundError once it has read that method's own
+   * `held: false` answer, rather than leaving that held-check-and-throw to
+   * read-connector-configuration.controller.ts's own
+   * handleReadConnectorConfigurationRequest. Called only from that one
+   * route's own dependencies wiring (build-app.factory.ts's own
+   * composeResources); readConnectorConfiguration above is unchanged in
+   * signature and keeps answering the miss as ordinary data for every other
+   * consumer that reads it directly — test-connector.controller.ts's own
+   * resolveTestedConnectorConfiguration and
+   * http-declarative-observation-source.adapter.ts's own
+   * resolveConnectorConfiguration among them — so neither is forced through
+   * this class.
+   */
+  public async readConnectorConfigurationOrThrow(connector: string): Promise<ConnectorConfiguration> {
+    const resolution = await this.readConnectorConfiguration(connector);
+    if (!resolution.held) {
+      throw new ConnectorConfigurationNotFoundError(resolution.connector);
+    }
+    return resolution.configuration;
   }
 
   /**

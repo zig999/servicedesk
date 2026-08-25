@@ -68,6 +68,7 @@ type ComposedResources = {
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
   readonly readConnectorConfiguration: (connector: string) => Promise<ConnectorConfigurationResolution>;
+  readonly readConnectorConfigurationOrThrow: ConnectorConfigurationRegistryService['readConnectorConfigurationOrThrow'];
   readonly listConnectorConfigurations: ConnectorConfigurationRegistryService['listConnectorConfigurations'];
   readonly caseLifecycle: CaseLifecycleOperations;
   readonly pagination: { readonly defaultLimit: number; readonly maxLimit: number };
@@ -118,6 +119,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
     readConnectorConfiguration: (connector) => connectorConfigurationRegistry.readConnectorConfiguration(connector),
+    readConnectorConfigurationOrThrow: (connector) => connectorConfigurationRegistry.readConnectorConfigurationOrThrow(connector),
     listConnectorConfigurations: (pagination) => connectorConfigurationRegistry.listConnectorConfigurations(pagination),
     caseLifecycle: createCaseLifecycle(connection),
     pagination: { defaultLimit: env.PAGINATION_DEFAULT_LIMIT, maxLimit: env.PAGINATION_MAX_LIMIT },
@@ -138,7 +140,19 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
  * testConnectorDependencies below shares: that raw read still answers a miss
  * as ordinary data, which is what test-connector's own resolveTestedCapability
  * needs to raise its own distinct CapabilityNotRegisteredForTestError, so
- * this route alone is wired to the throwing wrapper.
+ * this route alone is wired to the throwing wrapper. readConnectorConfiguration
+ * here carries readConnectorConfigurationOrThrow — ConnectorConfigurationRegistryService's
+ * own mirroring service-level wrapper that raises
+ * ConnectorConfigurationNotFoundError on a miss
+ * (task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation)
+ * — rather than the raw readConnectorConfiguration function
+ * testConnectorDependencies below shares: that raw read still answers a miss
+ * as ordinary data, which is what test-connector's own
+ * resolveTestedConnectorConfiguration and
+ * http-declarative-observation-source.adapter.ts's own
+ * resolveConnectorConfiguration each need to raise their own distinct
+ * errors on the same miss, so this route alone is wired to the throwing
+ * wrapper.
  */
 function readDependencies(
   resources: ComposedResources,
@@ -149,7 +163,7 @@ function readDependencies(
     readCase: { caseQuery: resources.caseQuery },
     readVocabularyTerm: { glossaryQuery: resources.glossaryQuery },
     readConcept: { glossaryQuery: resources.glossaryQuery },
-    readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfiguration },
+    readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },
   };
 }
 

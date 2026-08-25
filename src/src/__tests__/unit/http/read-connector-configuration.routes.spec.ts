@@ -10,15 +10,15 @@
 // already-delivered service's own concern, not this route's.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
-import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
 import type { ConnectorConfiguration } from '../../../connector-registry/connector-configuration.js';
+import { ConnectorConfigurationNotFoundError } from '../../../errors/connector-configuration-not-found.error.js';
 import { readConnectorConfigurationResponseSchema } from '../../../http/dto/read-connector-configuration.dto.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { ReadConnectorConfigurationControllerDependencies } from '../../../http/read-connector-configuration.controller.js';
 import { createReadConnectorConfigurationRoutesPlugin } from '../../../http/read-connector-configuration.routes.js';
 
 type ReadConnectorConfigurationMock = ReturnType<
-  typeof vi.fn<(connector: string) => Promise<ConnectorConfigurationResolution>>
+  typeof vi.fn<(connector: string) => Promise<ConnectorConfiguration>>
 >;
 
 /** A connector configuration exactly as the registry would already hold it, for seeding the stand-in read. */
@@ -56,7 +56,7 @@ it('answers 200 with the connector and configuration fields exactly as currently
     connector: 'a-known-connector',
     configuration: { host: 'example.com', apiKey: 'a-secret' },
   });
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+  built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
 
@@ -79,7 +79,7 @@ it('returns configuration as a JSON string, never a parsed object', async () => 
     connector: 'a-known-connector',
     configuration: { host: 'example.com', retries: 3, secure: true },
   });
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+  built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
 
@@ -99,7 +99,7 @@ it('answers a configuration string that parses back to the same JSON value the c
     note: 'a "quoted" value with a backslash \\ in it',
   };
   const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: registered });
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+  built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
 
@@ -111,7 +111,7 @@ it('answers a configuration string that parses back to an empty object when the 
   const built = buildTestApp();
   app = built.app;
   const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: {} });
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+  built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
 
@@ -138,7 +138,7 @@ it('readConnectorConfigurationResponseSchema rejects an empty string as configur
 it('does not refuse a request carrying no authentication credential', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration: heldConnectorConfiguration() });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfiguration());
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-connector' });
 
@@ -150,7 +150,7 @@ it('does not refuse a request carrying no authentication credential', async () =
 it('answers 404 with ConnectorConfigurationNotFoundError when no connector configuration is currently registered under the named connector', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readConnectorConfiguration.mockResolvedValueOnce({ held: false, connector: 'an-absent-connector' });
+  built.readConnectorConfiguration.mockRejectedValueOnce(new ConnectorConfigurationNotFoundError('an-absent-connector'));
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/an-absent-connector' });
 

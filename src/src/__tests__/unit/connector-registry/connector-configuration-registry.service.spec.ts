@@ -12,6 +12,7 @@ import type {
   ConnectorConfiguration,
   ConnectorConfigurationRegistration,
 } from '../../../connector-registry/connector-configuration.js';
+import { ConnectorConfigurationNotFoundError } from '../../../errors/connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from '../../../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 
@@ -257,4 +258,53 @@ it('accepts a registration whose configuration text is valid JSON object text, h
   );
 
   expect(registered.configuration).toEqual({ whatever: 'the connector alone interprets this' });
+});
+
+// ------------------------------------------------------------------ read-connector-configuration's own service-level wrapper
+// Proof for task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation:
+// readConnectorConfigurationOrThrow's own two branches. readConnectorConfiguration itself keeps
+// answering a miss as ordinary data, exactly as pinned above by "resolves the absence of a connector
+// nothing has registered, as data rather than a raised error" (criterion 3, lines 158-164 of this
+// file, left unmodified by this task) — so this block adds no assertion over that raw method, only
+// over the new wrapper built on top of it.
+
+it('answers the held configuration directly, with no resolution wrapper, when one is currently registered under the named connector', async () => {
+  const held = heldConfiguration({ connector: 'a-registered-connector' });
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore([held]));
+
+  const resolved = await registry.readConnectorConfigurationOrThrow('a-registered-connector');
+
+  expect(resolved).toEqual(held);
+});
+
+it('throws ConnectorConfigurationNotFoundError naming the requested connector, with the message unchanged from before the relocation, when nothing is registered under that name', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .readConnectorConfigurationOrThrow('an-unregistered-connector')
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotFoundError);
+  expect(refusal).toMatchObject({ context: { connector: 'an-unregistered-connector' } });
+  expect((refusal as Error).message).toBe(
+    'no connector configuration is currently registered for connector "an-unregistered-connector"',
+  );
+});
+
+it('propagates a failure the underlying store read itself raises, rather than reporting it as ConnectorConfigurationNotFoundError', async () => {
+  const failingStore: IConnectorConfigurationStore = {
+    readConnectorConfigurations: async () => {
+      throw new Error('the store is unavailable');
+    },
+    writeConnectorConfigurations: async () => undefined,
+  };
+  const registry = new ConnectorConfigurationRegistryService(failingStore);
+
+  const outcome = await registry
+    .readConnectorConfigurationOrThrow('a-connector')
+    .catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(Error);
+  expect(outcome).not.toBeInstanceOf(ConnectorConfigurationNotFoundError);
+  expect((outcome as Error).message).toBe('the store is unavailable');
 });

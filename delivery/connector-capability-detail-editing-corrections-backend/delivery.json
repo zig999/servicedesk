@@ -10,12 +10,28 @@
       "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation"
     },
     {
+      "id": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "kind": "implementation",
+      "file": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation.md",
+      "title": "Connector-configuration not-found relocated into a service-level wrapper",
+      "summary": "read-connector-configuration.controller.ts no longer performs its own held-check-and-throw; ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow raises ConnectorConfigurationNotFoundError instead, wired only into that route, while the raw readConnectorConfiguration method and every other consumer stay untouched.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation"
+    },
+    {
       "id": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
       "kind": "proof",
       "file": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation.md",
       "title": "Capability-by-identity not-found relocation into a service-level wrapper",
       "summary": "Proves the not-found refusal now originates from CapabilityRegistryService.readCapabilityByIdentityOrThrow rather than the controller, that the controller's handler is now a trivial pass-through, and that the raw readCapabilityByIdentity and test-connector's own refusal are unaffected.",
       "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation"
+    },
+    {
+      "id": "proof/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "kind": "proof",
+      "file": "proof/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation.md",
+      "title": "Connector-configuration not-found relocation — service wrapper and controller delegation",
+      "summary": "Proves ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow's two branches and that handleReadConnectorConfigurationRequest performs no held-check-and-throw of its own, delegating entirely to that wrapper.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation"
     }
   ],
   "edges": [
@@ -32,8 +48,26 @@
       "at": "the path"
     },
     {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
       "to": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "to": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
       "kind": "proves",
       "at": "the path"
     }

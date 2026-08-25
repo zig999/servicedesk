@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/registry-read-not-found-relocation-and-rate-limit-connector-configuration-not-found-relocation-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-25T15:47:55.850+00:00",
+      "ended_at": "2026-08-25T15:47:59.854+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-25T15:47:59.854+00:00",
+      "ended_at": "2026-08-25T15:48:03.447+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-25T15:48:03.447+00:00",
+      "ended_at": "2026-08-25T15:48:06.601+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-25T15:48:06.601+00:00",
+      "ended_at": "2026-08-25T15:48:06.990+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-08-25T15:48:06.990+00:00",
+      "ended_at": "2026-08-25T16:09:56.402+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
