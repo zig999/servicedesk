@@ -23,6 +23,18 @@
 // guard of its own, consistent with
 // constraints/no-route-enforces-authentication — a request carrying no
 // credential is dispatched exactly like one that carries one.
+//
+// task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit
+// (constraints/the-capability-identity-read-is-rate-limited): an onRequest
+// hook built by read-capability-by-identity-rate-limit.middleware.ts's own
+// createReadCapabilityByIdentityRateLimitHook is added on this plugin's own
+// FastifyInstance, ahead of the route itself, so Fastify's own encapsulation
+// confines it to this one route alone — no other route in build-app.ts's
+// routePlugins() list is registered against it. A source IP past 60
+// requests within the same one-minute window is answered 429 with a
+// Retry-After value from inside that hook, never reaching
+// readCapabilityByIdentityHandler below; every request at or under that
+// count reaches the handler exactly as before.
 
 import type { FastifyInstance, FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import {
@@ -30,6 +42,7 @@ import {
   type ReadCapabilityByIdentityControllerDependencies,
 } from './read-capability-by-identity.controller.js';
 import { readCapabilityByIdentityParamsSchema } from './dto/read-capability-by-identity.dto.js';
+import { createReadCapabilityByIdentityRateLimitHook } from './read-capability-by-identity-rate-limit.middleware.js';
 
 /** A versioned prefix (API-06), matching every sibling route's own constant so a later breaking shape lands beside it under v2 rather than in place of it. */
 const API_PREFIX = '/v1';
@@ -43,6 +56,7 @@ export function createReadCapabilityByIdentityRoutesPlugin(
   dependencies: ReadCapabilityByIdentityControllerDependencies,
 ): FastifyPluginAsync {
   return async function readCapabilityByIdentityRoutesPlugin(app: FastifyInstance): Promise<void> {
+    app.addHook('onRequest', createReadCapabilityByIdentityRateLimitHook());
     app.get(`${API_PREFIX}/capabilities/:name/:version`, (request, reply) =>
       readCapabilityByIdentityHandler(dependencies, request, reply),
     );

@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "implementation",
+      "file": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit.md",
+      "title": "Rate limit for read-capability-by-identity",
+      "summary": "The read-capability-by-identity route now refuses a source IP's 61st request within a one-minute window with HTTP 429 and a Retry-After value, through an onRequest hook scoped to that route's own plugin registration alone.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit"
+    },
+    {
       "id": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
       "kind": "implementation",
       "file": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation.md",
@@ -16,6 +24,14 @@
       "title": "Connector-configuration not-found relocated into a service-level wrapper",
       "summary": "read-connector-configuration.controller.ts no longer performs its own held-check-and-throw; ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow raises ConnectorConfigurationNotFoundError instead, wired only into that route, while the raw readConnectorConfiguration method and every other consumer stay untouched.",
       "task": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation"
+    },
+    {
+      "id": "proof/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "proof",
+      "file": "proof/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit.md",
+      "title": "Rate limit on the capability-by-identity read route",
+      "summary": "Seven Vitest tests, exercised through app.inject() against a real Fastify instance registering createReadCapabilityByIdentityRoutesPlugin(), prove the 61st-request refusal, its Retry-After header, the 60th-and-under pass-through, per-source-IP independence, the hook's confinement to this one route, the window's reset at its boundary, and the one-second Retry-After floor.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit"
     },
     {
       "id": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
@@ -35,6 +51,18 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
       "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
@@ -57,6 +85,12 @@
       "from": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
       "to": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "to": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "proves",
       "at": "the path"
     },
     {

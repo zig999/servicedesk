@@ -148,6 +148,20 @@
       ]
     },
     {
+      "node": "constraints/the-capability-identity-read-is-rate-limited",
+      "digest": "sha256:a4363eee19ca748bd7aca41fabf5bd04125f98f6c6afd34cf723607a9e6751c2",
+      "files": [
+        {
+          "path": "src/src/http/read-capability-by-identity-rate-limit.middleware.ts",
+          "digest": "sha256:146b3a2d061e379d78515439d244bf33e36c042496cc7f73b41283a4fdf1a61e"
+        },
+        {
+          "path": "src/src/http/read-capability-by-identity.routes.ts",
+          "digest": "sha256:e0c86312463798f63a2248f9b77e835f0b8c06cf2755207ed5e0dc13578cfe20"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
       "digest": "sha256:420332183825ece65d96e027961e42943f7f82327c29b36340051ac939ee5d28",
       "files": [
