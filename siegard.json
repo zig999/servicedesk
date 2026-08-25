@@ -1,8 +1,5 @@
 {
   "delivery_root": "delivery",
-  "edits_freely": [
-    "frontend"
-  ],
   "specification_root": "knowledge",
   "standard": {
     "frontend": "standards/frontend-typescript.yaml"
