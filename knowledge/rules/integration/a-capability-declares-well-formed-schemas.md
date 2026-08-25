@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: The registry refuses to register or update a capability whose input schema or output schema is not syntactically valid JSON.
+statement: The registry refuses to register or update a capability whose input schema or output schema is not syntactically valid JSON, with an HTTP 422 response reporting a CapabilitySchemaNotWellFormedError.
 constrains:
   - domain/integration/capability
 ---

@@ -1,5 +1,5 @@
 ---
-statement: The registry's read-capability-by-identity route accepts at most 60 requests per minute from one caller; a request beyond that limit is refused with a 429 response naming when the caller may retry.
+statement: The registry's read-capability-by-identity route accepts at most 60 requests per minute from one caller, where one caller is one source IP address; a request beyond that limit is refused with an HTTP 429 response carrying a Retry-After value naming when the caller may retry.
 scope: integration
 fitness: An automated test issues more than 60 requests within one minute against read-capability-by-identity from one caller and asserts that the response past the limit is HTTP 429 and carries a value naming when the caller may retry.
 ---

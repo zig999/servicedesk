@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: The glossary holds the two non-conclusion outcomes, inconclusive-no-data and inconclusive-hypotheses-exhausted, before the first case version validates.
+statement: The glossary holds the two non-conclusion outcomes, inconclusive-no-data and inconclusive-hypotheses-exhausted, before the first case version validates; ensuring them adds whichever of the two is missing and removes or rewrites no outcome already held, and an outcome a released case version or a released hypothesis revision names is never removed from the glossary.
 constrains:
   - domain/glossary/outcome
   - domain/knowledge/case-version

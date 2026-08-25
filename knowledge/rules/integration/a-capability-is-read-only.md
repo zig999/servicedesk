@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: The registry refuses any capability whose nature is not read-only.
+statement: The registry refuses any capability whose nature is not read-only, with an HTTP 422 response reporting a CapabilityNotReadOnlyError.
 constrains:
   - domain/integration/capability
 ---

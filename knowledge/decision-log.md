@@ -529,4 +529,156 @@ entries:
       states rather than one left for code alone to carry, the same discipline
       the-capability-identity-read-is-rate-limited already used in naming its own status (429)
       rather than leaving a caller's slow-down refusal unstated.
+  - location: rules/integration/one-capability-answers-one-concept.md
+    field: statement
+    unstated: >-
+      What register-capability answers when the concept is already answered by a capability of another identity, and what a concept read answers over a holding with two capabilities for one concept.
+    decided: >-
+      Registration is refused with HTTP 409 reporting ConceptAlreadyAnsweredError; the read is refused with HTTP 500 reporting DuplicateConceptAnswerError rather than choosing one.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The policy already says one to one with no fallback, so a second registration must be refused rather than silently replace or coexist; 409 is the status the backend already answers for a conflicting write. A holding answering twice is a state the registry itself promised never to produce, so a read meeting it reports a server-side fault rather than a caller error, which is what 500 says and what the backend answers for an unmapped class today.
+  - location: rules/integration/a-capability-declares-its-contract.md
+    field: statement
+    unstated: >-
+      Whether an empty-string attribute counts as declared, what refuses a registration lacking a required attribute, and whether the timeout must be an integer.
+    decided: >-
+      An absent or empty attribute is undeclared; the registration is refused with HTTP 422 reporting IncompleteCapabilityContractError; the timeout is an integer count of milliseconds.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. An empty string declares nothing anyone could execute a call from, and reading it as declared would admit a capability the registry could never resolve; 422 and the error name are what the delivered registry already answers, and the capability node already types timeout as integer.
+  - location: rules/integration/a-capability-is-read-only.md
+    field: statement
+    unstated: >-
+      The status and error value of the refusal of a non-read-only capability.
+    decided: >-
+      HTTP 422 reporting CapabilityNotReadOnlyError.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The sibling refusals of this same registration now name status and value, and the decision log already records that naming them keeps a refusal a fact the specification states rather than one left for code alone to carry.
+  - location: rules/integration/a-capability-declares-well-formed-schemas.md
+    field: statement
+    unstated: >-
+      The status and error value of the refusal of a malformed schema.
+    decided: >-
+      HTTP 422 reporting CapabilitySchemaNotWellFormedError.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. Same reasoning as a-capability-is-read-only: one registration, one idiom for its refusals.
+  - location: rules/integration/a-connector-configuration-holds-a-well-formed-object.md
+    field: statement
+    unstated: >-
+      The status and error value of the malformed-write refusal, and whether a registration may supply the configuration as an object rather than as text while the value object declares text.
+    decided: >-
+      HTTP 422 reporting ConnectorConfigurationNotWellFormedError; a registration may supply text or the object it parses to, and the registry holds and answers the configuration as text.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The read rule beside this one already names its status and value. The value object declares configuration as string and the published read answers a string, so text is what the specification holds; accepting the parsed object on input is a tolerance of the registration surface that changes nothing a reader learns, so it is admitted rather than refused.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: >-
+      The status and error value of the test action's own refusal when no capability is registered at the named identity.
+    decided: >-
+      HTTP 404 reporting CapabilityNotRegisteredForTestError.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The rule already decided the refusal is the test action's own, distinct from the identity read's; it left the name unstated, and the delivered backend names it this way with the same 404 the identity read answers.
+  - location: rules/integration/a-connector-configuration-names-its-connector.md
+    field: statement
+    unstated: >-
+      What register-connector answers to a registration with no connector name, and whether an empty string is one.
+    decided: >-
+      Refused with HTTP 422 reporting IncompleteConnectorConfigurationError; an empty string is no name.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The domain node marks connector required and stops there; the delivered registry refuses this way, and 422 is the status the sibling incomplete-contract refusal answers — the delivered backend leaves this class unmapped and answers 500, which this decision does not follow, because an operator omitting a name has sent an incomplete registration, not met a fault.
+  - location: rules/integration/an-http-connector-configuration-declares-its-call.md
+    field: statement
+    unstated: >-
+      Which keys an HTTP connector configuration must carry, what each must be, and what happens when one is missing at observation.
+    decided: >-
+      method (GET, POST, PUT, PATCH or DELETE), responseMap (object of string paths), statusMap (object from status to evidence-result ending); an observation reaching a configuration lacking one issues no call and ends unavailable with a result detail reporting MalformedHttpConnectorConfigurationError.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The keys and their meanings are exactly what the delivered connector requires. The delivered connector throws instead of ending; domain/investigation/evidence states that the absence of data arrives as a result and never as an exception, and no-stage-aborts-on-its-deadline holds the collection stage to recording rather than raising, so the specification decides an unavailable ending carrying the cause, and the code owes a correction.
+  - location: rules/integration/an-unclassified-status-ends-unavailable.md
+    field: statement
+    unstated: >-
+      Which evidence-result ending an HTTP status the statusMap does not classify resolves to.
+    decided: >-
+      unavailable.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The delivered connector defaults to unavailable and its own comment says no node stated a default; of the four endings it is the one that asserts the least about the attempt and never enters the cache.
+  - location: rules/integration/an-unresolvable-observation-ends-unavailable.md
+    field: statement
+    unstated: >-
+      What an observation records when no capability answers the concept or the capability's connector has no registered configuration.
+    decided: >-
+      No call is issued and the observation ends unavailable, with a result detail reporting CapabilityNotResolvedForObservationError or ConnectorConfigurationNotRegisteredError respectively.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The delivered adapter throws both as faults. The evidence node says absence of data is a recorded fact, never an exception, and the connector-configuration node says a capability may be registered before its connector is configured, so the state is reachable in ordinary operation and must record an ending; the two names are kept as the result detail so the cause stays readable.
+  - location: rules/glossary/a-glossary-read-by-an-unheld-name-is-refused.md
+    field: statement
+    unstated: >-
+      What read-vocabulary-term and read-concept answer for a name nothing holds.
+    decided: >-
+      A refusal: HTTP 404 reporting VocabularyTermNotHeldError for a term, ConceptNotHeldError for a concept.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The delivered glossary service answers the miss as data internally and the published route turns it into these two 404 refusals; the connector-configuration read already drew the same distinction between an empty result and a miss, and a caller of the published read learns the refusal, not the internal value.
+  - location: rules/glossary/a-vocabulary-holds-each-name-once.md
+    field: statement
+    unstated: >-
+      What a read answers over a vocabulary or the concepts holding one name twice.
+    decided: >-
+      Refused with HTTP 500 reporting DuplicateGlossaryNameError, answering neither record.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The glossary context already guarantees each term exists exactly once, so a duplicated holding is a corrupted store rather than a business state; refusing is what the delivered service does, and 500 says the fault is the system's, which is what the backend answers for this unmapped class today.
+  - location: rules/glossary/the-non-conclusion-outcomes-precede-the-first-case.md
+    field: statement
+    unstated: >-
+      Whether ensuring the two non-conclusion outcomes may remove or rewrite outcomes already held, and whether an outcome a released version or revision names may ever be removed.
+    decided: >-
+      Ensuring adds only what is missing and removes or rewrites nothing; an outcome a released case version or released hypothesis revision names is never removed.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The delivered service states this and cites a plan task that will not outlive the plan; a released version is written once and its revisions are never altered, so an outcome they name has to keep existing for them to stay readable.
+  - location: constraints/the-capability-identity-read-is-rate-limited.md
+    field: statement
+    unstated: >-
+      The statement did not carry what one caller means or what value the 429 response names, although this log already decided the caller is the source IP address.
+    decided: >-
+      One caller is one source IP address; the refusal carries a Retry-After value.
+    why: >-
+      The earlier entry for this field decided the source address and the statement never carried it, so a reader of the node could not find the decision; Retry-After is the value the delivered route answers and the ordinary way an HTTP response names when to retry.
+  - location: constraints/listings-are-paged.md
+    field: statement
+    unstated: >-
+      Whether the list operations of the published apis answer everything at once or in pages, what selects a page, and where the default and maximum page size come from.
+    decided: >-
+      Every published list operation answers one page selected by an optional offset defaulting to 0 and an optional limit defaulting to a configured default and clamped to a configured maximum, carrying data, total, offset, limit and page count.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The delivered listings are paged this way across the integration and glossary apis while the contracts said every record; a caller must page to learn the set, which is a fact about what can be learned and so belongs in a node; the two figures are deployment configuration, so their existence is stated and their values are not.
+  - location: constraints/a-malformed-request-is-refused-with-a-validation-error.md
+    field: statement
+    unstated: >-
+      What a caller is told when a request's path, query or body fails the route's declared shape.
+    decided: >-
+      HTTP 400 with error code VALIDATION_ERROR, a message naming which part failed, and details listing the issues.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The identity read's siblings state its 404 and 429 as facts and left its 400 unstated; the shape is the same on every delivered route, so it is stated once for the system rather than per route.
+  - location: constraints/the-concept-read-refuses-an-unanswered-concept.md
+    field: statement
+    unstated: >-
+      What the read-capability route answers for a concept no capability answers.
+    decided: >-
+      HTTP 404 naming ConceptNotAnsweredError.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The identity-keyed read of the same route family already states its miss this way, and the delivered route answers exactly this.
+  - location: domain/integration/connector-configuration.md
+    field: attributes.configuration.type
+    unstated: >-
+      Whether the configuration attribute is the JSON object text or the object, given the delivered registry holds a parsed object and the delivered read answers text.
+    decided: >-
+      string — the JSON object text.
+    why: >-
+      The material is the reconciliation record siegard-reconcile/connector-capability-corrections-post-closure-drift.md, whose findings report the delivered backend stating this fact while no node held it. The published read answers text and the value object already declared string; what the registry holds internally is representation, and the well-formed-object rule now admits an object on input while holding the answer to text.
+  - location: rules/integration/an-unresolvable-observation-ends-unavailable.md
+    field: statement
+    unstated: >-
+      Cross-check: one-capability-answers-one-concept refuses a concept read that finds two capabilities answering, while this policy decided only the case where none answers — an observation of a concept answered twice was decided by neither.
+    decided: >-
+      The observation issues no call and ends unavailable, with a result detail reporting DuplicateConceptAnswerError.
+    why: >-
+      Inside an investigation the collection stage records endings and never raises (domain/investigation/evidence, no-stage-aborts-on-its-deadline), so the published read's refusal cannot be what an observation answers; the same ending the other two unresolvable cases take, carrying the same name the read reports, keeps the cause readable without a second vocabulary.
 ---

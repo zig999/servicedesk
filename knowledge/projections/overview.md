@@ -6,8 +6,8 @@ Derived by spec.py from the specification files; never edited.
 
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
-| glossary | supporting | 6 | 4 | 2 | 0 |
-| integration | generic | 5 | 8 | 6 | 0 |
+| glossary | supporting | 6 | 6 | 2 | 0 |
+| integration | generic | 5 | 12 | 6 | 0 |
 | investigation | supporting | 14 | 20 | 6 | 6 |
 | knowledge | core | 10 | 27 | 4 | 5 |
 
@@ -20,14 +20,17 @@ Derived by spec.py from the specification files; never edited.
 ## Constraints
 
 - a-case-is-read-whole (knowledge)
+- a-malformed-request-is-refused-with-a-validation-error (system)
 - consolidation-runs-behind-a-port (investigation)
 - diagnosis-answers-synchronously (system)
 - evidence-normalization-is-an-anticorruption-layer (integration)
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
 - judgment-runs-behind-a-port (investigation)
+- listings-are-paged (system)
 - no-route-enforces-authentication (system)
 - the-capability-identity-read-is-rate-limited (integration)
 - the-capability-identity-read-refuses-an-unregistered-identity (integration)
+- the-concept-read-refuses-an-unanswered-concept (integration)
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
@@ -38,4 +41,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-90 decision(s) disclosed in the decision log.
+109 decision(s) disclosed in the decision log.
