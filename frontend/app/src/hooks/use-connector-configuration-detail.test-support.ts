@@ -13,6 +13,22 @@ export const CONFIGURATION_PATH = `/v1/connectors/${CONNECTOR}`;
 export const LOADED_CONFIGURATION = '{"key":"value"}';
 export const UPDATED_CONFIGURATION = '{"key":"updated"}';
 
+/** Every syntactically valid JSON shape rules/integration/a-connector-configuration-holds-a-well-formed-object
+ * still refuses because it is not an object -- the exact representative set
+ * task/detail-screen-corrections/configuration-validity-check's own criterion 1 names, shared by
+ * use-connector-configuration-detail-validity.spec.ts's own load-time and edit-time describe
+ * blocks. */
+export const NON_OBJECT_CONFIGURATIONS: ReadonlyArray<{
+  readonly label: string;
+  readonly text: string;
+}> = [
+  { label: "an array", text: "[1,2,3]" },
+  { label: "a bare string", text: '"just a string"' },
+  { label: "a number", text: "42" },
+  { label: "true", text: "true" },
+  { label: "null", text: "null" },
+];
+
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
 }

@@ -3159,7 +3159,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:21621f371c0e3b7caee6faf6fd08fe5bd35b8aa2455433db5e2ca3d646cd5b5f"
+          "digest": "sha256:66621f23bf34d333723c54dbbac5c123894498647695ccadfe0aa24bc276a59a"
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",

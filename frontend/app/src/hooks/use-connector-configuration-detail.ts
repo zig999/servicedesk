@@ -101,6 +101,37 @@ import {
 import type { ConnectorConfiguration } from "./use-connector-configurations";
 import type { ConfigurationFieldState } from "./use-connector-configuration-form";
 
+/**
+ * Whether `text` satisfies rules/integration/
+ * a-connector-configuration-holds-a-well-formed-object: syntactically valid
+ * JSON *and* shaped as an object, not merely parseable. Corrects this hook's
+ * own `configurationValid` flag (both derivations below), which previously
+ * read `getJsonTextareaMinifiedValue(text) !== null` alone -- that check
+ * only proves `JSON.parse` did not throw, so an array, a bare string, a
+ * number, `true`, or `null` all read as valid even though none of them is
+ * the object shape the registry requires.
+ *
+ * Deliberately scoped to this one hook rather than a change to
+ * getJsonTextareaMinifiedValue/parseJsonText themselves
+ * (json-textarea-field.tsx): that function also drives this hook's own
+ * isDirty comparison and its save-payload minification, and is read
+ * unchanged by use-capability-detail.ts's own inputSchemaValid/
+ * outputSchemaValid -- tightening it there would change all of those at
+ * once, none of which this correction's own scope reaches. Reads the
+ * already-parsed value off the minified string getJsonTextareaMinifiedValue
+ * already computed rather than a second, independent `JSON.parse` call --
+ * that string is only produced once `parseJsonText` succeeded, so parsing it
+ * back here is guaranteed to succeed too.
+ */
+function isValidConfigurationObject(text: string): boolean {
+  const minified = getJsonTextareaMinifiedValue(text);
+  if (minified === null) {
+    return false;
+  }
+  const parsed: unknown = JSON.parse(minified);
+  return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+}
+
 export type ConnectorConfigurationDetailState =
   | { readonly phase: "loading" }
   | { readonly phase: "load-error"; readonly retryLoad: () => void }
@@ -166,10 +197,12 @@ export function useConnectorConfigurationDetail(
       form.reset({ connector: query.data.connector });
       setConfigurationValue(query.data.configuration);
       // criterion 8 (connector-configuration-detail-route): a loaded value
-      // that does not parse as JSON must warn immediately, not read as
-      // valid until the operator edits it -- see this file's own header
-      // comment's second correction.
-      setConfigurationValid(getJsonTextareaMinifiedValue(query.data.configuration) !== null);
+      // that does not parse as JSON, or that parses but is not an object
+      // (task/detail-screen-corrections/configuration-validity-check), must
+      // warn immediately, not read as valid until the operator edits it --
+      // see this file's own header comment's second correction and
+      // isValidConfigurationObject above.
+      setConfigurationValid(isValidConfigurationObject(query.data.configuration));
       setConfigurationBaseline(query.data.configuration);
     }
   }, [query.data]);
@@ -243,9 +276,15 @@ export function useConnectorConfigurationDetail(
     configuration: {
       value: configurationValue,
       isValid: configurationValid,
-      onChange: (value, isValid) => {
+      // `isValid` as reported by JsonTextareaField's own onChange is a
+      // parse-only check (json-textarea-field.tsx's own parseJsonText); this
+      // hook derives its own configurationValid from isValidConfigurationObject
+      // above instead of trusting that flag directly, so an edit to a
+      // syntactically valid but non-object value (an array, a bare string, a
+      // number, `true`, or `null`) reads as invalid the same as a load does.
+      onChange: (value) => {
         setConfigurationValue(value);
-        setConfigurationValid(isValid);
+        setConfigurationValid(isValidConfigurationObject(value));
       },
     },
     isDirty,
