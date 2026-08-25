@@ -48,6 +48,26 @@
       "title": "Connector-configuration not-found relocation — service wrapper and controller delegation",
       "summary": "Proves ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow's two branches and that handleReadConnectorConfigurationRequest performs no held-check-and-throw of its own, delegating entirely to that wrapper.",
       "task": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation"
+    },
+    {
+      "id": "review/connector-capability-detail-editing-corrections-backend",
+      "kind": "review",
+      "file": "review/connector-capability-detail-editing-corrections-backend.md",
+      "title": "connector-capability-detail-editing-corrections-backend, first review",
+      "summary": "What four passes found over the backend corrective change's three tasks: the not-found relocations for capability and connector-configuration reads, and the capability-identity read's rate limit.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A request to read-capability-by-identity for a name/version nothing has registered still responds HTTP 404 with CapabilityIdentityNotFoundError, unchanged in condition and message from before the relocation.",
+        "No route other than read-capability-by-identity is registered against the rate-limit mechanism this task adds, and every other existing route's tests continue to pass unmodified.",
+        "read-capability-by-identity.controller.ts's handleReadCapabilityByIdentityRequest contains no held-check-and-throw of its own; it obtains the refusal, or the resolved capability, from a service-level wrapper method instead.",
+        "read-connector-configuration.controller.ts's handleReadConnectorConfigurationRequest contains no held-check-and-throw of its own; it obtains the refusal, or the resolved configuration, from a service-level wrapper method instead.",
+        "test-connector.controller.ts's resolveTestedConnectorConfiguration still throws its own ConnectorConfigurationNotFoundError from within test-connector.controller.ts's own code on the same miss, without going through the new wrapper, unaffected by the relocation."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -104,6 +124,24 @@
       "to": "implementation/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-corrections-backend",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-corrections-backend",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-corrections-backend",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "reviews",
+      "at": "tasks[2]"
     }
   ]
 }
