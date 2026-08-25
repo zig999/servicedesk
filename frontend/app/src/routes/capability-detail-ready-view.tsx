@@ -68,38 +68,40 @@ export function CapabilityDetailReadyView({
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
         isDirty={state.isDirty}
+        trailingActions={
+          <>
+            {/*
+              Discard (criterion 5) resets every field, including both JSON
+              schemas, back to the originally loaded (or most recently saved)
+              values and re-disables Save -- use-capability-detail-view.ts's own
+              header comment on how it derives what to reset back to. Disabled
+              while there is nothing to discard or a save is already in flight,
+              the same convention every other action in this app disables
+              itself under (e.g. JsonTextareaField's own Beautify button,
+              disabled while there is nothing valid to beautify).
+            */}
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={state.onDiscard}
+              disabled={!state.isDirty || state.isSubmitting}
+            >
+              Discard changes
+            </Button>
+            {state.justSaved && (
+              // criterion 7's success acknowledgement -- role="status" (an
+              // implicit aria-live="polite" region) rather than a visual-only
+              // message, so a screen-reader user is told the save landed
+              // without needing to notice the text appear (ACC-07, mirroring
+              // connector-configuration-detail-ready-view.tsx's own identical
+              // use).
+              <p role="status" className="text-sm text-foreground">
+                Saved.
+              </p>
+            )}
+          </>
+        }
       />
-      <div className="flex items-center gap-3">
-        {/*
-          Discard (criterion 5) resets every field, including both JSON
-          schemas, back to the originally loaded (or most recently saved)
-          values and re-disables Save -- use-capability-detail-view.ts's own
-          header comment on how it derives what to reset back to. Disabled
-          while there is nothing to discard or a save is already in flight,
-          the same convention every other action in this app disables
-          itself under (e.g. JsonTextareaField's own Beautify button,
-          disabled while there is nothing valid to beautify).
-        */}
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={state.onDiscard}
-          disabled={!state.isDirty || state.isSubmitting}
-        >
-          Discard changes
-        </Button>
-        {state.justSaved && (
-          // criterion 7's success acknowledgement -- role="status" (an
-          // implicit aria-live="polite" region) rather than a visual-only
-          // message, so a screen-reader user is told the save landed
-          // without needing to notice the text appear (ACC-07, mirroring
-          // connector-configuration-detail-ready-view.tsx's own identical
-          // use).
-          <p role="status" className="text-sm text-foreground">
-            Saved.
-          </p>
-        )}
-      </div>
     </div>
   );
 }

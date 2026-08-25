@@ -49,7 +49,7 @@ export function NewCaseDraftScreen(): JSX.Element {
   }
 
   return (
-    <section>
+    <section className="flex flex-col gap-4">
       <h1>Case {slug} — New draft</h1>
       {state.isFirstVersion && <p>This is the case&apos;s first version.</p>}
       <CaseVersionEditorReadyView state={state} slug={slug} />

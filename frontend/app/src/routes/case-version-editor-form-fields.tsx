@@ -131,6 +131,7 @@ export function CaseVersionEditorFormFields({
       onSubmit={isReadOnly ? undefined : onSubmit}
       onBlur={isReadOnly ? undefined : onFieldBlur}
       noValidate
+      className="flex flex-col gap-4"
     >
       <FormField label="Title" errorId="title-error" error={errors.title?.message}>
         <Input

@@ -51,6 +51,8 @@ export type ConnectorConfigurationFormFieldsProps = {
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
   /** See this file's own header comment above. */
   readonly isDirty?: boolean;
+  /** Layout only: controls a caller wants rendered in the footer row, to the right of Save (the routed detail screen passes its Discard button and saved acknowledgement here). */
+  readonly trailingActions?: ReactNode;
 };
 
 /** One labeled field: the label wraps its own control, and an invalid control's error text sits beside it, linked back through aria-describedby (EDG-03, ACC-04) -- the same convention every other form in this app already keeps. */
@@ -87,6 +89,7 @@ export function ConnectorConfigurationFormFields({
   isSubmitting,
   onSubmit,
   isDirty,
+  trailingActions,
 }: ConnectorConfigurationFormFieldsProps): JSX.Element {
   const {
     register,
@@ -114,10 +117,11 @@ export function ConnectorConfigurationFormFields({
         disabled={isSubmitting}
       />
 
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-3">
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
           Save
         </Button>
+        {trailingActions}
       </div>
     </form>
   );

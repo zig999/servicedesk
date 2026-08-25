@@ -30,8 +30,8 @@ export function ConnectorTestPanel({ connector }: ConnectorTestPanelProps): JSX.
   const state = useTestConnectorPanel(connector);
 
   return (
-    <section>
-      <h3>Test</h3>
+    <section className="flex flex-col gap-4 pt-4 border-t border-border">
+      <h3 className="text-lg font-semibold text-foreground">Test</h3>
       <ConnectorTestPanelFields state={state} />
       <ConnectorTestPanelResult
         isTesting={state.isTesting}

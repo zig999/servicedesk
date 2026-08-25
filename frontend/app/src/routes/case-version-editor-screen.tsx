@@ -42,7 +42,7 @@ export function CaseVersionEditorScreen(): JSX.Element {
   }
 
   return (
-    <section>
+    <section className="flex flex-col gap-4">
       <h1>
         Case {slug} — Version {version}
       </h1>
