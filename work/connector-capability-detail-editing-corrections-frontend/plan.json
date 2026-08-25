@@ -1,0 +1,49 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/detail-screen-corrections",
+      "kind": "epic",
+      "file": "epic/detail-screen-corrections.md",
+      "title": "Connector-configuration and capability detail-screen corrections",
+      "summary": "The corrective fixes over connector-capability-detail-editing's already-delivered detail screens — a stricter well-formed-object check on the connector-configuration validity flag, and a confirmation step before both screens' Discard action resets form state."
+    },
+    {
+      "id": "inventory/connector-capability-detail-editing-corrections-frontend",
+      "kind": "inventory",
+      "file": "inventory/connector-capability-detail-editing-corrections-frontend.md",
+      "title": "Connector configuration and capability detail-route editing surfaces",
+      "summary": "The frontend app root, surveyed at the hooks/routes/shared-components the two corrective facts land in — the configurationValid derivation and its two consumers, its capability-side sibling, the app's existing Dialog-confirmation precedent, and both screens' current one-click Discard control and its existing test coverage."
+    },
+    {
+      "id": "task/detail-screen-corrections/configuration-validity-check",
+      "kind": "task",
+      "file": "task/detail-screen-corrections/configuration-validity-check.md",
+      "title": "Reject non-object JSON in the connector-configuration validity check",
+      "summary": "use-connector-configuration-detail.ts's configurationValid derivation rejects a syntactically valid JSON value that is not an object.",
+      "epic": "detail-screen-corrections"
+    },
+    {
+      "id": "task/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "task",
+      "file": "task/detail-screen-corrections/discard-confirmation-dialog.md",
+      "title": "Confirm before Discard resets form state on both detail screens",
+      "summary": "Both connector-configuration-detail-ready-view.tsx and capability-detail-ready-view.tsx require an explicit confirm step, via a reused @tui/ui/dialog confirmation, before Discard resets form state.",
+      "epic": "detail-screen-corrections"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/detail-screen-corrections",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/detail-screen-corrections/configuration-validity-check",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

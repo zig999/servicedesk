@@ -1,0 +1,135 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "kind": "epic",
+      "file": "epic/registry-read-not-found-relocation-and-rate-limit.md",
+      "title": "Capability and connector-configuration read corrections",
+      "summary": "The corrective relocation of two not-found refusals and a new rate limit on the read-capability-by-identity route, over code the closed connector-capability-detail-editing initiative already delivered."
+    },
+    {
+      "id": "inventory/registry-read-not-found-relocation-and-rate-limit",
+      "kind": "inventory",
+      "file": "inventory/registry-read-not-found-relocation-and-rate-limit.md",
+      "title": "Registry-read not-found relocation and capability-identity rate limit",
+      "summary": "The read-by-identity paths for capabilities and connector configurations, their shared services, every other consumer of those two reads, and the route registration/testing conventions the two corrections and the new rate limit must fit."
+    },
+    {
+      "id": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "kind": "task",
+      "file": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit.md",
+      "title": "Rate limit on the capability-by-identity read route",
+      "summary": "The read-capability-by-identity route refuses more than 60 requests per minute from one source IP, with an HTTP 429 naming when the caller may retry.",
+      "epic": "registry-read-not-found-relocation-and-rate-limit"
+    },
+    {
+      "id": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "task",
+      "file": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation.md",
+      "title": "Capability-by-identity not-found raised from a service-level wrapper",
+      "summary": "The 404 refusal on a capability-by-identity miss moves from the controller into a service-level wrapper only that controller calls.",
+      "epic": "registry-read-not-found-relocation-and-rate-limit"
+    },
+    {
+      "id": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "kind": "task",
+      "file": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation.md",
+      "title": "Connector-configuration not-found raised from a service-level wrapper",
+      "summary": "The 404 refusal on a connector-configuration miss moves from the controller into a service-level wrapper only that controller calls.",
+      "epic": "registry-read-not-found-relocation-and-rate-limit"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/registry-read-not-found-relocation-and-rate-limit",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/registry-read-not-found-relocation-and-rate-limit/capability-identity-read-rate-limit",
+      "to": "constraints/the-capability-identity-read-is-rate-limited",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
