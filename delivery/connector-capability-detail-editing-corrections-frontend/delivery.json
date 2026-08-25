@@ -35,6 +35,27 @@
       "title": "Discard confirmation dialog on both detail screens",
       "summary": "Proves task/detail-screen-corrections/discard-confirmation-dialog's own seven behavioral criteria on both ready-views by updating the two pre-existing discard spec files to exercise the confirm-then-discard flow instead of the removed one-click reset (satisfying criterion 8), and fixes a test-timing race in both files' own mounting helper found while diagnosing the suite's own failures.",
       "task": "task/detail-screen-corrections/discard-confirmation-dialog"
+    },
+    {
+      "id": "review/connector-capability-detail-editing-corrections-frontend",
+      "kind": "review",
+      "file": "review/connector-capability-detail-editing-corrections-frontend.md",
+      "title": "connector-capability-detail-editing-corrections-frontend, first review",
+      "summary": "What four passes found over the frontend corrective change's two tasks: rejecting non-object JSON in the connector-configuration validity check, and requiring confirmation before Discard on both detail screens.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Both dialogs are composed from @tui/ui/dialog's existing primitives with two explicit buttons — one to discard, one to continue editing — matching the Release dialog's plain two-button shape in case-version-editor-ready-view.tsx rather than the typed-slug Discard dialog's heavier shape.",
+        "Cancelling or closing that dialog leaves the capability form's unsaved edits intact and does not call state.onDiscard.",
+        "Cancelling or closing that dialog leaves the connector-configuration form's unsaved edits intact and does not call state.onDiscard.",
+        "The Save button in connector-configuration-form-fields.tsx is disabled when configurationValid is false for a non-object parsed value, with no code change to connector-configuration-form-fields.tsx itself.",
+        "The warning banner in connector-configuration-detail-ready-view.tsx appears when configurationValid is false for a non-object parsed value, with no code change to connector-configuration-detail-ready-view.tsx itself.",
+        "use-capability-detail.ts's inputSchemaValid and outputSchemaValid derivation, and json-textarea-field.tsx's parseJsonText/getJsonTextareaMinifiedValue, are unchanged."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -67,6 +88,18 @@
       "to": "implementation/detail-screen-corrections/discard-confirmation-dialog",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-corrections-frontend",
+      "to": "task/detail-screen-corrections/configuration-validity-check",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-corrections-frontend",
+      "to": "task/detail-screen-corrections/discard-confirmation-dialog",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
