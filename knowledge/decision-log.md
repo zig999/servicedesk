@@ -681,4 +681,60 @@ entries:
       The observation issues no call and ends unavailable, with a result detail reporting DuplicateConceptAnswerError.
     why: >-
       Inside an investigation the collection stage records endings and never raises (domain/investigation/evidence, no-stage-aborts-on-its-deadline), so the published read's refusal cannot be what an observation answers; the same ending the other two unresolvable cases take, carrying the same name the read reports, keeps the cause readable without a second vocabulary.
+  - location: rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused.md
+    field: statement
+    unstated: >-
+      What a read or lifecycle operation answers for a slug, or slug and version, no case version answers.
+    decided: >-
+      Refused with HTTP 404 reporting CaseNotFoundError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. Every other read in this specification now names its miss; the delivered knowledge context answers exactly this, and the scenario for a case holding no versions already carves out the one neighbouring case that is not a miss.
+  - location: rules/knowledge/a-case-has-at-most-one-draft.md
+    field: statement
+    unstated: >-
+      The status and error name of refusing a second draft.
+    decided: >-
+      HTTP 409 reporting CaseAlreadyHasDraftError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The refusal exists in the rule; 409 is the status the backend answers for an operation the resource's current state forbids, the same reading ConceptAlreadyAnsweredError already took.
+  - location: rules/knowledge/a-hypothesis-position-is-unique-within-its-case.md
+    field: statement
+    unstated: >-
+      The status and error name of placing a hypothesis at an occupied position.
+    decided: >-
+      HTTP 409 reporting ManifestPositionOccupiedError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. Same reasoning as a-case-has-at-most-one-draft: a state conflict, not a malformed request.
+  - location: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle.md
+    field: statement
+    unstated: >-
+      What a lifecycle operation answers when asked of a version not in draft, and whether release has a refusal of its own for that case.
+    decided: >-
+      Operations other than release: HTTP 409 CaseVersionNotDraftError; release: HTTP 409 CaseVersionNotDraftAtReleaseError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The delivered backend distinguishes the two and the material keeps them apart because release is the one trigger that ever leaves draft, so a curator re-releasing a released version is told a different thing from one composing into it; both are state conflicts, hence 409. Recorded in the statement rather than as rejections of the machine, because discard removes a version rather than moving it to a state.
+  - location: rules/knowledge/a-release-refusal-with-no-named-violation-says-so.md
+    field: statement
+    unstated: >-
+      The status and error name of a release refused over violated rules.
+    decided: >-
+      HTTP 422 reporting CaseVersionNotReleasableError, naming every violated rule together.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The rule already required the curator be told why; 422 says the request was well-formed and the content would violate an invariant, the reading the sibling registration refusals took.
+  - location: rules/knowledge/a-case-has-at-least-one-hypothesis.md
+    field: statement
+    unstated: >-
+      The status and error name of a removal that would empty the manifest.
+    decided: >-
+      HTTP 422 reporting ManifestWouldHoldNoHypothesisError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The removal is well-formed and the result would violate the invariant, so 422 for the same reason as the release refusal.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: >-
+      What test-connector answers when the named connector is not the one the found capability names.
+    decided: >-
+      HTTP 409 reporting CapabilityConnectorMismatchError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The rule already restricts the test to the capability's own connector; the mismatch is a conflict with the capability's registered state rather than a missing resource, and the delivered backend answers 409.
 ---

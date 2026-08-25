@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: A case has at most one version in draft state at a time.
+statement: A case has at most one version in draft state at a time; create-draft asked of a case that already holds a draft is refused with an HTTP 409 response reporting a CaseAlreadyHasDraftError.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version

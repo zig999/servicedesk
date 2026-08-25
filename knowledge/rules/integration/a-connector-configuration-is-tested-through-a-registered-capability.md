@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: A connector configuration is tested only through a specific, already-registered capability that names it as its connector; finding no capability registered at that identity refuses the test with an HTTP 404 response reporting a CapabilityNotRegisteredForTestError — a refusal of its own, never the identity-keyed read's own not-found answer for that same identity reused across the two operations.
+statement: A connector configuration is tested only through a specific, already-registered capability that names it as its connector; finding no capability registered at that identity refuses the test with an HTTP 404 response reporting a CapabilityNotRegisteredForTestError — a refusal of its own, never the identity-keyed read's own not-found answer for that same identity reused across the two operations — and naming a connector the found capability's own connector attribute does not match refuses the test with an HTTP 409 response reporting a CapabilityConnectorMismatchError.
 constrains:
   - domain/integration/connector-configuration
   - domain/integration/capability

@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: No two manifest entries of one case version share a position.
+statement: No two manifest entries of one case version share a position; place-hypothesis at a position the manifest already places a different hypothesis at is refused with an HTTP 409 response reporting a ManifestPositionOccupiedError.
 constrains:
   - domain/knowledge/case-version
   - domain/knowledge/manifest-entry
