@@ -27,6 +27,19 @@ import type { ConfigurationFieldState } from "../hooks/use-connector-configurati
  * invalid, on top of the hook's own submit-time guard, so an operator sees
  * why Save will not act rather than clicking it and observing nothing
  * happen.
+ *
+ * `isDirty` (task/connector-capability-detail-editing/
+ * connector-configuration-detail-route, criterion 4) is optional and, left
+ * unset, never itself disables Save -- so
+ * connector-configuration-form-dialog.tsx's own existing call site (which
+ * never passes it) keeps exactly the disabling behavior it already had:
+ * that dialog's own hook (use-connector-configuration-form.ts) tracks no
+ * "differs from the loaded record" concept at all, and re-saving an
+ * unmodified record there was never refused. The routed detail screen is
+ * the one caller that does pass it, gating Save on top of the same
+ * isSubmitting/configuration.isValid conditions this component already
+ * applied -- the markup below is otherwise unchanged from this file's own
+ * prior delivery.
  */
 
 export type ConnectorConfigurationFormFieldsProps = {
@@ -36,6 +49,8 @@ export type ConnectorConfigurationFormFieldsProps = {
   readonly isEditingIdentity: boolean;
   readonly isSubmitting: boolean;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+  /** See this file's own header comment above. */
+  readonly isDirty?: boolean;
 };
 
 /** One labeled field: the label wraps its own control, and an invalid control's error text sits beside it, linked back through aria-describedby (EDG-03, ACC-04) -- the same convention every other form in this app already keeps. */
@@ -71,13 +86,14 @@ export function ConnectorConfigurationFormFields({
   isEditingIdentity,
   isSubmitting,
   onSubmit,
+  isDirty,
 }: ConnectorConfigurationFormFieldsProps): JSX.Element {
   const {
     register,
     formState: { errors },
   } = form;
 
-  const isSaveDisabled = isSubmitting || !configuration.isValid;
+  const isSaveDisabled = isSubmitting || !configuration.isValid || isDirty === false;
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">

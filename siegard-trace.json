@@ -696,8 +696,12 @@
       "digest": "sha256:9dc64da49a3ed25dc5d5713971a1f01d8d7565fa2e9d5710f1c85a472889bc5d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
+          "digest": "sha256:95a408d3b590c1450889ab2183ea61072c0cfe644728b8bb9243c350cc43d1fc"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:68633d00e1c44407a6a81fc353a89a9e65ffd916b531c27b10324899d18f5bb2"
+          "digest": "sha256:21621f371c0e3b7caee6faf6fd08fe5bd35b8aa2455433db5e2ca3d646cd5b5f"
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
@@ -706,6 +710,10 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configurations.ts",
           "digest": "sha256:ea93034a5b187115cc9d81e737ba99c71b042f680dde8daf6ddfdf72615d098c"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:77d08a2b7e6e22c47d3917fb887eb3677be466b5b51721d20ac0c07702bf27aa"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1778,8 +1786,12 @@
       "digest": "sha256:31857462e8f760445ae45b0f851761c07745195cfab341f38e56e326e3764971",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
+          "digest": "sha256:95a408d3b590c1450889ab2183ea61072c0cfe644728b8bb9243c350cc43d1fc"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
-          "digest": "sha256:68633d00e1c44407a6a81fc353a89a9e65ffd916b531c27b10324899d18f5bb2"
+          "digest": "sha256:21621f371c0e3b7caee6faf6fd08fe5bd35b8aa2455433db5e2ca3d646cd5b5f"
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
@@ -1794,8 +1806,20 @@
           "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
         },
         {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:77d08a2b7e6e22c47d3917fb887eb3677be466b5b51721d20ac0c07702bf27aa"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
+          "digest": "sha256:03bcce4a18b5cd44b38672c5ae1803b0fbce9b266680a23601def9c6bc82f1d9"
+        },
+        {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
           "digest": "sha256:7a2dd7f450c449df3fb0a4e4adea790446a060d6bfdb93c64868f8e24f2a4677"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configurations-screen.tsx",
+          "digest": "sha256:aa458dbc0983a3aa59243bd97687b86c007e58f971c14c9cb7bf3b11f8c52c1d"
         },
         {
           "path": "frontend/app/src/routes/connector-test-panel.tsx",
@@ -3090,8 +3114,16 @@
       "digest": "sha256:d5adc549fc025c4173babe3b595b49649109422e9a20e847fccaa5b8cdc6afef",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:21621f371c0e3b7caee6faf6fd08fe5bd35b8aa2455433db5e2ca3d646cd5b5f"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:77d08a2b7e6e22c47d3917fb887eb3677be466b5b51721d20ac0c07702bf27aa"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",

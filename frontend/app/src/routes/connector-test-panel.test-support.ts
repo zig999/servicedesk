@@ -1,26 +1,48 @@
-import { fireEvent, screen, waitForElementToBeRemoved, within } from "@testing-library/react";
+import { createElement } from "react";
+import { fireEvent, render, screen, waitForElementToBeRemoved, within } from "@testing-library/react";
 import { vi, type Mock } from "vitest";
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  RouterProvider,
+} from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Capability } from "../hooks/use-capabilities";
 import type { TestConnectorResult } from "../hooks/use-test-connector-panel";
+import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
+import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
 import {
   CONNECTORS_PATH,
   connectorConfiguration,
   connectorConfigurationsPage,
+  connectorPutPath,
   createConnectorConfigurationsFetchStub,
   jsonResponse,
-  mountConnectorConfigurationsScreen,
 } from "./connector-configurations-screen.test-support";
 
 // Shared fixtures and mounting helper for
 // task/connector-configuration-authoring/test-connector-debug-panel's own proof.
-// ConnectorTestPanel renders only inside ConnectorConfigurationFormDialog's own edit mode, so
-// every test reaching it goes through the same path: mount ConnectorConfigurationsScreen
-// through connector-configurations-screen.test-support.ts's own mountConnectorConfigurationsScreen
-// and createConnectorConfigurationsFetchStub (reused rather than duplicated -- this task adds no
-// new listing/edit behavior of its own), click a row's own "Edit" action, and await the dialog.
-// Every other fixture here is declared locally rather than imported from a sibling task's own
-// test-support module, mirroring this app's own established convention of each screen's test
-// support restating the shape it needs rather than reaching across tasks for one.
+//
+// ConnectorTestPanel used to render only inside ConnectorConfigurationFormDialog's own edit
+// mode, reached by clicking a connector configurations list row's own "Edit" action. That action
+// and the in-page edit dialog it opened are both gone: task/connector-capability-detail-editing/
+// connector-configuration-detail-route (criteria 2 and 9) replaced them with a row click that
+// navigates to the routed detail screen instead (connector-configurations-screen.tsx's own header
+// comment), and ConnectorConfigurationDetailReadyView now composes the very same ConnectorTestPanel
+// unchanged, scoped to that route's own `connector` identity
+// (connector-configuration-detail-ready-view.tsx's own header comment). mountTestPanelInEditMode
+// below is updated the same way production navigation now works: it mounts a small,
+// self-contained router carrying both ConnectorConfigurationsScreen at "/connectors" and
+// ConnectorConfigurationDetailScreen at "/connectors/$connector" (mirroring
+// connector-configuration-detail-screen.test-support.ts's own buildTestRouter pattern, restated
+// here locally rather than imported, since that module is a sibling task's own test-support and
+// this file already restates its own fixture shapes rather than reaching across tasks for them),
+// starts at the list, and clicks the one row it seeds -- the exact route this panel's own two
+// dependent reads are now dispatched from. Its own exported name is kept exactly as every one of
+// its five caller spec files already imports it.
 //
 // The panel depends on two of its own network reads settling before its fields are complete --
 // useCapabilities() (GET /v1/capabilities) and useGlossaryVocabularyOptions("subject-type") (GET
@@ -119,10 +141,49 @@ export function callsToPath(fetchMock: Mock<FetchFn>, path: string): readonly Re
 }
 
 /**
- * Mounts ConnectorConfigurationsScreen with one connector configuration named "deepl-connector",
- * opens its row's own Edit action, and awaits the Test section's own heading -- confirming
- * ConnectorTestPanel actually mounted (and so its own two reads were dispatched), without
- * asserting anything about whether either read has resolved yet.
+ * A small, self-contained router carrying both the connector configurations list and the routed
+ * detail screen -- exactly the two routes production navigation now uses to reach
+ * ConnectorTestPanel (this file's own header comment).
+ */
+function buildTestRouter() {
+  const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
+  const listRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/connectors",
+    component: ConnectorConfigurationsScreen,
+  });
+  const detailRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/connectors/$connector",
+    component: ConnectorConfigurationDetailScreen,
+  });
+  const routeTree = rootRoute.addChildren([listRoute, detailRoute]);
+  return createRouter({
+    routeTree,
+    history: createMemoryHistory({ initialEntries: ["/connectors"] }),
+  });
+}
+
+/**
+ * Mounts the connector configurations list with one connector configuration named
+ * "deepl-connector", clicks that row to navigate to its own routed detail screen (the same
+ * onRowClick navigation connector-configurations-screen.tsx now wires, StatusTable's own
+ * role="button" data row), and awaits the Test section's own heading there -- confirming
+ * ConnectorTestPanel actually mounted (and so its own two reads were dispatched). Unlike the
+ * former in-page-dialog mount (whose own two extra `findByRole` awaits, opening the Dialog then
+ * finding the heading inside it, happened to leave enough time for those two reads to settle
+ * before returning), ConnectorTestPanel here only mounts once the routed screen's own load
+ * settles into its "ready" phase, immediately alongside the "Test" heading -- so this also awaits
+ * the capabilities read's own settling (awaitCapabilitiesSettled below) before returning, the same
+ * postcondition every caller already relied on. Without it, a capabilities/subject-type read
+ * still in flight when a caller's own first interaction fires can settle a moment later and
+ * re-render use-test-connector-panel.ts's own consumers with a freshly recreated `onChange`
+ * (that hook returns a fresh closure every render, not memoized) -- which reopens
+ * JsonTextareaField's own mount-time pretty-print effect (its `selfInitiatedRef` guard was already
+ * consumed by the caller's own preceding change) and reformats whatever was just typed. The
+ * returned `dialog` is the render container holding the whole page (there is no popup Dialog to
+ * scope to anymore, but every caller's own `within(dialog)` query still resolves correctly
+ * against it).
  */
 export async function mountTestPanelInEditMode(
   handlers: Partial<Record<string, () => Response | Promise<Response>>>,
@@ -130,14 +191,31 @@ export async function mountTestPanelInEditMode(
   const target = connectorConfiguration({ connector: "deepl-connector" });
   const fetchMock = createConnectorConfigurationsFetchStub({
     [CONNECTORS_PATH]: () => jsonResponse(connectorConfigurationsPage([target])),
+    [connectorPutPath(target.connector)]: () => jsonResponse(target),
     ...handlers,
   });
-  await mountConnectorConfigurationsScreen(fetchMock);
+  vi.stubGlobal("fetch", fetchMock);
+  const router = buildTestRouter();
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  await router.load();
+  const { container } = render(
+    createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      createElement(RouterProvider, { router }),
+    ),
+  );
   await screen.findByText(target.connector);
-  fireEvent.click(screen.getByRole("button", { name: "Edit" }));
-  const dialog = await screen.findByRole("dialog");
-  await within(dialog).findByRole("heading", { name: "Test" });
-  return { dialog, fetchMock };
+  fireEvent.click(screen.getByRole("button", { name: target.connector }));
+  await screen.findByRole("heading", { name: "Test" });
+  await awaitCapabilitiesSettled();
+  // Flushes whatever transient re-render react-hook-form's own internal subscription mechanism
+  // still has pending after useConnectorConfigurationDetail.ts's own load effect calls
+  // `form.reset(...)` -- a real timer tick, not a bare microtask, since that mechanism notifies
+  // subscribers on its own schedule rather than synchronously with the state update that made
+  // this route's own phase "ready".
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  return { dialog: container, fetchMock };
 }
 
 /** Awaits the capabilities read settling (its own loading text disappearing), for a test that needs to observe the *final*, empty-or-not option set rather than the transient loading one. A no-op if the text is already gone. */

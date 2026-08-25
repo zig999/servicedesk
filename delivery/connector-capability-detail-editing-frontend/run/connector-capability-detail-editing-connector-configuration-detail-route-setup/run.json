@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-capability-detail-editing-connector-configuration-detail-route-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-25T09:35:58.349+00:00",
+      "ended_at": "2026-08-25T09:36:04.419+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

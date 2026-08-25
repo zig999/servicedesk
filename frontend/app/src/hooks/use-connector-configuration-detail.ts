@@ -57,6 +57,35 @@
  * handled here beyond letting the mutation settle -- this task's own Notes
  * name that as the connector-configuration detail route task's own concern,
  * which owns showing the registry's refusal to the operator once it exists.
+ *
+ * Two corrections landed after this file's own first delivery, made by
+ * task/connector-capability-detail-editing/connector-configuration-detail-route
+ * (the sibling task whose own concern the paragraph above already names)
+ * once a failure-diagnostician found both against the running suite --
+ * disclosed as that task's own divergence, since this file was delivered
+ * by the sibling connector-configuration-detail-hook task:
+ *
+ * - The load effect below used to hardcode `configurationValid` to `true`
+ *   on every load, so a stored value that does not parse as JSON never
+ *   showed that sibling task's own criterion 8 warning at the moment that
+ *   criterion names -- right after load, before any edit. It now derives
+ *   `configurationValid` the same way the isDirty comparison above already
+ *   does: through `getJsonTextareaMinifiedValue`, which returns `null` for
+ *   text that does not parse (json-textarea-field.tsx's own
+ *   `parseJsonText`), rather than duplicating that check with a second,
+ *   hand-written `JSON.parse`.
+ * - `isSubmitSuccessful` (react-query's own `mutation.isSuccess`) is a new
+ *   field on the "ready" phase. use-connector-configuration-detail-view.ts
+ *   (that sibling task's own composition hook) needs to tell "a save just
+ *   succeeded" apart from "nothing has happened" or "a save is pending",
+ *   and comparing `isSubmitting` across renders -- what it did until now --
+ *   never fires when a fast-resolving mutation's pending and settled
+ *   states land in the same committed render, the same
+ *   failure-diagnostician finding. Nothing already exposed by this phase
+ *   can answer that from outside (`onSubmit` is `void`, not a promise a
+ *   caller could await), so the fix widens this phase by exactly the one
+ *   fact react-query itself already derived, rather than a second,
+ *   home-grown one.
  */
 
 import { useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
@@ -81,6 +110,13 @@ export type ConnectorConfigurationDetailState =
       readonly configuration: ConfigurationFieldState;
       readonly isDirty: boolean;
       readonly isSubmitting: boolean;
+      /**
+       * react-query's own `mutation.isSuccess` for the last submitted save
+       * (this file's own header comment) -- true from the instant that
+       * save's `onSuccess` runs until a subsequent `mutate` call starts a
+       * new one, false on load and false after a failed save.
+       */
+      readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
     };
 
@@ -129,7 +165,11 @@ export function useConnectorConfigurationDetail(
     if (query.data) {
       form.reset({ connector: query.data.connector });
       setConfigurationValue(query.data.configuration);
-      setConfigurationValid(true);
+      // criterion 8 (connector-configuration-detail-route): a loaded value
+      // that does not parse as JSON must warn immediately, not read as
+      // valid until the operator edits it -- see this file's own header
+      // comment's second correction.
+      setConfigurationValid(getJsonTextareaMinifiedValue(query.data.configuration) !== null);
       setConfigurationBaseline(query.data.configuration);
     }
   }, [query.data]);
@@ -210,6 +250,7 @@ export function useConnectorConfigurationDetail(
     },
     isDirty,
     isSubmitting: mutation.isPending,
+    isSubmitSuccessful: mutation.isSuccess,
     onSubmit,
   };
 }

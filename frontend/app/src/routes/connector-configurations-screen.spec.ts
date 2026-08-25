@@ -36,12 +36,20 @@ describe("ConnectorConfigurationsScreen — listing (criterion 1)", () => {
     });
     await mountConnectorConfigurationsScreen(fetchMock);
 
-    const rows = await screen.findAllByRole("row");
-    // rows[0] is the header row (StatusTable's own TableHeader); one data row follows per
-    // connector configuration.
-    expect(rows).toHaveLength(3);
-    expect(within(rows[1]).getByText("deepl-connector")).toBeTruthy();
-    expect(within(rows[2]).getByText("sendgrid-connector")).toBeTruthy();
+    // StatusTable gives every data row role="button" rather than the implicit "row" once
+    // onRowClick is passed (task/connector-capability-detail-editing/connector-configuration-detail-route's
+    // own criterion 2 -- see status-table.spec.ts's own header row / data row distinction) -- the
+    // header row keeps its own implicit "row" role since it is never clickable, so
+    // findAllByRole("row") would now find only that one header row rather than one entry per
+    // connector configuration. Querying data rows by their own "button" role, scoped to the table
+    // itself (so this screen's own unrelated "New connector configuration" button, also
+    // role="button", is never counted alongside them), is this test's own equivalent for what it
+    // always verified: one row per connector configuration, each showing its own connector name.
+    const table = await screen.findByRole("table");
+    const dataRows = within(table).getAllByRole("button");
+    expect(dataRows).toHaveLength(2);
+    expect(within(dataRows[0]).getByText("deepl-connector")).toBeTruthy();
+    expect(within(dataRows[1]).getByText("sendgrid-connector")).toBeTruthy();
   });
 
   it("renders no row for a connector configuration GET /v1/connectors does not return", async () => {

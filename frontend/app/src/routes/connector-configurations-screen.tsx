@@ -1,4 +1,5 @@
 import { useState, type JSX } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
   StatusTable,
@@ -16,29 +17,31 @@ import { ConnectorConfigurationFormDialog } from "./connector-configuration-form
  * The Connector Configurations screen
  * (task/connector-configuration-authoring/connector-configuration-create-edit-form):
  * every connector configuration GET /v1/connectors returns, one row each
- * (criterion 1), a "New connector configuration" action (criterion 2) and a
- * per-row "Edit" action (criterion 3) that share one Dialog, parametrized by
+ * (criterion 1), and a "New connector configuration" action (criterion 2)
+ * that opens the shared create/edit Dialog in create mode, parametrized by
  * `formTarget`'s own nullable-identity shape (ConnectorConfigurationFormTarget:
- * `null` closed, `{ mode: "create" }`, or
- * `{ mode: "edit", connectorConfiguration }`) -- mirroring
- * capabilities-browser-screen.tsx's own composition exactly, this task's own
- * inventory naming that screen as a reuse point rather than a pattern to
- * re-derive.
+ * `null` closed, or `{ mode: "create" }` here -- `{ mode: "edit", ... }`
+ * stays part of that shared type for connector-configuration-form-dialog.tsx's
+ * own sake, but this screen never constructs one, see below).
  *
- * Selecting a row's own "Edit" action issues no second network request: the
- * row it edits is already fully loaded (both of ConnectorConfiguration's own
- * two attributes), the same property capabilities-browser-screen.tsx's own
- * header comment names for its own row-edit action.
+ * task/connector-capability-detail-editing/connector-configuration-detail-route
+ * (criteria 2 and 9) replaces this screen's own former per-row "Edit" action
+ * -- which opened that same Dialog in edit mode -- with a row click that
+ * navigates to the new routed detail/edit screen instead
+ * (route-tree.tsx's own "/connectors/$connector"), mirroring
+ * cases-list-screen.tsx's own established "clicking a row navigates"
+ * convention (StatusTable's own `onRowClick`, a plain function reading the
+ * clicked row's own identity field and calling `navigate`) rather than a
+ * second, hand-rolled row-link pattern. The popup Dialog's own "New
+ * connector configuration" creation path (criterion 2) is untouched: that
+ * action still opens the Dialog in create mode exactly as before.
  *
- * Wired in as route-tree.tsx's new "/connectors" route's own `component`
+ * Wired in as route-tree.tsx's "/connectors" route's own `component`
  * (this task's own inference on the route's path and this screen's own name,
  * disclosed in its delivery record: no criterion or reference states either).
  */
 
-const COLUMNS: StatusTableColumn[] = [
-  { key: "connector", header: "Connector" },
-  { key: "actions", header: "" },
-];
+const COLUMNS: StatusTableColumn[] = [{ key: "connector", header: "Connector" }];
 
 /**
  * `connector` is domain/integration/connector-configuration's own one
@@ -47,28 +50,32 @@ const COLUMNS: StatusTableColumn[] = [
  * own composite key, a connector configuration's identity is this one field
  * alone.
  */
-function toRow(
-  connectorConfiguration: ConnectorConfiguration,
-  onEdit: (connectorConfiguration: ConnectorConfiguration) => void,
-): StatusTableRow {
+function toRow(connectorConfiguration: ConnectorConfiguration): StatusTableRow {
   return {
     id: connectorConfiguration.connector,
     connector: connectorConfiguration.connector,
-    actions: (
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => onEdit(connectorConfiguration)}
-      >
-        Edit
-      </Button>
-    ),
   };
 }
 
 export function ConnectorConfigurationsScreen(): JSX.Element {
+  const navigate = useNavigate();
   const { connectorConfigurations, isLoading, isError, refetch } = useConnectorConfigurations();
   const [formTarget, setFormTarget] = useState<ConnectorConfigurationFormTarget | null>(null);
+
+  /**
+   * Clicking a row navigates to that connector's own detail/edit route
+   * (criterion 2) rather than opening the popup Dialog's edit mode
+   * (criterion 9) -- the same `typeof ... !== "string"` guard
+   * cases-list-screen.tsx's own handleRowClick already keeps before
+   * trusting a StatusTableRow's untyped `Record<string, unknown>` value.
+   */
+  function handleRowClick(row: StatusTableRow): void {
+    const connector = row.connector;
+    if (typeof connector !== "string") {
+      return;
+    }
+    void navigate({ to: "/connectors/$connector", params: { connector } });
+  }
 
   function renderBody(): JSX.Element {
     if (isLoading) {
@@ -101,11 +108,8 @@ export function ConnectorConfigurationsScreen(): JSX.Element {
     return (
       <StatusTable
         columns={COLUMNS}
-        rows={connectorConfigurations.map((connectorConfiguration) =>
-          toRow(connectorConfiguration, (target) =>
-            setFormTarget({ mode: "edit", connectorConfiguration: target }),
-          ),
-        )}
+        rows={connectorConfigurations.map(toRow)}
+        onRowClick={handleRowClick}
       />
     );
   }

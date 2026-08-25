@@ -52,6 +52,13 @@ import {
  * "/glossary" already are -- it renders a real screen, not a placeholder --
  * and checked by its own dedicated test beneath the capabilities/glossary
  * ones instead.
+ *
+ * "/connectors/$connector" is the fourteenth route, added by
+ * task/connector-capability-detail-editing/connector-configuration-detail-route's
+ * own criterion 1: the routed connector-configuration detail/edit screen a
+ * connector configurations list row now navigates to. Excluded from
+ * EXPECTED_COMPONENT_BY_PATH for the same reason -- it renders a real
+ * screen, not a placeholder.
  */
 
 const EXPECTED_PATHS = [
@@ -68,6 +75,7 @@ const EXPECTED_PATHS = [
   "/glossary",
   "/capabilities",
   "/connectors",
+  "/connectors/$connector",
 ];
 
 // /cases, /cases/$slug, /cases/$slug/versions/new, /cases/$slug/versions/$version, this task's
@@ -91,13 +99,13 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the thirteen proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the fourteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
   });
 
-  it("assigns no two of the twelve routes the same path", () => {
+  it("assigns no two of the fourteen routes the same path", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect(new Set(actualPaths).size).toBe(actualPaths.length);

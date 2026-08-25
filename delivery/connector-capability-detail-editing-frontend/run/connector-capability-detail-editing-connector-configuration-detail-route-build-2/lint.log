@@ -1,0 +1,22 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/connector-test-panel.test-support.ts
+   1:10  error  'createElement' is defined but never used                       @typescript-eslint/no-unused-vars
+   2:21  error  'render' is defined but never used                              @typescript-eslint/no-unused-vars
+   5:3   error  'createMemoryHistory' is defined but never used                 @typescript-eslint/no-unused-vars
+   6:3   error  'createRootRoute' is defined but never used                     @typescript-eslint/no-unused-vars
+   7:3   error  'createRoute' is defined but never used                         @typescript-eslint/no-unused-vars
+   8:3   error  'createRouter' is defined but never used                        @typescript-eslint/no-unused-vars
+   9:3   error  'Outlet' is defined but never used                              @typescript-eslint/no-unused-vars
+  10:3   error  'RouterProvider' is defined but never used                      @typescript-eslint/no-unused-vars
+  12:10  error  'QueryClient' is defined but never used                         @typescript-eslint/no-unused-vars
+  12:23  error  'QueryClientProvider' is defined but never used                 @typescript-eslint/no-unused-vars
+  15:10  error  'ConnectorConfigurationsScreen' is defined but never used       @typescript-eslint/no-unused-vars
+  16:10  error  'ConnectorConfigurationDetailScreen' is defined but never used  @typescript-eslint/no-unused-vars
+  21:3   error  'connectorPutPath' is defined but never used                    @typescript-eslint/no-unused-vars
+
+✖ 13 problems (13 errors, 0 warnings)
+

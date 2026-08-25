@@ -3,6 +3,7 @@ import { z } from "zod";
 import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
+import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
@@ -138,6 +139,17 @@ const connectorConfigurationsRoute = createRoute({
   component: ConnectorConfigurationsScreen,
 });
 
+// task/connector-capability-detail-editing/connector-configuration-detail-route's
+// own screen: shows and edits one connector configuration in place of the
+// popup dialog's edit path (the popup's own "New connector configuration"
+// creation path is untouched, still hosted on connectorConfigurationsRoute
+// above).
+const connectorConfigurationDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/connectors/$connector",
+  component: ConnectorConfigurationDetailScreen,
+});
+
 const caseHypothesesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/cases/$slug/hypotheses",
@@ -157,6 +169,7 @@ const routeTree = rootRoute.addChildren([
   glossaryRoute,
   capabilitiesRoute,
   connectorConfigurationsRoute,
+  connectorConfigurationDetailRoute,
   caseHypothesesRoute,
 ]);
 
