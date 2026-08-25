@@ -26,6 +26,7 @@ Derived by spec.py from the specification files; never edited.
 - hypotheses-are-judged-in-isolated-parallel-calls (investigation)
 - judgment-runs-behind-a-port (investigation)
 - no-route-enforces-authentication (system)
+- the-capability-identity-read-is-rate-limited (integration)
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
@@ -36,4 +37,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-86 decision(s) disclosed in the decision log.
+87 decision(s) disclosed in the decision log.

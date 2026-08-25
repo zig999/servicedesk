@@ -456,4 +456,19 @@ entries:
       and resolve-concept, never read-capability or list-capabilities either, so a read is
       consistently a contract-level surface over this domain-service, not one of its own
       declared operations.
+  - location: constraints/the-capability-identity-read-is-rate-limited.md
+    field: statement
+    unstated: >-
+      The material asks for a limit "per client" but this build verifies no caller's claimed
+      identity (no-route-enforces-authentication) — so "one caller" needs a concrete meaning
+      the material itself never supplies.
+    decided: >-
+      One caller means one source IP address making the request; the limit and the refusal it
+      triggers are keyed on that address, not on any claim the request body carries.
+    why: >-
+      A claimed identity is exactly what no-route-enforces-authentication already says this
+      build never verifies, so keying a limit meant to hold back an unbounded loop on the one
+      thing a caller supplies unverified would let the limit be defeated by simply claiming a
+      different identity on every request. The connection's own source address is the one
+      property of a request this build does not take on the caller's word.
 ---
