@@ -64,6 +64,8 @@ export type CapabilityFormFieldsProps = {
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
   /** See this file's own header comment above. */
   readonly isDirty?: boolean;
+  /** Layout only: controls a caller wants rendered in the footer row, to the right of Save (the routed detail screen passes its Discard button and saved acknowledgement here). */
+  readonly trailingActions?: ReactNode;
 };
 
 const NATURE_OPTIONS: SelectOption[] = CAPABILITY_NATURES.map((nature) => ({
@@ -107,6 +109,7 @@ export function CapabilityFormFields({
   isSubmitting,
   onSubmit,
   isDirty,
+  trailingActions,
 }: CapabilityFormFieldsProps): JSX.Element {
   const {
     register,
@@ -162,66 +165,72 @@ export function CapabilityFormFields({
         />
       </FormField>
 
-      <JsonTextareaField
-        id="input_schema"
-        label="Input schema"
-        value={inputSchema.value}
-        onChange={inputSchema.onChange}
-        disabled={isSubmitting}
-      />
-
-      <JsonTextareaField
-        id="output_schema"
-        label="Output schema"
-        value={outputSchema.value}
-        onChange={outputSchema.onChange}
-        disabled={isSubmitting}
-      />
-
-      <FormField label="Timeout (ms)" errorId="timeout-error" error={errors.timeout?.message}>
-        <Input
-          type="number"
-          {...register("timeout", {
-            setValueAs: (value: string) => (value === "" ? undefined : Number(value)),
-          })}
+      <div className="grid grid-cols-2 gap-4">
+        <JsonTextareaField
+          id="input_schema"
+          label="Input schema"
+          value={inputSchema.value}
+          onChange={inputSchema.onChange}
           disabled={isSubmitting}
-          aria-invalid={errors.timeout != null}
-          aria-describedby={errors.timeout != null ? "timeout-error" : undefined}
         />
-      </FormField>
 
-      <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
-        <Input
-          {...register("connector")}
+        <JsonTextareaField
+          id="output_schema"
+          label="Output schema"
+          value={outputSchema.value}
+          onChange={outputSchema.onChange}
           disabled={isSubmitting}
-          aria-invalid={errors.connector != null}
-          aria-describedby={errors.connector != null ? "connector-error" : undefined}
         />
-      </FormField>
+      </div>
 
-      <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
-        <Controller
-          control={control}
-          name="concept"
-          render={({ field }) => (
-            <Select
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              options={conceptSelectOptions}
-              disabled={isSubmitting}
-              placeholder="Select a concept"
-              aria-invalid={errors.concept != null}
-              aria-describedby={errors.concept != null ? "concept-error" : undefined}
-            />
-          )}
-        />
-      </FormField>
+      <div className="grid grid-cols-3 gap-4">
+        <FormField label="Timeout (ms)" errorId="timeout-error" error={errors.timeout?.message}>
+          <Input
+            type="number"
+            {...register("timeout", {
+              setValueAs: (value: string) => (value === "" ? undefined : Number(value)),
+            })}
+            disabled={isSubmitting}
+            aria-invalid={errors.timeout != null}
+            aria-describedby={errors.timeout != null ? "timeout-error" : undefined}
+          />
+        </FormField>
 
-      <div className="flex justify-end">
+        <FormField label="Connector" errorId="connector-error" error={errors.connector?.message}>
+          <Input
+            {...register("connector")}
+            disabled={isSubmitting}
+            aria-invalid={errors.connector != null}
+            aria-describedby={errors.connector != null ? "connector-error" : undefined}
+          />
+        </FormField>
+
+        <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
+          <Controller
+            control={control}
+            name="concept"
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                options={conceptSelectOptions}
+                disabled={isSubmitting}
+                placeholder="Select a concept"
+                aria-invalid={errors.concept != null}
+                aria-describedby={errors.concept != null ? "concept-error" : undefined}
+              />
+            )}
+          />
+        </FormField>
+
+      </div>
+
+      <div className="flex items-center justify-end gap-3">
         <Button type="submit" loading={isSubmitting} disabled={isSaveDisabled}>
           Save
         </Button>
+        {trailingActions}
       </div>
     </form>
   );

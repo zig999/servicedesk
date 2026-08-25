@@ -1,7 +1,12 @@
 {
   "delivery_root": "delivery",
+  "edits_freely": [
+    "frontend"
+  ],
   "specification_root": "knowledge",
-  "standard": "standards/backend-node-service.yaml",
+  "standard": {
+    "frontend": "standards/frontend-typescript.yaml"
+  },
   "targets": {
     "backend": "src",
     "frontend": "frontend/app"

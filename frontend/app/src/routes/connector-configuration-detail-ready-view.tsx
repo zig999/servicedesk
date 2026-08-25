@@ -94,61 +94,63 @@ export function ConnectorConfigurationDetailReadyView({
         isSubmitting={state.isSubmitting}
         onSubmit={state.onSubmit}
         isDirty={state.isDirty}
-      />
-      <div className="flex items-center gap-3">
-        {/*
-          Discard (criterion 5) resets every field, including configuration,
-          back to the originally loaded (or most recently saved) values and
-          re-disables Save -- use-connector-configuration-detail-view.ts's
-          own header comment on how it derives what to reset back to.
-          Disabled while there is nothing to discard or a save is already
-          in flight, the same convention every other action in this app
-          disables itself under (e.g. JsonTextareaField's own Beautify
-          button, disabled while there is nothing valid to beautify).
-          Confirmed through a Dialog before it runs -- this file's own
-          header comment above.
-        */}
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled={!state.isDirty || state.isSubmitting}
-            >
-              Discard changes
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Discard changes?</DialogTitle>
-            </DialogHeader>
-            <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Keep editing
-                </Button>
-              </DialogClose>
-              <DialogClose asChild>
-                <Button type="button" variant="destructive" onClick={state.onDiscard}>
+        trailingActions={
+          <>
+            {/*
+              Discard (criterion 5) resets every field, including configuration,
+              back to the originally loaded (or most recently saved) values and
+              re-disables Save -- use-connector-configuration-detail-view.ts's
+              own header comment on how it derives what to reset back to.
+              Disabled while there is nothing to discard or a save is already
+              in flight, the same convention every other action in this app
+              disables itself under (e.g. JsonTextareaField's own Beautify
+              button, disabled while there is nothing valid to beautify).
+              Confirmed through a Dialog before it runs -- this file's own
+              header comment above.
+            */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={!state.isDirty || state.isSubmitting}
+                >
                   Discard changes
                 </Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        {state.justSaved && (
-          // criterion 7's success acknowledgement -- role="status" (an
-          // implicit aria-live="polite" region) rather than a visual-only
-          // message, so a screen-reader user is told the save landed
-          // without needing to notice the text appear (ACC-07, mirroring
-          // case-version-editor-ready-view.tsx's own role="alert" use for
-          // content that changes without a navigation).
-          <p role="status" className="text-sm text-foreground">
-            Saved.
-          </p>
-        )}
-      </div>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Discard changes?</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>{DISCARD_DIALOG_DESCRIPTION}</DialogDescription>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Keep editing
+                    </Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button type="button" variant="destructive" onClick={state.onDiscard}>
+                      Discard changes
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            {state.justSaved && (
+              // criterion 7's success acknowledgement -- role="status" (an
+              // implicit aria-live="polite" region) rather than a visual-only
+              // message, so a screen-reader user is told the save landed
+              // without needing to notice the text appear (ACC-07, mirroring
+              // case-version-editor-ready-view.tsx's own role="alert" use for
+              // content that changes without a navigation).
+              <p role="status" className="text-sm text-foreground">
+                Saved.
+              </p>
+            )}
+          </>
+        }
+      />
       <ConnectorTestPanel connector={connector} />
     </div>
   );
