@@ -32,6 +32,23 @@
       "title": "Proof for read-capability-by-identity-route",
       "summary": "Tests exercise GET /v1/capabilities/{name}/{version} in isolation and through buildApp(), proving the four criteria, the class-distinctness inference, the path-coexistence inference, and the edge cases the route's behavior raises.",
       "task": "task/registry-reads/read-capability-by-identity-route"
+    },
+    {
+      "id": "review/connector-capability-detail-editing-backend",
+      "kind": "review",
+      "file": "review/connector-capability-detail-editing-backend.md",
+      "title": "connector-capability-detail-editing-backend, first review",
+      "summary": "What four passes found over the backend half of the connector-capability-detail-editing initiative: the connector-configuration read responses' wire-type correction, and the new read-capability-by-identity route.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "The route declares or invokes no authentication middleware, guard or check."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -88,6 +105,18 @@
       "to": "implementation/registry-reads/read-capability-by-identity-route",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-backend",
+      "to": "task/registry-reads/connector-configuration-response-wire-type",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-backend",
+      "to": "task/registry-reads/read-capability-by-identity-route",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
