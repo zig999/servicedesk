@@ -80,6 +80,28 @@
       "title": "Proof for JsonTextareaField's load-time pretty-print behavior",
       "summary": "Unit tests over JsonTextareaField prove mount-time pretty-printing of a valid value, the unchanged as-is display of an invalid one, and the disclosed generic-load inference; the connector-configuration and capability dialogs' own specs gain dedicated tests plus corrected pre-existing assertions proving each dialog's own field shows its loaded value pretty-printed.",
       "task": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load"
+    },
+    {
+      "id": "review/connector-capability-detail-editing-frontend",
+      "kind": "review",
+      "file": "review/connector-capability-detail-editing-frontend.md",
+      "title": "connector-capability-detail-editing-frontend, first review",
+      "summary": "What four passes found over the frontend half of the connector-capability-detail-editing initiative: pretty-print-on-load, the two detail hooks, and the two detail routes.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Returning every field, including configuration, to its most recently loaded or saved value flips isDirty back to false.",
+        "Returning every field, including input_schema and output_schema, to its most recently loaded or saved value flips isDirty back to false.",
+        "The configuration field in the connector-configuration create/edit dialog shows its loaded value pretty-printed.",
+        "The existing capability-form-fields.tsx markup is reused unchanged inside the new route.",
+        "The existing connector-configuration-form-fields.tsx markup and the existing ConnectorTestPanel are reused unchanged inside the new route.",
+        "The hook exposes a loading | load-error | ready phase union, mirroring use-edit-draft-version-form.ts's shape.",
+        "The input_schema and output_schema fields in the capability create/edit dialog show their loaded values pretty-printed."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -202,6 +224,36 @@
       "to": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-frontend",
+      "to": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-frontend",
+      "to": "task/connector-capability-detail-editing/capability-detail-hook",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-frontend",
+      "to": "task/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-frontend",
+      "to": "task/connector-capability-detail-editing/capability-detail-route",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/connector-capability-detail-editing-frontend",
+      "to": "task/connector-capability-detail-editing/connector-configuration-detail-route",
+      "kind": "reviews",
+      "at": "tasks[4]"
     }
   ]
 }
