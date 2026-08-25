@@ -22,3 +22,16 @@
   this app owns for wiring TUI's design system in.
 */
 @source "../../../tui/frontend/src";
+
+/*
+  Base typography override. TUI's theme.css declares no font-size or
+  font-weight on :root, so the document inherits the browser defaults
+  (16px / 400). This app sets its own base; every Tailwind text-* utility
+  is rem-based, so the whole scale follows from here. The size is stated as
+  a percentage of the browser default (87.5% of 16px = 14px) because the
+  project's standard (MNT-02) forbids a literal px value.
+*/
+:root {
+  font-size: 87.5%;
+  font-weight: 200;
+}
