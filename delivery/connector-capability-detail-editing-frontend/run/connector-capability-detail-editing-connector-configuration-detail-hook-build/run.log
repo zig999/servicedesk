@@ -1,0 +1,50 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 577 packages, and audited 578 packages in 6s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+error TS2318: Cannot find global type 'Array'.
+error TS2318: Cannot find global type 'Boolean'.
+error TS2318: Cannot find global type 'CallableFunction'.
+error TS2318: Cannot find global type 'Function'.
+error TS2318: Cannot find global type 'IArguments'.
+error TS2318: Cannot find global type 'NewableFunction'.
+error TS2318: Cannot find global type 'Number'.
+error TS2318: Cannot find global type 'Object'.
+error TS2318: Cannot find global type 'RegExp'.
+error TS2318: Cannot find global type 'String'.
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.dom.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.dom.d.ts' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.dom.iterable.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.dom.iterable.d.ts' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.es2022.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.es2022.d.ts' specified in compilerOptions
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "kind": "implementation",
+      "file": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook.md",
+      "title": "Connector configuration single-record edit hook",
+      "summary": "A new hook, useConnectorConfigurationDetail, that GETs one connector configuration by identity, tracks isDirty against a re-seeded loaded-or-saved baseline (including the configuration JSON text), and re-baselines/invalidates on a successful save.",
+      "task": "task/connector-capability-detail-editing/connector-configuration-detail-hook"
+    },
+    {
       "id": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "kind": "implementation",
       "file": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load.md",
       "title": "JsonTextareaField pretty-prints a loaded value on mount and on load",
       "summary": "JsonTextareaField now reformats a syntactically valid JSON value as indented text the moment it is mounted or replaced from outside, leaving typing, Beautify, the inline error and the minify-on-save helper untouched.",
       "task": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load"
+    },
+    {
+      "id": "proof/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "kind": "proof",
+      "file": "proof/connector-capability-detail-editing/connector-configuration-detail-hook.md",
+      "title": "Connector configuration detail hook, proven directly through renderHook",
+      "summary": "14 tests over useConnectorConfigurationDetail proving its own GET independence from the list cache, its loading/load-error/ready phase union, isDirty against a re-seeded loaded-or-saved baseline (including the minified-JSON comparison and the react-hook-form field), re-baselining and dual invalidation on a successful save, and a typed retry action on load failure -- with shared fixtures and helpers extracted to use-connector-configuration-detail.test-support.ts so the spec file stays under this project own max-lines rule.",
+      "task": "task/connector-capability-detail-editing/connector-configuration-detail-hook"
     },
     {
       "id": "proof/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
@@ -20,9 +36,33 @@
   ],
   "edges": [
     {
+      "from": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "to": "task/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "to": "task/connector-capability-detail-editing/json-textarea-pretty-print-on-load",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "to": "implementation/connector-capability-detail-editing/connector-configuration-detail-hook",
+      "kind": "proves",
       "at": "the path"
     },
     {

@@ -692,6 +692,10 @@
       "digest": "sha256:9dc64da49a3ed25dc5d5713971a1f01d8d7565fa2e9d5710f1c85a472889bc5d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:68633d00e1c44407a6a81fc353a89a9e65ffd916b531c27b10324899d18f5bb2"
+        },
+        {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
         },
@@ -1765,6 +1769,10 @@
       "node": "domain/integration/connector-configuration",
       "digest": "sha256:31857462e8f760445ae45b0f851761c07745195cfab341f38e56e326e3764971",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
+          "digest": "sha256:68633d00e1c44407a6a81fc353a89a9e65ffd916b531c27b10324899d18f5bb2"
+        },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"

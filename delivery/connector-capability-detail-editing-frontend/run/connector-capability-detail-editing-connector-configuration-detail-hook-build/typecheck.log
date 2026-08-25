@@ -1,0 +1,26 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+error TS2318: Cannot find global type 'Array'.
+error TS2318: Cannot find global type 'Boolean'.
+error TS2318: Cannot find global type 'CallableFunction'.
+error TS2318: Cannot find global type 'Function'.
+error TS2318: Cannot find global type 'IArguments'.
+error TS2318: Cannot find global type 'NewableFunction'.
+error TS2318: Cannot find global type 'Number'.
+error TS2318: Cannot find global type 'Object'.
+error TS2318: Cannot find global type 'RegExp'.
+error TS2318: Cannot find global type 'String'.
+error TS2688: Cannot find type definition file for 'node'.
+  The file is in the program because:
+    Entry point of type library 'node' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.dom.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.dom.d.ts' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.dom.iterable.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.dom.iterable.d.ts' specified in compilerOptions
+error TS6053: File '/home/siegfriedneto/projects/servicedeskn1/frontend/app/node_modules/typescript/lib/lib.es2022.d.ts' not found.
+  The file is in the program because:
+    Library 'lib.es2022.d.ts' specified in compilerOptions
