@@ -7,7 +7,7 @@ Derived by spec.py from the specification files; never edited.
 | context | strategic | elements | rules | contracts | scenarios |
 |---|---|---|---|---|---|
 | glossary | supporting | 6 | 4 | 2 | 0 |
-| integration | generic | 5 | 7 | 6 | 0 |
+| integration | generic | 5 | 8 | 6 | 0 |
 | investigation | supporting | 14 | 20 | 6 | 6 |
 | knowledge | core | 10 | 27 | 4 | 5 |
 
@@ -27,6 +27,7 @@ Derived by spec.py from the specification files; never edited.
 - judgment-runs-behind-a-port (investigation)
 - no-route-enforces-authentication (system)
 - the-capability-identity-read-is-rate-limited (integration)
+- the-capability-identity-read-refuses-an-unregistered-identity (integration)
 - the-consolidation-prompt-is-closed (investigation)
 - the-database-is-externally-provisioned (system)
 - the-deadline-is-an-absolute-propagated-instant (investigation)
@@ -37,4 +38,4 @@ Derived by spec.py from the specification files; never edited.
 - the-stored-schema-mirrors-the-declared-model (system)
 - the-system-persists-to-one-relational-database (system)
 
-87 decision(s) disclosed in the decision log.
+90 decision(s) disclosed in the decision log.

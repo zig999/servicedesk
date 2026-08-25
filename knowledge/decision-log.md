@@ -471,4 +471,62 @@ entries:
       thing a caller supplies unverified would let the limit be defeated by simply claiming a
       different identity on every request. The connection's own source address is the one
       property of a request this build does not take on the caller's word.
+  - location: constraints/the-capability-identity-read-refuses-an-unregistered-identity.md
+    field: statement
+    unstated: >-
+      No node states what read-capability-by-identity answers when the name and version it is
+      given is not currently registered at any capability — the specification's operations
+      list (contracts/integration/capability-registry.md) names the read but not its miss
+      behavior, and no rule or constraint anywhere in the specification pairs an HTTP status
+      with a refusal condition except this route's own sibling rate-limit constraint.
+    decided: >-
+      An HTTP 404 response, naming CapabilityIdentityNotFoundError as the specific condition
+      and message of the refusal.
+    why: >-
+      The route's own sibling constraint (the-capability-identity-read-is-rate-limited) already
+      establishes this specification's idiom for stating this exact route's HTTP-level refusal
+      shape as an Architecture Constraint rather than a domain Rule — every Rule and Scenario in
+      the specification states a refusal in domain language alone and never cites a status
+      code, while the one place a status code appears is that sibling constraint. The
+      corrective scope's own text independently confirms CapabilityIdentityNotFoundError as the
+      already-settled, unchanged condition and message for this miss (only its raising point is
+      being relocated, not its identity), so the decision fixes the missing HTTP-response
+      pairing for that already-given condition rather than inventing a new one.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: >-
+      Whether the test action's own refusal, on finding no capability registered at the
+      identity it names, is the identity-keyed read's own not-found answer reused, or a refusal
+      of the test action's own.
+    decided: >-
+      A refusal of the test action's own, distinct from the identity-keyed read's own not-found
+      answer for the same identity.
+    why: >-
+      Nothing in the domain model gives "capability not found" a single shared value object —
+      the registry's own resolution answers the absence as ordinary data, and each contract
+      that turns it into a refusal names its own (the same way a command's own `refusal` field
+      is always that command's own value object, never a shared one across contracts); the
+      identity-keyed read and this diagnostic test action answer two different questions
+      (retrieve a record versus exercise a call) about the same absence, so nothing licenses one
+      to inherit the other's refusal.
+  - location: rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused.md
+    field: statement
+    unstated: >-
+      What read-connector-configuration answers when the connector name it is given resolves to
+      no registered configuration — the api contract publishes the operation but, as an api,
+      cannot declare a refusal itself (that field is command-only per the contract schema), so
+      the fact had no addressable home at all.
+    decided: >-
+      A read of a connector configuration by a connector name nothing has registered is refused
+      with an HTTP 404 response reporting a ConnectorConfigurationNotFoundError.
+    why: >-
+      The only addressable home an api's own read can give a refusal is a rule constraining the
+      domain element being read, and this registry already has one such rule —
+      a-connector-configuration-holds-a-well-formed-object, anchored to
+      domain/integration/connector-configuration rather than to the domain-service, because
+      read-connector-configuration itself answers to no domain-service operation of its own.
+      Naming the HTTP status and the error value keeps the refusal a fact the specification
+      states rather than one left for code alone to carry, the same discipline
+      the-capability-identity-read-is-rate-limited already used in naming its own status (429)
+      rather than leaving a caller's slow-down refusal unstated.
 ---
