@@ -431,4 +431,29 @@ entries:
     unstated: The material asked only for creating and editing a connector configuration, without stating whether the published surface also exposes reading one or listing all of them.
     decided: read-connector-configuration and list-connector-configurations are published alongside register-connector.
     why: Editing an existing connector configuration requires reading it first, exactly as capability-registry already publishes read-capability and list-capabilities alongside register-capability; this mirrors that sibling contract's own shape rather than introducing a new judgment about what an authoring surface needs.
+  - location: contracts/integration/capability-registry.md
+    field: operations
+    unstated: >-
+      The material asked for a way to resolve a specific, already-known capability directly by
+      its own identity — name and version together — without depending on which concept it
+      currently answers; this contract's operations list was already closed and exhaustive over
+      read-capability, list-capabilities and register-capability, so the absence of an
+      identity-keyed read was the specification's own current statement rather than a silence,
+      until this material asked for one.
+    decided: read-capability-by-identity, added to capability-registry's own operations, alongside read-capability, list-capabilities and register-capability.
+    why: >-
+      An admin frontend needs a detail/edit screen addressed by a capability's own (name,
+      version) identity that loads directly on first navigation or a page refresh — the same
+      shape read-connector-configuration already serves for connector-configuration-registry's
+      own single identity (connector) — and read-capability's existing concept-keyed resolution
+      cannot serve this, since a screen editing an already-known capability does not need, and
+      may not yet know, which concept it currently answers. This mirrors the same reasoning
+      already used when list-capabilities and read-capability were themselves added to this
+      operations list — a new read at a different cardinality or key belongs beside the
+      existing reads rather than opening a second api. Left off
+      domain/integration/capability-registry.md's own operations, matching the established
+      pattern there — that domain-service's operations already name only register-capability
+      and resolve-concept, never read-capability or list-capabilities either, so a read is
+      consistently a contract-level surface over this domain-service, not one of its own
+      declared operations.
 ---
