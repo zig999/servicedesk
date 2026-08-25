@@ -14,7 +14,6 @@
 // answers.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
-import type { CapabilityIdentityResolution } from '../../../capability-registry/capability-registry.service.js';
 import type { Capability } from '../../../capability-registry/capability.js';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CapabilityNotRegisteredForTestError } from '../../../errors/capability-not-registered-for-test.error.js';
@@ -26,7 +25,7 @@ import type { ReadCapabilityByIdentityControllerDependencies } from '../../../ht
 import { createReadCapabilityByIdentityRoutesPlugin } from '../../../http/read-capability-by-identity.routes.js';
 
 type ReadCapabilityByIdentityMock = ReturnType<
-  typeof vi.fn<(name: string, version: string) => Promise<CapabilityIdentityResolution>>
+  typeof vi.fn<(name: string, version: string) => Promise<Capability>>
 >;
 
 /** A capability exactly as the registry would already hold it, every one of the eight declared attributes present, for seeding the stand-in read. */
@@ -67,7 +66,7 @@ it('answers 200 with the capability currently registered under the named (name, 
   const built = buildTestApp();
   app = built.app;
   const capability = heldCapability({ name: 'a-known-capability', version: '2.0.0' });
-  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability });
+  built.readCapabilityByIdentity.mockResolvedValueOnce(capability);
 
   const response = await app.inject({ method: 'GET', url: '/v1/capabilities/a-known-capability/2.0.0' });
 
@@ -81,10 +80,9 @@ it('answers 200 with the capability currently registered under the named (name, 
 it('resolves the identity exactly as the path spelled it, case and hyphenation preserved, never normalized', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readCapabilityByIdentity.mockResolvedValueOnce({
-    held: true,
-    capability: heldCapability({ name: 'Mixed-Case-Capability', version: '1.0.0-RC.1' }),
-  });
+  built.readCapabilityByIdentity.mockResolvedValueOnce(
+    heldCapability({ name: 'Mixed-Case-Capability', version: '1.0.0-RC.1' }),
+  );
 
   await app.inject({ method: 'GET', url: '/v1/capabilities/Mixed-Case-Capability/1.0.0-RC.1' });
 
@@ -95,8 +93,8 @@ it("answers each of two requests naming different identities with that request's
   const built = buildTestApp();
   app = built.app;
   built.readCapabilityByIdentity
-    .mockResolvedValueOnce({ held: true, capability: heldCapability({ name: 'capability-a', version: '1.0.0' }) })
-    .mockResolvedValueOnce({ held: true, capability: heldCapability({ name: 'capability-b', version: '2.0.0' }) });
+    .mockResolvedValueOnce(heldCapability({ name: 'capability-a', version: '1.0.0' }))
+    .mockResolvedValueOnce(heldCapability({ name: 'capability-b', version: '2.0.0' }));
 
   const first = await app.inject({ method: 'GET', url: '/v1/capabilities/capability-a/1.0.0' });
   const second = await app.inject({ method: 'GET', url: '/v1/capabilities/capability-b/2.0.0' });
@@ -110,7 +108,9 @@ it("answers each of two requests naming different identities with that request's
 it('answers 404 with CapabilityIdentityNotFoundError and the requested identity as details, when no capability is currently registered under the named (name, version) identity', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: false, name: 'an-absent-capability', version: '9.9.9' });
+  built.readCapabilityByIdentity.mockRejectedValueOnce(
+    new CapabilityIdentityNotFoundError('an-absent-capability', '9.9.9'),
+  );
 
   const response = await app.inject({ method: 'GET', url: '/v1/capabilities/an-absent-capability/9.9.9' });
 
@@ -133,7 +133,7 @@ it('raises a CapabilityIdentityNotFoundError instance that is none of ConceptNot
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readCapabilityByIdentity.mockResolvedValueOnce(heldCapability());
 
   const response = await app.inject({ method: 'GET', url: '/v1/capabilities/a-capability/1.0.0', headers: {} });
 
@@ -143,7 +143,7 @@ it('answers 200 for a request carrying no headers at all, reading no authenticat
 it('answers 200 for a request carrying an authorization header naming no credential this route recognizes, dispatching it exactly as one that carries none', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readCapabilityByIdentity.mockResolvedValueOnce(heldCapability());
 
   const response = await app.inject({
     method: 'GET',

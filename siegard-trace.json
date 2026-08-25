@@ -148,6 +148,20 @@
       ]
     },
     {
+      "node": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "digest": "sha256:420332183825ece65d96e027961e42943f7f82327c29b36340051ac939ee5d28",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:0ad1c184cfc4c08f26ba59842956a2ab9a0965a9a0d4149ec41eb0ffb2d791cf"
+        },
+        {
+          "path": "src/src/http/read-capability-by-identity.controller.ts",
+          "digest": "sha256:b15c20f7ad55eb56939cc5d3b2d0bdc19cc5b6f27d37ff3bcb718937f274c2e1"
+        }
+      ]
+    },
+    {
       "node": "constraints/the-consolidation-prompt-is-closed",
       "digest": "sha256:c3ddbcc0cf1d4bbd09456fdfa4627f95f377361dfa1beb0afacb091a18b9ce4b",
       "files": [

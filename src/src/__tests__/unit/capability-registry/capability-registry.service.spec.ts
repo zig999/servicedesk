@@ -8,6 +8,7 @@ import { expect, it } from 'vitest';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
 import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
@@ -438,4 +439,66 @@ it('reads the store on every call, answering a capability registered since the p
   const page = await registry.listCapabilities({ offset: 0, limit: 10 });
 
   expect(page.total).toBe(2);
+});
+
+// ------------------------------------------------------------------ read-capability-by-identity's own service-level wrapper
+// Proof for task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation:
+// readCapabilityByIdentityOrThrow's own two branches, plus proof that the raw readCapabilityByIdentity
+// it wraps keeps answering a miss — and a hit — as ordinary data rather than ever throwing itself
+// (criterion 3): its existing signature and held-false data-returning resolution are untouched by
+// the relocation.
+
+it('answers the held capability directly, with no resolution wrapper, when one is currently registered under the named identity', async () => {
+  const capability = heldCapability({ name: 'a-known-capability', version: '2.0.0' });
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore([capability]));
+
+  const resolved = await registry.readCapabilityByIdentityOrThrow('a-known-capability', '2.0.0');
+
+  expect(resolved).toEqual(capability);
+});
+
+it('throws CapabilityIdentityNotFoundError carrying the requested name and version when nothing is registered under that identity', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .readCapabilityByIdentityOrThrow('an-absent-capability', '9.9.9')
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(CapabilityIdentityNotFoundError);
+  expect(refusal).toMatchObject({ context: { name: 'an-absent-capability', version: '9.9.9' } });
+});
+
+it('propagates a failure the underlying store read itself raises, rather than reporting it as CapabilityIdentityNotFoundError', async () => {
+  const failingStore: ICapabilityStore = {
+    readCapabilities: async () => {
+      throw new Error('the store is unavailable');
+    },
+    writeCapabilities: async () => undefined,
+  };
+  const registry = new CapabilityRegistryService(failingStore);
+
+  const outcome = await registry
+    .readCapabilityByIdentityOrThrow('a-capability', '1.0.0')
+    .catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(Error);
+  expect(outcome).not.toBeInstanceOf(CapabilityIdentityNotFoundError);
+  expect((outcome as Error).message).toBe('the store is unavailable');
+});
+
+it("readCapabilityByIdentity itself still answers an unregistered identity as ordinary held-false data, never throwing, unaffected by the wrapper's own relocation", async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const resolution = await registry.readCapabilityByIdentity('an-absent-capability', '9.9.9');
+
+  expect(resolution).toEqual({ held: false, name: 'an-absent-capability', version: '9.9.9' });
+});
+
+it('readCapabilityByIdentity itself still answers a currently held identity as { held: true, capability }, unaffected by the wrapper', async () => {
+  const capability = heldCapability({ name: 'a-known-capability', version: '2.0.0' });
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore([capability]));
+
+  const resolution = await registry.readCapabilityByIdentity('a-known-capability', '2.0.0');
+
+  expect(resolution).toEqual({ held: true, capability });
 });

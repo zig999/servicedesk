@@ -1,3 +1,4 @@
+import { CapabilityIdentityNotFoundError } from '../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../errors/concept-already-answered.error.js';
@@ -103,6 +104,30 @@ export class CapabilityRegistryService implements ICapabilityQuery {
     const held = await this.store.readCapabilities();
     const capability = held.find((candidate) => candidate.name === name && candidate.version === version);
     return capability === undefined ? { held: false, name, version } : { held: true, capability };
+  }
+
+  /**
+   * read-capability-by-identity's own service-level wrapper
+   * (constraints/the-capability-identity-read-refuses-an-unregistered-identity):
+   * resolves through readCapabilityByIdentity above and raises
+   * CapabilityIdentityNotFoundError once it has read that method's own
+   * `held: false` answer, rather than leaving that held-check-and-throw to
+   * read-capability-by-identity.controller.ts's own
+   * handleReadCapabilityByIdentityRequest — the relocation
+   * task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation
+   * makes. Called only from that one route's own dependencies wiring
+   * (build-app.factory.ts's own composeResources); readCapabilityByIdentity
+   * above is unchanged in signature and keeps answering the miss as
+   * ordinary data for every other consumer that reads it directly —
+   * test-connector.controller.ts's own resolveTestedCapability among
+   * them — so none of them is forced through this class.
+   */
+  public async readCapabilityByIdentityOrThrow(name: string, version: string): Promise<Capability> {
+    const resolution = await this.readCapabilityByIdentity(name, version);
+    if (!resolution.held) {
+      throw new CapabilityIdentityNotFoundError(resolution.name, resolution.version);
+    }
+    return resolution.capability;
   }
 
   /**

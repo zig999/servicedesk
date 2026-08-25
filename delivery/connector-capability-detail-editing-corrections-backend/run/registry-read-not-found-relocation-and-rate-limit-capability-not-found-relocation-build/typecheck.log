@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(146,56): error TS2322: Type 'Promise<{ held: boolean; capability: { name: string; version: string; nature: string; input_schema: string; output_schema: string; timeout: number; connector: string; concept: string; }; }>' is not assignable to type 'Promise<Capability>'.
+  Type '{ held: boolean; capability: { name: string; version: string; nature: string; input_schema: string; output_schema: string; timeout: number; connector: string; concept: string; }; }' is missing the following properties from type 'Capability': name, version, nature, input_schema, and 4 more.
+src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts(50,74): error TS2322: Type 'Mock<(name: string, version: string) => Promise<CapabilityIdentityResolution>>' is not assignable to type '(name: string, version: string) => Promise<Capability>'.
+  Type 'Promise<CapabilityIdentityResolution>' is not assignable to type 'Promise<Capability>'.
+    Type 'CapabilityIdentityResolution' is not assignable to type 'Capability'.
+      Type '{ readonly held: true; readonly capability: Capability; }' is missing the following properties from type 'Capability': name, version, nature, input_schema, and 4 more.

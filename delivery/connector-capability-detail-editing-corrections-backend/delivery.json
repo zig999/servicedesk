@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "implementation",
+      "file": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation.md",
+      "title": "Capability-by-identity not-found relocated into a service-level wrapper",
+      "summary": "read-capability-by-identity's controller no longer performs its own held-check-and-throw; CapabilityRegistryService now offers a wrapper method it alone calls, while the raw readCapabilityByIdentity and every other consumer of it are unchanged.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation"
+    },
+    {
+      "id": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "proof",
+      "file": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation.md",
+      "title": "Capability-by-identity not-found relocation into a service-level wrapper",
+      "summary": "Proves the not-found refusal now originates from CapabilityRegistryService.readCapabilityByIdentityOrThrow rather than the controller, that the controller's handler is now a trivial pass-through, and that the raw readCapabilityByIdentity and test-connector's own refusal are unaffected.",
+      "task": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "to": "task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "to": "implementation/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

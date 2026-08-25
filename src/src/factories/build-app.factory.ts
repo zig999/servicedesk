@@ -63,6 +63,7 @@ type ComposedResources = {
   readonly capabilityQuery: ICapabilityQuery;
   readonly registerCapability: CapabilityRegistryService['registerCapability'];
   readonly readCapabilityByIdentity: CapabilityRegistryService['readCapabilityByIdentity'];
+  readonly readCapabilityByIdentityOrThrow: CapabilityRegistryService['readCapabilityByIdentityOrThrow'];
   readonly glossaryQuery: IGlossaryQuery;
   readonly registerConcept: GlossaryService['registerConcept'];
   readonly registerConnector: ConnectorConfigurationRegistryService['registerConnector'];
@@ -112,6 +113,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
     capabilityQuery: capabilityRegistry,
     registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
     readCapabilityByIdentity: (name, version) => capabilityRegistry.readCapabilityByIdentity(name, version),
+    readCapabilityByIdentityOrThrow: (name, version) => capabilityRegistry.readCapabilityByIdentityOrThrow(name, version),
     glossaryQuery: glossary,
     registerConcept: (registration) => glossary.registerConcept(registration),
     registerConnector: (registration) => connectorConfigurationRegistry.registerConnector(registration),
@@ -127,18 +129,23 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
  * read-capability-by-identity, read-case, read-vocabulary-term, read-concept
  * and read-connector-configuration, each carrying only the published read it
  * resolves against. readCapabilityByIdentity
- * (task/registry-reads/read-capability-by-identity-route) carries the same
- * readCapabilityByIdentity function testConnectorDependencies below already
- * shares, rather than a second instance or a call through capabilityQuery —
- * the underlying method is not part of ICapabilityQuery
- * (capability-registry.service.ts's own header comment).
+ * (task/registry-reads/read-capability-by-identity-route) carries
+ * readCapabilityByIdentityOrThrow — CapabilityRegistryService's own
+ * service-level wrapper that raises CapabilityIdentityNotFoundError on a
+ * miss
+ * (task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation)
+ * — rather than the raw readCapabilityByIdentity function
+ * testConnectorDependencies below shares: that raw read still answers a miss
+ * as ordinary data, which is what test-connector's own resolveTestedCapability
+ * needs to raise its own distinct CapabilityNotRegisteredForTestError, so
+ * this route alone is wired to the throwing wrapper.
  */
 function readDependencies(
   resources: ComposedResources,
 ): Pick<BuildAppDependencies, 'readCapability' | 'readCapabilityByIdentity' | 'readCase' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
   return {
     readCapability: { capabilityQuery: resources.capabilityQuery },
-    readCapabilityByIdentity: { readCapabilityByIdentity: resources.readCapabilityByIdentity },
+    readCapabilityByIdentity: { readCapabilityByIdentity: resources.readCapabilityByIdentityOrThrow },
     readCase: { caseQuery: resources.caseQuery },
     readVocabularyTerm: { glossaryQuery: resources.glossaryQuery },
     readConcept: { glossaryQuery: resources.glossaryQuery },

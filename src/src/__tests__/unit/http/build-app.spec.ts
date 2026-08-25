@@ -144,8 +144,7 @@ function stubGlossaryQuery(): IGlossaryQuery {
 function stubReadCapabilityByIdentity(): ReadCapabilityByIdentityControllerDependencies {
   return {
     readCapabilityByIdentity: async (name, version) => ({
-      held: true,
-      capability: { name, version, nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept: 'a-concept' },
+      name, version, nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept: 'a-concept',
     }),
   };
 }
