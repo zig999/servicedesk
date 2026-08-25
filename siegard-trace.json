@@ -118,6 +118,10 @@
           "digest": "sha256:4fed3787c5d0de747989250b2f592188da6d6bb2fc8a2f1dd9943a00acc305cd"
         },
         {
+          "path": "src/src/http/read-capability-by-identity.routes.ts",
+          "digest": "sha256:dc49f4ad190bf881a4057ff966950f38a7119be3ec060676af683fd670fe5a81"
+        },
+        {
           "path": "src/src/http/read-connector-configuration.routes.ts",
           "digest": "sha256:2ca2e764472bb015c8860b44b7a6630ff27f3a083fc3b622c3206391707646be"
         },
@@ -585,7 +589,7 @@
     },
     {
       "node": "contracts/integration/capability-registry",
-      "digest": "sha256:18860779585499ec3ed7e88fcdd69b805b0359c90de8efe5081fffec06f70afd",
+      "digest": "sha256:13b0b32e18331d7a24aa331ca323da073fe2c88ccaddf20b104afc62ee888a88",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -602,6 +606,14 @@
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
           "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:fd3c914ccc1e5ffdebcc277f65c5674baae19980401f405d045b95ae77213f02"
+        },
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:77535e5301fb1081d07081ccdb6c001247f0a91b170c82fe6666abde0b742198"
         },
         {
           "path": "src/src/http/dto/list-capabilities.dto.ts",
@@ -622,6 +634,14 @@
         {
           "path": "src/src/http/list-capabilities.routes.ts",
           "digest": "sha256:c437a210cbb0744d301cb2cff4e9cefb7f7f5dbc5d187f408f3f5c6e5719c6f4"
+        },
+        {
+          "path": "src/src/http/read-capability-by-identity.controller.ts",
+          "digest": "sha256:f787f9805c4ea66b4632dde2d410fa69fb9cd2c7a70801fc3fb2bb72218ba257"
+        },
+        {
+          "path": "src/src/http/read-capability-by-identity.routes.ts",
+          "digest": "sha256:dc49f4ad190bf881a4057ff966950f38a7119be3ec060676af683fd670fe5a81"
         },
         {
           "path": "src/src/http/read-capability.controller.ts",
@@ -693,7 +713,7 @@
         },
         {
           "path": "src/src/http/list-connector-configurations.controller.ts",
-          "digest": "sha256:f6080b7e2b64ef4c186326581ec0ada3cea68f4ff2abfe5934d6d8d0da33eff6"
+          "digest": "sha256:042e8fc8951e8f7361e060f059ee4c5e3b20d7b73ec5ae8437635e42acd8ab3e"
         },
         {
           "path": "src/src/http/list-connector-configurations.routes.ts",
@@ -701,7 +721,7 @@
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
-          "digest": "sha256:7766a08a2cd7c35e2ca224e3de0170f2067ec8a8dccc367ae956b802cf9d5162"
+          "digest": "sha256:955269740ee915d97780ea0686102408eeae32a1a937f8a89054a3be95754bf6"
         },
         {
           "path": "src/src/http/read-connector-configuration.routes.ts",
@@ -1652,8 +1672,16 @@
           "digest": "sha256:8ba3b399b7926967be2f4206f3e665b80fd54f5ea34515d2eb2b201af7d8e60d"
         },
         {
+          "path": "src/src/http/dto/read-capability-by-identity.dto.ts",
+          "digest": "sha256:830b1afbfde6717cd0d25e051a4fb9e1e3c847efb370d7db8d101caeab5a3677"
+        },
+        {
           "path": "src/src/http/dto/read-capability.dto.ts",
           "digest": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261"
+        },
+        {
+          "path": "src/src/http/read-capability-by-identity.controller.ts",
+          "digest": "sha256:f787f9805c4ea66b4632dde2d410fa69fb9cd2c7a70801fc3fb2bb72218ba257"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
@@ -1767,7 +1795,7 @@
         },
         {
           "path": "src/src/http/dto/read-connector-configuration.dto.ts",
-          "digest": "sha256:43e1fa2761457f29840240ce58cbd844344d582e3486f2521336d3a4d1bbf8f6"
+          "digest": "sha256:ada8888cad3040aab6d17f78f62abcbcb9344f134e0708a1a68d2c9e13b0f253"
         },
         {
           "path": "src/src/http/dto/register-connector.dto.ts",
@@ -1775,11 +1803,11 @@
         },
         {
           "path": "src/src/http/list-connector-configurations.controller.ts",
-          "digest": "sha256:f6080b7e2b64ef4c186326581ec0ada3cea68f4ff2abfe5934d6d8d0da33eff6"
+          "digest": "sha256:042e8fc8951e8f7361e060f059ee4c5e3b20d7b73ec5ae8437635e42acd8ab3e"
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
-          "digest": "sha256:7766a08a2cd7c35e2ca224e3de0170f2067ec8a8dccc367ae956b802cf9d5162"
+          "digest": "sha256:955269740ee915d97780ea0686102408eeae32a1a937f8a89054a3be95754bf6"
         },
         {
           "path": "src/src/http/register-connector.controller.ts",

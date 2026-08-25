@@ -61,10 +61,76 @@ it('answers 200 with the connector and configuration fields exactly as currently
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
 
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual(configuration);
+  expect(response.json()).toEqual({
+    connector: configuration.connector,
+    configuration: JSON.stringify(configuration.configuration),
+  });
   expect(Object.keys(response.json() as object).sort()).toEqual(
     Object.keys(readConnectorConfigurationResponseSchema.shape).sort(),
   );
+});
+
+// ------------------------------------------------------------------ registry-reads/connector-configuration-response-wire-type
+
+it('returns configuration as a JSON string, never a parsed object', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const configuration = heldConnectorConfiguration({
+    connector: 'a-known-connector',
+    configuration: { host: 'example.com', retries: 3, secure: true },
+  });
+  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+
+  const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
+
+  const body = response.json() as { configuration: unknown };
+  expect(typeof body.configuration).toBe('string');
+});
+
+it('answers a configuration string that parses back to the same JSON value the connector was registered with', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const registered = {
+    host: 'example.com',
+    retries: 3,
+    secure: true,
+    tags: ['a', 'b'],
+    nested: { timeout: null },
+    note: 'a "quoted" value with a backslash \\ in it',
+  };
+  const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: registered });
+  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+
+  const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
+
+  const body = response.json() as { configuration: string };
+  expect(JSON.parse(body.configuration)).toEqual(registered);
+});
+
+it('answers a configuration string that parses back to an empty object when the connector was registered with no configuration keys at all', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: {} });
+  built.readConnectorConfiguration.mockResolvedValueOnce({ held: true, configuration });
+
+  const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
+
+  const body = response.json() as { configuration: string };
+  expect(JSON.parse(body.configuration)).toEqual({});
+});
+
+// ------------------------------------------------------------------ inference: configuration schema is z.string().min(1)
+
+it('readConnectorConfigurationResponseSchema accepts the smallest string JSON.stringify() ever produces for an object, "{}"', () => {
+  const result = readConnectorConfigurationResponseSchema.safeParse({ connector: 'a-connector', configuration: '{}' });
+
+  expect(result.success).toBe(true);
+});
+
+it('readConnectorConfigurationResponseSchema rejects an empty string as configuration', () => {
+  const result = readConnectorConfigurationResponseSchema.safeParse({ connector: 'a-connector', configuration: '' });
+
+  expect(result.success).toBe(false);
 });
 
 // ------------------------------------------------------------------ criterion 2

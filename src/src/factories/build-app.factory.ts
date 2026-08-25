@@ -122,12 +122,23 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
   };
 }
 
-/** The five read-one routes' own dependencies: read-capability, read-case, read-vocabulary-term, read-concept and read-connector-configuration, each carrying only the published read it resolves against. */
+/**
+ * The six read-one routes' own dependencies: read-capability,
+ * read-capability-by-identity, read-case, read-vocabulary-term, read-concept
+ * and read-connector-configuration, each carrying only the published read it
+ * resolves against. readCapabilityByIdentity
+ * (task/registry-reads/read-capability-by-identity-route) carries the same
+ * readCapabilityByIdentity function testConnectorDependencies below already
+ * shares, rather than a second instance or a call through capabilityQuery —
+ * the underlying method is not part of ICapabilityQuery
+ * (capability-registry.service.ts's own header comment).
+ */
 function readDependencies(
   resources: ComposedResources,
-): Pick<BuildAppDependencies, 'readCapability' | 'readCase' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
+): Pick<BuildAppDependencies, 'readCapability' | 'readCapabilityByIdentity' | 'readCase' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
   return {
     readCapability: { capabilityQuery: resources.capabilityQuery },
+    readCapabilityByIdentity: { readCapabilityByIdentity: resources.readCapabilityByIdentity },
     readCase: { caseQuery: resources.caseQuery },
     readVocabularyTerm: { glossaryQuery: resources.glossaryQuery },
     readConcept: { glossaryQuery: resources.glossaryQuery },

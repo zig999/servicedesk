@@ -20,11 +20,19 @@
 // this bounding "is a controller/route concern".
 //
 // This module declares no response schema: GET /v1/connectors answers the
-// shared PaginatedResponse<ConnectorConfiguration>
-// src/types/pagination.ts already declares (API-01 — "never redeclared per
-// module"), so list-connector-configurations.controller.ts types its own
-// answer against that imported type directly rather than a second
-// Zod-inferred shape this file would have to keep in step with it.
+// shared PaginatedResponse<T> src/types/pagination.ts already declares
+// (API-01 — "never redeclared per module"), so
+// list-connector-configurations.controller.ts types its own answer against
+// that imported generic directly rather than a second Zod-inferred shape
+// this file would have to keep in step with it. The item type it carries is
+// ReadConnectorConfigurationResponseDto (read-connector-configuration.dto.ts's
+// own wire shape for one connector configuration), not
+// connector-configuration.ts's own domain ConnectorConfiguration type —
+// corrected by task/registry-reads/connector-configuration-response-wire-type,
+// which found this route reusing that domain type directly for its response
+// answered configuration as the plain object the registry holds it as
+// rather than the JSON string domain/integration/connector-configuration
+// declares its type to be.
 
 import { z } from 'zod';
 

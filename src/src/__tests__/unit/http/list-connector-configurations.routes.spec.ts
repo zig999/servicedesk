@@ -85,7 +85,10 @@ it('answers 200 with every connector configuration the registry read resolved, e
   const response = await app.inject({ method: 'GET', url: '/v1/connectors' });
 
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual(page);
+  expect(response.json()).toEqual({
+    ...page,
+    data: page.data.map((entry) => ({ connector: entry.connector, configuration: JSON.stringify(entry.configuration) })),
+  });
 });
 
 it("answers a data array whose single entry carries exactly the connector and configuration fields the domain model declares, unchanged from what the connector-configuration read resolved", async () => {
@@ -96,9 +99,57 @@ it("answers a data array whose single entry carries exactly the connector and co
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors' });
 
-  const body = response.json() as PaginatedResponse<ConnectorConfiguration>;
-  expect(body.data).toEqual([configuration]);
+  const body = response.json() as PaginatedResponse<{ connector: string; configuration: string }>;
+  expect(body.data).toEqual([
+    { connector: configuration.connector, configuration: JSON.stringify(configuration.configuration) },
+  ]);
   expect(Object.keys(body.data[0] as object).sort()).toEqual(['configuration', 'connector']);
+});
+
+// ------------------------------------------------------------------ registry-reads/connector-configuration-response-wire-type
+
+it("answers every entry's configuration as a JSON string, never a parsed object", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const page = heldPage({
+    data: [
+      heldConnectorConfiguration({ connector: 'connector-a', configuration: { endpoint: 'https://a.example.test' } }),
+      heldConnectorConfiguration({
+        connector: 'connector-b',
+        configuration: { endpoint: 'https://b.example.test', retries: 2 },
+      }),
+    ],
+    total: 2,
+    pageCount: 1,
+  });
+  built.listConnectorConfigurations.mockResolvedValueOnce(page);
+
+  const response = await app.inject({ method: 'GET', url: '/v1/connectors' });
+
+  const body = response.json() as PaginatedResponse<{ configuration: unknown }>;
+  expect(body.data).toHaveLength(2);
+  expect(body.data.every((entry) => typeof entry.configuration === 'string')).toBe(true);
+});
+
+it("answers every entry's configuration string parsing back to the same JSON value each connector was registered with", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const registeredA = { endpoint: 'https://a.example.test', tags: ['x', 'y'] };
+  const registeredB = { endpoint: 'https://b.example.test', retries: 2, active: false };
+  const page = heldPage({
+    data: [
+      heldConnectorConfiguration({ connector: 'connector-a', configuration: registeredA }),
+      heldConnectorConfiguration({ connector: 'connector-b', configuration: registeredB }),
+    ],
+    total: 2,
+    pageCount: 1,
+  });
+  built.listConnectorConfigurations.mockResolvedValueOnce(page);
+
+  const response = await app.inject({ method: 'GET', url: '/v1/connectors' });
+
+  const body = response.json() as PaginatedResponse<{ configuration: string }>;
+  expect(body.data.map((entry) => JSON.parse(entry.configuration))).toEqual([registeredA, registeredB]);
 });
 
 it('answers the paginated envelope with an empty data array and a total of zero, unchanged, when the registry holds no connector configuration at all', async () => {

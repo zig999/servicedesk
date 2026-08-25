@@ -1,0 +1,93 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/registry-reads/connector-configuration-response-wire-type",
+      "kind": "implementation",
+      "file": "implementation/registry-reads/connector-configuration-response-wire-type.md",
+      "title": "Connector-configuration read responses answer configuration as a JSON string",
+      "summary": "GET /v1/connectors/{connector} and GET /v1/connectors now both re-serialize the registry's held configuration object back to the JSON string domain/integration/connector-configuration declares, through one shared projection.",
+      "task": "task/registry-reads/connector-configuration-response-wire-type"
+    },
+    {
+      "id": "implementation/registry-reads/read-capability-by-identity-route",
+      "kind": "implementation",
+      "file": "implementation/registry-reads/read-capability-by-identity-route.md",
+      "title": "A capability can be read directly by its own (name, version) identity over HTTP",
+      "summary": "Adds GET /v1/capabilities/{name}/{version}, calling CapabilityRegistryService existing readCapabilityByIdentity through a new route, controller and DTO, wired into build-app and mapped through status-map.ts with a fourth typed not-found error.",
+      "task": "task/registry-reads/read-capability-by-identity-route"
+    },
+    {
+      "id": "proof/registry-reads/connector-configuration-response-wire-type",
+      "kind": "proof",
+      "file": "proof/registry-reads/connector-configuration-response-wire-type.md",
+      "title": "Connector-configuration read responses answer configuration as a JSON string",
+      "summary": "Proves that GET /v1/connectors/{connector} and GET /v1/connectors both answer configuration as the JSON string domain/integration/connector-configuration declares, and that parsing what either answers reproduces the same JSON value the connector was registered with.",
+      "task": "task/registry-reads/connector-configuration-response-wire-type"
+    },
+    {
+      "id": "proof/registry-reads/read-capability-by-identity-route",
+      "kind": "proof",
+      "file": "proof/registry-reads/read-capability-by-identity-route.md",
+      "title": "Proof for read-capability-by-identity-route",
+      "summary": "Tests exercise GET /v1/capabilities/{name}/{version} in isolation and through buildApp(), proving the four criteria, the class-distinctness inference, the path-coexistence inference, and the edge cases the route's behavior raises.",
+      "task": "task/registry-reads/read-capability-by-identity-route"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/registry-reads/connector-configuration-response-wire-type",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-reads/connector-configuration-response-wire-type",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-reads/connector-configuration-response-wire-type",
+      "to": "task/registry-reads/connector-configuration-response-wire-type",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/registry-reads/read-capability-by-identity-route",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/registry-reads/read-capability-by-identity-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/registry-reads/read-capability-by-identity-route",
+      "to": "constraints/no-route-enforces-authentication",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/registry-reads/read-capability-by-identity-route",
+      "to": "task/registry-reads/read-capability-by-identity-route",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-reads/connector-configuration-response-wire-type",
+      "to": "implementation/registry-reads/connector-configuration-response-wire-type",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/registry-reads/read-capability-by-identity-route",
+      "to": "implementation/registry-reads/read-capability-by-identity-route",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

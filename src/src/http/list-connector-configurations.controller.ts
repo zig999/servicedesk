@@ -1,7 +1,8 @@
 // Maps one validated list-connector-configurations request to the published
 // listConnectorConfigurations call, and answers with whatever page it
-// resolves, unchanged
+// resolves, each entry projected onto the wire shape
 // (task/connector-configuration-authoring/list-connector-configurations-route,
+// task/registry-reads/connector-configuration-response-wire-type,
 // contracts/integration/connector-configuration-registry): transport in,
 // transport out, no business decision of its own — the one thing this
 // controller itself decides is resolving the query's own optional
@@ -20,6 +21,20 @@
 // ConnectorConfigurationRegistryService instance registerConnector and
 // readConnectorConfiguration already share.
 //
+// This route previously answered each entry's configuration as the plain
+// object the registry holds it as (PaginatedResponse<ConnectorConfiguration>,
+// reusing connector-configuration.ts's own domain type directly for the
+// response) rather than the JSON string domain/integration/connector-configuration
+// declares configuration's type to be — the same divergence
+// read-connector-configuration.controller.ts answered for its own single-entry
+// response, and corrected here the same way
+// (task/registry-reads/connector-configuration-response-wire-type):
+// handleListConnectorConfigurationsRequest now maps every entry through
+// read-connector-configuration.controller.ts's own exported
+// toReadConnectorConfigurationResponse (MNT-03 — the identical per-entry
+// projection is called, not restated a second time) before the page ever
+// answers.
+//
 // list-connector-configurations carries no path or body parameter naming a
 // connector, so it raises no domain error of its own and needs no
 // status-map entry of its own — every domain error this route could ever
@@ -32,6 +47,8 @@
 import type { ConnectorConfiguration } from '../connector-registry/connector-configuration.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { ListConnectorConfigurationsQueryDto } from './dto/list-connector-configurations.dto.js';
+import type { ReadConnectorConfigurationResponseDto } from './dto/read-connector-configuration.dto.js';
+import { toReadConnectorConfigurationResponse } from './read-connector-configuration.controller.js';
 
 /**
  * Everything the controller needs beyond one request's own query string: the
@@ -53,17 +70,28 @@ export type ListConnectorConfigurationsControllerDependencies = {
  * Handles one list-connector-configurations request end to end: resolves
  * the query's own optional offset/limit against the configured bound
  * (resolvePagination below), reads the page through the published
- * connector-configuration-registry read, and answers with it exactly as
- * read — every field src/types/pagination.ts's own PaginatedResponse<T>
- * declares, computed by the registry this contract composes and never
- * recomputed or dropped here.
+ * connector-configuration-registry read, and answers with it projected onto
+ * the wire shape — every pagination field src/types/pagination.ts's own
+ * PaginatedResponse<T> declares, computed by the registry this contract
+ * composes and never recomputed or dropped here, alongside a data array
+ * whose every entry is mapped through
+ * read-connector-configuration.controller.ts's own
+ * toReadConnectorConfigurationResponse (MNT-03) so each entry's
+ * configuration answers as the JSON string
+ * domain/integration/connector-configuration declares
+ * (task/registry-reads/connector-configuration-response-wire-type), never
+ * the plain object the registry holds it as internally.
  */
 export async function handleListConnectorConfigurationsRequest(
   dependencies: ListConnectorConfigurationsControllerDependencies,
   query: ListConnectorConfigurationsQueryDto,
-): Promise<PaginatedResponse<ConnectorConfiguration>> {
+): Promise<PaginatedResponse<ReadConnectorConfigurationResponseDto>> {
   const pagination = resolvePagination(query, dependencies);
-  return dependencies.listConnectorConfigurations(pagination);
+  const page = await dependencies.listConnectorConfigurations(pagination);
+  return {
+    ...page,
+    data: page.data.map(toReadConnectorConfigurationResponse),
+  };
 }
 
 /**

@@ -39,6 +39,7 @@ import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { buildApp, type BuildAppDependencies } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { ListConnectorConfigurationsControllerDependencies } from '../../../http/list-connector-configurations.controller.js';
+import type { ReadCapabilityByIdentityControllerDependencies } from '../../../http/read-capability-by-identity.controller.js';
 import type { ReadConnectorConfigurationControllerDependencies } from '../../../http/read-connector-configuration.controller.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
@@ -139,6 +140,16 @@ function stubGlossaryQuery(): IGlossaryQuery {
   };
 }
 
+/** A minimally valid ReadCapabilityByIdentityControllerDependencies stand-in (TST-03): resolves a held capability under whichever (name, version) identity is asked, so read-capability-by-identity-route's own controller never raises CapabilityIdentityNotFoundError (mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
+function stubReadCapabilityByIdentity(): ReadCapabilityByIdentityControllerDependencies {
+  return {
+    readCapabilityByIdentity: async (name, version) => ({
+      held: true,
+      capability: { name, version, nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept: 'a-concept' },
+    }),
+  };
+}
+
 /** A minimally valid RegisterCapabilityControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed Capability so register-capability-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubRegisterCapability(): RegisterCapabilityControllerDependencies {
   return {
@@ -219,7 +230,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
   const caseQuery = stubCaseQuery(minimalCase()); const glossaryQuery = stubGlossaryQuery();
   return {
     diagnose,
-    readCapability: { capabilityQuery: stubCapabilityQuery() },
+    readCapability: { capabilityQuery: stubCapabilityQuery() }, readCapabilityByIdentity: stubReadCapabilityByIdentity(),
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
@@ -547,3 +558,45 @@ it('answers 500 with a generic message, never the rejected call\'s own error tex
   expect(response.statusCode).toBe(500);
   expect(response.body).not.toContain('sensitive internal detail');
 });
+
+// ------------------------------------------------------- registry-reads/read-capability-by-identity-route, criterion 3
+
+it(
+  "reaches read-capability-by-identity's own controller on the very first request a freshly built app instance ever receives, " +
+    'proving it is registered in routePlugins() with no dependency on any prior call to list-capabilities',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const response = await app.inject({ method: 'GET', url: '/v1/capabilities/a-capability/1.0.0' });
+
+    expect(response.statusCode).toBe(200);
+  },
+);
+
+// ------------------------------------------------------- registry-reads/read-capability-by-identity-route, inference: path coexistence
+
+it(
+  'answers the GET to /v1/capabilities/{name}/{version} through read-capability-by-identity and the PUT to the identical path ' +
+    'through register-capability, neither one colliding with the other',
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const getResponse = await app.inject({ method: 'GET', url: '/v1/capabilities/a-capability/1.0.0' });
+    const putResponse = await app.inject({
+      method: 'PUT',
+      url: '/v1/capabilities/a-capability/1.0.0',
+      payload: {
+        nature: 'read-only',
+        input_schema: '{"type":"object"}',
+        output_schema: '{"type":"object"}',
+        connector: 'a-connector',
+        concept: 'a-concept',
+      },
+    });
+
+    expect(getResponse.statusCode).toBe(200);
+    expect(putResponse.statusCode).toBe(200);
+  },
+);

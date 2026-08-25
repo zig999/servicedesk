@@ -1,5 +1,6 @@
 // Wire shapes for GET /v1/connectors/{connector}
 // (task/connector-configuration-authoring/read-connector-configuration-route,
+// task/registry-reads/connector-configuration-response-wire-type,
 // contracts/integration/connector-configuration-registry,
 // domain/integration/connector-configuration): the path-parameter and
 // response DTOs the route validates and types against (DTO-02/DTO-03), named
@@ -14,11 +15,18 @@
 // domain/integration/connector-configuration's own attributes, spelled with
 // the same names connector-configuration.ts's own ConnectorConfiguration type
 // holds them under (connector, configuration) — configuration held as the
-// plain object the registry itself holds rather than the JSON text a
-// registration submits (register-connector.dto.ts's own
-// registerConnectorBodySchema), since this is the already-held shape the
-// domain model and the registry answer with, never the wire representation a
-// write validates.
+// JSON string domain/integration/connector-configuration declares its type
+// to be, the same wire representation register-connector.dto.ts's own
+// registerConnectorBodySchema already carries it as, rather than the plain
+// object the registry holds it as internally
+// (connector-configuration.ts's own ConnectorConfiguration type). This
+// corrects a prior divergence (task/registry-reads/connector-configuration-response-wire-type):
+// this schema previously declared configuration as z.record(z.string(),
+// z.unknown()), answering the registry's own already-parsed object directly
+// rather than the domain's declared string; read-connector-configuration.controller.ts's
+// own toReadConnectorConfigurationResponse is what now re-serializes the
+// held object back to that JSON string before it ever reaches this schema's
+// shape.
 
 import { z } from 'zod';
 
@@ -44,7 +52,7 @@ export type ReadConnectorConfigurationParamsDto = z.infer<typeof readConnectorCo
  */
 export const readConnectorConfigurationResponseSchema = z.object({
   connector: z.string().min(1),
-  configuration: z.record(z.string(), z.unknown()),
+  configuration: z.string().min(1),
 });
 
 export type ReadConnectorConfigurationResponseDto = z.infer<typeof readConnectorConfigurationResponseSchema>;

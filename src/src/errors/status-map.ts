@@ -15,7 +15,12 @@
 // task/connector-configuration-authoring/read-connector-configuration-route;
 // CapabilityNotRegisteredForTestError — the sixth, once test-connector is
 // exposed as a route, task/connector-diagnostics/test-connector-route,
-// criterion 3); an operation the named resource's own current state forbids
+// criterion 3; CapabilityIdentityNotFoundError — the seventh, once
+// read-capability-by-identity is exposed as its own route,
+// task/registry-reads/read-capability-by-identity-route, a fourth typed
+// class for the same structural absence rather than a reuse of
+// ConceptNotAnsweredError, ConnectorConfigurationNotFoundError or
+// CapabilityNotRegisteredForTestError); an operation the named resource's own current state forbids
 // — a second open draft, an already occupied manifest position, a mutation
 // against anything but a draft version, a concept a different capability
 // already answers (ConceptAlreadyAnsweredError,
@@ -46,6 +51,7 @@
 // mapped to a status yet).
 
 import { CapabilityConnectorMismatchError } from './capability-connector-mismatch.error.js';
+import { CapabilityIdentityNotFoundError } from './capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from './capability-not-read-only.error.js';
 import { CapabilityNotRegisteredForTestError } from './capability-not-registered-for-test.error.js';
 import { CapabilitySchemaNotWellFormedError } from './capability-schema-not-well-formed.error.js';
@@ -72,7 +78,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * fourteen extends another, so that never arises today.
+ * nineteen extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -81,6 +87,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [VocabularyTermNotHeldError, 404],
   [ConnectorConfigurationNotFoundError, 404],
   [CapabilityNotRegisteredForTestError, 404],
+  [CapabilityIdentityNotFoundError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],

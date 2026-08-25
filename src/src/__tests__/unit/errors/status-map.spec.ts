@@ -6,6 +6,7 @@
 // this function is proved separately, in
 // __tests__/unit/http/error-handler.middleware.spec.ts.
 import { expect, it } from 'vitest';
+import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
@@ -32,6 +33,17 @@ it('resolves CaseNotFoundError to 404', () => {
 // with the status status-map assigns".
 it('resolves ConceptNotAnsweredError to 404', () => {
   const error = new ConceptNotAnsweredError('a-concept');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(404);
+});
+
+// Added for task/registry-reads/read-capability-by-identity-route, whose own criterion 2 depends
+// on this exact entry: "a request naming a (name, version) pair that is not currently registered
+// is refused ... mapped through status-map.ts".
+it('resolves CapabilityIdentityNotFoundError to 404', () => {
+  const error = new CapabilityIdentityNotFoundError('a-name', '1.0.0');
 
   const status = statusForError(error);
 
