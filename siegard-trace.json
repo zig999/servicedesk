@@ -797,7 +797,7 @@
         },
         {
           "path": "src/src/http/list-connector-configurations.controller.ts",
-          "digest": "sha256:042e8fc8951e8f7361e060f059ee4c5e3b20d7b73ec5ae8437635e42acd8ab3e"
+          "digest": "sha256:ed2b4f1a729090c5edd6108485f845a38838de399f4b89021eb9a690150d7ca8"
         },
         {
           "path": "src/src/http/list-connector-configurations.routes.ts",
@@ -805,7 +805,7 @@
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
-          "digest": "sha256:9d07fb978ef3f9e727a096544bb182b39426b946bcad4bd9f963482ccc8aaa77"
+          "digest": "sha256:205e5ae5a44d6f5b9418662e57f1a8826b2230b8c89f5091ed6621f9498b7a88"
         },
         {
           "path": "src/src/http/read-connector-configuration.routes.ts",
@@ -1911,7 +1911,11 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:1e677a88dd49e041272916ca1396384cd89d8358fcd30ba18a8893dfbe978e9d"
+          "digest": "sha256:efd9118e980b926a8a1e79445409214fde8fba906afd3d4d52b3223d59e30ca1"
+        },
+        {
+          "path": "src/src/connector-registry/connector-configuration.ts",
+          "digest": "sha256:1ba2d66a15f541cf88c83ead94e8f7445d79f4c340918ebd0bfac5e3c829ac92"
         },
         {
           "path": "src/src/http/dto/read-connector-configuration.dto.ts",
@@ -1927,7 +1931,7 @@
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
-          "digest": "sha256:9d07fb978ef3f9e727a096544bb182b39426b946bcad4bd9f963482ccc8aaa77"
+          "digest": "sha256:205e5ae5a44d6f5b9418662e57f1a8826b2230b8c89f5091ed6621f9498b7a88"
         },
         {
           "path": "src/src/http/register-connector.controller.ts",
@@ -1940,6 +1944,10 @@
         {
           "path": "src/src/http/test-connector.controller.ts",
           "digest": "sha256:9b5634a27ccb4467205b5e703ff2a2fd3543abb9698d005287300cab826eed1b"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:95e94695c135f381c55192f058535747b2a06902bc6c9e30924d5a5879a094ce"
         }
       ]
     },
@@ -3231,7 +3239,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:1e677a88dd49e041272916ca1396384cd89d8358fcd30ba18a8893dfbe978e9d"
+          "digest": "sha256:efd9118e980b926a8a1e79445409214fde8fba906afd3d4d52b3223d59e30ca1"
         },
         {
           "path": "src/src/errors/connector-configuration-not-well-formed.error.ts",

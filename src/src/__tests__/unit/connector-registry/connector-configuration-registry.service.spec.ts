@@ -443,6 +443,15 @@ it("answers each entry through listConnectorConfigurations parsing back to exact
   expect(JSON.parse(byConnector.get('connector-b') as string)).toEqual(registeredB);
 });
 
+it('round-trips an empty object supplied as configuration to the empty-object JSON text "{}" through readConnectorConfigurationOrThrow, the smallest well-formed JSON object this criterion applies to', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  await registry.registerConnector(completeRegistration({ connector: 'a-connector', configuration: {} }));
+
+  const resolved = await registry.readConnectorConfigurationOrThrow('a-connector');
+
+  expect(resolved.configuration).toBe('{}');
+});
+
 // ------------------------------------------------------------------ inference: a string-supplied configuration is held verbatim, never re-serialized
 
 it('holds a string-supplied configuration exactly as given, not re-parsed and re-serialized, so its own non-canonical formatting survives a read back through readConnectorConfigurationOrThrow', async () => {

@@ -98,6 +98,14 @@
       "task": "task/capability-timeout-contract-refusal/non-integer-timeout-refusal"
     },
     {
+      "id": "proof/connector-configuration-registration-conformance/configuration-held-as-text",
+      "kind": "proof",
+      "file": "proof/connector-configuration-registration-conformance/configuration-held-as-text.md",
+      "title": "Proof for configuration held as text across registration, single read and list",
+      "summary": "Tests prove configuration is held and answered as JSON object text — never a parsed object — through readConnectorConfigurationOrThrow and listConnectorConfigurations after an object-supplied registration, that both round-trip to the exact registered content including the empty-object boundary, corroborated by the controller/route pass-through and persistence-layer re-serialization tests this task's own file set also touches.",
+      "task": "task/connector-configuration-registration-conformance/configuration-held-as-text"
+    },
+    {
       "id": "proof/connector-configuration-registration-conformance/malformed-object-classification",
       "kind": "proof",
       "file": "proof/connector-configuration-registration-conformance/malformed-object-classification.md",
@@ -424,6 +432,12 @@
     {
       "from": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal",
       "to": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-registration-conformance/configuration-held-as-text",
+      "to": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
       "kind": "proves",
       "at": "the path"
     },
