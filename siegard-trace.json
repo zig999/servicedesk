@@ -1914,6 +1914,10 @@
         {
           "path": "src/src/http/register-connector.routes.ts",
           "digest": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:9b5634a27ccb4467205b5e703ff2a2fd3543abb9698d005287300cab826eed1b"
         }
       ]
     },

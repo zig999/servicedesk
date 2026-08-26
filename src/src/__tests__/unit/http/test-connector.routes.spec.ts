@@ -166,6 +166,54 @@ it('issues the exact request resolveConnectorRequest assembles from the given su
   expect(body.request.headers['x-requester']).toBe('a-requester');
 });
 
+// -------------------------------- task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration
+//
+// The criterion's own "issues the call the configuration declares, deriving
+// method, responseMap and statusMap from the parsed object" is proven for
+// `method` by the two criterion-2 tests above: heldConnectorConfigurationResolution()
+// stores configuration as JSON *text* (JSON.stringify), and the outbound
+// httpClient call above is only ever reached once that text has been parsed
+// back into an object and its own 'GET' read from it — an unparsed or
+// wrongly-parsed configuration would leave `configuration.method` undefined
+// and the request would never be issued at all (see below). What those two
+// tests do not observe is `responseMap` and `statusMap`: this route never
+// surfaces either in its own response, so the only way to tell they were
+// actually read from the parsed text — rather than replaced with an
+// always-valid default — is to store a stored text whose own responseMap or
+// statusMap, once parsed, is not well-formed, and confirm the call is
+// refused for exactly that reason rather than issued anyway.
+it("refuses a test-connector request whose stored connector configuration text parses to a responseMap holding a non-string value, proving responseMap is read from the parsed stored text rather than defaulted past", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readConnectorConfiguration.mockResolvedValueOnce(
+    heldConnectorConfigurationResolution({ responseMap: { value: 123 } }),
+  );
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(500);
+  const body = response.json() as { error: { code: string } };
+  expect(body.error.code).toBe('INTERNAL_ERROR');
+  expect(built.httpClient).not.toHaveBeenCalled();
+});
+
+it("refuses a test-connector request whose stored connector configuration text parses to a statusMap holding a value outside the four evidence-result endings, proving statusMap is read from the parsed stored text rather than defaulted past", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({ held: true, capability: heldCapability() });
+  built.readConnectorConfiguration.mockResolvedValueOnce(
+    heldConnectorConfigurationResolution({ statusMap: { '200': 'not-a-real-ending' } }),
+  );
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(500);
+  const body = response.json() as { error: { code: string } };
+  expect(body.error.code).toBe('INTERNAL_ERROR');
+  expect(built.httpClient).not.toHaveBeenCalled();
+});
+
 // ------------------------------------------------------------------ criterion 3
 
 it('refuses a request naming a capability that is not registered at all, with the status the status map assigns CapabilityNotRegisteredForTestError', async () => {

@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-registration-conformance/malformed-object-classification"
     },
     {
+      "id": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration.md",
+      "title": "Test-connector's parse-then-derive path named for this task",
+      "summary": "Confirms and documents that test-connector.controller.ts already derives its issued call's method, responseMap and statusMap from the registry's stored configuration text, parsed, rather than from an assumed-already-parsed object.",
+      "task": "task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration"
+    },
+    {
       "id": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "kind": "implementation",
       "file": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan.md",
@@ -72,6 +80,14 @@
       "title": "Proof for register-connector's malformed-object classification",
       "summary": "Tests pin that a null or array configuration value is refused as ConnectorConfigurationNotWellFormedError rather than as incomplete, that unparsable-text and accepted-object behavior held unchanged, and that ConnectorConfigurationNotWellFormedError still maps to 422 — the last two by pointing at the pre-existing tests that already prove them.",
       "task": "task/connector-configuration-registration-conformance/malformed-object-classification"
+    },
+    {
+      "id": "proof/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "kind": "proof",
+      "file": "proof/connector-configuration-registration-conformance/test-connector-parses-stored-configuration.md",
+      "title": "Test-connector's parse-then-derive path proven, including responseMap and statusMap",
+      "summary": "Proves this task's one criterion — deriving method, responseMap and statusMap from a registered connector configuration's parsed, JSON-text-stored content — through the full capability-scoped test-connector route, citing the pre-existing tests that already prove the method half and adding two new tests that prove the previously-unobserved responseMap/statusMap half.",
+      "task": "task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration"
     },
     {
       "id": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan",
@@ -178,6 +194,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "to": "task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "constraints/the-domain-depends-on-no-infrastructure",
       "kind": "encodes",
@@ -252,6 +286,12 @@
     {
       "from": "proof/connector-configuration-registration-conformance/malformed-object-classification",
       "to": "implementation/connector-configuration-registration-conformance/malformed-object-classification",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
+      "to": "implementation/connector-configuration-registration-conformance/test-connector-parses-stored-configuration",
       "kind": "proves",
       "at": "the path"
     },

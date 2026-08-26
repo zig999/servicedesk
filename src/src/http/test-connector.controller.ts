@@ -118,7 +118,15 @@ async function resolveTestedCapability(
  * parsedConnectorConfiguration, the one seam between the registry's own
  * text representation
  * (task/connector-configuration-registration-conformance/configuration-held-as-text)
- * and this consumer, reused rather than re-derived (MNT-03).
+ * and this consumer, reused rather than re-derived (MNT-03). Returning that
+ * parsed object, never the stored text itself, is what lets
+ * handleTestConnectorRequest below derive method, responseMap and statusMap
+ * from it through asHttpConnectorCallConfiguration
+ * (task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration,
+ * domain/integration/connector-configuration,
+ * rules/integration/a-connector-configuration-holds-a-well-formed-object) —
+ * a call derived from the parsed configuration rather than from an
+ * assumed-already-parsed object.
  */
 async function resolveTestedConnectorConfiguration(
   dependencies: TestConnectorControllerDependencies,
