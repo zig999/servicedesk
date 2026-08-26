@@ -16,6 +16,13 @@
       "summary": "register-connector answers the refusals the connector-configuration nodes state, and every reader of the configuration field treats it as the JSON text the domain node declares."
     },
     {
+      "id": "epic/domain-boundary-scan-fix",
+      "kind": "epic",
+      "file": "epic/domain-boundary-scan-fix.md",
+      "title": "Domain-boundary substring scan false positive",
+      "summary": "The one corrective task that narrows domain-depends-on-no-infrastructure.spec.ts's raw substring scan so it stops recusing a legitimate specification-node citation as an http-connector dependency."
+    },
+    {
       "id": "epic/observation-endings-and-collection-budget",
       "kind": "epic",
       "file": "epic/observation-endings-and-collection-budget.md",
@@ -75,6 +82,14 @@
       "title": "Test-connector parses the stored configuration text",
       "summary": "Testing a connector configuration derives its call from the stored text, parsed, rather than an already-parsed object.",
       "epic": "connector-configuration-registration-conformance"
+    },
+    {
+      "id": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "kind": "task",
+      "file": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan.md",
+      "title": "Domain-boundary scan stops flagging a legitimate specification-node citation",
+      "summary": "The nine domain-depends-on-no-infrastructure.spec.ts's bypass-mention scan for \"http-connector\" no longer matches the substring inside a cited specification-node identity, while still catching a real reference to the http-connector module.",
+      "epic": "domain-boundary-scan-fix"
     },
     {
       "id": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
@@ -165,6 +180,24 @@
       "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
       "kind": "covers",
       "at": "covers[4]"
+    },
+    {
+      "from": "epic/domain-boundary-scan-fix",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/domain-boundary-scan-fix",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/domain-boundary-scan-fix",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[2]"
     },
     {
       "from": "epic/observation-endings-and-collection-budget",
@@ -393,6 +426,12 @@
       "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "kind": "implements",
       "at": "implements[1]"
+    },
+    {
+      "from": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
