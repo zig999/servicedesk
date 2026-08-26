@@ -2093,7 +2093,7 @@
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+          "digest": "sha256:38d37fb1ac3c3128b8a6b0965c020e4d7bd7faf6663e2da9aa46a820215f1810"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -3236,6 +3236,30 @@
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
           "digest": "sha256:9d07fb978ef3f9e727a096544bb182b39426b946bcad4bd9f963482ccc8aaa77"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "digest": "sha256:e3fc66b749d78fcd0a64e4225fb3826deb9cea735b8852c14d56c3045fdf1505",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:34bc74d93924be46c4d25213cb250f522a196682698576c2b19b91a0beddac8b"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "digest": "sha256:2a8eb065e51a135b072c83b88f981c6ba7ea5d47f48fe76af6231698dd26a90f",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:34bc74d93924be46c4d25213cb250f522a196682698576c2b19b91a0beddac8b"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:38d37fb1ac3c3128b8a6b0965c020e4d7bd7faf6663e2da9aa46a820215f1810"
         }
       ]
     },
