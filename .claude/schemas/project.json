@@ -2,14 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://siegard.dev/schemas/project.json",
   "title": "Siegard project file",
-  "description": "What a project declares once instead of naming per invocation: `siegard.json`, at the project's own root, holding every root a consumer would otherwise retype at every invocation. It is the consumer's own file — the framework ships this contract and `bin/project.py` to hold the file to it, and writes neither; `/siegard-config` is the one skill that writes it, from what a human tells it. Two resolution rules, and they differ on purpose. `standard` alone may be overridden by an invocation naming a different one, and the report says both existed and which won — a rule's own registry is sometimes worth trying a different one against. `specification_root`, `targets`, `work_root` and `delivery_root` answer only from here: an invocation naming one of these paths instead has no effect, and their absence from this file is a stop, not a question the invocation can answer around it — a structural root is not something worth guessing at twice. Either way, an answer given in a session persists only by this file gaining it.",
+  "description": "What a project declares once instead of naming per invocation: `siegard.json`, at the project's own root, holding every root a consumer would otherwise retype at every invocation. It is the consumer's own file — the framework ships this contract and `bin/project.py` to hold the file to it, and writes neither; `/siegard-config` is the one skill that writes it, from what a human tells it. Two resolution rules, and they differ on purpose. `standard` alone may be overridden by an invocation naming a different one, and the report says both existed and which won — a rule's own registry is sometimes worth trying a different one against. `specification_root`, `targets`, `work_root`, `delivery_root` and `telemetry_root` answer only from here: an invocation naming one of these paths instead has no effect, and their absence from this file is a stop for whichever entry point needs them, not a question the invocation can answer around it — a root is not something worth guessing at twice. Either way, an answer given in a session persists only by this file gaining it.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
     "standard": {
-      "type": ["string", "null"],
-      "minLength": 1,
-      "description": "The project's registry of rules, by path relative to this file's own directory — the artifact `schemas/standard.json` is the contract for. `null` is a full answer, not an omission: it declares the project authors no standard, so every entry point takes the honestly narrow path without asking again. That is a different fact from this field being absent, which — like every field's absence here — declares nothing: the project has not gotten to it yet, not decided against it."
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "null" },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "#/$defs/slug" },
+          "additionalProperties": { "type": ["string", "null"], "minLength": 1 }
+        }
+      ],
+      "description": "The project's registry of rules — the artifact `schemas/standard.json` is the contract for — in one of two shapes. As an object, one entry per target, keyed exactly as `targets` keys them, each value a path relative to this file's own directory or `null`: an entry point resolves `standard[<the target it was invoked over>]`, and a key `targets` does not hold is a defect `bin/project.py` refuses, never a target nobody declared. A standard governs one target (see `/siegard-standard`), so this is the shape a project with more than one target declares; an entry the object lacks for a target declares nothing for it, and stops an entry point invoked over that target exactly as an absent field would. As a bare path, the shape a project with one target declares: it governs that target, and `bin/project.py` refuses it where `targets` holds more than one key — a single registry silently answering for two stacks is the wrong registry answering for one of them, and the refusal carries the per-target declaration ready to paste. `null`, in either shape, is a full answer, not an omission: it declares the project authors no standard for the target it covers, so every entry point takes the honestly narrow path without asking again. That is a different fact from this field being absent, which — like every field's absence here — declares nothing: the project has not gotten to it yet, not decided against it."
     },
     "specification_root": {
       "type": "string",
@@ -32,6 +40,11 @@
       "type": "string",
       "minLength": 1,
       "description": "Where this project's delivery records live, by path relative to this file's own directory, one subdirectory per initiative — the same slug that names its work root, since one initiative is one plan and one delivery."
+    },
+    "telemetry_root": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Where this project's telemetry reports land, by path relative to this file's own directory — the one root nothing the framework builds, plans or delivers ever reads. A report is a record of how a stretch of work happened (which agents ran, what they cost, what refused, what stopped), written by `/siegard-telemetry` from disk and the harness's own session transcripts, named by the moment its window closed, and never overwritten: a second report over a window that already has one says so with a second name, the way `run.py` refuses a slug that exists. Read exclusively from here, like the structural roots: an invocation naming one instead has no effect, and its absence stops `/siegard-telemetry` — a report whose location was chosen per session would be a report nobody finds again. Absent, every other entry point runs exactly as before; this field gates one skill and nothing else."
     },
     "edits_freely": {
       "type": "array",

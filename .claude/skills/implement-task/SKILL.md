@@ -54,13 +54,17 @@ is the contract a project's own file answers to.
 
 The standard resolves in one order, from the same `project.py` run above, and the report says
 which step answered. Unlike the roots, **a naming in the invocation wins here**. Where the
-invocation names none, the file's `standard` answers: `null` declares deliberately that it has
-none — the narrow path, chosen rather than forgotten, taken without asking again. Where neither
-answers — no naming, no file, or the file simply does not declare the field — the standard joins
-the single stop of absent inputs: name it, or declare it through `/siegard-config`, and the
-stop's report carries that invocation ready to paste. A file that does not hold together is a
-stop reported verbatim; a naming that overrode a differing file is reported with both. Below, a
-standard "named" means resolved by either step.
+invocation names none, the file's `standard` answers **for the target**: a standard governs one
+target, so `project.py` prints either one `standard:` line for a one-target project or one
+`standard <target>:` line per target the file declares one for, and the line for the target this
+invocation names is the answer — never another target's line. `null` there declares deliberately
+that it has none for this target — the narrow path, chosen rather than forgotten, taken without
+asking again. Where neither answers — no naming, no file, the file not declaring the field, or
+the field declaring no entry for this target — the standard joins the single stop of absent
+inputs: name it, or declare it through `/siegard-config` for this target, and the stop's report
+carries that invocation ready to paste. A file that does not hold together is a stop reported
+verbatim; a naming that overrode a differing file is reported with both. Below, a standard
+"named" means resolved by either step.
 
 ## Before anything: the plan
 
@@ -85,13 +89,17 @@ pins is the implementation record itself, and step 3 says why.
 ## Before anything: the tree
 
 The review is `git diff`, and a diff only says what this invocation did when the tree starts
-clean. Before any write, `git status --porcelain -- <delivery-root> <target-source-root>` must
-print nothing — the pathspec is the point: the stop's scope is the roots this invocation writes,
-and a pending change elsewhere in the repository is somebody else's work in progress, not a reason
-this delivery cannot be reviewed. Output is a stop: report what is pending and go no further
-— committing, discarding or overriding is the human's decision, never this skill's. A root not
-under git control is the same stop: without git there is no review, and source is the one thing
-here nobody can review any other way.
+clean. Before any write, `git status --porcelain -- <delivery-root> <target-source-root>
+<work-root>/task/<epic>/<slug>.md` must print nothing — the pathspec is the point: the stop's
+scope is the roots this invocation writes, plus the one file it reads and pins. A pending change
+elsewhere in the work root — a sibling task still being drafted, an epic for a later increment —
+is somebody else's work in progress, not a reason this delivery cannot be reviewed; the task file
+this invocation is about to build against and hash into the implementation record is different in
+kind, because `/plan-work` already told a person to review that diff and stop there, and a pin
+taken before that review happened is a hash of something nobody looked at. Output is a stop:
+report what is pending and go no further — committing, discarding or overriding is the human's
+decision, never this skill's. A root not under git control is the same stop: without git there is
+no review, and source is the one thing here nobody can review any other way.
 
 ## Read the contract
 
@@ -146,6 +154,15 @@ construction, including where both are wrong. Only where the session cannot spaw
 read the agent's file under the plugin root's `agents/` directory and apply its discipline in
 place — the file stays the single home of that judgment — and the report must say which steps
 ran inline.
+
+A spawned subagent that stalls is never resumed. Its partial work already stands on disk — a
+draft implementation, a run directory, a half-written record — and resuming a stalled context
+asks it to continue from a state it may no longer hold, where a fresh one asks it to continue
+from the one thing that is actually still true: what the tree now shows. Spawn again under the
+same task, naming what the prior attempt already left in place and what remains, and let the new
+attempt read the tree rather than inherit the old context. Nothing here is lost by this: the
+record this step writes is judged against the tree at the end, never against how many attempts it
+took to get there.
 
 The three steps that execute — set up, build, suite — run only where the standard names commands.
 Where none was named, or the registry declares none, they do not run, the report says so, and what
@@ -506,7 +523,10 @@ the fix goes back to the `task-implementer` with the findings, and the suite run
 `<epic>-<slug>-suite-2`, with the first run keeping its name. `test`, on a test this delivery
 wrote — the two producers disagree and that disagreement is what the red is: the proof asserts
 what the criterion requires and the implementation does not satisfy it, and only a person
-settles that. `test`, on a test an earlier task owns — what broke it is not a regression but
+settles that. The report quotes the diagnosis's evidence and correction in full, whole findings
+and not a summary of them — a diagnosis obvious enough to look mechanical is still a person's
+call to make, and the report's business is to make that call fast, not to make it for them.
+`test`, on a test an earlier task owns — what broke it is not a regression but
 this delivery's own legitimate files: the old assertion claimed more than its task's criteria
 establish, totality over ground the two tasks share, and this delivery falsified the excess.
 That test is not edited from here, whatever the temptation: the way out is the proof-only
