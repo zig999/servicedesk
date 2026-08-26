@@ -141,14 +141,43 @@ function reachesTheConnectorPlaceholderErrors(specifier: string): boolean {
   );
 }
 
+/** The one bypass-mention this scan narrows against a cited specification-node identity — declared once so the function below and the array it seeds never spell the substring out a second time. */
+const HTTP_CONNECTOR_MENTION = 'http-connector';
+
 /** Any bare mention of the connector-request-resolver module or its own exports a domain module's raw source could carry — a dynamic lookup, a global registry, or a string-keyed service locator, none of which is a static import specifier the sweep above would ever see. */
 const CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS = [
-  'http-connector',
+  HTTP_CONNECTOR_MENTION,
   'connector-request-resolver',
   'connector-call-descriptor',
   'resolveConnectorRequest',
   'asConnectorCallDescriptor',
 ];
+
+/** Matches a cited specification-node identity by SPEC-003's own grammar: a class prefix (domain/rules/scenarios/contracts) followed by a context slug and an element slug, or "constraints/" followed by one slug — e.g. "rules/integration/an-http-connector-configuration-declares-its-call" or "constraints/the-domain-depends-on-no-infrastructure". A domain module's own comment cites nodes this way, and "http-connector" sometimes falls entirely inside such a cited identity's own slug without naming the http-connector module at all. */
+const SPECIFICATION_NODE_IDENTITY_PATTERN =
+  /(?:domain|rules|scenarios|contracts)\/[a-z0-9-]+\/[a-z0-9-]+|constraints\/[a-z0-9-]+/g;
+
+/** The index ranges within source a cited specification-node identity spans. */
+function specificationNodeIdentityRanges(source: string): ReadonlyArray<readonly [number, number]> {
+  return [...source.matchAll(SPECIFICATION_NODE_IDENTITY_PATTERN)].map((match) => {
+    const start = match.index ?? 0;
+    return [start, start + match[0].length] as const;
+  });
+}
+
+/** Whether every occurrence of HTTP_CONNECTOR_MENTION in source sits entirely inside a cited specification-node identity — e.g. the "-http-connector-configuration-" span inside "rules/integration/an-http-connector-configuration-declares-its-call". Such an occurrence names the identity of a rule the comment cites, not a reference to the http-connector module, so it is the one shape this scan must not flag. Any occurrence falling even partly outside every cited identity is a real, unnarrowed mention and still reports. */
+function everyHttpConnectorMentionIsANodeIdentityCitation(source: string): boolean {
+  const identityRanges = specificationNodeIdentityRanges(source);
+
+  let index = source.indexOf(HTTP_CONNECTOR_MENTION);
+  while (index !== -1) {
+    const end = index + HTTP_CONNECTOR_MENTION.length;
+    const citedInsideAnIdentity = identityRanges.some(([start, rangeEnd]) => index >= start && end <= rangeEnd);
+    if (!citedInsideAnIdentity) return false;
+    index = source.indexOf(HTTP_CONNECTOR_MENTION, index + 1);
+  }
+  return true;
+}
 
 /**
  * task/http-observation-runtime/http-declarative-observation-source's own production adapter —
@@ -282,16 +311,16 @@ it('none of these modules imports either error the connector-request-resolver ra
   expect(offenders).toEqual([]);
 });
 
-it("none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out — except this epic's own legitimate HTTP adapter", async () => {
+it("none of these modules holds any mention of the http-connector module or its exports outside a static import — a dynamic lookup, a global registry, or a string-keyed service locator would not show up as an import specifier at all, which is exactly the gap this task's own Notes call out — except this epic's own legitimate HTTP adapter, and except a citation of a specification-node identity that merely contains the \"http-connector\" substring in its own slug", async () => {
   const sources = await domainModuleSources();
 
   const offenders: string[] = [];
   for (const [file, source] of sources) {
     if (file === HTTP_DECLARATIVE_OBSERVATION_SOURCE_ADAPTER_KEY) continue;
     for (const mention of CONNECTOR_REQUEST_RESOLVER_BYPASS_MENTIONS) {
-      if (source.includes(mention)) {
-        offenders.push(`${file} mentions "${mention}"`);
-      }
+      if (!source.includes(mention)) continue;
+      if (mention === HTTP_CONNECTOR_MENTION && everyHttpConnectorMentionIsANodeIdentityCitation(source)) continue;
+      offenders.push(`${file} mentions "${mention}"`);
     }
   }
 

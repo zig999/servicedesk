@@ -238,6 +238,10 @@
       "digest": "sha256:05cf4c66d374126874156a4aa0ef90d3bc1191d4a60150d38a2000e3deee9f2c",
       "files": [
         {
+          "path": "src/src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts",
+          "digest": "sha256:49cdd250c555c7cc436db4b9ef8a6d91b7edb83639505305561d0833a710df1f"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:ab3f8d65483b5178b16daaf6264f1cb9ca10de58e3c059b70c992b2353ba4d9d"
         },
