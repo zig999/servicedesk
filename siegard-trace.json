@@ -3278,6 +3278,16 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-configuration-names-its-connector",
+      "digest": "sha256:cb4a52cc2e19a2815e25b7bd6daca32319cbe4b0d15104c58290b681341ac31f",
+      "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:a0e13bfd64fe58a16133d44b96b900125944cb098deb3119dfe01b9f0acc999f"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
       "digest": "sha256:f53596f1337236466201a8abb395af6b7ede034982414f873b0d658f16104f36",
       "files": [
