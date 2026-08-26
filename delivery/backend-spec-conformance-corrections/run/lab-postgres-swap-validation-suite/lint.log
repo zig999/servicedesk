@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/persistence/migration-runner.ts
+  135:1  error  Async function 'applyMigrationFile' has too many parameters (4). Maximum allowed is 3  max-params
+
+✖ 1 problem (1 error, 0 warnings)
+
