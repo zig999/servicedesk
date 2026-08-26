@@ -186,10 +186,20 @@ function heldConfiguration(registration: ConnectorConfigurationRegistration): Co
  * confirmed to parse to a plain object — not an array, not a primitive —
  * refusing it before any write where it fails JSON.parse or parses to
  * anything else. A value given as a genuine plain object is re-serialized to
- * that same text form (JSON.stringify) before being held. Anything else —
- * undeclared, null, an array, a primitive — passes through unchanged for the
- * completeness check below to catch, exactly as this registry always did for
- * a registration missing this shape.
+ * that same text form (JSON.stringify) before being held. A value given
+ * already as null or an array is refused here too
+ * (task/connector-configuration-registration-conformance/malformed-object-classification):
+ * the node's own statement that the configuration "must be ... a well-formed
+ * JSON object" makes null and an array not-well-formed exactly as an
+ * unparsable text is, never merely incomplete — and unlike text, JSON.parse
+ * never runs over either to raise that refusal on its own, so this function
+ * raises it directly. Undeclared and every other primitive (a number, a
+ * boolean, a bare string once it has already failed the string branch above)
+ * pass through unchanged for the completeness check below to catch, exactly
+ * as this registry always did for a registration missing this shape — the
+ * node does not clearly decide whether an entirely absent configuration is
+ * malformed or incomplete, so that case is left exactly where it already
+ * stood.
  */
 function wellFormedConfiguration(configuration: unknown): unknown {
   if (typeof configuration === 'string') {
@@ -197,6 +207,9 @@ function wellFormedConfiguration(configuration: unknown): unknown {
   }
   if (isPlainObject(configuration)) {
     return JSON.stringify(configuration);
+  }
+  if (configuration === null || Array.isArray(configuration)) {
+    throw new ConnectorConfigurationNotWellFormedError('configuration is not a JSON object');
   }
   return configuration;
 }
@@ -251,12 +264,14 @@ export function parsedConnectorConfiguration(
  * requires: an undeclared connector identity, or a configuration payload
  * that did not resolve to held JSON object text (wellFormedConfiguration
  * above — a value given as a string or a genuine plain object resolves to
- * that text; anything else reaches this check unchanged and is refused
- * here). What that payload itself must contain to reach any particular
- * external system is left entirely to the connector it names —
- * domain/investigation/subject states a connector "resolves internally ...
- * which of the attributes it needs" — so nothing here reads or constrains a
- * key inside it.
+ * that text; null and an array are already refused there as
+ * ConnectorConfigurationNotWellFormedError and never reach this check;
+ * undeclared and every other primitive reach this check unchanged and are
+ * refused here as incomplete). What that payload itself must contain to
+ * reach any particular external system is left entirely to the connector it
+ * names — domain/investigation/subject states a connector "resolves
+ * internally ... which of the attributes it needs" — so nothing here reads
+ * or constrains a key inside it.
  */
 function refuseRegistrationDepartures(
   registration: ConnectorConfigurationRegistration,

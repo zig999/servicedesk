@@ -758,6 +758,10 @@
           "digest": "sha256:77d08a2b7e6e22c47d3917fb887eb3677be466b5b51721d20ac0c07702bf27aa"
         },
         {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:1e677a88dd49e041272916ca1396384cd89d8358fcd30ba18a8893dfbe978e9d"
+        },
+        {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
         },
@@ -1885,7 +1889,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:ab3f8d65483b5178b16daaf6264f1cb9ca10de58e3c059b70c992b2353ba4d9d"
+          "digest": "sha256:1e677a88dd49e041272916ca1396384cd89d8358fcd30ba18a8893dfbe978e9d"
         },
         {
           "path": "src/src/http/dto/read-connector-configuration.dto.ts",
@@ -3173,7 +3177,7 @@
     },
     {
       "node": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
-      "digest": "sha256:d5adc549fc025c4173babe3b595b49649109422e9a20e847fccaa5b8cdc6afef",
+      "digest": "sha256:6a04b2c635b41aa443ceca9ca74632b18c2db721f78df7a54dadb7c1f69411dc",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-detail.ts",
@@ -3197,7 +3201,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:fdf68347faa46c4b6014dc17e655fd91e51a33006dabf12a767811e8a1f8d046"
+          "digest": "sha256:1e677a88dd49e041272916ca1396384cd89d8358fcd30ba18a8893dfbe978e9d"
         },
         {
           "path": "src/src/errors/connector-configuration-not-well-formed.error.ts",

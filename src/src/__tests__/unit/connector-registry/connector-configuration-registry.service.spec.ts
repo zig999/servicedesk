@@ -79,17 +79,21 @@ it('treats a connector identity declared as the empty string as undeclared', asy
   expect(namedProblems(refusal)).toEqual(['connector']);
 });
 
-it('refuses a registration whose configuration is not a plain object, whether undeclared, null, or an array', async () => {
+// Narrowed for task/connector-configuration-registration-conformance/malformed-object-classification:
+// this test previously named undeclared, null, and an array together as "not a plain object" and
+// asserted all three as an incomplete-configuration refusal. That is no longer true for the latter
+// two — see the "task/connector-configuration-registration-conformance/malformed-object-classification"
+// section below — so this test is narrowed to the one case that is still classified as incomplete: a
+// configuration value left entirely undeclared. The node the new section proves against does not
+// clearly decide what an entirely absent configuration answers, so this stays where it already stood.
+it('refuses a registration whose configuration value is entirely undeclared, treating that as an incomplete registration', async () => {
   const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
-  const badConfigurations: unknown[] = [undefined, null, ['not', 'an', 'object']];
 
-  const refusals = await Promise.all(
-    badConfigurations.map((configuration) =>
-      registry.registerConnector(completeRegistration({ configuration })).catch((error: unknown) => error),
-    ),
-  );
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: undefined }))
+    .catch((error: unknown) => error);
 
-  expect(refusals.map(namedProblems)).toEqual([['configuration'], ['configuration'], ['configuration']]);
+  expect(namedProblems(refusal)).toEqual(['configuration']);
 });
 
 it('refuses an empty registration, naming both the connector and the configuration', async () => {
@@ -263,6 +267,69 @@ it('accepts a registration whose configuration text is valid JSON object text, h
   );
 
   expect(JSON.parse(registered.configuration)).toEqual({ whatever: 'the connector alone interprets this' });
+});
+
+// ------------------------------------------------------------------ task/connector-configuration-registration-conformance/malformed-object-classification
+// Proof for this task's own criteria 1, 2 and 4: a configuration value supplied already as null or
+// as an array is refused as ConnectorConfigurationNotWellFormedError — distinctly from an incomplete
+// configuration, and with a reason distinct from textConfigurationOrThrow's own parse-oriented
+// wording above, since neither value was ever run through JSON.parse — and a configuration value
+// supplied already as a plain object is accepted exactly as the same content given as JSON text
+// would be. Criterion 3 (unparsable text) is unchanged pre-existing behavior, already proved above.
+// Criterion 5 (the HTTP 422 mapping) is unchanged too: statusForError resolves ConnectorConfigurationNotWellFormedError
+// by class, not by reason, and that resolution is already proved for two other reasons of this same
+// class by register-connector.routes.spec.ts's own criterion 3 and criterion 4 tests.
+
+it('refuses a registration whose configuration value is null as ConnectorConfigurationNotWellFormedError, naming the reason, rather than as an incomplete configuration', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: null }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).not.toBeInstanceOf(IncompleteConnectorConfigurationError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration is not a JSON object' } });
+});
+
+it('refuses a registration whose configuration value is an array as ConnectorConfigurationNotWellFormedError, naming the reason, rather than as an incomplete configuration', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const refusal = await registry
+    .registerConnector(completeRegistration({ configuration: ['not', 'an', 'object'] }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).not.toBeInstanceOf(IncompleteConnectorConfigurationError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration is not a JSON object' } });
+});
+
+it('writes nothing to the store when it refuses a registration whose configuration value is null or an array', async () => {
+  const alreadyHeld = heldConfiguration();
+  const store = new InMemoryConnectorConfigurationStore([alreadyHeld]);
+  const registry = new ConnectorConfigurationRegistryService(store);
+
+  await registry.registerConnector(completeRegistration({ configuration: null })).catch(() => undefined);
+  await registry
+    .registerConnector(completeRegistration({ configuration: ['not', 'an', 'object'] }))
+    .catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+it('accepts a configuration value supplied already as a plain object, holding it as exactly the same text a JSON-text registration of the same content would resolve to', async () => {
+  const store = new InMemoryConnectorConfigurationStore();
+  const registry = new ConnectorConfigurationRegistryService(store);
+  const content = { host: 'example.com', retries: 3 };
+
+  const fromObject = await registry.registerConnector(
+    completeRegistration({ connector: 'from-object', configuration: content }),
+  );
+  const fromText = await registry.registerConnector(
+    completeRegistration({ connector: 'from-text', configuration: JSON.stringify(content) }),
+  );
+
+  expect(fromObject.configuration).toBe(fromText.configuration);
 });
 
 // ------------------------------------------------------------------ read-connector-configuration's own service-level wrapper
