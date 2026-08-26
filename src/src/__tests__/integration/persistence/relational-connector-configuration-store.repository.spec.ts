@@ -42,7 +42,7 @@ function requireDatabaseUrl(): string {
 function connectorConfigurationRecord(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { method: 'GET', address: 'https://example.test' },
+    configuration: JSON.stringify({ method: 'GET', address: 'https://example.test' }),
     ...overrides,
   };
 }

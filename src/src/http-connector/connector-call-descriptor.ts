@@ -10,13 +10,17 @@
 // domain/investigation/subject states that a connector "resolves internally
 // ... which of the attributes it needs and how to derive its call from
 // them." So this shape is this task's own free technical design over what a
-// connector's own opaque configuration payload
+// connector's own opaque configuration payload may declare when it is meant
+// for this resolver — never a second, competing persisted schema: the
+// registry itself stores and answers that payload as opaque JSON object text
 // (connector-registry/connector-configuration.ts's own
-// `ConnectorConfiguration.configuration: Readonly<Record<string, unknown>>`)
-// may declare when it is meant for this resolver — never a second, competing
-// persisted schema: the registry still stores and returns that payload
-// exactly as opaque data, unaware of this shape, and nothing here reads from
-// or writes to the registry at all.
+// `ConnectorConfiguration.configuration: string`,
+// task/connector-configuration-registration-conformance/configuration-held-as-text),
+// unaware of this shape, and nothing here reads from or writes to the
+// registry at all — a consumer that derives a call from it (this resolver
+// among them) parses that text through
+// connector-configuration-registry.service.ts's own
+// parsedConnectorConfiguration before this module ever sees it.
 
 /**
  * What this resolver expects a connector's own opaque call configuration to

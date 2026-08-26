@@ -25,7 +25,7 @@ type ListConnectorConfigurationsMock = ReturnType<
 function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { endpoint: 'https://example.test' },
+    configuration: JSON.stringify({ endpoint: 'https://example.test' }),
     ...overrides,
   };
 }
@@ -87,21 +87,24 @@ it('answers 200 with every connector configuration the registry read resolved, e
   expect(response.statusCode).toBe(200);
   expect(response.json()).toEqual({
     ...page,
-    data: page.data.map((entry) => ({ connector: entry.connector, configuration: JSON.stringify(entry.configuration) })),
+    data: page.data.map((entry) => ({ connector: entry.connector, configuration: entry.configuration })),
   });
 });
 
 it("answers a data array whose single entry carries exactly the connector and configuration fields the domain model declares, unchanged from what the connector-configuration read resolved", async () => {
   const built = buildTestApp();
   app = built.app;
-  const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: { apiKey: 'secret-value' } });
+  const configuration = heldConnectorConfiguration({
+    connector: 'a-known-connector',
+    configuration: JSON.stringify({ apiKey: 'secret-value' }),
+  });
   built.listConnectorConfigurations.mockResolvedValueOnce(heldPage({ data: [configuration], total: 1, pageCount: 1 }));
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors' });
 
   const body = response.json() as PaginatedResponse<{ connector: string; configuration: string }>;
   expect(body.data).toEqual([
-    { connector: configuration.connector, configuration: JSON.stringify(configuration.configuration) },
+    { connector: configuration.connector, configuration: configuration.configuration },
   ]);
   expect(Object.keys(body.data[0] as object).sort()).toEqual(['configuration', 'connector']);
 });
@@ -113,10 +116,13 @@ it("answers every entry's configuration as a JSON string, never a parsed object"
   app = built.app;
   const page = heldPage({
     data: [
-      heldConnectorConfiguration({ connector: 'connector-a', configuration: { endpoint: 'https://a.example.test' } }),
+      heldConnectorConfiguration({
+        connector: 'connector-a',
+        configuration: JSON.stringify({ endpoint: 'https://a.example.test' }),
+      }),
       heldConnectorConfiguration({
         connector: 'connector-b',
-        configuration: { endpoint: 'https://b.example.test', retries: 2 },
+        configuration: JSON.stringify({ endpoint: 'https://b.example.test', retries: 2 }),
       }),
     ],
     total: 2,
@@ -138,8 +144,8 @@ it("answers every entry's configuration string parsing back to the same JSON val
   const registeredB = { endpoint: 'https://b.example.test', retries: 2, active: false };
   const page = heldPage({
     data: [
-      heldConnectorConfiguration({ connector: 'connector-a', configuration: registeredA }),
-      heldConnectorConfiguration({ connector: 'connector-b', configuration: registeredB }),
+      heldConnectorConfiguration({ connector: 'connector-a', configuration: JSON.stringify(registeredA) }),
+      heldConnectorConfiguration({ connector: 'connector-b', configuration: JSON.stringify(registeredB) }),
     ],
     total: 2,
     pageCount: 1,

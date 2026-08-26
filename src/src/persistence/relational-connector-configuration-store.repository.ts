@@ -20,11 +20,17 @@
 // the same kind of driver auto-conversion
 // relational-investigation-store.repository.ts's own written_at (a Date
 // from a timestamptz column) already documents, for a different column
-// type. Written back through JSON.stringify: passing JSON text as the
-// parameter for a jsonb column and letting Postgres' own input function
-// cast it is the ordinary node-pg pattern for this column type, and it
-// keeps this module free of any concatenation into the statement text
-// itself (SEC-02).
+// type. connector-configuration.ts's own ConnectorConfiguration.configuration
+// holds and answers this same field as JSON object text
+// (task/connector-configuration-registration-conformance/configuration-held-as-text,
+// domain/integration/connector-configuration), so toConnectorConfiguration
+// below re-serializes the row's own driver-parsed object back to that text
+// (JSON.stringify) on every read, and insertStatementFor passes the
+// domain's own already-held text straight through as the jsonb column's
+// parameter on every write — letting Postgres' own input function cast that
+// text is the ordinary node-pg pattern for this column type, and it keeps
+// this module free of any concatenation into the statement text itself
+// (SEC-02).
 //
 // Every statement below names "connector_configurations" unqualified, the
 // same convention persistence/migration-runner.ts's own header already
@@ -78,16 +84,28 @@ export class RelationalConnectorConfigurationStore implements IConnectorConfigur
   }
 }
 
-/** Maps one row to the ConnectorConfiguration the port promises. */
+/**
+ * Maps one row to the ConnectorConfiguration the port promises —
+ * re-serializing the row's own driver-parsed object back into the JSON
+ * object text the domain type now holds
+ * (task/connector-configuration-registration-conformance/configuration-held-as-text).
+ */
 function toConnectorConfiguration(row: IConnectorConfigurationRow): ConnectorConfiguration {
-  return { connector: row.connector, configuration: row.configuration };
+  return { connector: row.connector, configuration: JSON.stringify(row.configuration) };
 }
 
-/** The one INSERT every kept and incoming configuration runs through writeConnectorConfigurations' own whole replace. */
+/**
+ * The one INSERT every kept and incoming configuration runs through
+ * writeConnectorConfigurations' own whole replace — configuration is passed
+ * through as is: the domain type already holds it as the JSON object text
+ * this jsonb column's own input function expects
+ * (task/connector-configuration-registration-conformance/configuration-held-as-text),
+ * so this statement no longer re-serializes it.
+ */
 function insertStatementFor(configuration: ConnectorConfiguration): IStatement {
   return {
     text: `INSERT INTO ${CONNECTOR_CONFIGURATIONS_TABLE} (connector, configuration) VALUES ($1, $2)`,
-    params: [configuration.connector, JSON.stringify(configuration.configuration)],
+    params: [configuration.connector, configuration.configuration],
   };
 }
 

@@ -22,7 +22,7 @@ import {
 function heldConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { host: 'example.com' },
+    configuration: JSON.stringify({ host: 'example.com' }),
     ...overrides,
   };
 }
@@ -32,7 +32,7 @@ function heldConfiguration(overrides: Partial<ConnectorConfiguration> = {}): Con
 it('answers the wire projection of exactly the configuration its readConnectorConfiguration dependency resolves, performing no held-check of its own', async () => {
   const configuration = heldConfiguration({
     connector: 'a-known-connector',
-    configuration: { host: 'example.com', retries: 3 },
+    configuration: JSON.stringify({ host: 'example.com', retries: 3 }),
   });
   const dependencies: ReadConnectorConfigurationControllerDependencies = {
     readConnectorConfiguration: async () => configuration,
@@ -42,7 +42,7 @@ it('answers the wire projection of exactly the configuration its readConnectorCo
 
   expect(result).toEqual({
     connector: configuration.connector,
-    configuration: JSON.stringify(configuration.configuration),
+    configuration: configuration.configuration,
   });
 });
 

@@ -25,7 +25,7 @@ type ReadConnectorConfigurationMock = ReturnType<
 function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { host: 'example.com', apiKey: 'a-secret' },
+    configuration: JSON.stringify({ host: 'example.com', apiKey: 'a-secret' }),
     ...overrides,
   };
 }
@@ -54,7 +54,7 @@ it('answers 200 with the connector and configuration fields exactly as currently
   app = built.app;
   const configuration = heldConnectorConfiguration({
     connector: 'a-known-connector',
-    configuration: { host: 'example.com', apiKey: 'a-secret' },
+    configuration: JSON.stringify({ host: 'example.com', apiKey: 'a-secret' }),
   });
   built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
@@ -63,7 +63,7 @@ it('answers 200 with the connector and configuration fields exactly as currently
   expect(response.statusCode).toBe(200);
   expect(response.json()).toEqual({
     connector: configuration.connector,
-    configuration: JSON.stringify(configuration.configuration),
+    configuration: configuration.configuration,
   });
   expect(Object.keys(response.json() as object).sort()).toEqual(
     Object.keys(readConnectorConfigurationResponseSchema.shape).sort(),
@@ -77,7 +77,7 @@ it('returns configuration as a JSON string, never a parsed object', async () => 
   app = built.app;
   const configuration = heldConnectorConfiguration({
     connector: 'a-known-connector',
-    configuration: { host: 'example.com', retries: 3, secure: true },
+    configuration: JSON.stringify({ host: 'example.com', retries: 3, secure: true }),
   });
   built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
@@ -98,7 +98,10 @@ it('answers a configuration string that parses back to the same JSON value the c
     nested: { timeout: null },
     note: 'a "quoted" value with a backslash \\ in it',
   };
-  const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: registered });
+  const configuration = heldConnectorConfiguration({
+    connector: 'a-known-connector',
+    configuration: JSON.stringify(registered),
+  });
   built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });
@@ -110,7 +113,10 @@ it('answers a configuration string that parses back to the same JSON value the c
 it('answers a configuration string that parses back to an empty object when the connector was registered with no configuration keys at all', async () => {
   const built = buildTestApp();
   app = built.app;
-  const configuration = heldConnectorConfiguration({ connector: 'a-known-connector', configuration: {} });
+  const configuration = heldConnectorConfiguration({
+    connector: 'a-known-connector',
+    configuration: JSON.stringify({}),
+  });
   built.readConnectorConfiguration.mockResolvedValueOnce(configuration);
 
   const response = await app.inject({ method: 'GET', url: '/v1/connectors/a-known-connector' });

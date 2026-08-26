@@ -21,16 +21,12 @@
 // ConnectorConfigurationRegistryService instance registerConnector and
 // readConnectorConfiguration already share.
 //
-// This route previously answered each entry's configuration as the plain
-// object the registry holds it as (PaginatedResponse<ConnectorConfiguration>,
-// reusing connector-configuration.ts's own domain type directly for the
-// response) rather than the JSON string domain/integration/connector-configuration
-// declares configuration's type to be — the same divergence
-// read-connector-configuration.controller.ts answered for its own single-entry
-// response, and corrected here the same way
-// (task/registry-reads/connector-configuration-response-wire-type):
-// handleListConnectorConfigurationsRequest now maps every entry through
-// read-connector-configuration.controller.ts's own exported
+// Each entry's configuration is answered exactly as the registry now holds
+// it — JSON object text, the type domain/integration/connector-configuration
+// declares
+// (task/connector-configuration-registration-conformance/configuration-held-as-text)
+// — through handleListConnectorConfigurationsRequest mapping every entry
+// through read-connector-configuration.controller.ts's own exported
 // toReadConnectorConfigurationResponse (MNT-03 — the identical per-entry
 // projection is called, not restated a second time) before the page ever
 // answers.
@@ -78,9 +74,9 @@ export type ListConnectorConfigurationsControllerDependencies = {
  * read-connector-configuration.controller.ts's own
  * toReadConnectorConfigurationResponse (MNT-03) so each entry's
  * configuration answers as the JSON string
- * domain/integration/connector-configuration declares
- * (task/registry-reads/connector-configuration-response-wire-type), never
- * the plain object the registry holds it as internally.
+ * domain/integration/connector-configuration declares — exactly what the
+ * registry now holds it as internally too
+ * (task/connector-configuration-registration-conformance/configuration-held-as-text).
  */
 export async function handleListConnectorConfigurationsRequest(
   dependencies: ListConnectorConfigurationsControllerDependencies,

@@ -17,16 +17,13 @@
 // holds them under (connector, configuration) — configuration held as the
 // JSON string domain/integration/connector-configuration declares its type
 // to be, the same wire representation register-connector.dto.ts's own
-// registerConnectorBodySchema already carries it as, rather than the plain
-// object the registry holds it as internally
-// (connector-configuration.ts's own ConnectorConfiguration type). This
-// corrects a prior divergence (task/registry-reads/connector-configuration-response-wire-type):
-// this schema previously declared configuration as z.record(z.string(),
-// z.unknown()), answering the registry's own already-parsed object directly
-// rather than the domain's declared string; read-connector-configuration.controller.ts's
-// own toReadConnectorConfigurationResponse is what now re-serializes the
-// held object back to that JSON string before it ever reaches this schema's
-// shape.
+// registerConnectorBodySchema already carries it as, and the same
+// representation connector-configuration.ts's own ConnectorConfiguration
+// type now holds it as internally too
+// (task/connector-configuration-registration-conformance/configuration-held-as-text)
+// — read-connector-configuration.controller.ts's own
+// toReadConnectorConfigurationResponse answers this field exactly as the
+// registry holds it, with no re-serialization step.
 
 import { z } from 'zod';
 

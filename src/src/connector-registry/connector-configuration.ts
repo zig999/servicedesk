@@ -21,11 +21,18 @@
  * at call time, as the registry holds it: the connector identity — exactly
  * the value domain/integration/capability's own "connector" attribute
  * names — paired with its own opaque configuration payload, held and
- * returned whole rather than interpreted by this module.
+ * returned whole rather than interpreted by this module. configuration is
+ * JSON object text, exactly the type domain/integration/connector-configuration
+ * declares ("Its configuration is held and answered as JSON object text,
+ * whatever form a registration supplied it in.") — a well-formed
+ * registration text or object is resolved to this text form by
+ * connector-configuration-registry.service.ts's own wellFormedConfiguration
+ * before this type is ever populated
+ * (rules/integration/a-connector-configuration-holds-a-well-formed-object).
  */
 export type ConnectorConfiguration = {
   readonly connector: string;
-  readonly configuration: Readonly<Record<string, unknown>>;
+  readonly configuration: string;
 };
 
 /**

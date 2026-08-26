@@ -47,7 +47,10 @@
 
 import type { Capability } from '../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../capability-registry/capability-query.port.js';
-import type { ConnectorConfigurationResolution } from '../connector-registry/connector-configuration-registry.service.js';
+import {
+  parsedConnectorConfiguration,
+  type ConnectorConfigurationResolution,
+} from '../connector-registry/connector-configuration-registry.service.js';
 import type { AssembledConnectorRequest } from '../http-connector/connector-call-descriptor.js';
 import { issueConnectorHttpCall } from '../http-connector/connector-http-issuer.js';
 import { resolveConnectorRequest } from '../http-connector/connector-request-resolver.js';
@@ -242,7 +245,16 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
    * unavailable ending naming ConnectorConfigurationNotRegisteredError
    * where the connector-configuration registry holds none for it — a
    * registration bug, resolved as data rather than as a fault it raises
-   * (rules/integration/an-unresolvable-observation-ends-unavailable).
+   * (rules/integration/an-unresolvable-observation-ends-unavailable). The
+   * registry now holds and answers configuration as JSON object text
+   * (task/connector-configuration-registration-conformance/configuration-held-as-text),
+   * so the held resolution is parsed back into the plain object this
+   * adapter derives its call from through
+   * connector-configuration-registry.service.ts's own
+   * parsedConnectorConfiguration — the one seam between the registry's own
+   * text representation and this consumer, reused rather than re-derived
+   * (MNT-03), the same call test-connector.controller.ts's own
+   * resolveTestedConnectorConfiguration makes for its own identical need.
    */
   private async resolveConnectorConfiguration(
     connector: string,
@@ -251,7 +263,7 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
     if (!resolution.held) {
       return { ok: false, outcome: unavailableFor(new ConnectorConfigurationNotRegisteredError(connector)) };
     }
-    return { ok: true, value: resolution.configuration.configuration };
+    return { ok: true, value: parsedConnectorConfiguration(resolution.configuration) };
   }
 
   /**

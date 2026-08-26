@@ -6,7 +6,10 @@
 // is ever read or validated, whatever shape it takes. The store boundary is an in-memory stand-in
 // (TST-03), so no test here touches a relational database.
 import { expect, it } from 'vitest';
-import { ConnectorConfigurationRegistryService } from '../../../connector-registry/connector-configuration-registry.service.js';
+import {
+  ConnectorConfigurationRegistryService,
+  parsedConnectorConfiguration,
+} from '../../../connector-registry/connector-configuration-registry.service.js';
 import type { IConnectorConfigurationStore } from '../../../connector-registry/connector-configuration-store.port.js';
 import type {
   ConnectorConfiguration,
@@ -38,7 +41,7 @@ class InMemoryConnectorConfigurationStore implements IConnectorConfigurationStor
 function heldConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { whatever: 'the connector alone interprets this' },
+    configuration: JSON.stringify({ whatever: 'the connector alone interprets this' }),
     ...overrides,
   };
 }
@@ -116,7 +119,7 @@ it('accepts a configuration payload of any shape, holding it unchanged rather th
 
   const registered = await registry.registerConnector(completeRegistration({ configuration }));
 
-  expect(registered.configuration).toEqual(configuration);
+  expect(JSON.parse(registered.configuration)).toEqual(configuration);
 });
 
 it('persists an accepted registration through the store', async () => {
@@ -129,12 +132,14 @@ it('persists an accepted registration through the store', async () => {
 });
 
 it('replaces the held configuration when a connector re-registers, rather than holding a second row', async () => {
-  const store = new InMemoryConnectorConfigurationStore([heldConfiguration({ configuration: { version: 'old' } })]);
+  const store = new InMemoryConnectorConfigurationStore([
+    heldConfiguration({ configuration: JSON.stringify({ version: 'old' }) }),
+  ]);
   const registry = new ConnectorConfigurationRegistryService(store);
 
   await registry.registerConnector(completeRegistration({ configuration: { version: 'new' } }));
 
-  expect(store.held()).toEqual([heldConfiguration({ configuration: { version: 'new' } })]);
+  expect(store.held()).toEqual([heldConfiguration({ configuration: JSON.stringify({ version: 'new' }) })]);
 });
 
 it("keeps every other connector's configuration untouched when one connector registers", async () => {
@@ -257,7 +262,7 @@ it('accepts a registration whose configuration text is valid JSON object text, h
     completeRegistration({ configuration: '{"whatever":"the connector alone interprets this"}' }),
   );
 
-  expect(registered.configuration).toEqual({ whatever: 'the connector alone interprets this' });
+  expect(JSON.parse(registered.configuration)).toEqual({ whatever: 'the connector alone interprets this' });
 });
 
 // ------------------------------------------------------------------ read-connector-configuration's own service-level wrapper
@@ -307,4 +312,99 @@ it('propagates a failure the underlying store read itself raises, rather than re
   expect(outcome).toBeInstanceOf(Error);
   expect(outcome).not.toBeInstanceOf(ConnectorConfigurationNotFoundError);
   expect((outcome as Error).message).toBe('the store is unavailable');
+});
+
+// ------------------------------------------------------------------ task/connector-configuration-registration-conformance/configuration-held-as-text
+// Proof for this task's own three criteria: a connector configuration read back after
+// registration answers `configuration` as JSON object text — never a parsed object — from both
+// read-connector-configuration's own service-level wrapper (readConnectorConfigurationOrThrow,
+// exactly the dependency read-connector-configuration.controller.ts is wired to) and from
+// listConnectorConfigurations, and a registration whose configuration was supplied as a parsed
+// object round-trips to that same content as text on both of those reads. Every test below
+// registers first, through registerConnector, and only then reads — through a second, separate
+// call — so a fixture already pre-built as text (this file's own heldConfiguration() default)
+// cannot stand in for the registry's own resolution of an object-supplied registration.
+
+it('answers configuration as a JSON text string, never a parsed object, through readConnectorConfigurationOrThrow after a registration supplied it as a parsed object', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  const suppliedObject = { host: 'example.com', retries: 3 };
+  await registry.registerConnector(completeRegistration({ connector: 'a-connector', configuration: suppliedObject }));
+
+  const resolved = await registry.readConnectorConfigurationOrThrow('a-connector');
+
+  expect(typeof resolved.configuration).toBe('string');
+});
+
+it('answers a configuration through readConnectorConfigurationOrThrow that parses back to exactly the object the connector was registered with', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  const suppliedObject = { host: 'example.com', retries: 3, nested: { timeout: null }, tags: ['a', 'b'] };
+  await registry.registerConnector(completeRegistration({ connector: 'a-connector', configuration: suppliedObject }));
+
+  const resolved = await registry.readConnectorConfigurationOrThrow('a-connector');
+
+  expect(JSON.parse(resolved.configuration)).toEqual(suppliedObject);
+});
+
+it("answers every entry's configuration as a JSON text string, never a parsed object, through listConnectorConfigurations after registrations each supplied as a parsed object", async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  await registry.registerConnector(
+    completeRegistration({ connector: 'connector-a', configuration: { endpoint: 'https://a.example.test' } }),
+  );
+  await registry.registerConnector(
+    completeRegistration({ connector: 'connector-b', configuration: { endpoint: 'https://b.example.test', retries: 2 } }),
+  );
+
+  const page = await registry.listConnectorConfigurations({ offset: 0, limit: 10 });
+
+  expect(page.data).toHaveLength(2);
+  expect(page.data.every((entry) => typeof entry.configuration === 'string')).toBe(true);
+});
+
+it("answers each entry through listConnectorConfigurations parsing back to exactly the object its own connector was registered with", async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  const registeredA = { endpoint: 'https://a.example.test', tags: ['x', 'y'] };
+  const registeredB = { endpoint: 'https://b.example.test', retries: 2, active: false };
+  await registry.registerConnector(completeRegistration({ connector: 'connector-a', configuration: registeredA }));
+  await registry.registerConnector(completeRegistration({ connector: 'connector-b', configuration: registeredB }));
+
+  const page = await registry.listConnectorConfigurations({ offset: 0, limit: 10 });
+
+  const byConnector = new Map(page.data.map((entry) => [entry.connector, entry.configuration]));
+  expect(JSON.parse(byConnector.get('connector-a') as string)).toEqual(registeredA);
+  expect(JSON.parse(byConnector.get('connector-b') as string)).toEqual(registeredB);
+});
+
+// ------------------------------------------------------------------ inference: a string-supplied configuration is held verbatim, never re-serialized
+
+it('holds a string-supplied configuration exactly as given, not re-parsed and re-serialized, so its own non-canonical formatting survives a read back through readConnectorConfigurationOrThrow', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+  // Spacing and key order JSON.stringify(JSON.parse(...)) would not reproduce, so a re-serialization would fail this.
+  const suppliedText = '{ "b": 2, "a": 1 }';
+  await registry.registerConnector(completeRegistration({ connector: 'a-connector', configuration: suppliedText }));
+
+  const resolved = await registry.readConnectorConfigurationOrThrow('a-connector');
+
+  expect(resolved.configuration).toBe(suppliedText);
+});
+
+// ------------------------------------------------------------------ inference: parsedConnectorConfiguration's own defensive floor
+
+it('parsedConnectorConfiguration parses a well-formed held configuration back into exactly the object its own text holds', () => {
+  const held: ConnectorConfiguration = { connector: 'a-connector', configuration: JSON.stringify({ host: 'example.com' }) };
+
+  expect(parsedConnectorConfiguration(held)).toEqual({ host: 'example.com' });
+});
+
+it('parsedConnectorConfiguration throws ConnectorConfigurationNotWellFormedError, naming the same reason the write side raises, for a held configuration whose text does not parse to a plain object', () => {
+  const corrupted: ConnectorConfiguration = { connector: 'a-connector', configuration: '[1,2,3]' };
+
+  let refusal: unknown;
+  try {
+    parsedConnectorConfiguration(corrupted);
+  } catch (error) {
+    refusal = error;
+  }
+
+  expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
+  expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
 });

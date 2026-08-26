@@ -5,9 +5,12 @@
 // task/registry-reads/connector-configuration-response-wire-type,
 // contracts/integration/connector-configuration-registry): transport in,
 // transport out, no business decision of its own — the connector identity
-// travels through unchanged, and configuration is re-serialized to the
-// wire's own JSON-string representation (toReadConnectorConfigurationResponse
-// below) rather than answered as the plain object the registry holds it as.
+// travels through unchanged, and configuration is answered exactly as the
+// registry holds and answers it: JSON object text
+// (domain/integration/connector-configuration,
+// task/connector-configuration-registration-conformance/configuration-held-as-text)
+// — never re-parsed or re-serialized here (toReadConnectorConfigurationResponse
+// below).
 // Receives its one dependency as a plain function type (ARC-01) — the
 // ConnectorConfigurationRegistryService's own
 // readConnectorConfigurationOrThrow wrapper — rather than constructing
@@ -39,12 +42,12 @@
 //
 // toReadConnectorConfigurationResponse projects the domain's own
 // ConnectorConfiguration (connector-configuration.ts) — whose configuration
-// field the registry holds as a plain object — onto the wire response,
-// re-serializing that object back to the JSON string
-// domain/integration/connector-configuration declares configuration's type
-// to be (task/registry-reads/connector-configuration-response-wire-type),
-// consistent with the JSON text register-connector.dto.ts's own
-// registerConnectorBodySchema already carries it as. Exported so
+// field the registry now holds as JSON object text, exactly the type
+// domain/integration/connector-configuration declares
+// (task/connector-configuration-registration-conformance/configuration-held-as-text)
+// — onto the wire response unchanged, consistent with the JSON text
+// register-connector.dto.ts's own registerConnectorBodySchema already
+// carries it as. Exported so
 // list-connector-configurations.controller.ts's own per-item projection can
 // call this exact function rather than restating it (MNT-03) — both routes
 // answer the same connector-configuration wire shape, so the projection
@@ -85,14 +88,13 @@ export async function handleReadConnectorConfigurationRequest(
 /**
  * Projects the domain's own connector configuration
  * (connector-configuration.ts's own ConnectorConfiguration) onto the wire
- * response: connector unchanged, and configuration re-serialized from the
- * plain object the registry holds it as back into the JSON string
- * domain/integration/connector-configuration declares its type to be
- * (task/registry-reads/connector-configuration-response-wire-type) —
- * parsing that string back reproduces the same JSON value the connector was
- * registered with, since connector-configuration-registry.service.ts's own
- * wellFormedConfiguration only ever holds a configuration that already
- * parsed from well-formed JSON text.
+ * response: connector unchanged, and configuration answered exactly as the
+ * registry holds it — JSON object text, exactly the type
+ * domain/integration/connector-configuration declares
+ * (task/connector-configuration-registration-conformance/configuration-held-as-text)
+ * — never re-parsed or re-serialized, since the registry already holds and
+ * answers it as text either way it was originally supplied
+ * (rules/integration/a-connector-configuration-holds-a-well-formed-object).
  *
  * Exported so list-connector-configurations.controller.ts's own per-item
  * projection can reuse this exact function rather than restating it
@@ -104,6 +106,6 @@ export function toReadConnectorConfigurationResponse(
 ): ReadConnectorConfigurationResponseDto {
   return {
     connector: configuration.connector,
-    configuration: JSON.stringify(configuration.configuration),
+    configuration: configuration.configuration,
   };
 }

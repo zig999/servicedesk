@@ -154,16 +154,18 @@ function pageCountOf(total: number, limit: number): number {
 /** A registration that declared the minimum required shape, as the type then knows it. */
 type DeclaredRegistration = ConnectorConfigurationRegistration & {
   readonly connector: string;
-  readonly configuration: Readonly<Record<string, unknown>>;
+  readonly configuration: string;
 };
 
 /**
  * Holds one registration to the minimum shape this registry requires,
  * refusing what departs from it, and answers the configuration as the
- * registry will hold it. The well-formedness check runs first
- * (wellFormedConfiguration), since it is what turns this route's own
- * configuration text into the plain object the completeness check below,
- * and the registry itself, both expect.
+ * registry will hold it — JSON object text
+ * (domain/integration/connector-configuration), never the parsed object.
+ * The well-formedness check runs first (wellFormedConfiguration), since it
+ * is what resolves this registration's own configuration — supplied as
+ * that text or as the object it parses to — to the text form the
+ * completeness check below, and the registry itself, both now expect.
  */
 function heldConfiguration(registration: ConnectorConfigurationRegistration): ConnectorConfiguration {
   const resolved: ConnectorConfigurationRegistration = {
@@ -175,26 +177,32 @@ function heldConfiguration(registration: ConnectorConfigurationRegistration): Co
 }
 
 /**
- * Resolves a registration's configuration to the plain object the
- * completeness check below and the registry both expect, before that check
- * ever runs. A value already given as an object — undeclared, null, an
- * array, or a genuine plain object — passes through unchanged, exactly as
- * this registry always held it. A value given as a string is this route's
- * own wire representation of configuration text
- * (task/connector-configuration-authoring/register-connector-route): parsed
- * as JSON here, refusing it before any write where it fails JSON.parse or
- * parses to something other than a plain object — not an array, not a
- * primitive
- * (rules/integration/a-connector-configuration-holds-a-well-formed-object)
- * — the same discipline capability-registry.service.ts's own
- * refuseMalformedSchemas holds for a capability's two schema strings,
- * extended here with the object-shape check this rule additionally
- * requires.
+ * Resolves a registration's configuration to the JSON object text the
+ * completeness check below and the registry both now hold and answer it as
+ * (domain/integration/connector-configuration, rules/integration/a-connector-configuration-holds-a-well-formed-object
+ * — "a registration may supply the configuration as that text or as the
+ * object it parses to, and the registry holds and answers it as text either
+ * way"). A value given as a string is held exactly as supplied once it is
+ * confirmed to parse to a plain object — not an array, not a primitive —
+ * refusing it before any write where it fails JSON.parse or parses to
+ * anything else. A value given as a genuine plain object is re-serialized to
+ * that same text form (JSON.stringify) before being held. Anything else —
+ * undeclared, null, an array, a primitive — passes through unchanged for the
+ * completeness check below to catch, exactly as this registry always did for
+ * a registration missing this shape.
  */
 function wellFormedConfiguration(configuration: unknown): unknown {
-  if (typeof configuration !== 'string') {
-    return configuration;
+  if (typeof configuration === 'string') {
+    return textConfigurationOrThrow(configuration);
   }
+  if (isPlainObject(configuration)) {
+    return JSON.stringify(configuration);
+  }
+  return configuration;
+}
+
+/** Parses one candidate configuration text to confirm it is syntactically valid JSON that parses to a plain object, refusing it otherwise, and answers the text itself unchanged once confirmed — never the parsed value, since the registry holds text (rules/integration/a-connector-configuration-holds-a-well-formed-object). */
+function textConfigurationOrThrow(configuration: string): string {
   let parsed: unknown;
   try {
     parsed = JSON.parse(configuration);
@@ -204,17 +212,51 @@ function wellFormedConfiguration(configuration: unknown): unknown {
   if (!isPlainObject(parsed)) {
     throw new ConnectorConfigurationNotWellFormedError('configuration does not parse to a JSON object');
   }
+  return configuration;
+}
+
+/**
+ * Parses one held connector configuration's own JSON object text back into
+ * the plain object a connector's own call needs to derive its request — the
+ * one seam between this registry's own text representation
+ * (domain/integration/connector-configuration,
+ * rules/integration/a-connector-configuration-holds-a-well-formed-object)
+ * and every consumer that must derive an HTTP call from it rather than read
+ * it back as is. Exported so http-declarative-observation-source.adapter.ts's
+ * own resolveConnectorConfiguration and test-connector.controller.ts's own
+ * resolveTestedConnectorConfiguration both call this rather than each
+ * JSON.parse-ing the held text a second time (MNT-03). Never throws for a
+ * configuration this registry itself holds: the text was already confirmed
+ * to parse to a plain object before it was ever written
+ * (textConfigurationOrThrow above). The isPlainObject guard below is a
+ * defensive floor for a value this method's own invariant says can never
+ * fail it (TYP-02's own narrowing-guard rule for the type assertion this
+ * parse would otherwise be) — no specification node states what a corrupted
+ * persisted row answers, so raising the same well-formedness error the write
+ * side already raises is this function's own inference over that silence,
+ * never a path a passing registration reaches.
+ */
+export function parsedConnectorConfiguration(
+  configuration: ConnectorConfiguration,
+): Readonly<Record<string, unknown>> {
+  const parsed: unknown = JSON.parse(configuration.configuration);
+  if (!isPlainObject(parsed)) {
+    throw new ConnectorConfigurationNotWellFormedError('configuration does not parse to a JSON object');
+  }
   return parsed;
 }
 
 /**
  * Refuses a registration that departs from the minimum shape this registry
  * requires: an undeclared connector identity, or a configuration payload
- * that is not a plain object. What that payload itself must contain to
- * reach any particular external system is left entirely to the connector it
- * names — domain/investigation/subject states a connector "resolves
- * internally ... which of the attributes it needs" — so nothing here reads
- * or constrains a key inside it.
+ * that did not resolve to held JSON object text (wellFormedConfiguration
+ * above — a value given as a string or a genuine plain object resolves to
+ * that text; anything else reaches this check unchanged and is refused
+ * here). What that payload itself must contain to reach any particular
+ * external system is left entirely to the connector it names —
+ * domain/investigation/subject states a connector "resolves internally ...
+ * which of the attributes it needs" — so nothing here reads or constrains a
+ * key inside it.
  */
 function refuseRegistrationDepartures(
   registration: ConnectorConfigurationRegistration,
@@ -231,7 +273,7 @@ function registrationProblems(registration: ConnectorConfigurationRegistration):
   if (isUndeclared(registration.connector)) {
     problems.push('connector is undeclared');
   }
-  if (!isPlainObject(registration.configuration)) {
+  if (typeof registration.configuration !== 'string') {
     problems.push('configuration is not a plain object');
   }
   return problems;

@@ -181,7 +181,7 @@ function stubRegisterConnector(): RegisterConnectorControllerDependencies {
   return {
     registerConnector: async () => ({
       connector: 'a-connector',
-      configuration: {},
+      configuration: JSON.stringify({}),
     }),
   };
 }
@@ -189,7 +189,7 @@ function stubRegisterConnector(): RegisterConnectorControllerDependencies {
 /** A minimally valid ReadConnectorConfigurationControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed ConnectorConfiguration so read-connector-configuration-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubReadConnectorConfiguration(): ReadConnectorConfigurationControllerDependencies {
   return {
-    readConnectorConfiguration: async () => ({ connector: 'a-connector', configuration: {} }),
+    readConnectorConfiguration: async () => ({ connector: 'a-connector', configuration: JSON.stringify({}) }),
   };
 }
 
@@ -209,7 +209,10 @@ function stubTestConnector(): TestConnectorControllerDependencies {
       held: true,
       capability: { name, version, nature: 'read-only', input_schema: 'a-schema', output_schema: 'a-schema', timeout: 1000, connector: 'a-connector', concept: 'a-concept' },
     }),
-    readConnectorConfiguration: async (connector) => ({ held: true, configuration: { connector, configuration: {} } }),
+    readConnectorConfiguration: async (connector) => ({
+      held: true,
+      configuration: { connector, configuration: JSON.stringify({}) },
+    }),
     httpClient: (async () => new Response('', { status: 200 })) as typeof fetch,
   };
 }

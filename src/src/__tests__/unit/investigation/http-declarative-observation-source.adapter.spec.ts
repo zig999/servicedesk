@@ -120,7 +120,9 @@ class FakeConnectorConfigurationQuery implements IConnectorConfigurationQuery {
 
   public async readConnectorConfiguration(connector: string): Promise<ConnectorConfigurationResolution> {
     const configuration = this.held.get(connector);
-    return configuration === undefined ? { held: false, connector } : { held: true, configuration: { connector, configuration } };
+    return configuration === undefined
+      ? { held: false, connector }
+      : { held: true, configuration: { connector, configuration: JSON.stringify(configuration) } };
   }
 }
 

@@ -46,7 +46,7 @@ function validBody(overrides: Record<string, unknown> = {}): Record<string, unkn
 function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { key: 'value' },
+    configuration: JSON.stringify({ key: 'value' }),
     ...overrides,
   };
 }
@@ -113,8 +113,8 @@ it("answers each of two requests at the same :connector with that request's own 
   const built = buildTestApp();
   app = built.app;
   built.registerConnector
-    .mockResolvedValueOnce(heldConnectorConfiguration({ configuration: { key: 'first' } }))
-    .mockResolvedValueOnce(heldConnectorConfiguration({ configuration: { key: 'second' } }));
+    .mockResolvedValueOnce(heldConnectorConfiguration({ configuration: JSON.stringify({ key: 'first' }) }))
+    .mockResolvedValueOnce(heldConnectorConfiguration({ configuration: JSON.stringify({ key: 'second' }) }));
 
   const first = await app.inject({ method: 'PUT', url: '/v1/connectors/a-connector', payload: validBody() });
   const second = await app.inject({
@@ -125,8 +125,8 @@ it("answers each of two requests at the same :connector with that request's own 
 
   expect(first.statusCode).toBe(200);
   expect(second.statusCode).toBe(200);
-  expect((first.json() as ConnectorConfiguration).configuration).toEqual({ key: 'first' });
-  expect((second.json() as ConnectorConfiguration).configuration).toEqual({ key: 'second' });
+  expect(JSON.parse((first.json() as ConnectorConfiguration).configuration)).toEqual({ key: 'first' });
+  expect(JSON.parse((second.json() as ConnectorConfiguration).configuration)).toEqual({ key: 'second' });
   expect(built.registerConnector).toHaveBeenCalledTimes(2);
 });
 

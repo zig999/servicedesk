@@ -78,14 +78,14 @@ function heldConnectorConfigurationResolution(
     held: true,
     configuration: {
       connector: 'a-connector',
-      configuration: {
+      configuration: JSON.stringify({
         address: 'https://api.example.com/subjects/${subject:id}',
         method: 'GET',
         headers: { 'x-requester': '${requester}' },
         responseMap: {},
         statusMap: {},
         ...configurationOverrides,
-      },
+      }),
     },
   };
 }

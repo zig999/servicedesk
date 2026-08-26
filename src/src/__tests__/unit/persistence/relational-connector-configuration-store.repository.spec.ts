@@ -19,7 +19,7 @@ import { RelationalConnectorConfigurationStore } from '../../../persistence/rela
 function connectorConfigurationRecord(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
-    configuration: { method: 'GET', address: 'https://example.test' },
+    configuration: JSON.stringify({ method: 'GET', address: 'https://example.test' }),
     ...overrides,
   };
 }
@@ -63,7 +63,13 @@ it('answers a read with the connector identity and its configuration exactly as 
 it("answers the second call's own rows, never a value the first call already answered", async () => {
   const firstRow = connectorConfigurationRecord({ connector: 'first' });
   const secondRow = connectorConfigurationRecord({ connector: 'second' });
-  const query = vi.fn().mockResolvedValueOnce({ rows: [firstRow] }).mockResolvedValueOnce({ rows: [secondRow] });
+  // The mocked query answers what the real jsonb-column driver hands back — the parsed object
+  // (see this store's own header comment) — never the JSON text form connectorConfigurationRecord()
+  // itself now holds, since that text form is the domain's own representation, resolved by
+  // toConnectorConfiguration only after this row is read.
+  const query = vi.fn()
+    .mockResolvedValueOnce({ rows: [{ ...firstRow, configuration: JSON.parse(firstRow.configuration) }] })
+    .mockResolvedValueOnce({ rows: [{ ...secondRow, configuration: JSON.parse(secondRow.configuration) }] });
   const store = new RelationalConnectorConfigurationStore(fakeBareConnection(query));
 
   const first = await store.readConnectorConfigurations();

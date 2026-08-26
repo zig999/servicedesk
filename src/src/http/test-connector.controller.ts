@@ -44,7 +44,10 @@
 
 import type { Capability } from '../capability-registry/capability.js';
 import type { CapabilityIdentityResolution } from '../capability-registry/capability-registry.service.js';
-import type { ConnectorConfigurationResolution } from '../connector-registry/connector-configuration-registry.service.js';
+import {
+  parsedConnectorConfiguration,
+  type ConnectorConfigurationResolution,
+} from '../connector-registry/connector-configuration-registry.service.js';
 import type { AssembledConnectorRequest } from '../http-connector/connector-call-descriptor.js';
 import { connectorRequestUrl, issueConnectorHttpCall } from '../http-connector/connector-http-issuer.js';
 import { resolveConnectorRequest } from '../http-connector/connector-request-resolver.js';
@@ -107,7 +110,16 @@ async function resolveTestedCapability(
   return resolution.capability;
 }
 
-/** Resolves the named connector's own opaque call configuration, refusing where the registry holds none for it. */
+/**
+ * Resolves the named connector's own opaque call configuration, refusing
+ * where the registry holds none for it, and parses the registry's own held
+ * JSON object text back into the plain object this route derives a call
+ * from — connector-configuration-registry.service.ts's own
+ * parsedConnectorConfiguration, the one seam between the registry's own
+ * text representation
+ * (task/connector-configuration-registration-conformance/configuration-held-as-text)
+ * and this consumer, reused rather than re-derived (MNT-03).
+ */
 async function resolveTestedConnectorConfiguration(
   dependencies: TestConnectorControllerDependencies,
   connector: string,
@@ -116,7 +128,7 @@ async function resolveTestedConnectorConfiguration(
   if (!resolution.held) {
     throw new ConnectorConfigurationNotFoundError(connector);
   }
-  return resolution.configuration.configuration;
+  return parsedConnectorConfiguration(resolution.configuration);
 }
 
 /** An env substitute answering every credential placeholder's own lookup with the redaction marker rather than a real secret value, so resolveConnectorRequest's own substitution mechanism produces a redacted echo without this module re-deriving it (MNT-03). */
