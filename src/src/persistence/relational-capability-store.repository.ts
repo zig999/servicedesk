@@ -17,18 +17,13 @@
 // database-access.ts already declares, are the only things this file names
 // for the pool it is given (STK-05).
 //
-// Every statement below is schema-qualified as public.capabilities, the
-// same convention persistence/migration-runner.ts's own header and
-// database-access.spec.ts's own proof already document at length: this
-// project's DATABASE_URL reaches Postgres through a transaction-pooling
-// endpoint that can hand back a physical connection still carrying an
-// unrelated, already-finished session's own search_path, so an unqualified
-// name run outside an already-open transaction — as readCapabilities' own
-// SELECT is — could otherwise resolve against whatever schema happened to
-// be ambient rather than against public. Inside writeCapabilities' own
-// runInTransaction the qualification is likewise kept, even though that
-// helper has already reset search_path to public itself, so every
-// statement below reads the same way regardless of which path runs it.
+// Every statement below names "capabilities" unqualified, the same
+// convention persistence/migration-runner.ts's own header already documents
+// at length: it resolves against whatever schema the connecting role's own
+// server-side default names, safe to trust under this project's
+// transaction-pooling DATABASE_URL — true of readCapabilities' own SELECT,
+// run outside an already-open transaction, exactly as it is of
+// writeCapabilities' own runInTransaction.
 import type { ICapabilityStore } from '../capability-registry/capability-store.port.js';
 import { CAPABILITY_NATURES, type Capability, type CapabilityNature } from '../capability-registry/capability.js';
 import { CapabilityStoreError } from '../errors/capability-store.error.js';
@@ -51,7 +46,7 @@ interface ICapabilityRow {
 const CAPABILITY_NATURE_VALUES: ReadonlySet<string> = new Set<string>(CAPABILITY_NATURES);
 
 /** Schema-qualified table name, named once and reused across every statement below rather than repeated as a literal three times over (TYP-04) — the same convention persistence/migration-runner.ts's own BOOKKEEPING_TABLE already follows. */
-const CAPABILITIES_TABLE = 'public.capabilities';
+const CAPABILITIES_TABLE = 'capabilities';
 
 /**
  * The relational adapter of the registry's store port: every registration

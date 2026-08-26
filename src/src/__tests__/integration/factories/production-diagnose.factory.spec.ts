@@ -182,21 +182,21 @@ function freshVocabulary(): IVocabulary {
 
 /** Every row one test's own vocabulary needs, inserted directly against the real tables — the glossary terms, the concept, its capability (a JSON-Schema output_schema, never read for its own field names since every judged hypothesis here falls back to inconclusive before citation validation ever runs), and the case_versions row the investigation write's own foreign key requires. */
 async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [vocabulary.subjectType]);
-  await pool.query('INSERT INTO public.subject_attributes (name) VALUES ($1)', [vocabulary.subjectAttribute]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [vocabulary.fallbackOutcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [vocabulary.action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [vocabulary.recipient]);
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
-  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, vocabulary.subjectType]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [vocabulary.subjectType]);
+  await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [vocabulary.subjectAttribute]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [vocabulary.fallbackOutcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [vocabulary.action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [vocabulary.recipient]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, vocabulary.subjectType]);
   await pool.query(
-    `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+    `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
      VALUES ($1, '1.0.0', 'read-only', 'input-schema', $2, 5000, 'contract-status-connector', $3)`,
     [vocabulary.capabilityName, JSON.stringify({ type: 'object', properties: { 'a-field': { type: 'string' } } }), vocabulary.concept],
   );
-  await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [vocabulary.caseSlug]);
+  await pool.query('INSERT INTO cases (slug) VALUES ($1)', [vocabulary.caseSlug]);
   await pool.query(
-    `INSERT INTO public.case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
+    `INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
     [vocabulary.caseSlug, new Date('2024-01-01T00:00:00.000Z'), vocabulary.subjectType, vocabulary.fallbackOutcome, vocabulary.action, vocabulary.recipient],
   );
@@ -205,22 +205,22 @@ async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
 /** Every row this file's own tests wrote for one vocabulary and its investigations, deleted in an order that always satisfies their own foreign keys. */
 async function cleanupVocabulary(vocabulary: IVocabulary, investigationIds: readonly string[]): Promise<void> {
   if (investigationIds.length > 0) {
-    await deleteTolerantly('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
-    await deleteTolerantly('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIds]);
-    await deleteTolerantly('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIds]);
-    await deleteTolerantly('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIds]);
-    await deleteTolerantly('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM investigation_evidence WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIds]);
+    await deleteTolerantly('DELETE FROM investigations WHERE id = ANY($1)', [investigationIds]);
   }
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.caseSlug]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [vocabulary.caseSlug]);
-  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
-  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subjectType]);
-  await deleteTolerantly('DELETE FROM public.subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
-  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
-  await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [vocabulary.action]);
-  await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [vocabulary.recipient]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [vocabulary.caseSlug]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [vocabulary.caseSlug]);
+  await deleteTolerantly('DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [vocabulary.subjectType]);
+  await deleteTolerantly('DELETE FROM subject_attributes WHERE name = $1', [vocabulary.subjectAttribute]);
+  await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [vocabulary.fallbackOutcome]);
+  await deleteTolerantly('DELETE FROM actions WHERE name = $1', [vocabulary.action]);
+  await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [vocabulary.recipient]);
 }
 
 let vocabulary: IVocabulary;

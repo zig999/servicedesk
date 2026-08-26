@@ -121,7 +121,7 @@ it('passes whatever the driver rejected with through to raise unexamined, even w
 
 // ---------------------------------------------------------------- criterion 3, plus inferences 1 and 2
 
-it('opens BEGIN and resets search_path to public before ever handing the connection to the unit of work, then lets a read run through it just as freely as a write would, and only then commits', async () => {
+it('opens BEGIN before ever handing the connection to the unit of work, then lets a read run through it just as freely as a write would, and only then commits', async () => {
   const recordedTexts: string[] = [];
   const { connection } = fakeTransactionConnection(async (text) => {
     recordedTexts.push(text);
@@ -132,7 +132,7 @@ it('opens BEGIN and resets search_path to public before ever handing the connect
     await runStatement(tx, { text: 'SELECT slug FROM cases' }, raiseAsCaseStoreError);
   });
 
-  expect(recordedTexts).toEqual(['BEGIN', 'SET LOCAL search_path TO public', 'SELECT slug FROM cases', 'COMMIT']);
+  expect(recordedTexts).toEqual(['BEGIN', 'SELECT slug FROM cases', 'COMMIT']);
 });
 
 it('commits once the whole unit of work resolves, answering with the value work itself resolved to and releasing the connection back to the pool', async () => {
@@ -166,7 +166,6 @@ it('issues ROLLBACK and never COMMIT — still releasing the connection back to 
 
   expect(recordedTexts).toEqual([
     'BEGIN',
-    'SET LOCAL search_path TO public',
     "SELECT 'first statement ran'",
     'INSERT INTO cases (slug) VALUES ($1)',
     'ROLLBACK',

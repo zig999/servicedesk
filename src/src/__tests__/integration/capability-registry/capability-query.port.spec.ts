@@ -60,8 +60,8 @@ afterAll(async () => {
 
 afterEach(async () => {
   if (conceptsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.capabilities WHERE concept = ANY($1)', [conceptsWrittenByThisTest]);
-    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM capabilities WHERE concept = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
     conceptsWrittenByThisTest = [];
   }
 });
@@ -69,7 +69,7 @@ afterEach(async () => {
 /** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
 async function aFreshConcept(): Promise<string> {
   const name = `capability-query-concept-${randomUUID()}`;
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   conceptsWrittenByThisTest.push(name);
   return name;
 }
@@ -101,7 +101,7 @@ it('answers a changed registration as it now stands, never the record it replace
 it('refuses to resolve over a real holding with two rows answering one concept, inserted directly against the table bypassing every API', async () => {
   const concept = await aFreshConcept();
   await pool.query(
-    `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+    `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8), ($9, $2, $3, $4, $5, $6, $7, $8)`,
     ['a-capability', '1.0.0', 'read-only', '{}', '{}', 5000, 'a-connector', concept, 'another-capability'],
   );

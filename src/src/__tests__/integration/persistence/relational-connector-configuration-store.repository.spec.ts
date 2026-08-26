@@ -5,15 +5,15 @@
 // sent, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen) are proven independently of a
 // real database in this file's own unit-level sibling instead.
 //
-// Every statement below is schema-qualified as public.connector_configurations, the same
-// convention database-access.spec.ts's and isolated-connection.spec.ts's own integration proofs
-// already document at length: this project's DATABASE_URL reaches Postgres through a
-// transaction-pooling endpoint that can hand back a physical connection still carrying an
-// unrelated, already-finished session's own search_path.
+// Every statement below names "connector_configurations" unqualified, resolving against whatever
+// schema the connecting role's own server-side default names, the same convention
+// database-access.spec.ts's and isolated-connection.spec.ts's own integration proofs already
+// document at length (persistence/migration-runner.ts's own header says why that default is safe
+// to trust under this project's transaction-pooling DATABASE_URL).
 //
 // writeConnectorConfigurations() replaces the whole "connector_configurations" table on every
 // call (a DELETE, then one INSERT per given configuration); no other suite in this project writes
-// to public.connector_configurations (this table is new with this task's own migration), so this
+// to connector_configurations (this table is new with this task's own migration), so this
 // file is free to treat the whole table as its own, and its own afterEach wipes it completely.
 //
 // Divergence disclosed here for the same reason database-access.spec.ts and
@@ -51,7 +51,7 @@ let pool: DatabaseConnection;
 
 beforeAll(async () => {
   pool = createDatabaseConnection(requireDatabaseUrl());
-  await pool.query('DELETE FROM public.connector_configurations');
+  await pool.query('DELETE FROM connector_configurations');
 });
 
 afterAll(async () => {
@@ -59,7 +59,7 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  await pool.query('DELETE FROM public.connector_configurations');
+  await pool.query('DELETE FROM connector_configurations');
 });
 
 // ---------------------------------------------------------------- criterion 1
@@ -125,7 +125,7 @@ it('excludes a write with no configuration payload: the write is refused by the 
 
 it('holds only the connector and configuration columns — no transport-specific column such as a method or an address', async () => {
   const { rows } = await pool.query<{ column_name: string }>(
-    "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'connector_configurations' ORDER BY column_name",
+    "SELECT column_name FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'connector_configurations' ORDER BY column_name",
   );
 
   expect(rows.map((row) => row.column_name)).toEqual(['configuration', 'connector']);

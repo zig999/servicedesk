@@ -11,11 +11,10 @@
 // naming a capability the real capabilities table does not hold, and confirms the real foreign key —
 // not only this store's own shape — refuses it, and that nothing from that write survives.
 //
-// Every statement below is schema-qualified as public.<table>, the same convention
-// database-access.spec.ts's, relational-case-store.repository.spec.ts's and
-// relational-capability-store.repository.spec.ts's own integration proofs already document at length:
-// this project's DATABASE_URL reaches Postgres through a transaction-pooling endpoint that can hand
-// back a physical connection still carrying an unrelated, already-finished session's own search_path.
+// Every statement below names its table unqualified, resolving against whatever schema the
+// connecting role's own server-side default names, the same convention database-access.spec.ts's,
+// relational-case-store.repository.spec.ts's and relational-capability-store.repository.spec.ts's
+// own integration proofs already document at length.
 //
 // Every row this file writes carries an investigation-store-prefixed marker plus a fresh randomUUID(),
 // so no test here can collide with a row another suite file wrote, and every row a test actually
@@ -123,19 +122,19 @@ function freshFixtureNames(): IFixtures {
 
 /** Every row one fresh fixture bundle's own foreign keys need, inserted under the given, already-generated names. */
 async function insertFixtureRows(names: IFixtures): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [names.subjectType]);
-  await pool.query('INSERT INTO public.subject_attributes (name) VALUES ($1)', [names.subjectAttribute]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [names.outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [names.action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [names.recipient]);
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [names.concept]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [names.subjectType]);
+  await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [names.subjectAttribute]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [names.outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [names.action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [names.recipient]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [names.concept]);
   await pool.query(
-    'INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+    'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
     [names.capabilityName, names.capabilityVersion, 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', names.concept],
   );
-  await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [names.caseSlug]);
+  await pool.query('INSERT INTO cases (slug) VALUES ($1)', [names.caseSlug]);
   await pool.query(
-    `INSERT INTO public.case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
+    `INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
     [names.caseSlug, names.caseVersion, 'A title', 'A use', new Date('2024-01-01T00:00:00.000Z'), names.subjectType, names.outcome, names.action, names.recipient],
   );
@@ -152,7 +151,7 @@ async function freshFixtures(): Promise<IFixtures> {
 /** One extra glossary concept a test may reference beyond its own fixture bundle's own concept, tracked for this file's own afterEach cleanup. */
 async function freshConcept(): Promise<string> {
   const name = `investigation-store-concept-${randomUUID()}`;
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   extraConceptsWrittenByThisTest.push(name);
   return name;
 }
@@ -201,30 +200,30 @@ function anIntegrationInvestigation(options: IInvestigationOptions): Investigati
 /** Every row this file's own tests wrote under an investigation id — citations, then evaluations, then evidence, then subject attribute-values, then the root row, in the order their own foreign keys require. */
 async function cleanupWrittenInvestigations(): Promise<void> {
   if (investigationIdsWrittenByThisTest.length === 0) return;
-  await pool.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-  await pool.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-  await pool.query('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-  await pool.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-  await pool.query('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIdsWrittenByThisTest]);
+  await pool.query('DELETE FROM investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+  await pool.query('DELETE FROM investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+  await pool.query('DELETE FROM investigation_evidence WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+  await pool.query('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+  await pool.query('DELETE FROM investigations WHERE id = ANY($1)', [investigationIdsWrittenByThisTest]);
   investigationIdsWrittenByThisTest = [];
 }
 
 /** Every fixture bundle freshFixtures() wrote for this file's own tests that can still be removed, attempted in an order that always satisfies their own foreign keys — a permanently released case_versions row (this file's header comment explains why every one of them is) leaves the cases row, and the subject_types/outcomes/actions/recipients rows it names, behind, exactly as a real curator's released case would. */
 async function cleanupWrittenFixtures(): Promise<void> {
   for (const fixtures of fixtureBundlesWrittenByThisTest) {
-    await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [fixtures.caseSlug]);
-    await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [fixtures.caseSlug]);
-    await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [fixtures.capabilityName, fixtures.capabilityVersion]);
-    await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [fixtures.concept]);
-    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [fixtures.subjectType]);
-    await deleteTolerantly('DELETE FROM public.subject_attributes WHERE name = $1', [fixtures.subjectAttribute]);
-    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [fixtures.outcome]);
-    await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [fixtures.action]);
-    await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [fixtures.recipient]);
+    await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [fixtures.caseSlug]);
+    await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [fixtures.caseSlug]);
+    await deleteTolerantly('DELETE FROM capabilities WHERE name = $1 AND version = $2', [fixtures.capabilityName, fixtures.capabilityVersion]);
+    await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [fixtures.concept]);
+    await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [fixtures.subjectType]);
+    await deleteTolerantly('DELETE FROM subject_attributes WHERE name = $1', [fixtures.subjectAttribute]);
+    await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [fixtures.outcome]);
+    await deleteTolerantly('DELETE FROM actions WHERE name = $1', [fixtures.action]);
+    await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [fixtures.recipient]);
   }
   fixtureBundlesWrittenByThisTest = [];
   if (extraConceptsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [extraConceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [extraConceptsWrittenByThisTest]);
     extraConceptsWrittenByThisTest = [];
   }
 }
@@ -436,11 +435,11 @@ it(
 
     await expect(rejection).rejects.toBeInstanceOf(InvestigationStoreError);
     await expect(rejection).rejects.toMatchObject({ cause: { code: UNIQUE_VIOLATION } });
-    const { rows: rootRows } = await pool.query('SELECT id FROM public.investigations WHERE id = $1', [id]);
-    const { rows: attributeRows } = await pool.query('SELECT attribute FROM public.investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
-    const { rows: evidenceRows } = await pool.query('SELECT concept FROM public.investigation_evidence WHERE investigation_id = $1', [id]);
-    const { rows: evaluationRows } = await pool.query('SELECT hypothesis FROM public.investigation_evaluations WHERE investigation_id = $1', [id]);
-    const { rows: citationRows } = await pool.query('SELECT concept FROM public.investigation_evaluation_citations WHERE investigation_id = $1', [id]);
+    const { rows: rootRows } = await pool.query('SELECT id FROM investigations WHERE id = $1', [id]);
+    const { rows: attributeRows } = await pool.query('SELECT attribute FROM investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
+    const { rows: evidenceRows } = await pool.query('SELECT concept FROM investigation_evidence WHERE investigation_id = $1', [id]);
+    const { rows: evaluationRows } = await pool.query('SELECT hypothesis FROM investigation_evaluations WHERE investigation_id = $1', [id]);
+    const { rows: citationRows } = await pool.query('SELECT concept FROM investigation_evaluation_citations WHERE investigation_id = $1', [id]);
     expect(rootRows).toEqual([]);
     expect(attributeRows).toEqual([]);
     expect(evidenceRows).toEqual([]);
@@ -468,7 +467,7 @@ it(
 
     await expect(rejection).rejects.toBeInstanceOf(InvestigationStoreError);
     await expect(rejection).rejects.toMatchObject({ cause: { code: FOREIGN_KEY_VIOLATION } });
-    const { rows } = await pool.query('SELECT id FROM public.investigations WHERE id = $1', [id]);
+    const { rows } = await pool.query('SELECT id FROM investigations WHERE id = $1', [id]);
     expect(rows).toEqual([]);
   },
   15000,

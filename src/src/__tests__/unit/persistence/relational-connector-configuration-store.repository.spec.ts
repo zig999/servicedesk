@@ -108,13 +108,12 @@ it('deletes every existing row and inserts exactly the given configurations, in 
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toBe('SET LOCAL search_path TO public');
-  expect(texts[2]).toContain('DELETE FROM public.connector_configurations');
-  expect(texts[3]).toContain('INSERT INTO public.connector_configurations');
-  expect(texts[4]).toContain('INSERT INTO public.connector_configurations');
-  expect(texts[5]).toBe('COMMIT');
-  expect(recorded[3]?.params).toEqual(['a-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
-  expect(recorded[4]?.params).toEqual(['another-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
+  expect(texts[1]).toContain('DELETE FROM connector_configurations');
+  expect(texts[2]).toContain('INSERT INTO connector_configurations');
+  expect(texts[3]).toContain('INSERT INTO connector_configurations');
+  expect(texts[4]).toBe('COMMIT');
+  expect(recorded[2]?.params).toEqual(['a-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
+  expect(recorded[3]?.params).toEqual(['another-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -128,12 +127,7 @@ it('issues only the DELETE and still commits, when replacing the whole table wit
 
   await store.writeConnectorConfigurations([]);
 
-  expect(collapsedTexts(recorded)).toEqual([
-    'BEGIN',
-    'SET LOCAL search_path TO public',
-    'DELETE FROM public.connector_configurations',
-    'COMMIT',
-  ]);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'DELETE FROM connector_configurations', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 

@@ -75,7 +75,7 @@ function requireDatabaseUrl(): string {
 }
 
 /** The exact text RelationalInvestigationStore's own INVESTIGATION_INSERT_TEXT begins with — the one statement this file's own delaying connection ever holds up. */
-const INVESTIGATION_ROOT_INSERT_MARKER = 'INSERT INTO public.investigations';
+const INVESTIGATION_ROOT_INSERT_MARKER = 'INSERT INTO investigations';
 /** Comfortably longer than run-diagnosis.ts's own two-second PERSISTENCE_STAGE_BUDGET_MS, so writeWithinDeadline's own race always resolves through its timeout branch first, regardless of ordinary network jitter against the real database. */
 const WRITE_DELAY_MS = 5_000;
 /** Ample headroom over WRITE_DELAY_MS, so persistence's own bound below is exactly its nominal budget rather than a tighter overall deadline clamping it further. */
@@ -162,18 +162,18 @@ function freshFixture(): IFixture {
 }
 
 async function seedVocabulary(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
-  await connection.query('INSERT INTO public.subject_types (name) VALUES ($1)', [fixture.subjectType]);
-  await connection.query('INSERT INTO public.subject_attributes (name) VALUES ($1)', [fixture.subjectAttribute]);
-  await connection.query('INSERT INTO public.outcomes (name) VALUES ($1)', [fixture.outcome]);
-  await connection.query('INSERT INTO public.actions (name) VALUES ($1)', [fixture.action]);
-  await connection.query('INSERT INTO public.recipients (name) VALUES ($1)', [fixture.recipient]);
-  await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
-  await connection.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, fixture.subjectType]);
+  await connection.query('INSERT INTO subject_types (name) VALUES ($1)', [fixture.subjectType]);
+  await connection.query('INSERT INTO subject_attributes (name) VALUES ($1)', [fixture.subjectAttribute]);
+  await connection.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
+  await connection.query('INSERT INTO actions (name) VALUES ($1)', [fixture.action]);
+  await connection.query('INSERT INTO recipients (name) VALUES ($1)', [fixture.recipient]);
+  await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
+  await connection.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, fixture.subjectType]);
 }
 
 async function seedCapability(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await connection.query(
-    `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+    `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
      VALUES ($1, '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', $2)`,
     [fixture.capabilityName, fixture.concept],
   );
@@ -242,29 +242,29 @@ async function cleanupFixture(connection: DatabaseConnection, fixture: IFixture)
   // hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
   // identity-only hypotheses — the same table set and order release.operation.spec.ts's own
   // afterEach already established for cleaning up after a released version.
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
-  await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
-  await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = $1', [fixture.subjectType]);
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = $1', [fixture.subjectAttribute]);
-  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
-  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = $1', [fixture.action]);
-  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM case_versions WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly(connection, 'DELETE FROM capabilities WHERE name = $1', [fixture.capabilityName]);
+  await deleteTolerantly(connection, 'DELETE FROM concept_accepts WHERE concept_name = $1', [fixture.concept]);
+  await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [fixture.concept]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = $1', [fixture.subjectType]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = $1', [fixture.subjectAttribute]);
+  await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = $1', [fixture.outcome]);
+  await deleteTolerantly(connection, 'DELETE FROM actions WHERE name = $1', [fixture.action]);
+  await deleteTolerantly(connection, 'DELETE FROM recipients WHERE name = $1', [fixture.recipient]);
 }
 
 /** Deletes whatever investigation the delayed write may have eventually finished committing, in the child-then-root order every foreign key needs — a no-op where nothing landed. */
 async function cleanupInvestigationIfAny(connection: DatabaseConnection, id: string): Promise<void> {
-  await connection.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = $1', [id]);
-  await connection.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = $1', [id]);
-  await connection.query('DELETE FROM public.investigation_evidence WHERE investigation_id = $1', [id]);
-  await connection.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
-  await connection.query('DELETE FROM public.investigations WHERE id = $1', [id]);
+  await connection.query('DELETE FROM investigation_evaluation_citations WHERE investigation_id = $1', [id]);
+  await connection.query('DELETE FROM investigation_evaluations WHERE investigation_id = $1', [id]);
+  await connection.query('DELETE FROM investigation_evidence WHERE investigation_id = $1', [id]);
+  await connection.query('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
+  await connection.query('DELETE FROM investigations WHERE id = $1', [id]);
 }
 
 /** The subject this file's own single request names — one attribute, drawn from the glossary row seedVocabulary above inserted, exactly as investigation-factory.ts's own refuseAttributesNotInGlossary requires. */

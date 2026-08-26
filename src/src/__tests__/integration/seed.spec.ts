@@ -169,21 +169,21 @@ async function deleteTolerantly(connection: DatabaseConnection, text: string, pa
 }
 
 async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<void> {
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_versions WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [SLUG]);
   for (const capability of await readCapabilityFixture()) {
-    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   for (const concept of await readConceptFixture()) {
-    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
   // One deleteTolerantly call per name, not one batched ANY($1) array, the same per-row shape the
   // capability and concept loops above already use — found live, running this exact file against a
   // database where the fixture case already stands released: a single batched DELETE targeting both
@@ -193,10 +193,10 @@ async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<voi
   // even the otherwise perfectly removable non-conclusion names undeleted too. One DELETE per name
   // lets deleteTolerantly's own foreign-key tolerance apply per name instead of to the whole array.
   for (const outcomeName of await readGlossaryFixtureNames('outcome.json')) {
-    await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = $1', [outcomeName]);
+    await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = $1', [outcomeName]);
   }
-  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
 /**
@@ -224,14 +224,14 @@ async function wipeFixtureOwnedRows(connection: DatabaseConnection): Promise<voi
 async function isPermanentlyReferencedByAReleasedCaseVersion(connection: DatabaseConnection, outcomeName: string): Promise<boolean> {
   const { rows } = await connection.query(
     `SELECT 1
-       FROM public.case_versions cv
+       FROM case_versions cv
       WHERE cv.fallback_outcome = $1 AND cv.state = 'released'
       UNION
      SELECT 1
-       FROM public.hypothesis_revisions hr
-       JOIN public.case_version_hypotheses cvh
+       FROM hypothesis_revisions hr
+       JOIN case_version_hypotheses cvh
          ON cvh.case_slug = hr.case_slug AND cvh.hypothesis_name = hr.hypothesis_name AND cvh.revision = hr.revision
-       JOIN public.case_versions cv2
+       JOIN case_versions cv2
          ON cv2.slug = cvh.case_slug AND cv2.version = cvh.case_version
       WHERE hr.resolution_outcome = $1 AND cv2.state = 'released'
       LIMIT 1`,
@@ -267,7 +267,7 @@ async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<voi
     throw new Error("this file's own wipe left the fixture case stored; the transition this file proves would not be genuine");
   }
   const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [nonConclusionNames]);
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [nonConclusionNames]);
   for (const row of rows) {
     if (!(await isPermanentlyReferencedByAReleasedCaseVersion(connection, row.name))) {
       throw new Error("this file's own wipe left a non-conclusion outcome stored; the transition this file proves would not be genuine");
@@ -277,26 +277,26 @@ async function assertGenuinelyEmpty(connection: DatabaseConnection): Promise<voi
 
 /** Removes every row seed.ts's own run wrote, the same way wipeFixtureOwnedRows empties them, except the two non-conclusion outcomes (see this file's own header) — table set and order rewired the same way wipeFixtureOwnedRows was, above. */
 async function cleanupSeededRows(connection: DatabaseConnection): Promise<void> {
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypotheses WHERE case_slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_versions WHERE slug = $1', [SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [SLUG]);
   for (const capability of await readCapabilityFixture()) {
-    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   for (const concept of await readConceptFixture()) {
-    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readGlossaryFixtureNames('subject-attribute.json')]);
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readGlossaryFixtureNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
-  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
-  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
+  await deleteTolerantly(connection, 'DELETE FROM actions WHERE name = ANY($1)', [await readGlossaryFixtureNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM recipients WHERE name = ANY($1)', [await readGlossaryFixtureNames('recipient.json')]);
 }
 
 /**
@@ -367,7 +367,7 @@ it(
   'holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand',
   async () => {
     const nonConclusionNames = NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name);
-    const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [nonConclusionNames]);
+    const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [nonConclusionNames]);
 
     expect(rows.map((row) => row.name).sort()).toEqual([...nonConclusionNames].sort());
   },
@@ -377,14 +377,14 @@ it(
 
 it("holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together", async () => {
   const expected = await readGlossaryFixtureNames('outcome.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [expected]);
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
 
 it('holds exactly the fixture\'s own subject-type name, the one the curated case declares as its subject', async () => {
   const expected = await readGlossaryFixtureNames('subject-type.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.subject_types WHERE name = ANY($1)', [expected]);
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_types WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
@@ -392,21 +392,21 @@ it('holds exactly the fixture\'s own subject-type name, the one the curated case
 it("holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own", async () => {
   const expected = await readGlossaryFixtureNames('subject-attribute.json');
   expect(expected.length).toBeGreaterThan(0);
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.subject_attributes');
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM subject_attributes');
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
 
 it("holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare", async () => {
   const expected = await readGlossaryFixtureNames('action.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.actions WHERE name = ANY($1)', [expected]);
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM actions WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
 
 it("holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare", async () => {
   const expected = await readGlossaryFixtureNames('recipient.json');
-  const { rows } = await connection.query<{ name: string }>('SELECT name FROM public.recipients WHERE name = ANY($1)', [expected]);
+  const { rows } = await connection.query<{ name: string }>('SELECT name FROM recipients WHERE name = ANY($1)', [expected]);
 
   expect(rows.map((row) => row.name).sort()).toEqual([...expected].sort());
 });
@@ -417,11 +417,11 @@ it('holds every concept the curated case collects, each with the subject types i
   const expected = await readConceptFixture();
   const conceptNames = expected.map((concept) => concept.name);
   const { rows: conceptRows } = await connection.query<{ name: string; ttl: number }>(
-    'SELECT name, ttl FROM public.concepts WHERE name = ANY($1)',
+    'SELECT name, ttl FROM concepts WHERE name = ANY($1)',
     [conceptNames],
   );
   const { rows: acceptRows } = await connection.query<{ concept_name: string; subject_type_name: string }>(
-    'SELECT concept_name, subject_type_name FROM public.concept_accepts WHERE concept_name = ANY($1)',
+    'SELECT concept_name, subject_type_name FROM concept_accepts WHERE concept_name = ANY($1)',
     [conceptNames],
   );
 
@@ -446,7 +446,7 @@ it(
   async () => {
     const expected = await readCapabilityFixture();
     const { rows } = await connection.query<ICapabilityFixture>(
-      'SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept FROM public.capabilities WHERE concept = ANY($1)',
+      'SELECT name, version, nature, input_schema, output_schema, timeout, connector, concept FROM capabilities WHERE concept = ANY($1)',
       [expected.map((capability) => capability.concept)],
     );
 

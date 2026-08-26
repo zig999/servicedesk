@@ -144,16 +144,16 @@
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
-// given (STK-05). Every statement below is schema-qualified as
-// public.<table>, the same convention this file's previous implementation
-// already documented at length: this project's DATABASE_URL reaches
-// Postgres through a transaction-pooling endpoint that can hand back a
-// physical connection still carrying an unrelated, already-finished
-// session's own search_path, so an unqualified name could otherwise resolve
-// against whatever schema happened to be ambient rather than against
-// public — true of a single statement run directly against the pool
+// given (STK-05). Every statement below names its table unqualified, so it
+// resolves against whatever schema the connecting role's own server-side
+// default names (persistence/migration-runner.ts's own header describes why
+// that default is safe to trust under this project's transaction-pooling
+// DATABASE_URL) — true of a single statement run directly against the pool
 // (placeHypothesis, removeManifestEntry, release) exactly as it is of one
-// run inside a transaction this module opens itself.
+// run inside a transaction this module opens itself. An earlier
+// implementation schema-qualified every name as public.<table> instead,
+// against a single fixed schema this project's own database swap now
+// varies per role.
 import type {
   AssembledCaseVersion,
   CaseIdentity,
@@ -240,12 +240,12 @@ interface ICollectRow {
 const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
 
 /** Schema-qualified table names, named once and reused across every statement below rather than repeated as literals (TYP-04). */
-const CASES_TABLE = 'public.cases';
-const CASE_VERSIONS_TABLE = 'public.case_versions';
-const HYPOTHESES_TABLE = 'public.hypotheses';
-const HYPOTHESIS_REVISIONS_TABLE = 'public.hypothesis_revisions';
-const HYPOTHESIS_REVISION_COLLECTS_TABLE = 'public.hypothesis_revision_collects';
-const CASE_VERSION_HYPOTHESES_TABLE = 'public.case_version_hypotheses';
+const CASES_TABLE = 'cases';
+const CASE_VERSIONS_TABLE = 'case_versions';
+const HYPOTHESES_TABLE = 'hypotheses';
+const HYPOTHESIS_REVISIONS_TABLE = 'hypothesis_revisions';
+const HYPOTHESIS_REVISION_COLLECTS_TABLE = 'hypothesis_revision_collects';
+const CASE_VERSION_HYPOTHESES_TABLE = 'case_version_hypotheses';
 
 /** The two values domain/knowledge/case-version-state declares (TYP-04), named once rather than spelled at each write. */
 const DRAFT_STATE: CaseVersionState = 'draft';

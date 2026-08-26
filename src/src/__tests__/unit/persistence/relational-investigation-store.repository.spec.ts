@@ -68,11 +68,11 @@ function recordingQuery(rows: IRoutedRows): {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: unknown[] }> => {
     recorded.push({ text, params });
-    if (text.includes('FROM public.investigation_evaluation_citations')) return { rows: [...(rows.citations ?? [])] };
-    if (text.includes('FROM public.investigation_evaluations')) return { rows: [...(rows.evaluations ?? [])] };
-    if (text.includes('FROM public.investigation_evidence')) return { rows: [...(rows.evidence ?? [])] };
-    if (text.includes('FROM public.investigation_subject_attribute_values')) return { rows: [...(rows.attributes ?? [])] };
-    if (text.includes('FROM public.investigations')) return { rows: rows.investigation ? [rows.investigation] : [] };
+    if (text.includes('FROM investigation_evaluation_citations')) return { rows: [...(rows.citations ?? [])] };
+    if (text.includes('FROM investigation_evaluations')) return { rows: [...(rows.evaluations ?? [])] };
+    if (text.includes('FROM investigation_evidence')) return { rows: [...(rows.evidence ?? [])] };
+    if (text.includes('FROM investigation_subject_attribute_values')) return { rows: [...(rows.attributes ?? [])] };
+    if (text.includes('FROM investigations')) return { rows: rows.investigation ? [rows.investigation] : [] };
     return { rows: [] };
   };
   return { handleQuery, recorded };
@@ -208,7 +208,7 @@ it("sends every declared attribute of the root row — identity, subject type, p
 
   await store.write(anInvestigation());
 
-  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.investigations'));
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
   expect(rootInsert?.params).toEqual([
     'an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative', 'a-subject-type', 'a-prompt-version', 'a-model',
     'a-case-slug', 1,
@@ -233,15 +233,14 @@ it('inserts the root row first, then every subject attribute-value, every eviden
 
   expect(collapsedTexts(recorded)).toEqual([
     'BEGIN',
-    'SET LOCAL search_path TO public',
-    expect.stringContaining('INSERT INTO public.investigations'),
-    expect.stringContaining('INSERT INTO public.investigation_subject_attribute_values'),
-    expect.stringContaining('INSERT INTO public.investigation_subject_attribute_values'),
-    expect.stringContaining('INSERT INTO public.investigation_evidence'),
-    expect.stringContaining('INSERT INTO public.investigation_evidence'),
-    expect.stringContaining('INSERT INTO public.investigation_evaluations'),
-    expect.stringContaining('INSERT INTO public.investigation_evaluation_citations'),
-    expect.stringContaining('INSERT INTO public.investigation_evaluations'),
+    expect.stringContaining('INSERT INTO investigations'),
+    expect.stringContaining('INSERT INTO investigation_subject_attribute_values'),
+    expect.stringContaining('INSERT INTO investigation_subject_attribute_values'),
+    expect.stringContaining('INSERT INTO investigation_evidence'),
+    expect.stringContaining('INSERT INTO investigation_evidence'),
+    expect.stringContaining('INSERT INTO investigation_evaluations'),
+    expect.stringContaining('INSERT INTO investigation_evaluation_citations'),
+    expect.stringContaining('INSERT INTO investigation_evaluations'),
     'COMMIT',
   ]);
   expect(client.release).toHaveBeenCalledTimes(1);
@@ -257,7 +256,7 @@ it("inserts one row per subject attribute-value the investigation's subject carr
 
   await store.write(investigation);
 
-  const attributeInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO public.investigation_subject_attribute_values'));
+  const attributeInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO investigation_subject_attribute_values'));
   expect(attributeInserts.map((entry) => entry.params)).toEqual([
     [investigation.id, 'attribute-a', 'value-a'],
     [investigation.id, 'attribute-b', 'value-b'],
@@ -272,7 +271,7 @@ it("carries each evidence item's capability_name and capability_version pin into
 
   await store.write(investigation);
 
-  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.investigation_evidence'));
+  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
   expect(evidenceInsert?.params).toEqual([
     investigation.id, 'a-concept', 'serialized-inputs', 'an-observation', '2024-01-01T00:00:00.000Z', 60, 'a-connector', 'ok', null,
     'a-registered-capability', '2.0.0',
@@ -284,7 +283,7 @@ it("carries each evidence item's capability_name and capability_version pin into
 it("rolls back and raises this store's own typed error, carrying the driver failure as its cause, when an evidence insert fails after the root row and the subject attribute-values already succeeded", async () => {
   const driverFailure = new Error('the driver refused this insert');
   const handleQuery = async (text: string): Promise<{ rows: unknown[] }> => {
-    if (text.includes('INSERT INTO public.investigation_evidence')) throw driverFailure;
+    if (text.includes('INSERT INTO investigation_evidence')) throw driverFailure;
     return { rows: [] };
   };
   const { connection, client } = fakeTransactionConnection(handleQuery);
@@ -305,7 +304,7 @@ it("refuses a second write of an id already stored through InvestigationAlreadyS
   const recorded: { text: string }[] = [];
   const handleQuery = async (text: string): Promise<{ rows: unknown[] }> => {
     recorded.push({ text });
-    if (text.includes('INSERT INTO public.investigations')) throw driverFailure;
+    if (text.includes('INSERT INTO investigations')) throw driverFailure;
     return { rows: [] };
   };
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -328,7 +327,7 @@ it('answers absence, not a rejection, and reads no further, when investigations 
   const answered = await store.read('an-absent-id');
 
   expect(answered).toBeUndefined();
-  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'SET LOCAL search_path TO public', expect.stringContaining('FROM public.investigations'), 'COMMIT']);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', expect.stringContaining('FROM investigations'), 'COMMIT']);
 });
 
 it('answers one evidence item for every evidence row and one evaluation for every evaluation row a read finds, unfiltered', async () => {
@@ -533,10 +532,10 @@ it('reads evidence ordered by concept, evaluations ordered by hypothesis, citati
   await store.read('an-investigation-id');
 
   const texts = collapsedTexts(recorded);
-  expect(texts.some((text) => text.includes('FROM public.investigation_subject_attribute_values') && text.includes('ORDER BY attribute, value'))).toBe(true);
-  expect(texts.some((text) => text.includes('FROM public.investigation_evidence') && text.includes('ORDER BY concept'))).toBe(true);
-  expect(texts.some((text) => text.includes('FROM public.investigation_evaluations') && text.includes('ORDER BY hypothesis'))).toBe(true);
-  expect(texts.some((text) => text.includes('FROM public.investigation_evaluation_citations') && text.includes('ORDER BY hypothesis, concept, field'))).toBe(true);
+  expect(texts.some((text) => text.includes('FROM investigation_subject_attribute_values') && text.includes('ORDER BY attribute, value'))).toBe(true);
+  expect(texts.some((text) => text.includes('FROM investigation_evidence') && text.includes('ORDER BY concept'))).toBe(true);
+  expect(texts.some((text) => text.includes('FROM investigation_evaluations') && text.includes('ORDER BY hypothesis'))).toBe(true);
+  expect(texts.some((text) => text.includes('FROM investigation_evaluation_citations') && text.includes('ORDER BY hypothesis, concept, field'))).toBe(true);
 });
 
 // ---------------------------------------------------------------- inference: the hash is sha256 of the assembled document's own JSON
@@ -568,7 +567,7 @@ it('sends ticket_ref exactly as the given investigation holds it, including the 
 
   await store.write(anInvestigation({ ticket_ref: '' }));
 
-  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.investigations'));
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
   expect(rootInsert?.params?.[2]).toBe('');
 });
 
@@ -586,7 +585,7 @@ it('sends ticket_ref as undefined in the root insert\'s own params when the give
 
   await store.write(anInvestigation({ ticket_ref: undefined }));
 
-  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.investigations'));
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
   expect(rootInsert?.params?.[2]).toBeUndefined();
 });
 

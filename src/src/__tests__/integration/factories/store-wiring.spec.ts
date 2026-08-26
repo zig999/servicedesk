@@ -96,12 +96,12 @@ function freshFixture(): IFixture {
 
 /** Every glossary and capability row one fixture's own case, written through createCaseStore, will reference by foreign key. The concept and its capability are written through createCapabilityRegistry, built from this test's own connection, exactly the way the composed application's own construction site does; the bare vocabulary terms are inserted directly, since IGlossaryStore's own published port exposes no per-term write — only writeTerms' own whole-vocabulary replace, which this fixture has no need to invoke. */
 async function seedGlossaryAndCapability(fixture: IFixture): Promise<void> {
-  await connection.query('INSERT INTO public.subject_types (name) VALUES ($1)', [fixture.subject]);
-  await connection.query('INSERT INTO public.actions (name) VALUES ($1)', [fixture.action]);
-  await connection.query('INSERT INTO public.recipients (name) VALUES ($1)', [fixture.recipient]);
-  await connection.query('INSERT INTO public.outcomes (name) VALUES ($1)', [fixture.outcome]);
-  await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
-  await connection.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, fixture.subject]);
+  await connection.query('INSERT INTO subject_types (name) VALUES ($1)', [fixture.subject]);
+  await connection.query('INSERT INTO actions (name) VALUES ($1)', [fixture.action]);
+  await connection.query('INSERT INTO recipients (name) VALUES ($1)', [fixture.recipient]);
+  await connection.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
+  await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
+  await connection.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, fixture.subject]);
   await createCapabilityRegistry(connection).registerCapability({
     name: fixture.capabilityName,
     version: '1.0.0',
@@ -119,19 +119,19 @@ async function cleanupFixture(fixture: IFixture): Promise<void> {
   // migrated: hypothesis_collects is dropped, and hypotheses is split into hypotheses (identity),
   // hypothesis_revisions and hypothesis_revision_collects, joined into one version's manifest
   // through case_version_hypotheses. Deleted in the order their own foreign keys require.
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [fixture.capabilityName]);
-  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
-  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
-  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [fixture.subject]);
-  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
-  await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [fixture.action]);
-  await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM capabilities WHERE name = $1', [fixture.capabilityName]);
+  await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [fixture.subject]);
+  await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [fixture.outcome]);
+  await deleteTolerantly('DELETE FROM actions WHERE name = $1', [fixture.action]);
+  await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [fixture.recipient]);
 }
 
 let fixturesWrittenByThisTest: IFixture[] = [];
@@ -139,11 +139,11 @@ let investigationIdsWrittenByThisTest: string[] = [];
 
 afterEach(async () => {
   if (investigationIdsWrittenByThisTest.length > 0) {
-    await connection.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-    await connection.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-    await connection.query('DELETE FROM public.investigation_evidence WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-    await connection.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
-    await connection.query('DELETE FROM public.investigations WHERE id = ANY($1)', [investigationIdsWrittenByThisTest]);
+    await connection.query('DELETE FROM investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+    await connection.query('DELETE FROM investigation_evaluations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+    await connection.query('DELETE FROM investigation_evidence WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+    await connection.query('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
+    await connection.query('DELETE FROM investigations WHERE id = ANY($1)', [investigationIdsWrittenByThisTest]);
     investigationIdsWrittenByThisTest = [];
   }
   for (const fixture of fixturesWrittenByThisTest) {
@@ -194,9 +194,9 @@ it(
 
 /** Inserts the one case-versions row a pinned investigation needs, for the given fixture's own vocabulary. */
 async function insertPinnedCaseVersion(fixture: IFixture): Promise<void> {
-  await connection.query('INSERT INTO public.cases (slug) VALUES ($1)', [fixture.slug]);
+  await connection.query('INSERT INTO cases (slug) VALUES ($1)', [fixture.slug]);
   await connection.query(
-    `INSERT INTO public.case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
+    `INSERT INTO case_versions (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient)
      VALUES ($1, 1, 'A title', 'A use', $2, $3, $4, $5, $6)`,
     [fixture.slug, new Date('2024-01-01T00:00:00.000Z'), fixture.subject, fixture.outcome, fixture.action, fixture.recipient],
   );

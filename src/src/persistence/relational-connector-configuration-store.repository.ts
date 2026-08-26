@@ -26,12 +26,11 @@
 // keeps this module free of any concatenation into the statement text
 // itself (SEC-02).
 //
-// Every statement below is schema-qualified as public.connector_configurations,
-// the same convention persistence/migration-runner.ts's own header and
-// database-access.spec.ts's own proof already document at length: this
-// project's DATABASE_URL reaches Postgres through a transaction-pooling
-// endpoint that can hand back a physical connection still carrying an
-// unrelated, already-finished session's own search_path.
+// Every statement below names "connector_configurations" unqualified, the
+// same convention persistence/migration-runner.ts's own header already
+// documents at length: it resolves against whatever schema the connecting
+// role's own server-side default names, safe to trust under this project's
+// transaction-pooling DATABASE_URL.
 import type { ConnectorConfiguration } from '../connector-registry/connector-configuration.js';
 import type { IConnectorConfigurationStore } from '../connector-registry/connector-configuration-store.port.js';
 import { ConnectorConfigurationStoreError } from '../errors/connector-configuration-store.error.js';
@@ -45,7 +44,7 @@ interface IConnectorConfigurationRow {
 }
 
 /** Schema-qualified table name, named once and reused across every statement below rather than repeated as a literal (TYP-04) — the same convention relational-capability-store.repository.ts's own CAPABILITIES_TABLE already follows. */
-const CONNECTOR_CONFIGURATIONS_TABLE = 'public.connector_configurations';
+const CONNECTOR_CONFIGURATIONS_TABLE = 'connector_configurations';
 
 /**
  * The relational adapter of the connector-configuration registry's own

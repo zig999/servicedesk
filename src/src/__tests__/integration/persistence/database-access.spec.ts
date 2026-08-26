@@ -47,9 +47,9 @@ function raiseAsCaseStoreError(cause: unknown): Error {
   return new CaseStoreError('a statement against the case store failed', A_CONTEXT, { cause });
 }
 
-/** Schema-qualified as public.cases, the same convention migration-runner.spec.ts's and isolated-connection.spec.ts's own verification reads already use: called both directly against the bare pool, outside any transaction, where an unqualified name can otherwise resolve against whatever search_path an unrelated, already-finished session left on the physical backend the pool hands back — and against a checked-out tx inside runInTransaction, where the qualification is harmless since runInTransaction has already reset search_path to public itself. */
+/** Names "cases" unqualified, resolving against whatever schema the connecting role's own server-side default names — called both directly against the bare pool, outside any transaction, and against a checked-out tx inside runInTransaction alike. */
 async function insertCase(target: IQueryable, slug: string): Promise<void> {
-  await runStatement(target, { text: 'INSERT INTO public.cases (slug) VALUES ($1)', params: [slug] }, raiseAsCaseStoreError);
+  await runStatement(target, { text: 'INSERT INTO cases (slug) VALUES ($1)', params: [slug] }, raiseAsCaseStoreError);
 }
 
 let pool: DatabaseConnection;
@@ -65,7 +65,7 @@ afterAll(async () => {
 
 afterEach(async () => {
   if (slugsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+    await pool.query('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
   }
   slugsWrittenByThisTest = [];
 });
@@ -77,7 +77,7 @@ it('answers undefined, not a rejection, when a real query matches no row for the
 
   const result = await queryOneOrAbsent<ICaseRow>(
     pool,
-    { text: 'SELECT slug FROM public.cases WHERE slug = $1', params: [neverWrittenSlug] },
+    { text: 'SELECT slug FROM cases WHERE slug = $1', params: [neverWrittenSlug] },
     raiseAsCaseStoreError,
   );
 
@@ -116,7 +116,7 @@ it('commits a unit of work as a whole, leaving every statement it ran visible to
     await insertCase(tx, slugB);
   });
 
-  const { rows } = await pool.query<ICaseRow>('SELECT slug FROM public.cases WHERE slug = ANY($1) ORDER BY slug', [[slugA, slugB]]);
+  const { rows } = await pool.query<ICaseRow>('SELECT slug FROM cases WHERE slug = ANY($1) ORDER BY slug', [[slugA, slugB]]);
   expect(rows).toEqual([{ slug: slugA }, { slug: slugB }]);
 });
 
@@ -143,6 +143,6 @@ it("leaves none of a unit of work's earlier statements applied, when a later sta
   });
 
   await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-  const { rows } = await pool.query<ICaseRow>('SELECT slug FROM public.cases WHERE slug = $1', [slug]);
+  const { rows } = await pool.query<ICaseRow>('SELECT slug FROM cases WHERE slug = $1', [slug]);
   expect(rows).toEqual([]);
 });

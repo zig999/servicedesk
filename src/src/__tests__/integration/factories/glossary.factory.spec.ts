@@ -13,7 +13,7 @@
 // case_versions/hypothesis_revisions row (and so, transitively, the outcomes row its own
 // fallback_outcome/resolution_outcome names) permanently undeletable by ordinary SQL, and several
 // sibling suites now call release() for real against this same shared database, a blanket
-// DELETE FROM public.outcomes racing one of those rows is a foreign-key violation, not a no-op.
+// DELETE FROM outcomes racing one of those rows is a foreign-key violation, not a no-op.
 // This file therefore never deletes or truncates the table: vitest-global-setup.ts's own
 // seedNonConclusionOutcomes already guarantees both non-conclusion outcomes are present before any
 // test in the suite runs, so this file only checks they answer from — and persist among — whatever
@@ -62,6 +62,6 @@ it('persists the two non-conclusion outcomes as rows a read against the real tab
 
   await glossary.terms('outcome');
 
-  const { rows } = await pool.query<{ name: string }>('SELECT name FROM public.outcomes WHERE name = ANY($1)', [NON_CONCLUSION_OUTCOME_NAMES]);
+  const { rows } = await pool.query<{ name: string }>('SELECT name FROM outcomes WHERE name = ANY($1)', [NON_CONCLUSION_OUTCOME_NAMES]);
   expect(rows.map((row) => row.name).sort()).toEqual(NON_CONCLUSION_OUTCOME_NAMES);
 });

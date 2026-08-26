@@ -15,12 +15,14 @@
 //
 // The first test below also carries criterion 2 — "running that step against an empty database
 // leaves it holding the schema" — because it is the one real empty-database → populated-schema
-// transition this shared-database suite can still observe: migration-runner.ts's own bookkeeping is
-// schema-qualified to public.schema_migrations (a real fix for Neon's pooler leaking search_path
-// between unrelated pooled connections), so it is global rather than scoped per caller, and by the
-// time any test file starts, the suite's own global setup has already consumed the only moment this
-// database was ever empty. See migration-runner.spec.ts's own header for what that leaves a
-// disposable schema unable to demonstrate, and what it demonstrates instead.
+// transition this shared-database suite can still observe against this project's actual environment
+// schema: migration-runner.ts's own bookkeeping is schema-qualified (a real fix for Neon's pooler
+// leaking search_path between unrelated pooled connections), scoped to whichever schema a caller
+// names — this suite's own global setup names the connecting role's own resolvedSchema(), the same
+// schema this file's own unqualified read below then resolves against too — and by the time any
+// test file starts, the suite's own global setup has already consumed the only moment this schema
+// was ever empty. See migration-runner.spec.ts's own header for what a disposable schema can still
+// demonstrate about a schema explicitly named.
 //
 // Divergence disclosed here for the same reason src/vitest-global-setup.ts itself discloses it
 // (STK-08): DATABASE_URL is read directly from process.env below — exactly as the module under test
@@ -74,12 +76,12 @@ it("has already recorded every script migrations/ holds as applied, exactly once
   const client = new Client({ connectionString: requireDatabaseUrl() });
   await client.connect();
   try {
-    const { rows } = await client.query<{ filename: string }>('SELECT filename FROM public.schema_migrations ORDER BY filename');
+    const { rows } = await client.query<{ filename: string }>('SELECT filename FROM schema_migrations ORDER BY filename');
 
     expect(expectedFilenames).toContain(ANCHOR_MIGRATION_FILENAME);
     expect(rows.map((row) => row.filename)).toEqual(expectedFilenames);
 
-    const { rows: sentinelRows } = await client.query<{ exists: boolean }>("SELECT to_regclass('public.cases') IS NOT NULL AS exists");
+    const { rows: sentinelRows } = await client.query<{ exists: boolean }>("SELECT to_regclass('cases') IS NOT NULL AS exists");
     expect(sentinelRows[0]?.exists).toBe(true);
   } finally {
     await client.end();

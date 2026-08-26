@@ -151,10 +151,10 @@ async function writeCase(vocabulary: IVocabulary, hypotheses: readonly ReturnTyp
 
 /** Writes every vocabulary row and, unless told to skip it, the concept row this vocabulary's own case depends on, directly against the real tables — tracked for this file's own afterEach cleanup. */
 async function persistCoherentGlossary(vocabulary: IVocabulary, options: { withConcept?: boolean } = {}): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [vocabulary.subject]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1), ($2)', [vocabulary.outcome, vocabulary.fallbackOutcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1), ($2)', [vocabulary.action, vocabulary.fallbackAction]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1), ($2)', [vocabulary.recipient, vocabulary.fallbackRecipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [vocabulary.subject]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1), ($2)', [vocabulary.outcome, vocabulary.fallbackOutcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1), ($2)', [vocabulary.action, vocabulary.fallbackAction]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1), ($2)', [vocabulary.recipient, vocabulary.fallbackRecipient]);
   if (options.withConcept ?? true) {
     await registerConceptAccepting(vocabulary, vocabulary.subject);
   }
@@ -163,8 +163,8 @@ async function persistCoherentGlossary(vocabulary: IVocabulary, options: { withC
 
 /** Writes the concept row plus one concept_accepts row naming the given subject type — split out so a test can register it accepting a subject type other than the case's own declared one, or not at all. */
 async function registerConceptAccepting(vocabulary: IVocabulary, subjectType: string): Promise<void> {
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
-  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
 }
 
 /** Registers, through the real registry, a complete read-only capability answering the vocabulary's own concept. */
@@ -183,19 +183,19 @@ async function registerCoherentCapability(vocabulary: IVocabulary): Promise<void
 
 /** Every row this file's own tests wrote for one vocabulary, deleted in an order that always satisfies their own foreign keys. */
 async function cleanupVocabulary(vocabulary: IVocabulary): Promise<void> {
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [vocabulary.slug]);
-  await deleteTolerantly('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
-  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [vocabulary.concept]);
-  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = $1', [vocabulary.subject]);
-  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
-  await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
-  await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [vocabulary.slug]);
+  await deleteTolerantly('DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
+  await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [vocabulary.concept]);
+  await deleteTolerantly('DELETE FROM subject_types WHERE name = $1', [vocabulary.subject]);
+  await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [[vocabulary.outcome, vocabulary.fallbackOutcome]]);
+  await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [[vocabulary.action, vocabulary.fallbackAction]]);
+  await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [[vocabulary.recipient, vocabulary.fallbackRecipient]]);
 }
 
 afterEach(async () => {
@@ -285,7 +285,7 @@ it(
     await expect(query.readCase(vocabulary.slug, version)).resolves.toMatchObject({ case: { slug: vocabulary.slug } });
 
     // Edits the concept's own accepted subject types away directly against the table, bypassing every API.
-    await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
+    await pool.query('DELETE FROM concept_accepts WHERE concept_name = $1', [vocabulary.concept]);
 
     const refusal = await query.readCase(vocabulary.slug, version).catch((error: unknown) => error);
     expect(refusal).toBeInstanceOf(CaseNotValidError);
@@ -306,7 +306,7 @@ it(
     const read = await query.readCase(vocabulary.slug, version);
 
     // Deletes the registration directly against the capabilities table, bypassing every API.
-    await pool.query('DELETE FROM public.capabilities WHERE name = $1', [vocabulary.capabilityName]);
+    await pool.query('DELETE FROM capabilities WHERE name = $1', [vocabulary.capabilityName]);
     await expect(query.readCase(vocabulary.slug, version)).rejects.toBeInstanceOf(CaseNotValidError);
 
     const replayed = await replayCase(vocabulary.slug, version, createCaseStore(pool));

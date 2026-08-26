@@ -117,10 +117,10 @@ function resolutionOf(vocabulary: IVocabulary): Resolution {
 
 /** Writes every glossary row a case_versions/hypothesis_revisions row's own foreign keys require: both subject types, the outcome, the action and the recipient — tracked for this file's own afterEach cleanup. */
 async function persistGlossary(vocabulary: IVocabulary): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1), ($2)', [vocabulary.subjectType, vocabulary.otherSubjectType]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [vocabulary.outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [vocabulary.action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [vocabulary.recipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [vocabulary.subjectType, vocabulary.otherSubjectType]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [vocabulary.outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [vocabulary.action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [vocabulary.recipient]);
   subjectTypesWrittenByThisTest.push(vocabulary.subjectType, vocabulary.otherSubjectType);
   outcomesWrittenByThisTest.push(vocabulary.outcome);
   actionsWrittenByThisTest.push(vocabulary.action);
@@ -129,8 +129,8 @@ async function persistGlossary(vocabulary: IVocabulary): Promise<void> {
 
 /** Writes the concept row plus one concept_accepts row naming the given subject type, tracked for this file's own afterEach cleanup. */
 async function registerConceptAccepting(vocabulary: IVocabulary, subjectType: string): Promise<void> {
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
-  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
   conceptsWrittenByThisTest.push(vocabulary.concept);
 }
 
@@ -202,34 +202,34 @@ function wireRelease(store: RelationalCaseStore): ReleaseOperation {
 /** Every row this file's own tests wrote under a case slug — collects, then the manifest, then the hypothesis-revisions, the hypothesis identities, the versions, then the case identity, in the order their own foreign keys require. */
 async function cleanupCaseRows(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
 }
 
 /** Every glossary/capability row persistGlossary/registerConceptAccepting/registerCoherentCapability wrote for this file's own tests, in the order their own foreign keys require, tolerating a foreign-key violation from a row a released fixture still references. */
 async function cleanupGlossaryRows(): Promise<void> {
   if (capabilityNamesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.capabilities WHERE name = ANY($1)', [capabilityNamesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM capabilities WHERE name = ANY($1)', [capabilityNamesWrittenByThisTest]);
   }
   if (conceptsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
-    await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
   }
   if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
   }
   if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   }
 }
 

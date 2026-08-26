@@ -18,25 +18,23 @@
 // alone, never through the pool itself reassigning any one of them to a
 // different backend.
 //
-// checkOutIsolatedConnection opens that transaction itself — BEGIN,
-// immediately followed by SET LOCAL search_path TO public — before ever
-// handing the connection back to a caller, rather than leaving the caller
-// to open its own transaction and qualify its own statements. This was
-// added after the real suite caught it directly: an unrelated, already-
-// finished session's own SET search_path was still ambient on the physical
-// backend Pool.connect() happened to hand back, so this module's own first
-// test failed an unqualified INSERT INTO cases with "relation \"cases\"
-// does not exist" — the identical Neon-pooler behavior task/relational-
-// substrate/migration-step already found and had to schema-qualify its own
-// bookkeeping table against, now shown to reach a freshly checked-out
-// connection too, not only a connection reused across separate statements.
-// Resetting search_path to public on every checkout, unconditionally,
-// removes the caller's own need to know or guard against whatever an
-// unrelated session left behind. SET LOCAL rather than plain SET is
-// deliberate: its effect lasts only until this same transaction's own
-// COMMIT or ROLLBACK, so release()'s own ROLLBACK below already undoes it
-// — there is no separate reset to remember on the way out, and no session-
-// scoped state survives for the pool to hand to the next checkout either.
+// checkOutIsolatedConnection opens that transaction itself — BEGIN alone —
+// before ever handing the connection back to a caller, rather than leaving
+// the caller to open its own transaction. An earlier version of this
+// function followed BEGIN with SET LOCAL search_path TO public,
+// unconditionally, after the real suite caught an unrelated, already-
+// finished session's own SET search_path still ambient on the physical
+// backend Pool.connect() happened to hand back — the identical Neon-pooler
+// behavior task/relational-substrate/migration-step already found and had
+// to schema-qualify its own bookkeeping table against. That client-side
+// reset is gone now that every role this project connects as carries its
+// own server-side default (ALTER ROLE ... SET search_path,
+// persistence/migration-runner.ts's own header describes why Postgres
+// reapplying that default at the start of every session the role opens is
+// safe under the same pooling this comment otherwise warns about): a fixed
+// 'public' was exactly the wrong answer once one caller's role and
+// another's name two different schemas by design, so it went the same way
+// as database-access.ts's own runInTransaction, for the same reason.
 //
 // Names no import of 'pg': DatabaseConnection, database-connection.ts's own
 // exported type, is the only thing this file names for the pool it takes,
@@ -59,8 +57,8 @@ import type { DatabaseConnection } from './database-connection.js';
 /**
  * What checkOutIsolatedConnection resolves to: the same query() shape
  * DatabaseConnection itself exposes, backed by one connection checked out
- * of the pool for this caller alone, already inside an open transaction
- * pinned to the public schema, until release() is called.
+ * of the pool for this caller alone, already inside an open transaction,
+ * until release() is called.
  */
 export interface IIsolatedConnection {
   query<R = Record<string, unknown>>(text: string, params?: readonly unknown[]): Promise<{ rows: R[] }>;
@@ -69,18 +67,16 @@ export interface IIsolatedConnection {
 
 /**
  * Checks one connection out of the given pool, exclusively for the caller
- * until it calls release() on what this returns, opens a transaction on it
- * and resets its search_path to public before handing it back — so every
- * statement the caller then sends through the returned object's own
- * query() runs inside that one already-open transaction, on that one
- * checked-out connection, against the public schema regardless of what an
- * unrelated, earlier session may have left set on the physical backend the
- * pool happened to hand back for this checkout.
+ * until it calls release() on what this returns, and opens a transaction on
+ * it before handing it back — so every statement the caller then sends
+ * through the returned object's own query() runs inside that one already-
+ * open transaction, on that one checked-out connection, against whatever
+ * schema the connecting role's own server-side default names (see the
+ * header comment above).
  */
 export async function checkOutIsolatedConnection(pool: DatabaseConnection): Promise<IIsolatedConnection> {
   const client = await pool.connect();
   await client.query('BEGIN');
-  await client.query('SET LOCAL search_path TO public');
   return {
     async query<R = Record<string, unknown>>(text: string, params?: readonly unknown[]): Promise<{ rows: R[] }> {
       return client.query<R>(text, params);

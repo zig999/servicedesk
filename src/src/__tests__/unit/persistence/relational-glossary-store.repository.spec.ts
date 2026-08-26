@@ -50,8 +50,8 @@ function recordingConceptQuery(rows: IRoutedConceptRows): {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: unknown[] }> => {
     recorded.push({ text, params });
-    if (text.includes('FROM public.concept_accepts')) return { rows: [...rows.accepts] };
-    if (text.includes('FROM public.concepts')) return { rows: [...rows.concepts] };
+    if (text.includes('FROM concept_accepts')) return { rows: [...rows.accepts] };
+    if (text.includes('FROM concepts')) return { rows: [...rows.concepts] };
     return { rows: [] };
   };
   return { handleQuery, recorded };
@@ -60,11 +60,11 @@ function recordingConceptQuery(rows: IRoutedConceptRows): {
 // ---------------------------------------------------------------- criterion 1
 
 it.each([
-  ['subject-type', 'public.subject_types'],
-  ['subject-attribute', 'public.subject_attributes'],
-  ['outcome', 'public.outcomes'],
-  ['action', 'public.actions'],
-  ['recipient', 'public.recipients'],
+  ['subject-type', 'subject_types'],
+  ['subject-attribute', 'subject_attributes'],
+  ['outcome', 'outcomes'],
+  ['action', 'actions'],
+  ['recipient', 'recipients'],
 ] as const)("reads %s from its own table, %s, never another vocabulary's", async (vocabulary, table) => {
   const rows = [{ name: 'a-term' }];
   const query = vi.fn().mockResolvedValue({ rows });
@@ -124,13 +124,12 @@ it('deletes every existing row and inserts exactly the given terms, in that orde
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toBe('SET LOCAL search_path TO public');
-  expect(texts[2]).toBe('DELETE FROM public.actions');
-  expect(texts[3]).toContain('INSERT INTO public.actions');
-  expect(texts[4]).toContain('INSERT INTO public.actions');
-  expect(texts[5]).toBe('COMMIT');
-  expect(recorded[3]?.params).toEqual(['an-action']);
-  expect(recorded[4]?.params).toEqual(['another-action']);
+  expect(texts[1]).toBe('DELETE FROM actions');
+  expect(texts[2]).toContain('INSERT INTO actions');
+  expect(texts[3]).toContain('INSERT INTO actions');
+  expect(texts[4]).toBe('COMMIT');
+  expect(recorded[2]?.params).toEqual(['an-action']);
+  expect(recorded[3]?.params).toEqual(['another-action']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -144,7 +143,7 @@ it('issues only the DELETE and still commits, when replacing the whole vocabular
 
   await store.writeTerms('recipient', []);
 
-  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'SET LOCAL search_path TO public', 'DELETE FROM public.recipients', 'COMMIT']);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'DELETE FROM recipients', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -244,7 +243,7 @@ it('reads concept_accepts ordered by concept name and subject type name, for a d
 
   const acceptsQuery = recorded.find((entry) => entry.text.includes('concept_accepts'));
   expect(acceptsQuery?.text.replace(/\s+/g, ' ').trim()).toBe(
-    'SELECT concept_name, subject_type_name FROM public.concept_accepts ORDER BY concept_name, subject_type_name',
+    'SELECT concept_name, subject_type_name FROM concept_accepts ORDER BY concept_name, subject_type_name',
   );
 });
 
@@ -261,9 +260,8 @@ it('assembles concepts and concept_accepts inside the one transaction it opens, 
   const texts = collapsedTexts(recorded);
   expect(texts).toEqual([
     'BEGIN',
-    'SET LOCAL search_path TO public',
-    'SELECT name, ttl FROM public.concepts',
-    'SELECT concept_name, subject_type_name FROM public.concept_accepts ORDER BY concept_name, subject_type_name',
+    'SELECT name, ttl FROM concepts',
+    'SELECT concept_name, subject_type_name FROM concept_accepts ORDER BY concept_name, subject_type_name',
     'COMMIT',
   ]);
   expect(client.release).toHaveBeenCalledTimes(1);
@@ -294,9 +292,9 @@ it("inserts each given concept's own name and ttl into concepts, and no concept_
 
   await store.writeConcepts([{ name: 'a-concept', accepts: [], ttl: 120 }]);
 
-  const conceptInsert = recorded.find((entry) => entry.text.includes('INSERT INTO public.concepts'));
+  const conceptInsert = recorded.find((entry) => entry.text.includes('INSERT INTO concepts'));
   expect(conceptInsert?.params).toEqual(['a-concept', 120]);
-  expect(recorded.filter((entry) => entry.text.includes('INSERT INTO public.concept_accepts'))).toEqual([]);
+  expect(recorded.filter((entry) => entry.text.includes('INSERT INTO concept_accepts'))).toEqual([]);
 });
 
 it('inserts one concept_accepts row per subject type the given concept accepts, each carrying that concept\'s own name', async () => {
@@ -309,7 +307,7 @@ it('inserts one concept_accepts row per subject type the given concept accepts, 
 
   await store.writeConcepts([{ name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 60 }]);
 
-  const acceptInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO public.concept_accepts'));
+  const acceptInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO concept_accepts'));
   expect(acceptInserts.map((entry) => entry.params)).toEqual([
     ['a-concept', 'a-subject-type'],
     ['a-concept', 'another-subject-type'],

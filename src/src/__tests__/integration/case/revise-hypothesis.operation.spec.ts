@@ -122,29 +122,29 @@ function freshFixture(): IFixture {
 
 /** Claims the case's own identity row — hypotheses.case_slug foreign-keys into cases (slug), so insertHypothesisRevision needs this row to exist before it ever runs. */
 async function persistCase(fixture: IFixture): Promise<void> {
-  await pool.query('INSERT INTO public.cases (slug) VALUES ($1)', [fixture.slug]);
+  await pool.query('INSERT INTO cases (slug) VALUES ($1)', [fixture.slug]);
   fixturesWrittenByThisTest.push(fixture);
 }
 
 /** Every glossary row a hypothesis-revision's own resolution and the case version's declared subject type need, under fresh, uniquely named rows. Both subject types this fixture carries are seeded, so a test can register a concept accepting either one. */
 async function persistGlossaryVocabulary(fixture: IFixture): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1), ($2)', [fixture.subjectType, fixture.otherSubjectType]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [fixture.outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [fixture.action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [fixture.recipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [fixture.subjectType, fixture.otherSubjectType]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [fixture.action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [fixture.recipient]);
 }
 
 /** Registers the fixture's own concept, accepting exactly the given subject type — split out so a test can register it accepting a subject type other than the one it later declares, or not register it at all. */
 async function registerConceptAccepting(fixture: IFixture, subjectType: string): Promise<void> {
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
-  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, subjectType]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, subjectType]);
 }
 
 /** Seeds one case_versions row directly against the table, at the given version and state — seedDraftCaseVersion and seedReleasedCaseVersion below are its two commonly used shapes, so neither duplicates this insert's own text a second time (MNT-03). */
 async function seedCaseVersion(fixture: IFixture, version: number, state: 'draft' | 'released'): Promise<void> {
   const releasedAt = state === 'released' ? new Date().toISOString() : null;
   await pool.query(
-    `INSERT INTO public.case_versions
+    `INSERT INTO case_versions
        (slug, version, title, when_to_use, authored_at, subject, fallback_outcome, fallback_action, fallback_recipient, state, released_at)
      VALUES ($1, $2, 'A title', 'A use', now(), $3, $4, $5, $6, $7, $8)`,
     [fixture.slug, version, fixture.subjectType, fixture.outcome, fixture.action, fixture.recipient, state, releasedAt],
@@ -163,15 +163,15 @@ async function seedReleasedCaseVersion(fixture: IFixture): Promise<void> {
 
 /** Seeds one already-manifested hypothesis-revision directly against the tables, at position 1 of the fixture's own draft version — the entry criterion 6's own test holds fixed to prove revise-hypothesis moves nothing here. */
 async function seedAlreadyPlacedManifestEntry(fixture: IFixture): Promise<void> {
-  await pool.query('INSERT INTO public.hypotheses (case_slug, name) VALUES ($1, $2)', [fixture.slug, 'an-already-placed-hypothesis']);
+  await pool.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [fixture.slug, 'an-already-placed-hypothesis']);
   await pool.query(
-    `INSERT INTO public.hypothesis_revisions
+    `INSERT INTO hypothesis_revisions
        (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)
      VALUES ($1, $2, 1, $3, $4, $5, $6)`,
     [fixture.slug, 'an-already-placed-hypothesis', 'the already-placed criterion', fixture.outcome, fixture.action, fixture.recipient],
   );
   await pool.query(
-    `INSERT INTO public.case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position)
+    `INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position)
      VALUES ($1, 1, $2, 1, 1)`,
     [fixture.slug, 'an-already-placed-hypothesis'],
   );
@@ -197,18 +197,18 @@ function reviseInput(fixture: IFixture, overrides: Partial<ReviseHypothesisInput
 
 /** Every row this file's own tests wrote for one fixture, deleted in an order that always satisfies their own foreign keys. concepts that were never registered (the "unregistered" one) need no cleanup, since nothing was ever inserted for them. */
 async function cleanupFixture(fixture: IFixture): Promise<void> {
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = $1', [fixture.slug]);
-  await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = $1', [fixture.concept]);
-  await deleteTolerantly('DELETE FROM public.concepts WHERE name = $1', [fixture.concept]);
-  await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [[fixture.subjectType, fixture.otherSubjectType]]);
-  await deleteTolerantly('DELETE FROM public.outcomes WHERE name = $1', [fixture.outcome]);
-  await deleteTolerantly('DELETE FROM public.actions WHERE name = $1', [fixture.action]);
-  await deleteTolerantly('DELETE FROM public.recipients WHERE name = $1', [fixture.recipient]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = $1', [fixture.slug]);
+  await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM concepts WHERE name = $1', [fixture.concept]);
+  await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [[fixture.subjectType, fixture.otherSubjectType]]);
+  await deleteTolerantly('DELETE FROM outcomes WHERE name = $1', [fixture.outcome]);
+  await deleteTolerantly('DELETE FROM actions WHERE name = $1', [fixture.action]);
+  await deleteTolerantly('DELETE FROM recipients WHERE name = $1', [fixture.recipient]);
 }
 
 afterEach(async () => {
@@ -232,12 +232,12 @@ it("originates a never-named hypothesis's own identity and its first revision, n
 
   expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });
   const { rows: identityRows } = await pool.query(
-    'SELECT name FROM public.hypotheses WHERE case_slug = $1 AND name = $2',
+    'SELECT name FROM hypotheses WHERE case_slug = $1 AND name = $2',
     [fixture.slug, 'the-hypothesis'],
   );
   expect(identityRows).toEqual([{ name: 'the-hypothesis' }]);
   const { rows: revisionRows } = await pool.query(
-    'SELECT revision, criterion FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+    'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
     [fixture.slug, 'the-hypothesis'],
   );
   expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);
@@ -259,7 +259,7 @@ it("numbers a new revision of an already-named hypothesis one past its own highe
 
   expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });
   const { rows } = await pool.query(
-    'SELECT revision, criterion FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 ORDER BY revision',
+    'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 ORDER BY revision',
     [fixture.slug, 'the-hypothesis'],
   );
   expect(rows).toEqual([
@@ -281,7 +281,7 @@ it('refuses revising with an empty collects list, naming that the revision colle
 
   await expect(rejection).rejects.toBeInstanceOf(HypothesisRevisionCollectsNoConceptError);
   await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug, hypothesis_name: 'the-hypothesis' } });
-  const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+  const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
   expect(rows).toEqual([]);
 });
 
@@ -291,7 +291,7 @@ it('refuses revising with a collected concept the glossary does not currently ho
   const fixture = freshFixture();
   await persistCase(fixture);
   await persistGlossaryVocabulary(fixture);
-  // fixture.unregisteredConcept is deliberately never inserted into public.concepts.
+  // fixture.unregisteredConcept is deliberately never inserted into concepts.
   await seedDraftCaseVersion(fixture);
   const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
 
@@ -301,7 +301,7 @@ it('refuses revising with a collected concept the glossary does not currently ho
   await expect(rejection).rejects.toMatchObject({
     context: { slug: fixture.slug, hypothesis_name: 'the-hypothesis', concepts: [fixture.unregisteredConcept] },
   });
-  const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+  const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
   expect(rows).toEqual([]);
 });
 
@@ -326,7 +326,7 @@ it('refuses revising with a collected concept that does not accept the declared 
       concepts: [fixture.concept],
     },
   });
-  const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+  const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
   expect(rows).toEqual([]);
 });
 
@@ -344,7 +344,7 @@ it("changes no version's manifest on its own — an existing manifest entry stay
   await operation.reviseHypothesis(reviseInput(fixture, { hypothesis_name: 'a-freshly-revised-hypothesis' }));
 
   const { rows } = await pool.query(
-    'SELECT hypothesis_name, revision, position FROM public.case_version_hypotheses WHERE case_slug = $1 AND case_version = 1',
+    'SELECT hypothesis_name, revision, position FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1',
     [fixture.slug],
   );
   expect(rows).toEqual([{ hypothesis_name: 'an-already-placed-hypothesis', revision: 1, position: 1 }]);
@@ -366,10 +366,10 @@ it(
 
     await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
     await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });
-    const { rows: hypothesisRows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+    const { rows: hypothesisRows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(hypothesisRows).toEqual([]);
     const { rows: revisionRows } = await pool.query(
-      'SELECT revision FROM public.hypothesis_revisions WHERE case_slug = $1',
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1',
       [fixture.slug],
     );
     expect(revisionRows).toEqual([]);
@@ -392,10 +392,10 @@ it(
 
     await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
     await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });
-    const { rows: hypothesisRows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+    const { rows: hypothesisRows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(hypothesisRows).toEqual([]);
     const { rows: revisionRows } = await pool.query(
-      'SELECT revision FROM public.hypothesis_revisions WHERE case_slug = $1',
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1',
       [fixture.slug],
     );
     expect(revisionRows).toEqual([]);
@@ -419,7 +419,7 @@ it(
 
     await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
     await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });
-    const { rows: hypothesisRows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+    const { rows: hypothesisRows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(hypothesisRows).toEqual([]);
   },
 );
@@ -442,7 +442,7 @@ it(
     const answered = await operation.reviseHypothesis(reviseInput(fixture));
 
     expect(answered).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });
-    const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+    const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(rows).toEqual([{ name: 'the-hypothesis' }]);
   },
 );
@@ -462,7 +462,7 @@ it(
     const rejection = operation.reviseHypothesis(reviseInput(fixture));
 
     await expect(rejection).rejects.toBeInstanceOf(Error);
-    const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1', [fixture.slug]);
+    const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(rows).toEqual([]);
   },
 );

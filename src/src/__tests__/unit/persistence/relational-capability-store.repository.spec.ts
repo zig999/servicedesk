@@ -130,13 +130,12 @@ it('deletes every existing row and inserts exactly the given capabilities, in th
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toBe('SET LOCAL search_path TO public');
-  expect(texts[2]).toContain('DELETE FROM public.capabilities');
-  expect(texts[3]).toContain('INSERT INTO public.capabilities');
-  expect(texts[4]).toContain('INSERT INTO public.capabilities');
-  expect(texts[5]).toBe('COMMIT');
-  expect(recorded[3]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
-  expect(recorded[4]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
+  expect(texts[1]).toContain('DELETE FROM capabilities');
+  expect(texts[2]).toContain('INSERT INTO capabilities');
+  expect(texts[3]).toContain('INSERT INTO capabilities');
+  expect(texts[4]).toBe('COMMIT');
+  expect(recorded[2]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
+  expect(recorded[3]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -152,7 +151,7 @@ it('issues only the DELETE and still commits, when replacing the whole table wit
 
   await store.writeCapabilities([]);
 
-  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'SET LOCAL search_path TO public', 'DELETE FROM public.capabilities', 'COMMIT']);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'DELETE FROM capabilities', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 

@@ -24,10 +24,9 @@
 // rule) to make that DELETE a no-op regardless of what application code checks, so this test would
 // fail over the flagged implementation and passes over the one actually delivered.
 //
-// Every statement below is schema-qualified as public.<table>, the same convention every sibling
-// integration proof in this initiative already documents at length: this project's DATABASE_URL
-// reaches Postgres through a transaction-pooling endpoint that can hand back a physical connection
-// still carrying an unrelated, already-finished session's own search_path.
+// Every statement below names its table unqualified, resolving against whatever schema the
+// connecting role's own server-side default names, the same convention every sibling integration
+// proof in this initiative already documents at length.
 //
 // Every case, hypothesis and glossary row this file writes carries a case-lifecycle-store-prefixed
 // marker plus a fresh randomUUID(), so no test here can collide with a row another suite file
@@ -114,10 +113,10 @@ async function freshGlossary(): Promise<IGlossary> {
   const outcome = `case-lifecycle-store-outcome-${randomUUID()}`;
   const action = `case-lifecycle-store-action-${randomUUID()}`;
   const recipient = `case-lifecycle-store-recipient-${randomUUID()}`;
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [subjectType]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [recipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [subjectType]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [recipient]);
   subjectTypesWrittenByThisTest.push(subjectType);
   outcomesWrittenByThisTest.push(outcome);
   actionsWrittenByThisTest.push(action);
@@ -128,7 +127,7 @@ async function freshGlossary(): Promise<IGlossary> {
 /** One glossary concept a hypothesis-revision may collect, freshly and uniquely named, tracked for this file's own afterEach cleanup. */
 async function freshConcept(): Promise<string> {
   const name = `case-lifecycle-store-concept-${randomUUID()}`;
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   conceptsWrittenByThisTest.push(name);
   return name;
 }
@@ -154,31 +153,31 @@ function aCreateDraftInput(slug: string, glossary: IGlossary, overrides: Partial
 /** Every row this file's own tests wrote under one or more slugs, deleted in the order their own foreign keys require — manifest entries and revision collects before the revisions and hypotheses they reference, those before the versions, those before the case identity itself. */
 async function cleanupWrittenCases(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
   slugsWrittenByThisTest = [];
 }
 
 /** Every glossary row freshGlossary()/freshConcept() wrote for this file's own tests that can still be removed. */
 async function cleanupWrittenGlossary(): Promise<void> {
   if (conceptsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
   }
   if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
   }
   if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   }
   conceptsWrittenByThisTest = [];
   subjectTypesWrittenByThisTest = [];
@@ -289,7 +288,7 @@ it("returns every case currently held, with no filter narrowing it, so all three
   // A limit derived from the table's own count right now, plus headroom for the three rows this
   // test is about to add — wide enough to cover every case currently held, whatever that count is,
   // without this test ever asserting what that count equals.
-  const { rows } = await pool.query<{ count: string }>('SELECT COUNT(*) AS count FROM public.cases');
+  const { rows } = await pool.query<{ count: string }>('SELECT COUNT(*) AS count FROM cases');
   const wideEnoughLimit = Number(rows[0]?.count ?? '0') + 10;
   await store.createDraft(aCreateDraftInput(slugA, glossary));
   await store.createDraft(aCreateDraftInput(slugB, glossary));
@@ -854,7 +853,7 @@ it("creates a hypothesis's own identity row only the first time its name is used
   await store.insertHypothesisRevision(input);
   await store.insertHypothesisRevision(input);
 
-  const { rows } = await pool.query('SELECT name FROM public.hypotheses WHERE case_slug = $1 AND name = $2', [slug, 'a-hypothesis']);
+  const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1 AND name = $2', [slug, 'a-hypothesis']);
   expect(rows).toEqual([{ name: 'a-hypothesis' }]);
 });
 
@@ -932,7 +931,7 @@ it('removes only the named manifest entry, never the hypothesis-revision it refe
 
   const assembled = await store.assembleVersion(slug, version);
   expect(assembled?.manifest).toEqual([]);
-  const { rows } = await pool.query('SELECT revision FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
+  const { rows } = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
   expect(rows).toEqual([{ revision }]);
 });
 
@@ -1001,7 +1000,7 @@ it("removes a draft version and its own manifest entries, without deleting any h
   await store.discard(slug, version);
 
   await expect(store.assembleVersion(slug, version)).resolves.toBeUndefined();
-  const { rows } = await pool.query('SELECT revision FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
+  const { rows } = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
   expect(rows).toEqual([{ revision }]);
 });
 
@@ -1197,7 +1196,7 @@ it(
     const rejection = store.createDraft(input);
 
     await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-    const { rows } = await pool.query('SELECT slug FROM public.cases WHERE slug = $1', [slug]);
+    const { rows } = await pool.query('SELECT slug FROM cases WHERE slug = $1', [slug]);
     expect(rows).toEqual([]);
   },
 );
@@ -1223,7 +1222,7 @@ it(
     });
 
     await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
-    const { rows } = await pool.query('SELECT revision FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
+    const { rows } = await pool.query('SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2', [slug, 'a-hypothesis']);
     expect(rows).toEqual([]);
   },
 );

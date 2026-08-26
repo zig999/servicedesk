@@ -19,25 +19,26 @@
 // persistence/isolated-connection.ts already follow, so database-connection.ts
 // remains the only module that imports the driver (STK-05).
 //
-// runInTransaction resets search_path to public with SET LOCAL immediately
-// after BEGIN, on the connection it checks out of the pool — the same step
-// persistence/isolated-connection.ts already takes and documents at length:
-// this project's DATABASE_URL reaches Postgres through a transaction-pooling
-// endpoint that can hand a freshly checked-out connection back still
-// carrying whatever search_path an unrelated, already-finished session last
-// set on that physical backend, so an unqualified statement inside the
-// transaction this function opens would otherwise resolve against whichever
-// schema happened to be ambient rather than the one the caller means. SET
-// LOCAL rather than plain SET is deliberate here too: its effect lasts only
-// until this same transaction's own COMMIT or ROLLBACK, so nothing survives
-// for the pool to hand to the next checkout.
+// runInTransaction opens no search_path of its own on the connection it
+// checks out of the pool — a caller's own unqualified statement resolves
+// against whatever schema the connecting role's own server-side default
+// names (persistence/migration-runner.ts's own header describes why that
+// default, set with ALTER ROLE ... SET search_path rather than a per-
+// connection SET, is safe to trust under this project's transaction-pooling
+// DATABASE_URL: Postgres reapplies it at the start of every session that
+// role opens, on whichever physical backend the pool hands back, so no
+// value an unrelated session left ambient ever survives to this one). An
+// earlier version of this function sent 'SET LOCAL search_path TO public'
+// itself, once per transaction; that concrete resolution was environment
+// state the connecting role now carries on its own, and the client-side
+// reset undid a schema this project's own database swap deliberately
+// varies per role.
 //
 // Issues no DDL of its own (STK-06): the only statements this module ever
-// sends on its own account are BEGIN, SET LOCAL search_path, COMMIT and
-// ROLLBACK — transaction control, never a CREATE, ALTER or DROP. Every
-// statement a caller runs through runStatement or queryOneOrAbsent is
-// parameterized text the caller supplies, never text this module builds by
-// concatenation (SEC-02).
+// sends on its own account are BEGIN, COMMIT and ROLLBACK — transaction
+// control, never a CREATE, ALTER or DROP. Every statement a caller runs
+// through runStatement or queryOneOrAbsent is parameterized text the caller
+// supplies, never text this module builds by concatenation (SEC-02).
 import type { DatabaseConnection } from './database-connection.js';
 
 /**
@@ -108,12 +109,12 @@ export async function queryOneOrAbsent<R = Record<string, unknown>>(
 
 /**
  * Runs work as one unit of work against a connection checked out of the
- * pool for its own exclusive use: opens a transaction and resets its
- * search_path to public (see the header comment above), then commits once
- * work resolves or rolls back once it rejects — so a unit of work commits
- * as a whole (criterion 3) and one statement's failure inside it leaves
- * none of its earlier statements applied (criterion 4). work may run any
- * statement through the connection it is given — a read as freely as a
+ * pool for its own exclusive use: opens a transaction (see the header
+ * comment above for why no search_path reset belongs here), then commits
+ * once work resolves or rolls back once it rejects — so a unit of work
+ * commits as a whole (criterion 3) and one statement's failure inside it
+ * leaves none of its earlier statements applied (criterion 4). work may run
+ * any statement through the connection it is given — a read as freely as a
  * write — so the one transaction this opens can serve either.
  */
 export async function runInTransaction<T>(
@@ -135,19 +136,17 @@ export async function runInTransaction<T>(
 }
 
 /**
- * Checks a connection out of the pool and opens a transaction on it, reset
- * to the public schema regardless of what an unrelated session left ambient
- * on the physical backend the pool hands back (see the header comment
- * above). A failure here — of the checkout itself, of BEGIN or of the
- * search_path reset — reaches the caller through raise, the same as any
- * other statement this module runs.
+ * Checks a connection out of the pool and opens a transaction on it, against
+ * whatever schema the connecting role's own server-side default names (see
+ * the header comment above). A failure here — of the checkout itself or of
+ * BEGIN — reaches the caller through raise, the same as any other statement
+ * this module runs.
  */
 async function openTransaction(connection: DatabaseConnection, raise: RaiseStoreError) {
   try {
     const client = await connection.connect();
     try {
       await client.query('BEGIN');
-      await client.query('SET LOCAL search_path TO public');
       return client;
     } catch (error) {
       client.release();

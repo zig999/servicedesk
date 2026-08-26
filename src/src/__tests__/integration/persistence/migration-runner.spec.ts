@@ -24,19 +24,17 @@
 // client.query() is unaffected.
 //
 // Criterion 2 — "running against an empty database leaves it holding the schema" — is no longer
-// demonstrable here through a disposable schema: migration-runner.ts's own bookkeeping queries are
-// schema-qualified to public.schema_migrations (a real fix — Neon's pooler leaks search_path
-// between unrelated pooled connections, so an unqualified reference to that table was unreliable),
-// which means bookkeeping is global rather than scoped to whichever schema a caller's own
-// search_path names, while the migration files' own DDL still lands wherever that search_path
-// points. Once the suite's own global setup has applied every file once (against the database's
-// default schema, before any test runs), every later call — including one made against a schema
-// that has never held any of these tables — finds every file already recorded and applies nothing.
-// The one real empty-database → populated-schema transition left in this shared-database suite is
-// the suite's own global setup's own single run, proven instead in vitest-global-setup.spec.ts's
-// own strengthened test. What a disposable schema can still honestly demonstrate is documented
-// below instead: that this global bookkeeping, once populated, leaves a schema that never actually
-// received the DDL without the tables the scripts describe.
+// demonstrable here through a disposable schema created bare: migration-runner.ts's own bookkeeping
+// queries are schema-qualified (a real fix — Neon's pooler leaks search_path between unrelated
+// pooled connections, so an unqualified reference to that table was unreliable), against the schema
+// each call is explicitly given, so bookkeeping and the migration files' own DDL land in the same
+// schema every call names — this file names its own disposable schemaName explicitly on every call
+// below, the same way migrate.ts names the connecting role's own resolvedSchema(). The one real
+// empty-database → populated-schema transition against this project's actual environment schema is
+// the suite's own global setup's own single run, proven instead in vitest-global-setup.spec.ts's own
+// strengthened test; what this file demonstrates instead is that a schema explicitly named gets both
+// its own bookkeeping and its own domain tables, independent of whatever another schema — this
+// project's real "test" schema among them — already has recorded.
 //
 // Divergence disclosed here for the same reason schema-migrations.spec.ts already discloses it:
 // (STK-08) DATABASE_URL is read directly from process.env below rather than through config/env.ts's
@@ -105,25 +103,25 @@ afterEach(async () => {
   await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
 });
 
-// ---------------------------------------------------------------- documents: bookkeeping is global
+// ------------------------------------------- documents: bookkeeping follows the named schema
 
-it("leaves a disposable schema without the domain tables when an explicit call finds every file already recorded as applied elsewhere, since bookkeeping is global rather than scoped to the caller's own search_path", async () => {
-  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY);
+it("creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real \"test\" schema already has recorded", async () => {
+  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY, schemaName);
 
   const { rows: sentinelRows } = await client.query<{ exists: boolean }>("SELECT to_regclass('cases') IS NOT NULL AS exists");
-  expect(sentinelRows[0]?.exists).toBe(false);
+  expect(sentinelRows[0]?.exists).toBe(true);
 });
 
 // ---------------------------------------------------------------- criterion 3: idempotent re-run
 
 it('applies no script twice and fails nothing when run again against a database that already holds the schema', async () => {
   const expectedFilenames = await migrationFilenamesOnDisk();
-  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY);
+  await applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY, schemaName);
 
-  await expect(applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY)).resolves.toBeUndefined();
+  await expect(applyPendingMigrations(asMigrationConnection(client), MIGRATIONS_DIRECTORY, schemaName)).resolves.toBeUndefined();
 
   const { rows } = await client.query<{ filename: string; row_count: string }>(
-    'SELECT filename, COUNT(*) AS row_count FROM public.schema_migrations GROUP BY filename ORDER BY filename',
+    `SELECT filename, COUNT(*) AS row_count FROM "${schemaName}".schema_migrations GROUP BY filename ORDER BY filename`,
   );
   expect(expectedFilenames).toContain(ANCHOR_MIGRATION_FILENAME);
   expect(rows.map((row) => row.filename)).toEqual(expectedFilenames);

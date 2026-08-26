@@ -52,18 +52,15 @@
 // database-access.ts already declares, are the only things this file names
 // for the pool it is given (STK-05).
 //
-// Every statement below is schema-qualified as public.<table>, the same
-// convention relational-capability-store.repository.ts and
-// relational-case-store.repository.ts already document at length: this
-// project's DATABASE_URL reaches Postgres through a transaction-pooling
-// endpoint that can hand back a physical connection still carrying an
-// unrelated, already-finished session's own search_path, so an unqualified
-// name run by readTerms — outside any transaction this module opens itself
-// — could otherwise resolve against whatever schema happened to be ambient
-// rather than against public. Inside writeTerms' and readConcepts' own
-// runInTransaction the qualification is kept regardless, even though that
-// helper has already reset search_path to public itself, so every
-// statement below reads the same way no matter which path runs it.
+// Every statement below names its table unqualified, the same convention
+// relational-capability-store.repository.ts and
+// relational-case-store.repository.ts already document at length: it
+// resolves against whatever schema the connecting role's own server-side
+// default names (persistence/migration-runner.ts's own header describes why
+// that default is safe to trust under this project's transaction-pooling
+// DATABASE_URL) — true of readTerms, run outside any transaction this
+// module opens itself, exactly as it is of writeTerms' and readConcepts'
+// own runInTransaction.
 import { GlossaryStoreError } from '../errors/glossary-store.error.js';
 import type { IGlossaryStore } from '../glossary/glossary-store.port.js';
 import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../glossary/terms.js';
@@ -84,16 +81,16 @@ interface IConceptAcceptRow {
 
 /** Each of the five term vocabularies' own schema-qualified table name, keyed by the TermVocabulary name migrations/0002-glossary-vocabulary.sql's own header comment already pairs it with. */
 const VOCABULARY_TABLES: Readonly<Record<TermVocabulary, string>> = {
-  'subject-type': 'public.subject_types',
-  'subject-attribute': 'public.subject_attributes',
-  outcome: 'public.outcomes',
-  action: 'public.actions',
-  recipient: 'public.recipients',
+  'subject-type': 'subject_types',
+  'subject-attribute': 'subject_attributes',
+  outcome: 'outcomes',
+  action: 'actions',
+  recipient: 'recipients',
 };
 
 /** Schema-qualified table names for the concept tables, named once and reused across every statement below rather than repeated as literals (TYP-04). */
-const CONCEPTS_TABLE = 'public.concepts';
-const CONCEPT_ACCEPTS_TABLE = 'public.concept_accepts';
+const CONCEPTS_TABLE = 'concepts';
+const CONCEPT_ACCEPTS_TABLE = 'concept_accepts';
 
 /**
  * The relational adapter of the glossary's store port: each term vocabulary

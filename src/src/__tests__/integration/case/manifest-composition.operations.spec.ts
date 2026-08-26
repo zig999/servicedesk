@@ -92,10 +92,10 @@ async function freshGlossary(): Promise<IGlossary> {
   const outcome = `manifest-ops-outcome-${randomUUID()}`;
   const action = `manifest-ops-action-${randomUUID()}`;
   const recipient = `manifest-ops-recipient-${randomUUID()}`;
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [subjectType]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [recipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [subjectType]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [recipient]);
   subjectTypesWrittenByThisTest.push(subjectType);
   outcomesWrittenByThisTest.push(outcome);
   actionsWrittenByThisTest.push(action);
@@ -106,7 +106,7 @@ async function freshGlossary(): Promise<IGlossary> {
 /** One glossary concept a hypothesis-revision may collect, freshly and uniquely named, tracked for this file's own afterEach cleanup. */
 async function freshConcept(): Promise<string> {
   const name = `manifest-ops-concept-${randomUUID()}`;
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   conceptsWrittenByThisTest.push(name);
   return name;
 }
@@ -155,7 +155,7 @@ async function manifestOf(slug: string, version: number) {
 
 async function revisionRowsFor(slug: string, hypothesisNames: readonly string[]) {
   const { rows } = await pool.query<{ hypothesis_name: string; revision: number }>(
-    'SELECT hypothesis_name, revision FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = ANY($2) ORDER BY hypothesis_name, revision',
+    'SELECT hypothesis_name, revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = ANY($2) ORDER BY hypothesis_name, revision',
     [slug, hypothesisNames],
   );
   return rows;
@@ -163,21 +163,21 @@ async function revisionRowsFor(slug: string, hypothesisNames: readonly string[])
 
 async function cleanupWrittenCases(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
   slugsWrittenByThisTest = [];
 }
 
 async function cleanupWrittenGlossary(): Promise<void> {
-  if (conceptsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
-  if (subjectTypesWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
-  if (outcomesWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
-  if (actionsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
-  if (recipientsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+  if (conceptsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+  if (subjectTypesWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+  if (outcomesWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+  if (actionsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+  if (recipientsWrittenByThisTest.length > 0) await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   conceptsWrittenByThisTest = [];
   subjectTypesWrittenByThisTest = [];
   outcomesWrittenByThisTest = [];

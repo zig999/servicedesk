@@ -54,13 +54,12 @@
 // already declares are the only things this file names for the pool it is
 // given (STK-05).
 //
-// Every statement below is schema-qualified as public.<table>, the same
-// Neon-transaction-pooler convention every sibling relational store in this
-// tree already documents at length (relational-case-store.repository.ts,
-// database-access.spec.ts): a checked-out connection can carry an
-// unrelated session's own ambient search_path, so an unqualified name
-// could resolve against the wrong schema even though runInTransaction has
-// already reset it to public itself.
+// Every statement below names its table unqualified, the same convention
+// every sibling relational store in this tree already documents at length
+// (relational-case-store.repository.ts, persistence/migration-runner.ts's
+// own header): it resolves against whatever schema the connecting role's
+// own server-side default names, safe to trust under this project's
+// transaction-pooling DATABASE_URL.
 
 import { createHash } from 'node:crypto';
 import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';
@@ -143,11 +142,11 @@ const VERDICT_VALUES: ReadonlySet<string> = new Set<string>(VERDICTS);
 const EVALUATION_REASON_VALUES: ReadonlySet<string> = new Set<string>(EVALUATION_REASONS);
 
 /** Schema-qualified table names, named once and reused across every statement below rather than repeated as literals (TYP-04). */
-const INVESTIGATIONS_TABLE = 'public.investigations';
-const INVESTIGATION_EVIDENCE_TABLE = 'public.investigation_evidence';
-const INVESTIGATION_EVALUATIONS_TABLE = 'public.investigation_evaluations';
-const INVESTIGATION_EVALUATION_CITATIONS_TABLE = 'public.investigation_evaluation_citations';
-const INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE = 'public.investigation_subject_attribute_values';
+const INVESTIGATIONS_TABLE = 'investigations';
+const INVESTIGATION_EVIDENCE_TABLE = 'investigation_evidence';
+const INVESTIGATION_EVALUATIONS_TABLE = 'investigation_evaluations';
+const INVESTIGATION_EVALUATION_CITATIONS_TABLE = 'investigation_evaluation_citations';
+const INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE = 'investigation_subject_attribute_values';
 
 /** Postgres' own error code for a unique-constraint violation — the signal write-once is decided by, never a value spelled out where it is compared (TYP-04). */
 const UNIQUE_VIOLATION_CODE = '23505';

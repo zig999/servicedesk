@@ -10,28 +10,27 @@
 // isolated-connection.ts's own header as harmless on its own checked-out client, but not guaranteed
 // harmless on a client a shared hook has already returned to the pool) off every test path here.
 //
-// Every read or write that runs through an isolated connection (isolated.query, connectionA.query,
-// connectionB.query) reaches "cases" and the glossary/investigation tables unqualified, because
-// checkOutIsolatedConnection resets search_path on its own checkout. The two verification reads that
-// run through the plain pool.query() directly instead — outside any isolated connection, precisely
-// to observe the database from a caller that never checked one out — are not covered by that reset,
-// so each is schema-qualified as public.cases, the same convention migration-runner.ts and its own
-// tests already use for exactly this reason (an unqualified name can otherwise resolve against
-// whatever search_path an unrelated, already-finished session left on whichever physical backend
-// this project's transaction-pooling endpoint happens to hand pool.query() next).
+// Every read or write below — through an isolated connection (isolated.query, connectionA.query,
+// connectionB.query) or through the plain pool.query() directly, in the two verification reads that
+// run outside any isolated connection precisely to observe the database from a caller that never
+// checked one out — reaches "cases" and the glossary/investigation tables unqualified, and resolves
+// against whatever schema the connecting role's own server-side default names
+// (persistence/migration-runner.ts's own header describes why that default is safe to trust under
+// this project's transaction-pooling DATABASE_URL, for a checkout as much as for pool.query() run
+// directly).
 //
 // Deliberately writes into the same "cases" and "investigations" tables the already-applied
-// migrations left in the database's own default (public) schema, rather than standing up a
+// migrations left in the database's own connecting-role schema, rather than standing up a
 // disposable schema of its own the way schema-migrations.spec.ts and migration-runner.spec.ts do:
 // this task's own criterion 5 forbids obtaining isolation by creating, dropping or altering a table,
 // and CREATE SCHEMA is not that, but the mechanism this task ships is the transactional one
 // (BEGIN .. ROLLBACK over one pinned connection), and proving it against the very tables every other
 // caller of this pool already shares is the direct demonstration of it — not a schema-per-test
 // substitute for it. No statement below is CREATE, ALTER or DROP against any table (criterion 5);
-// nothing else in this suite writes to "cases" or "investigations" in the public schema (verified by
-// reading — the two schema-per-test suites redirect every unqualified reference to their own
-// disposable schema via search_path before they ever insert into either table), so every row this
-// file's own tests observe is a row one of this file's own tests wrote.
+// nothing else in this suite writes to "cases" or "investigations" in this role's own schema
+// (verified by reading — the two schema-per-test suites redirect every unqualified reference to
+// their own disposable schema via search_path before they ever insert into either table), so every
+// row this file's own tests observe is a row one of this file's own tests wrote.
 //
 // Divergence disclosed here for the same reason schema-migrations.spec.ts and migration-runner.spec.ts
 // already disclose it: (STK-08) DATABASE_URL is read directly from process.env below rather than
@@ -168,7 +167,7 @@ it('leaves the cases table holding no row for the slug it wrote, once it release
 
   await isolated.release();
 
-  const { rows: seenAfterRelease } = await pool.query<ICaseRow>('SELECT slug FROM public.cases WHERE slug = $1', [slug]);
+  const { rows: seenAfterRelease } = await pool.query<ICaseRow>('SELECT slug FROM cases WHERE slug = $1', [slug]);
   expect(seenAfterRelease).toEqual([]);
 });
 
@@ -270,6 +269,6 @@ it("keeps two isolated connections checked out from the same pool at once from s
     await connectionB.release();
   }
 
-  const { rows: remaining } = await pool.query<ICaseRow>('SELECT slug FROM public.cases WHERE slug = ANY($1)', [[slugA, slugB]]);
+  const { rows: remaining } = await pool.query<ICaseRow>('SELECT slug FROM cases WHERE slug = ANY($1)', [[slugA, slugB]]);
   expect(remaining).toEqual([]);
 });

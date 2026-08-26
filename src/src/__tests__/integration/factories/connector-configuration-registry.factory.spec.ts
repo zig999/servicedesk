@@ -34,7 +34,7 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  await pool.query("DELETE FROM public.connector_configurations WHERE connector LIKE 'connector-registry-factory-%'");
+  await pool.query("DELETE FROM connector_configurations WHERE connector LIKE 'connector-registry-factory-%'");
 });
 
 it('persists a registered connector configuration as a row RelationalConnectorConfigurationStore reads back, through the real factory wiring', async () => {

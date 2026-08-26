@@ -64,7 +64,7 @@ it('sends no further statement once every migration file is already recorded as 
     if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
       return { rows: [{ exists: true }] };
     }
-    if (text.includes('SELECT filename FROM public.schema_migrations')) {
+    if (text.includes('SELECT filename FROM "public".schema_migrations')) {
       return { rows: [{ filename: '0001-a.sql' }, { filename: '0002-b.sql' }] };
     }
     throw new Error(`this test expected no other statement, but received: ${text}`);

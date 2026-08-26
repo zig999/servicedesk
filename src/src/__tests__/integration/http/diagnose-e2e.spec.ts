@@ -153,10 +153,10 @@ async function insertConcepts(connection: DatabaseConnection): Promise<void> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8');
   const concepts = JSON.parse(raw) as ReadonlyArray<{ name: string; accepts: readonly string[]; ttl: number }>;
   for (const concept of concepts) {
-    await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
+    await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [concept.name, concept.ttl]);
     for (const subjectType of concept.accepts) {
       await connection.query(
-        'INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
         [concept.name, subjectType],
       );
     }
@@ -168,7 +168,7 @@ async function insertCapabilities(connection: DatabaseConnection): Promise<void>
   const capabilities = JSON.parse(raw) as ReadonlyArray<Record<string, unknown>>;
   for (const capability of capabilities) {
     await connection.query(
-      `INSERT INTO public.capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
+      `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT DO NOTHING`,
       [capability.name, capability.version, capability.nature, capability.input_schema, capability.output_schema, capability.timeout, capability.connector, capability.concept],
     );
@@ -262,11 +262,11 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
 
 /** Inserts every row the committed fixture's own case, glossary and capability data need, each guarded by ON CONFLICT DO NOTHING so a row already present (left behind by a crash) never fails or duplicates. */
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
-  await insertTerms(connection, 'public.subject_types', await readTermNames('subject-type.json'));
-  await insertTerms(connection, 'public.subject_attributes', await readTermNames('subject-attribute.json'));
-  await insertTerms(connection, 'public.outcomes', await readTermNames('outcome.json'));
-  await insertTerms(connection, 'public.actions', await readTermNames('action.json'));
-  await insertTerms(connection, 'public.recipients', await readTermNames('recipient.json'));
+  await insertTerms(connection, 'subject_types', await readTermNames('subject-type.json'));
+  await insertTerms(connection, 'subject_attributes', await readTermNames('subject-attribute.json'));
+  await insertTerms(connection, 'outcomes', await readTermNames('outcome.json'));
+  await insertTerms(connection, 'actions', await readTermNames('action.json'));
+  await insertTerms(connection, 'recipients', await readTermNames('recipient.json'));
   await insertConcepts(connection);
   await insertCapabilities(connection);
   await insertFixtureCase(connection);
@@ -296,23 +296,23 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   // hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
   // identity-only hypotheses — the same table set and order release.operation.spec.ts's own
   // afterEach already established for cleaning up after a released version.
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revision_collects WHERE case_slug = $1', [CASE_SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_version_hypotheses WHERE case_slug = $1', [CASE_SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypothesis_revisions WHERE case_slug = $1', [CASE_SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.hypotheses WHERE case_slug = $1', [CASE_SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.case_versions WHERE slug = $1', [CASE_SLUG]);
-  await deleteTolerantly(connection, 'DELETE FROM public.cases WHERE slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM hypotheses WHERE case_slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM case_versions WHERE slug = $1', [CASE_SLUG]);
+  await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [CASE_SLUG]);
   const capabilities = JSON.parse(await readFile(join(FIXTURES_ROOT, 'capability', 'capability.json'), 'utf8')) as ReadonlyArray<{ name: string; version: string }>;
   for (const capability of capabilities) {
-    await deleteTolerantly(connection, 'DELETE FROM public.capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+    await deleteTolerantly(connection, 'DELETE FROM capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
   }
   const concepts = JSON.parse(await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8')) as ReadonlyArray<{ name: string }>;
   for (const concept of concepts) {
-    await deleteTolerantly(connection, 'DELETE FROM public.concept_accepts WHERE concept_name = $1', [concept.name]);
-    await deleteTolerantly(connection, 'DELETE FROM public.concepts WHERE name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concept_accepts WHERE concept_name = $1', [concept.name]);
+    await deleteTolerantly(connection, 'DELETE FROM concepts WHERE name = $1', [concept.name]);
   }
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
   // The fixture's own outcome.json happens to list both non-conclusion outcomes among its own
   // terms; excluded here rather than deleted, since they are the glossary's own suite-wide seed
   // (vitest-global-setup.ts), never this fixture's own to remove — deleting them mid-suite races
@@ -320,9 +320,9 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   // hypothesis row (task/service-on-the-database/store-wiring, disclosed in that task's own delivery).
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
-  await deleteTolerantly(connection, 'DELETE FROM public.outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
-  await deleteTolerantly(connection, 'DELETE FROM public.actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
-  await deleteTolerantly(connection, 'DELETE FROM public.recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
+  await deleteTolerantly(connection, 'DELETE FROM actions WHERE name = ANY($1)', [await readTermNames('action.json')]);
+  await deleteTolerantly(connection, 'DELETE FROM recipients WHERE name = ANY($1)', [await readTermNames('recipient.json')]);
 }
 
 function buildObservationSource(): FakeObservationSource {
@@ -441,11 +441,11 @@ afterEach(async () => {
   await app.close();
   const id = getCapturedId();
   if (id !== undefined) {
-    await connection.query('DELETE FROM public.investigation_evaluation_citations WHERE investigation_id = $1', [id]);
-    await connection.query('DELETE FROM public.investigation_evaluations WHERE investigation_id = $1', [id]);
-    await connection.query('DELETE FROM public.investigation_evidence WHERE investigation_id = $1', [id]);
-    await connection.query('DELETE FROM public.investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
-    await connection.query('DELETE FROM public.investigations WHERE id = $1', [id]);
+    await connection.query('DELETE FROM investigation_evaluation_citations WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM investigation_evaluations WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM investigation_evidence WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM investigation_subject_attribute_values WHERE investigation_id = $1', [id]);
+    await connection.query('DELETE FROM investigations WHERE id = $1', [id]);
   }
   if (originalAnthropicApiKey === undefined) {
     delete process.env.ANTHROPIC_API_KEY;

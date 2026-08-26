@@ -59,8 +59,8 @@ afterAll(async () => {
 
 afterEach(async () => {
   if (conceptsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.capabilities WHERE concept = ANY($1)', [conceptsWrittenByThisTest]);
-    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM capabilities WHERE concept = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
     conceptsWrittenByThisTest = [];
   }
 });
@@ -68,7 +68,7 @@ afterEach(async () => {
 /** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
 async function aFreshConcept(): Promise<string> {
   const name = `capability-registry-factory-concept-${randomUUID()}`;
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   conceptsWrittenByThisTest.push(name);
   return name;
 }

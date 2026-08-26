@@ -42,48 +42,48 @@ afterAll(async () => {
 
 afterEach(async () => {
   if (conceptsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
-    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
     conceptsWrittenByThisTest = [];
   }
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await pool.query('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
     subjectTypesWrittenByThisTest = [];
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await pool.query('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
     actionsWrittenByThisTest = [];
   }
 });
 
 /** Writes one action row directly against the real table, tracked for this file's own afterEach cleanup. */
 async function insertAction(name: string): Promise<void> {
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [name]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [name]);
   actionsWrittenByThisTest.push(name);
 }
 
 /** Removes one action row directly, so a test can prove a term no longer answers once its row is gone. */
 async function deleteAction(name: string): Promise<void> {
-  await pool.query('DELETE FROM public.actions WHERE name = $1', [name]);
+  await pool.query('DELETE FROM actions WHERE name = $1', [name]);
   actionsWrittenByThisTest = actionsWrittenByThisTest.filter((tracked) => tracked !== name);
 }
 
 /** Writes one subject type row directly, tracked for this file's own afterEach cleanup — concept_accepts' own foreign key needs it before a concept can accept it. */
 async function insertSubjectType(name: string): Promise<void> {
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [name]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [name]);
   subjectTypesWrittenByThisTest.push(name);
 }
 
 /** Writes one concept row plus its own concept_accepts row directly, tracked for this file's own afterEach cleanup. */
 async function insertConcept(name: string, subjectType: string, ttl: number): Promise<void> {
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2)', [name, ttl]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2)', [name, ttl]);
   conceptsWrittenByThisTest.push(name);
-  await pool.query('INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [name, subjectType]);
+  await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [name, subjectType]);
 }
 
 /** Replaces one concept row's own ttl directly against the real table, bypassing every store API. */
 async function updateConceptTtl(name: string, ttl: number): Promise<void> {
-  await pool.query('UPDATE public.concepts SET ttl = $1 WHERE name = $2', [ttl, name]);
+  await pool.query('UPDATE concepts SET ttl = $1 WHERE name = $2', [ttl, name]);
 }
 
 it('answers a term added to the data since the previous read', async () => {

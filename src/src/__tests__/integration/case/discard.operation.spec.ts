@@ -109,10 +109,10 @@ async function freshGlossary(): Promise<IGlossary> {
   const outcome = `discard-op-outcome-${randomUUID()}`;
   const action = `discard-op-action-${randomUUID()}`;
   const recipient = `discard-op-recipient-${randomUUID()}`;
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [subjectType]);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [outcome]);
-  await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [action]);
-  await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [recipient]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [subjectType]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome]);
+  await pool.query('INSERT INTO actions (name) VALUES ($1)', [action]);
+  await pool.query('INSERT INTO recipients (name) VALUES ($1)', [recipient]);
   subjectTypesWrittenByThisTest.push(subjectType);
   outcomesWrittenByThisTest.push(outcome);
   actionsWrittenByThisTest.push(action);
@@ -123,28 +123,28 @@ async function freshGlossary(): Promise<IGlossary> {
 /** Every row this file's own tests wrote under a case slug, in the order their own foreign keys require. */
 async function cleanupWrittenCases(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
-  await deleteTolerantly('DELETE FROM public.case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
-  await deleteTolerantly('DELETE FROM public.cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypothesis_revisions WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM case_versions WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
+  await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
   slugsWrittenByThisTest = [];
 }
 
 /** Every glossary row freshGlossary() wrote for this file's own tests that can still be removed. */
 async function cleanupWrittenGlossary(): Promise<void> {
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
   }
   if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
   }
   if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   }
   subjectTypesWrittenByThisTest = [];
   outcomesWrittenByThisTest = [];
@@ -186,7 +186,7 @@ it("removes the discarded draft's own manifest entries", async () => {
   await discardCaseVersion(store, slug, version);
 
   const { rows } = await pool.query(
-    'SELECT 1 FROM public.case_version_hypotheses WHERE case_slug = $1 AND case_version = $2',
+    'SELECT 1 FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = $2',
     [slug, version],
   );
   expect(rows).toEqual([]);
@@ -240,7 +240,7 @@ it("never removes a hypothesis-revision the discarded draft's manifest reference
   await discardCaseVersion(store, slug, version);
 
   const { rows } = await pool.query(
-    'SELECT 1 FROM public.hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
+    'SELECT 1 FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3',
     [slug, 'an-orphaned-hypothesis', revision],
   );
   expect(rows).toHaveLength(1);

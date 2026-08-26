@@ -5,17 +5,16 @@
 // BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen) are proven independently of a real database in
 // this file's own unit-level sibling instead.
 //
-// Every statement below is schema-qualified as public.capabilities and public.concepts, the same
-// convention database-access.spec.ts's and isolated-connection.spec.ts's own integration proofs
-// already document at length: this project's DATABASE_URL reaches Postgres through a
-// transaction-pooling endpoint that can hand back a physical connection still carrying an unrelated,
-// already-finished session's own search_path, so an unqualified name run outside an already-open
-// transaction could otherwise resolve against whatever schema happened to be ambient.
+// Every statement below names "capabilities" and "concepts" unqualified, the same convention
+// database-access.spec.ts's and isolated-connection.spec.ts's own integration proofs already
+// document at length: it resolves against whatever schema the connecting role's own server-side
+// default names, safe to trust under this project's transaction-pooling DATABASE_URL for a
+// statement run outside an already-open transaction exactly as for one run inside it.
 //
 // writeCapabilities() replaces the whole "capabilities" table on every call (a DELETE, then one
 // INSERT per given capability), unlike the scoped, per-slug writes database-access.spec.ts's and
 // isolated-connection.spec.ts's own integration proofs make against "cases": no other suite in this
-// project writes to public.capabilities or public.concepts (verified by reading), so this file is
+// project writes to capabilities or concepts (verified by reading), so this file is
 // free to treat the whole table as its own, and its own afterEach wipes it completely rather than
 // deleting by tracked key — the direct consequence of the store's own whole-replace semantics, not a
 // departure from the established per-row cleanup convention.
@@ -73,8 +72,8 @@ let conceptsWrittenByThisTest: string[] = [];
 beforeAll(async () => {
   pool = createDatabaseConnection(requireDatabaseUrl());
   // A safety wipe, not a per-row cleanup: no other suite in this project writes to
-  // public.capabilities, so an empty table is the only state this file ever assumes.
-  await pool.query('DELETE FROM public.capabilities');
+  // capabilities, so an empty table is the only state this file ever assumes.
+  await pool.query('DELETE FROM capabilities');
 });
 
 afterAll(async () => {
@@ -82,16 +81,16 @@ afterAll(async () => {
 });
 
 afterEach(async () => {
-  await pool.query('DELETE FROM public.capabilities');
+  await pool.query('DELETE FROM capabilities');
   if (conceptsWrittenByThisTest.length > 0) {
-    await pool.query('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await pool.query('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
   conceptsWrittenByThisTest = [];
 });
 
 /** Inserts one glossary concept this test's own capability rows may reference by foreign key, tracked for this file's own afterEach cleanup. */
 async function insertConcept(name: string): Promise<void> {
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, 60)', [name]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
   conceptsWrittenByThisTest.push(name);
 }
 

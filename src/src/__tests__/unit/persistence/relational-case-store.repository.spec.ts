@@ -73,7 +73,7 @@ function recordingQuery(rows: IRoutedRows): {
     recorded.push({ text, params });
     if (text.includes('hypothesis_revision_collects')) return { rows: [...(rows.collects ?? [])] };
     if (text.includes('hypothesis_revisions')) return { rows: [...(rows.manifest ?? [])] };
-    if (text.includes('FROM public.case_versions')) return { rows: [...(rows.caseVersions ?? [])] };
+    if (text.includes('FROM case_versions')) return { rows: [...(rows.caseVersions ?? [])] };
     return { rows: [] };
   };
   return { handleQuery, recorded };
@@ -152,7 +152,6 @@ it('assembles one version together with its manifest, joining each entry to its 
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toBe('SET LOCAL search_path TO public');
   expect(texts).toContain('COMMIT');
   expect(texts.some((text) => text.includes('ORDER BY cvh.position'))).toBe(true);
   expect(answered?.manifest).toEqual([
@@ -172,12 +171,7 @@ it('answers undefined and reads no manifest at all, when case_versions holds no 
   const answered = await store.assembleVersion('an-absent-slug', 1);
 
   expect(answered).toBeUndefined();
-  expect(collapsedTexts(recorded)).toEqual([
-    'BEGIN',
-    'SET LOCAL search_path TO public',
-    expect.stringContaining('FROM public.case_versions'),
-    'COMMIT',
-  ]);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', expect.stringContaining('FROM case_versions'), 'COMMIT']);
 });
 
 it("raises this store's own typed error, carrying the driver failure as its cause, when a read is refused", async () => {
@@ -301,12 +295,12 @@ it('runs the case-identity insert, assigns the next version off its own durable 
   expect(version).toBe(5);
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[2]).toContain('INSERT INTO public.cases');
-  expect(texts[3]).toContain('SET next_version');
-  expect(texts[4]).toContain('INSERT INTO public.case_versions');
-  expect(texts[5]).toContain('INSERT INTO public.case_version_hypotheses');
+  expect(texts[1]).toContain('INSERT INTO cases');
+  expect(texts[2]).toContain('SET next_version');
+  expect(texts[3]).toContain('INSERT INTO case_versions');
+  expect(texts[4]).toContain('INSERT INTO case_version_hypotheses');
   expect(texts.at(-1)).toBe('COMMIT');
-  expect(recorded[5]?.params).toEqual(['a-slug', 5, 3]);
+  expect(recorded[4]?.params).toEqual(['a-slug', 5, 3]);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -323,13 +317,13 @@ it('skips copying any manifest when naming no source version and the case holds 
 
   await store.createDraft(aCreateDraftInput());
 
-  expect(recorded.some((text) => text.includes('INSERT INTO public.case_version_hypotheses'))).toBe(false);
+  expect(recorded.some((text) => text.includes('INSERT INTO case_version_hypotheses'))).toBe(false);
 });
 
 it("raises this store's own CaseAlreadyHasDraftError, naming the slug, and rolls back, when the one-draft-per-case constraint is violated", async () => {
   const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
     if (text.includes('SET next_version')) return { rows: [{ version: 2 }] };
-    if (text.includes('INSERT INTO public.case_versions')) throw uniqueViolation('case_versions_one_draft_per_case');
+    if (text.includes('INSERT INTO case_versions')) throw uniqueViolation('case_versions_one_draft_per_case');
     return { rows: [] };
   };
   const { connection, client } = fakeTransactionConnection(handleQuery);
@@ -346,7 +340,7 @@ it('still raises the generic CaseStoreError for a draft-insert failure that is n
   const driverFailure = new Error('the connection to the database was lost');
   const handleQuery = async (text: string): Promise<{ rows: Row[] }> => {
     if (text.includes('SET next_version')) return { rows: [{ version: 2 }] };
-    if (text.includes('INSERT INTO public.case_versions')) throw driverFailure;
+    if (text.includes('INSERT INTO case_versions')) throw driverFailure;
     return { rows: [] };
   };
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -377,7 +371,7 @@ it("claims the hypothesis's own identity idempotently, inserts the revision numb
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: Row[] }> => {
     recorded.push({ text, params });
-    if (text.includes('INSERT INTO public.hypothesis_revisions')) return { rows: [{ revision: 4 }] };
+    if (text.includes('INSERT INTO hypothesis_revisions')) return { rows: [{ revision: 4 }] };
     return { rows: [] };
   };
   const { connection, client } = fakeTransactionConnection(handleQuery);
@@ -387,12 +381,12 @@ it("claims the hypothesis's own identity idempotently, inserts the revision numb
 
   expect(revision).toBe(4);
   const texts = collapsedTexts(recorded);
-  expect(texts[2]).toContain('INSERT INTO public.hypotheses');
-  expect(texts[3]).toContain('INSERT INTO public.hypothesis_revisions');
-  expect(texts[4]).toContain('INSERT INTO public.hypothesis_revision_collects');
-  expect(texts[5]).toContain('INSERT INTO public.hypothesis_revision_collects');
-  expect(recorded[2]?.params).toEqual(['a-slug', 'a-hypothesis']);
-  expect(recorded[4]?.params).toEqual(['a-slug', 'a-hypothesis', 4, 'concept-a']);
+  expect(texts[1]).toContain('INSERT INTO hypotheses');
+  expect(texts[2]).toContain('INSERT INTO hypothesis_revisions');
+  expect(texts[3]).toContain('INSERT INTO hypothesis_revision_collects');
+  expect(texts[4]).toContain('INSERT INTO hypothesis_revision_collects');
+  expect(recorded[1]?.params).toEqual(['a-slug', 'a-hypothesis']);
+  expect(recorded[3]?.params).toEqual(['a-slug', 'a-hypothesis', 4, 'concept-a']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
@@ -424,7 +418,7 @@ it('places one hypothesis-revision at one manifest position through a single sta
   await store.placeHypothesis(aPlaceHypothesisInput({ position: 3 }));
 
   expect(query).toHaveBeenCalledTimes(1);
-  expect(query.mock.calls[0]?.[0]).toContain('INSERT INTO public.case_version_hypotheses');
+  expect(query.mock.calls[0]?.[0]).toContain('INSERT INTO case_version_hypotheses');
   expect(query.mock.calls[0]?.[1]).toEqual(['a-slug', 1, 'a-hypothesis', 1, 3]);
 });
 
@@ -458,7 +452,7 @@ it('removes only the named manifest entry through a single statement, never touc
 
   expect(query).toHaveBeenCalledTimes(1);
   const [text, params] = query.mock.calls[0] as [string, readonly unknown[]];
-  expect(text).toContain('DELETE FROM public.case_version_hypotheses');
+  expect(text).toContain('DELETE FROM case_version_hypotheses');
   expect(text).not.toContain('hypothesis_revisions');
   expect(params).toEqual(['a-slug', 1, 'a-hypothesis']);
 });
@@ -504,8 +498,8 @@ it("removes a draft version's own manifest entries before its own row, as one un
   await store.discard('a-slug', 1);
 
   const texts = collapsedTexts(recorded);
-  expect(texts[2]).toContain('DELETE FROM public.case_version_hypotheses');
-  expect(texts[3]).toContain('DELETE FROM public.case_versions');
+  expect(texts[1]).toContain('DELETE FROM case_version_hypotheses');
+  expect(texts[2]).toContain('DELETE FROM case_versions');
   expect(texts.some((text) => text.includes('hypothesis_revisions'))).toBe(false);
   expect(client.release).toHaveBeenCalledTimes(1);
 });

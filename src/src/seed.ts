@@ -168,13 +168,13 @@ async function seedConcepts(connection: DatabaseConnection): Promise<void> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', 'concept.json'), 'utf8');
   const concepts = JSON.parse(raw) as readonly ConceptFixture[];
   for (const concept of concepts) {
-    await connection.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [
+    await connection.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2) ON CONFLICT DO NOTHING', [
       concept.name,
       concept.ttl,
     ]);
     for (const subjectType of concept.accepts) {
       await connection.query(
-        'INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2) ON CONFLICT DO NOTHING',
         [concept.name, subjectType],
       );
     }

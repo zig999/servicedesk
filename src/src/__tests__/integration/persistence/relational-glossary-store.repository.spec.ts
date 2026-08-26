@@ -5,14 +5,13 @@
 // BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen) are proven independently of a real database in
 // this file's own unit-level sibling instead.
 //
-// Every statement below is schema-qualified as public.<table>, the same convention
-// database-access.spec.ts's, relational-capability-store.repository.spec.ts's and
-// relational-case-store.repository.spec.ts's own integration proofs already document at length:
-// this project's DATABASE_URL reaches Postgres through a transaction-pooling endpoint that can
-// hand back a physical connection still carrying an unrelated, already-finished session's own
-// search_path.
+// Every statement below names its table unqualified, resolving against whatever schema the
+// connecting role's own server-side default names, the same convention database-access.spec.ts's,
+// relational-capability-store.repository.spec.ts's and relational-case-store.repository.spec.ts's
+// own integration proofs already document at length (persistence/migration-runner.ts's own header
+// says why that default is safe to trust under this project's transaction-pooling DATABASE_URL).
 //
-// This file used to wipe all five vocabulary tables plus public.concepts and public.concept_accepts
+// This file used to wipe all five vocabulary tables plus concepts and concept_accepts
 // wholesale in its own beforeAll/afterEach (wipeGlossaryTables), reasoning that no other suite file
 // ever left a row behind in any of them. migrations/0009-case-version-lifecycle-schema.sql now
 // makes a released case_versions/hypothesis_revisions row permanently undeletable by ordinary SQL,
@@ -48,7 +47,7 @@
 // from the schema: every one of subject_types, outcomes, actions and recipients already holds a row
 // a released case_versions or hypothesis_revisions fixture permanently references (357/369/368/369
 // rows respectively were held at the time this was checked, against 303 released case_versions and
-// 188 hypothesis_revisions), so a bare `DELETE FROM public.<table>` against any of the four — run
+// 188 hypothesis_revisions), so a bare `DELETE FROM <table>` against any of the four — run
 // directly, no test-file fixture involved at all — already raises 23503 today; subject_attributes
 // alone deletes cleanly, confirming this file's own original account. Calling the real store's
 // writeTerms end-to-end against subject-type, outcome, action or recipient was then confirmed the
@@ -128,23 +127,23 @@ afterAll(async () => {
 /** Every row this file's own tests wrote, in an order that always satisfies concept_accepts' own foreign key, attempted individually and tolerantly (this file's header comment explains why). */
 async function cleanupWrittenRows(): Promise<void> {
   if (conceptsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
-    await deleteTolerantly('DELETE FROM public.concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
   if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
   }
   if (subjectAttributesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.subject_attributes WHERE name = ANY($1)', [subjectAttributesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM subject_attributes WHERE name = ANY($1)', [subjectAttributesWrittenByThisTest]);
   }
   if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
   }
   if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
   }
   if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM public.recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
+    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
   }
   subjectTypesWrittenByThisTest = [];
   subjectAttributesWrittenByThisTest = [];
@@ -194,10 +193,10 @@ it(
     const outcome = freshTerm('glossary-store-outcome', outcomesWrittenByThisTest);
     const action = freshTerm('glossary-store-action', actionsWrittenByThisTest);
     const recipient = freshTerm('glossary-store-recipient', recipientsWrittenByThisTest);
-    await pool.query('INSERT INTO public.subject_types (name) VALUES ($1)', [subjectType.name]);
-    await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [outcome.name]);
-    await pool.query('INSERT INTO public.actions (name) VALUES ($1)', [action.name]);
-    await pool.query('INSERT INTO public.recipients (name) VALUES ($1)', [recipient.name]);
+    await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [subjectType.name]);
+    await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome.name]);
+    await pool.query('INSERT INTO actions (name) VALUES ($1)', [action.name]);
+    await pool.query('INSERT INTO recipients (name) VALUES ($1)', [recipient.name]);
     await store.writeTerms('subject-attribute', [subjectAttribute]);
 
     await expect(store.readTerms('subject-type')).resolves.toEqual(expect.arrayContaining([subjectType]));
@@ -229,11 +228,11 @@ it('answers the empty vocabulary when the real table currently holds no row', as
 it('answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them', async () => {
   const subjectA = freshTerm('glossary-store-concept-subject-a', subjectTypesWrittenByThisTest);
   const subjectB = freshTerm('glossary-store-concept-subject-b', subjectTypesWrittenByThisTest);
-  await pool.query('INSERT INTO public.subject_types (name) VALUES ($1), ($2)', [subjectA.name, subjectB.name]);
+  await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [subjectA.name, subjectB.name]);
   const concept = freshTerm('glossary-store-concept', conceptsWrittenByThisTest);
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2)', [concept.name, 120]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2)', [concept.name, 120]);
   await pool.query(
-    'INSERT INTO public.concept_accepts (concept_name, subject_type_name) VALUES ($1, $2), ($1, $3)',
+    'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2), ($1, $3)',
     [concept.name, subjectA.name, subjectB.name],
   );
   const store = new RelationalGlossaryStore(pool);
@@ -245,7 +244,7 @@ it('answers each concept with its name, the subject types it accepts and its ttl
 
 it('answers a concept with an empty accepts array when it currently accepts no subject type', async () => {
   const concept = freshTerm('glossary-store-lonely-concept', conceptsWrittenByThisTest);
-  await pool.query('INSERT INTO public.concepts (name, ttl) VALUES ($1, $2)', [concept.name, 45]);
+  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2)', [concept.name, 45]);
   const store = new RelationalGlossaryStore(pool);
 
   const answered = await store.readConcepts();
@@ -265,7 +264,7 @@ it('answers no concepts, not a rejection, when no row was ever stored under a gi
 
 it('answers exactly what a row inserted directly into the real table holds, among whatever else the table currently holds', async () => {
   const outcome = freshTerm('glossary-store-direct-outcome', outcomesWrittenByThisTest);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [outcome.name]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [outcome.name]);
   const store = new RelationalGlossaryStore(pool);
 
   const answered = await store.readTerms('outcome');
@@ -370,7 +369,7 @@ it(
 it('adds only the terms the outcomes table does not already hold, and leaves an already-held row untouched, even though the table already holds rows permanently referenced by released fixtures', async () => {
   const store = new RelationalGlossaryStore(pool);
   const alreadyHeld = freshTerm('glossary-store-insert-missing-already-held', outcomesWrittenByThisTest);
-  await pool.query('INSERT INTO public.outcomes (name) VALUES ($1)', [alreadyHeld.name]);
+  await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [alreadyHeld.name]);
   const missing = freshTerm('glossary-store-insert-missing-new', outcomesWrittenByThisTest);
 
   await store.insertMissingTerms('outcome', [alreadyHeld, missing]);
