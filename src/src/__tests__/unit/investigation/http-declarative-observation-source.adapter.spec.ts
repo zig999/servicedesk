@@ -179,7 +179,7 @@ it('defaults its own HTTP client to the platform global fetch when the caller in
   try {
     const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), connectorConfiguration: anHttpConfiguration() });
 
-    await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+    await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   } finally {
@@ -193,7 +193,7 @@ it('issues exactly one outbound call per observeConcept invocation', async () =>
   const httpClient = newHttpClient().mockResolvedValue(okResponse({ status: 'a-value' }));
   const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), connectorConfiguration: anHttpConfiguration(), httpClient });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(httpClient).toHaveBeenCalledTimes(1);
 });
@@ -213,8 +213,8 @@ it("issues its own single call for each of two concurrent observeConcept invocat
   const adapter = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations, httpClient: httpClient as unknown as typeof fetch });
 
   const [outcomeOne, outcomeTwo] = await Promise.all([
-    adapter.observeConcept('concept-one', A_SUBJECT, A_REQUESTER),
-    adapter.observeConcept('concept-two', A_SUBJECT, A_REQUESTER),
+    adapter.observeConcept({ concept: 'concept-one', subject: A_SUBJECT, requester: A_REQUESTER }),
+    adapter.observeConcept({ concept: 'concept-two', subject: A_SUBJECT, requester: A_REQUESTER }),
   ]);
 
   expect(httpClient).toHaveBeenCalledTimes(2);
@@ -236,8 +236,8 @@ it("resolves which external system to reach entirely from the calling capability
   const httpClient = newHttpClient().mockResolvedValue(okResponse({ status: 'a-value' }));
   const adapter = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations, httpClient: httpClient as unknown as typeof fetch });
 
-  await adapter.observeConcept('concept-a', A_SUBJECT, A_REQUESTER);
-  await adapter.observeConcept('concept-b', A_SUBJECT, A_REQUESTER);
+  await adapter.observeConcept({ concept: 'concept-a', subject: A_SUBJECT, requester: A_REQUESTER });
+  await adapter.observeConcept({ concept: 'concept-b', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(httpClient.mock.calls[0]?.[0]).toBe('https://host-a.example.com/records');
   expect(httpClient.mock.calls[1]?.[0]).toBe('https://host-b.example.com/records');
@@ -254,7 +254,7 @@ it('carries an observation on the ok ending', async () => {
   const httpClient = newHttpClient().mockResolvedValue(okResponse({ status: 'operational' }));
   const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), connectorConfiguration: anHttpConfiguration(), httpClient });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'operational' }) });
 });
@@ -267,7 +267,7 @@ it('carries no observation field on a non-ok ending, resolving exactly to its ow
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'denied' });
 });
@@ -282,7 +282,7 @@ it("defaults an HTTP status absent from the connector's own status map to the un
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable' });
 });
@@ -297,7 +297,7 @@ it('resolves to the timeout ending, rather than throwing, once its own bound ela
     httpClient,
   });
 
-  const outcomePromise = adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcomePromise = adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
   await vi.advanceTimersByTimeAsync(1_000);
 
   await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
@@ -311,7 +311,7 @@ it('resolves to timeout immediately when the capability declares a zero-length t
     httpClient,
   });
 
-  const outcomePromise = adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcomePromise = adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
   await vi.advanceTimersByTimeAsync(0);
 
   await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
@@ -325,7 +325,7 @@ it('propagates a genuine network failure unmodified, rather than degrading it to
     httpClient,
   });
 
-  await expect(adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER)).rejects.toThrow('a genuine network failure');
+  await expect(adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER })).rejects.toThrow('a genuine network failure');
 });
 
 // ------------------------------------------------------------------ criterion 7, and the binder's carried-forward concern
@@ -347,7 +347,7 @@ it("does not resolve before a capability's own longer declared timeout elapses, 
     httpClient,
   });
   let settled = false;
-  const outcomePromise = adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER).then((outcome) => {
+  const outcomePromise = adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER }).then((outcome) => {
     settled = true;
     return outcome;
   });
@@ -368,7 +368,7 @@ it("resolves to timeout by the moment a different, shorter capability-declared t
     httpClient,
   });
   let settled = false;
-  const outcomePromise = adapter.observeConcept('a-different-concept', A_SUBJECT, A_REQUESTER).then((outcome) => {
+  const outcomePromise = adapter.observeConcept({ concept: 'a-different-concept', subject: A_SUBJECT, requester: A_REQUESTER }).then((outcome) => {
     settled = true;
     return outcome;
   });
@@ -378,6 +378,98 @@ it("resolves to timeout by the moment a different, shorter capability-declared t
 
   await vi.advanceTimersByTimeAsync(1);
   expect(settled).toBe(true);
+  await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
+});
+
+// ------------------------------------------------------------------ task/observation-endings-and-collection-budget/observation-port-budget-clamp
+//
+// Each test below gives a capability's own declared timeout that differs sharply from the caller's
+// own given remainingBudgetMs, precisely so a settle observed at one value and not the other rules
+// out an adapter reading only one of the two fields: one that used capability.timeout alone would
+// still be pending when the first test's clock reaches its own smaller remainingBudgetMs, and one
+// that used remainingBudgetMs alone would already have settled before the second test's clock
+// reaches the capability's own shorter declared timeout.
+
+it("bounds its call by the caller's own smaller remaining-budget bound, settling to timeout before the capability's own longer declared timeout would have elapsed", async () => {
+  const httpClient = newPendingUntilAbortedHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept', timeout: 5_000 }),
+    connectorConfiguration: anHttpConfiguration(),
+    httpClient,
+  });
+  let settled = false;
+  const outcomePromise = adapter
+    .observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, remainingBudgetMs: 200 })
+    .then((outcome) => {
+      settled = true;
+      return outcome;
+    });
+
+  await vi.advanceTimersByTimeAsync(199);
+  expect(settled).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  expect(settled).toBe(true);
+  await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
+});
+
+it("remains bounded by the capability's own declared timeout when the caller's given remaining-budget bound is larger, not waiting for that larger bound to elapse", async () => {
+  const httpClient = newPendingUntilAbortedHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept', timeout: 150 }),
+    connectorConfiguration: anHttpConfiguration(),
+    httpClient,
+  });
+  let settled = false;
+  const outcomePromise = adapter
+    .observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, remainingBudgetMs: 5_000 })
+    .then((outcome) => {
+      settled = true;
+      return outcome;
+    });
+
+  await vi.advanceTimersByTimeAsync(149);
+  expect(settled).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  expect(settled).toBe(true);
+  await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
+});
+
+it("remains bounded by the capability's own declared timeout when the caller's given remaining-budget bound equals it exactly, the shared boundary 'at or above' names", async () => {
+  const httpClient = newPendingUntilAbortedHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept', timeout: 250 }),
+    connectorConfiguration: anHttpConfiguration(),
+    httpClient,
+  });
+  let settled = false;
+  const outcomePromise = adapter
+    .observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, remainingBudgetMs: 250 })
+    .then((outcome) => {
+      settled = true;
+      return outcome;
+    });
+
+  await vi.advanceTimersByTimeAsync(249);
+  expect(settled).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  expect(settled).toBe(true);
+  await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
+});
+
+it('resolves to timeout immediately when the remaining-budget bound is zero, the lower boundary, even though the capability declares a much longer timeout of its own', async () => {
+  const httpClient = newPendingUntilAbortedHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept', timeout: 5_000 }),
+    connectorConfiguration: anHttpConfiguration(),
+    httpClient,
+  });
+
+  const outcomePromise = adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, remainingBudgetMs: 0 });
+  await vi.advanceTimersByTimeAsync(0);
+
   await expect(outcomePromise).resolves.toEqual({ result: 'timeout' });
 });
 
@@ -391,7 +483,7 @@ it('carries the given requester into the assembled request unmodified, never a s
     httpClient,
   });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, 'the-marker-requester');
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: 'the-marker-requester' });
 
   expect(httpClient.mock.calls[0]?.[0]).toBe('https://api.example.com/the-marker-requester/records');
 });
@@ -404,8 +496,8 @@ it('carries a different requester into a different call rather than reusing a fi
     httpClient,
   });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, 'requester-one');
-  await adapter.observeConcept('a-concept', A_SUBJECT, 'requester-two');
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: 'requester-one' });
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: 'requester-two' });
 
   expect(httpClient.mock.calls[0]?.[0]).toBe('https://api.example.com/requester-one/records');
   expect(httpClient.mock.calls[1]?.[0]).toBe('https://api.example.com/requester-two/records');
@@ -427,7 +519,7 @@ it("keys the ok observation by the capability's own output_schema property names
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({ equipment_state: 'operational' }) });
   expect(outcome.result === 'ok' ? outcome.observation : '').not.toContain('raw_vendor');
@@ -495,7 +587,7 @@ it('answers unavailable naming CapabilityNotResolvedForObservationError, issuing
     httpClient: httpClient as unknown as typeof fetch,
   });
 
-  const outcome = await adapter.observeConcept('an-unregistered-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'an-unregistered-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: CapabilityNotResolvedForObservationError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -512,7 +604,7 @@ it('answers unavailable naming DuplicateConceptAnswerError, issuing no call, whe
     httpClient: httpClient as unknown as typeof fetch,
   });
 
-  const outcome = await adapter.observeConcept('a-duplicated-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-duplicated-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: DuplicateConceptAnswerError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -522,7 +614,7 @@ it("answers unavailable naming ConnectorConfigurationNotRegisteredError, issuing
   const httpClient = newHttpClient();
   const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), httpClient });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: ConnectorConfigurationNotRegisteredError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -536,7 +628,7 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -550,7 +642,7 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -564,7 +656,7 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
   expect(httpClient).not.toHaveBeenCalled();
@@ -588,7 +680,7 @@ it("issues the connector's own declared HTTP method rather than defaulting to GE
     httpClient,
   });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(httpClient.mock.calls[0]?.[1]?.method).toBe('POST');
 });
@@ -603,7 +695,7 @@ it('serializes a non-string resolved request body as JSON before sending it', as
     httpClient,
   });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(httpClient.mock.calls[0]?.[1]?.body).toBe(JSON.stringify({ subjectId: 'a-subject-id' }));
 });
@@ -616,7 +708,7 @@ it('sends an already-string resolved request body verbatim, without double-encod
     httpClient,
   });
 
-  await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(httpClient.mock.calls[0]?.[1]?.body).toBe('a-raw-string-body-for-a-requester');
 });
@@ -631,7 +723,7 @@ it('treats a response body that is not valid JSON as nothing extracted, rather t
     httpClient,
   });
 
-  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });
 });

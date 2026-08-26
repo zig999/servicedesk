@@ -10,11 +10,14 @@
 // connector-request-resolver.ts's own resolveConnectorRequest, issues
 // exactly one call through the platform's own global fetch — the only HTTP
 // client this module names, since no HTTP client package is authorized for
-// this project and Node's own runtime already exposes one — bounded by the
-// calling capability's own declared timeout
+// this project and Node's own runtime already exposes one — bounded by
+// whichever of the calling capability's own declared timeout or the
+// caller's own given remaining-budget bound is smaller, and by the
+// capability's own declared timeout alone where the caller gave none
 // (rules/investigation/collection-has-its-own-budget-within-the-total,
-// scenarios/investigation/a-collection-timeout-degrades-to-no-data), and
-// classifies the answer into exactly one of the four evidence-result
+// scenarios/investigation/a-collection-timeout-degrades-to-no-data,
+// scenarios/investigation/a-slow-capability-yields-to-the-collection-budget),
+// and classifies the answer into exactly one of the four evidence-result
 // endings (domain/investigation/evidence-result), extracting the ok
 // observation through response-path-extractor.ts's own
 // extractResponseFields and keying it by the capability's own output_schema
@@ -61,7 +64,7 @@ import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.
 import { MalformedHttpConnectorConfigurationError } from '../errors/malformed-http-connector-configuration.error.js';
 import { declaredFieldsOf } from './citation-validation.js';
 import { EVIDENCE_RESULTS, type EvidenceResult } from './evidence-result.js';
-import type { IObservationSource, ObservationOutcome, Subject } from './observation-source.port.js';
+import type { IObservationSource, ObservationOutcome, ObserveConceptOptions } from './observation-source.port.js';
 
 /**
  * The read this adapter needs from the connector-configuration registry —
@@ -129,6 +132,19 @@ function unavailableFor(error: Error): ObservationOutcome {
 }
 
 /**
+ * The bound this adapter applies to its one outbound call: whichever of the
+ * capability's own declared timeout or the caller's own given
+ * remaining-budget bound is smaller, and the capability's own declared
+ * timeout alone where the caller gave none — unchanged from before this
+ * bound existed
+ * (rules/investigation/collection-has-its-own-budget-within-the-total,
+ * scenarios/investigation/a-slow-capability-yields-to-the-collection-budget).
+ */
+function effectiveTimeoutMsFor(capability: Capability, remainingBudgetMs: number | undefined): number {
+  return remainingBudgetMs === undefined ? capability.timeout : Math.min(capability.timeout, remainingBudgetMs);
+}
+
+/**
  * The one production adapter behind IObservationSource
  * (contracts/investigation/observation-source): a generic, data-driven HTTP
  * call for any capability whose connector is registered — no external
@@ -148,12 +164,15 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
   /**
    * observe-concept (contracts/integration/concept-observation): resolves
    * the concept's capability and its connector's own call configuration,
-   * issues exactly one HTTP call within the capability's own declared
-   * timeout, and answers one of the four evidence-result endings — never
-   * throwing for any of them (domain/investigation/evidence-result). Where
-   * a concept resolves to no capability, to more than one, to a capability
-   * naming an unregistered connector, or to a connector configuration that
-   * does not declare method, responseMap or statusMap, this method answers
+   * issues exactly one HTTP call within whichever of the capability's own
+   * declared timeout or the given remaining-budget bound is smaller
+   * (rules/investigation/collection-has-its-own-budget-within-the-total,
+   * scenarios/investigation/a-slow-capability-yields-to-the-collection-budget),
+   * and answers one of the four evidence-result endings — never throwing
+   * for any of them (domain/investigation/evidence-result). Where a concept
+   * resolves to no capability, to more than one, to a capability naming an
+   * unregistered connector, or to a connector configuration that does not
+   * declare method, responseMap or statusMap, this method answers
    * 'unavailable' with a result_detail naming the condition and issues no
    * call at all
    * (rules/integration/an-unresolvable-observation-ends-unavailable,
@@ -161,7 +180,7 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
    * The requester travels unchanged into the assembled request
    * (rules/investigation/collection-runs-in-the-requester-scope).
    */
-  public async observeConcept(concept: string, subject: Subject, requester: string): Promise<ObservationOutcome> {
+  public async observeConcept({ concept, subject, requester, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
     const capabilityResolution = await this.resolveCapability(concept);
     if (!capabilityResolution.ok) {
       return capabilityResolution.outcome;
@@ -181,7 +200,8 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
     const httpFields = httpFieldsResolution.value;
 
     const request = resolveConnectorRequest({ configuration: rawConfiguration, subject, requester });
-    const call = await this.issueRequest(httpFields.method, request, capability.timeout);
+    const timeoutMs = effectiveTimeoutMsFor(capability, remainingBudgetMs);
+    const call = await this.issueRequest(httpFields.method, request, timeoutMs);
     if (call.kind === 'timed-out') {
       return { result: 'timeout' };
     }
@@ -259,9 +279,12 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
   }
 
   /**
-   * Issues exactly one HTTP call (criterion 2), bounded by the capability's
-   * own declared timeout and never a moment longer
-   * (rules/investigation/collection-has-its-own-budget-within-the-total):
+   * Issues exactly one HTTP call (criterion 2), bounded by the given
+   * timeoutMs and never a moment longer — the effective bound
+   * effectiveTimeoutMsFor already computed as whichever of the capability's
+   * own declared timeout or the caller's own remaining-budget bound is
+   * smaller (rules/investigation/collection-has-its-own-budget-within-the-total,
+   * scenarios/investigation/a-slow-capability-yields-to-the-collection-budget):
    * a client-side abort once that bound elapses is reported as timed-out
    * rather than propagated as a fault (criterion 6), and any other
    * rejection — a genuine network failure — propagates unmodified. Delegates

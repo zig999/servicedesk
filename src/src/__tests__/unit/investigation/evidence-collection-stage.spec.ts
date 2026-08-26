@@ -20,7 +20,12 @@ import type { Case } from '../../../case/case.js';
 import { COLLECTION_STAGE_BUDGET_MS, collectEvidence } from '../../../investigation/evidence-collection-stage.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS } from '../../../investigation/evidence.js';
 import { FakeObservationSource } from '../../../investigation/fake-observation-source.adapter.js';
-import type { IObservationSource, ObservationOutcome, Subject } from '../../../investigation/observation-source.port.js';
+import type {
+  IObservationSource,
+  ObservationOutcome,
+  ObserveConceptOptions,
+  Subject,
+} from '../../../investigation/observation-source.port.js';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -149,7 +154,7 @@ class ScriptedObservationSource implements IObservationSource {
 
   public constructor(private readonly handlers: ReadonlyMap<string, () => Promise<ObservationOutcome>>) {}
 
-  public async observeConcept(concept: string, _subject: Subject, requester: string): Promise<ObservationOutcome> {
+  public async observeConcept({ concept, requester }: ObserveConceptOptions): Promise<ObservationOutcome> {
     this.calls.push({ concept, requester });
     const handler = this.handlers.get(concept);
     if (handler === undefined) {
@@ -173,7 +178,7 @@ function neverSettles(): Promise<ObservationOutcome> {
 class RecordingObservationSource implements IObservationSource {
   public readonly subjectReceivedByConcept = new Map<string, Subject>();
 
-  public async observeConcept(concept: string, subject: Subject, _requester: string): Promise<ObservationOutcome> {
+  public async observeConcept({ concept, subject }: ObserveConceptOptions): Promise<ObservationOutcome> {
     this.subjectReceivedByConcept.set(concept, subject);
     return { result: 'ok', observation: `observed-${concept}` };
   }

@@ -1,0 +1,126 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(83,16): error TS2416: Property 'observeConcept' in type 'RecordingObservationSource' is not assignable to the same property in base type 'IObservationSource'.
+  Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+    Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(253,65): error TS2345: Argument of type 'RecordingObservationSource' is not assignable to parameter of type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(274,65): error TS2345: Argument of type 'RecordingObservationSource' is not assignable to parameter of type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(291,65): error TS2345: Argument of type 'RecordingObservationSource' is not assignable to parameter of type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(306,65): error TS2345: Argument of type 'RecordingObservationSource' is not assignable to parameter of type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/integration/factories/production-diagnose.factory.spec.ts(319,40): error TS2345: Argument of type 'RecordingObservationSource' is not assignable to parameter of type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/fixtures/case-fixture-observations.spec.ts(77,51): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(152,16): error TS2416: Property 'observeConcept' in type 'ScriptedObservationSource' is not assignable to the same property in base type 'IObservationSource'.
+  Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+    Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(176,16): error TS2416: Property 'observeConcept' in type 'RecordingObservationSource' is not assignable to the same property in base type 'IObservationSource'.
+  Type '(concept: string, subject: Subject, _requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+    Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(335,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(367,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(391,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(418,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(446,5): error TS2322: Type 'RecordingObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, subject: Subject, _requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(475,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(505,78): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/evidence-collection-stage.spec.ts(554,5): error TS2322: Type 'ScriptedObservationSource' is not assignable to type 'IObservationSource'.
+  Types of property 'observeConcept' are incompatible.
+    Type '(concept: string, _subject: Subject, requester: string) => Promise<ObservationOutcome>' is not assignable to type '(options: ObserveConceptOptions) => Promise<ObservationOutcome>'.
+      Target signature provides too few arguments. Expected 3 or more, but got 1.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(182,47): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(196,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(216,43): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(217,43): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(239,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(240,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(257,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(270,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(285,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(300,62): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(314,62): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(328,52): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(350,62): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(371,72): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(394,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(407,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(408,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(430,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(498,75): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(515,72): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(525,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(539,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(553,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(567,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(591,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(606,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(619,45): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(634,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(122,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(132,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(142,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(152,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(163,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(174,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(185,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(193,61): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(204,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(214,51): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(225,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(236,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(246,51): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(257,60): error TS2554: Expected 1 arguments, but got 3.
+src/__tests__/unit/investigation/observation-source.port.spec.ts(267,60): error TS2554: Expected 1 arguments, but got 3.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

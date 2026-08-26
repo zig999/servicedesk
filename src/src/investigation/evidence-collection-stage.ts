@@ -96,7 +96,11 @@ async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<E
     capabilityVersion: capability.version,
   };
   const effectiveBoundMs = effectiveBoundMsFor(capability, stageCeilingMs);
-  const outcome = await raceObservation(observationSource.observeConcept(concept, subject, requester), effectiveBoundMs);
+  // effectiveBoundMs is not yet threaded into observe-concept's own
+  // remaining-budget bound — that propagation is
+  // task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget's
+  // own objective, not this call site's.
+  const outcome = await raceObservation(observationSource.observeConcept({ concept, subject, requester }), effectiveBoundMs);
   return settledEvidence(base, outcome, effectiveBoundMs);
 }
 

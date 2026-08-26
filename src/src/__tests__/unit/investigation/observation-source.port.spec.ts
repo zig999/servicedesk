@@ -119,7 +119,7 @@ it('answers the ok ending carrying the actual observation seeded for the pair, n
   fake.seed('a-concept', SUBJECT_ONE, { result: 'ok', observation: 'the-observed-value' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'the-observed-value' });
 });
@@ -129,7 +129,7 @@ it('answers the unavailable ending as data, without throwing', async () => {
   fake.seed('a-concept', SUBJECT_ONE, { result: 'unavailable' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'unavailable' });
 });
@@ -139,7 +139,7 @@ it('answers the denied ending as data, without throwing', async () => {
   fake.seed('a-concept', SUBJECT_ONE, { result: 'denied' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'denied' });
 });
@@ -149,7 +149,7 @@ it('answers the timeout ending as data, without throwing', async () => {
   fake.seed('a-concept', SUBJECT_ONE, { result: 'timeout' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'timeout' });
 });
@@ -160,7 +160,7 @@ it('answers the outcome seeded for this subject, not the one seeded for a differ
   fake.seed('a-concept', SUBJECT_TWO, { result: 'denied' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-subject-one' });
 });
@@ -171,7 +171,7 @@ it('answers the outcome seeded for this concept, not the one seeded for a differ
   fake.seed('another-concept', SUBJECT_ONE, { result: 'timeout' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-a-concept' });
 });
@@ -182,7 +182,7 @@ it('a later seed for the same concept and subject replaces the earlier one', asy
   fake.seed('a-concept', SUBJECT_ONE, { result: 'ok', observation: 'the-replacing-observation' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'the-replacing-observation' });
 });
@@ -190,7 +190,7 @@ it('a later seed for the same concept and subject replaces the earlier one', asy
 it('throws naming the concept rather than answering a default for a concept-and-subject pair nothing seeded', async () => {
   const source = sourceOver(new FakeObservationSource());
 
-  await expect(source.observeConcept('an-unseeded-concept', SUBJECT_ONE, A_REQUESTER)).rejects.toThrow(
+  await expect(source.observeConcept({ concept: 'an-unseeded-concept', subject: SUBJECT_ONE, requester: A_REQUESTER })).rejects.toThrow(
     /an-unseeded-concept/,
   );
 });
@@ -201,7 +201,7 @@ it('answers the outcome seeded for the subset itself, not the outcome later seed
   fake.seed('a-concept', SUBJECT_WITH_AN_EXTRA_ATTRIBUTE, { result: 'ok', observation: 'observed-for-the-whole-set' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_WITH_ONE_ATTRIBUTE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_WITH_ONE_ATTRIBUTE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-the-subset' });
 });
@@ -211,7 +211,7 @@ it('throws for a subject carrying only a subset of the attribute-value pairs see
   fake.seed('a-concept', SUBJECT_WITH_AN_EXTRA_ATTRIBUTE, { result: 'ok', observation: 'observed-for-the-whole-set' });
   const source = sourceOver(fake);
 
-  await expect(source.observeConcept('a-concept', SUBJECT_WITH_ONE_ATTRIBUTE, A_REQUESTER)).rejects.toThrow(
+  await expect(source.observeConcept({ concept: 'a-concept', subject: SUBJECT_WITH_ONE_ATTRIBUTE, requester: A_REQUESTER })).rejects.toThrow(
     /a-concept/,
   );
 });
@@ -222,7 +222,7 @@ it("answers the outcome seeded for a subject's own second attribute-value pair, 
   fake.seed('a-concept', SUBJECT_TWO_ATTRIBUTES_VARIANT_B, { result: 'denied' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_TWO_ATTRIBUTES_VARIANT_A, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_TWO_ATTRIBUTES_VARIANT_A, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-variant-a' });
 });
@@ -233,7 +233,7 @@ it('answers the outcome seeded for its own attribute name, not the outcome later
   fake.seed('a-concept', SUBJECT_NAMED_PHONE, { result: 'timeout' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_NAMED_ID, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_NAMED_ID, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-id' });
 });
@@ -243,7 +243,7 @@ it('throws when a subject supplies the same attribute-value pairs as a seeded on
   fake.seed('a-concept', SUBJECT_PAIRS_IN_ORDER, { result: 'ok', observation: 'observed-in-order' });
   const source = sourceOver(fake);
 
-  await expect(source.observeConcept('a-concept', SUBJECT_PAIRS_REVERSED, A_REQUESTER)).rejects.toThrow(
+  await expect(source.observeConcept({ concept: 'a-concept', subject: SUBJECT_PAIRS_REVERSED, requester: A_REQUESTER })).rejects.toThrow(
     /a-concept/,
   );
 });
@@ -254,7 +254,7 @@ it('answers the outcome seeded for its own governed type, not the outcome later 
   fake.seed('a-concept', SUBJECT_OF_TYPE_TWO, { result: 'denied' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_OF_TYPE_ONE, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_OF_TYPE_ONE, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-for-type-one' });
 });
@@ -264,7 +264,7 @@ it('seeds and answers for a subject carrying no attribute-value pair at all, com
   fake.seed('a-concept', SUBJECT_WITH_NO_ATTRIBUTES, { result: 'ok', observation: 'observed-with-no-attributes' });
   const source = sourceOver(fake);
 
-  const outcome = await source.observeConcept('a-concept', SUBJECT_WITH_NO_ATTRIBUTES, A_REQUESTER);
+  const outcome = await source.observeConcept({ concept: 'a-concept', subject: SUBJECT_WITH_NO_ATTRIBUTES, requester: A_REQUESTER });
 
   expect(outcome).toEqual({ result: 'ok', observation: 'observed-with-no-attributes' });
 });

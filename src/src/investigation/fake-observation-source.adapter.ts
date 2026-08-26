@@ -5,7 +5,7 @@
 // stays testable end to end without the real connector this epic leaves as
 // its declared remainder.
 
-import type { IObservationSource, ObservationOutcome, Subject } from './observation-source.port.js';
+import type { IObservationSource, ObservationOutcome, ObserveConceptOptions, Subject } from './observation-source.port.js';
 
 /**
  * Answers exactly the outcome a test seeded for one concept and one
@@ -35,13 +35,14 @@ export class FakeObservationSource implements IObservationSource {
    * remainder. `subject` reaches fixtureKey exactly as given — its whole
    * attribute-value set, not a bare id — with no pair selected or dropped
    * along the way (task/subject-identity-rework/observation-source-subject-shape's
-   * own criteria 1 and 2).
+   * own criteria 1 and 2). The remaining-budget bound is accepted, as the
+   * port also requires on every call
+   * (rules/investigation/collection-has-its-own-budget-within-the-total),
+   * but this fake never issues a real call for it to bound — clamping a
+   * capability's own declared timeout by it is the real connector's own
+   * concern (http-declarative-observation-source.adapter.ts).
    */
-  public async observeConcept(
-    concept: string,
-    subject: Subject,
-    _requester: string,
-  ): Promise<ObservationOutcome> {
+  public async observeConcept({ concept, subject }: ObserveConceptOptions): Promise<ObservationOutcome> {
     const outcome = this.fixtures.get(fixtureKey(concept, subject));
     if (outcome === undefined) {
       throw new Error(

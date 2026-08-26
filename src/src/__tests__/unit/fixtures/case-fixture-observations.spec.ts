@@ -74,7 +74,7 @@ it(
 
     for (const concept of collected) {
       const canned = cannedFor(observations, concept);
-      await expect(source.observeConcept(concept, subject, 'a-test-requester')).resolves.toEqual(
+      await expect(source.observeConcept({ concept, subject, requester: 'a-test-requester' })).resolves.toEqual(
         outcomeOf(canned),
       );
     }

@@ -48,7 +48,12 @@ import {
 } from '../../../factories/production-diagnose.factory.js';
 import type { Cost } from '../../../investigation/cost.js';
 import type { Durations } from '../../../investigation/durations.js';
-import type { IObservationSource, ObservationOutcome, Subject } from '../../../investigation/observation-source.port.js';
+import type {
+  IObservationSource,
+  ObservationOutcome,
+  ObserveConceptOptions,
+  Subject,
+} from '../../../investigation/observation-source.port.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
@@ -80,7 +85,7 @@ interface IVocabulary {
 class RecordingObservationSource implements IObservationSource {
   public readonly calls: Array<{ concept: string; subject: Subject; requester: string }> = [];
 
-  public async observeConcept(concept: string, subject: Subject, requester: string): Promise<ObservationOutcome> {
+  public async observeConcept({ concept, subject, requester }: ObserveConceptOptions): Promise<ObservationOutcome> {
     this.calls.push({ concept, subject, requester });
     return { result: 'ok', observation: `an-observation-for-${concept}` };
   }

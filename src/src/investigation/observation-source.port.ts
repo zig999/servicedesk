@@ -6,6 +6,16 @@
 // (constraints/the-domain-depends-on-no-infrastructure). The investigation
 // module declares this port; infrastructure implements it — a fake for
 // testing today, and this epic's declared remainder for the real connector.
+//
+// observe-concept also carries a remaining-budget bound the caller may
+// supply, so an implementer never lets a capability's own declared timeout
+// run past whatever of the collection stage's own budget the caller has
+// left (rules/investigation/collection-has-its-own-budget-within-the-total,
+// scenarios/investigation/a-slow-capability-yields-to-the-collection-budget).
+// Bundled with the call's other three arguments into one options object
+// (task/observation-endings-and-collection-budget/observation-port-budget-clamp)
+// rather than added as a fourth positional parameter, since this project
+// bounds how many positional parameters one function takes.
 
 import type { EvidenceResult } from './evidence-result.js';
 import type { Subject } from './subject.js';
@@ -53,6 +63,30 @@ export type ObservationOutcome =
   | { readonly result: Exclude<EvidenceResult, 'ok'>; readonly result_detail?: string };
 
 /**
+ * What one observe-concept call takes: the concept and subject to observe,
+ * the requester whose own scope the call runs in
+ * (rules/investigation/collection-runs-in-the-requester-scope), and,
+ * optionally, the remaining-budget bound the caller still has left. Bundled
+ * as one options object rather than four positional parameters (this
+ * project's own bound on a function's positional parameters).
+ */
+export type ObserveConceptOptions = {
+  readonly concept: string;
+  readonly subject: Subject;
+  readonly requester: string;
+  /**
+   * The caller's own remaining-budget bound, in milliseconds — never itself
+   * the seven-second nominal budget or the propagated deadline, only
+   * whatever of either the caller still has left when it makes this call
+   * (rules/investigation/collection-has-its-own-budget-within-the-total).
+   * Absent where a caller has none to give, in which case an implementer
+   * bounds the call by the capability's own declared timeout alone, exactly
+   * as before this field existed.
+   */
+  readonly remainingBudgetMs?: number;
+};
+
+/**
  * The published observation-source contract
  * (contracts/investigation/observation-source): the collection stage's one
  * call per concept in its plan, observing it for one subject within the
@@ -66,9 +100,13 @@ export type ObservationOutcome =
 export interface IObservationSource {
   /**
    * observe-concept: observes one concept, by its glossary name, for one
-   * subject, within the given requester's own scope, answering one of the
-   * four evidence-result endings as data — never throwing for a non-ok
-   * ending (domain/investigation/evidence,
+   * subject, within the given requester's own scope, bounded by whichever
+   * of the capability's own declared timeout or the given remaining-budget
+   * bound is smaller
+   * (rules/investigation/collection-has-its-own-budget-within-the-total,
+   * scenarios/investigation/a-slow-capability-yields-to-the-collection-budget),
+   * answering one of the four evidence-result endings as data — never
+   * throwing for a non-ok ending (domain/investigation/evidence,
    * domain/investigation/evidence-result). `subject` carries the whole
    * attribute-value set the entry point assembled: this signature has no
    * narrower parameter for a subset of it, so nothing this interface
@@ -76,5 +114,5 @@ export interface IObservationSource {
    * implementation (task/subject-identity-rework/observation-source-subject-shape's
    * own criteria 1 and 2).
    */
-  observeConcept(concept: string, subject: Subject, requester: string): Promise<ObservationOutcome>;
+  observeConcept(options: ObserveConceptOptions): Promise<ObservationOutcome>;
 }
