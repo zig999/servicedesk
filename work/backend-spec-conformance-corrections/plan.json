@@ -23,6 +23,13 @@
       "summary": "The one corrective task that narrows domain-depends-on-no-infrastructure.spec.ts's raw substring scan so it stops recusing a legitimate specification-node citation as an http-connector dependency."
     },
     {
+      "id": "epic/evidence-collection-stage-result-detail-fix",
+      "kind": "epic",
+      "file": "epic/evidence-collection-stage-result-detail-fix.md",
+      "title": "Evidence-collection-stage result-detail fix",
+      "summary": "The one corrective task that makes evidence-collection-stage.ts's unavailableEvidence() report the same result_detail rules/integration/an-unresolvable-observation-ends-unavailable requires for its own \"no capability currently registered\" scenario, instead of a free-text sentence the rule does not name."
+    },
+    {
       "id": "epic/observation-endings-and-collection-budget",
       "kind": "epic",
       "file": "epic/observation-endings-and-collection-budget.md",
@@ -90,6 +97,14 @@
       "title": "Domain-boundary scan stops flagging a legitimate specification-node citation",
       "summary": "The nine domain-depends-on-no-infrastructure.spec.ts's bypass-mention scan for \"http-connector\" no longer matches the substring inside a cited specification-node identity, while still catching a real reference to the http-connector module.",
       "epic": "domain-boundary-scan-fix"
+    },
+    {
+      "id": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "kind": "task",
+      "file": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name.md",
+      "title": "unavailableEvidence reports the rule's own error name",
+      "summary": "evidence-collection-stage.ts's unavailableEvidence() reports CapabilityNotResolvedForObservationError as its result_detail for a concept nothing currently answers, instead of a free-text sentence.",
+      "epic": "evidence-collection-stage-result-detail-fix"
     },
     {
       "id": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
@@ -198,6 +213,12 @@
       "to": "domain/integration/connector-configuration",
       "kind": "covers",
       "at": "covers[2]"
+    },
+    {
+      "from": "epic/evidence-collection-stage-result-detail-fix",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[0]"
     },
     {
       "from": "epic/observation-endings-and-collection-budget",
@@ -430,6 +451,12 @@
     {
       "from": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
       "kind": "implements",
       "at": "implements[0]"
     },
