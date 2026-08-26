@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/observation-endings-and-collection-budget-observation-port-budget-clamp-suite-3",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-26T11:13:40.858+00:00",
+      "ended_at": "2026-08-26T11:13:45.047+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-26T11:13:45.047+00:00",
+      "ended_at": "2026-08-26T11:13:49.037+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-26T11:13:49.037+00:00",
+      "ended_at": "2026-08-26T11:13:52.441+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-26T11:13:52.441+00:00",
+      "ended_at": "2026-08-26T11:13:52.892+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-08-26T11:13:52.892+00:00",
+      "ended_at": "2026-08-26T11:35:24.763+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

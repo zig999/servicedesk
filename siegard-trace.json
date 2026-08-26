@@ -719,7 +719,7 @@
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
-          "digest": "sha256:6b92a90bc05a0b4f994c74d9e3eaeba31d2a5a59e69f9fcbb1ea85b9e3ce2eff"
+          "digest": "sha256:38d37fb1ac3c3128b8a6b0965c020e4d7bd7faf6663e2da9aa46a820215f1810"
         }
       ]
     },
@@ -882,6 +882,10 @@
         {
           "path": "src/src/fixtures/observations.json",
           "digest": "sha256:e46e29d48ce6a9b9910330d7f3244fe0f8361d82aa3d39195a82543ceeec1181"
+        },
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:d42b8ce5a2fd06d8e4ee27245d7617b01dc437e52eeaf6860d7c91a416de65aa"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -3457,7 +3461,11 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:fe1a559881a039ddf402bc73aa6926b2c78368c8f86b33985821b07322fdc419"
+          "digest": "sha256:34bc74d93924be46c4d25213cb250f522a196682698576c2b19b91a0beddac8b"
+        },
+        {
+          "path": "src/src/investigation/observation-source.port.ts",
+          "digest": "sha256:38d37fb1ac3c3128b8a6b0965c020e4d7bd7faf6663e2da9aa46a820215f1810"
         }
       ]
     },
@@ -4398,6 +4406,10 @@
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:af249d0fbf1fddc3893b5e7441fb01cf49a585f034fc3d7ebc13fda47b8d005c"
+        },
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:34bc74d93924be46c4d25213cb250f522a196682698576c2b19b91a0beddac8b"
         }
       ]
     },
