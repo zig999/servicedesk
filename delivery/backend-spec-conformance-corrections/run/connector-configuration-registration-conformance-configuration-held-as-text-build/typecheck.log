@@ -1,0 +1,40 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts(45,5): error TS2322: Type '{ method: string; address: string; }' is not assignable to type 'string'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(41,5): error TS2322: Type '{ whatever: string; }' is not assignable to type 'string'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(132,78): error TS2322: Type '{ version: string; }' is not assignable to type 'string'.
+src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts(137,53): error TS2322: Type '{ version: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/build-app.spec.ts(182,36): error TS2322: Type 'Promise<{ connector: string; configuration: {}; }>' is not assignable to type 'Promise<ConnectorConfiguration>'.
+  Type '{ connector: string; configuration: {}; }' is not assignable to type 'ConnectorConfiguration'.
+    Types of property 'configuration' are incompatible.
+      Type '{}' is not assignable to type 'string'.
+src/__tests__/unit/http/build-app.spec.ts(192,45): error TS2322: Type 'Promise<{ connector: string; configuration: {}; }>' is not assignable to type 'Promise<ConnectorConfiguration>'.
+  Type '{ connector: string; configuration: {}; }' is not assignable to type 'ConnectorConfiguration'.
+    Types of property 'configuration' are incompatible.
+      Type '{}' is not assignable to type 'string'.
+src/__tests__/unit/http/build-app.spec.ts(212,54): error TS2322: Type 'Promise<{ held: true; configuration: { connector: string; configuration: {}; }; }>' is not assignable to type 'Promise<ConnectorConfigurationResolution>'.
+  Type '{ held: true; configuration: { connector: string; configuration: {}; }; }' is not assignable to type 'ConnectorConfigurationResolution'.
+    Type '{ held: true; configuration: { connector: string; configuration: {}; }; }' is not assignable to type '{ readonly held: true; readonly configuration: ConnectorConfiguration; }'.
+      The types of 'configuration.configuration' are incompatible between these types.
+        Type '{}' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(28,5): error TS2322: Type '{ endpoint: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(97,86): error TS2322: Type '{ apiKey: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(116,62): error TS2322: Type '{ endpoint: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(119,9): error TS2322: Type '{ endpoint: string; retries: number; }' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(141,62): error TS2322: Type '{ endpoint: string; tags: string[]; }' is not assignable to type 'string'.
+src/__tests__/unit/http/list-connector-configurations.routes.spec.ts(142,62): error TS2322: Type '{ endpoint: string; retries: number; active: boolean; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.controller.spec.ts(25,5): error TS2322: Type '{ host: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.controller.spec.ts(35,5): error TS2322: Type '{ host: string; retries: number; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(28,5): error TS2322: Type '{ host: string; apiKey: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(57,5): error TS2322: Type '{ host: string; apiKey: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(80,5): error TS2322: Type '{ host: string; retries: number; secure: true; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(101,86): error TS2322: Type '{ host: string; retries: number; secure: boolean; tags: string[]; nested: { timeout: null; }; note: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/read-connector-configuration.routes.spec.ts(113,86): error TS2322: Type '{}' is not assignable to type 'string'.
+src/__tests__/unit/http/register-connector.routes.spec.ts(49,5): error TS2322: Type '{ key: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/register-connector.routes.spec.ts(116,57): error TS2322: Type '{ key: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/register-connector.routes.spec.ts(117,57): error TS2322: Type '{ key: string; }' is not assignable to type 'string'.
+src/__tests__/unit/http/test-connector.routes.spec.ts(81,7): error TS2322: Type '{ address: string; method: string; headers: { 'x-requester': string; }; responseMap: {}; statusMap: {}; }' is not assignable to type 'string'.
+src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts(123,113): error TS2322: Type 'Readonly<Record<string, unknown>>' is not assignable to type 'string'.
+src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts(22,5): error TS2322: Type '{ method: string; address: string; }' is not assignable to type 'string'.
