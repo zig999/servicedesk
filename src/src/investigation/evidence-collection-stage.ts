@@ -74,9 +74,15 @@ type CollectOneEvidenceOptions = {
 /**
  * Resolves one concept's evidence: reads its capability, then — only where
  * one is currently held — races observe-concept against the smaller of its
- * own declared timeout and the stage's own ceiling. A concept nothing
- * currently answers never reaches the race at all, since there is nothing
- * to call (domain/investigation/evidence, domain/investigation/evidence-result).
+ * own declared timeout and the stage's own ceiling, and hands observe-concept
+ * itself the stage's own ceiling as its remaining-budget bound, so an
+ * implementer never lets the capability's own declared timeout govern the
+ * call past what the stage's own seven-second-derived budget still allows
+ * (rules/investigation/collection-has-its-own-budget-within-the-total). The
+ * local race stays the stage's own backstop regardless of whether a given
+ * implementer honors that bound. A concept nothing currently answers never
+ * reaches the race at all, since there is nothing to call
+ * (domain/investigation/evidence, domain/investigation/evidence-result).
  */
 async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<Evidence> {
   const { concept, subject, requester, capabilities, observationSource, stageCeilingMs, now } = options;
@@ -96,11 +102,10 @@ async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<E
     capabilityVersion: capability.version,
   };
   const effectiveBoundMs = effectiveBoundMsFor(capability, stageCeilingMs);
-  // effectiveBoundMs is not yet threaded into observe-concept's own
-  // remaining-budget bound — that propagation is
-  // task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget's
-  // own objective, not this call site's.
-  const outcome = await raceObservation(observationSource.observeConcept({ concept, subject, requester }), effectiveBoundMs);
+  const outcome = await raceObservation(
+    observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs: stageCeilingMs }),
+    effectiveBoundMs,
+  );
   return settledEvidence(base, outcome, effectiveBoundMs);
 }
 

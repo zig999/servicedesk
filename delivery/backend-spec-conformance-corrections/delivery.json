@@ -50,6 +50,14 @@
       "task": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan"
     },
     {
+      "id": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "kind": "implementation",
+      "file": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget.md",
+      "title": "Collection stage propagates its remaining budget into observe-concept",
+      "summary": "evidence-collection-stage.ts now hands its own seven-second-derived stage ceiling into observe-concept's remaining-budget field on its one production call site, completing the propagation the sibling task's port and adapter change left undone.",
+      "task": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget"
+    },
+    {
       "id": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp",
       "kind": "implementation",
       "file": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp.md",
@@ -96,6 +104,14 @@
       "title": "Bypass-mention scan's specification-node exemption, proven directly against its own extracted logic",
       "summary": "Byte-extracts and compiles the ninth test's new HTTP_CONNECTOR_MENTION/everyHttpConnectorMentionIsANodeIdentityCitation logic from domain-depends-on-no-infrastructure.spec.ts and exercises the real, deployed function against the actual observation-source.port.ts citation and against synthetic real references, proving both criteria of task/domain-boundary-scan-fix/narrow-bypass-mention-scan without reimplementing or exporting anything.",
       "task": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan"
+    },
+    {
+      "id": "proof/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "kind": "proof",
+      "file": "proof/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget.md",
+      "title": "Proof for collection stage propagates its remaining budget into observe-concept",
+      "summary": "Three tests on evidence-collection-stage.spec.ts assert the exact remainingBudgetMs value the stage sends across the observation-source port on every call, reproducing the propagation failure the sibling task's local race alone cannot surface.",
+      "task": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget"
     },
     {
       "id": "proof/observation-endings-and-collection-budget/observation-port-budget-clamp",
@@ -224,6 +240,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "to": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp",
       "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
       "kind": "encodes",
@@ -298,6 +338,12 @@
     {
       "from": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "to": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
       "kind": "proves",
       "at": "the path"
     },

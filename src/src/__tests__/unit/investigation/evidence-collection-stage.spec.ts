@@ -184,6 +184,16 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
+/** Captures the exact remainingBudgetMs each observe-concept call received, keyed by concept, and answers ok unconditionally — a stand-in for the observation-source port that lets a test see the one value this stage's own propagation actually sends across that boundary, rather than what any implementer does with it once received (task/observation-endings-and-collection-budget/observation-port-budget-clamp's own proof already covers the latter, invoking the port directly). */
+class BudgetRecordingObservationSource implements IObservationSource {
+  public readonly remainingBudgetMsByConcept = new Map<string, number | undefined>();
+
+  public async observeConcept({ concept, remainingBudgetMs }: ObserveConceptOptions): Promise<ObservationOutcome> {
+    this.remainingBudgetMsByConcept.set(concept, remainingBudgetMs);
+    return { result: 'ok', observation: `observed-${concept}` };
+  }
+}
+
 /** What every expected Evidence shares except its result: which concept, subject and requester it was called with, and the instant the stage recorded as observed_at. */
 type EvidenceContext = {
   readonly concept: string;
@@ -401,6 +411,65 @@ it('clamps the effective bound to zero, timing out immediately, once the propaga
   const result = await resultPromise;
 
   expect(result[0]).toMatchObject({ result: 'timeout', result_detail: 'no observation within 0ms' });
+});
+
+it("propagates the stage's own seven-second budget as observe-concept's remaining-budget bound for every concept, rather than leaving a capability's own longer declared timeout to reach the call ungoverned (rules/investigation/collection-has-its-own-budget-within-the-total)", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'concept-longer-timeout', timeout: 10_000 }));
+  capabilities.hold(aCapability({ concept: 'concept-shorter-timeout', timeout: 5_000 }));
+  const observationSource = new BudgetRecordingObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['concept-longer-timeout', 'concept-shorter-timeout'] }]);
+
+  await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(observationSource.remainingBudgetMsByConcept.get('concept-longer-timeout')).toBe(COLLECTION_STAGE_BUDGET_MS);
+  expect(observationSource.remainingBudgetMsByConcept.get('concept-shorter-timeout')).toBe(COLLECTION_STAGE_BUDGET_MS);
+});
+
+it('propagates the smaller, deadline-derived ceiling as remaining-budget when the propagated deadline is nearer than the nominal seven seconds, rather than the nominal figure or the capability\'s own timeout', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', timeout: 10_000 }));
+  const observationSource = new BudgetRecordingObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 3_000,
+  });
+
+  expect(observationSource.remainingBudgetMsByConcept.get('a-concept')).toBe(3_000);
+});
+
+it('propagates zero as remaining-budget, never undefined or a negative value, once the propagated deadline has already elapsed by the time the stage starts', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', timeout: 5_000 }));
+  const observationSource = new BudgetRecordingObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 1_000,
+    deadline: 500,
+  });
+
+  expect(observationSource.remainingBudgetMsByConcept.get('a-concept')).toBe(0);
 });
 
 it('carries the requester unmodified into every observe-concept call, never a substituted or defaulted value', async () => {
