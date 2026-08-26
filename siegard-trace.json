@@ -116,6 +116,24 @@
       ]
     },
     {
+      "node": "constraints/listings-are-paged",
+      "digest": "sha256:b5ab6babf9211bf2a00f9807a1d81267f2d4222c2823ab929b6320770f58b7df",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:d051c741e298e379276c000e91d75932d08db615036f022d7e800370b62a3f42"
+        },
+        {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:efd9118e980b926a8a1e79445409214fde8fba906afd3d4d52b3223d59e30ca1"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:b3a565280f318989fa89767433496d893eb3581ce4b260ffcaeb47413d094032"
+        }
+      ]
+    },
+    {
       "node": "constraints/no-route-enforces-authentication",
       "digest": "sha256:6a6bbf9399f504a42cb96abe79d00793135ae491db8b3e81fda54819fa8d57b4",
       "files": [
@@ -180,8 +198,12 @@
           "digest": "sha256:0ad1c184cfc4c08f26ba59842956a2ab9a0965a9a0d4149ec41eb0ffb2d791cf"
         },
         {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:a0e13bfd64fe58a16133d44b96b900125944cb098deb3119dfe01b9f0acc999f"
+        },
+        {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
-          "digest": "sha256:b15c20f7ad55eb56939cc5d3b2d0bdc19cc5b6f27d37ff3bcb718937f274c2e1"
+          "digest": "sha256:df2431ee454af8720ece7e284218916385d5a5031e342bad6d906144eed0bf2b"
         }
       ]
     },
@@ -631,7 +653,7 @@
     },
     {
       "node": "contracts/integration/capability-registry",
-      "digest": "sha256:13b0b32e18331d7a24aa331ca323da073fe2c88ccaddf20b104afc62ee888a88",
+      "digest": "sha256:e5f41ebb5573b541533f16db4d43fdee8fb8e1c71d91a11ec27dd254472a1f5a",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -651,7 +673,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:da52f52c46c61c4587a952275ae81b78f9790c7f8d00a47845bed7bfd0412f76"
+          "digest": "sha256:d051c741e298e379276c000e91d75932d08db615036f022d7e800370b62a3f42"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -683,7 +705,7 @@
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
-          "digest": "sha256:f787f9805c4ea66b4632dde2d410fa69fb9cd2c7a70801fc3fb2bb72218ba257"
+          "digest": "sha256:df2431ee454af8720ece7e284218916385d5a5031e342bad6d906144eed0bf2b"
         },
         {
           "path": "src/src/http/read-capability-by-identity.routes.ts",
@@ -1743,7 +1765,7 @@
         },
         {
           "path": "src/src/capability-registry/capability.ts",
-          "digest": "sha256:fd6debc568e53c6741cdb8c8d0024ff9ed7f260e35db208967cf6e6c017155ee"
+          "digest": "sha256:2818977a314140703451a271308f02e5bc5fbf1ab2c890030c20c959cae718c0"
         },
         {
           "path": "src/src/fixtures/capability/capability.json",
@@ -3065,7 +3087,7 @@
     },
     {
       "node": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
-      "digest": "sha256:a58c74646fda1c1f3d80ac9a4cd91fd4b128ed5eb87a7819735e09f9bc1e0727",
+      "digest": "sha256:ac3b28aa4373ac407a489230953de6fbf0b9f4c3f54e6d3e3e982d6f2e37a692",
       "files": [
         {
           "path": "src/src/fixtures/glossary/outcome.json",
@@ -3073,11 +3095,11 @@
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
-          "digest": "sha256:87d8de903d17e4b7988303083c15985033fbe8900c5aea76b1c80e50f6519995"
+          "digest": "sha256:64c7fdc6afacc58b01dda573b893d2bc2274ed8d4c6e11944a835fb2c67b60df"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:89f190b7e99bc0e554f96efbb6efb5011229a09e72094ea81d6cb5c6be1047a6"
+          "digest": "sha256:b3a565280f318989fa89767433496d893eb3581ce4b260ffcaeb47413d094032"
         },
         {
           "path": "src/src/glossary/terms.ts",
@@ -3085,7 +3107,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:8ab90a2c29e36c439d87dfc464f31ea8f27fc40aabfd39334de69dd9eb0f5066"
+          "digest": "sha256:716753c25344bed090963fce4567e474312486c3788a4a88410dc0ceb32dd60c"
         },
         {
           "path": "src/src/seed.ts",
@@ -3253,7 +3275,11 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:ab3f8d65483b5178b16daaf6264f1cb9ca10de58e3c059b70c992b2353ba4d9d"
+          "digest": "sha256:efd9118e980b926a8a1e79445409214fde8fba906afd3d4d52b3223d59e30ca1"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:a0e13bfd64fe58a16133d44b96b900125944cb098deb3119dfe01b9f0acc999f"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -3261,7 +3287,7 @@
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
-          "digest": "sha256:9d07fb978ef3f9e727a096544bb182b39426b946bcad4bd9f963482ccc8aaa77"
+          "digest": "sha256:205e5ae5a44d6f5b9418662e57f1a8826b2230b8c89f5091ed6621f9498b7a88"
         }
       ]
     },
@@ -3276,6 +3302,16 @@
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
           "digest": "sha256:34bc74d93924be46c4d25213cb250f522a196682698576c2b19b91a0beddac8b"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/an-unclassified-status-ends-unavailable",
+      "digest": "sha256:7d9645ca53fc56f6a573deddb715f5f4301f7473b1e45b37d0e358222ff0df9b",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
         }
       ]
     },

@@ -3,6 +3,8 @@
 // with sixty as the default where its registration states none, and the two
 // non-conclusion outcomes are held from the first outcome read on. The store
 // boundary is an in-memory stand-in, so no test here touches a file.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
@@ -432,4 +434,37 @@ it('answers a page count of zero for a non-positive limit, rather than dividing 
   const page = await glossary.listVocabularyTerms('subject-attribute', { offset: 0, limit: 0 });
 
   expect(page.pageCount).toBe(0);
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it("pageCountOf's own comment cites constraints/listings-are-paged's own statement that a non-positive limit never reaches this count, rather than claiming no source states the answer (criterion 6)", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../glossary/glossary.service.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/no source states/i);
+  expect(prose).toContain('constraints/listings-are-paged now states this branch is never reached by a request this system answers');
+  expect(prose).toContain(
+    'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
+  );
+});
+
+it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task path — terms()' and withNonConclusionOutcomes' own doc comments both cite rules/glossary/the-non-conclusion-outcomes-precede-the-first-case instead (criterion 8)", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../glossary/glossary.service.ts', import.meta.url)), 'utf8');
+
+  expect(source).not.toContain('task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome');
+  const citationCount = source.split('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case').length - 1;
+  expect(citationCount).toBeGreaterThanOrEqual(2);
 });

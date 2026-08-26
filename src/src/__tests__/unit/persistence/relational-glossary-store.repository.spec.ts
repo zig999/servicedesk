@@ -8,6 +8,8 @@
 // replace really rolls back together against a real constraint, and that a real duplicate name
 // inside one write is refused by the table's own primary key rather than silently deduped — is
 // proven separately, against a real database, in this file's own integration-level sibling.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import { GlossaryStoreError } from '../../../errors/glossary-store.error.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -312,4 +314,14 @@ it('inserts one concept_accepts row per subject type the given concept accepts, 
     ['a-concept', 'a-subject-type'],
     ['a-concept', 'another-subject-type'],
   ]);
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 8
+
+it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task path anywhere — the file header, the class doc comment and insertMissingTerms' own doc comment all cite rules/glossary/the-non-conclusion-outcomes-precede-the-first-case instead", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../persistence/relational-glossary-store.repository.ts', import.meta.url)), 'utf8');
+
+  expect(source).not.toContain('task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome');
+  const citationCount = source.split('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case').length - 1;
+  expect(citationCount).toBeGreaterThanOrEqual(3);
 });

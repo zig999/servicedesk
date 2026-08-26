@@ -18,7 +18,7 @@ export interface IGlossaryStore {
    * that are not already held, and touches nothing else: no already-held
    * row is deleted or rewritten, so a row some other part of this database
    * now permanently references never stands in this operation's way
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
    * The narrower sibling of writeTerms, for a caller that only ever needs to
    * ensure a term exists rather than to author the vocabulary's whole
    * content.

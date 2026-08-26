@@ -9,12 +9,16 @@ import type {
 import type { IConnectorConfigurationStore } from './connector-configuration-store.port.js';
 
 /**
- * What resolving a connector against the registry answers: its
+ * What readConnectorConfiguration below answers when called directly: the
  * configuration exactly as registered, or its absence stated as data —
- * never an invented configuration and never an error, since a connector no
- * registration has yet reached is an ordinary answer of a resolution, the
- * same shape capability-query.port.ts's own CapabilityResolution already
- * holds for the capability registry.
+ * never an invented configuration, and never a thrown error from this
+ * method itself, since a connector no registration has yet reached is an
+ * ordinary answer of a resolution, the same shape
+ * capability-query.port.ts's own CapabilityResolution already holds for the
+ * capability registry. The published read-connector-configuration route
+ * does not stop at this resolution: a name nothing has registered is
+ * refused there, through readConnectorConfigurationOrThrow below
+ * (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused).
  */
 export type ConnectorConfigurationResolution =
   | { readonly held: true; readonly configuration: ConnectorConfiguration }
@@ -132,11 +136,14 @@ export class ConnectorConfigurationRegistryService {
 /**
  * The page count this limit divides total into (API-03) — 0 for a
  * non-positive limit, since dividing by it would answer no page count a
- * caller could page through at all; neither this task's own criteria nor
- * src/types/pagination.ts states what a non-positive limit answers, so this
- * is this service's own defensive floor, the same inference
- * capability-registry.service.ts's own pageCountOf already made for its
- * identical listing shape.
+ * caller could page through at all. constraints/listings-are-paged now
+ * states this branch is never reached by a request this system answers: "no
+ * request with a non-positive limit reaches the count, because
+ * a-malformed-request-is-refused-with-a-validation-error refuses it first"
+ * — so the 0 this function answers for that case is this service's own
+ * defensive floor for a call the constraint says never happens, the same
+ * inference capability-registry.service.ts's own pageCountOf already made
+ * for its identical listing shape.
  *
  * Restated here rather than imported (MNT-03 divergence, disclosed):
  * capability-registry.service.ts's own pageCountOf is a private, unexported

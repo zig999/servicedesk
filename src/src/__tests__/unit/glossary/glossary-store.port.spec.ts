@@ -1,0 +1,17 @@
+// Proof for task/stale-specification-citations/citations-corrected's own criterion 8, over
+// glossary-store.port.ts: insertMissingTerms' own doc comment cites
+// rules/glossary/the-non-conclusion-outcomes-precede-the-first-case, in place of the discarded
+// task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome path this comment used to
+// name.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { expect, it } from 'vitest';
+
+const MODULE_PATH = fileURLToPath(new URL('../../../glossary/glossary-store.port.ts', import.meta.url));
+
+it('no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task path, citing rules/glossary/the-non-conclusion-outcomes-precede-the-first-case instead', async () => {
+  const source = await readFile(MODULE_PATH, 'utf8');
+
+  expect(source).not.toContain('task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome');
+  expect(source).toContain('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case');
+});

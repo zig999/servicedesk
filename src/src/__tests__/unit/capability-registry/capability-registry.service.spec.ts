@@ -4,6 +4,8 @@
 // default of sixty seconds held as 60000 milliseconds, and a re-registration
 // under a held name and version replaces the record it holds. The store
 // boundary is an in-memory stand-in, so no test here touches a file.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
@@ -508,4 +510,39 @@ it('readCapabilityByIdentity itself still answers a currently held identity as {
   const resolution = await registry.readCapabilityByIdentity('a-known-capability', '2.0.0');
 
   expect(resolution).toEqual({ held: true, capability });
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it("readCapabilityByIdentity's own comment states the operation is part of the published capability-registry contract, not outside it (criterion 2)", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/outside (?:the|this) (?:published )?capability-registry contract/i);
+  expect(prose).toContain(
+    'Part of the published capability-registry contract alongside read-capability, by concept, list-capabilities and register-capability',
+  );
+});
+
+it("pageCountOf's own comment cites constraints/listings-are-paged's own statement that a non-positive limit never reaches this count, rather than claiming no source states the answer (criterion 6)", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/no source states/i);
+  expect(prose).toContain('constraints/listings-are-paged now states this branch is never reached by a request this system answers');
+  expect(prose).toContain(
+    'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
+  );
 });

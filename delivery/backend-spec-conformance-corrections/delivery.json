@@ -82,6 +82,14 @@
       "task": "task/observation-endings-and-collection-budget/observation-port-unavailable-endings"
     },
     {
+      "id": "implementation/stale-specification-citations/citations-corrected",
+      "kind": "implementation",
+      "file": "implementation/stale-specification-citations/citations-corrected.md",
+      "title": "Stale specification citations corrected across nine locations",
+      "summary": "Nine comments and one constant's doc comment across nine files now cite the specification nodes they discuss as those nodes currently read, replacing readings the two same-day analysis increments superseded.",
+      "task": "task/stale-specification-citations/citations-corrected"
+    },
+    {
       "id": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal",
       "kind": "proof",
       "file": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal.md",
@@ -144,6 +152,14 @@
       "title": "Proof for observation-port-unavailable-endings",
       "summary": "HttpDeclarativeObservationSource answers an unavailable ending naming its cause via result_detail for each of the four presently-unresolvable conditions, issuing no HTTP call, verified by rewriting the three pre-existing tests that asserted the old throwing behavior for these same conditions and adding what those tests did not cover.",
       "task": "task/observation-endings-and-collection-budget/observation-port-unavailable-endings"
+    },
+    {
+      "id": "proof/stale-specification-citations/citations-corrected",
+      "kind": "proof",
+      "file": "proof/stale-specification-citations/citations-corrected.md",
+      "title": "Stale specification citations corrected — nine locations",
+      "summary": "Each of the nine touched files is read from disk and its comment text is asserted to no longer carry the superseded reading and to carry the corrected specification citation instead.",
+      "task": "task/stale-specification-citations/citations-corrected"
     }
   ],
   "edges": [
@@ -358,6 +374,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "constraints/listings-are-paged",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "rules/integration/an-unclassified-status-ends-unavailable",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/stale-specification-citations/citations-corrected",
+      "to": "task/stale-specification-citations/citations-corrected",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal",
       "to": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
       "kind": "proves",
@@ -402,6 +466,12 @@
     {
       "from": "proof/observation-endings-and-collection-budget/observation-port-unavailable-endings",
       "to": "implementation/observation-endings-and-collection-budget/observation-port-unavailable-endings",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/stale-specification-citations/citations-corrected",
+      "to": "implementation/stale-specification-citations/citations-corrected",
       "kind": "proves",
       "at": "the path"
     }

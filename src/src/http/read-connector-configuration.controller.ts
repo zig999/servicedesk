@@ -33,10 +33,12 @@
 // ConnectorConfigurationRegistryService.readConnectorConfiguration itself is
 // unaffected: it still answers an unregistered connector as ordinary data
 // (`{ held: false, connector }`), never a thrown error, for every other
-// consumer that reads it directly (the wrapper included, internally). Which
-// transport status the propagated ConnectorConfigurationNotFoundError
-// becomes is COR-04's concern, not this specification's: the shared status
-// map (src/errors/status-map.ts) resolves it — mirroring
+// consumer that reads it directly (the wrapper included, internally). The
+// propagated ConnectorConfigurationNotFoundError's own transport status is
+// HTTP 404, the specification's own decision
+// (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused);
+// COR-04's shared status map (src/errors/status-map.ts) is where that
+// decision is enacted rather than chosen inline — mirroring
 // read-capability.controller.ts's own handling of ConceptNotAnsweredError
 // for the sibling registry.
 //

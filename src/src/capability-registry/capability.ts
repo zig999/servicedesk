@@ -65,9 +65,11 @@ export const DEFAULT_CAPABILITY_TIMEOUT_MS = 60_000;
 
 /**
  * The attributes a registration must declare: every required attribute of
- * the capability element except the defaulted timeout, plus the concept the
- * capability answers — the registry being the one lookup from a concept to
- * the capability that answers it (domain/integration/capability-registry).
+ * the capability element except the defaulted timeout, plus the concept —
+ * required of the capability itself, the one it answers
+ * (domain/integration/capability's own "concept ... required: true"), not a
+ * fact of domain/integration/capability-registry, the domain-service that
+ * only resolves by it once the capability already declares it.
  */
 export const REQUIRED_REGISTRATION_ATTRIBUTES = [
   'name',

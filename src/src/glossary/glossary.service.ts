@@ -25,12 +25,10 @@ export class GlossaryService implements IGlossaryQuery {
    * Answers one term vocabulary as the glossary holds it: each name exactly
    * once — and the outcome vocabulary never without the two non-conclusion
    * outcomes, which are added through the port's own additive primitive
-   * where the records lack them
-   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case),
-   * never through the port's whole-replace writeTerms — ensuring these two
-   * exist must never delete or rewrite an outcome some other row now
-   * permanently references
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * where the records lack them, never through the port's whole-replace
+   * writeTerms — ensuring these two exist must never delete or rewrite an
+   * outcome some other row now permanently references
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
    */
   public async terms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {
     const held = await this.store.readTerms(vocabulary);
@@ -170,7 +168,7 @@ export class GlossaryService implements IGlossaryQuery {
    * moment any of them, non-conclusion or not, is permanently referenced by
    * a released case version's fallback_outcome or a released hypothesis
    * revision's resolution_outcome
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
    * Every currently-held outcome's own name is left exactly as it was.
    */
   private async withNonConclusionOutcomes(held: readonly GlossaryTerm[]): Promise<readonly GlossaryTerm[]> {
@@ -188,12 +186,18 @@ export class GlossaryService implements IGlossaryQuery {
 /**
  * The page count this limit divides total into (API-03) — 0 for a
  * non-positive limit, since dividing by it would answer no page count at all
- * rather than one a caller could page through; the same defensive floor
- * relational-case-store.repository.ts's own pageCountOf already applies to
- * every SQL-paged listing, restated here rather than imported because that
- * one is a private, unexported helper of an unrelated persistence module
- * (MNT-03 reaches a block of logic this project already calls from
- * elsewhere, not a private one-line formula sitting in a different layer).
+ * rather than one a caller could page through. constraints/listings-are-paged
+ * now states this branch is never reached by a request this system answers:
+ * "no request with a non-positive limit reaches the count, because
+ * a-malformed-request-is-refused-with-a-validation-error refuses it first"
+ * — so the 0 this function answers for that case is this service's own
+ * defensive floor for a call the constraint says never happens, the same
+ * defensive floor relational-case-store.repository.ts's own pageCountOf
+ * already applies to every SQL-paged listing, restated here rather than
+ * imported because that one is a private, unexported helper of an unrelated
+ * persistence module (MNT-03 reaches a block of logic this project already
+ * calls from elsewhere, not a private one-line formula sitting in a
+ * different layer).
  */
 function pageCountOf(total: number, limit: number): number {
   return limit > 0 ? Math.ceil(total / limit) : 0;

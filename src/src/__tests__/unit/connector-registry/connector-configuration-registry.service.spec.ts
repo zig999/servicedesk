@@ -5,6 +5,8 @@
 // rather than merging or duplicating it, and the payload itself is held opaque — no key inside it
 // is ever read or validated, whatever shape it takes. The store boundary is an in-memory stand-in
 // (TST-03), so no test here touches a relational database.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import {
   ConnectorConfigurationRegistryService,
@@ -474,4 +476,45 @@ it('parsedConnectorConfiguration throws ConnectorConfigurationNotWellFormedError
 
   expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
   expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it("ConnectorConfigurationResolution's own comment scopes its 'never an error' claim to readConnectorConfiguration called directly, and states the published route does refuse an unregistered name (criterion 5)", async () => {
+  const source = await readFile(
+    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
+    'utf8',
+  );
+  const prose = proseOf(source);
+
+  expect(prose).toContain('never a thrown error from this method itself');
+  expect(prose).toContain(
+    'The published read-connector-configuration route does not stop at this resolution: a name nothing has registered is refused there, through readConnectorConfigurationOrThrow below (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)',
+  );
+});
+
+it("pageCountOf's own comment cites constraints/listings-are-paged's own statement that a non-positive limit never reaches this count, rather than claiming no source states the answer (criterion 6)", async () => {
+  const source = await readFile(
+    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
+    'utf8',
+  );
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/no source states/i);
+  expect(prose).toContain('constraints/listings-are-paged now states this branch is never reached by a request this system answers');
+  expect(prose).toContain(
+    'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
+  );
 });

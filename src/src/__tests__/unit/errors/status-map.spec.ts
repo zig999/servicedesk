@@ -5,6 +5,8 @@
 // answering 500 unchanged. error-handler.middleware.ts's own consultation of
 // this function is proved separately, in
 // __tests__/unit/http/error-handler.middleware.spec.ts.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
@@ -139,4 +141,29 @@ it('returns undefined for a thrown value that is not an Error at all', () => {
   const status = statusForError('a plain string');
 
   expect(status).toBeUndefined();
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 1
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it("the header comment names the two specification nodes that now fix a status as a decided fact, rather than claiming no node does", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).not.toMatch(/no specification node/i);
+  expect(header).toContain('two specification nodes now fix a status as a decided fact');
+  expect(header).toContain('constraints/the-capability-identity-read-refuses-an-unregistered-identity');
+  expect(header).toContain('rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused');
+  expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });

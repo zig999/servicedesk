@@ -25,7 +25,7 @@
 // runs, so a failure partway through never leaves a table holding a mix of
 // the old and the new set (EDG-05). insertMissingTerms is the port's own
 // narrower sibling to writeTerms
-// (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome):
+// (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case):
 // it runs one INSERT ... ON CONFLICT DO NOTHING per given term, inside one
 // transaction the same way (EDG-05 again, now that more than one term can
 // go in), issuing no DELETE at all — every already-held row, including one
@@ -98,7 +98,7 @@ const CONCEPT_ACCEPTS_TABLE = 'concept_accepts';
  * 3) and replaced whole on every writeTerms call, inside one transaction
  * (criterion 4); insertMissingTerms instead adds only what a vocabulary does
  * not already hold, deleting nothing
- * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome);
+ * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case);
  * every concept lives in one row of "concepts" plus one row of
  * "concept_accepts" per subject type it accepts, read fresh the same way
  * (criterion 2); writeConcepts replaces every concept the two tables
@@ -135,7 +135,7 @@ export class RelationalGlossaryStore implements IGlossaryStore {
    * partway through never leaves some of the given terms inserted and
    * others not (EDG-05). A row the vocabulary already holds — including one
    * some other table now permanently references — is never touched
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
+   * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case).
    */
   public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
     const table = VOCABULARY_TABLES[vocabulary];

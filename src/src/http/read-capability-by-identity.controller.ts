@@ -8,12 +8,14 @@
 //
 // Receives its one dependency as a plain function type (ARC-01), not the
 // published ICapabilityQuery interface: readCapabilityByIdentityOrThrow is
-// not part of that contract (contracts/integration/capability-registry names
-// read-capability, by concept, list-capabilities and register-capability;
-// this operation is published as this route's own fourth operation,
-// read-capability-by-identity, over the underlying method that already
-// existed on CapabilityRegistryService for test-connector.controller.ts's
-// own internal use). Constructs nothing of its own (ARC-02): the
+// not part of that interface, though the operation it serves is
+// (contracts/integration/capability-registry names read-capability, by
+// concept, read-capability-by-identity, list-capabilities and
+// register-capability) — the underlying method already existed on
+// CapabilityRegistryService for test-connector.controller.ts's own internal
+// use, and this route exposes that same published operation through a plain
+// function type rather than the whole ICapabilityQuery interface.
+// Constructs nothing of its own (ARC-02): the
 // composition root that supplies this function is build-app.factory.ts's
 // own composeResources, reusing the same CapabilityRegistryService instance
 // every other capability-registry route already shares.
@@ -28,13 +30,16 @@
 // CapabilityRegistryService.readCapabilityByIdentity itself is unaffected:
 // it still answers an unregistered identity as ordinary data, never a
 // thrown error, for every other consumer that reads it directly (the
-// wrapper included, internally). Which transport status the propagated
-// CapabilityIdentityNotFoundError becomes is COR-04's concern, not this
-// specification's: the shared status map (src/errors/status-map.ts)
-// resolves it, a class distinct from ConceptNotAnsweredError,
-// ConnectorConfigurationNotFoundError and CapabilityNotRegisteredForTestError,
-// mirroring how each of those already answers its own route's structurally
-// identical absence with its own class rather than a shared one.
+// wrapper included, internally). The propagated
+// CapabilityIdentityNotFoundError's own transport status is HTTP 404, the
+// specification's own decision
+// (constraints/the-capability-identity-read-refuses-an-unregistered-identity);
+// COR-04's shared status map (src/errors/status-map.ts) is where that
+// decision is enacted rather than chosen inline, a class distinct from
+// ConceptNotAnsweredError, ConnectorConfigurationNotFoundError and
+// CapabilityNotRegisteredForTestError, mirroring how each of those already
+// answers its own route's structurally identical absence with its own class
+// rather than a shared one.
 
 import type { Capability } from '../capability-registry/capability.js';
 import type {

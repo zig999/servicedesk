@@ -7,6 +7,8 @@
 // stand-in (TST-03 — a stand-in replaces a boundary, never business logic): the real service-level
 // wrapper it is wired to in production, CapabilityRegistryService.readCapabilityByIdentityOrThrow,
 // is proved separately in capability-registry.service.spec.ts.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
@@ -68,4 +70,40 @@ it('calls its readCapabilityByIdentity dependency with exactly the given name an
   await handleReadCapabilityByIdentityRequest(dependencies, { name: 'Mixed-Case', version: '1.0.0-RC.1' });
 
   expect(received).toEqual(['Mixed-Case', '1.0.0-RC.1']);
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 3
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it('the dependency comment states read-capability-by-identity is one of the published capability-registry contract\'s four operations, not a wrapper standing outside it', async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../http/read-capability-by-identity.controller.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/outside (?:the|this) (?:published )?capability-registry contract/i);
+  expect(prose).toContain('though the operation it serves is');
+  expect(prose).toContain(
+    'contracts/integration/capability-registry names read-capability, by concept, read-capability-by-identity, list-capabilities and register-capability',
+  );
+});
+
+it("the transport-status comment cites constraints/the-capability-identity-read-refuses-an-unregistered-identity as the specification's own HTTP 404 decision, rather than claiming it undecided", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../http/read-capability-by-identity.controller.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/undecided by the specification/i);
+  expect(prose).toContain(
+    "specification's own decision (constraints/the-capability-identity-read-refuses-an-unregistered-identity)",
+  );
+  expect(prose).toContain('is where that decision is enacted rather than chosen inline');
 });

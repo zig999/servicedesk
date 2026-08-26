@@ -84,10 +84,12 @@ export interface IConnectorConfigurationQuery {
 /**
  * The ending a received HTTP status resolves to where the connector's own
  * status map declares no entry for it, or declares one this adapter does
- * not recognize as one of the four — the implementer's own free technical
- * choice (this task's own Notes), since no specification node states a
- * default classification; chosen as the closest of the four to "the call
- * reached the system but nothing usable came back," the same reading
+ * not recognize as one of the four: 'unavailable', the specification's own
+ * decided default
+ * (rules/integration/an-unclassified-status-ends-unavailable's own "An HTTP
+ * status the executing connector configuration's statusMap does not
+ * classify ends the observation as unavailable" — "the ending that claims
+ * the least: it asserts no denial and no timeout"), the same reading
  * evidence-collection-stage.ts's own unavailableEvidence already gives an
  * unresolved capability.
  */

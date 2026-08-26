@@ -10,6 +10,8 @@
 // connector-configuration-registry.service.spec.ts. Mirrors
 // read-capability-by-identity.controller.spec.ts's own shape for the sibling relocation
 // (task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation).
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { ConnectorConfiguration } from '../../../connector-registry/connector-configuration.js';
 import { ConnectorConfigurationNotFoundError } from '../../../errors/connector-configuration-not-found.error.js';
@@ -71,4 +73,29 @@ it('calls its readConnectorConfiguration dependency with exactly the given conne
   await handleReadConnectorConfigurationRequest(dependencies, { connector: 'Mixed-Case-Connector' });
 
   expect(received).toBe('Mixed-Case-Connector');
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 4
+
+// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
+// opener, closer or continuation star) and collapses what remains to one line of prose, so a
+// comment wrapped across several source lines compares the same as its own single-line paraphrase.
+function proseOf(source: string): string {
+  return source
+    .split('\n')
+    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+it("the transport-status comment cites rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused as the specification's own HTTP 404 decision, rather than claiming it undecided", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../http/read-connector-configuration.controller.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toMatch(/undecided by the specification/i);
+  expect(prose).toContain(
+    "specification's own decision (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)",
+  );
+  expect(prose).toContain('is where that decision is enacted rather than chosen inline');
 });

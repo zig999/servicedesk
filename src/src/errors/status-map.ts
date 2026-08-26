@@ -2,10 +2,15 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note): which status each domain error resolves to is this
-// project's own engineering decision, not a fact the specification holds or
-// should hold, so it is written here rather than left for a handler to pick
-// inline.
+// `elsewhere` note). That silence no longer covers every entry below: two
+// specification nodes now fix a status as a decided fact —
+// CapabilityIdentityNotFoundError's HTTP 404
+// (constraints/the-capability-identity-read-refuses-an-unregistered-identity)
+// and ConnectorConfigurationNotFoundError's HTTP 404
+// (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)
+// — while every other entry's status stays this project's own engineering
+// decision, not a fact the specification holds or should hold, so it is
+// written here rather than left for a handler to pick inline.
 //
 // Grouped by what the refusal means for the caller: a resource that plainly
 // does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError,

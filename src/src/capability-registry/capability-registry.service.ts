@@ -88,17 +88,16 @@ export class CapabilityRegistryService implements ICapabilityQuery {
   }
 
   /**
-   * read-capability-by-identity
-   * (task/connector-diagnostics/test-connector-route): resolves one
+   * read-capability-by-identity (contracts/integration/capability-registry,
+   * task/connector-diagnostics/test-connector-route): resolves one
    * capability by its own identity — name and version
    * (domain/integration/capability's own "identified by name and version")
-   * — read through the store on every call, never remembered. Not part of
-   * the published capability-registry contract
-   * (contracts/integration/capability-registry names only read-capability,
-   * by concept, and list-capabilities): this is a second read this service
-   * offers for a consumer that already holds a capability's own identity
-   * rather than the concept it answers, the same "absence stated as data,
-   * never an error" shape readCapability already gives.
+   * — read through the store on every call, never remembered. Part of the
+   * published capability-registry contract alongside read-capability, by
+   * concept, list-capabilities and register-capability: a second read this
+   * service offers for a consumer that already holds a capability's own
+   * identity rather than the concept it answers, the same "absence stated
+   * as data, never an error" shape readCapability already gives.
    */
   public async readCapabilityByIdentity(name: string, version: string): Promise<CapabilityIdentityResolution> {
     const held = await this.store.readCapabilities();
@@ -250,11 +249,14 @@ function isWellFormedJson(value: string): boolean {
 /**
  * The page count this limit divides total into (API-03) — 0 for a
  * non-positive limit, since dividing by it would answer no page count a
- * caller could page through at all; neither this task's own criteria nor
- * src/types/pagination.ts states what a non-positive limit answers, so this
- * is this service's own defensive floor, the same inference
- * relational-case-store.repository.ts's own pageCountOf already made for
- * the store-paginated listings, rather than a documented behavior.
+ * caller could page through at all. constraints/listings-are-paged now
+ * states this branch is never reached by a request this system answers: "no
+ * request with a non-positive limit reaches the count, because
+ * a-malformed-request-is-refused-with-a-validation-error refuses it first"
+ * — so the 0 this function answers for that case is this service's own
+ * defensive floor for a call the constraint says never happens, the same
+ * inference relational-case-store.repository.ts's own pageCountOf already
+ * made for the store-paginated listings.
  *
  * Restated here rather than imported (MNT-03 divergence, disclosed): that
  * pageCountOf is a private, unexported function of an unrelated persistence
