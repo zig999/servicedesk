@@ -28,15 +28,22 @@
 //
 // Never throws for one of the four endings the port declares: a received
 // status and this adapter's own applied timeout both resolve to one of the
-// four. Only a genuine unexpected fault — a capability or connector
-// configuration a race left unresolved, a malformed connector configuration,
-// an unresolved request placeholder, or a network failure that is not this
-// adapter's own timeout — propagates as a rejection, the same convention
-// evidence-collection-stage.ts's own raceObservation already documents and
-// lets through uncaught.
+// four. Nor does it throw for any of the four presently-unresolvable
+// conditions this task adds — a concept no registered capability currently
+// answers, a concept more than one currently answers, a capability naming a
+// connector no configuration is registered under, or a connector
+// configuration that does not declare method, responseMap or statusMap
+// (rules/integration/an-unresolvable-observation-ends-unavailable,
+// rules/integration/an-http-connector-configuration-declares-its-call):
+// each answers 'unavailable' with a result_detail naming the condition, and
+// none of the four issues an HTTP call. Only a genuine unexpected fault — an
+// unresolved request placeholder, or a network failure that is not this
+// adapter's own timeout — still propagates as a rejection, the same
+// convention evidence-collection-stage.ts's own raceObservation already
+// documents and lets through uncaught.
 
 import type { Capability } from '../capability-registry/capability.js';
-import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
+import type { CapabilityResolution, ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { ConnectorConfigurationResolution } from '../connector-registry/connector-configuration-registry.service.js';
 import type { AssembledConnectorRequest } from '../http-connector/connector-call-descriptor.js';
 import { issueConnectorHttpCall } from '../http-connector/connector-http-issuer.js';
@@ -50,6 +57,7 @@ import {
 import { extractResponseFields, type ResponseFieldPaths } from '../http-connector/response-path-extractor.js';
 import { CapabilityNotResolvedForObservationError } from '../errors/capability-not-resolved-for-observation.error.js';
 import { ConnectorConfigurationNotRegisteredError } from '../errors/connector-configuration-not-registered.error.js';
+import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../errors/malformed-http-connector-configuration.error.js';
 import { declaredFieldsOf } from './citation-validation.js';
 import { EVIDENCE_RESULTS, type EvidenceResult } from './evidence-result.js';
@@ -96,6 +104,31 @@ export type HttpDeclarativeObservationSourceOptions = {
 type CallResult = { readonly kind: 'response'; readonly response: Response } | { readonly kind: 'timed-out' };
 
 /**
+ * What resolving one prerequisite step of observe-concept answers: the
+ * value to proceed with, or the unavailable ObservationOutcome this adapter
+ * answers in its place — never a thrown fault, for exactly the four
+ * conditions this task names
+ * (rules/integration/an-unresolvable-observation-ends-unavailable,
+ * rules/integration/an-http-connector-configuration-declares-its-call).
+ */
+type Resolution<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly outcome: ObservationOutcome };
+
+/**
+ * The unavailable ending this adapter answers for one of its four
+ * presently-unresolvable conditions, naming its cause by the raised error's
+ * own class name — read from the error itself rather than restated as a
+ * second literal, so result_detail can never drift from the class the
+ * condition actually is
+ * (rules/integration/an-unresolvable-observation-ends-unavailable,
+ * rules/integration/an-http-connector-configuration-declares-its-call).
+ */
+function unavailableFor(error: Error): ObservationOutcome {
+  return { result: 'unavailable', result_detail: error.name };
+}
+
+/**
  * The one production adapter behind IObservationSource
  * (contracts/investigation/observation-source): a generic, data-driven HTTP
  * call for any capability whose connector is registered — no external
@@ -117,14 +150,36 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
    * the concept's capability and its connector's own call configuration,
    * issues exactly one HTTP call within the capability's own declared
    * timeout, and answers one of the four evidence-result endings — never
-   * throwing for any of them (domain/investigation/evidence-result). The
-   * requester travels unchanged into the assembled request
+   * throwing for any of them (domain/investigation/evidence-result). Where
+   * a concept resolves to no capability, to more than one, to a capability
+   * naming an unregistered connector, or to a connector configuration that
+   * does not declare method, responseMap or statusMap, this method answers
+   * 'unavailable' with a result_detail naming the condition and issues no
+   * call at all
+   * (rules/integration/an-unresolvable-observation-ends-unavailable,
+   * rules/integration/an-http-connector-configuration-declares-its-call).
+   * The requester travels unchanged into the assembled request
    * (rules/investigation/collection-runs-in-the-requester-scope).
    */
   public async observeConcept(concept: string, subject: Subject, requester: string): Promise<ObservationOutcome> {
-    const capability = await this.resolveCapability(concept);
-    const rawConfiguration = await this.resolveConnectorConfiguration(capability.connector);
-    const httpFields = asHttpConnectorCallConfiguration(capability.connector, rawConfiguration);
+    const capabilityResolution = await this.resolveCapability(concept);
+    if (!capabilityResolution.ok) {
+      return capabilityResolution.outcome;
+    }
+    const capability = capabilityResolution.value;
+
+    const configurationResolution = await this.resolveConnectorConfiguration(capability.connector);
+    if (!configurationResolution.ok) {
+      return configurationResolution.outcome;
+    }
+    const rawConfiguration = configurationResolution.value;
+
+    const httpFieldsResolution = this.resolveHttpConnectorCallConfiguration(capability.connector, rawConfiguration);
+    if (!httpFieldsResolution.ok) {
+      return httpFieldsResolution.outcome;
+    }
+    const httpFields = httpFieldsResolution.value;
+
     const request = resolveConnectorRequest({ configuration: rawConfiguration, subject, requester });
     const call = await this.issueRequest(httpFields.method, request, capability.timeout);
     if (call.kind === 'timed-out') {
@@ -134,31 +189,73 @@ export class HttpDeclarativeObservationSource implements IObservationSource {
   }
 
   /**
-   * Resolves the concept's capability, refusing with a typed error where
-   * the registry no longer holds one — a race with whatever already
-   * checked this before calling observe-concept, never one of the four
-   * endings this port answers.
+   * Resolves the concept's capability: the unavailable ending naming
+   * CapabilityNotResolvedForObservationError where the registry no longer
+   * holds one for this concept — a race with whatever already checked this
+   * before calling observe-concept — or naming DuplicateConceptAnswerError
+   * where CapabilityRegistryService's own readCapability throws it for
+   * answering the concept more than once
+   * (rules/integration/one-capability-answers-one-concept). Neither reaches
+   * the caller as a rejection here: this is the one call site of
+   * readCapability that catches that throw and turns it into the ending
+   * the port declares rather than letting it propagate
+   * (rules/integration/an-unresolvable-observation-ends-unavailable).
    */
-  private async resolveCapability(concept: string): Promise<Capability> {
-    const resolution = await this.capabilities.readCapability(concept);
-    if (!resolution.held) {
-      throw new CapabilityNotResolvedForObservationError(concept);
+  private async resolveCapability(concept: string): Promise<Resolution<Capability>> {
+    let resolution: CapabilityResolution;
+    try {
+      resolution = await this.capabilities.readCapability(concept);
+    } catch (error) {
+      if (error instanceof DuplicateConceptAnswerError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+      throw error;
     }
-    return resolution.capability;
+    if (!resolution.held) {
+      return { ok: false, outcome: unavailableFor(new CapabilityNotResolvedForObservationError(concept)) };
+    }
+    return { ok: true, value: resolution.capability };
   }
 
   /**
-   * Resolves the connector's own opaque configuration payload, refusing
-   * with a typed error where the connector-configuration registry holds
-   * none for it — a registration bug, never one of the four endings this
-   * port answers.
+   * Resolves the connector's own opaque configuration payload: the
+   * unavailable ending naming ConnectorConfigurationNotRegisteredError
+   * where the connector-configuration registry holds none for it — a
+   * registration bug, resolved as data rather than as a fault it raises
+   * (rules/integration/an-unresolvable-observation-ends-unavailable).
    */
-  private async resolveConnectorConfiguration(connector: string): Promise<Readonly<Record<string, unknown>>> {
+  private async resolveConnectorConfiguration(
+    connector: string,
+  ): Promise<Resolution<Readonly<Record<string, unknown>>>> {
     const resolution = await this.connectorConfigurations.readConnectorConfiguration(connector);
     if (!resolution.held) {
-      throw new ConnectorConfigurationNotRegisteredError(connector);
+      return { ok: false, outcome: unavailableFor(new ConnectorConfigurationNotRegisteredError(connector)) };
     }
-    return resolution.configuration.configuration;
+    return { ok: true, value: resolution.configuration.configuration };
+  }
+
+  /**
+   * Narrows the connector's own opaque configuration to this adapter's own
+   * HttpConnectorCallConfiguration through the module-level
+   * asHttpConnectorCallConfiguration — unchanged and still thrown from,
+   * since test-connector.controller.ts also calls it directly and still
+   * needs its refusal to propagate — catching only the one throw this
+   * method's own caller degrades to an ending: the unavailable ending
+   * naming MalformedHttpConnectorConfigurationError
+   * (rules/integration/an-http-connector-configuration-declares-its-call).
+   */
+  private resolveHttpConnectorCallConfiguration(
+    connector: string,
+    configuration: Readonly<Record<string, unknown>>,
+  ): Resolution<HttpConnectorCallConfiguration> {
+    try {
+      return { ok: true, value: asHttpConnectorCallConfiguration(connector, configuration) };
+    } catch (error) {
+      if (error instanceof MalformedHttpConnectorConfigurationError) {
+        return { ok: false, outcome: unavailableFor(error) };
+      }
+      throw error;
+    }
   }
 
   /**

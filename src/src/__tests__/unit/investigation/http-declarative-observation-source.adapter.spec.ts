@@ -20,8 +20,10 @@ import type { CapabilityResolution, ICapabilityQuery } from '../../../capability
 import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
 import { CapabilityNotResolvedForObservationError } from '../../../errors/capability-not-resolved-for-observation.error.js';
 import { ConnectorConfigurationNotRegisteredError } from '../../../errors/connector-configuration-not-registered.error.js';
+import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../../../errors/malformed-http-connector-configuration.error.js';
 import {
+  asHttpConnectorCallConfiguration,
   HttpDeclarativeObservationSource,
   type IConnectorConfigurationQuery,
 } from '../../../investigation/http-declarative-observation-source.adapter.js';
@@ -72,12 +74,30 @@ function okResponse(body: unknown, status = 200): Response {
 /** Holds whatever capabilities a test registers, resolving every other concept as unheld — the adapter's own upstream, standing in for the capability registry. */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly held = new Map<string, Capability>();
+  private readonly duplicated = new Set<string>();
 
   public hold(capability: Capability): void {
     this.held.set(capability.concept, capability);
   }
 
+  /**
+   * Registers a concept as currently answered by more than one capability,
+   * so readCapability throws DuplicateConceptAnswerError for it exactly as
+   * CapabilityRegistryService's own readCapability does
+   * (rules/integration/one-capability-answers-one-concept) — the one call
+   * site this adapter's own resolveCapability catches that throw at.
+   */
+  public holdDuplicate(concept: string): void {
+    this.duplicated.add(concept);
+  }
+
   public async readCapability(concept: string): Promise<CapabilityResolution> {
+    if (this.duplicated.has(concept)) {
+      throw new DuplicateConceptAnswerError(concept, [
+        { name: `capability-one-for-${concept}`, version: '1.0.0' },
+        { name: `capability-two-for-${concept}`, version: '1.0.0' },
+      ]);
+    }
     const capability = this.held.get(concept);
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
@@ -223,13 +243,10 @@ it("resolves which external system to reach entirely from the calling capability
   expect(httpClient.mock.calls[1]?.[0]).toBe('https://host-b.example.com/records');
 });
 
-it("rejects with a typed ConnectorConfigurationNotRegisteredError, never one of the four endings, when the capability's own connector names no configuration currently registered", async () => {
-  const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }) });
-
-  await expect(adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER)).rejects.toBeInstanceOf(
-    ConnectorConfigurationNotRegisteredError,
-  );
-});
+// ConnectorConfigurationNotRegisteredError no longer rejects here — see
+// task/observation-endings-and-collection-budget/observation-port-unavailable-endings's
+// own dedicated section below, which supersedes this file's own earlier
+// reject-based test for this same condition.
 
 // ------------------------------------------------------------------ criterion 4
 
@@ -459,19 +476,59 @@ it('is imported by no domain module, so the domain layer reaches this adapter on
   expect(offenders).toEqual([]);
 });
 
-// ------------------------------------------------------------------ inference: capability/connector-configuration lookup faults
+// ------------------------------------------------------------------ task/observation-endings-and-collection-budget/observation-port-unavailable-endings
+//
+// Each of the four presently-unresolvable conditions this task adds answers
+// 'unavailable' with a result_detail naming the condition's own error class
+// — read off the raised error's own .name rather than a second hand-written
+// literal, so a rename of the class cannot drift from what result_detail
+// carries — instead of throwing, and issues no HTTP call: the httpClient
+// fake stays uncalled in every one of the six tests below.
 
-it('rejects with a typed CapabilityNotResolvedForObservationError, never one of the four endings, when no capability currently answers the concept', async () => {
+it('answers unavailable naming CapabilityNotResolvedForObservationError, issuing no call, when no capability currently answers the concept', async () => {
   const capabilities = new FakeCapabilityQuery();
   const connectorConfigurations = new FakeConnectorConfigurationQuery();
-  const adapter = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations, httpClient: newHttpClient() as unknown as typeof fetch });
+  const httpClient = newHttpClient();
+  const adapter = new HttpDeclarativeObservationSource({
+    capabilities,
+    connectorConfigurations,
+    httpClient: httpClient as unknown as typeof fetch,
+  });
 
-  await expect(adapter.observeConcept('an-unregistered-concept', A_SUBJECT, A_REQUESTER)).rejects.toBeInstanceOf(
-    CapabilityNotResolvedForObservationError,
-  );
+  const outcome = await adapter.observeConcept('an-unregistered-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: CapabilityNotResolvedForObservationError.name });
+  expect(httpClient).not.toHaveBeenCalled();
 });
 
-it("refuses with a typed MalformedHttpConnectorConfigurationError, before any request is assembled, when the connector's own configuration does not declare a recognized method", async () => {
+it('answers unavailable naming DuplicateConceptAnswerError, issuing no call, when more than one registered capability currently answers the concept', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.holdDuplicate('a-duplicated-concept');
+  const connectorConfigurations = new FakeConnectorConfigurationQuery();
+  const httpClient = newHttpClient();
+  const adapter = new HttpDeclarativeObservationSource({
+    capabilities,
+    connectorConfigurations,
+    httpClient: httpClient as unknown as typeof fetch,
+  });
+
+  const outcome = await adapter.observeConcept('a-duplicated-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: DuplicateConceptAnswerError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("answers unavailable naming ConnectorConfigurationNotRegisteredError, issuing no call, when the capability's own connector names no configuration currently registered", async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({ capability: aCapability({ concept: 'a-concept' }), httpClient });
+
+  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: ConnectorConfigurationNotRegisteredError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a recognized method", async () => {
   const httpClient = newHttpClient();
   const adapter = anAdapter({
     capability: aCapability({ concept: 'a-concept' }),
@@ -479,10 +536,46 @@ it("refuses with a typed MalformedHttpConnectorConfigurationError, before any re
     httpClient,
   });
 
-  await expect(adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER)).rejects.toBeInstanceOf(
+  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a responseMap", async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ responseMap: undefined }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing no call, when the connector's own configuration does not declare a statusMap", async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ statusMap: undefined }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept('a-concept', A_SUBJECT, A_REQUESTER);
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+// ------------------------------------------------------------------ inference: asHttpConnectorCallConfiguration itself still throws
+
+it('still throws MalformedHttpConnectorConfigurationError from the exported asHttpConnectorCallConfiguration itself, unwrapped, for a caller that narrows a configuration directly rather than through observeConcept', () => {
+  expect(() => asHttpConnectorCallConfiguration('a-connector', anHttpConfiguration({ method: 'TRACE' }))).toThrow(
     MalformedHttpConnectorConfigurationError,
   );
-  expect(httpClient).not.toHaveBeenCalled();
 });
 
 // ------------------------------------------------------------------ inference: HTTP method not restricted to GET

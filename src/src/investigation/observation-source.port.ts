@@ -37,11 +37,20 @@ export type { Subject };
  * observation, being facts about the attempt rather than data
  * (domain/investigation/evidence-result), and none of the four is ever
  * thrown: an absence of data is a recorded fact, never an exception
- * (domain/investigation/evidence).
+ * (domain/investigation/evidence). A non-ok ending may also carry
+ * `result_detail`, naming why the attempt could not proceed — the same
+ * field domain/investigation/evidence already declares on the record this
+ * outcome eventually feeds, so a cause the port already knows does not have
+ * to be rediscovered downstream. Optional even for a non-ok ending: a
+ * timeout or a denial an implementer's own connector answered needs no
+ * further naming, only the four presently-unresolvable conditions
+ * (rules/integration/an-unresolvable-observation-ends-unavailable,
+ * rules/integration/an-http-connector-configuration-declares-its-call) name
+ * one today.
  */
 export type ObservationOutcome =
   | { readonly result: 'ok'; readonly observation: string }
-  | { readonly result: Exclude<EvidenceResult, 'ok'> };
+  | { readonly result: Exclude<EvidenceResult, 'ok'>; readonly result_detail?: string };
 
 /**
  * The published observation-source contract
