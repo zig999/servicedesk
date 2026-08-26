@@ -186,7 +186,20 @@ function unavailableEvidence(concept: string, inputs: string, observedAt: string
   );
 }
 
-/** Turns what the race answered — a timeout mark, or one of observe-concept's own four endings — into this concept's Evidence, never treating a non-ok ending as a thrown failure that aborts the stage (rules/investigation/no-stage-aborts-on-its-deadline, scenarios/investigation/a-collection-timeout-degrades-to-no-data). */
+/**
+ * Turns what the race answered — a timeout mark, or one of observe-concept's
+ * own four endings — into this concept's Evidence, never treating a non-ok
+ * ending as a thrown failure that aborts the stage
+ * (rules/investigation/no-stage-aborts-on-its-deadline,
+ * scenarios/investigation/a-collection-timeout-degrades-to-no-data). An
+ * unavailable ending also carries the outcome's own result_detail straight
+ * into the evidence entry, naming the cause the port already resolved
+ * (rules/integration/an-unresolvable-observation-ends-unavailable,
+ * rules/integration/an-http-connector-configuration-declares-its-call,
+ * domain/investigation/evidence) — denied and timeout endings answered by
+ * observe-concept itself carry none today and stay unchanged, and the local
+ * race timeout above is this stage's own, not the port's.
+ */
 function settledEvidence(
   base: EvidenceBase,
   outcome: ObservationOutcome | typeof TIMED_OUT,
@@ -197,6 +210,9 @@ function settledEvidence(
   }
   if (outcome.result === 'ok') {
     return evidenceOf(base, { result: 'ok', observation: outcome.observation });
+  }
+  if (outcome.result === 'unavailable') {
+    return evidenceOf(base, { result: 'unavailable', resultDetail: outcome.result_detail });
   }
   return evidenceOf(base, { result: outcome.result });
 }

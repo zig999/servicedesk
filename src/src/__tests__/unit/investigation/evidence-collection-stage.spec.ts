@@ -222,10 +222,10 @@ function expectedOkEvidence(context: EvidenceContext & { readonly capability: Ca
   };
 }
 
-/** The full Evidence a held capability's denied or timed-out observation assembles: an empty observation, and a result_detail only where one was given. */
+/** The full Evidence a held capability's denied, timed-out or observation-reported-unavailable ending assembles: an empty observation, and a result_detail only where one was given. */
 function expectedNonOkEvidence(
   context: EvidenceContext & { readonly capability: Capability },
-  result: 'denied' | 'timeout',
+  result: 'denied' | 'timeout' | 'unavailable',
   resultDetail?: string,
 ) {
   return {
@@ -331,6 +331,106 @@ it('records a concept nothing currently answers as unavailable, naming the conce
   expect(result).toEqual([
     expectedUnavailableEvidence(context, 'no capability is currently registered for concept "unregistered-concept"'),
   ]);
+});
+
+// ---------------------------- an observation-reported unavailable ending carries its own cause
+
+it.each([
+  'CapabilityNotResolvedForObservationError',
+  'DuplicateConceptAnswerError',
+  'ConnectorConfigurationNotRegisteredError',
+  'MalformedHttpConnectorConfigurationError',
+])(
+  'carries %s as the evidence result_detail for a held capability whose observation ends unavailable for that cause (rules/integration/an-unresolvable-observation-ends-unavailable, rules/integration/an-http-connector-configuration-declares-its-call)',
+  async (cause) => {
+    const capabilities = new FakeCapabilityQuery();
+    const capability = aCapability({ concept: 'a-concept' });
+    capabilities.hold(capability);
+    const observationSource = new FakeObservationSource();
+    observationSource.seed('a-concept', A_SUBJECT, { result: 'unavailable', result_detail: cause });
+    const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+    const result = await collectEvidence({
+      case: theCase,
+      subject: A_SUBJECT,
+      requester: A_REQUESTER,
+      capabilities,
+      observationSource,
+      now: 0,
+      deadline: 20_000,
+    });
+
+    const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
+    expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', cause)]);
+  },
+);
+
+it('carries no result_detail for an unavailable ending the observation reported without one, rather than requiring one to be present or inventing one', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept' });
+  capabilities.hold(capability);
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'unavailable' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
+  expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable')]);
+});
+
+// ---------------------------- denied and observation-reported timeout stay unchanged by this task
+
+it('drops a result_detail the observation reported on a denied ending, leaving evidence for denied unchanged from before this task', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept' });
+  capabilities.hold(capability);
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'denied', result_detail: 'a-reported-detail' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
+  expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'denied')]);
+});
+
+it("drops a result_detail the observation reported on its own timeout ending, distinct from the stage's own race timeout, leaving evidence for timeout unchanged from before this task", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const capability = aCapability({ concept: 'a-concept' });
+  capabilities.hold(capability);
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'timeout', result_detail: 'a-reported-detail' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
+  expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'timeout')]);
 });
 
 it('records a timeout at the stage\'s own seven-second ceiling for a capability declaring ten seconds, unaffected by the three seconds its own declared timeout still had left (scenarios/investigation/a-slow-capability-yields-to-the-collection-budget)', async () => {

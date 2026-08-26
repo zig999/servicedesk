@@ -58,6 +58,14 @@
       "task": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget"
     },
     {
+      "id": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "kind": "implementation",
+      "file": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail.md",
+      "title": "Collection stage copies an unavailable observation's result_detail into evidence",
+      "summary": "settledEvidence now carries ObservationOutcome's own result_detail into the Evidence entry for an unavailable ending, leaving ok, denied and timeout untouched.",
+      "task": "task/observation-endings-and-collection-budget/collection-stage-records-result-detail"
+    },
+    {
       "id": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp",
       "kind": "implementation",
       "file": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp.md",
@@ -112,6 +120,14 @@
       "title": "Proof for collection stage propagates its remaining budget into observe-concept",
       "summary": "Three tests on evidence-collection-stage.spec.ts assert the exact remainingBudgetMs value the stage sends across the observation-source port on every call, reproducing the propagation failure the sibling task's local race alone cannot surface.",
       "task": "task/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget"
+    },
+    {
+      "id": "proof/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "kind": "proof",
+      "file": "proof/observation-endings-and-collection-budget/collection-stage-records-result-detail.md",
+      "title": "Proof for collection stage recording the observation's result detail",
+      "summary": "Tests added to evidence-collection-stage.spec.ts proving settledEvidence copies an unavailable ObservationOutcome's result_detail into Evidence, for each of the four newly classified causes and when absent, while denied and observation-reported timeout endings keep dropping any result_detail they carry.",
+      "task": "task/observation-endings-and-collection-budget/collection-stage-records-result-detail"
     },
     {
       "id": "proof/observation-endings-and-collection-budget/observation-port-budget-clamp",
@@ -264,6 +280,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "to": "task/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp",
       "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
       "kind": "encodes",
@@ -344,6 +384,12 @@
     {
       "from": "proof/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
       "to": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/observation-endings-and-collection-budget/collection-stage-records-result-detail",
+      "to": "implementation/observation-endings-and-collection-budget/collection-stage-records-result-detail",
       "kind": "proves",
       "at": "the path"
     },
