@@ -788,4 +788,21 @@ entries:
       secret an operator only ever meant a connector's own call to carry defeats the reason a
       credential is read from environment configuration rather than the configuration text in the
       first place.
+  - location: rules/integration/a-connector-configuration-holds-a-well-formed-object.md
+    field: statement
+    unstated: >-
+      What a present connector-configuration value that is neither a string nor a plain object —
+      a boolean or a number — answers, distinctly from null, an array, or an entirely absent
+      value.
+    decided: >-
+      The same refusal an absent configuration gets: HTTP 422 reporting
+      IncompleteConnectorConfigurationError, not ConnectorConfigurationNotWellFormedError.
+    why: >-
+      The material is siegard-reconcile/post-analyse-timeout-malformed-credential-drift.md, whose
+      judge over connector-configuration-registry.service.ts reported this classification as
+      decided in code alone. wellFormedConfiguration passes a present non-string, non-object,
+      non-null, non-array value through unchanged, and registrationProblems then refuses it the
+      same way it refuses an absent one ("configuration is not a plain object") — a boolean or a
+      number carries no syntax to call well-formed or not well-formed, the same reasoning that
+      already put an entirely absent value on the incomplete side rather than the malformed one.
 ---
