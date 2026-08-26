@@ -16,6 +16,7 @@ import type { ICapabilityQuery } from '../capability-registry/capability-query.p
 import type { Capability } from '../capability-registry/capability.js';
 import { collectionPlan } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
+import { CapabilityNotResolvedForObservationError } from '../errors/capability-not-resolved-for-observation.error.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS, type Evidence } from './evidence.js';
 import type { EvidenceResult } from './evidence-result.js';
 import type { IObservationSource, ObservationOutcome, Subject } from './observation-source.port.js';
@@ -178,11 +179,24 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
   };
 }
 
-/** The evidence this stage records for a concept nothing currently answers: 'unavailable' — the closest of the four evidence-result endings to "no capability was ever reached," since none of the other three presuppose a capability that exists to time out, be denied by or answer ok. */
+/**
+ * The evidence this stage records for a concept nothing currently answers:
+ * 'unavailable' — the closest of the four evidence-result endings to "no
+ * capability was ever reached," since none of the other three presuppose a
+ * capability that exists to time out, be denied by or answer ok. The
+ * result_detail names the same CapabilityNotResolvedForObservationError class
+ * http-declarative-observation-source.adapter.ts's own resolveCapability path
+ * already answers for the identical condition reached through its own later
+ * resolution (rules/integration/an-unresolvable-observation-ends-unavailable)
+ * — read from the error's own `.name` rather than restated as a free-text
+ * literal, so this stage's own pre-check can never report a different
+ * result_detail than the port's own later resolution would for the same
+ * concept.
+ */
 function unavailableEvidence(concept: string, inputs: string, observedAt: string): Evidence {
   return evidenceOf(
     { concept, inputs, observedAt, origin: '', capabilityName: '', capabilityVersion: '' },
-    { result: 'unavailable', resultDetail: `no capability is currently registered for concept "${concept}"` },
+    { result: 'unavailable', resultDetail: new CapabilityNotResolvedForObservationError(concept).name },
   );
 }
 

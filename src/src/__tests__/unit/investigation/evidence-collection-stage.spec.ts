@@ -20,6 +20,10 @@ import type { Case } from '../../../case/case.js';
 import { COLLECTION_STAGE_BUDGET_MS, collectEvidence } from '../../../investigation/evidence-collection-stage.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS } from '../../../investigation/evidence.js';
 import { FakeObservationSource } from '../../../investigation/fake-observation-source.adapter.js';
+import {
+  HttpDeclarativeObservationSource,
+  type IConnectorConfigurationQuery,
+} from '../../../investigation/http-declarative-observation-source.adapter.js';
 import type {
   IObservationSource,
   ObservationOutcome,
@@ -194,6 +198,21 @@ class BudgetRecordingObservationSource implements IObservationSource {
   }
 }
 
+/**
+ * A stand-in for the connector-configuration registry HttpDeclarativeObservationSource's own
+ * constructor requires but this file's own cross-path parity scenario never reaches: the
+ * capability-resolution failure it exercises short-circuits observeConcept before the connector
+ * configuration is ever read. Throws if it is ever called, so a change that made the adapter reach
+ * past that short-circuit would fail this test loudly rather than answering with data nobody seeded.
+ */
+class UnreachableConnectorConfigurationQuery implements IConnectorConfigurationQuery {
+  public async readConnectorConfiguration(): Promise<never> {
+    throw new Error(
+      'UnreachableConnectorConfigurationQuery.readConnectorConfiguration should never be called: the unresolved-capability outcome short-circuits before this read',
+    );
+  }
+}
+
 /** What every expected Evidence shares except its result: which concept, subject and requester it was called with, and the instant the stage recorded as observed_at. */
 type EvidenceContext = {
   readonly concept: string;
@@ -307,7 +326,7 @@ it('records a denied ending as the evidence result with an empty observation, ra
   expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'denied')]);
 });
 
-it('records a concept nothing currently answers as unavailable, naming the concept, and never attempts to call observe-concept for it', async () => {
+it('records a concept nothing currently answers as unavailable, carrying result_detail exactly equal to "CapabilityNotResolvedForObservationError", and never attempts to call observe-concept for it (rules/integration/an-unresolvable-observation-ends-unavailable)', async () => {
   const capabilities = new FakeCapabilityQuery();
   const observationSource = new FakeObservationSource();
   const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
@@ -328,9 +347,37 @@ it('records a concept nothing currently answers as unavailable, naming the conce
     requester: A_REQUESTER,
     observedAt: new Date(0).toISOString(),
   };
-  expect(result).toEqual([
-    expectedUnavailableEvidence(context, 'no capability is currently registered for concept "unregistered-concept"'),
-  ]);
+  expect(result).toEqual([expectedUnavailableEvidence(context, 'CapabilityNotResolvedForObservationError')]);
+});
+
+it("reports the same result_detail, character for character, whichever of the two paths reaches the unresolved-capability condition: the collection stage's own pre-check, reached through collectEvidence(), against http-declarative-observation-source.adapter.ts's own later-resolution path, reached directly through observeConcept()", async () => {
+  const stageCapabilities = new FakeCapabilityQuery();
+  const observationSource = new FakeObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
+  const adapter = new HttpDeclarativeObservationSource({
+    capabilities: new FakeCapabilityQuery(),
+    connectorConfigurations: new UnreachableConnectorConfigurationQuery(),
+  });
+
+  const stageResult = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities: stageCapabilities,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+  const adapterOutcome = await adapter.observeConcept({
+    concept: 'unregistered-concept',
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+  });
+
+  if (adapterOutcome.result === 'ok') {
+    throw new Error('expected the adapter to answer unavailable for a concept nothing currently answers, not ok');
+  }
+  expect(stageResult[0].result_detail).toBe(adapterOutcome.result_detail);
 });
 
 // ---------------------------- an observation-reported unavailable ending carries its own cause

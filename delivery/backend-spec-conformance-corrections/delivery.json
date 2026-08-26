@@ -50,6 +50,14 @@
       "task": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan"
     },
     {
+      "id": "implementation/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "kind": "implementation",
+      "file": "implementation/evidence-collection-stage-result-detail-fix/report-the-required-error-name.md",
+      "title": "unavailableEvidence names its cause by the error's own class name",
+      "summary": "evidence-collection-stage.ts's unavailableEvidence() now reports \"CapabilityNotResolvedForObservationError\" as result_detail, read from the error class's own .name rather than a free-text sentence, matching the adapter's later-resolution path character for character.",
+      "task": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name"
+    },
+    {
       "id": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
       "kind": "implementation",
       "file": "implementation/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget.md",
@@ -136,6 +144,14 @@
       "title": "Bypass-mention scan's specification-node exemption, proven directly against its own extracted logic",
       "summary": "Byte-extracts and compiles the ninth test's new HTTP_CONNECTOR_MENTION/everyHttpConnectorMentionIsANodeIdentityCitation logic from domain-depends-on-no-infrastructure.spec.ts and exercises the real, deployed function against the actual observation-source.port.ts citation and against synthetic real references, proving both criteria of task/domain-boundary-scan-fix/narrow-bypass-mention-scan without reimplementing or exporting anything.",
       "task": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan"
+    },
+    {
+      "id": "proof/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "kind": "proof",
+      "file": "proof/evidence-collection-stage-result-detail-fix/report-the-required-error-name.md",
+      "title": "unavailableEvidence result_detail matches its rule and the adapter's own path",
+      "summary": "Tests that evidence-collection-stage.ts's unavailableEvidence() records result_detail as exactly \"CapabilityNotResolvedForObservationError\", and that this value is identical, character for character, to what http-declarative-observation-source.adapter.ts's own resolveCapability path records for the identical unresolved-capability condition — correcting one existing test that still asserted the free-text sentence the fix replaced.",
+      "task": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name"
     },
     {
       "id": "proof/observation-endings-and-collection-budget/collection-stage-propagates-remaining-budget",
@@ -284,6 +300,18 @@
     {
       "from": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "to": "task/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
       "kind": "implements",
       "at": "the path"
     },
@@ -470,6 +498,12 @@
     {
       "from": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
+      "to": "implementation/evidence-collection-stage-result-detail-fix/report-the-required-error-name",
       "kind": "proves",
       "at": "the path"
     },
