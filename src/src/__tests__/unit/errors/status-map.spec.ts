@@ -14,6 +14,7 @@ import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
+import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
 import { statusForError } from '../../../errors/status-map.js';
@@ -92,6 +93,22 @@ it('resolves CaseVersionNotReleasableError to 422', () => {
 
 it('resolves ManifestWouldHoldNoHypothesisError to 422', () => {
   const error = new ManifestWouldHoldNoHypothesisError('a-slug', 1);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+// Added for task/connector-configuration-registration-conformance/incomplete-name-refusal-status,
+// whose own criteria 1-3 depend on this exact entry: registerConnector's own isUndeclared check
+// (connector-configuration-registry.service.ts) throws this one class identically for an absent
+// connector attribute and for one declared as the empty string — connector-configuration-registry.service.spec.ts's
+// own "refuses a registration that declares no connector identity" and "treats a connector identity
+// declared as the empty string as undeclared" already prove that throw side — so this single entry
+// answers both: whichever of the two conditions raised the error, it must resolve to 422 rather than
+// falling through to the table's unmapped default (criterion 3).
+it('resolves IncompleteConnectorConfigurationError to 422', () => {
+  const error = new IncompleteConnectorConfigurationError(['connector is undeclared']);
 
   const status = statusForError(error);
 

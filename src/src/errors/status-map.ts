@@ -38,12 +38,15 @@
 // registration whose configuration text is not syntactically valid JSON
 // object text (ConnectorConfigurationNotWellFormedError,
 // rules/integration/a-connector-configuration-holds-a-well-formed-object,
-// task/connector-configuration-authoring/register-connector-route) — answers
+// task/connector-configuration-authoring/register-connector-route), or one
+// whose connector name is absent or an empty string
+// (IncompleteConnectorConfigurationError,
+// rules/integration/a-connector-configuration-names-its-connector) — answers
 // 422 Unprocessable Entity: each of the first three reached this table only
 // once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
-// before that task ever called registerCapability from HTTP; the fourth
-// reaches it the same way, now that register-connector is exposed as a
+// before that task ever called registerCapability from HTTP; the fourth and
+// fifth reach it the same way, now that register-connector is exposed as a
 // route.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
@@ -66,6 +69,7 @@ import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
+import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
@@ -78,7 +82,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * nineteen extends another, so that never arises today.
+ * twenty extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -100,6 +104,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [CapabilityNotReadOnlyError, 422],
   [CapabilitySchemaNotWellFormedError, 422],
   [ConnectorConfigurationNotWellFormedError, 422],
+  [IncompleteConnectorConfigurationError, 422],
 ]);
 
 /**

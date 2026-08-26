@@ -25,6 +25,7 @@ import type {
   ConnectorConfigurationRegistration,
 } from '../../../connector-registry/connector-configuration.js';
 import { ConnectorConfigurationNotWellFormedError } from '../../../errors/connector-configuration-not-well-formed.error.js';
+import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
 import { createRegisterConnectorRoutesPlugin } from '../../../http/register-connector.routes.js';
@@ -169,6 +170,34 @@ it('refuses with the status the status map assigns ConnectorConfigurationNotWell
   const body = response.json() as { error: { code: string; details?: unknown } };
   expect(body.error.code).toBe('ConnectorConfigurationNotWellFormedError');
   expect(body.error.details).toEqual({ reason: 'configuration does not parse to a JSON object' });
+});
+
+// ------------------------------------------------------------------ absent or empty connector name
+// (task/connector-configuration-registration-conformance/incomplete-name-refusal-status, criteria 1-2)
+//
+// registerConnectorParamsSchema (z.string().min(1)) refuses an empty :connector path segment with
+// 400 before the service is ever reached, so the registry's own absent/empty-connector refusal
+// (IncompleteConnectorConfigurationError, connector-configuration-registry.service.ts's own
+// isUndeclared check, proved at the service level by connector-configuration-registry.service.spec.ts's
+// own "refuses a registration that declares no connector identity" and "treats a connector identity
+// declared as the empty string as undeclared") cannot reach this route through the path segment
+// today. registerConnector is the one boundary stand-in this route already uses (TST-03) to exercise
+// every domain refusal it lets propagate, so it is exercised the same way here, mirroring the two
+// ConnectorConfigurationNotWellFormedError tests immediately above.
+
+it('refuses with the status the status map assigns IncompleteConnectorConfigurationError, reporting it by name, when registerConnector rejects with it', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerConnector.mockRejectedValueOnce(
+    new IncompleteConnectorConfigurationError(['connector is undeclared']),
+  );
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/connectors/a-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('IncompleteConnectorConfigurationError');
+  expect(body.error.details).toEqual({ problems: ['connector is undeclared'] });
 });
 
 // ------------------------------------------------------------------ criterion 5 — no authentication credential required
