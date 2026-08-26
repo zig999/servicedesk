@@ -737,4 +737,55 @@ entries:
       HTTP 409 reporting CapabilityConnectorMismatchError.
     why: >-
       The material is siegard-reconcile/post-analyse-refusals-and-endings-drift.md, whose judge over src/errors/status-map.ts reported this refusal's status and error name as decided in code alone. The rule already restricts the test to the capability's own connector; the mismatch is a conflict with the capability's registered state rather than a missing resource, and the delivered backend answers 409.
+  - location: rules/integration/a-capability-declares-its-contract.md
+    field: statement
+    unstated: >-
+      Whether a stated timeout must be positive, or whether zero or a negative integer is an
+      acceptable value the sixty-second default and the "undeclared" reading of an absent value
+      don't otherwise reach.
+    decided: >-
+      A stated timeout is a positive integer; zero or negative is refused, distinctly from the
+      absent-timeout default.
+    why: >-
+      The material is siegard-reconcile/backend-post-corrections-code-drift.md, whose judge over
+      register-capability.dto.ts reported the schema's own `.positive()` timeout bound as a fact
+      no node states. The reading matches non-integer-timeout-refusal's own precedent (a
+      declared-but-malformed timeout takes the system-wide malformed-request route, distinct from
+      the absent-timeout default) — a duration of zero or less bounds no call, the same as one
+      that isn't a number at all.
+  - location: rules/integration/a-connector-configuration-holds-a-well-formed-object.md
+    field: statement
+    unstated: >-
+      Whether a null or an array configuration value is classified with the not-well-formed
+      refusal or falls through to the incomplete one, and what an entirely absent configuration
+      value answers.
+    decided: >-
+      A null value or an array is not well-formed, the same refusal unparsable text already gets;
+      an entirely absent configuration is a separate refusal, IncompleteConnectorConfigurationError,
+      the same class an absent connector name already gets.
+    why: >-
+      The material is siegard-reconcile/backend-post-corrections-code-drift.md, whose judge over
+      connector-configuration-registry.service.ts reported this classification as decided in code
+      alone (malformed-object-classification, commit 13014f2, whose own rationale classified null
+      and an array as not well-formed but explicitly left an absent value's classification
+      unresolved, since the node "does not clearly decide" it). Absence reads as incomplete rather
+      than malformed for the same reason a-connector-configuration-names-its-connector already
+      reads an absent connector name that way: nothing was supplied to judge the syntax of, so
+      there is nothing to call not well-formed.
+  - location: rules/integration/a-diagnostic-response-masks-a-resolved-credential.md
+    field: statement
+    unstated: >-
+      Whether the diagnostic operation's echoed request may carry a resolved credential's real
+      value.
+    decided: >-
+      It may not: the response masks any value a credential placeholder in the connector's own
+      call resolved to.
+    why: >-
+      The material is siegard-reconcile/backend-post-corrections-code-drift.md, whose judge over
+      test-connector.controller.ts reported the masking as this controller's own silent inference,
+      citing only the project's own standard (SEC-03, SEC-04) rather than a specification node. A
+      diagnostic response is read by whoever called the route; echoing back the real value of a
+      secret an operator only ever meant a connector's own call to carry defeats the reason a
+      credential is read from environment configuration rather than the configuration text in the
+      first place.
 ---
