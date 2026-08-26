@@ -2,6 +2,22 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "kind": "implementation",
+      "file": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal.md",
+      "title": "Non-integer capability timeout is refused by the route's declared shape, not the service's contract-completeness check",
+      "summary": "Removes the service-level misclassification of a declared-but-malformed capability timeout as an undeclared-attribute (422) refusal, leaving the route's own Zod shape validation (400 VALIDATION_ERROR) as the one mechanism that refuses it.",
+      "task": "task/capability-timeout-contract-refusal/non-integer-timeout-refusal"
+    },
+    {
+      "id": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-registration-conformance/configuration-held-as-text.md",
+      "title": "Connector-configuration registry holds configuration as text",
+      "summary": "ConnectorConfiguration.configuration is now typed and held as JSON object text throughout registration, storage, single read and listing, with every consumer that derives an HTTP call parsing it back through one shared seam, for task/connector-configuration-registration-conformance/configuration-held-as-text.",
+      "task": "task/connector-configuration-registration-conformance/configuration-held-as-text"
+    },
+    {
       "id": "implementation/connector-configuration-registration-conformance/incomplete-name-refusal-status",
       "kind": "implementation",
       "file": "implementation/connector-configuration-registration-conformance/incomplete-name-refusal-status.md",
@@ -34,15 +50,81 @@
       "task": "task/observation-endings-and-collection-budget/observation-port-unavailable-endings"
     },
     {
+      "id": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "kind": "proof",
+      "file": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal.md",
+      "title": "Non-integer capability timeout is refused at the route, not the service",
+      "summary": "Proves that a decimal or numeric-string timeout is refused by register-capability's own 400 VALIDATION_ERROR, identically for both forms and distinctly from the absent-timeout default, and corrects the one pre-existing test that asserted the service-level refusal this task deliberately removed.",
+      "task": "task/capability-timeout-contract-refusal/non-integer-timeout-refusal"
+    },
+    {
       "id": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "kind": "proof",
       "file": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan.md",
       "title": "Bypass-mention scan's specification-node exemption, proven directly against its own extracted logic",
       "summary": "Byte-extracts and compiles the ninth test's new HTTP_CONNECTOR_MENTION/everyHttpConnectorMentionIsANodeIdentityCitation logic from domain-depends-on-no-infrastructure.spec.ts and exercises the real, deployed function against the actual observation-source.port.ts citation and against synthetic real references, proving both criteria of task/domain-boundary-scan-fix/narrow-bypass-mention-scan without reimplementing or exporting anything.",
       "task": "task/domain-boundary-scan-fix/narrow-bypass-mention-scan"
+    },
+    {
+      "id": "proof/observation-endings-and-collection-budget/observation-port-budget-clamp",
+      "kind": "proof",
+      "file": "proof/observation-endings-and-collection-budget/observation-port-budget-clamp.md",
+      "title": "Observation port budget clamp — proof",
+      "summary": "Four new tests on the production HTTP adapter's fake-timer-driven settling prove the two criteria — a smaller remaining-budget bound governs the call over a capability's own longer timeout, and a capability's own timeout governs it wherever the given bound is equal to or larger than it — while every pre-existing assertion in the files the implementation touched for compilation stays unread and unchanged.",
+      "task": "task/observation-endings-and-collection-budget/observation-port-budget-clamp"
+    },
+    {
+      "id": "proof/observation-endings-and-collection-budget/observation-port-unavailable-endings",
+      "kind": "proof",
+      "file": "proof/observation-endings-and-collection-budget/observation-port-unavailable-endings.md",
+      "title": "Proof for observation-port-unavailable-endings",
+      "summary": "HttpDeclarativeObservationSource answers an unavailable ending naming its cause via result_detail for each of the four presently-unresolvable conditions, issuing no HTTP call, verified by rewriting the three pre-existing tests that asserted the old throwing behavior for these same conditions and adding what those tests did not cover.",
+      "task": "task/observation-endings-and-collection-budget/observation-port-unavailable-endings"
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "to": "task/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-registration-conformance/configuration-held-as-text",
+      "to": "task/connector-configuration-registration-conformance/configuration-held-as-text",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/connector-configuration-registration-conformance/incomplete-name-refusal-status",
       "to": "rules/integration/a-connector-configuration-names-its-connector",
@@ -122,8 +204,26 @@
       "at": "the path"
     },
     {
+      "from": "proof/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "to": "implementation/capability-timeout-contract-refusal/non-integer-timeout-refusal",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/domain-boundary-scan-fix/narrow-bypass-mention-scan",
       "to": "implementation/domain-boundary-scan-fix/narrow-bypass-mention-scan",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/observation-endings-and-collection-budget/observation-port-budget-clamp",
+      "to": "implementation/observation-endings-and-collection-budget/observation-port-budget-clamp",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/observation-endings-and-collection-budget/observation-port-unavailable-endings",
+      "to": "implementation/observation-endings-and-collection-budget/observation-port-unavailable-endings",
       "kind": "proves",
       "at": "the path"
     }

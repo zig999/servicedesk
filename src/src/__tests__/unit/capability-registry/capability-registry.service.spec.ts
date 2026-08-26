@@ -196,14 +196,21 @@ it('passes a stated timeout through unchanged', async () => {
   expect(registered.timeout).toBe(STATED_TIMEOUT_MS);
 });
 
-it('refuses a stated timeout that is not an integer count of milliseconds', async () => {
+// A stated, non-integer timeout is no longer refused at this level
+// (task/capability-timeout-contract-refusal/non-integer-timeout-refusal):
+// rules/integration/a-capability-declares-its-contract's own wording limits
+// "undeclared" — the only case this service's contract-completeness refusal
+// covers — to an absent or empty-string value, and a present, non-integer
+// value is neither. The refusal for it now lives at the route's own
+// validation layer (register-capability.dto.ts's timeout:z.number().int()),
+// which a call straight into the service, as this test makes, never passes
+// through — so this direct call now succeeds.
+it('accepts a stated timeout that is not an integer count of milliseconds, holding it through unchanged, since a present value is never "undeclared"', async () => {
   const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
 
-  const refusal = await registry
-    .registerCapability(completeRegistration({ timeout: 0.5 }))
-    .catch((error: unknown) => error);
+  const registered = await registry.registerCapability(completeRegistration({ timeout: 0.5 }));
 
-  expect(namedAttributes(refusal)).toEqual(['timeout']);
+  expect(registered.timeout).toBe(0.5);
 });
 
 it('accepts a complete read-only contract and answers the capability as registered', async () => {

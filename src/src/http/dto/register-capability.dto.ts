@@ -22,7 +22,18 @@
 // optional (a registration that states none takes the registry's own
 // default of sixty seconds — capability.ts's own
 // DEFAULT_CAPABILITY_TIMEOUT_MS — this schema states only the shape, never
-// that default, criterion 6). This schema does not check input_schema or
+// that default, criterion 6). timeout: z.number().int().positive() also
+// refuses a declared-but-non-integer timeout — a decimal number or a numeric
+// string alike — with this schema's own 400 VALIDATION_ERROR envelope, the
+// same status and code for every non-integer value tested, distinct from
+// the absent-timeout default above
+// (task/capability-timeout-contract-refusal/non-integer-timeout-refusal,
+// constraints/a-malformed-request-is-refused-with-a-validation-error): the
+// value is declared, so it never reaches capability-registry.service.ts's
+// own undeclared-attribute refusal
+// (rules/integration/a-capability-declares-its-contract's own "absent or an
+// empty string is undeclared", which a present, malformed value is not).
+// This schema does not check input_schema or
 // output_schema for JSON syntax
 // (rules/integration/a-capability-declares-well-formed-schemas): that
 // refusal belongs to the registry service alongside the refusals it already

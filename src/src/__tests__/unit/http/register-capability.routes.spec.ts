@@ -268,6 +268,93 @@ it("answers 400 for a timeout of 0, one below the schema's own positive lower bo
   expect(built.registerCapability).not.toHaveBeenCalled();
 });
 
+// ------------------------------------------------------------------ task/capability-timeout-contract-refusal/non-integer-timeout-refusal
+//
+// A declared timeout that is present but not an integer count of
+// milliseconds is refused here, at the route's own declared shape
+// (registerCapabilityBodySchema's timeout:z.number().int().positive().optional()),
+// rather than by capability-registry.service.ts's contract-completeness
+// check — this task's own "What it is". These four also pin the
+// implementation's own disclosed inference that no change to
+// registerCapabilityBodySchema was needed: the existing schema, unmodified,
+// already answers every case below.
+
+it('refuses a registration whose timeout is a decimal number, answering 400 VALIDATION_ERROR rather than registering it', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ timeout: 0.5 }),
+  });
+
+  expect(response.statusCode).toBe(400);
+  expect((response.json() as { error: { code: string } }).error.code).toBe('VALIDATION_ERROR');
+  expect(built.registerCapability).not.toHaveBeenCalled();
+});
+
+it('refuses a registration whose timeout is a numeric string, answering 400 VALIDATION_ERROR rather than registering it', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ timeout: '60000' }),
+  });
+
+  expect(response.statusCode).toBe(400);
+  expect((response.json() as { error: { code: string } }).error.code).toBe('VALIDATION_ERROR');
+  expect(built.registerCapability).not.toHaveBeenCalled();
+});
+
+it('refuses a decimal timeout and a numeric-string timeout alike with the identical status and the identical named error, rather than either falling through to a different or default response', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const decimalResponse = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ timeout: 0.5 }),
+  });
+  const numericStringResponse = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ timeout: '60000' }),
+  });
+
+  expect(decimalResponse.statusCode).toBe(numericStringResponse.statusCode);
+  expect(decimalResponse.statusCode).toBe(400);
+  expect((decimalResponse.json() as { error: { code: string } }).error.code).toBe(
+    (numericStringResponse.json() as { error: { code: string } }).error.code,
+  );
+  expect((decimalResponse.json() as { error: { code: string } }).error.code).toBe('VALIDATION_ERROR');
+  expect(built.registerCapability).not.toHaveBeenCalled();
+});
+
+it("answers the non-integer-timeout refusal distinctly from the registry's response to a capability that declares no timeout at all: a decimal timeout is refused with 400 while an absent timeout reaches registerCapability and takes the registry's own sixty-second default", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockResolvedValueOnce(heldCapability());
+
+  const nonIntegerResponse = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody({ timeout: 0.5 }),
+  });
+  const absentTimeoutResponse = await app.inject({
+    method: 'PUT',
+    url: '/v1/capabilities/a-name/1.0.0',
+    payload: validBody(),
+  });
+
+  expect(nonIntegerResponse.statusCode).toBe(400);
+  expect(absentTimeoutResponse.statusCode).toBe(200);
+  const [calledWith] = built.registerCapability.mock.calls[0] as [CapabilityRegistration];
+  expect(calledWith).not.toHaveProperty('timeout');
+});
+
 // ------------------------------------------------------------------ criterion 7
 
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {

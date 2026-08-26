@@ -191,9 +191,17 @@ function heldCapability(registration: CapabilityRegistration): Capability {
 }
 
 /**
- * Refuses a registration that departs from the declared contract: a required
- * attribute left undeclared, or a stated timeout that is not the integer
- * count of milliseconds the capability element declares.
+ * Refuses a registration leaving a required attribute undeclared
+ * (rules/integration/a-capability-declares-its-contract's own "an attribute
+ * that is absent or an empty string is undeclared"). A declared-but-malformed
+ * timeout — present, but not an integer count of milliseconds — is not
+ * undeclared by that same wording, so it never reaches this refusal
+ * (task/capability-timeout-contract-refusal/non-integer-timeout-refusal):
+ * registerCapabilityBodySchema's own timeout: z.number().int() already
+ * refuses it at the route's declared shape, with the system-wide HTTP 400
+ * VALIDATION_ERROR response
+ * (constraints/a-malformed-request-is-refused-with-a-validation-error),
+ * before a request carrying one ever reaches this service.
  */
 function refuseContractDepartures(
   registration: CapabilityRegistration,
@@ -204,15 +212,11 @@ function refuseContractDepartures(
   }
 }
 
-/** Every way one registration departs from the declared contract, in the attributes' own names. */
+/** Every required attribute one registration leaves undeclared, by its own name. */
 function contractProblems(registration: CapabilityRegistration): string[] {
-  const problems = REQUIRED_REGISTRATION_ATTRIBUTES.filter((attribute) =>
-    isUndeclared(registration[attribute]),
-  ).map((attribute) => `${attribute} is undeclared`);
-  if (registration.timeout !== undefined && !Number.isInteger(registration.timeout)) {
-    problems.push('timeout is not an integer count of milliseconds');
-  }
-  return problems;
+  return REQUIRED_REGISTRATION_ATTRIBUTES.filter((attribute) => isUndeclared(registration[attribute])).map(
+    (attribute) => `${attribute} is undeclared`,
+  );
 }
 
 /** Whether one attribute of a registration was left undeclared — absent and empty alike, since an empty attribute declares nothing. */
