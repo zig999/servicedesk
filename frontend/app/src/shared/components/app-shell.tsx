@@ -40,7 +40,11 @@ const SIDEBAR_ENTRIES: ReadonlyArray<{
  * $version/manifest/hypotheses/new" (task/manifest-hypothesis-authoring/
  * revise-hypothesis-form's own distinct New-hypothesis entry point, added
  * for the same reason -- a hypothesis literally named "new" must not
- * collide with the create trigger).
+ * collide with the create trigger), plus "/cases/$slug/versions/$version/
+ * simulate" (task/simulation-cockpit/case-simulation-route's own new leaf
+ * route, added so the breadcrumb shows "Simulate" rather than falling back
+ * to that route's raw pathname -- this same table's own risk, named by this
+ * area's own inventory).
  */
 const ROUTE_LABELS: Record<string, string> = {
   "/cases": "Cases List",
@@ -53,6 +57,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/cases/$slug/versions/$version/manifest/hypotheses/new": "New Hypothesis",
   "/cases/$slug/versions/$version/release": "Release",
   "/cases/$slug/versions/$version/discard": "Discard",
+  "/cases/$slug/versions/$version/simulate": "Simulate",
   "/cases/$slug/hypotheses": "Hypotheses",
   "/glossary": "Glossary Browser",
   "/capabilities": "Capabilities Browser",

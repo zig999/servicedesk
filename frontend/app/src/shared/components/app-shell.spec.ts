@@ -71,6 +71,72 @@ function buildTestRouter(initialPath: string) {
   });
 }
 
+// A second test router, built independently of buildTestRouter above so it does
+// not disturb SIDEBAR_ENTRIES's own four-item assertion (the new route
+// task/simulation-cockpit/case-simulation-route registers is not a sidebar
+// destination, so it is added as a fifth leaf here rather than folded into
+// buildTestRouter's own four). It keeps the same four sidebar-destination
+// leaves buildTestRouter registers -- AppShell always renders Sidebar's own
+// four Links regardless of which route is current, so they need a real
+// destination to resolve an href against here too. It exists to check
+// ROUTE_LABELS's own new entry for "/cases/$slug/versions/$version/simulate"
+// -- a param route, so its own raw pathname (what a match falls back to when
+// no label is found) is the *resolved* path with real params substituted in,
+// never the literal pattern string.
+function buildSimulateTestRouter(initialPath: string) {
+  const rootRoute = createRootRoute({ component: AppShell });
+  const casesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases",
+    component: ScreenA,
+  });
+  const glossaryRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/glossary",
+    component: ScreenB,
+  });
+  const capabilitiesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/capabilities",
+    component: ScreenB,
+  });
+  const connectorsRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/connectors",
+    component: ScreenB,
+  });
+  const simulateRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/$version/simulate",
+    component: () => createElement("div", null, "Simulation Cockpit content"),
+  });
+  const routeTree = rootRoute.addChildren([
+    casesRoute,
+    glossaryRoute,
+    capabilitiesRoute,
+    connectorsRoute,
+    simulateRoute,
+  ]);
+  return createRouter({
+    routeTree,
+    history: createMemoryHistory({ initialEntries: [initialPath] }),
+  });
+}
+
+describe("AppShell -- ROUTE_LABELS' own new entry for the Simulation Cockpit route (task/simulation-cockpit/case-simulation-route, criterion 2)", () => {
+  it("shows the breadcrumb as 'Simulate' rather than falling back to the route's own resolved pathname", async () => {
+    const router = buildSimulateTestRouter("/cases/some-slug/versions/7/simulate");
+    await router.load();
+    render(createElement(RouterProvider, { router }));
+
+    const breadcrumb = screen.getByRole("navigation", { name: "breadcrumb" });
+    expect(within(breadcrumb).getByText("Simulate")).toBeTruthy();
+    expect(
+      within(breadcrumb).queryByText("/cases/some-slug/versions/7/simulate"),
+    ).toBeNull();
+  });
+});
+
 describe("AppShell", () => {
   it("lists exactly the four sidebar entries Cases, Glossary, Capabilities and Connectors, with no Hypotheses entry", async () => {
     const router = buildTestRouter("/cases");

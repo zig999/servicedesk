@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulation-cockpit-case-simulation-route-suite-3",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa01a06d3895713be/frontend/app",
+  "timeout_seconds": 900,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T19:46:14.635+00:00",
+      "ended_at": "2026-08-27T19:46:27.164+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-27T19:46:27.164+00:00",
+      "ended_at": "2026-08-27T19:46:34.720+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-27T19:46:34.721+00:00",
+      "ended_at": "2026-08-27T19:46:39.665+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-08-27T19:46:39.665+00:00",
+      "ended_at": "2026-08-27T19:46:40.035+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-08-27T19:46:40.035+00:00",
+      "ended_at": "2026-08-27T19:46:43.288+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-08-27T19:46:43.288+00:00",
+      "ended_at": "2026-08-27T19:46:47.687+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-27T19:46:47.687+00:00",
+      "ended_at": "2026-08-27T19:46:48.258+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-08-27T19:46:48.258+00:00",
+      "ended_at": "2026-08-27T19:47:19.291+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
