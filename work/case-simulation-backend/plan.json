@@ -1,0 +1,1093 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/case-simulation-pipeline",
+      "kind": "epic",
+      "file": "epic/case-simulation-pipeline.md",
+      "title": "Shared investigation pipeline and the simulate HTTP surface",
+      "summary": "The stage extraction shared between diagnose and simulate, the no-cache simulation composition, and the two new simulate-case/simulate-hypothesis HTTP operations."
+    },
+    {
+      "id": "epic/diagnose-release-gate",
+      "kind": "epic",
+      "file": "epic/diagnose-release-gate.md",
+      "title": "The release gate on diagnose",
+      "summary": "diagnose refuses a case version still in draft state, naming that it is not released, per decision D6."
+    },
+    {
+      "id": "epic/investigation-telemetry",
+      "kind": "epic",
+      "file": "epic/investigation-telemetry.md",
+      "title": "Instrumented judgment, consolidation and cost",
+      "summary": "The judgment/consolidation ports, their Anthropic and fake adapters, evidence's own elapsed_ms, and diagnose's own switch from placeholder to real cost and durations."
+    },
+    {
+      "id": "inventory/investigation-pipeline-and-http-surface",
+      "kind": "inventory",
+      "file": "inventory/investigation-pipeline-and-http-surface.md",
+      "title": "Investigation pipeline, judgment/consolidation ports, and diagnose HTTP surface",
+      "summary": "The one pipeline (run-diagnosis.ts) and its composition roots, ports/adapters and HTTP wiring that simulate-case, simulate-hypothesis and the diagnose release gate must extend rather than duplicate."
+    },
+    {
+      "id": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "task",
+      "file": "task/case-simulation-pipeline/extract-shared-investigation-pipeline.md",
+      "title": "Extract the shared investigation pipeline",
+      "summary": "buildSubject through draftAssessment become one function returning the complete record, called by diagnose (which adds buildInvestigation and writeWithinDeadline) and, later, by simulate.",
+      "epic": "case-simulation-pipeline"
+    },
+    {
+      "id": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "task",
+      "file": "task/case-simulation-pipeline/no-cache-simulation-composition.md",
+      "title": "A no-cache composition for simulation",
+      "summary": "A factory parallel to production-diagnose.factory.ts assembles a simulation's observation source with no cache layer, by construction, so nothing a simulation collects can ever enter a cache.",
+      "epic": "case-simulation-pipeline"
+    },
+    {
+      "id": "task/case-simulation-pipeline/simulate-case-operation",
+      "kind": "task",
+      "file": "task/case-simulation-pipeline/simulate-case-operation.md",
+      "title": "POST /v1/simulate returns the complete record without writing an investigation",
+      "summary": "The simulate-case DTO, route and controller run the shared pipeline over a case version in either state and return evidence, evaluations, resolved outcome, assessment, cost and durations.",
+      "epic": "case-simulation-pipeline"
+    },
+    {
+      "id": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "kind": "task",
+      "file": "task/case-simulation-pipeline/simulate-hypothesis-operation.md",
+      "title": "POST /v1/simulate/hypothesis returns one hypothesis's own evaluation",
+      "summary": "The simulate-hypothesis DTO, route and controller restrict collection to one named hypothesis's own revision and return exactly one evaluation, with no outcome or assessment resolved.",
+      "epic": "case-simulation-pipeline"
+    },
+    {
+      "id": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "task",
+      "file": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
+      "title": "diagnose refuses a draft-state case version",
+      "summary": "A new named domain error refuses a diagnose request pinned to a draft-state case version, registered in status-map.ts, before the engine ever runs.",
+      "epic": "diagnose-release-gate"
+    },
+    {
+      "id": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "kind": "task",
+      "file": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing.md",
+      "title": "Anthropic adapters report the provider's own usage, timing and prompt",
+      "summary": "anthropic-hypothesis-evaluator.adapter.ts and anthropic-assessment-consolidator.adapter.ts read message.usage, measure elapsed time and return the materialized prompt instead of discarding them.",
+      "epic": "investigation-telemetry"
+    },
+    {
+      "id": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "kind": "task",
+      "file": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations.md",
+      "title": "diagnose writes real cost and durations",
+      "summary": "diagnose.controller.ts stops writing UNMEASURED_COST/UNMEASURED_DURATIONS and writes what the investigation actually cost and took.",
+      "epic": "investigation-telemetry"
+    },
+    {
+      "id": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "kind": "task",
+      "file": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms.md",
+      "title": "Evidence carries its own collection elapsed_ms",
+      "summary": "evidence-collection-stage.ts records how long each concept's own collection attempt took, on every Evidence item it assembles.",
+      "epic": "investigation-telemetry"
+    },
+    {
+      "id": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "kind": "task",
+      "file": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing.md",
+      "title": "Fake adapters return zero-valued usage and timing",
+      "summary": "fake-hypothesis-evaluator.adapter.ts and fake-assessment-consolidator.adapter.ts satisfy the widened ports with deterministic zeros.",
+      "epic": "investigation-telemetry"
+    },
+    {
+      "id": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "task",
+      "file": "task/investigation-telemetry/widen-judgment-and-consolidation-ports.md",
+      "title": "Widen the judgment and consolidation ports to carry usage, elapsed time and prompt",
+      "summary": "IHypothesisEvaluator and IAssessmentConsolidator declare usage/elapsed_ms/prompt, and the judgment stage attaches them onto each Evaluation a call produced.",
+      "epic": "investigation-telemetry"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/collection-has-its-own-budget-within-the-total",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/judgment-does-not-infer",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/replay-is-pinned",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "constraints/diagnosis-answers-synchronously",
+      "kind": "covers",
+      "at": "covers[26]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "constraints/the-evidence-cache-admits-only-ok-results",
+      "kind": "covers",
+      "at": "covers[27]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[28]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[29]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[30]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[31]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[32]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[33]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[34]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[35]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[36]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[37]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[38]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[39]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[40]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[41]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[42]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[43]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[44]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[45]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/the-writing-input-is-narrowed",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-simulation-pipeline",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/diagnose-release-gate",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/diagnose-release-gate",
+      "to": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/diagnose-release-gate",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/diagnose-release-gate",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/diagnose-release-gate",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "constraints/consolidation-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/investigation-telemetry",
+      "to": "constraints/judgment-runs-behind-a-port",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[19]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[20]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[21]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[22]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[23]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[16]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[17]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[18]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
