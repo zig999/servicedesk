@@ -2453,11 +2453,11 @@
     },
     {
       "node": "domain/knowledge/case-summary",
-      "digest": "sha256:a27fe5a39d642343e1bfb8f0a55388a3f9760a43490dba4834ec9382731b697b",
+      "digest": "sha256:c2b2d98f97f6607f794e095db5afc5c58e162da0b68ce9c132fccdeacbbd9606",
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:5bc025d0499e219acda2822ecfb5cc59e1b44420f66d095de86a470fc2d5e299"
+          "digest": "sha256:0c69fd23441b2dd50fdc865dbc70d53ce34ea7b0a5001a1e37997ebfd9fc22d1"
         }
       ]
     },
@@ -3799,11 +3799,11 @@
     },
     {
       "node": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
-      "digest": "sha256:333f252e474aafd89546b46efbc7eb0499a1ec5806f9f50bea84dd130625ba6e",
+      "digest": "sha256:2928fa945dc17e53a7f201392c051b20554b919cdef78b4052be558b39cb270f",
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:5e22e6bffb65a69a3309cfa5ea3e7ef1e99342ab5a79cd047423b427d1495f50"
+          "digest": "sha256:0c69fd23441b2dd50fdc865dbc70d53ce34ea7b0a5001a1e37997ebfd9fc22d1"
         }
       ]
     },

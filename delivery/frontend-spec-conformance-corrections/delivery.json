@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "kind": "implementation",
+      "file": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes.md",
+      "title": "cases-list-screen.tsx's CaseSummary comment corrected to cite the current specification nodes",
+      "summary": "Rewrote the stale two claims in CaseSummary's JSDoc — \"an edge no governing node addresses\" and \"this task's own inference\" — to quote what domain/knowledge/case-summary and rules/knowledge/a-case-summary-is-derived-from-its-existing-versions now state about the zero-version case, keeping the still-valid case-store.port.ts citation for why a case can reach zero versions.",
+      "task": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes"
+    },
+    {
       "id": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
       "kind": "implementation",
       "file": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement.md",
@@ -24,6 +32,14 @@
       "title": "Subject field honors isBlocked like every other declared attribute",
       "summary": "case-version-editor-form-fields.tsx's subject field now disables through isBlocked instead of unconditionally, and its label no longer claims the field is fixed.",
       "task": "task/subject-field-fixed-bug/subject-follows-isblocked"
+    },
+    {
+      "id": "proof/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "kind": "proof",
+      "file": "proof/cases-list-screen-stale-comment/comment-cites-the-current-nodes.md",
+      "title": "cases-list-screen's CaseSummary comment cites the current specification nodes",
+      "summary": "Four file-content tests, one per comment-content criterion, pin the corrected JSDoc above CaseSummary in cases-list-screen.tsx against the two stale phrases it must no longer carry and the two specification quotes it must now carry, following this codebase's own established convention for this exact criterion shape.",
+      "task": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes"
     },
     {
       "id": "proof/connector-configuration-warning-text/warning-states-the-object-requirement",
@@ -52,6 +68,24 @@
   ],
   "edges": [
     {
+      "from": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "domain/knowledge/case-summary",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
       "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "kind": "encodes",
@@ -79,6 +113,12 @@
       "from": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
       "to": "task/subject-field-fixed-bug/subject-follows-isblocked",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "implementation/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "kind": "proves",
       "at": "the path"
     },
     {

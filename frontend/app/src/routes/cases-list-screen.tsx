@@ -83,13 +83,20 @@ type CaseVersionDetail = {
  * domain/knowledge/case-summary, computed per
  * rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.
  * currentState and lastUpdated are undefined only where the case currently
- * holds no version at all -- an edge no governing node addresses
+ * holds no version at all -- domain/knowledge/case-summary's own
+ * conditional-presence statement ("current_state and last_updated are
+ * present only where the case currently holds at least one version; a case
+ * whose every version was ever discarded before release holds none to
+ * derive either from, and both are absent rather than invented"), and
+ * a-case-summary-is-derived-from-its-existing-versions's own statement of
+ * the same case ("a case currently holding no version has version_count
+ * zero and neither current_state nor last_updated, there being no version
+ * to derive either from") -- both decided, not this screen's own inference
  * (case-store.port.ts's own listCaseVersions header: "a case row survives
  * the discarding of every version it ever held", so a case can reach zero
  * versions by every draft it ever held being discarded before release).
- * This screen renders an explicit absence for that edge rather than
- * inventing a state or a timestamp neither node states; this task's own
- * inference, disclosed in its delivery record.
+ * This screen renders the explicit absence both nodes state rather than
+ * inventing a state or a timestamp neither node names.
  */
 type CaseSummary = {
   readonly versionCount: number;
