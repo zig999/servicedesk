@@ -18,6 +18,14 @@
       "task": "task/simulation-cockpit/hypotheses-table"
     },
     {
+      "id": "implementation/simulation-cockpit/use-simulate-case",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/use-simulate-case.md",
+      "title": "use-simulate-case mutation hook",
+      "summary": "A new hook, apiFetch + useMutation over POST /v1/simulate, dispatching the simulate-case operation for a given case version and subject and exposing its complete typed record -- evidence, evaluations, assessment, cost and durations -- without writing to any query or cache.",
+      "task": "task/simulation-cockpit/use-simulate-case"
+    },
+    {
       "id": "implementation/simulation-cockpit/use-simulate-hypothesis",
       "kind": "implementation",
       "file": "implementation/simulation-cockpit/use-simulate-hypothesis.md",
@@ -48,6 +56,14 @@
       "title": "Hypotheses table proof",
       "summary": "Tests for task/simulation-cockpit/hypotheses-table's six criteria and its five behavioral inferences, all against CaseSimulationHypothesesTable and its row-shaping helpers.",
       "task": "task/simulation-cockpit/hypotheses-table"
+    },
+    {
+      "id": "proof/simulation-cockpit/use-simulate-case",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/use-simulate-case.md",
+      "title": "Proof for use-simulate-case",
+      "summary": "Extends the existing use-simulate-case test suite with the two absence-cases criterion 4's conditional fields lacked, and confirms the rest already proves this task's criteria and inferences.",
+      "task": "task/simulation-cockpit/use-simulate-case"
     },
     {
       "id": "proof/simulation-cockpit/use-simulate-hypothesis",
@@ -218,6 +234,102 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-case",
+      "to": "task/simulation-cockpit/use-simulate-case",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -340,6 +452,12 @@
     {
       "from": "proof/simulation-cockpit/hypotheses-table",
       "to": "implementation/simulation-cockpit/hypotheses-table",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/use-simulate-case",
+      "to": "implementation/simulation-cockpit/use-simulate-case",
       "kind": "proves",
       "at": "the path"
     },

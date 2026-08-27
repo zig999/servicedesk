@@ -878,6 +878,10 @@
       "digest": "sha256:e4c25ac208368ca00d7f0d95f0a87585f61e961f7dc840a23a72be030117fd3d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
         },
@@ -2008,6 +2012,10 @@
       "digest": "sha256:72ade6f2ed7985ede99f6501ae043bec6716953bb72e8cb8affbc630486f5db9",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
         },
@@ -2072,6 +2080,10 @@
       "digest": "sha256:b735794d6d5f6504b1bf6a04d953fb91112e25e9c2e7829a33aa8634a3683318",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
         },
@@ -2102,6 +2114,10 @@
       "digest": "sha256:0aa57d3c57f3b84240e543a2b3ac4b592fe7d7c17b6d06d9daa7d58d6055a38e",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -2119,6 +2135,10 @@
       "node": "domain/investigation/durations",
       "digest": "sha256:b808f8d873866e399daf116fcf533c6a04f4bdef3fb2af35b10f7b34b5a1296e",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
@@ -2145,6 +2165,10 @@
       "node": "domain/investigation/evaluation",
       "digest": "sha256:0655535de663d589fa71f7c931783e5256be604060122ae37865482c111e3957",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
@@ -2204,6 +2228,10 @@
       "digest": "sha256:10e91ea37bff620a565a090515f8ee3f4a6891a58ce6986b38b2715a500cb65f",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
         },
@@ -2233,6 +2261,10 @@
       "node": "domain/investigation/evidence",
       "digest": "sha256:f303758283dd6b27d2b5f02ccaaa1fc66e3d265002f54dd4c119baf3120ef684",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:06e3a17809d40cdf88ffbe77f2219e622c1c571e99fc8ff51c468c9b99b32db0"
@@ -2283,6 +2315,10 @@
       "node": "domain/investigation/evidence-result",
       "digest": "sha256:d93207f04278033eb3f001f58838c01322d3fe92cfdf2c2c4c490467f060c3a4",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:06e3a17809d40cdf88ffbe77f2219e622c1c571e99fc8ff51c468c9b99b32db0"
@@ -2446,6 +2482,10 @@
       "digest": "sha256:f6d0966a7e8a42306bb77485c080af4848f80cfd4d33b879cc41993453e9b87b",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
         },
@@ -2471,6 +2511,10 @@
       "node": "domain/investigation/verdict",
       "digest": "sha256:de42119b8ff628c589d98059c373c87558a72dad9ab2d76e32ea99d303eb6451",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
@@ -2664,6 +2708,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
@@ -3206,6 +3254,10 @@
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
         },
@@ -3703,6 +3755,10 @@
       "node": "rules/investigation/a-simulation-writes-no-investigation",
       "digest": "sha256:18074fefae973c4817dc50260ef5f789c3cf78c006bf1728690f9cd50f32d065",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
@@ -4745,6 +4801,10 @@
       "node": "scenarios/investigation/a-draft-case-version-is-simulated",
       "digest": "sha256:e1fad571c717daea726c8bfb291f533538e87248c334c3e445ae887dd9a3056a",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
           "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
