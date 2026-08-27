@@ -4,7 +4,7 @@ summary: case-version-editor-form-fields.tsx's subject field now disables throug
   unconditionally, and its label no longer claims the field is fixed.
 task: sha256:ac04f0428bcc164deffd9194136626457e76271a922acf4e43215b3b31e0c18a
 standard:
-  at: ../standards/frontend-typescript.yaml
+  at: ../../standards/frontend-typescript.yaml
   pin: sha256:4ab98ed7da8178e0fb1e79970b51b0fd9ff0712bb86cf0a02ebde8d52cd4cc09
 run: run/subject-field-fixed-bug-subject-follows-isblocked-build
 files:
