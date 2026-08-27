@@ -1317,7 +1317,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -1481,7 +1481,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -1547,7 +1547,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -2675,7 +2675,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -2983,7 +2983,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -3045,7 +3045,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -3821,7 +3821,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
@@ -4247,7 +4247,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:d5349f0d97a26a10d836cb3099799d5f19b364f0b54e91d4783096f85a65c8bb"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
