@@ -7,6 +7,7 @@ import { ConnectorConfigurationDetailScreen } from "./connector-configuration-de
 import { CapabilityDetailScreen } from "./capability-detail-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
+import { CaseSimulationScreen } from "./case-simulation-screen";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
 import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewCaseDraftScreen } from "./new-case-draft-screen";
@@ -119,6 +120,20 @@ const versionDiscardRoute = createRoute({
   component: VersionDiscardPlaceholder,
 });
 
+// task/simulation-cockpit/case-simulation-route's own screen: the curator's
+// own entry to the same engine a diagnosis runs (contracts/investigation/
+// case-simulation), open on a case version in either draft or released
+// state. No dynamic sibling exists directly under "/cases/$slug/versions/
+// $version" that a literal "simulate" segment could collide with (every
+// other child there -- manifest, release, discard -- is likewise a static
+// segment), so this needs no specificity note the way "new" and
+// "hypotheses/new" do above.
+const caseSimulationRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/cases/$slug/versions/$version/simulate",
+  component: CaseSimulationScreen,
+});
+
 const glossaryRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/glossary",
@@ -177,6 +192,7 @@ const routeTree = rootRoute.addChildren([
   newManifestHypothesisRoute,
   versionReleaseRoute,
   versionDiscardRoute,
+  caseSimulationRoute,
   glossaryRoute,
   capabilitiesRoute,
   capabilityDetailRoute,

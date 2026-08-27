@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
+import { CaseSimulationScreen } from "./case-simulation-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
@@ -67,6 +68,13 @@ import {
  * (domain/integration/capability's own "identified by name and version")
  * rather than name alone. Excluded from EXPECTED_COMPONENT_BY_PATH for the
  * same reason -- it renders a real screen, not a placeholder.
+ *
+ * "/cases/$slug/versions/$version/simulate" is the sixteenth route, added by
+ * task/simulation-cockpit/case-simulation-route's own criterion 1: the
+ * curator's own entry into the Simulation Cockpit, open on a case version in
+ * either draft or released state. Excluded from EXPECTED_COMPONENT_BY_PATH
+ * for the same reason as the others above -- it renders a real screen -- and
+ * checked by its own dedicated test beneath them instead.
  */
 
 const EXPECTED_PATHS = [
@@ -85,6 +93,7 @@ const EXPECTED_PATHS = [
   "/capabilities/$name/$version",
   "/connectors",
   "/connectors/$connector",
+  "/cases/$slug/versions/$version/simulate",
 ];
 
 // /cases, /cases/$slug, /cases/$slug/versions/new, /cases/$slug/versions/$version, this task's
@@ -108,13 +117,13 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the fifteen proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the sixteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
   });
 
-  it("assigns no two of the fifteen routes the same path", () => {
+  it("assigns no two of the sixteen routes the same path", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect(new Set(actualPaths).size).toBe(actualPaths.length);
@@ -146,6 +155,14 @@ describe("route-tree", () => {
     const connectorsRoute = leafRoutes().find((route) => route.fullPath === "/connectors");
 
     expect(connectorsRoute?.options.component).toBe(ConnectorConfigurationsScreen);
+  });
+
+  it("renders the /cases/$slug/versions/$version/simulate route through CaseSimulationScreen (task/simulation-cockpit/case-simulation-route, criterion 1)", () => {
+    const simulateRoute = leafRoutes().find(
+      (route) => route.fullPath === "/cases/$slug/versions/$version/simulate",
+    );
+
+    expect(simulateRoute?.options.component).toBe(CaseSimulationScreen);
   });
 
   it("renders the New-hypothesis route and the Revise route through two distinct screens (criterion 1)", () => {

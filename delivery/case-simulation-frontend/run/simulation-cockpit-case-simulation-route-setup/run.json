@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulation-cockpit-case-simulation-route-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa01a06d3895713be/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T11:35:56.227+00:00",
+      "ended_at": "2026-08-27T11:36:24.929+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
