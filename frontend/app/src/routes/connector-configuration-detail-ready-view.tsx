@@ -66,7 +66,7 @@ import type { ConnectorConfigurationDetailViewState } from "../hooks/use-connect
  */
 
 const INVALID_CONFIGURATION_WARNING =
-  "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.";
+  "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.";
 
 const DISCARD_DIALOG_DESCRIPTION =
   "Every unsaved change to this connector configuration will be lost. This cannot be undone.";

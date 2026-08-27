@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement.md",
+      "title": "Connector configuration warning states the object requirement, not a JSON-syntax claim",
+      "summary": "Corrected INVALID_CONFIGURATION_WARNING in connector-configuration-detail-ready-view.tsx to state the registry's actual requirement (the stored value must be a JSON object) instead of the false-in-two-cases 'is not valid JSON' claim.",
+      "task": "task/connector-configuration-warning-text/warning-states-the-object-requirement"
+    },
+    {
       "id": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
       "kind": "implementation",
       "file": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix.md",
@@ -16,6 +24,14 @@
       "title": "Subject field honors isBlocked like every other declared attribute",
       "summary": "case-version-editor-form-fields.tsx's subject field now disables through isBlocked instead of unconditionally, and its label no longer claims the field is fixed.",
       "task": "task/subject-field-fixed-bug/subject-follows-isblocked"
+    },
+    {
+      "id": "proof/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "kind": "proof",
+      "file": "proof/connector-configuration-warning-text/warning-states-the-object-requirement.md",
+      "title": "Connector-configuration warning states the object requirement, not a JSON-syntax claim",
+      "summary": "Extends connector-configuration-detail-screen.spec.ts (and its shared test-support fixtures) to prove the corrected INVALID_CONFIGURATION_WARNING text and Save-blocking hold across all three isValid=false shapes — unparsable text, a syntactically valid array, and syntactically valid null — and that the underlying validity gate is unchanged.",
+      "task": "task/connector-configuration-warning-text/warning-states-the-object-requirement"
     },
     {
       "id": "proof/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
@@ -36,6 +52,18 @@
   ],
   "edges": [
     {
+      "from": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "to": "task/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
       "to": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
       "kind": "implements",
@@ -51,6 +79,12 @@
       "from": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
       "to": "task/subject-field-fixed-bug/subject-follows-isblocked",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "to": "implementation/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "kind": "proves",
       "at": "the path"
     },
     {

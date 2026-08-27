@@ -3231,7 +3231,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:77d08a2b7e6e22c47d3917fb887eb3677be466b5b51721d20ac0c07702bf27aa"
+          "digest": "sha256:950897895b2ec9fb68c49f4335d9c95f36ebcdcdbdb7710ec5a833bd5f3d116a"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-fields.tsx",

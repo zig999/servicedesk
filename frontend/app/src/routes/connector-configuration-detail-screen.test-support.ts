@@ -40,6 +40,15 @@ export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
 export const LOADED_CONFIGURATION = '{"key":"value"}';
 export const UPDATED_CONFIGURATION = '{"key":"updated"}';
 export const INVALID_CONFIGURATION = "{not valid json";
+/** Syntactically valid JSON, refused by rules/integration/a-connector-configuration-holds-a-well-formed-object
+ * for not being an object -- alongside INVALID_CONFIGURATION (unparsable text) and
+ * NULL_CONFIGURATION below, the three isValid=false-triggering shapes
+ * task/connector-configuration-warning-text/warning-states-the-object-requirement's own criteria
+ * name. */
+export const ARRAY_CONFIGURATION = "[1,2,3]";
+/** Syntactically valid JSON, refused for the same reason as ARRAY_CONFIGURATION above -- see that
+ * constant's own comment. */
+export const NULL_CONFIGURATION = "null";
 
 /** JsonTextareaField's own mount-time pretty-print effect reformats a syntactically valid loaded
  * value before any test can observe it (json-textarea-pretty-print-on-load, already delivered) --

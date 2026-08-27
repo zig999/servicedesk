@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/connector-configuration-warning-text-warning-states-the-object-requirement-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T02:01:12.790+00:00",
+      "ended_at": "2026-08-27T02:01:19.084+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

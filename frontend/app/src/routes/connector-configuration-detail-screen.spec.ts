@@ -1,11 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import {
+  ARRAY_CONFIGURATION,
   CAPABILITIES_PATH,
   CONFIGURATION_PATH,
   CONNECTOR,
   INVALID_CONFIGURATION,
   LOADED_CONFIGURATION,
+  NULL_CONFIGURATION,
   SUBJECT_TYPE_PATH,
   UPDATED_CONFIGURATION,
   baseHandlers,
@@ -15,6 +17,17 @@ import {
   prettyPrinted,
   putCallCount,
 } from "./connector-configuration-detail-screen.test-support";
+
+// Proof for task/connector-configuration-warning-text/warning-states-the-object-requirement, a
+// corrective increment over INVALID_CONFIGURATION_WARNING (connector-configuration-detail-ready-
+// view.tsx): the warning must state the registry's actual requirement (a JSON object) rather than
+// a JSON-syntax claim that reads false for two of the three isValid=false shapes -- a
+// syntactically valid array and a syntactically valid null, alongside the pre-existing unparsable-
+// text case. INVALID_CONFIGURATION_WARNING below mirrors that constant's own corrected text
+// exactly, so a future edit to the wording is caught here rather than by a stale duplicate
+// literal.
+const INVALID_CONFIGURATION_WARNING =
+  "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.";
 
 // Proof for task/connector-capability-detail-editing/connector-configuration-detail-route's own
 // criteria 1 ("shows that connector configuration's full record, loaded through the new hook"),
@@ -95,16 +108,12 @@ describe("ConnectorConfigurationDetailScreen -- reuses the existing form fields 
 });
 
 describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration is warned about (criterion 8)", () => {
-  it("shows a plain warning that the stored configuration is not valid JSON when the loaded value does not parse", async () => {
+  it("shows the plain warning, stating the value must be a JSON object, when the loaded value does not parse as JSON at all (corrective criterion 1)", async () => {
     const fetchMock = createFetchStub(baseHandlers(INVALID_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
     await screen.findByLabelText("Configuration");
-    expect(
-      screen.getByText(
-        "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
-      ),
-    ).toBeTruthy();
+    expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
   });
 
   it("shows no such warning while the loaded configuration is valid JSON", async () => {
@@ -112,25 +121,17 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
     await mountConnectorConfigurationDetailScreen(fetchMock);
 
     await screen.findByLabelText("Configuration");
-    expect(
-      screen.queryByText(
-        "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
-      ),
-    ).toBeNull();
+    expect(screen.queryByText(INVALID_CONFIGURATION_WARNING)).toBeNull();
   });
 
-  it("shows the same plain warning once a valid loaded configuration is edited into invalid JSON, and disables Save while it stays that way", async () => {
+  it("shows the same plain warning once a valid loaded configuration is edited into unparsable text, and disables Save while it stays that way", async () => {
     const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
     await mountConnectorConfigurationDetailScreen(fetchMock);
     const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
 
     fireEvent.change(configurationField, { target: { value: INVALID_CONFIGURATION } });
 
-    expect(
-      screen.getByText(
-        "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
-      ),
-    ).toBeTruthy();
+    expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
     // This route's own plain-wording banner and JsonTextareaField's own parser-message inline
     // error (json-textarea-field.tsx's own "Invalid JSON: <message>") both render, additive to
     // one another rather than one replacing the other (this task's own disclosed inference).
@@ -147,18 +148,47 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
     const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
 
     fireEvent.change(configurationField, { target: { value: INVALID_CONFIGURATION } });
-    expect(
-      screen.getByText(
-        "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
-      ),
-    ).toBeTruthy();
+    expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
 
     fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
 
-    expect(
-      screen.queryByText(
-        "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
-      ),
-    ).toBeNull();
+    expect(screen.queryByText(INVALID_CONFIGURATION_WARNING)).toBeNull();
   });
 });
+
+// Proof for task/connector-configuration-warning-text/warning-states-the-object-requirement's own
+// criteria 1-4: a syntactically valid array and a syntactically valid null are both
+// isValid=false (use-connector-configuration-detail.ts's own isValidConfigurationObject, read
+// unmodified) but neither one fails JSON syntax -- the warning must not claim otherwise, and must
+// instead state the actual requirement. Each case edits a validly loaded configuration into the
+// non-object shape (rather than loading it directly) so the Save-blocked assertion is not merely
+// the trivial "Save starts disabled before any edit" fact every load exhibits regardless of
+// validity -- once edited, the field differs from its baseline (isDirty is true), so Save staying
+// disabled here is evidence the invalidity itself is what blocks it, the same thing the
+// pre-existing unparsable-text edit case above already establishes.
+describe.each([
+  { label: "a syntactically valid JSON array", text: ARRAY_CONFIGURATION },
+  { label: "syntactically valid JSON null", text: NULL_CONFIGURATION },
+])(
+  "ConnectorConfigurationDetailScreen -- the warning states the object requirement rather than a JSON-syntax claim, for $label (corrective criteria 1-4)",
+  ({ text }) => {
+    it("does not claim the value is not valid JSON, states it must be a JSON object, and blocks Save, once a validly loaded configuration is edited into this shape", async () => {
+      const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
+      await mountConnectorConfigurationDetailScreen(fetchMock);
+      const configurationField =
+        await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+
+      fireEvent.change(configurationField, { target: { value: text } });
+
+      expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
+      expect(
+        screen.queryByText(
+          "This connector configuration's stored value is not valid JSON. Correct it before Save can succeed.",
+        ),
+      ).toBeNull();
+      expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
+      fireEvent.click(screen.getByRole("button", { name: "Save" }));
+      expect(putCallCount(fetchMock)).toBe(0);
+    });
+  },
+);
