@@ -31,6 +31,20 @@
 // raced by every pool-slot wait and every evaluate() call and retry alike —
 // the only way to honor one absolute instant without re-reading a clock this
 // module never holds.
+//
+// asEvaluation() also carries usage, elapsed_ms and prompt onto the
+// Evaluation it builds, exactly where they came back on the evaluate() call
+// whose verdict/citations/reason it is already threading through unchanged
+// (task/investigation-telemetry/widen-judgment-and-consolidation-ports): a
+// no-data evaluation never reaches asEvaluation() at all (it degrades before
+// the pool, in noDataEvaluation() below), and a deadline-exceeded or
+// judgment-failure answer built by this stage's own synthetic fallbacks
+// (deadlineExceededEvaluation(), judgmentFailureEvaluation()) carries none
+// of the three either — including the one path where a retry's own answer
+// did come back but is discarded for citations that still fail structural
+// validation, since that Evaluation's own verdict, citations and reason are
+// themselves this stage's own decision, not a value read from the retry's
+// own port response, the same way no-data's are.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { requiresEvaluationOf } from '../case/case-resolution.js';
@@ -40,6 +54,7 @@ import { acceptedCitations, capabilityOutputSchemaKey, declaredFieldsOf, type Ca
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+import type { Usage } from './usage.js';
 
 /** Answered by the shared deadline signal once this call's own ceiling elapses — never itself a domain outcome, only this module's internal "time is up" marker. */
 const DEADLINE_ELAPSED = Symbol('judgment-stage-deadline-elapsed');
@@ -372,7 +387,7 @@ function evidenceFor(name: string, evidenceByHypothesis: ReadonlyMap<string, rea
   return evidence;
 }
 
-/** Inconclusive with reason no-data, citing every non-ok evidence item this hypothesis collects — field left as the empty string, evidence-collection-stage's own convention for a value with nothing meaningful to put there. */
+/** Inconclusive with reason no-data, citing every non-ok evidence item this hypothesis collects — field left as the empty string, evidence-collection-stage's own convention for a value with nothing meaningful to put there. Carries no usage, elapsed_ms or prompt: judgment was never called at all for this hypothesis. */
 function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Evaluation {
   return {
     hypothesis: name,
@@ -392,13 +407,29 @@ function judgmentFailureEvaluation(name: string): Evaluation {
   return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
 }
 
-/** Names the hypothesis on an evaluator's own answer, assembling the full domain/investigation/evaluation record this port deliberately leaves to its caller — each branch's verdict written as its own literal so it matches exactly the corresponding member of the Evaluation union. */
+/** Names the hypothesis on an evaluator's own answer, assembling the full domain/investigation/evaluation record this port deliberately leaves to its caller — each branch's verdict written as its own literal so it matches exactly the corresponding member of the Evaluation union, with this same outcome's own usage/elapsed_ms/prompt carried through unchanged wherever it actually returned them. */
 function asEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {
+  const callRecord = callRecordOf(outcome);
   if (outcome.verdict === 'confirmed') {
-    return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations };
+    return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };
   }
   if (outcome.verdict === 'refuted') {
-    return { hypothesis: name, verdict: 'refuted', citations: outcome.citations };
+    return { hypothesis: name, verdict: 'refuted', citations: outcome.citations, ...callRecord };
   }
-  return { hypothesis: name, verdict: outcome.verdict, reason: outcome.reason, citations: outcome.citations };
+  return { hypothesis: name, verdict: outcome.verdict, reason: outcome.reason, citations: outcome.citations, ...callRecord };
+}
+
+/** This outcome's own usage/elapsed_ms/prompt, present in the returned record only where the port's own answer actually carried them — never invented as an explicit `undefined` for an adapter that has not (yet) been widened to report them. */
+function callRecordOf(outcome: EvaluationOutcome): { readonly usage?: Usage; readonly elapsed_ms?: number; readonly prompt?: string } {
+  const record: { usage?: Usage; elapsed_ms?: number; prompt?: string } = {};
+  if (outcome.usage !== undefined) {
+    record.usage = outcome.usage;
+  }
+  if (outcome.elapsed_ms !== undefined) {
+    record.elapsed_ms = outcome.elapsed_ms;
+  }
+  if (outcome.prompt !== undefined) {
+    record.prompt = outcome.prompt;
+  }
+  return record;
 }

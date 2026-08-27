@@ -78,7 +78,13 @@ export type DraftAssessmentOptions = {
  */
 export async function draftAssessment(options: DraftAssessmentOptions): Promise<Assessment> {
   const { resolved, narrowedInput, consolidationRegister, consolidator } = options;
-  const text = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
+  // consolidator.consolidate() now answers a ConsolidationOutcome rather
+  // than the text alone (task/investigation-telemetry/widen-judgment-and-consolidation-ports),
+  // so this call unwraps its own `text` field, unchanged from what
+  // consolidate() always answered here — its usage/elapsed_ms/prompt are
+  // task/investigation-telemetry/diagnose-reports-real-cost-and-durations's
+  // own declared scope to carry into Assessment, not this task's.
+  const { text } = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
   const base = { outcome: resolved.outcome, referral: resolved.referral, text };
   return resolved.determining === undefined ? base : { ...base, determining_hypothesis: resolved.determining };
 }

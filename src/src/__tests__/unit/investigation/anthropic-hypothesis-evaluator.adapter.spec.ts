@@ -6,6 +6,8 @@
 // this adapter's own prompt-assembly, no-data short-circuit and
 // response-parsing behavior, since none of those are exported from the
 // module under test.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-hypothesis-evaluator.adapter.js';
 import type { CaseContext, EvidenceItem } from '../../../investigation/hypothesis-evaluator.port.js';
@@ -295,4 +297,31 @@ it('sends exactly the model the caller configured, not a hardcoded default', asy
   await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
   expect(createMock.mock.calls[0]?.[0]).toMatchObject({ model: 'a-configured-model' });
+});
+
+// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criterion 5, unchanged
+
+it("answers a decided verdict carrying no usage, elapsed_ms or prompt property, even when the provider's own mocked response itself carries a usage field — this adapter never reads message.usage or reports one", async () => {
+  const citation = { concept: 'concept-one', field: 'field-one' };
+  const responseCarryingProviderUsage = {
+    content: [{ type: 'text', text: JSON.stringify({ verdict: 'confirmed', citations: [citation] }) }],
+    usage: { input_tokens: 77, output_tokens: 88 },
+  };
+  createMock.mockResolvedValueOnce(responseCarryingProviderUsage);
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toEqual({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome).not.toHaveProperty('usage');
+  expect(outcome).not.toHaveProperty('elapsed_ms');
+  expect(outcome).not.toHaveProperty('prompt');
+});
+
+it("this adapter's own source declares no usage or elapsed_ms field, and no prompt field on any answered outcome — proving it was left untouched by the widened port's own new, optional call-record fields (its own pre-existing, unrelated prose use of the word \"prompt\" for the judgment prompt itself is not what this checks)", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../investigation/anthropic-hypothesis-evaluator.adapter.ts', import.meta.url)), 'utf8');
+
+  expect(source).not.toMatch(/\busage\b/);
+  expect(source).not.toMatch(/\belapsed_ms\b/);
+  expect(source).not.toMatch(/prompt:|\.prompt\b/);
 });

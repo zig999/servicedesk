@@ -21,6 +21,7 @@ import type { Citation } from '../../../investigation/citation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import { judgeHypotheses } from '../../../investigation/judgment-stage.js';
+import type { Usage } from '../../../investigation/usage.js';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -681,6 +682,140 @@ it('passes an inconclusive retry answer through unchanged', async () => {
     citations: [{ concept: 'concept-a', field: 'a-field' }],
   }]);
   expect(evaluator.calls).toHaveLength(2);
+});
+
+// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criteria 3 and 4, and the inference over which discarded calls carry no call record
+
+it("attaches the usage, elapsed_ms and prompt a first call's own decided, structurally valid answer returned, onto the resulting Evaluation", async () => {
+  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(capA);
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const usage: Usage = { input_tokens: 10, output_tokens: 20 };
+  evaluator.script(
+    'h1 criterion',
+    immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }], usage, elapsed_ms: 321, prompt: 'the first-call prompt' }),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([
+    { hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }], usage, elapsed_ms: 321, prompt: 'the first-call prompt' },
+  ]);
+});
+
+it("attaches the usage, elapsed_ms and prompt a first call's own inconclusive answer returned, passed through unchanged", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const usage: Usage = { input_tokens: 5, output_tokens: 7 };
+  evaluator.script('h1 criterion', immediately({
+    verdict: 'inconclusive',
+    reason: 'judgment-failure',
+    citations: [],
+    usage,
+    elapsed_ms: 99,
+    prompt: 'the inconclusive-call prompt',
+  }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([
+    { hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [], usage, elapsed_ms: 99, prompt: 'the inconclusive-call prompt' },
+  ]);
+});
+
+it("attaches the retry's own usage, elapsed_ms and prompt — never the discarded first call's — onto the decided answer the retry accepted", async () => {
+  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(capA);
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const firstCallUsage: Usage = { input_tokens: 1, output_tokens: 1 };
+  const retryUsage: Usage = { input_tokens: 999, output_tokens: 888 };
+  const invalidFirst: EvaluationOutcome = { verdict: 'confirmed', citations: [{ concept: 'concept-foreign', field: 'field-a' }], usage: firstCallUsage, elapsed_ms: 1, prompt: 'discarded' };
+  const validRetry: EvaluationOutcome = { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }], usage: retryUsage, elapsed_ms: 456, prompt: 'the retry prompt' };
+  evaluator.script('h1 criterion', immediately(invalidFirst), immediately(validRetry));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([{ hypothesis: 'h1', ...validRetry }]);
+});
+
+it('a no-data evaluation carries no usage, elapsed_ms or prompt key at all — judgment was never called for it', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const theCase = aCase([{ name: 'h1', collects: ['concept-denied'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-denied', result: 'denied' })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result[0]).not.toHaveProperty('usage');
+  expect(result[0]).not.toHaveProperty('elapsed_ms');
+  expect(result[0]).not.toHaveProperty('prompt');
+});
+
+it('a deadline-exceeded evaluation carries no usage, elapsed_ms or prompt key, for a call that never settled before the deadline', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', neverSettles);
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
+
+  const resultPromise = judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 5,
+  });
+  await vi.advanceTimersByTimeAsync(5);
+  const result = await resultPromise;
+
+  expect(result[0]).not.toHaveProperty('usage');
+  expect(result[0]).not.toHaveProperty('elapsed_ms');
+  expect(result[0]).not.toHaveProperty('prompt');
+});
+
+it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even though the discarded retry's own decided answer carried all three — a call that happened but whose citations this stage itself invalidates is not a call this Evaluation records", async () => {
+  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(capA);
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const invalidCitation: readonly [Citation, ...Citation[]] = [{ concept: 'concept-foreign', field: 'field-a' }];
+  const someUsage: Usage = { input_tokens: 3, output_tokens: 4 };
+  evaluator.script(
+    'h1 criterion',
+    immediately({ verdict: 'confirmed', citations: invalidCitation, usage: someUsage, elapsed_ms: 12, prompt: 'the first-call prompt' }),
+    immediately({ verdict: 'refuted', citations: invalidCitation, usage: someUsage, elapsed_ms: 34, prompt: 'the retry prompt' }),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
+  expect(result[0]).not.toHaveProperty('usage');
+  expect(result[0]).not.toHaveProperty('elapsed_ms');
+  expect(result[0]).not.toHaveProperty('prompt');
 });
 
 it("refuses a citation whose field is declared only under a capability output-schema key that does not match the cited evidence's own capability_name/capability_version", async () => {

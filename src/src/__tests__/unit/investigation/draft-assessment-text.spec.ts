@@ -179,6 +179,22 @@ it('exposes only outcome, referral and text — no determining_hypothesis, verdi
   expect(Object.keys(result).sort()).toEqual(['outcome', 'referral', 'text']);
 });
 
+// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: the consolidator's
+// own ConsolidationOutcome is unwrapped to its text field alone; usage, elapsed_ms and prompt do not
+// leak onto the answered Assessment.
+
+it("unwraps the consolidator's own ConsolidationOutcome to its text field, exposing no usage, elapsed_ms or prompt property on the answered Assessment", async () => {
+  const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [anEvidence({ concept: 'a-concept' })] });
+  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'the consolidated write-up');
+
+  const result = await draftAssessment(draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'formal', consolidator }));
+
+  expect(result.text).toBe('the consolidated write-up');
+  expect(result).not.toHaveProperty('usage');
+  expect(result).not.toHaveProperty('elapsed_ms');
+  expect(result).not.toHaveProperty('prompt');
+});
+
 // ------------------------------------------------------------- edge case: empty collections
 
 it('forwards empty evaluations and empty evidence to the consolidator rather than special-casing either one', async () => {
