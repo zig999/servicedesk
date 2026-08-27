@@ -204,9 +204,11 @@ function heldConfiguration(registration: ConnectorConfigurationRegistration): Co
  * boolean, a bare string once it has already failed the string branch above)
  * pass through unchanged for the completeness check below to catch, exactly
  * as this registry always did for a registration missing this shape — the
- * node does not clearly decide whether an entirely absent configuration is
- * malformed or incomplete, so that case is left exactly where it already
- * stood.
+ * node decides that classification explicitly: a registration whose
+ * configuration is entirely absent is refused as incomplete
+ * (IncompleteConnectorConfigurationError), distinct from a present value
+ * that fails the well-formedness check above, the same distinction the node
+ * draws for the connector name.
  */
 function wellFormedConfiguration(configuration: unknown): unknown {
   if (typeof configuration === 'string') {

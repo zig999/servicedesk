@@ -162,8 +162,24 @@ it("the header comment names the two specification nodes that now fix a status a
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
   expect(header).not.toMatch(/no specification node/i);
-  expect(header).toContain('two specification nodes now fix a status as a decided fact');
   expect(header).toContain('constraints/the-capability-identity-read-refuses-an-unregistered-identity');
   expect(header).toContain('rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused');
+  expect(header).toContain("every other entry's status stays this project's own engineering decision");
+});
+
+// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 1
+
+// The round-one test above named "two specification nodes" and did not require
+// ConnectorConfigurationNotWellFormedError's own citation; round two adds a third
+// specification-fixed status to the same header paragraph, so the count in prose changed
+// from two to three and the count itself is asserted only here rather than duplicated above.
+it("the header comment names three specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).toContain('three specification nodes now fix a status as a decided fact');
+  expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
+  expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
+  expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });

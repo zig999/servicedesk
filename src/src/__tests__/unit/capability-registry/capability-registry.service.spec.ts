@@ -546,3 +546,15 @@ it("pageCountOf's own comment cites constraints/listings-are-paged's own stateme
     'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
   );
 });
+
+// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 4
+
+it("refuseContractDepartures' own doc comment describes both the non-integer and the non-positive timeout boundaries, and cites the schema's actual shape rather than z.number().int() alone", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
+  const prose = proseOf(source);
+
+  expect(prose).not.toContain('z.number().int() alone');
+  expect(prose).toContain('not an integer count of milliseconds, or an integer that is zero or less');
+  expect(prose).toContain('a timeout of zero or less bounds nothing');
+  expect(prose).toContain("registerCapabilityBodySchema's own timeout: z.number().int().positive()");
+});

@@ -193,12 +193,15 @@ function heldCapability(registration: CapabilityRegistration): Capability {
  * Refuses a registration leaving a required attribute undeclared
  * (rules/integration/a-capability-declares-its-contract's own "an attribute
  * that is absent or an empty string is undeclared"). A declared-but-malformed
- * timeout — present, but not an integer count of milliseconds — is not
- * undeclared by that same wording, so it never reaches this refusal
- * (task/capability-timeout-contract-refusal/non-integer-timeout-refusal):
- * registerCapabilityBodySchema's own timeout: z.number().int() already
- * refuses it at the route's declared shape, with the system-wide HTTP 400
- * VALIDATION_ERROR response
+ * timeout — present, but not an integer count of milliseconds, or an integer
+ * that is zero or less — is not undeclared by that same wording, so neither
+ * boundary ever reaches this refusal
+ * (task/capability-timeout-contract-refusal/non-integer-timeout-refusal;
+ * rules/integration/a-capability-declares-its-contract's own "a timeout of
+ * zero or less bounds nothing ... so a stated timeout is refused the same
+ * way a non-integer one already is"): registerCapabilityBodySchema's own
+ * timeout: z.number().int().positive() already refuses both at the route's
+ * declared shape, with the system-wide HTTP 400 VALIDATION_ERROR response
  * (constraints/a-malformed-request-is-refused-with-a-validation-error),
  * before a request carrying one ever reaches this service.
  */

@@ -25,7 +25,7 @@ export interface IGlossaryStore {
    */
   insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void>;
 
-  /** Answers every persisted concept registration — ttl absent where the registration stated none. */
+  /** Answers every persisted concept registration — ttl absent where the registration stated none (rules/knowledge/a-collected-concept-declares-a-ttl), as read, with no default resolved on its behalf. */
   readConcepts(): Promise<readonly ConceptRegistration[]>;
 
   /**

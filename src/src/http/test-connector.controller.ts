@@ -32,15 +32,16 @@
 // resolved to: resolveConnectorRequest is called a second time with a
 // redacting environment substitute, so the real secret a connector's own
 // configuration would otherwise read from process.env never reaches this
-// diagnostic operation's own response — this project's own standard (SEC-03,
-// SEC-04) forbids a credential reaching a client response, and no
-// specification node or task criterion states that this diagnostic
-// operation's echoed request must carry the real credential value rather
-// than a marker standing in for it, so this is this controller's own
-// inference over an otherwise-silent point. The actual call this route
-// issues still uses the real, unredacted resolution — the credential
-// travels to the external system exactly as a real observation's would;
-// only what is reported back is masked.
+// diagnostic operation's own response
+// (rules/integration/a-diagnostic-response-masks-a-resolved-credential's own
+// "a connector configuration's diagnostic call masks whatever value a
+// credential placeholder in its own call resolves to, so the response
+// echoing that call back never carries a credential's real value") — this
+// project's own standard (SEC-03, SEC-04) independently forbids a credential
+// reaching a client response too. The actual call this route issues still
+// uses the real, unredacted resolution — the credential travels to the
+// external system exactly as a real observation's would; only what is
+// reported back is masked.
 
 import type { Capability } from '../capability-registry/capability.js';
 import type { CapabilityIdentityResolution } from '../capability-registry/capability-registry.service.js';

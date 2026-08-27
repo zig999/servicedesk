@@ -2,12 +2,16 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: two
+// `elsewhere` note). That silence no longer covers every entry below: three
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
-// (constraints/the-capability-identity-read-refuses-an-unregistered-identity)
-// and ConnectorConfigurationNotFoundError's HTTP 404
+// (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
+// ConnectorConfigurationNotFoundError's HTTP 404
 // (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)
+// and ConnectorConfigurationNotWellFormedError's HTTP 422
+// (rules/integration/a-connector-configuration-holds-a-well-formed-object,
+// whose own statement refuses a not-well-formed configuration "with an HTTP
+// 422 response reporting a ConnectorConfigurationNotWellFormedError")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.

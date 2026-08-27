@@ -12,9 +12,9 @@ import type { IObservationSource, ObservationOutcome, ObserveConceptOptions, Sub
  * subject, never inventing one of its own — the fake's whole behavior is
  * what was seeded, which is what "driven entirely by test-supplied
  * fixtures" means here. Asking for a pair nothing seeded is a test setup
- * fault, not one of the four evidence-result endings, so it throws a plain
- * error rather than answering ok, unavailable, denied or timeout for a
- * fixture nobody supplied.
+ * fault, not one of the endings domain/investigation/evidence-result
+ * enumerates, so it throws a plain error rather than answering one of
+ * those endings for a fixture nobody supplied.
  */
 export class FakeObservationSource implements IObservationSource {
   private readonly fixtures = new Map<string, ObservationOutcome>();
@@ -26,8 +26,10 @@ export class FakeObservationSource implements IObservationSource {
 
   /**
    * observe-concept: answers the seeded outcome for this concept and
-   * subject as plain data, one of the four evidence-result endings, never
-   * throwing for any of them. The requester is accepted, as the port
+   * subject as plain data, one of the four endings
+   * domain/investigation/evidence-result enumerates (ok, unavailable,
+   * denied, timeout), never throwing for any of them. The requester is
+   * accepted, as the port
    * requires on every call
    * (rules/investigation/collection-runs-in-the-requester-scope), but this
    * fake computes nothing from it — scoping the call to an actual identity

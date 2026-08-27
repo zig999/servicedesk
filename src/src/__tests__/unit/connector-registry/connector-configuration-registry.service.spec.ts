@@ -527,3 +527,20 @@ it("pageCountOf's own comment cites constraints/listings-are-paged's own stateme
     'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
   );
 });
+
+// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 5
+
+it("wellFormedConfiguration's own doc comment states the node's own decided classification for an entirely absent configuration, rather than claiming the specification leaves it undecided", async () => {
+  const source = await readFile(
+    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
+    'utf8',
+  );
+  const prose = proseOf(source);
+
+  expect(prose).not.toContain('the node does not clearly decide');
+  expect(prose).toContain('the node decides that classification explicitly');
+  expect(prose).toContain(
+    'a registration whose configuration is entirely absent is refused as incomplete (IncompleteConnectorConfigurationError)',
+  );
+  expect(prose).toContain('distinct from a present value that fails the well-formedness check above');
+});
