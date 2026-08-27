@@ -19,15 +19,19 @@ afterEach(() => {
 });
 
 describe("CaseVersionEditorScreen", () => {
-  it("pre-populates title, when_to_use, the fixed/disabled subject, consolidation register and fallback outcome/referral from the loaded version", async () => {
+  it("pre-populates title, when_to_use, subject, consolidation register and fallback outcome/referral from the loaded version, with subject enabled while the draft is not blocked", async () => {
     const fetchMock = createFetchStub(baseHandlers());
     await mountCaseVersionEditor(fetchMock);
 
     expect(await screen.findByDisplayValue("Original title")).toBeTruthy();
     expect(screen.getByDisplayValue("Use when the case needs manual review")).toBeTruthy();
 
+    // task/subject-field-fixed-bug/subject-follows-isblocked, criterion 1:
+    // subject is a declared attribute like every other, so a draft version
+    // whose form is not blocked (this load: no save in flight, no conflict,
+    // not released) renders its input enabled rather than fixed.
     const subjectInput = screen.getByDisplayValue("billing-dispute");
-    expect(subjectInput.hasAttribute("disabled")).toBe(true);
+    expect(subjectInput.hasAttribute("disabled")).toBe(false);
 
     expect(screen.getByText("formal")).toBeTruthy();
     expect(screen.getByText("resolved")).toBeTruthy();

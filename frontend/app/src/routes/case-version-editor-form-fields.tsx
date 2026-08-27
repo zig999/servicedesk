@@ -13,9 +13,12 @@ import type { SaveStatus } from "../hooks/use-edit-draft-version-form";
 /**
  * The Version Editor's own field markup (task/version-editor/
  * edit-draft-version), the wireframe's own field set (proposal §2.3, quoted
- * in this task's `sources`): title, when_to_use, subject fixed/disabled,
- * consolidation_register, fallback outcome and fallback referral
- * (action+recipient). Kept in its own file, apart from
+ * in this task's `sources`): title, when_to_use, subject, consolidation_register,
+ * fallback outcome and fallback referral (action+recipient). subject is a
+ * declared attribute like every other (domain/knowledge/case-version) and is
+ * corrected the same way while the version stays in draft
+ * (task/subject-field-fixed-bug/subject-follows-isblocked) -- it renders
+ * `disabled` through `isBlocked`, never unconditionally. Kept in its own file, apart from
  * case-version-editor-screen.tsx's own loading/error composition, so
  * neither file grows toward MNT-01's three-hundred-line limit.
  *
@@ -156,8 +159,8 @@ export function CaseVersionEditorFormFields({
       </FormField>
 
       <div className="flex gap-4">
-        <FormField label="Subject type (fixed)" errorId="subject-error">
-          <Input {...register("subject")} disabled />
+        <FormField label="Subject type" errorId="subject-error">
+          <Input {...register("subject")} disabled={isBlocked} />
         </FormField>
 
         <FormField label="Consolidation register" errorId="consolidation_register-error">
