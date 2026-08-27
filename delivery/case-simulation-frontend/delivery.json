@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/simulation-cockpit/case-result-panel",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/case-result-panel.md",
+      "title": "Case result panel",
+      "summary": "A presentational Case-result region plus its own in-memory run-history hook -- the outcome/referral/determining line and customer-facing text box of the last full-case run, this session's run history with a Compare action, and a passive \"stale\" marker -- built as four new files under frontend/app/src, wired to nothing yet.",
+      "task": "task/simulation-cockpit/case-result-panel"
+    },
+    {
       "id": "implementation/simulation-cockpit/case-simulation-route",
       "kind": "implementation",
       "file": "implementation/simulation-cockpit/case-simulation-route.md",
@@ -56,6 +64,14 @@
       "title": "use-simulation-subject hook",
       "summary": "A pure derivation service module plus a new hooks/use-simulation-subject.ts that resolves a case version's collection plan through the capability and connector-configuration registries into required subject fields, merges them with curator-added attributes and the requester, and reports readiness.",
       "task": "task/subject-derivation/use-simulation-subject-hook"
+    },
+    {
+      "id": "proof/simulation-cockpit/case-result-panel",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/case-result-panel.md",
+      "title": "Case result panel proof",
+      "summary": "Forty-five tests across five spec files proving the Case result region's five criteria and every disclosed inference, split by source file (types, hook, Compare view) and by concern within the panel itself (its own outcome/text/stale rendering versus its Compare-selection wiring).",
+      "task": "task/simulation-cockpit/case-result-panel"
     },
     {
       "id": "proof/simulation-cockpit/case-simulation-route",
@@ -115,6 +131,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/case-result-panel",
+      "to": "task/simulation-cockpit/case-result-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/simulation-cockpit/case-simulation-route",
       "to": "contracts/investigation/case-simulation",
@@ -545,6 +621,12 @@
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "task/subject-derivation/use-simulation-subject-hook",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/case-result-panel",
+      "to": "implementation/simulation-cockpit/case-result-panel",
+      "kind": "proves",
       "at": "the path"
     },
     {

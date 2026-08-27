@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/hooks/use-case-simulation-history.spec.ts
+  172:11  error  `firstResult` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`   testing-library/render-result-naming-convention
+  179:11  error  `secondResult` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+✖ 2 problems (2 errors, 0 warnings)
+

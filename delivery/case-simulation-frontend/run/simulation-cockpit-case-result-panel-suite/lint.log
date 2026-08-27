@@ -1,0 +1,37 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/hooks/use-case-simulation-history.spec.ts
+  172:11  error  `first` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`   testing-library/render-result-naming-convention
+  179:11  error  `second` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/routes/case-simulation-case-result-compare.spec.ts
+   40:3   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+   43:21  error    Avoid direct Node access. Prefer using the methods from Testing Library                                                              testing-library/no-node-access
+   52:3   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  114:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-container' or 'testing-library/no-node-access')
+  118:22  error    Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"                                  testing-library/no-container
+  118:32  error    Avoid direct Node access. Prefer using the methods from Testing Library                                                              testing-library/no-node-access
+  118:32  error    Avoid direct Node access. Prefer using the methods from Testing Library                                                              testing-library/no-node-access
+  134:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-container' or 'testing-library/no-node-access')
+  136:12  error    Avoid using container methods. Prefer using the methods from Testing Library, such as "getByRole()"                                  testing-library/no-container
+  136:22  error    Avoid direct Node access. Prefer using the methods from Testing Library                                                              testing-library/no-node-access
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/routes/case-simulation-case-result-panel-compare.spec.ts
+  159:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  162:33  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+  162:33  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+  166:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  169:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/routes/case-simulation-case-result-panel.spec.ts
+   42:22  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+  111:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  114:23  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+  114:23  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+
+✖ 21 problems (13 errors, 8 warnings)
+  0 errors and 8 warnings potentially fixable with the `--fix` option.
+
