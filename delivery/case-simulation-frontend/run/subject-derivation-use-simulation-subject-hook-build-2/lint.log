@@ -1,0 +1,11 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/hooks/use-simulation-subject.spec.ts
+  173:11  error  `first` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`   testing-library/render-result-naming-convention
+  174:11  error  `second` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+✖ 2 problems (2 errors, 0 warnings)
+

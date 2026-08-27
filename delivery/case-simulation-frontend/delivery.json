@@ -1,0 +1,89 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/subject-derivation/use-simulation-subject-hook",
+      "kind": "implementation",
+      "file": "implementation/subject-derivation/use-simulation-subject-hook.md",
+      "title": "use-simulation-subject hook",
+      "summary": "A pure derivation service module plus a new hooks/use-simulation-subject.ts that resolves a case version's collection plan through the capability and connector-configuration registries into required subject fields, merges them with curator-added attributes and the requester, and reports readiness.",
+      "task": "task/subject-derivation/use-simulation-subject-hook"
+    },
+    {
+      "id": "proof/subject-derivation/use-simulation-subject-hook",
+      "kind": "proof",
+      "file": "proof/subject-derivation/use-simulation-subject-hook.md",
+      "title": "use-simulation-subject hook proof",
+      "summary": "Proves the pure derivation module and the composing hook against all seven criteria, the implementation's own recorded inferences, and MNT-04's stable-key convention, with the render-result-naming-convention lint failure in the criterion-7 test corrected by destructuring renderHook's own return.",
+      "task": "task/subject-derivation/use-simulation-subject-hook"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/subject-derivation/use-simulation-subject-hook",
+      "to": "task/subject-derivation/use-simulation-subject-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-derivation/use-simulation-subject-hook",
+      "to": "implementation/subject-derivation/use-simulation-subject-hook",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

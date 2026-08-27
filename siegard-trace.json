@@ -668,6 +668,10 @@
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
+        {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
         },
@@ -774,6 +778,10 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configurations.ts",
           "digest": "sha256:ea93034a5b187115cc9d81e737ba99c71b042f680dde8daf6ddfdf72615d098c"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -1736,6 +1744,10 @@
           "digest": "sha256:f0271982865d0819c9a5c9a411c915f3c9612d7cd7c7a8d1aac30294ec1d7223"
         },
         {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
+        },
+        {
           "path": "src/migrations/0003-capability-registry.sql",
           "digest": "sha256:c2bfac6613eb30117a7a59ef5ea41afeb66375d301f2a2d4a34234bd2f1557ed"
         },
@@ -1896,6 +1908,10 @@
         {
           "path": "frontend/app/src/services/connector-configuration-form-schema.ts",
           "digest": "sha256:d707cd7fc63e9b062d54a1fdba2e653f668c877cf4cc8f853378ed4df809d5c7"
+        },
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -2248,6 +2264,10 @@
       "digest": "sha256:227b64423f511acc785d02a9f046616eeb0e996cc23ebddd255a0b4e6316be21",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -2277,6 +2297,10 @@
       "node": "domain/investigation/subject-attribute-value",
       "digest": "sha256:e2564e4d4df957fc670bbca57995dea304b3c6ea4dfce1357bf574f8b9568a3e",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
@@ -2492,6 +2516,10 @@
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
+        {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:a9754c7f0903f00f8b53618e017667e4b5a5430ce3d9a33bde0f7565fdfe88a8"
         },
@@ -2514,6 +2542,10 @@
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
           "digest": "sha256:c3e51ae1955e369e5150707959ba4ee13328b3033334cab44cd8435e01b8ee4d"
+        },
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -3339,8 +3371,12 @@
     },
     {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
-      "digest": "sha256:e3fc66b749d78fcd0a64e4225fb3826deb9cea735b8852c14d56c3045fdf1505",
+      "digest": "sha256:2598018958cff7c496b1cb70eb410e4b36075b64030604cc2cbcebf0749d4683",
       "files": [
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
+        },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
@@ -3495,6 +3531,10 @@
       "node": "rules/investigation/a-subject-carries-at-least-one-attribute",
       "digest": "sha256:ba062f6475b2ed8579bca44a53bcb04dfb39534780bdf58b96860923434e603b",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
           "digest": "sha256:b8eafe6b856b35822b5ec23c711a29a6a2203bfe5afffe1a2cab3e79d324e190"
