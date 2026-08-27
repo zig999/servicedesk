@@ -22,25 +22,8 @@ import { randomUUID } from 'node:crypto';
 import type { ICaseQuery } from '../case/case-query.port.js';
 import { CaseVersionNotReleasedError } from '../errors/case-version-not-released.error.js';
 import type { Assessment } from '../investigation/assessment.js';
-import type { Cost } from '../investigation/cost.js';
-import type { Durations } from '../investigation/durations.js';
 import type { ProductionDiagnoseCall } from '../factories/production-diagnose.factory.js';
 import type { DiagnoseRequestDto, DiagnoseResponseDto } from './dto/diagnose.dto.js';
-
-/**
- * Neither IHypothesisEvaluator, IAssessmentConsolidator nor IObservationSource
- * reports a token count, a call count or a stage timing today
- * (run-diagnosis.ts's own "no port this composition calls... reports a
- * token count or a call count" / "this composition never reads the system
- * clock, so it has no way to measure it itself") — accumulating either is
- * explicitly outside whichever task eventually adds it (cost.ts's and
- * durations.ts's own module comments), and every existing caller of this
- * pipeline already supplies an arbitrary placeholder rather than a measured
- * figure. This route supplies the same kind of placeholder, at zero rather
- * than an arbitrary positive figure, since nothing here has measured anything.
- */
-const UNMEASURED_COST: Cost = { calls: 0, input_tokens: 0, output_tokens: 0 };
-const UNMEASURED_DURATIONS: Durations = { collection: 0, judgment: 0, writing: 0, total: 0 };
 
 /** Everything the controller needs beyond one request's own body: the published case read, the wired production runner, and the two replay-pin values (model, prompt_version) this route's own configuration supplies. */
 export type DiagnoseControllerDependencies = {
@@ -60,9 +43,12 @@ export type DiagnoseControllerDependencies = {
  * collection, judgment and writing all sit behind runDiagnose, so this check
  * ahead of that call is what keeps them from ever starting — assembles the
  * one still-missing ProductionDiagnoseCall fields this route itself owns —
- * a fresh id, the configured model and prompt version, and the
- * not-yet-measured cost/duration placeholders above — and answers with the
- * resulting Assessment unchanged. A request naming no ticket_ref runs the
+ * a fresh id, the configured model and prompt version — and answers with the
+ * resulting Assessment unchanged. cost and durations are no longer assembled
+ * here at all (task/investigation-telemetry/diagnose-reports-real-cost-and-durations):
+ * ProductionDiagnoseCall no longer declares either field, since runDiagnose's
+ * own pipeline now accumulates both itself from what collection, judgment and
+ * writing actually did. A request naming no ticket_ref runs the
  * same way as one that supplies it: body.ticket_ref travels through exactly
  * as the request carried it — undefined where none was given — since
  * ProductionDiagnoseCall's own ticket_ref is optional and no node states a
@@ -87,7 +73,5 @@ export async function handleDiagnoseRequest(
     case: pinnedCase,
     prompt_version: dependencies.promptVersion,
     model: dependencies.model,
-    cost: UNMEASURED_COST,
-    durations: UNMEASURED_DURATIONS,
   });
 }

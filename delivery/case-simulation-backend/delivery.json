@@ -10,6 +10,14 @@
       "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
     },
     {
+      "id": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "kind": "implementation",
+      "file": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations.md",
+      "title": "run-diagnosis accumulates real cost and durations, and diagnose.controller.ts stops writing placeholders",
+      "summary": "run-diagnosis.ts now computes Cost and Durations itself from every judged evaluation's own usage, the one consolidation call's own usage and elapsed_ms, and every concept's/hypothesis's own already-measured elapsed_ms, so diagnose.controller.ts no longer assembles UNMEASURED_COST or UNMEASURED_DURATIONS at all.",
+      "task": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations"
+    },
+    {
       "id": "implementation/investigation-telemetry/evidence-collection-measures-elapsed-ms",
       "kind": "implementation",
       "file": "implementation/investigation-telemetry/evidence-collection-measures-elapsed-ms.md",
@@ -32,6 +40,14 @@
       "title": "proof — diagnose refuses a draft-state case version",
       "summary": "Nine vitest tests across three files prove that a draft-pinned diagnose request is refused with CaseVersionNotReleasedError before the pipeline runs, that the error is registered in status-map.ts at 409, and that a released-pinned request proceeds unchanged, both at the unit level and on the wire.",
       "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
+    },
+    {
+      "id": "proof/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "kind": "proof",
+      "file": "proof/investigation-telemetry/diagnose-reports-real-cost-and-durations.md",
+      "title": "Proof for diagnose reports real cost and durations",
+      "summary": "Proves diagnose.controller.ts no longer references the UNMEASURED_COST/UNMEASURED_DURATIONS placeholders, and that run-diagnosis.ts's costOf()/durationsOf() compute cost.calls/input_tokens/output_tokens and durations.collection/judgment/writing/total for real, end to end through runDiagnosis().",
+      "task": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations"
     },
     {
       "id": "proof/investigation-telemetry/evidence-collection-measures-elapsed-ms",
@@ -66,6 +82,36 @@
     {
       "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "to": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
       "kind": "implements",
       "at": "the path"
     },
@@ -120,6 +166,12 @@
     {
       "from": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "to": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "to": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
       "kind": "proves",
       "at": "the path"
     },

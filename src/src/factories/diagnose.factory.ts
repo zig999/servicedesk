@@ -59,8 +59,11 @@ export type DiagnoseCall = Omit<
  * and the given observation/judgment/consolidation adapters — into one
  * function that only still needs each individual call's own inputs (the
  * resolved case, subject, narrative, requester/ticket_ref, the model and
- * prompt version in use, the accumulated cost and durations, and the
- * propagated now/deadline pair). The diagnose composition root's own single
+ * prompt version in use, and the propagated now/deadline pair) — cost and
+ * durations are no longer among them
+ * (task/investigation-telemetry/diagnose-reports-real-cost-and-durations):
+ * runDiagnosis now accumulates both itself from what its own pipeline did.
+ * The diagnose composition root's own single
  * wiring point (task/diagnose-entry-point/diagnose-pipeline-composition),
  * extending the per-context factory convention case-query.factory.ts and
  * case-store.factory.ts already establish rather than starting a second

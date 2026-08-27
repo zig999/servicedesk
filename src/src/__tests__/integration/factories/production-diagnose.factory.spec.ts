@@ -46,8 +46,6 @@ import {
   type ProductionDiagnoseCall,
   type ProductionDiagnoseDependencies,
 } from '../../../factories/production-diagnose.factory.js';
-import type { Cost } from '../../../investigation/cost.js';
-import type { Durations } from '../../../investigation/durations.js';
 import type {
   IObservationSource,
   ObservationOutcome,
@@ -116,9 +114,6 @@ function aCase(vocabulary: IVocabulary): Case {
   };
 }
 
-const A_COST: Cost = { calls: 1, input_tokens: 10, output_tokens: 5 };
-const A_DURATIONS: Durations = { collection: 0, judgment: 0, writing: 0, total: 0 };
-
 interface ICallFixture {
   readonly theCase: Case;
   readonly subjectAttribute: string;
@@ -136,8 +131,6 @@ function callFor(id: string, requester: string, fixture: ICallFixture): Producti
     case: fixture.theCase,
     prompt_version: 'prompt-v1',
     model: 'model-x',
-    cost: A_COST,
-    durations: A_DURATIONS,
   };
 }
 

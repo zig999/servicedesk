@@ -13,6 +13,15 @@
 // end-to-end __tests__/integration/http/diagnose-e2e.spec.ts. CaseNotFoundError
 // and CaseNotValidError, readCase's own pre-existing refusals, are untouched
 // by this task and not re-proved here.
+//
+// Also carries task/investigation-telemetry/diagnose-reports-real-cost-and-durations's
+// own criterion 1 (diagnose.controller.ts no longer references UNMEASURED_COST
+// or UNMEASURED_DURATIONS): this is the one spec file exercising
+// diagnose.controller.ts, so the assembled-call assertion below no longer
+// asserts a cost or durations shape, and a source-text scan proves neither
+// placeholder identifier survives in the file itself.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
@@ -166,9 +175,9 @@ function expectRunDiagnoseCalledOnceAndAssembled(
     case: releasedCase,
     prompt_version: 'a-configured-prompt-version',
     model: 'a-configured-model',
-    cost: { calls: 0, input_tokens: 0, output_tokens: 0 },
-    durations: { collection: 0, judgment: 0, writing: 0, total: 0 },
   });
+  expect(call).not.toHaveProperty('cost');
+  expect(call).not.toHaveProperty('durations');
   expect(typeof call?.id).toBe('string');
   expect((call?.id ?? '').length).toBeGreaterThan(0);
   expect(result).toEqual(expectedAssessment);
@@ -184,4 +193,15 @@ it('proceeds exactly as before for a released-state pinned version: calls runDia
   const result = await handleDiagnoseRequest(dependencies, body);
 
   expectRunDiagnoseCalledOnceAndAssembled(runDiagnose, { releasedCase, body, expectedAssessment }, result);
+});
+
+// ------ task/investigation-telemetry/diagnose-reports-real-cost-and-durations: criterion 1
+
+const CONTROLLER_MODULE_PATH = fileURLToPath(new URL('../../../http/diagnose.controller.ts', import.meta.url));
+
+it('no longer references UNMEASURED_COST or UNMEASURED_DURATIONS anywhere in its own source', async () => {
+  const source = await readFile(CONTROLLER_MODULE_PATH, 'utf8');
+
+  expect(source).not.toMatch(/UNMEASURED_COST/);
+  expect(source).not.toMatch(/UNMEASURED_DURATIONS/);
 });

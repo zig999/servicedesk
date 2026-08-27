@@ -90,6 +90,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
         }
       ]
     },
@@ -2202,6 +2206,10 @@
           "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
         },
         {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
+        },
+        {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
           "digest": "sha256:5893bbb1f939b2f0370b9a82a5c39c3ce737cce968015c20278288f6fe0c8dcb"
         }
@@ -2230,6 +2238,10 @@
         {
           "path": "src/src/investigation/durations.ts",
           "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
+        },
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -2497,7 +2509,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",

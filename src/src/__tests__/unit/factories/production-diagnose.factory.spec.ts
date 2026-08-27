@@ -45,8 +45,6 @@ import { fileURLToPath } from 'node:url';
 import { AnthropicAssessmentConsolidator } from '../../../investigation/anthropic-assessment-consolidator.adapter.js';
 import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-hypothesis-evaluator.adapter.js';
 import type { Case } from '../../../case/case.js';
-import type { Cost } from '../../../investigation/cost.js';
-import type { Durations } from '../../../investigation/durations.js';
 import type { IObservationSource, ObservationOutcome } from '../../../investigation/observation-source.port.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -99,9 +97,6 @@ function baseDependencies(overrides: Partial<ProductionDiagnoseDependencies> = {
   };
 }
 
-const A_COST: Cost = { calls: 1, input_tokens: 10, output_tokens: 5 };
-const A_DURATIONS: Durations = { collection: 0, judgment: 0, writing: 0, total: 0 };
-
 /** Every field ProductionDiagnoseCall declares, all arbitrary — nothing in this file's tests reads their content. */
 function baseCall(): ProductionDiagnoseCall {
   return {
@@ -114,8 +109,6 @@ function baseCall(): ProductionDiagnoseCall {
     case: aCase(),
     prompt_version: 'a-prompt-version',
     model: 'a-model',
-    cost: A_COST,
-    durations: A_DURATIONS,
   };
 }
 
