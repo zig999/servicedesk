@@ -262,15 +262,21 @@
     },
     {
       "from": "epic/subject-derivation",
-      "to": "contracts/integration/connector-configuration-registry",
+      "to": "contracts/integration/capability-registry",
       "kind": "covers",
       "at": "covers[10]"
     },
     {
       "from": "epic/subject-derivation",
-      "to": "contracts/knowledge/case-query",
+      "to": "contracts/integration/connector-configuration-registry",
       "kind": "covers",
       "at": "covers[11]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[12]"
     },
     {
       "from": "epic/subject-derivation",
@@ -304,25 +310,25 @@
     },
     {
       "from": "epic/subject-derivation",
-      "to": "domain/knowledge/case-version",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
       "kind": "covers",
       "at": "covers[6]"
     },
     {
       "from": "epic/subject-derivation",
-      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "to": "domain/knowledge/case-version",
       "kind": "covers",
       "at": "covers[7]"
     },
     {
       "from": "epic/subject-derivation",
-      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
       "kind": "covers",
       "at": "covers[8]"
     },
     {
       "from": "epic/subject-derivation",
-      "to": "contracts/integration/capability-registry",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
       "kind": "covers",
       "at": "covers[9]"
     },
@@ -922,25 +928,25 @@
     },
     {
       "from": "task/subject-derivation/use-simulation-subject-hook",
-      "to": "domain/glossary/subject-type",
+      "to": "domain/glossary/subject-attribute",
       "kind": "implements",
       "at": "implements[2]"
     },
     {
       "from": "task/subject-derivation/use-simulation-subject-hook",
-      "to": "domain/glossary/subject-attribute",
+      "to": "domain/integration/capability",
       "kind": "implements",
       "at": "implements[3]"
     },
     {
       "from": "task/subject-derivation/use-simulation-subject-hook",
-      "to": "domain/integration/capability",
+      "to": "domain/integration/connector-configuration",
       "kind": "implements",
       "at": "implements[4]"
     },
     {
       "from": "task/subject-derivation/use-simulation-subject-hook",
-      "to": "domain/integration/connector-configuration",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
       "kind": "implements",
       "at": "implements[5]"
     },

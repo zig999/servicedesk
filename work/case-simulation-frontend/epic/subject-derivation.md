@@ -11,6 +11,7 @@ covers:
   - domain/glossary/subject-attribute
   - domain/integration/capability
   - domain/integration/connector-configuration
+  - rules/integration/an-http-connector-configuration-declares-its-call
   - domain/knowledge/case-version
   - rules/investigation/a-subject-carries-at-least-one-attribute
   - rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
