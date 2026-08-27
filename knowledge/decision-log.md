@@ -805,4 +805,37 @@ entries:
       same way it refuses an absent one ("configuration is not a plain object") — a boolean or a
       number carries no syntax to call well-formed or not well-formed, the same reasoning that
       already put an entirely absent value on the incomplete side rather than the malformed one.
+  - location: domain/knowledge/case-summary.md
+    field: attributes
+    unstated: >-
+      What current_state and last_updated answer for a case currently holding no version at all
+      — the node declared both required, but the deriving rule only knows how to compute either
+      from the case's highest-numbered version, which presumes one exists.
+    decided: >-
+      Both are optional, present only where the case currently holds at least one version; a
+      case holding none has neither, the same pattern domain/knowledge/case-version.released_at
+      already uses ("present only once released").
+    why: >-
+      The material is siegard-reconcile/frontend-cases-list-screen-drift.md, whose judge over
+      cases-list-screen.tsx reported the frontend already deciding this — treating both fields
+      as absent and stating that absence explicitly in the UI ("No version yet", "—") — with no
+      node backing the decision. A case reaches zero current versions exactly the way
+      a-case-holding-no-versions-is-told-explicitly already describes: its one and only draft
+      discarded before release, leaving nothing behind
+      (rules/knowledge/a-case-version-number-is-never-reused). There being no version, there is
+      nothing to derive either field from, and the frontend's choice to state the absence rather
+      than invent a value is the same discipline released_at's own conditional presence already
+      established in this specification.
+  - location: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.md
+    field: statement
+    unstated: >-
+      What the rule's own derivation answers for a case currently holding no version, since it
+      is stated only in terms of "the case's highest-numbered version."
+    decided: >-
+      version_count is zero and neither current_state nor last_updated is derived; both are
+      absent.
+    why: >-
+      Same material and reasoning as the case-summary.md entry above — the rule's statement and
+      description now say explicitly what was previously left to be inferred from a node that
+      presumed a version always exists.
 ---
