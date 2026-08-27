@@ -1,0 +1,972 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulation-cockpit",
+      "kind": "epic",
+      "file": "epic/simulation-cockpit.md",
+      "title": "Simulation cockpit",
+      "summary": "The route, the entry points into it, the mutation hooks, and the four screen regions that let a curator run and inspect a full-case or single-hypothesis simulation."
+    },
+    {
+      "id": "epic/subject-derivation",
+      "kind": "epic",
+      "file": "epic/subject-derivation.md",
+      "title": "Subject derivation",
+      "summary": "The subject a simulation runs against, derived in the frontend from the version's own collection plan through the capability and connector-configuration registries, and rendered for the curator to complete."
+    },
+    {
+      "id": "inventory/case-simulation-frontend-area",
+      "kind": "inventory",
+      "file": "inventory/case-simulation-frontend-area.md",
+      "title": "Case simulation screen area",
+      "summary": "The screen/ready-view/hooks triad, the route tree and app-shell label table, the mutation-hook precedent, the shared/TUI components, and the error-mapping table the new simulate route must extend."
+    },
+    {
+      "id": "task/simulation-cockpit/case-result-panel",
+      "kind": "task",
+      "file": "task/simulation-cockpit/case-result-panel.md",
+      "title": "Case result panel",
+      "summary": "Renders the outcome/referral/text of the last full-case run, the in-memory run history, and the compare and stale-marking behavior.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/case-simulation-route",
+      "kind": "task",
+      "file": "task/simulation-cockpit/case-simulation-route.md",
+      "title": "Simulation route and header",
+      "summary": "Registers the new route and renders the header identifying the version, its state, and its links.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/detail-panel",
+      "kind": "task",
+      "file": "task/simulation-cockpit/detail-panel.md",
+      "title": "Detail panel",
+      "summary": "Renders the selected hypothesis's verdict, criterion, evidence and judgment metadata across three tabs.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/hypotheses-table",
+      "kind": "task",
+      "file": "task/simulation-cockpit/hypotheses-table.md",
+      "title": "Hypotheses table",
+      "summary": "Renders the precedence-ordered StatusTable of every manifested hypothesis, its actions, and the last-run summary line and timing bar.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/screen-assembly",
+      "kind": "task",
+      "file": "task/simulation-cockpit/screen-assembly.md",
+      "title": "Screen assembly",
+      "summary": "Composes the header, subject, hypotheses, detail and case-result regions into one working cockpit with cross-region gating and stale-marking.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/simulate-entry-links",
+      "kind": "task",
+      "file": "task/simulation-cockpit/simulate-entry-links.md",
+      "title": "Simulate entry links",
+      "summary": "Adds the \"Simulate\" entry control to the version screen and to the Versions tab of the case screen.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/use-simulate-case",
+      "kind": "task",
+      "file": "task/simulation-cockpit/use-simulate-case.md",
+      "title": "use-simulate-case hook",
+      "summary": "Dispatches the simulate-case operation and exposes its full response, following the apiFetch/useMutation convention.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "task",
+      "file": "task/simulation-cockpit/use-simulate-hypothesis.md",
+      "title": "use-simulate-hypothesis hook",
+      "summary": "Dispatches the simulate-hypothesis operation and exposes exactly one evaluation, resolving no outcome.",
+      "epic": "simulation-cockpit"
+    },
+    {
+      "id": "task/subject-derivation/subject-panel",
+      "kind": "task",
+      "file": "task/subject-derivation/subject-panel.md",
+      "title": "Subject region",
+      "summary": "Renders the subject-type selector, the requester field, the derived required fields, the free-attribute control, and the raw-subject-JSON link.",
+      "epic": "subject-derivation"
+    },
+    {
+      "id": "task/subject-derivation/use-simulation-subject-hook",
+      "kind": "task",
+      "file": "task/subject-derivation/use-simulation-subject-hook.md",
+      "title": "use-simulation-subject hook",
+      "summary": "Derives the subject's required fields from a case version's collection plan through the capability and connector-configuration registries.",
+      "epic": "subject-derivation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/resolution",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/knowledge/referral",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/cost",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/simulation-cockpit",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/glossary/subject-type",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/subject-derivation",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "task/simulation-cockpit/use-simulate-case",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-result-panel",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-simulation-route",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-simulation-route",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-simulation-route",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/case-simulation-route",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/detail-panel",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/resolution",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/case-simulation-route",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/use-simulate-case",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "depends_on",
+      "at": "depends_on[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/hypotheses-table",
+      "kind": "depends_on",
+      "at": "depends_on[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/detail-panel",
+      "kind": "depends_on",
+      "at": "depends_on[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/case-result-panel",
+      "kind": "depends_on",
+      "at": "depends_on[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "task/subject-derivation/subject-panel",
+      "kind": "depends_on",
+      "at": "depends_on[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "rules/investigation/the-customer-sees-only-the-text",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/screen-assembly",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/simulate-entry-links",
+      "to": "task/simulation-cockpit/case-simulation-route",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/simulate-entry-links",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/simulate-entry-links",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "implements",
+      "at": "implements[14]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/knowledge/referral",
+      "kind": "implements",
+      "at": "implements[15]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/cost",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-case",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulation-cockpit/use-simulate-hypothesis",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "task/subject-derivation/use-simulation-subject-hook",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-derivation/subject-panel",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/glossary/subject-type",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/subject-derivation/use-simulation-subject-hook",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[9]"
+    }
+  ]
+}
