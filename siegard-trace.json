@@ -1646,6 +1646,10 @@
           "digest": "sha256:4c660f8822f5b655b7d64fee611d53f4af66a1b016a8370dcad515013e97d2d5"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+        },
+        {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
         },
@@ -1702,6 +1706,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -1780,6 +1788,10 @@
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -2438,6 +2450,10 @@
           "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -2470,6 +2486,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
           "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -3797,6 +3817,10 @@
       "node": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
       "digest": "sha256:25399d172f19ecd02a80a28c96ccc68cd0cab79f53f7edad40ba256c62a3c38a",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+        },
         {
           "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
           "digest": "sha256:9653b8c378e12e12060d2bcb07f51595db6615bc9ad0c06ae68746e5fae8e52b"
