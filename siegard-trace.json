@@ -944,10 +944,6 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
-        },
-        {
-          "path": "src/src/factories/author-case-version.factory.ts",
-          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
         }
       ]
     },
@@ -1218,10 +1214,6 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
-        },
-        {
-          "path": "src/src/factories/author-case-version.factory.ts",
-          "digest": "sha256:9e3495a3f6177a57d5a7378aef4664916d95ce68279718a2a7c5853154fed4d0"
         }
       ]
     },
@@ -1229,10 +1221,6 @@
       "node": "contracts/system/case-authoring",
       "digest": "sha256:f8fc5c0855f4c4311629e981cb63107122bf7216b5dc6b39fe0522a6b9902d6d",
       "files": [
-        {
-          "path": "src/src/case/author-case-version.service.ts",
-          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
-        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
@@ -4428,10 +4416,6 @@
       "digest": "sha256:df11e0cf29f5361fb9f82ad56bf88db3f8463ce6ce25bf3cfd63d7de364cff99",
       "files": [
         {
-          "path": "src/src/case/author-case-version.service.ts",
-          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
-        },
-        {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
         },
@@ -4449,10 +4433,6 @@
       "node": "rules/knowledge/validation-runs-at-every-read",
       "digest": "sha256:d23c3ea3ac2b08f3c477641ff601f37f513c678160e0078cee69d95633eda8b7",
       "files": [
-        {
-          "path": "src/src/case/author-case-version.service.ts",
-          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
-        },
         {
           "path": "src/src/case/case-query.service.ts",
           "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
@@ -4557,10 +4537,6 @@
       "node": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
       "digest": "sha256:852bddaee0e2ce41fd1c89b16f67aff0d1a08df281565afc747970724fea6e4f",
       "files": [
-        {
-          "path": "src/src/case/author-case-version.service.ts",
-          "digest": "sha256:cb983a8a5891458ad2606da4d920d70ffe796d6844a4172ca378a09104302ef4"
-        },
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
