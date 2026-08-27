@@ -73,6 +73,12 @@ function newQueryClient(): QueryClient {
 // Versions tab's own two Link destinations; duplicated here (rather than
 // imported, since that file exports nothing) for this task's own new tab
 // strip assertions over the same screen.
+//
+// task/simulation-cockpit/simulate-entry-links's own criterion 2 adds a
+// second Link per Versions-tab row, to "/cases/$slug/versions/$version/
+// simulate" -- registered here as one more dummy leaf, the same reasoning
+// caseVersionRoute and newDraftRoute already give: so that Link has a real
+// route to resolve an href against.
 export async function mountCaseDetailScreen(
   fetchMock: FetchFn,
   initialPath: string = `/cases/${SLUG}`,
@@ -94,7 +100,17 @@ export async function mountCaseDetailScreen(
     path: "/cases/$slug/versions/new",
     component: () => null,
   });
-  const routeTree = rootRoute.addChildren([caseDetailRoute, caseVersionRoute, newDraftRoute]);
+  const simulateRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/$version/simulate",
+    component: () => createElement("div", null, "Simulation Cockpit Placeholder"),
+  });
+  const routeTree = rootRoute.addChildren([
+    caseDetailRoute,
+    caseVersionRoute,
+    newDraftRoute,
+    simulateRoute,
+  ]);
   const router = createRouter({
     routeTree,
     history: createMemoryHistory({ initialEntries: [initialPath] }),

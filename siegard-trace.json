@@ -894,6 +894,10 @@
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
         },
         {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:67e3f921c245f51907123f7c28c478bf142937758aab48872a1da04a31f81f70"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
           "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
         },
@@ -924,6 +928,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-ready-view.tsx",
           "digest": "sha256:46092a978d98375fce89a19649fe543a2262f7a4f9f33e92700fa04752b845a8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-version-editor-screen.tsx",
+          "digest": "sha256:a12e62959199328732b2b73a4212038023b2579bc14e931684a28c95d0b078ed"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",

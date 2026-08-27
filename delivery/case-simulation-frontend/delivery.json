@@ -42,6 +42,14 @@
       "task": "task/simulation-cockpit/screen-assembly"
     },
     {
+      "id": "implementation/simulation-cockpit/simulate-entry-links",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/simulate-entry-links.md",
+      "title": "Simulate entry links",
+      "summary": "Adds a 'Simulate' navigation Link to the version screen and to the Versions tab of the case screen, each targeting that exact version's own simulation cockpit route, unconditional of the version's draft or released state.",
+      "task": "task/simulation-cockpit/simulate-entry-links"
+    },
+    {
       "id": "implementation/simulation-cockpit/use-simulate-case",
       "kind": "implementation",
       "file": "implementation/simulation-cockpit/use-simulate-case.md",
@@ -112,6 +120,14 @@
       "title": "Screen assembly proof",
       "summary": "Proves the composed case-simulation cockpit's cross-region gating, shared subject, per-hypothesis evaluation merging, case-result population, dispatch-error exclusivity and return-from-editing staleness mechanism, at both the hook and the fully-rendered-view level, and rewrites the superseded placeholder-wiring proof.",
       "task": "task/simulation-cockpit/screen-assembly"
+    },
+    {
+      "id": "proof/simulation-cockpit/simulate-entry-links",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/simulate-entry-links.md",
+      "title": "Simulate entry links — proof",
+      "summary": "Tests that the version screen and the case screen's Versions tab each show an unconditional Simulate control navigating to that exact version's own simulation route, in both draft and released state.",
+      "task": "task/simulation-cockpit/simulate-entry-links"
     },
     {
       "id": "proof/simulation-cockpit/use-simulate-case",
@@ -436,6 +452,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-cockpit/simulate-entry-links",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/simulate-entry-links",
+      "to": "task/simulation-cockpit/simulate-entry-links",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/simulation-cockpit/use-simulate-case",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -714,6 +742,12 @@
     {
       "from": "proof/simulation-cockpit/screen-assembly",
       "to": "implementation/simulation-cockpit/screen-assembly",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/simulate-entry-links",
+      "to": "implementation/simulation-cockpit/simulate-entry-links",
       "kind": "proves",
       "at": "the path"
     },

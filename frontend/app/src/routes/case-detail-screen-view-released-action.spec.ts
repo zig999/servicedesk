@@ -40,7 +40,7 @@ describe("CaseDetailScreen's Versions tab actions cell — a released row's own 
 });
 
 describe("CaseDetailScreen's Versions tab actions cell — a draft row's own action (criterion 2)", () => {
-  it("renders only Continue editing on a draft version's row, never a View action", async () => {
+  it("renders Continue editing and Simulate on a draft version's row, never a View action", async () => {
     const versions = [{ version: 2, state: "draft" }];
     const fetchMock = createFetchStub({
       [VERSIONS_PATH]: () => jsonResponse({ data: versions }),
@@ -52,8 +52,13 @@ describe("CaseDetailScreen's Versions tab actions cell — a draft row's own act
     const draftRow = rows[1];
     expect(within(draftRow).getByRole("link", { name: "Continue editing" })).toBeTruthy();
     expect(within(draftRow).queryByRole("link", { name: "View" })).toBeNull();
-    // Exactly one action link on this row -- never both.
-    expect(within(draftRow).getAllByRole("link")).toHaveLength(1);
+    // task/simulation-cockpit/simulate-entry-links's own criterion 2 adds a
+    // second, unconditional Simulate action beside this row's own
+    // Continue-editing/View branch -- so a draft row now carries exactly
+    // two action links (Continue editing, Simulate), never a third and
+    // never the released row's own View instead of Continue editing.
+    expect(within(draftRow).getByRole("link", { name: "Simulate" })).toBeTruthy();
+    expect(within(draftRow).getAllByRole("link")).toHaveLength(2);
   });
 });
 
