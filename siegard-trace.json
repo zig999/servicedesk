@@ -2124,6 +2124,10 @@
           "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+        },
+        {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
         },
@@ -2206,6 +2210,10 @@
           "digest": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647"
         },
         {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+        },
+        {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
         },
@@ -2238,6 +2246,10 @@
         {
           "path": "src/src/investigation/durations.ts",
           "digest": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794"
+        },
+        {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -2308,6 +2320,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -2400,6 +2416,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -2544,6 +2564,10 @@
         {
           "path": "src/src/investigation/investigation-factory.ts",
           "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
+        },
+        {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -3526,6 +3550,10 @@
         {
           "path": "src/src/http/dto/update-draft.dto.ts",
           "digest": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f"
+        },
+        {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         }
       ]
     },
@@ -3956,6 +3984,10 @@
           "digest": "sha256:59c5b2d6c205cf731d8896a0e3354973ebe4bc57660947c2bddf2583d52f3c18"
         },
         {
+          "path": "src/src/investigation/investigation-pipeline.ts",
+          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+        },
+        {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
         }
@@ -4183,7 +4215,7 @@
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },

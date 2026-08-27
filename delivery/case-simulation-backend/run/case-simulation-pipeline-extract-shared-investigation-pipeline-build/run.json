@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/case-simulation-pipeline-extract-shared-investigation-pipeline-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T23:47:09.228+00:00",
+      "ended_at": "2026-08-27T23:47:16.101+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-27T23:47:16.101+00:00",
+      "ended_at": "2026-08-27T23:47:21.171+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-27T23:47:21.171+00:00",
+      "ended_at": "2026-08-27T23:47:25.133+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-27T23:47:25.133+00:00",
+      "ended_at": "2026-08-27T23:47:25.554+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
