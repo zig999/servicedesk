@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "implementation",
+      "file": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
+      "title": "diagnose refuses a draft-state case version",
+      "summary": "A new CaseVersionNotReleasedError refuses POST /v1/diagnose against a draft-state pinned case version, registered in status-map.ts's STATUS_BY_ERROR_CLASS as 409, checked in the controller before the pipeline is ever called.",
+      "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
+    },
+    {
+      "id": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "proof",
+      "file": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
+      "title": "proof — diagnose refuses a draft-state case version",
+      "summary": "Nine vitest tests across three files prove that a draft-pinned diagnose request is refused with CaseVersionNotReleasedError before the pipeline runs, that the error is registered in status-map.ts at 409, and that a released-pinned request proceeds unchanged, both at the unit level and on the wire.",
+      "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "to": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

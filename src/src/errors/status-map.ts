@@ -36,7 +36,13 @@
 // rules/integration/one-capability-answers-one-concept), or a
 // test-connector request naming a connector the capability's own connector
 // does not match (CapabilityConnectorMismatchError,
-// task/connector-diagnostics/test-connector-route, criterion 4)
+// task/connector-diagnostics/test-connector-route, criterion 4), or a
+// diagnose request pinned to a draft-state case version
+// (CaseVersionNotReleasedError,
+// rules/investigation/only-a-released-case-version-is-diagnosed) — this
+// project's own engineering choice, the same way every other entry in this
+// group already is, since this refusal's status is not something any
+// specification node fixes
 // — answers 409 Conflict; a request that is well-formed but would violate a
 // business invariant were it applied — a release whose validator rules did
 // not all pass, a removal that would leave a manifest holding no hypothesis,
@@ -72,6 +78,7 @@ import { CaseNotFoundError } from './case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from './case-version-not-releasable.error.js';
+import { CaseVersionNotReleasedError } from './case-version-not-released.error.js';
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
@@ -91,7 +98,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty extends another, so that never arises today.
+ * twenty-one extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -107,6 +114,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [CaseVersionNotDraftAtReleaseError, 409],
   [ConceptAlreadyAnsweredError, 409],
   [CapabilityConnectorMismatchError, 409],
+  [CaseVersionNotReleasedError, 409],
   [CaseVersionNotReleasableError, 422],
   [ManifestWouldHoldNoHypothesisError, 422],
   [IncompleteCapabilityContractError, 422],

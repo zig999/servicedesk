@@ -9,10 +9,18 @@
 // where every one of them is built. The requester this call runs under is
 // exactly request.body.requester: nothing here reads a header, a session or
 // any other identity of its own, so there is no authentication or
-// authorization surface for SEC-01 to reach.
+// authorization surface for SEC-01 to reach. The one refusal this handler
+// does raise on its own — a draft-state pinned version — decides nothing
+// itself: it names a state the pinned case already carries against the one
+// rule that forbids diagnosing it
+// (rules/investigation/only-a-released-case-version-is-diagnosed), the same
+// way EDG-04 already asks an operation attempted against forbidding state to
+// be refused before any write, here before the pipeline this handler calls
+// ever starts.
 
 import { randomUUID } from 'node:crypto';
 import type { ICaseQuery } from '../case/case-query.port.js';
+import { CaseVersionNotReleasedError } from '../errors/case-version-not-released.error.js';
 import type { Assessment } from '../investigation/assessment.js';
 import type { Cost } from '../investigation/cost.js';
 import type { Durations } from '../investigation/durations.js';
@@ -45,15 +53,20 @@ export type DiagnoseControllerDependencies = {
 /**
  * Handles one diagnose request end to end: reads the pinned case by the
  * request's own slug and version through the published case-query
- * (contracts/knowledge/case-query), assembles the one still-missing
- * ProductionDiagnoseCall fields this route itself owns — a fresh id, the
- * configured model and prompt version, and the not-yet-measured cost/duration
- * placeholders above — and answers with the resulting Assessment unchanged.
- * A request naming no ticket_ref runs the same way as one that supplies it:
- * body.ticket_ref travels through exactly as the request carried it —
- * undefined where none was given — since ProductionDiagnoseCall's own
- * ticket_ref is optional and no node states a placeholder wire
- * representation for its absence
+ * (contracts/knowledge/case-query), refuses before the pipeline ever runs
+ * where that version is still in draft state
+ * (rules/investigation/only-a-released-case-version-is-diagnosed,
+ * scenarios/investigation/a-draft-case-version-refuses-diagnosis) —
+ * collection, judgment and writing all sit behind runDiagnose, so this check
+ * ahead of that call is what keeps them from ever starting — assembles the
+ * one still-missing ProductionDiagnoseCall fields this route itself owns —
+ * a fresh id, the configured model and prompt version, and the
+ * not-yet-measured cost/duration placeholders above — and answers with the
+ * resulting Assessment unchanged. A request naming no ticket_ref runs the
+ * same way as one that supplies it: body.ticket_ref travels through exactly
+ * as the request carried it — undefined where none was given — since
+ * ProductionDiagnoseCall's own ticket_ref is optional and no node states a
+ * placeholder wire representation for its absence
  * (task/case-and-investigation-model/ticket-ref-is-optional).
  */
 export async function handleDiagnoseRequest(
@@ -61,6 +74,9 @@ export async function handleDiagnoseRequest(
   body: DiagnoseRequestDto,
 ): Promise<DiagnoseResponseDto> {
   const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version);
+  if (pinnedCase.state !== 'released') {
+    throw new CaseVersionNotReleasedError(pinnedCase.slug, pinnedCase.version, pinnedCase.state);
+  }
   return dependencies.runDiagnose({
     id: randomUUID(),
     requester: body.requester,
