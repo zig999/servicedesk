@@ -2,6 +2,13 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/cases-list-screen-stale-comment",
+      "kind": "epic",
+      "file": "epic/cases-list-screen-stale-comment.md",
+      "title": "CaseSummary comment cites what the specification now decides",
+      "summary": "The one corrective task that corrects cases-list-screen.tsx's CaseSummary JSDoc to cite domain/knowledge/case-summary and rules/knowledge/a-case-summary-is-derived-from-its-existing-versions as they now stand, instead of the stale \"no governing node addresses\" / \"this task's own inference\" claims an /analyse since made false."
+    },
+    {
       "id": "epic/connector-configuration-warning-text",
       "kind": "epic",
       "file": "epic/connector-configuration-warning-text.md",
@@ -21,6 +28,14 @@
       "file": "epic/subject-field-fixed-bug.md",
       "title": "Case-version subject field correctable while draft",
       "summary": "The one corrective task that makes case-version-editor-form-fields.tsx's subject field honor disabled={isBlocked} like every other declared-attribute field, instead of a layout reference's own \"fixed/disabled\" call overriding what the specification actually decided."
+    },
+    {
+      "id": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "kind": "task",
+      "file": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes.md",
+      "title": "CaseSummary's JSDoc cites the specification's own current statement, not a stale inference claim",
+      "summary": "cases-list-screen.tsx's CaseSummary type comment no longer says the zero-version case \"is an edge no governing node addresses\" or \"this task's own inference\" — it cites domain/knowledge/case-summary and rules/knowledge/a-case-summary-is-derived-from-its-existing-versions's own current, decided statement of that case.",
+      "epic": "cases-list-screen-stale-comment"
     },
     {
       "id": "task/connector-configuration-warning-text/warning-states-the-object-requirement",
@@ -49,6 +64,18 @@
   ],
   "edges": [
     {
+      "from": "epic/cases-list-screen-stale-comment",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/cases-list-screen-stale-comment",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
       "from": "epic/connector-configuration-warning-text",
       "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "kind": "covers",
@@ -65,6 +92,18 @@
       "to": "domain/knowledge/case-version",
       "kind": "covers",
       "at": "covers[0]"
+    },
+    {
+      "from": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "domain/knowledge/case-summary",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/cases-list-screen-stale-comment/comment-cites-the-current-nodes",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-configuration-warning-text/warning-states-the-object-requirement",
