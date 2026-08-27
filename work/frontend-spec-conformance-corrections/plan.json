@@ -1,0 +1,34 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/subject-field-fixed-bug",
+      "kind": "epic",
+      "file": "epic/subject-field-fixed-bug.md",
+      "title": "Case-version subject field correctable while draft",
+      "summary": "The one corrective task that makes case-version-editor-form-fields.tsx's subject field honor disabled={isBlocked} like every other declared-attribute field, instead of a layout reference's own \"fixed/disabled\" call overriding what the specification actually decided."
+    },
+    {
+      "id": "task/subject-field-fixed-bug/subject-follows-isblocked",
+      "kind": "task",
+      "file": "task/subject-field-fixed-bug/subject-follows-isblocked.md",
+      "title": "Subject field honors isBlocked like every other declared attribute",
+      "summary": "case-version-editor-form-fields.tsx's subject field is editable while a draft is not blocked, and its label stops asserting the field is fixed.",
+      "epic": "subject-field-fixed-bug"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/subject-field-fixed-bug",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/subject-field-fixed-bug/subject-follows-isblocked",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
