@@ -2,11 +2,26 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/new-case-draft-screen-stale-subject-tests",
+      "kind": "epic",
+      "file": "epic/new-case-draft-screen-stale-subject-tests.md",
+      "title": "NewCaseDraftScreen's stale subject-field test assertions corrected",
+      "summary": "The one corrective task that updates four pre-existing test assertions, delivered under the closed frontend-bootstrap initiative, to match the subject field's now-correct shared behavior rather than the bug task/subject-field-fixed-bug/subject-follows-isblocked already removed."
+    },
+    {
       "id": "epic/subject-field-fixed-bug",
       "kind": "epic",
       "file": "epic/subject-field-fixed-bug.md",
       "title": "Case-version subject field correctable while draft",
       "summary": "The one corrective task that makes case-version-editor-form-fields.tsx's subject field honor disabled={isBlocked} like every other declared-attribute field, instead of a layout reference's own \"fixed/disabled\" call overriding what the specification actually decided."
+    },
+    {
+      "id": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "task",
+      "file": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix.md",
+      "title": "NewCaseDraftScreen's subject-field tests match the shared component's corrected behavior",
+      "summary": "Four test assertions in new-case-draft-screen-seed.spec.ts and new-case-draft-screen.spec.ts, still asserting the pre-fix \"subject permanently disabled/labeled (fixed)\" behavior, now match the shared field component's current, correct behavior.",
+      "epic": "new-case-draft-screen-stale-subject-tests"
     },
     {
       "id": "task/subject-field-fixed-bug/subject-follows-isblocked",
@@ -19,10 +34,22 @@
   ],
   "edges": [
     {
+      "from": "epic/new-case-draft-screen-stale-subject-tests",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
       "from": "epic/subject-field-fixed-bug",
       "to": "domain/knowledge/case-version",
       "kind": "covers",
       "at": "covers[0]"
+    },
+    {
+      "from": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/subject-field-fixed-bug/subject-follows-isblocked",
