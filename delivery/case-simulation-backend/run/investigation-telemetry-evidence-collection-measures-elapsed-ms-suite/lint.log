@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src/src/__tests__/unit/investigation/evidence-collection-stage.spec.ts
+  549:254  error  Async arrow function has too many lines (32). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+

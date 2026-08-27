@@ -293,6 +293,11 @@ function expectedOkEvidence(concept: string, observation: string): Evidence {
     result: 'ok',
     capability_name: `capability-for-${concept}`,
     capability_version: '1.0.0',
+    // Fake timers stay frozen for the whole synchronous, microtask-only
+    // path this stage's own ok branch takes (no setTimeout ever needs to
+    // fire), so attemptStartedAt and the settling Date.now() read the same
+    // instant and elapsed_ms is always exactly 0 here.
+    elapsed_ms: 0,
   };
 }
 
@@ -583,8 +588,24 @@ it('tightens judgment\'s own deadline to no more than what remains of the declar
 });
 
 it('forwards its own (now, deadline) pair into collection unmodified, letting a call finish just under a tight propagated deadline', async () => {
+  // DelayedObservationSource(190, …) genuinely advances the fake clock by
+  // 190ms before resolving, so the evidence this call actually produces
+  // carries elapsed_ms: 190 — not the frozen-clock elapsed_ms: 0
+  // baseConsolidator()'s default seeds via expectedOkEvidence(). This test
+  // seeds its own consolidator fixture keyed on that real elapsed_ms,
+  // instead of relying on baseOptions()'s zero-elapsed_ms default.
+  const consolidator = new FakeAssessmentConsolidator();
+  consolidator.seed(
+    {
+      evaluations: [CONFIRMED_H1_EVALUATION],
+      evidence: [{ ...expectedOkEvidence('concept-a', 'observed-concept-a'), elapsed_ms: 190 }],
+      consolidationRegister: 'plain',
+    },
+    HAPPY_PATH_TEXT,
+  );
   const options = baseOptions({
     observationSource: new DelayedObservationSource(190, { result: 'ok', observation: 'observed-concept-a' }),
+    consolidator,
     now: 0,
     deadline: 200,
   });

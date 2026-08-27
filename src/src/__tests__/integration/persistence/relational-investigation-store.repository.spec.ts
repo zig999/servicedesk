@@ -173,6 +173,7 @@ function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][n
     result: 'ok',
     capability_name: fixtures.capabilityName,
     capability_version: fixtures.capabilityVersion,
+    elapsed_ms: 12,
   };
 }
 

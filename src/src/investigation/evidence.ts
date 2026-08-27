@@ -45,4 +45,13 @@ export type Evidence = {
   readonly result_detail?: string;
   readonly capability_name: string;
   readonly capability_version: string;
+  /**
+   * How long this one concept's own collection attempt took, in
+   * milliseconds, whatever the result (ok, unavailable, denied or timeout) —
+   * the same unit domain/investigation/durations already keeps its own
+   * stage totals in (domain/investigation/evidence). Assembled by
+   * evidence-collection-stage.ts's own evidenceOf() on every branch it can
+   * return, never left off.
+   */
+  readonly elapsed_ms: number;
 };

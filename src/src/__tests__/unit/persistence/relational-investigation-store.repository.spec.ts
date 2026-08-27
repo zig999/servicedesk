@@ -119,6 +119,7 @@ function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, un
     result_detail: null,
     capability_name: 'a-capability',
     capability_version: '1.0.0',
+    elapsed_ms: 12,
     ...overrides,
   };
 }
@@ -145,6 +146,7 @@ function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
     result: 'ok',
     capability_name: 'a-capability',
     capability_version: '1.0.0',
+    elapsed_ms: 12,
     ...overrides,
   };
 }
@@ -274,7 +276,7 @@ it("carries each evidence item's capability_name and capability_version pin into
   const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
   expect(evidenceInsert?.params).toEqual([
     investigation.id, 'a-concept', 'serialized-inputs', 'an-observation', '2024-01-01T00:00:00.000Z', 60, 'a-connector', 'ok', null,
-    'a-registered-capability', '2.0.0',
+    'a-registered-capability', '2.0.0', 12,
   ]);
 });
 
@@ -597,5 +599,40 @@ it('answers ticket_ref as the empty string when the stored column itself is a SQ
   const answered = (await store.read('an-investigation-id'))?.document as Investigation;
 
   expect(answered.ticket_ref).toBe('');
+});
+
+// ---------------------------------------------------------------- task/investigation-telemetry/evidence-collection-measures-elapsed-ms
+//
+// The whole-object tests above (criterion 1's own params assertion, criterion 6's own read
+// assembly) already carry elapsed_ms through their fixtures' shared defaults, but a mismatch
+// on any of their other eleven fields would fail them for that unrelated reason too. The two
+// tests below isolate this task's own persistence-round-trip inference — that
+// RelationalInvestigationStore's evidenceStatement() and evidenceOf(row) needed to change even
+// though this file sits outside this task's own inventory node area — to elapsed_ms alone, on
+// each side of the round trip.
+
+it("sends the evidence item's own elapsed_ms as the evidence insert's own last param, not silently dropped from the row this store persists", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const investigation = anInvestigation({ evidence: [anEvidence({ elapsed_ms: 4_321 })] });
+
+  await store.write(investigation);
+
+  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
+  expect(evidenceInsert?.params?.at(-1)).toBe(4_321);
+});
+
+it("assembles the stored row's own elapsed_ms into the read Evidence's own elapsed_ms, rather than a value carried over from another column", async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evidence: [evidenceRow({ elapsed_ms: 777 })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evidence[0]?.elapsed_ms).toBe(777);
 });
 

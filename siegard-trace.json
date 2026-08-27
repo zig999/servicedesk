@@ -2145,11 +2145,15 @@
     },
     {
       "node": "domain/investigation/evidence",
-      "digest": "sha256:160c028d837c1c601e865af333feb0591470b4db55252835eda9708c67b95916",
+      "digest": "sha256:f303758283dd6b27d2b5f02ccaaa1fc66e3d265002f54dd4c119baf3120ef684",
       "files": [
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
+          "path": "src/migrations/0011-investigation-evidence-elapsed-ms.sql",
+          "digest": "sha256:29683bb8fad29678220be501898cd0155be388e81ede47c8981e9492796bd483"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
@@ -2157,7 +2161,11 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
+        },
+        {
+          "path": "src/src/investigation/evidence.ts",
+          "digest": "sha256:54a73e7fc52251d4425f2e86cf29326610942736f943665e5e73d33f323dbced"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -2173,7 +2181,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:5893bbb1f939b2f0370b9a82a5c39c3ce737cce968015c20278288f6fe0c8dcb"
+          "digest": "sha256:4c41d74c94cebc18dbd328acbce5f18785171a50cf86bdcbfc490de6c633a2c0"
         }
       ]
     },

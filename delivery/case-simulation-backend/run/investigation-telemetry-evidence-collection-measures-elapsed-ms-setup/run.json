@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/investigation-telemetry-evidence-collection-measures-elapsed-ms-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T11:38:24.187+00:00",
+      "ended_at": "2026-08-27T11:38:27.728+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

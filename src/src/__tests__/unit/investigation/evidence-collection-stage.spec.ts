@@ -152,6 +152,30 @@ class DelayedCapabilityQuery implements ICapabilityQuery {
   }
 }
 
+/**
+ * Answers "no capability held" for whatever concept it is asked about, but
+ * only after the given delay under fake timers — for a proof that elapsed_ms
+ * on the unavailable-because-nothing-answers ending counts the capability
+ * read itself, since that read is the whole of this concept's own attempt
+ * where nothing is held to observe with
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ */
+class DelayedUnheldCapabilityQuery implements ICapabilityQuery {
+  public constructor(private readonly delayMs: number) {}
+
+  public async readCapability(concept: string): Promise<CapabilityResolution> {
+    await new Promise<void>((resolve) => setTimeout(resolve, this.delayMs));
+    return { held: false, concept };
+  }
+
+  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface,
+  // the same convention DelayedCapabilityQuery's own stub above keeps: this
+  // file's own scenarios never call listCapabilities.
+  public async listCapabilities(): Promise<never> {
+    throw new Error('DelayedUnheldCapabilityQuery.listCapabilities is not scripted for this file');
+  }
+}
+
 /** Answers whatever handler a test scripted for the concept, recording every call it received — a stand-in for the observation-source port whose per-concept timing a test controls directly, rather than through a real delay. */
 class ScriptedObservationSource implements IObservationSource {
   public readonly calls: Array<{ readonly concept: string; readonly requester: string }> = [];
@@ -171,6 +195,17 @@ class ScriptedObservationSource implements IObservationSource {
 /** A ScriptedObservationSource handler answering ok with the given observation after delayMs — for a concept whose own settling a test controls precisely. */
 function resolvesAfter(delayMs: number, observation: string): () => Promise<ObservationOutcome> {
   return () => new Promise((resolve) => setTimeout(() => resolve({ result: 'ok', observation }), delayMs));
+}
+
+/**
+ * A ScriptedObservationSource handler answering the given outcome — of any
+ * of the four evidence-result endings observe-concept itself may answer —
+ * after delayMs, for a proof that elapsed_ms on that ending is the real time
+ * this took, not a default or the stage's own ceiling
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ */
+function answersAfter(delayMs: number, outcome: ObservationOutcome): () => Promise<ObservationOutcome> {
+  return () => new Promise((resolve) => setTimeout(() => resolve(outcome), delayMs));
 }
 
 /** A ScriptedObservationSource handler that never settles — for a concept a test forces to reach the stage's own race timeout. */
@@ -226,8 +261,20 @@ function expectedInputs(context: EvidenceContext): string {
   return JSON.stringify({ concept: context.concept, subject: context.subject, requester: context.requester });
 }
 
-/** The full Evidence a held capability's ok observation assembles. */
-function expectedOkEvidence(context: EvidenceContext & { readonly capability: Capability }, observation: string) {
+/**
+ * The full Evidence a held capability's ok observation assembles.
+ * elapsed_ms defaults to 0: every call site in this file that reaches this
+ * ending settles through a plain microtask chain (FakeCapabilityQuery,
+ * FakeObservationSource) with no vi.advanceTimersByTimeAsync between the
+ * stage's own attemptStartedAt and this ending being determined, so under
+ * this file's own vi.useFakeTimers() discipline Date.now() reads the same
+ * frozen instant twice (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ */
+function expectedOkEvidence(
+  context: EvidenceContext & { readonly capability: Capability },
+  observation: string,
+  elapsedMs: number = 0,
+) {
   return {
     concept: context.concept,
     inputs: expectedInputs(context),
@@ -238,15 +285,26 @@ function expectedOkEvidence(context: EvidenceContext & { readonly capability: Ca
     result: 'ok' as const,
     capability_name: context.capability.name,
     capability_version: context.capability.version,
+    elapsed_ms: elapsedMs,
   };
 }
 
-/** The full Evidence a held capability's denied, timed-out or observation-reported-unavailable ending assembles: an empty observation, and a result_detail only where one was given. */
+/**
+ * The full Evidence a held capability's denied, timed-out or
+ * observation-reported-unavailable ending assembles: an empty observation,
+ * and a result_detail only where one was given. options.elapsedMs defaults
+ * to 0 for the same reason expectedOkEvidence's does; the one call site that
+ * races the stage's own timeout across a real fake-timer advance passes its
+ * own elapsed figure explicitly. Both trail in one object, keeping this
+ * helper at three positional parameters
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ */
 function expectedNonOkEvidence(
   context: EvidenceContext & { readonly capability: Capability },
   result: 'denied' | 'timeout' | 'unavailable',
-  resultDetail?: string,
+  options: { readonly resultDetail?: string; readonly elapsedMs?: number } = {},
 ) {
+  const { resultDetail, elapsedMs = 0 } = options;
   return {
     concept: context.concept,
     inputs: expectedInputs(context),
@@ -258,10 +316,17 @@ function expectedNonOkEvidence(
     ...(resultDetail === undefined ? {} : { result_detail: resultDetail }),
     capability_name: context.capability.name,
     capability_version: context.capability.version,
+    elapsed_ms: elapsedMs,
   };
 }
 
-/** The full Evidence this stage assembles for a concept nothing currently answers. */
+/**
+ * The full Evidence this stage assembles for a concept nothing currently
+ * answers. elapsed_ms is always 0 here: every call site reaches this ending
+ * through FakeCapabilityQuery's own plain microtask resolution, with no
+ * fake-timer advance between attemptStartedAt and this ending being
+ * determined (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ */
 function expectedUnavailableEvidence(context: EvidenceContext, resultDetail: string) {
   return {
     concept: context.concept,
@@ -274,6 +339,7 @@ function expectedUnavailableEvidence(context: EvidenceContext, resultDetail: str
     result_detail: resultDetail,
     capability_name: '',
     capability_version: '',
+    elapsed_ms: 0,
   };
 }
 
@@ -408,7 +474,7 @@ it.each([
     });
 
     const context = { concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(0).toISOString() };
-    expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', cause)]);
+    expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable', { resultDetail: cause })]);
   },
 );
 
@@ -480,14 +546,24 @@ it("drops a result_detail the observation reported on its own timeout ending, di
   expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'timeout')]);
 });
 
-it('records a timeout at the stage\'s own seven-second ceiling for a capability declaring ten seconds, unaffected by the three seconds its own declared timeout still had left (scenarios/investigation/a-slow-capability-yields-to-the-collection-budget)', async () => {
+/**
+ * Runs collectEvidence for a single capability declaring a ten-second timeout whose observation
+ * never settles, advancing fake time by the stage's own budget so the race resolves at the
+ * stage's own ceiling rather than the capability's declared one — pulled into its own function
+ * only so the test below stays inside the standard's max-lines-per-function rule; the setup and
+ * behavior are exactly what that test's own body ran before this split (this delivery's own
+ * inference — the extraction changes nothing but where the lines are counted).
+ */
+async function collectEvidenceAtTheStageBudget(
+  concept: string,
+): Promise<{ readonly result: Awaited<ReturnType<typeof collectEvidence>>; readonly capability: Capability }> {
   const capabilities = new FakeCapabilityQuery();
-  const capability = aCapability({ concept: 'equipment-state', timeout: 10_000 });
+  const capability = aCapability({ concept, timeout: 10_000 });
   capabilities.hold(capability);
   const observationSource = new ScriptedObservationSource(
-    new Map([['equipment-state', () => new Promise<ObservationOutcome>(() => {})]]),
+    new Map([[concept, () => new Promise<ObservationOutcome>(() => {})]]),
   );
-  const theCase = aCase([{ name: 'h1', collects: ['equipment-state'] }]);
+  const theCase = aCase([{ name: 'h1', collects: [concept] }]);
 
   const resultPromise = collectEvidence({
     case: theCase,
@@ -500,6 +576,11 @@ it('records a timeout at the stage\'s own seven-second ceiling for a capability 
   });
   await vi.advanceTimersByTimeAsync(COLLECTION_STAGE_BUDGET_MS);
   const result = await resultPromise;
+  return { result, capability };
+}
+
+it('records a timeout at the stage\'s own seven-second ceiling for a capability declaring ten seconds, unaffected by the three seconds its own declared timeout still had left (scenarios/investigation/a-slow-capability-yields-to-the-collection-budget)', async () => {
+  const { result, capability } = await collectEvidenceAtTheStageBudget('equipment-state');
 
   const context = {
     concept: 'equipment-state',
@@ -508,7 +589,10 @@ it('records a timeout at the stage\'s own seven-second ceiling for a capability 
     observedAt: new Date(0).toISOString(),
   };
   expect(result).toEqual([
-    expectedNonOkEvidence({ ...context, capability }, 'timeout', `no observation within ${COLLECTION_STAGE_BUDGET_MS}ms`),
+    expectedNonOkEvidence({ ...context, capability }, 'timeout', {
+      resultDetail: `no observation within ${COLLECTION_STAGE_BUDGET_MS}ms`,
+      elapsedMs: COLLECTION_STAGE_BUDGET_MS,
+    }),
   ]);
 });
 
@@ -533,7 +617,7 @@ it('records a timeout at a ceiling smaller than the nominal seven seconds when t
   await vi.advanceTimersByTimeAsync(3_000);
   const result = await resultPromise;
 
-  expect(result[0]).toMatchObject({ result: 'timeout', result_detail: 'no observation within 3000ms' });
+  expect(result[0]).toMatchObject({ result: 'timeout', result_detail: 'no observation within 3000ms', elapsed_ms: 3_000 });
 });
 
 it('clamps the effective bound to zero, timing out immediately, once the propagated deadline has already elapsed by the time the stage starts', async () => {
@@ -557,7 +641,7 @@ it('clamps the effective bound to zero, timing out immediately, once the propaga
   await vi.advanceTimersByTimeAsync(0);
   const result = await resultPromise;
 
-  expect(result[0]).toMatchObject({ result: 'timeout', result_detail: 'no observation within 0ms' });
+  expect(result[0]).toMatchObject({ result: 'timeout', result_detail: 'no observation within 0ms', elapsed_ms: 0 });
 });
 
 it("propagates the stage's own seven-second budget as observe-concept's remaining-budget bound for every concept, rather than leaving a capability's own longer declared timeout to reach the call ungoverned (rules/investigation/collection-has-its-own-budget-within-the-total)", async () => {
@@ -784,6 +868,127 @@ it("keeps the effective observation bound at the stage's own fixed seven-second 
     result: 'timeout',
     result_detail: `no observation within ${COLLECTION_STAGE_BUDGET_MS}ms`,
   });
+});
+
+// --------------------------------------------------------------- elapsed_ms
+// (task/investigation-telemetry/evidence-collection-measures-elapsed-ms):
+// evidenceOf()/EvidenceEnding carries a per-concept elapsed_ms on every one
+// of the four evidence-result endings, measured as real wall-clock duration
+// from this concept's own attemptStartedAt (before the capability read) to
+// the moment its own ending is determined — no part of the deadline/budget
+// computation above, which the tests above already exercise on their own.
+
+it('carries a defined, non-negative integer elapsed_ms on every Evidence item, whatever its result (ok, unavailable, denied, timeout)', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'ok-concept' }));
+  capabilities.hold(aCapability({ concept: 'denied-concept' }));
+  capabilities.hold(aCapability({ concept: 'timeout-concept', timeout: 20_000 }));
+  const observationSource = new ScriptedObservationSource(
+    new Map([
+      ['ok-concept', async () => ({ result: 'ok' as const, observation: 'observed' })],
+      ['denied-concept', async () => ({ result: 'denied' as const })],
+      ['timeout-concept', neverSettles],
+    ]),
+  );
+  const theCase = aCase([
+    { name: 'h1', collects: ['ok-concept', 'denied-concept', 'timeout-concept', 'unregistered-concept'] },
+  ]);
+
+  const resultPromise = collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(COLLECTION_STAGE_BUDGET_MS);
+  const result = await resultPromise;
+
+  expect(result.map((evidence) => evidence.result)).toEqual(['ok', 'denied', 'timeout', 'unavailable']);
+  expect(result.every((evidence) => Number.isInteger(evidence.elapsed_ms) && evidence.elapsed_ms >= 0)).toBe(true);
+});
+
+it('measures elapsed_ms as exactly zero when a concept settles within the same instant its attempt started, rather than a positive default', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+
+  expect(result[0].elapsed_ms).toBe(0);
+});
+
+it("measures elapsed_ms as each concept's own real collection duration, distinct per concept rather than one value shared across the whole stage", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'fast-concept', timeout: 10_000 }));
+  capabilities.hold(aCapability({ concept: 'slow-concept', timeout: 10_000 }));
+  const observationSource = new ScriptedObservationSource(
+    new Map([
+      ['fast-concept', resolvesAfter(100, 'fast-observed')],
+      ['slow-concept', resolvesAfter(3_000, 'slow-observed')],
+    ]),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['fast-concept', 'slow-concept'] }]);
+
+  const resultPromise = collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(3_000);
+  const result = await resultPromise;
+
+  const elapsedByConcept = result.map((evidence): [string, number] => [evidence.concept, evidence.elapsed_ms]);
+  expect(elapsedByConcept).toEqual([
+    ['fast-concept', 100],
+    ['slow-concept', 3_000],
+  ]);
+});
+
+it("measures elapsed_ms from before the capability read for a concept nothing currently answers, since resolving whether anything can even be called is part of this concept's own attempt", async () => {
+  const capabilities = new DelayedUnheldCapabilityQuery(250);
+  const observationSource = new FakeObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
+
+  const resultPromise = collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(250);
+  const result = await resultPromise;
+
+  expect(result[0]).toMatchObject({ result: 'unavailable', elapsed_ms: 250 });
+});
+
+it('measures elapsed_ms for a denied ending as the real time observe-concept itself took to answer, never zero and never the stage ceiling', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', timeout: 10_000 }));
+  const observationSource = new ScriptedObservationSource(
+    new Map([['a-concept', answersAfter(1_500, { result: 'denied' })]]),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const resultPromise = collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(1_500);
+  const result = await resultPromise;
+
+  expect(result[0]).toMatchObject({ result: 'denied', elapsed_ms: 1_500 });
+});
+
+it('measures elapsed_ms for an observation-reported unavailable ending as the real time observe-concept itself took to answer, distinct from the capability-not-held branch above', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', timeout: 10_000 }));
+  const observationSource = new ScriptedObservationSource(
+    new Map([['a-concept', answersAfter(800, { result: 'unavailable', result_detail: 'a-cause' })]]),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const resultPromise = collectEvidence({
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(800);
+  const result = await resultPromise;
+
+  expect(result[0]).toMatchObject({ result: 'unavailable', result_detail: 'a-cause', elapsed_ms: 800 });
 });
 
 // ------------------------------------------------------------- module purity
