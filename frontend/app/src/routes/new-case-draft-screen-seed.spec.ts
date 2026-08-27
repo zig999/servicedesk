@@ -36,7 +36,7 @@ describe("NewCaseDraftScreen — seeding from the case's own latest released ver
     expect(await screen.findByDisplayValue(RELEASED_VERSION_RECORD.title)).toBeTruthy();
     expect(screen.getByDisplayValue(RELEASED_VERSION_RECORD.when_to_use)).toBeTruthy();
     const subjectInput = screen.getByDisplayValue(RELEASED_VERSION_RECORD.subject);
-    expect(subjectInput.hasAttribute("disabled")).toBe(true);
+    expect(subjectInput.hasAttribute("disabled")).toBe(false);
     expect(screen.getByText(RELEASED_VERSION_RECORD.consolidation_register)).toBeTruthy();
     expect(screen.getByText(RELEASED_VERSION_RECORD.fallback.outcome)).toBeTruthy();
     expect(screen.getByText(RELEASED_VERSION_RECORD.fallback.referral.action)).toBeTruthy();
@@ -83,7 +83,7 @@ describe("NewCaseDraftScreen — seeding from the case's own latest released ver
     await mountNewCaseDraft(fetchMock);
 
     const subjectInput = await screen.findByDisplayValue(SUBJECT_TYPE_TERMS.data[0].name);
-    expect(subjectInput.hasAttribute("disabled")).toBe(true);
+    expect(subjectInput.hasAttribute("disabled")).toBe(false);
     const titleInput = screen.getByLabelText<HTMLInputElement>("Title");
     expect(titleInput.value).toBe("");
     expect(screen.getByText("This is the case's first version.")).toBeTruthy();

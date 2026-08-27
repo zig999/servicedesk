@@ -1,0 +1,55 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "implementation",
+      "file": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix.md",
+      "title": "NewCaseDraftScreen's subject-field tests match the shared component's corrected behavior",
+      "summary": "Four stale test assertions in two pre-existing spec files, still asserting the pre-fix \"subject permanently disabled/labeled (fixed)\" behavior, now match case-version-editor-form-fields.tsx's current, correct behavior (disabled={isBlocked}, labeled \"Subject type\").",
+      "task": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix"
+    },
+    {
+      "id": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
+      "kind": "implementation",
+      "file": "implementation/subject-field-fixed-bug/subject-follows-isblocked.md",
+      "title": "Subject field honors isBlocked like every other declared attribute",
+      "summary": "case-version-editor-form-fields.tsx's subject field now disables through isBlocked instead of unconditionally, and its label no longer claims the field is fixed.",
+      "task": "task/subject-field-fixed-bug/subject-follows-isblocked"
+    },
+    {
+      "id": "proof/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "proof",
+      "file": "proof/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix.md",
+      "title": "NewCaseDraftScreen's subject-field tests match the shared component's corrected behavior",
+      "summary": "Independently confirms, against case-version-editor-form-fields.tsx and both corrected spec files as they stand, that all four corrected assertions match the subject Input's current disabled={isBlocked}/\"Subject type\" behavior and that nothing else in either file changed; adds one new test proving this screen's own isBlocked (createMutation.isPending) is what the four corrected assertions' \"false\" actually depends on.",
+      "task": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "to": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
+      "to": "task/subject-field-fixed-bug/subject-follows-isblocked",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "to": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

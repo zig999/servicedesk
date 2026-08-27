@@ -25,7 +25,7 @@ describe("NewCaseDraftScreen", () => {
     await mountNewCaseDraft(fetchMock);
 
     const subjectInput = await screen.findByDisplayValue(SUBJECT_TYPE_TERMS.data[0].name);
-    expect(subjectInput.hasAttribute("disabled")).toBe(true);
+    expect(subjectInput.hasAttribute("disabled")).toBe(false);
 
     const titleInput = await screen.findByLabelText<HTMLInputElement>("Title");
     const whenToUseInput = screen.getByLabelText<HTMLTextAreaElement>("When to use");
@@ -50,7 +50,7 @@ describe("NewCaseDraftScreen", () => {
     );
     await mountNewCaseDraft(fetchMock);
 
-    const subjectInput = await screen.findByLabelText<HTMLInputElement>("Subject type (fixed)");
+    const subjectInput = await screen.findByLabelText<HTMLInputElement>("Subject type");
     expect(subjectInput.value).toBe("");
   });
 
