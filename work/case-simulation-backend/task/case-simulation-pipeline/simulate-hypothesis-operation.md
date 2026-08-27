@@ -12,6 +12,7 @@ criteria:
   - A subject with no attribute-values is refused, applying the same rule diagnose applies.
   - A subject attribute-value naming an attribute outside the glossary is refused, applying the same rule diagnose applies.
   - No investigation is written and nothing collected enters a cache.
+  - "The response's durations carry collection and judgment; writing is absent, since this operation never reaches consolidation."
   - The route is registered following the routePlugins()/BuildAppDependencies/buildAppDependencies() convention and is reachable through diagnose-server.factory.ts's composition for a real process.
 depends_on:
   - task/case-simulation-pipeline/extract-shared-investigation-pipeline
@@ -20,19 +21,21 @@ implements:
   - contracts/investigation/case-simulation
   - rules/investigation/a-simulation-writes-no-investigation
   - rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused
-  - scenarios/investigation/a-single-hypothesis-is-simulated
   - scenarios/investigation/a-simulation-never-enters-the-cache
+  - scenarios/investigation/a-single-hypothesis-is-simulated
   - rules/investigation/a-subject-carries-at-least-one-attribute
   - rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
-  - domain/investigation/evaluation
   - domain/investigation/citation
   - domain/investigation/verdict
-  - domain/investigation/evaluation-reason
-  - domain/investigation/usage
-  - domain/investigation/evidence
   - domain/investigation/evidence-result
+  - domain/investigation/evaluation-reason
   - domain/investigation/subject
   - domain/investigation/subject-attribute-value
+  - domain/investigation/assessment
+  - domain/investigation/evidence
+  - domain/investigation/evaluation
+  - domain/investigation/usage
+  - domain/investigation/durations
   - domain/knowledge/case-version
   - domain/knowledge/hypothesis-revision
   - domain/knowledge/manifest-entry
@@ -44,4 +47,5 @@ simulate-hypothesis.dto.ts, the /v1/simulate/hypothesis route, and a controller 
 
 ## Notes
 
-BLOCKING, from the specification — the original criterion "the response's durations carry collection, judgment and total only, with no writing field" contradicts `domain/investigation/durations`, whose four attributes (collection, judgment, writing, total) are each declared `required: true` unconditionally, with no conditional-presence language of the kind `domain/investigation/evaluation` and `domain/investigation/assessment` use for their own call-level optional/always-required fields. The node states `writing` as always present; this task's own design (§5.2 of the source document, faithfully carried into this plan's scope) demands its absence for a `simulate-hypothesis` response, since no writing/consolidation call ever runs for this operation. The criterion has been dropped from this task pending resolution — this task does not, as written, state what its own response's durations look like. A human settles this: either `domain/investigation/durations`'s `writing` attribute becomes optional (present exactly when a consolidation call ran, the same pattern `evaluation`'s own optional fields already use), which would need to go back through `/analyse`, or `simulate-hypothesis` is decided to report a durations shape distinct from `domain/investigation/durations` altogether — a second decision `/analyse` would also need to make. Until one of these lands, this task is not ready to implement.
+The eighth criterion's durations shape was BLOCKING through two earlier rounds of this task's own binding: `domain/investigation/durations` declared `writing` required unconditionally, contradicting an operation that never reaches consolidation. Resolved via `/analyse` — `writing` is now optional on `durations`, present exactly when a consolidation call happened, mirroring `domain/investigation/evaluation`'s own conditional per-call attributes. Logged at `domain/investigation/durations.md`/`attributes.writing.required`.
+REMAINDER, from the specification — `rules/investigation/the-response-follows-the-record` ("the response leaves whole and only after the investigation is written") is a candidate here, but its premise never arises: this operation writes no investigation at all, per `rules/investigation/a-simulation-writes-no-investigation`, already answered by this task's own seventh criterion. Belongs to the diagnose entry point, the operation that actually writes an investigation and whose response ordering this rule governs.

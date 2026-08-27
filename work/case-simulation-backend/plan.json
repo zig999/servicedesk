@@ -791,51 +791,57 @@
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/usage",
+      "to": "domain/investigation/subject",
       "kind": "implements",
       "at": "implements[11]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/evidence",
+      "to": "domain/investigation/subject-attribute-value",
       "kind": "implements",
       "at": "implements[12]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/evidence-result",
+      "to": "domain/investigation/assessment",
       "kind": "implements",
       "at": "implements[13]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/subject",
+      "to": "domain/investigation/evidence",
       "kind": "implements",
       "at": "implements[14]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/subject-attribute-value",
+      "to": "domain/investigation/evaluation",
       "kind": "implements",
       "at": "implements[15]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/knowledge/case-version",
+      "to": "domain/investigation/usage",
       "kind": "implements",
       "at": "implements[16]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/knowledge/hypothesis-revision",
+      "to": "domain/investigation/durations",
       "kind": "implements",
       "at": "implements[17]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/knowledge/manifest-entry",
+      "to": "domain/knowledge/case-version",
       "kind": "implements",
       "at": "implements[18]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[19]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
@@ -845,19 +851,25 @@
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[20]"
+    },
+    {
+      "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
       "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
       "kind": "implements",
       "at": "implements[2]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
       "kind": "implements",
       "at": "implements[3]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
       "kind": "implements",
       "at": "implements[4]"
     },
@@ -875,19 +887,19 @@
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/evaluation",
+      "to": "domain/investigation/citation",
       "kind": "implements",
       "at": "implements[7]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/citation",
+      "to": "domain/investigation/verdict",
       "kind": "implements",
       "at": "implements[8]"
     },
     {
       "from": "task/case-simulation-pipeline/simulate-hypothesis-operation",
-      "to": "domain/investigation/verdict",
+      "to": "domain/investigation/evidence-result",
       "kind": "implements",
       "at": "implements[9]"
     },
