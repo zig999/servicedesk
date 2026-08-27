@@ -42,6 +42,14 @@
       "task": "task/simulation-cockpit/use-simulate-hypothesis"
     },
     {
+      "id": "implementation/subject-derivation/subject-panel",
+      "kind": "implementation",
+      "file": "implementation/subject-derivation/subject-panel.md",
+      "title": "Case-simulation Subject panel",
+      "summary": "A props-driven Subject region (subject type, requester, derived required fields with connector/capability annotations and input_schema hints, a glossary-restricted add-attribute control, and a raw-JSON view) for the simulation cockpit, built as one new file under frontend/app/src/routes, wired to nothing yet.",
+      "task": "task/subject-derivation/subject-panel"
+    },
+    {
       "id": "implementation/subject-derivation/use-simulation-subject-hook",
       "kind": "implementation",
       "file": "implementation/subject-derivation/use-simulation-subject-hook.md",
@@ -88,6 +96,14 @@
       "title": "Proof for the use-simulate-hypothesis hook",
       "summary": "Tests over useSimulateHypothesis's request shape, response shape, no-invalidation guarantee, failure resolution and pending/re-entrancy gating, extending two already-existing spec files with the one gap found (the judgment-call-carrying evaluation fields) rather than duplicating what was already proven.",
       "task": "task/simulation-cockpit/use-simulate-hypothesis"
+    },
+    {
+      "id": "proof/subject-derivation/subject-panel",
+      "kind": "proof",
+      "file": "proof/subject-derivation/subject-panel.md",
+      "title": "Subject region proof",
+      "summary": "Tests for CaseSimulationSubjectPanel covering all six task criteria, its disclosed inferences, and the edge cases its own state shape raises, mounted directly with a built SimulationSubjectState against a stubbed global fetch for its two live glossary reads. Split across a shared test-support file and three spec files (fields, add-attribute control, JSON view/inferences) to stay under MNT-01's line budget.",
+      "task": "task/subject-derivation/subject-panel"
     },
     {
       "id": "proof/subject-derivation/use-simulation-subject-hook",
@@ -430,6 +446,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "domain/glossary/subject-type",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/subject-derivation/subject-panel",
+      "to": "task/subject-derivation/subject-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -516,6 +574,12 @@
     {
       "from": "proof/simulation-cockpit/use-simulate-hypothesis",
       "to": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-derivation/subject-panel",
+      "to": "implementation/subject-derivation/subject-panel",
       "kind": "proves",
       "at": "the path"
     },

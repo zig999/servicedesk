@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a7099977ccaafb9d6/frontend/app/src/routes/case-simulation-subject-panel.spec.ts
+  258:28  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  270:17  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+  383:1   error  File has too many lines (369). Maximum allowed is 300                    max-lines
+
+✖ 3 problems (3 errors, 0 warnings)
+
