@@ -2,6 +2,13 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/connector-configuration-warning-text",
+      "kind": "epic",
+      "file": "epic/connector-configuration-warning-text.md",
+      "title": "Connector configuration warning states the real requirement",
+      "summary": "The one corrective task that corrects connector-configuration-detail-ready-view.tsx's INVALID_CONFIGURATION_WARNING to state truthfully, for every case its own isValid can be false, what the registry actually requires."
+    },
+    {
       "id": "epic/new-case-draft-screen-stale-subject-tests",
       "kind": "epic",
       "file": "epic/new-case-draft-screen-stale-subject-tests.md",
@@ -14,6 +21,14 @@
       "file": "epic/subject-field-fixed-bug.md",
       "title": "Case-version subject field correctable while draft",
       "summary": "The one corrective task that makes case-version-editor-form-fields.tsx's subject field honor disabled={isBlocked} like every other declared-attribute field, instead of a layout reference's own \"fixed/disabled\" call overriding what the specification actually decided."
+    },
+    {
+      "id": "task/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "kind": "task",
+      "file": "task/connector-configuration-warning-text/warning-states-the-object-requirement.md",
+      "title": "Connector configuration warning states the object requirement, not a JSON-syntax claim",
+      "summary": "INVALID_CONFIGURATION_WARNING in connector-configuration-detail-ready-view.tsx states what the registry actually requires — a JSON object — instead of claiming the stored value is not valid JSON, which is false whenever the value is a syntactically valid array or null.",
+      "epic": "connector-configuration-warning-text"
     },
     {
       "id": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
@@ -34,6 +49,12 @@
   ],
   "edges": [
     {
+      "from": "epic/connector-configuration-warning-text",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
       "from": "epic/new-case-draft-screen-stale-subject-tests",
       "to": "domain/knowledge/case-version",
       "kind": "covers",
@@ -44,6 +65,12 @@
       "to": "domain/knowledge/case-version",
       "kind": "covers",
       "at": "covers[0]"
+    },
+    {
+      "from": "task/connector-configuration-warning-text/warning-states-the-object-requirement",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[0]"
     },
     {
       "from": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
