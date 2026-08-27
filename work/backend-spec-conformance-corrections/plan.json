@@ -44,6 +44,13 @@
       "summary": "Comments and constants across nine locations cite a superseded reading of the specification instead of the node as it currently stands."
     },
     {
+      "id": "epic/stale-specification-citations-round-two",
+      "kind": "epic",
+      "file": "epic/stale-specification-citations-round-two.md",
+      "title": "Stale specification citations, round two",
+      "summary": "Six comments and docstrings across six files, found by two reconciliation sessions after two same-day analysis increments, still misdescribe whether or how the specification governs the behavior they document."
+    },
+    {
       "id": "inventory/backend-spec-conformance-corrections",
       "kind": "inventory",
       "file": "inventory/backend-spec-conformance-corrections.md",
@@ -137,6 +144,14 @@
       "title": "Observation port and adapter return unavailable endings instead of throwing",
       "summary": "The four presently-unresolvable observation conditions end unavailable with a named result detail instead of raising.",
       "epic": "observation-endings-and-collection-budget"
+    },
+    {
+      "id": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "kind": "task",
+      "file": "task/stale-specification-citations-round-two/citations-corrected-again.md",
+      "title": "Stale citations corrected across six locations, round two",
+      "summary": "Six comments and docstrings that restated a superseded reading of the specification now reflect, or cite, it as it currently stands.",
+      "epic": "stale-specification-citations-round-two"
     },
     {
       "id": "task/stale-specification-citations/citations-corrected",
@@ -377,6 +392,36 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/stale-specification-citations-round-two",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/stale-specification-citations-round-two",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/stale-specification-citations-round-two",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/stale-specification-citations-round-two",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/stale-specification-citations-round-two",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
       "from": "task/capability-timeout-contract-refusal/non-integer-timeout-refusal",
       "to": "rules/integration/a-capability-declares-its-contract",
       "kind": "implements",
@@ -583,6 +628,36 @@
     {
       "from": "task/observation-endings-and-collection-budget/observation-port-unavailable-endings",
       "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "to": "domain/investigation/evidence-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/stale-specification-citations-round-two/citations-corrected-again",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
       "kind": "implements",
       "at": "implements[4]"
     },
