@@ -3642,6 +3642,20 @@
       ]
     },
     {
+      "node": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "digest": "sha256:22637d2cf1bb41a39332a76f6bc743df0d7e549e6bd944f893da74523668df73",
+      "files": [
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:3ced7974ab96720028b28a344f0454a99e4176ca1c31896a5678ad8bce5ea8d0"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:0437c477096b2c3a81729e6059b735f17535ef22a2351ecb7c223fd72f8911b2"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/replay-is-pinned",
       "digest": "sha256:b3d5e0376e6a54e4339548a3a0ba93d5b97b5b2c0eed1d8893fa93f1210f4fb3",
       "files": [
@@ -4462,6 +4476,20 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
+      "digest": "sha256:566d7a188de7a5d2775b7210230c4bfe44ca8a674daf6725b4569f33587d6fd7",
+      "files": [
+        {
+          "path": "src/src/errors/case-version-not-released.error.ts",
+          "digest": "sha256:3ced7974ab96720028b28a344f0454a99e4176ca1c31896a5678ad8bce5ea8d0"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:0437c477096b2c3a81729e6059b735f17535ef22a2351ecb7c223fd72f8911b2"
         }
       ]
     },

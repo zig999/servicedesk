@@ -14,6 +14,7 @@ import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
+import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
@@ -79,6 +80,19 @@ it('resolves CaseVersionNotDraftError to 409', () => {
 
 it('resolves CaseVersionNotDraftAtReleaseError to 409', () => {
   const error = new CaseVersionNotDraftAtReleaseError('a-slug', 1, 'released');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(409);
+});
+
+// Added for task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version, whose own
+// criterion 2 depends on this exact entry: the new error is registered in status-map.ts's
+// STATUS_BY_ERROR_CLASS table, mapped to a status this project decides as its own engineering
+// choice — 409, grouped with this table's other "an operation the named resource's own current
+// state forbids" entries.
+it('resolves CaseVersionNotReleasedError to 409', () => {
+  const error = new CaseVersionNotReleasedError('a-slug', 1, 'draft');
 
   const status = statusForError(error);
 
