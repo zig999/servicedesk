@@ -1127,7 +1127,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:5e22e6bffb65a69a3309cfa5ea3e7ef1e99342ab5a79cd047423b427d1495f50"
+          "digest": "sha256:0c69fd23441b2dd50fdc865dbc70d53ce34ea7b0a5001a1e37997ebfd9fc22d1"
         },
         {
           "path": "src/src/case/case-query.port.ts",
@@ -2351,7 +2351,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:5e22e6bffb65a69a3309cfa5ea3e7ef1e99342ab5a79cd047423b427d1495f50"
+          "digest": "sha256:0c69fd23441b2dd50fdc865dbc70d53ce34ea7b0a5001a1e37997ebfd9fc22d1"
         },
         {
           "path": "frontend/app/src/services/discard-confirmation.ts",
@@ -2617,7 +2617,7 @@
         },
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
-          "digest": "sha256:5e22e6bffb65a69a3309cfa5ea3e7ef1e99342ab5a79cd047423b427d1495f50"
+          "digest": "sha256:0c69fd23441b2dd50fdc865dbc70d53ce34ea7b0a5001a1e37997ebfd9fc22d1"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
