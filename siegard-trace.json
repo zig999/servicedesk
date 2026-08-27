@@ -878,12 +878,24 @@
       "digest": "sha256:e4c25ac208368ca00d7f0d95f0a87585f61e961f7dc840a23a72be030117fd3d",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-simulation-history.ts",
+          "digest": "sha256:0a94733d5f87223ef6c0c59a04ad204e6d3bad1a47b62799661ee4caa9e37d72"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
@@ -2040,8 +2052,20 @@
       "digest": "sha256:72ade6f2ed7985ede99f6501ae043bec6716953bb72e8cb8affbc630486f5db9",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-simulation-history.ts",
+          "digest": "sha256:0a94733d5f87223ef6c0c59a04ad204e6d3bad1a47b62799661ee4caa9e37d72"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -2200,6 +2224,14 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-compare.tsx",
+          "digest": "sha256:66d3cc24a359d5684170e7dfcf12bb69bc1e74e48d9a172737b5bcf7d5c2048e"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -2554,6 +2586,14 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-compare.tsx",
+          "digest": "sha256:66d3cc24a359d5684170e7dfcf12bb69bc1e74e48d9a172737b5bcf7d5c2048e"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
@@ -3306,6 +3346,14 @@
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
         },
@@ -3370,6 +3418,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -3803,6 +3855,10 @@
       "node": "rules/investigation/a-simulation-writes-no-investigation",
       "digest": "sha256:18074fefae973c4817dc50260ef5f789c3cf78c006bf1728690f9cd50f32d065",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-simulation-history.ts",
+          "digest": "sha256:0a94733d5f87223ef6c0c59a04ad204e6d3bad1a47b62799661ee4caa9e37d72"
+        },
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
@@ -4854,8 +4910,16 @@
       "digest": "sha256:e1fad571c717daea726c8bfb291f533538e87248c334c3e445ae887dd9a3056a",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-case-simulation-history.ts",
+          "digest": "sha256:0a94733d5f87223ef6c0c59a04ad204e6d3bad1a47b62799661ee4caa9e37d72"
+        },
+        {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
           "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
@@ -4901,6 +4965,14 @@
       "node": "scenarios/investigation/a-single-hypothesis-is-simulated",
       "digest": "sha256:e0ea9562038d0f7f96735c44817c7dd4dce605c0d086081dd83aa9f11a8ba07e",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-panel.tsx",
+          "digest": "sha256:69ee039e1a43c6d63ca9045c477afacaf43024f422cdfdbf11011c3d65ead5f6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-case-result-types.ts",
+          "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
+        },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
           "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
