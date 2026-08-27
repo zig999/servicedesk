@@ -112,7 +112,21 @@ function buildTestRouter(initialPath: string) {
     path: "/cases",
     component: () => createElement("div", null, "Cases List Placeholder"),
   });
-  const routeTree = rootRoute.addChildren([caseVersionRoute, casesListRoute]);
+  // task/simulation-cockpit/simulate-entry-links's own criterion 1 adds a
+  // "Simulate" Link to "/cases/$slug/versions/$version/simulate" -- one more
+  // dummy leaf, the same reasoning casesListRoute already gives: so that
+  // Link has a real route to resolve an href against and, unlike the two
+  // above, an actual navigation target to click through to.
+  const caseSimulationRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/$version/simulate",
+    component: () => createElement("div", null, "Simulation Cockpit Placeholder"),
+  });
+  const routeTree = rootRoute.addChildren([
+    caseVersionRoute,
+    casesListRoute,
+    caseSimulationRoute,
+  ]);
   return createRouter({
     routeTree,
     history: createMemoryHistory({ initialEntries: [initialPath] }),

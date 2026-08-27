@@ -1,0 +1,14 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/frontend/app/src/routes/case-detail-screen-simulate-action.spec.ts
+  113:11  error  Prefer `findByText` query over using `waitFor` + `getByText`  testing-library/prefer-find-by
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/frontend/app/src/routes/case-version-editor-screen-simulate-entry.spec.ts
+  82:11  error  Prefer `findByText` query over using `waitFor` + `getByText`  testing-library/prefer-find-by
+
+✖ 2 problems (2 errors, 0 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+

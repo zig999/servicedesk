@@ -103,20 +103,31 @@ const STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
  * request beyond the load the route itself triggers" (criterion 3) asks
  * for. domain/knowledge/case-version-state names exactly these two values,
  * so this two-branch mapping is exhaustive with no further fallback needed.
+ *
+ * task/simulation-cockpit/simulate-entry-links's own "Simulate" control
+ * (criterion 2): a second, unconditional Link in the same cell, to that
+ * row's own "/cases/$slug/versions/$version/simulate" -- rendered
+ * identically for a draft or a released row, since nothing about this
+ * control depends on which of the two states the row is in, unlike the
+ * "Continue editing"/"View" branch above.
  */
 function actionsForRow(slug: string, version: CaseVersionListItem): ReactNode {
   const params = { slug, version: String(version.version) };
-  if (version.state === "draft") {
-    return (
-      <Link to="/cases/$slug/versions/$version" params={params}>
-        Continue editing
-      </Link>
-    );
-  }
   return (
-    <Link to="/cases/$slug/versions/$version" params={params}>
-      View
-    </Link>
+    <div className="flex items-center gap-4">
+      {version.state === "draft" ? (
+        <Link to="/cases/$slug/versions/$version" params={params}>
+          Continue editing
+        </Link>
+      ) : (
+        <Link to="/cases/$slug/versions/$version" params={params}>
+          View
+        </Link>
+      )}
+      <Link to="/cases/$slug/versions/$version/simulate" params={params}>
+        Simulate
+      </Link>
+    </div>
   );
 }
 

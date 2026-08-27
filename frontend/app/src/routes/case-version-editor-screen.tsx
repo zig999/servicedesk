@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { useParams } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { useEditDraftVersionForm } from "../hooks/use-edit-draft-version-form";
 import { CaseVersionEditorReadyView } from "./case-version-editor-ready-view";
@@ -17,8 +17,19 @@ import { CaseVersionEditorReadyView } from "./case-version-editor-ready-view";
  * reads and the save state machine -- to useEditDraftVersionForm
  * (ARC-02, ARC-03).
  *
- * Wired in as route-tree.tsx's "/cases/$slug/versions/$version" route's own
- * `component`, replacing CaseVersionPlaceholder.
+ * task/simulation-cockpit/simulate-entry-links's own "Simulate" entry
+ * control (criterion 1): a plain client-side Link to route-tree.tsx's own
+ * "/cases/$slug/versions/$version/simulate" (already registered by
+ * task/simulation-cockpit/case-simulation-route), addressed by this same
+ * route's own params -- matching the established convention for a
+ * navigation action in this area (case-simulation-header.tsx's own "Edit
+ * version"/"Manifest" Links, case-detail-screen.tsx's own Versions-tab
+ * actions cell, case-attributes-tab.tsx's own CurrentVersionAction): a plain
+ * Link, never a Button wrapping one. Rendered once, above the ready-view,
+ * unconditionally of the loaded record's own draft/released state -- unlike
+ * "Edit version" in the simulation header, nothing about this control
+ * differs between the two states, so it needs no state-keyed branch of its
+ * own.
  */
 export function CaseVersionEditorScreen(): JSX.Element {
   const { slug, version } = useParams({
@@ -46,6 +57,9 @@ export function CaseVersionEditorScreen(): JSX.Element {
       <h1>
         Case {slug} — Version {version}
       </h1>
+      <Link to="/cases/$slug/versions/$version/simulate" params={{ slug, version }}>
+        Simulate
+      </Link>
       <CaseVersionEditorReadyView state={state} slug={slug} />
     </section>
   );
