@@ -10,6 +10,14 @@
       "task": "task/simulation-cockpit/detail-panel"
     },
     {
+      "id": "implementation/simulation-cockpit/hypotheses-table",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/hypotheses-table.md",
+      "title": "Hypotheses table (case simulation cockpit)",
+      "summary": "A presentational, props-driven React component rendering the case-simulation screen's Hypotheses region — the precedence-ordered StatusTable, its per-row simulate/edit actions, and the determining/outcome/referral summary and last-run durations lines beneath it.",
+      "task": "task/simulation-cockpit/hypotheses-table"
+    },
+    {
       "id": "implementation/subject-derivation/use-simulation-subject-hook",
       "kind": "implementation",
       "file": "implementation/subject-derivation/use-simulation-subject-hook.md",
@@ -24,6 +32,14 @@
       "title": "Proof for the case-simulation Detail panel",
       "summary": "Tests proving all seven criteria, every disclosed inference, and the edge cases the Detail region's fixture/props-driven behavior raises, across the panel, its two tabs, and the shared status-dot idiom.",
       "task": "task/simulation-cockpit/detail-panel"
+    },
+    {
+      "id": "proof/simulation-cockpit/hypotheses-table",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/hypotheses-table.md",
+      "title": "Hypotheses table proof",
+      "summary": "Tests for task/simulation-cockpit/hypotheses-table's six criteria and its five behavioral inferences, all against CaseSimulationHypothesesTable and its row-shaping helpers.",
+      "task": "task/simulation-cockpit/hypotheses-table"
     },
     {
       "id": "proof/subject-derivation/use-simulation-subject-hook",
@@ -96,6 +112,96 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/hypotheses-table",
+      "to": "task/simulation-cockpit/hypotheses-table",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -158,6 +264,12 @@
     {
       "from": "proof/simulation-cockpit/detail-panel",
       "to": "implementation/simulation-cockpit/detail-panel",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/hypotheses-table",
+      "to": "implementation/simulation-cockpit/hypotheses-table",
       "kind": "proves",
       "at": "the path"
     },
