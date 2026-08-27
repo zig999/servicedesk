@@ -1,0 +1,74 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulation-cockpit-use-simulate-hypothesis-build-3",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a9b6b1af0af9e23b8/frontend/app",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T11:48:18.717+00:00",
+      "ended_at": "2026-08-27T11:48:31.004+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-27T11:48:31.004+00:00",
+      "ended_at": "2026-08-27T11:48:40.467+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-27T11:48:40.467+00:00",
+      "ended_at": "2026-08-27T11:48:47.133+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-08-27T11:48:47.133+00:00",
+      "ended_at": "2026-08-27T11:48:47.623+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-08-27T11:48:47.623+00:00",
+      "ended_at": "2026-08-27T11:48:51.478+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-08-27T11:48:51.479+00:00",
+      "ended_at": "2026-08-27T11:48:55.831+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-27T11:48:55.831+00:00",
+      "ended_at": "2026-08-27T11:48:56.156+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
