@@ -884,6 +884,14 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
           "digest": "sha256:dff6da3011e901fd67072be091ce737548921696d390752cc50eda335fa364d8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
         }
       ]
     },
@@ -1996,6 +2004,14 @@
       "digest": "sha256:72ade6f2ed7985ede99f6501ae043bec6716953bb72e8cb8affbc630486f5db9",
       "files": [
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -2093,8 +2109,16 @@
     },
     {
       "node": "domain/investigation/durations",
-      "digest": "sha256:42289bd861a9e6c105efad7d504bb9c2f2825b0021ac8ac803d915737da0c39a",
+      "digest": "sha256:b808f8d873866e399daf116fcf533c6a04f4bdef3fb2af35b10f7b34b5a1296e",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
+        },
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
@@ -2130,6 +2154,10 @@
           "digest": "sha256:dff6da3011e901fd67072be091ce737548921696d390752cc50eda335fa364d8"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
@@ -2163,6 +2191,10 @@
       "node": "domain/investigation/evaluation-reason",
       "digest": "sha256:10e91ea37bff620a565a090515f8ee3f4a6891a58ce6986b38b2715a500cb65f",
       "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
@@ -2406,6 +2438,10 @@
           "digest": "sha256:dff6da3011e901fd67072be091ce737548921696d390752cc50eda335fa364d8"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
           "path": "src/src/investigation/usage.ts",
           "digest": "sha256:43900ba505f8e2eacf6ebb42d58b8a897729e6764d8ed84df42e5480e35e5f1d"
         }
@@ -2422,6 +2458,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
           "digest": "sha256:dff6da3011e901fd67072be091ce737548921696d390752cc50eda335fa364d8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -2608,6 +2648,10 @@
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:a9754c7f0903f00f8b53618e017667e4b5a5430ce3d9a33bde0f7565fdfe88a8"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -2970,6 +3014,10 @@
           "digest": "sha256:dff6da3011e901fd67072be091ce737548921696d390752cc50eda335fa364d8"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
           "digest": "sha256:0b2afbb4d14bfaa72a4eb0eca4f490be7d41021660f652b159674ac5fc2cc79c"
         },
@@ -3056,6 +3104,14 @@
           "digest": "sha256:376323e1832a4771297bc8e7ad1aed2c97ce8fe57b24cc720d9a1aaf48748e98"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:7c1fac0e52ac3aafa59a2df15384abf129e2646765268b652027684a0e39f42a"
         },
@@ -3122,6 +3178,10 @@
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
           "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
@@ -3182,6 +3242,10 @@
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
           "digest": "sha256:553c271f17649a0e39346617fc74c0eb80a9c182fa0ffdebba7ecbf76b4468dd"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -4640,6 +4704,16 @@
       ]
     },
     {
+      "node": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "digest": "sha256:e1fad571c717daea726c8bfb291f533538e87248c334c3e445ae887dd9a3056a",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
+        }
+      ]
+    },
+    {
       "node": "scenarios/investigation/a-draft-case-version-refuses-diagnosis",
       "digest": "sha256:566d7a188de7a5d2775b7210230c4bfe44ca8a674daf6725b4569f33587d6fd7",
       "files": [
@@ -4670,6 +4744,16 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "digest": "sha256:e0ea9562038d0f7f96735c44817c7dd4dce605c0d086081dd83aa9f11a8ba07e",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:50cc7bd0b05d7e7316dbd804ef03575897b2d2cfdeb7f48c0f3f05f360d96a71"
         }
       ]
     },
