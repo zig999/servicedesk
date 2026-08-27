@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/simulation-cockpit/detail-panel",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/detail-panel.md",
+      "title": "Case-simulation Detail panel",
+      "summary": "A fixture/props-driven Detail region (verdict, citations, criterion, Evidence/Prompt/JSON tabs, judgment metadata) for the simulation cockpit's selected hypothesis, built as five new files under frontend/app/src/routes, wired to nothing yet.",
+      "task": "task/simulation-cockpit/detail-panel"
+    },
+    {
       "id": "implementation/subject-derivation/use-simulation-subject-hook",
       "kind": "implementation",
       "file": "implementation/subject-derivation/use-simulation-subject-hook.md",
       "title": "use-simulation-subject hook",
       "summary": "A pure derivation service module plus a new hooks/use-simulation-subject.ts that resolves a case version's collection plan through the capability and connector-configuration registries into required subject fields, merges them with curator-added attributes and the requester, and reports readiness.",
       "task": "task/subject-derivation/use-simulation-subject-hook"
+    },
+    {
+      "id": "proof/simulation-cockpit/detail-panel",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/detail-panel.md",
+      "title": "Proof for the case-simulation Detail panel",
+      "summary": "Tests proving all seven criteria, every disclosed inference, and the edge cases the Detail region's fixture/props-driven behavior raises, across the panel, its two tabs, and the shared status-dot idiom.",
+      "task": "task/simulation-cockpit/detail-panel"
     },
     {
       "id": "proof/subject-derivation/use-simulation-subject-hook",
@@ -19,6 +35,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/detail-panel",
+      "to": "task/simulation-cockpit/detail-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "domain/investigation/subject",
@@ -77,6 +153,12 @@
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "task/subject-derivation/use-simulation-subject-hook",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/detail-panel",
+      "to": "implementation/simulation-cockpit/detail-panel",
+      "kind": "proves",
       "at": "the path"
     },
     {

@@ -1,0 +1,50 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+> case-authoring-console@0.1.0 postinstall
+> node scripts/dedupe-tui-react.mjs
+
+dedupe-tui-react: react already deduped
+dedupe-tui-react: react-dom already deduped
+
+added 577 packages, and audited 578 packages in 9s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa7b3f7811670100c/frontend/app/scripts/dedupe-tui-react.mjs
+  34:3  error  'console' is not defined  no-undef
+  37:3  error  'process' is not defined  no-undef
+  45:5  error  'console' is not defined  no-undef
+  50:5  error  'console' is not defined  no-undef
+  56:3  error  'console' is not defined  no-undef
+
+✖ 5 problems (5 errors, 0 warnings)
+
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
+===== test :: npm test :: not_run =====
+
