@@ -1,0 +1,19 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/frontend/app/src/hooks/use-case-simulation-cockpit-gating.spec.ts
+  183:32  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+  187:32  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/frontend/app/src/hooks/use-case-simulation-cockpit-staleness.spec.ts
+  55:11  error  `first` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`   testing-library/render-result-naming-convention
+  72:11  error  `first` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`   testing-library/render-result-naming-convention
+  81:11  error  `second` is not a recommended name for `render` returned value. Instead, you should destructure it, or name it using one of: `view`, or `utils`  testing-library/render-result-naming-convention
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/frontend/app/src/routes/case-simulation-ready-view-dispatch.spec.ts
+  103:28  error  Do not use any type assertions  @typescript-eslint/consistent-type-assertions
+
+✖ 6 problems (6 errors, 0 warnings)
+
