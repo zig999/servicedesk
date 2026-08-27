@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/investigation-telemetry-diagnose-reports-real-cost-and-durations-suite-3",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T23:27:16.549+00:00",
+      "ended_at": "2026-08-27T23:27:25.325+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-27T23:27:25.325+00:00",
+      "ended_at": "2026-08-27T23:27:31.052+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-27T23:27:31.053+00:00",
+      "ended_at": "2026-08-27T23:27:34.841+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-27T23:27:34.841+00:00",
+      "ended_at": "2026-08-27T23:27:35.364+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-08-27T23:27:35.364+00:00",
+      "ended_at": "2026-08-27T23:29:23.859+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

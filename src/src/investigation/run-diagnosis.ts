@@ -59,7 +59,7 @@ import type { Case } from '../case/case.js';
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
-import type { IAssessmentConsolidator } from './assessment-consolidator.port.js';
+import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
 import type { ConsolidationRegister } from './consolidation-register.js';
 import type { Cost } from './cost.js';
 import { draftAssessment } from './draft-assessment-text.js';
@@ -76,6 +76,7 @@ import type { IObservationSource, Subject } from './observation-source.port.js';
 import { resolveAndNarrow } from './resolve-and-narrow-input.js';
 import { buildSubject } from './subject.js';
 import type { SubjectAttributeValue } from './subject-attribute-value.js';
+import type { Usage } from './usage.js';
 
 /**
  * Judgment's own nominal budget inside the declared total deadline
@@ -129,21 +130,6 @@ export type RunDiagnosisOptions = {
   readonly prompt_version: string;
   readonly model: string;
   /**
-   * What this investigation cost at the provider, already accumulated by
-   * this call's own caller: no port this composition calls
-   * (IHypothesisEvaluator, IAssessmentConsolidator, IObservationSource)
-   * reports a token count or a call count, so this arrives the same
-   * already-given way model and prompt_version already do
-   * (BuildInvestigationOptions' own convention).
-   */
-  readonly cost: Cost;
-  /**
-   * How long each stage took, already measured by this call's own caller —
-   * this composition never reads the system clock, so it has no way to
-   * measure it itself.
-   */
-  readonly durations: Durations;
-  /**
    * The register to consolidate in where the pinned case leaves
    * consolidation_register undeclared (domain/knowledge/case's own "the
    * consolidation step keeps whatever register its own adapter defaults
@@ -180,6 +166,18 @@ export type RunDiagnosisOptions = {
  * answers with the written investigation's own assessment only once that
  * write has concluded (rules/investigation/the-response-follows-the-record,
  * scenarios/investigation/no-response-without-a-record).
+ *
+ * cost and durations are no longer given by this call's own caller
+ * (task/investigation-telemetry/diagnose-reports-real-cost-and-durations):
+ * this composition now accumulates domain/investigation/cost from every
+ * judged evaluation's own usage and the one consolidation call's own usage
+ * (costOf below), and assembles domain/investigation/durations from the same
+ * already-measured, real wall-clock data evidence-collection-stage.ts and
+ * judgment-stage.ts each already keep on their own items and the
+ * consolidation call's own measured elapsed_ms (durationsOf below) — never a
+ * fresh clock read of this module's own, preserving this composition's own
+ * "never reads the system clock internally" (task/diagnose-entry-point/diagnose-pipeline-composition,
+ * proved by run-diagnosis.spec.ts's own criterion 5).
  */
 export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {
   const subject = buildSubject(options.subjectType, options.subjectAttributes);
@@ -187,15 +185,104 @@ export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assess
   const evidenceByHypothesis = evidenceByHypothesisOf(options.case, evidence);
   const evaluations = await judgeHypotheses(judgeHypothesesOptions(options, evidenceByHypothesis));
   const { resolved, narrowedInput } = resolveAndNarrow({ case: options.case, evaluations, evidenceByHypothesis });
+  const consolidationCapture: ConsolidationCapture = {};
   const assessment = await draftAssessment({
     resolved,
     narrowedInput,
     consolidationRegister: options.case.consolidation_register ?? options.defaultConsolidationRegister,
-    consolidator: options.consolidator,
+    consolidator: capturingConsolidator(options.consolidator, consolidationCapture),
   });
-  const investigation = await buildInvestigation(buildInvestigationOptions({ options, evidence, evaluations, assessment }));
+  const consolidation = consolidatedOutcomeOf(consolidationCapture);
+  const cost = costOf(evaluations, consolidation.usage);
+  const durations = durationsOf(evidence, evaluations, consolidation.elapsed_ms);
+  const investigation = await buildInvestigation(
+    buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
+  );
   await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline });
   return investigation.assessment;
+}
+
+/** Holds the one ConsolidationOutcome capturingConsolidator below records, once draftAssessment has called consolidate() through it. */
+type ConsolidationCapture = { outcome?: ConsolidationOutcome };
+
+/**
+ * Wraps the given consolidator so this composition can read its one call's
+ * own ConsolidationOutcome — usage and elapsed_ms — for cost and durations,
+ * without ever changing what draftAssessment itself calls or answers:
+ * draftAssessment keeps calling consolidate() exactly once, unchanged
+ * (this codebase's own must-not-duplicate convention for draftAssessment),
+ * and its own answered Assessment still carries no usage, elapsed_ms or
+ * prompt property (draft-assessment-text.spec.ts's own delivered guarantee)
+ * — this wrapper only ever forwards to the real consolidator and records
+ * what it answered, as a side effect invisible to draftAssessment.
+ */
+function capturingConsolidator(consolidator: IAssessmentConsolidator, capture: ConsolidationCapture): IAssessmentConsolidator {
+  return {
+    consolidate: async (evaluations, evidence, consolidationRegister) => {
+      const outcome = await consolidator.consolidate(evaluations, evidence, consolidationRegister);
+      capture.outcome = outcome;
+      return outcome;
+    },
+  };
+}
+
+/**
+ * The captured consolidation outcome, once draftAssessment has resolved —
+ * never absent in practice, since draftAssessment always calls consolidate()
+ * exactly once through capturingConsolidator's own wrapper before it can
+ * answer at all; thrown rather than silently treated as a zero-cost,
+ * zero-duration call if this invariant is ever violated.
+ */
+function consolidatedOutcomeOf(capture: ConsolidationCapture): ConsolidationOutcome {
+  if (capture.outcome === undefined) {
+    throw new Error('draftAssessment resolved without ever calling consolidate()');
+  }
+  return capture.outcome;
+}
+
+/**
+ * What this investigation cost at the provider (domain/investigation/cost):
+ * one judgment call per required hypothesis actually judged — an Evaluation
+ * carrying usage, present exactly where the underlying evaluate() call's own
+ * answer was threaded through (judgment-stage.ts's own asEvaluation/callRecordOf),
+ * never for a hypothesis that degraded to no-data, deadline-exceeded or
+ * judgment-failure without an answer to thread through — plus exactly one
+ * consolidation call, which always happens
+ * (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "one
+ * provider call per hypothesis appears in the recorded cost"; cost.ts's own
+ * "one writing call, linear in hypotheses").
+ */
+function costOf(evaluations: readonly Evaluation[], consolidationUsage: Usage): Cost {
+  const judgmentUsages = evaluations.flatMap((evaluation): Usage[] => (evaluation.usage === undefined ? [] : [evaluation.usage]));
+  const usages = [...judgmentUsages, consolidationUsage];
+  return {
+    calls: judgmentUsages.length + 1,
+    input_tokens: usages.reduce((sum, usage) => sum + usage.input_tokens, 0),
+    output_tokens: usages.reduce((sum, usage) => sum + usage.output_tokens, 0),
+  };
+}
+
+/**
+ * How long each stage took (domain/investigation/durations), from
+ * already-measured, real wall-clock data alone — never a fresh clock read of
+ * this module's own: collection and judgment each run their own units
+ * (concepts, hypotheses) in parallel, so a stage is not done until its
+ * slowest unit is — the largest of every concept's own Evidence.elapsed_ms
+ * (evidence-collection-stage.ts) for collection, and the largest of every
+ * judged hypothesis's own Evaluation.elapsed_ms (judgment-stage.ts) for
+ * judgment. writing is the one consolidation call's own measured elapsed_ms
+ * directly, there being exactly one. total is the sum of the three: the
+ * whole time from the first delivery through the end of writing.
+ */
+function durationsOf(evidence: readonly Evidence[], evaluations: readonly Evaluation[], writingElapsedMs: number): Durations {
+  const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
+  const judgment = maxElapsedMs(evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms])));
+  return { collection, judgment, writing: writingElapsedMs, total: collection + judgment + writingElapsedMs };
+}
+
+/** The largest of the given elapsed_ms readings, or 0 where there are none — a stage with nothing to time took no time. */
+function maxElapsedMs(values: readonly number[]): number {
+  return values.length === 0 ? 0 : Math.max(...values);
 }
 
 /** collectEvidence's own options, assembled from this call's given options and the subject already built above. */
@@ -254,6 +341,10 @@ type BuildInvestigationArgs = {
   readonly evidence: readonly Evidence[];
   readonly evaluations: readonly Evaluation[];
   readonly assessment: Assessment;
+  /** This run's own accumulated cost, computed above by costOf — never read from options, which no longer carries one (task/investigation-telemetry/diagnose-reports-real-cost-and-durations). */
+  readonly cost: Cost;
+  /** This run's own measured durations, computed above by durationsOf — never read from options, for the same reason. */
+  readonly durations: Durations;
 };
 
 /**
@@ -267,7 +358,7 @@ type BuildInvestigationArgs = {
  * that follows shortly after (task/case-and-investigation-model/investigation-record-shape).
  */
 function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestigationOptions {
-  const { options, evidence, evaluations, assessment } = args;
+  const { options, evidence, evaluations, assessment, cost, durations } = args;
   return {
     id: options.id,
     requester: options.requester,
@@ -281,8 +372,8 @@ function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestiga
     evidence,
     evaluations,
     assessment,
-    cost: options.cost,
-    durations: options.durations,
+    cost,
+    durations,
     written_at: new Date(options.now).toISOString(),
     glossary: options.glossary,
   };

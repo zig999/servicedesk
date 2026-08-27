@@ -20,7 +20,7 @@ import { InvestigationAlreadyStoredError } from '../../../errors/investigation-a
 import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
 import type { ConceptResolution, IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
 import type { TermVocabulary } from '../../../glossary/terms.js';
-import type { Cost } from '../../../investigation/cost.js';
+import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
 import type { Durations } from '../../../investigation/durations.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS, type Evidence } from '../../../investigation/evidence.js';
@@ -29,7 +29,7 @@ import { FakeObservationSource } from '../../../investigation/fake-observation-s
 import type { EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import type { Investigation } from '../../../investigation/investigation.js';
 import type { IInvestigationStore, StoredInvestigation } from '../../../investigation/investigation-store.port.js';
-import type { IObservationSource, ObservationOutcome, Subject } from '../../../investigation/observation-source.port.js';
+import type { IObservationSource, ObserveConceptOptions, ObservationOutcome, Subject } from '../../../investigation/observation-source.port.js';
 import { runDiagnosis, type RunDiagnosisOptions } from '../../../investigation/run-diagnosis.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 
@@ -226,6 +226,41 @@ class CountingObservationSource implements IObservationSource {
   }
 }
 
+/** Answers a distinct, fully scripted EvaluationOutcome keyed by hypothesis criterion — the per-hypothesis usage/elapsed_ms fixture the cost/durations tests below need, since ImmediateHypothesisEvaluator answers one fixed outcome for every hypothesis alike. */
+class ScriptedByCriterionHypothesisEvaluator implements IHypothesisEvaluator {
+  private readonly outcomes = new Map<string, EvaluationOutcome>();
+  public script(criterion: string, outcome: EvaluationOutcome): void {
+    this.outcomes.set(criterion, outcome);
+  }
+  public async evaluate(criterion: string): Promise<EvaluationOutcome> {
+    const outcome = this.outcomes.get(criterion);
+    if (outcome === undefined) {
+      throw new Error(`ScriptedByCriterionHypothesisEvaluator has no outcome scripted for criterion ${JSON.stringify(criterion)}`);
+    }
+    return outcome;
+  }
+}
+
+/** Answers one fixed ConsolidationOutcome regardless of input — a stand-in carrying real, non-zero usage/elapsed_ms, since FakeAssessmentConsolidator (fake-assessment-consolidator.adapter.ts) always answers a zero-valued placeholder for both. */
+class ScriptedAssessmentConsolidator implements IAssessmentConsolidator {
+  public constructor(private readonly outcome: ConsolidationOutcome) {}
+  public async consolidate(): Promise<ConsolidationOutcome> {
+    return this.outcome;
+  }
+}
+
+/** Delays each concept's own ok observation by a distinct, per-concept duration — the fixture the collection-duration-is-a-max-not-a-sum test below needs, since DelayedObservationSource above delays every concept alike. */
+class PerConceptDelayedObservationSource implements IObservationSource {
+  private readonly delaysMs = new Map<string, number>();
+  public delay(concept: string, delayMs: number): void {
+    this.delaysMs.set(concept, delayMs);
+  }
+  public observeConcept(options: ObserveConceptOptions): Promise<ObservationOutcome> {
+    const delayMs = this.delaysMs.get(options.concept) ?? 0;
+    return new Promise((resolve) => setTimeout(() => resolve({ result: 'ok', observation: `observed-${options.concept}` }), delayMs));
+  }
+}
+
 /** Holds every investigation written to it, keyed by id, refusing a second write for the same id — the persistence boundary this composition never bypasses (rules/investigation/an-investigation-is-written-once). */
 class InMemoryInvestigationStore implements IInvestigationStore {
   private readonly documents = new Map<string, unknown>();
@@ -353,8 +388,6 @@ function baseOptions(overrides: Partial<RunDiagnosisOptions> = {}): RunDiagnosis
     case: aCase(),
     prompt_version: 'prompt-v1',
     model: 'model-x',
-    cost: { calls: 1, input_tokens: 10, output_tokens: 5 },
-    durations: { collection: 0, judgment: 0, writing: 0, total: 0 },
     defaultConsolidationRegister: 'plain',
     glossary: glossaryHolding('id'),
     capabilities,
@@ -693,16 +726,197 @@ it('consolidates in the pinned case\'s own declared register, ignoring the given
   expect(assessment.text).toBe('formal text');
 });
 
-it('forwards the given cost and durations unchanged into the written investigation, computing neither itself', async () => {
+// ------ task/investigation-telemetry/diagnose-reports-real-cost-and-durations: criteria 2-4
+
+it('counts cost.calls as one per hypothesis whose Evaluation actually carries usage, excluding a hypothesis that degraded to no-data without ever calling the evaluator, plus one for the consolidation call', async () => {
   const store = new InMemoryInvestigationStore();
-  const cost: Cost = { calls: 7, input_tokens: 1_234, output_tokens: 567 };
-  const durations: Durations = { collection: 11, judgment: 22, writing: 33, total: 66 };
-  const options = baseOptions({ store, cost, durations });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'concept-a' })); // concept-b's own capability is never held, so h2 degrades to no-data before the pool and never calls evaluate()
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('concept-a', A_SUBJECT, { result: 'ok', observation: 'observed-concept-a' });
+  const evaluator = new ImmediateHypothesisEvaluator({
+    verdict: 'confirmed',
+    citations: [{ concept: 'concept-a', field: 'a-field' }],
+    usage: { input_tokens: 10, output_tokens: 5 },
+  });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 1, output_tokens: 2 }, elapsed_ms: 7, prompt: 'a-prompt' });
+  const options = baseOptions({
+    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])] }),
+    capabilities,
+    observationSource,
+    evaluator,
+    consolidator,
+    store,
+  });
 
   await runDiagnosis(options);
   const document = await writtenDocument(store, 'investigation-1');
 
-  expect(document).toMatchObject({ cost, durations });
+  expect((document as Investigation).cost.calls).toBe(2);
+});
+
+it("excludes a hypothesis from cost.calls when its evaluator's own answer carries no usage, even though evaluate() genuinely ran for it — a call this recorded cost never charges for", async () => {
+  const store = new InMemoryInvestigationStore();
+  const consolidator = new ScriptedAssessmentConsolidator({ text: HAPPY_PATH_TEXT, usage: { input_tokens: 4, output_tokens: 2 }, elapsed_ms: 3, prompt: 'a-prompt' });
+  // baseOptions()'s own default evaluator answers confirmed with no usage field at all — evaluate() genuinely runs for h1, but nothing was ever returned to charge for.
+  const options = baseOptions({ store, consolidator });
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).cost).toEqual({ calls: 1, input_tokens: 4, output_tokens: 2 });
+});
+
+it('counts cost.calls as exactly one — the consolidation call alone — when every required hypothesis degrades to no-data without ever calling the evaluator', async () => {
+  const store = new InMemoryInvestigationStore();
+  const capabilities = new FakeCapabilityQuery(); // concept-a's own capability is never held
+  const evaluator = new CountingHypothesisEvaluator();
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'fallback text', usage: { input_tokens: 9, output_tokens: 6 }, elapsed_ms: 11, prompt: 'a-prompt' });
+  const options = baseOptions({ capabilities, evaluator, consolidator, store });
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).cost).toEqual({ calls: 1, input_tokens: 9, output_tokens: 6 });
+  expect(evaluator.calls).toBe(0);
+});
+
+/** Options for two required hypotheses (h1/concept-a, h2/concept-b), both hypotheses' own capability held, evidence collection delegated to the given observation source and judgment to the given evaluator — the two-hypothesis telemetry fixture the cost-token-sum and durations-formula tests below share. */
+function twoHypothesisTelemetryOptions(
+  observationSource: IObservationSource,
+  evaluator: IHypothesisEvaluator,
+  consolidator: IAssessmentConsolidator,
+): RunDiagnosisOptions {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'concept-a' }));
+  capabilities.hold(aCapability({ concept: 'concept-b' }));
+  return baseOptions({
+    case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])] }),
+    capabilities,
+    observationSource,
+    evaluator,
+    consolidator,
+  });
+}
+
+it('counts cost.calls as one per hypothesis when every required hypothesis is actually judged, plus one for the consolidation call', async () => {
+  const store = new InMemoryInvestigationStore();
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('concept-a', A_SUBJECT, { result: 'ok', observation: 'observed-a' });
+  observationSource.seed('concept-b', A_SUBJECT, { result: 'ok', observation: 'observed-b' });
+  const evaluator = new ScriptedByCriterionHypothesisEvaluator();
+  evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], usage: { input_tokens: 1, output_tokens: 1 } });
+  evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], usage: { input_tokens: 1, output_tokens: 1 } });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 1, output_tokens: 1 }, elapsed_ms: 0, prompt: 'a-prompt' });
+  const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).cost.calls).toBe(3);
+});
+
+it("sums cost.input_tokens and cost.output_tokens across every judgment call's own usage and the consolidation call's own usage", async () => {
+  const store = new InMemoryInvestigationStore();
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('concept-a', A_SUBJECT, { result: 'ok', observation: 'observed-a' });
+  observationSource.seed('concept-b', A_SUBJECT, { result: 'ok', observation: 'observed-b' });
+  const evaluator = new ScriptedByCriterionHypothesisEvaluator();
+  evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], usage: { input_tokens: 10, output_tokens: 5 } });
+  evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], usage: { input_tokens: 20, output_tokens: 8 } });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 7, output_tokens: 3 }, elapsed_ms: 0, prompt: 'a-prompt' });
+  const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).cost.input_tokens).toBe(37);
+  expect((document as Investigation).cost.output_tokens).toBe(16);
+});
+
+it("computes durations.collection and durations.judgment as the largest of their own stage's per-unit elapsed_ms, durations.writing as the consolidation call's own elapsed_ms, and durations.total as the sum of the three", async () => {
+  const store = new InMemoryInvestigationStore();
+  const observationSource = new PerConceptDelayedObservationSource();
+  observationSource.delay('concept-a', 100);
+  observationSource.delay('concept-b', 300);
+  const evaluator = new ScriptedByCriterionHypothesisEvaluator();
+  evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], elapsed_ms: 50 });
+  evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], elapsed_ms: 200 });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 400, prompt: 'a-prompt' });
+  const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(300);
+  await resultPromise;
+  const document = await writtenDocument(store, 'investigation-1');
+
+  const durations = (document as Investigation).durations;
+  expect(durations.collection).toBe(300);
+  expect(durations.judgment).toBe(200);
+  expect(durations.writing).toBe(400);
+  expect(durations.total).toBe(900);
+});
+
+/** Runs one diagnose call with a single delayed evidence collection, a judgment call reporting the given elapsed_ms and a consolidation call reporting the given elapsed_ms, and returns the written investigation's own durations — the two-different-timings fixture the non-constant-durations test below needs. */
+async function durationsForOneRun(runTiming: {
+  readonly id: string;
+  readonly collectionDelayMs: number;
+  readonly judgmentElapsedMs: number;
+  readonly writingElapsedMs: number;
+}): Promise<Durations> {
+  const store = new InMemoryInvestigationStore();
+  const consolidator = new ScriptedAssessmentConsolidator({
+    text: `text-${runTiming.id}`,
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: runTiming.writingElapsedMs,
+    prompt: 'a-prompt',
+  });
+  const options = baseOptions({
+    id: runTiming.id,
+    store,
+    observationSource: new DelayedObservationSource(runTiming.collectionDelayMs, { result: 'ok', observation: 'observed-concept-a' }),
+    evaluator: new ImmediateHypothesisEvaluator({
+      verdict: 'confirmed',
+      citations: [{ concept: 'concept-a', field: 'a-field' }],
+      elapsed_ms: runTiming.judgmentElapsedMs,
+    }),
+    consolidator,
+  });
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(runTiming.collectionDelayMs);
+  await resultPromise;
+  const document = await writtenDocument(store, runTiming.id);
+  return (document as Investigation).durations;
+}
+
+it('writes measured, non-constant durations across two diagnose calls whose evidence and judgment take different amounts of time', async () => {
+  const durationsA = await durationsForOneRun({ id: 'investigation-a', collectionDelayMs: 100, judgmentElapsedMs: 50, writingElapsedMs: 20 });
+  const durationsB = await durationsForOneRun({ id: 'investigation-b', collectionDelayMs: 700, judgmentElapsedMs: 500, writingElapsedMs: 90 });
+
+  expect(durationsA).not.toEqual(durationsB);
+  expect(durationsA.collection).not.toBe(durationsB.collection);
+  expect(durationsA.judgment).not.toBe(durationsB.judgment);
+  expect(durationsA.writing).not.toBe(durationsB.writing);
+  expect(durationsA.total).not.toBe(durationsB.total);
+});
+
+it('writes an assessment carrying no usage, elapsed_ms or prompt, even though the wrapped consolidation call answered all three — capturingConsolidator captures them for cost and durations without exposing them through Assessment', async () => {
+  const store = new InMemoryInvestigationStore();
+  const consolidator = new ScriptedAssessmentConsolidator({
+    text: HAPPY_PATH_TEXT,
+    usage: { input_tokens: 3, output_tokens: 4 },
+    elapsed_ms: 15,
+    prompt: 'a consolidation prompt',
+  });
+  const options = baseOptions({ store, consolidator });
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  const assessment = (document as Investigation).assessment;
+  expect(assessment).not.toHaveProperty('usage');
+  expect(assessment).not.toHaveProperty('elapsed_ms');
+  expect(assessment).not.toHaveProperty('prompt');
 });
 
 it('exports exactly RunDiagnosisOptions and runDiagnosis, keeping every internal helper — including its own evidence-by-hypothesis matching — private to this module', async () => {
@@ -746,8 +960,6 @@ function baseOptionsOmittingTicketRef(): RunDiagnosisOptions {
     case: full.case,
     prompt_version: full.prompt_version,
     model: full.model,
-    cost: full.cost,
-    durations: full.durations,
     defaultConsolidationRegister: full.defaultConsolidationRegister,
     glossary: full.glossary,
     capabilities: full.capabilities,

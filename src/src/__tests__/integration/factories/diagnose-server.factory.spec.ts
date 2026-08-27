@@ -457,25 +457,52 @@ it("sends the caller-configured evaluator and consolidator models to the provide
   expect(sentModels).toContain('a-test-consolidator-model');
 });
 
-// ------------------------------------------- inference: cost/durations are zero placeholders
+// ----- task/investigation-telemetry/diagnose-reports-real-cost-and-durations: real consolidation
+// ----- cost and real collection duration, judgment/evaluator usage and writing still zero
 
-it('persists the zero-valued cost and duration placeholders this HTTP layer stamps, since nothing behind it measures either yet', async () => {
-  await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
+/**
+ * run-diagnosis.ts (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) no
+ * longer stamps the old UNMEASURED_COST/UNMEASURED_DURATIONS placeholders at all — it now counts
+ * and sums real usage/elapsed_ms off the pipeline's own stages. Against today's tree this still
+ * reads as partly zero, not because anything stamps a placeholder, but because the two Anthropic
+ * adapters this suite's own mocked @anthropic-ai/sdk stands behind
+ * (AnthropicHypothesisEvaluator, AnthropicAssessmentConsolidator) do not yet report real
+ * usage/elapsed_ms themselves — that is task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing's
+ * own separate, not-yet-delivered scope:
+ * - AnthropicHypothesisEvaluator.evaluate() never sets usage or elapsed_ms on the EvaluationOutcome
+ *   it answers (confirmed, refuted or inconclusive alike), so no Evaluation ever carries a defined
+ *   usage or elapsed_ms here — costOf() counts zero judgment calls, and durationsOf() reads
+ *   judgment as 0.
+ * - AnthropicAssessmentConsolidator.consolidate() answers a hardcoded PLACEHOLDER_USAGE
+ *   ({ input_tokens: 0, output_tokens: 0 }) and PLACEHOLDER_ELAPSED_MS (0), so writing reads 0 too,
+ *   and the one consolidation call it always makes contributes no tokens — but it still counts as
+ *   the one call costOf() always adds regardless of usage, so cost.calls reads 1, not 0.
+ * - evidence-collection-stage.ts, by contrast, already measures real wall-clock elapsed_ms per
+ *   concept (task/investigation-telemetry/evidence-collection-measures-elapsed-ms, already
+ *   delivered) regardless of which adapter answers the observation, so durations.collection is
+ *   real and positive here — the one value in this row that is not a leftover zero.
+ * total is exactly durations.collection, since judgment and writing both still read 0.
+ */
+it(
+  'persists cost.calls as the one real consolidation call and a real, non-zero collection duration, ' +
+    'while judgment usage, writing and judgment duration still read zero until the Anthropic adapters ' +
+    'themselves report real usage and elapsed_ms',
+  async () => {
+    await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
 
-  const [written] = await investigationsFor(seedingConnection, requester);
-  expect(written).toBeDefined();
-  expect({ calls: written?.cost_calls, input_tokens: written?.cost_input_tokens, output_tokens: written?.cost_output_tokens }).toEqual({
-    calls: 0,
-    input_tokens: 0,
-    output_tokens: 0,
-  });
-  expect({
-    collection: written?.durations_collection,
-    judgment: written?.durations_judgment,
-    writing: written?.durations_writing,
-    total: written?.durations_total,
-  }).toEqual({ collection: 0, judgment: 0, writing: 0, total: 0 });
-});
+    const [written] = await investigationsFor(seedingConnection, requester);
+    expect(written).toBeDefined();
+    expect({ calls: written?.cost_calls, input_tokens: written?.cost_input_tokens, output_tokens: written?.cost_output_tokens }).toEqual({
+      calls: 1,
+      input_tokens: 0,
+      output_tokens: 0,
+    });
+    expect(written?.durations_judgment).toBe(0);
+    expect(written?.durations_writing).toBe(0);
+    expect(written?.durations_collection).toBeGreaterThan(0);
+    expect(written?.durations_total).toBe(written?.durations_collection);
+  },
+);
 
 // ---------------------- task/http-observation-runtime/production-wiring-swap, criteria 1 and 2
 
