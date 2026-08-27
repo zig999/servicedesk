@@ -18,6 +18,14 @@
       "task": "task/simulation-cockpit/hypotheses-table"
     },
     {
+      "id": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/use-simulate-hypothesis.md",
+      "title": "use-simulate-hypothesis hook",
+      "summary": "A new mutation hook dispatches the simulate-hypothesis operation of contracts/investigation/case-simulation for one named hypothesis of a case version and a subject, exposing exactly one typed evaluation and resolving no outcome or assessment.",
+      "task": "task/simulation-cockpit/use-simulate-hypothesis"
+    },
+    {
       "id": "implementation/subject-derivation/use-simulation-subject-hook",
       "kind": "implementation",
       "file": "implementation/subject-derivation/use-simulation-subject-hook.md",
@@ -40,6 +48,14 @@
       "title": "Hypotheses table proof",
       "summary": "Tests for task/simulation-cockpit/hypotheses-table's six criteria and its five behavioral inferences, all against CaseSimulationHypothesesTable and its row-shaping helpers.",
       "task": "task/simulation-cockpit/hypotheses-table"
+    },
+    {
+      "id": "proof/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/use-simulate-hypothesis.md",
+      "title": "Proof for the use-simulate-hypothesis hook",
+      "summary": "Tests over useSimulateHypothesis's request shape, response shape, no-invalidation guarantee, failure resolution and pending/re-entrancy gating, extending two already-existing spec files with the one gap found (the judgment-call-carrying evaluation fields) rather than duplicating what was already proven.",
+      "task": "task/simulation-cockpit/use-simulate-hypothesis"
     },
     {
       "id": "proof/subject-derivation/use-simulation-subject-hook",
@@ -202,6 +218,60 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/use-simulate-hypothesis",
+      "to": "task/simulation-cockpit/use-simulate-hypothesis",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-derivation/use-simulation-subject-hook",
       "to": "domain/investigation/subject",
       "kind": "encodes",
@@ -270,6 +340,12 @@
     {
       "from": "proof/simulation-cockpit/hypotheses-table",
       "to": "implementation/simulation-cockpit/hypotheses-table",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/use-simulate-hypothesis",
+      "to": "implementation/simulation-cockpit/use-simulate-hypothesis",
       "kind": "proves",
       "at": "the path"
     },
