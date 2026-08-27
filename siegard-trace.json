@@ -2487,7 +2487,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
-          "digest": "sha256:f9e774df405939b37aae5b7217999d5ee0b9034cb18a54ff81959ec2ba9623f9"
+          "digest": "sha256:d41095c5306337f351ea455aea0021496548d2e6d3f8d44d3af2a46418310b79"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",

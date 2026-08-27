@@ -24,6 +24,14 @@
       "title": "NewCaseDraftScreen's subject-field tests match the shared component's corrected behavior",
       "summary": "Independently confirms, against case-version-editor-form-fields.tsx and both corrected spec files as they stand, that all four corrected assertions match the subject Input's current disabled={isBlocked}/\"Subject type\" behavior and that nothing else in either file changed; adds one new test proving this screen's own isBlocked (createMutation.isPending) is what the four corrected assertions' \"false\" actually depends on.",
       "task": "task/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix"
+    },
+    {
+      "id": "proof/subject-field-fixed-bug/subject-follows-isblocked",
+      "kind": "proof",
+      "file": "proof/subject-field-fixed-bug/subject-follows-isblocked.md",
+      "title": "Subject field disables through isBlocked, not unconditionally",
+      "summary": "Proof that case-version-editor-form-fields.tsx's subject field is enabled on an unblocked draft, disabled for each of isBlocked's four stated reasons, and no longer labeled as fixed.",
+      "task": "task/subject-field-fixed-bug/subject-follows-isblocked"
     }
   ],
   "edges": [
@@ -48,6 +56,12 @@
     {
       "from": "proof/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
       "to": "implementation/new-case-draft-screen-stale-subject-tests/subject-tests-match-shared-fix",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-field-fixed-bug/subject-follows-isblocked",
+      "to": "implementation/subject-field-fixed-bug/subject-follows-isblocked",
       "kind": "proves",
       "at": "the path"
     }
