@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "postinstall": "node scripts/dedupe-tui-react.mjs",
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

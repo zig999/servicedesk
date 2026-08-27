@@ -128,7 +128,9 @@ export default tseslint.config(
   },
   {
     // vite.config.ts and playwright.config.ts run under Node, not the browser.
-    files: ["vite.config.ts", "playwright.config.ts", "eslint.config.js", "stylelint.config.js", "stylelint-rules/**/*.js"],
+    // scripts/**/*.mjs is the same: postinstall tooling (dedupe-tui-react.mjs)
+    // that runs under Node during npm install, never bundled into the app.
+    files: ["vite.config.ts", "playwright.config.ts", "eslint.config.js", "stylelint.config.js", "stylelint-rules/**/*.js", "scripts/**/*.mjs"],
     languageOptions: { globals: globals.node },
   },
 );
