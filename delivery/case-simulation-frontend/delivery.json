@@ -34,6 +34,14 @@
       "task": "task/simulation-cockpit/hypotheses-table"
     },
     {
+      "id": "implementation/simulation-cockpit/screen-assembly",
+      "kind": "implementation",
+      "file": "implementation/simulation-cockpit/screen-assembly.md",
+      "title": "Simulation cockpit screen assembly",
+      "summary": "Composes the header, subject, hypotheses, detail and case-result regions into one working simulation cockpit sharing one subject, one dispatch-at-a-time gate, and a return-from-editing staleness marker.",
+      "task": "task/simulation-cockpit/screen-assembly"
+    },
+    {
       "id": "implementation/simulation-cockpit/use-simulate-case",
       "kind": "implementation",
       "file": "implementation/simulation-cockpit/use-simulate-case.md",
@@ -96,6 +104,14 @@
       "title": "Hypotheses table proof",
       "summary": "Tests for task/simulation-cockpit/hypotheses-table's six criteria and its five behavioral inferences, all against CaseSimulationHypothesesTable and its row-shaping helpers.",
       "task": "task/simulation-cockpit/hypotheses-table"
+    },
+    {
+      "id": "proof/simulation-cockpit/screen-assembly",
+      "kind": "proof",
+      "file": "proof/simulation-cockpit/screen-assembly.md",
+      "title": "Screen assembly proof",
+      "summary": "Proves the composed case-simulation cockpit's cross-region gating, shared subject, per-hypothesis evaluation merging, case-result population, dispatch-error exclusivity and return-from-editing staleness mechanism, at both the hook and the fully-rendered-view level, and rewrites the superseded placeholder-wiring proof.",
+      "task": "task/simulation-cockpit/screen-assembly"
     },
     {
       "id": "proof/simulation-cockpit/use-simulate-case",
@@ -372,6 +388,54 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/simulation-cockpit/screen-assembly",
+      "to": "task/simulation-cockpit/screen-assembly",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/simulation-cockpit/use-simulate-case",
       "to": "contracts/investigation/case-simulation",
       "kind": "encodes",
@@ -644,6 +708,12 @@
     {
       "from": "proof/simulation-cockpit/hypotheses-table",
       "to": "implementation/simulation-cockpit/hypotheses-table",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-cockpit/screen-assembly",
+      "to": "implementation/simulation-cockpit/screen-assembly",
       "kind": "proves",
       "at": "the path"
     },

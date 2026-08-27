@@ -69,6 +69,29 @@ export type CaseSimulationHypothesesTableProps = {
   readonly lastRunDurations?: SimulationDurations;
   /** Criterion 6: dispatch belongs to the caller, never to this component. */
   readonly onSimulateHypothesis: (hypothesisName: string) => void;
+  /**
+   * task/simulation-cockpit/screen-assembly's own criteria 1-2: true while the
+   * shared subject is not ready, or while any dispatch (case-level or
+   * hypothesis-level) is already in flight -- gates every row's own Simulate
+   * button. The row's Edit link is never gated by it: editing stays available
+   * regardless of dispatch state. Optional, defaulting to not-disabled: this
+   * task's own already-proven criteria never asked for a disabled state, only
+   * that dispatch itself be a callback this component does not implement, so
+   * an existing caller supplying none keeps rendering exactly as before.
+   * Added, and always supplied, by screen-assembly -- the one task whose own
+   * stated criteria need a row's Simulate action disableable from outside.
+   */
+  readonly disableSimulate?: boolean;
+  /**
+   * task/simulation-cockpit/screen-assembly's own criterion 4: opens the
+   * Detail region for the clicked row's own hypothesis, whichever kind of run
+   * last produced its evaluation. Optional, for the same reason as
+   * `disableSimulate` above: absent, a row renders inert to selection
+   * (StatusTable's own established "no onRowClick -> inert" convention,
+   * status-table.tsx), matching this task's own already-proven behavior
+   * exactly. Added, and always supplied, by screen-assembly.
+   */
+  readonly onSelectHypothesis?: (hypothesisName: string) => void;
 };
 
 const COLUMNS: StatusTableColumn[] = [
@@ -100,17 +123,20 @@ function RowActions({
   version,
   row,
   onSimulateHypothesis,
+  disableSimulate,
 }: {
   readonly slug: string;
   readonly version: number;
   readonly row: SimulationManifestRow;
   readonly onSimulateHypothesis: (hypothesisName: string) => void;
+  readonly disableSimulate: boolean;
 }): JSX.Element {
   return (
     <span className="inline-flex items-center gap-2">
       <Button
         type="button"
         aria-label={`Simulate hypothesis at position ${row.position}`}
+        disabled={disableSimulate}
         onClick={() => onSimulateHypothesis(row.hypothesisName)}
       >
         Simulate
@@ -132,6 +158,7 @@ function toTableRow(
   version: number,
   row: SimulationManifestRow,
   onSimulateHypothesis: (hypothesisName: string) => void,
+  disableSimulate: boolean,
 ): StatusTableRow {
   return {
     id: row.position,
@@ -146,9 +173,32 @@ function toTableRow(
         version={version}
         row={row}
         onSimulateHypothesis={onSimulateHypothesis}
+        disableSimulate={disableSimulate}
       />
     ),
   };
+}
+
+/**
+ * task/simulation-cockpit/screen-assembly's own criterion 4: resolves the
+ * clicked StatusTableRow back to the SimulationManifestRow it was built from
+ * (by `position`, this table's own stable row id -- toTableRow's own `id`
+ * above) rather than trusting an unknown field off StatusTable's generic
+ * `StatusTableRow` shape with a type assertion (TYP-02).
+ */
+function handleRowSelected(
+  row: StatusTableRow,
+  rows: readonly SimulationManifestRow[],
+  onSelectHypothesis: (hypothesisName: string) => void,
+): void {
+  const position = row.id;
+  if (typeof position !== "number") {
+    return;
+  }
+  const matched = rows.find((candidate) => candidate.position === position);
+  if (matched) {
+    onSelectHypothesis(matched.hypothesisName);
+  }
 }
 
 /**
@@ -191,6 +241,8 @@ export function CaseSimulationHypothesesTable({
   summary,
   lastRunDurations,
   onSimulateHypothesis,
+  disableSimulate = false,
+  onSelectHypothesis,
 }: CaseSimulationHypothesesTableProps): JSX.Element {
   // Criterion 1: "the manifest's own precedence order" holds regardless of
   // how the caller happens to assemble `rows`.
@@ -206,7 +258,14 @@ export function CaseSimulationHypothesesTable({
       ) : (
         <StatusTable
           columns={COLUMNS}
-          rows={orderedRows.map((row) => toTableRow(slug, version, row, onSimulateHypothesis))}
+          rows={orderedRows.map((row) =>
+            toTableRow(slug, version, row, onSimulateHypothesis, disableSimulate),
+          )}
+          onRowClick={
+            onSelectHypothesis
+              ? (row) => handleRowSelected(row, orderedRows, onSelectHypothesis)
+              : undefined
+          }
         />
       )}
       {summary && <SummaryLine summary={summary} />}
