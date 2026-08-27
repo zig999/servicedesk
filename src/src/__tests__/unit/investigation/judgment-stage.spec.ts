@@ -119,6 +119,7 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
     result: 'ok',
     capability_name: `capability-for-${overrides.concept}`,
     capability_version: '1.0.0',
+    elapsed_ms: 12,
     ...overrides,
   };
 }

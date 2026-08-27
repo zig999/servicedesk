@@ -116,6 +116,7 @@ interface IEvidenceRow {
   readonly result_detail: string | null;
   readonly capability_name: string;
   readonly capability_version: string;
+  readonly elapsed_ms: number;
 }
 
 /** One row of "investigation_evaluations", exactly the columns beyond its own key. */
@@ -253,12 +254,12 @@ function subjectAttributeValueStatement(investigationId: string, attribute: Subj
   };
 }
 
-/** Inserts one evidence item's own row, whole (domain/investigation/evidence): every declared attribute plus the capability reference this task's own UNDERDETERMINED note requires a column for. */
+/** Inserts one evidence item's own row, whole (domain/investigation/evidence): every declared attribute plus the capability reference this task's own UNDERDETERMINED note requires a column for, plus elapsed_ms (task/investigation-telemetry/evidence-collection-measures-elapsed-ms, 0011-investigation-evidence-elapsed-ms.sql). */
 function evidenceStatement(investigationId: string, evidence: Evidence): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVIDENCE_TABLE}
-             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
     params: [
       investigationId,
       evidence.concept,
@@ -271,6 +272,7 @@ function evidenceStatement(investigationId: string, evidence: Evidence): IStatem
       evidence.result_detail ?? null,
       evidence.capability_name,
       evidence.capability_version,
+      evidence.elapsed_ms,
     ],
   };
 }
@@ -360,7 +362,7 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   const rows = await runStatement<IEvidenceRow>(
     tx,
     {
-      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version
+      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms
              FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE investigation_id = $1 ORDER BY concept`,
       params: [id],
     },
@@ -369,7 +371,7 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   return rows.map(evidenceOf);
 }
 
-/** One evidence row assembled into the shape domain/investigation/evidence declares, including the capability pin this task's own UNDERDETERMINED note requires. */
+/** One evidence row assembled into the shape domain/investigation/evidence declares, including the capability pin this task's own UNDERDETERMINED note requires and elapsed_ms (task/investigation-telemetry/evidence-collection-measures-elapsed-ms). */
 function evidenceOf(row: IEvidenceRow): Evidence {
   return {
     concept: row.concept,
@@ -382,6 +384,7 @@ function evidenceOf(row: IEvidenceRow): Evidence {
     ...(row.result_detail !== null ? { result_detail: row.result_detail } : {}),
     capability_name: row.capability_name,
     capability_version: row.capability_version,
+    elapsed_ms: row.elapsed_ms,
   };
 }
 

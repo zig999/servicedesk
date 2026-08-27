@@ -242,8 +242,8 @@ async function insertEvidence(client: Client, options: IEvidenceOptions): Promis
   const observation = options.observation ?? 'an observation';
   await client.query(
     `INSERT INTO investigation_evidence
-       (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, capability_name, capability_version)
-     VALUES ($1,$2,'{}',$3,now(),60,'an-origin',$4,$5,$6)`,
+       (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, capability_name, capability_version, elapsed_ms)
+     VALUES ($1,$2,'{}',$3,now(),60,'an-origin',$4,$5,$6,12)`,
     [options.investigationId, options.concept, observation, result, options.capability.name, options.capability.version],
   );
 }

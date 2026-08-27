@@ -6,11 +6,16 @@
 // propagated deadline's remaining time is smaller
 // (rules/investigation/collection-has-its-own-budget-within-the-total,
 // constraints/the-deadline-is-an-absolute-propagated-instant). Both `now`
-// and `deadline` arrive as explicit parameters — this module never reads the
-// system clock itself — so the whole race is exercised deterministically
-// against fixture timings, the same discipline
-// src/investigation/idempotency-resolution.ts already established for its
-// own instant.
+// and `deadline` arrive as explicit parameters and decide every deadline and
+// budget computation below — so the race against the propagated deadline
+// stays exercised deterministically against fixture timings, the same
+// discipline src/investigation/idempotency-resolution.ts already established
+// for its own instant. Measuring each concept's own elapsed_ms
+// (domain/investigation/evidence) is a separate concern from that
+// determinism: it is real wall-clock duration, read via Date.now() around
+// one concept's own attempt exactly as connector-http-issuer.ts's own
+// issueConnectorHttpCall already reads it around one HTTP call, and it plays
+// no part in any deadline or budget decision this module makes.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { Capability } from '../capability-registry/capability.js';
@@ -84,14 +89,19 @@ type CollectOneEvidenceOptions = {
  * implementer honors that bound. A concept nothing currently answers never
  * reaches the race at all, since there is nothing to call
  * (domain/investigation/evidence, domain/investigation/evidence-result).
+ * attemptStartedAt marks the start of this one concept's own collection
+ * attempt — before the capability read, since resolving whether anything can
+ * even be called is part of that attempt — and every ending below is timed
+ * against it (domain/investigation/evidence's own elapsed_ms).
  */
 async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<Evidence> {
   const { concept, subject, requester, capabilities, observationSource, stageCeilingMs, now } = options;
   const inputs = serializeInputs(concept, subject, requester);
   const observedAt = new Date(now).toISOString();
+  const attemptStartedAt = Date.now();
   const resolution = await capabilities.readCapability(concept);
   if (!resolution.held) {
-    return unavailableEvidence(concept, inputs, observedAt);
+    return unavailableEvidence({ concept, inputs, observedAt, attemptStartedAt });
   }
   const capability = resolution.capability;
   const base: EvidenceBase = {
@@ -107,7 +117,12 @@ async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<E
     observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs: stageCeilingMs }),
     effectiveBoundMs,
   );
-  return settledEvidence(base, outcome, effectiveBoundMs);
+  return settledEvidence({ base, outcome, effectiveBoundMs, attemptStartedAt });
+}
+
+/** How long this one concept's own collection attempt has taken so far, in whole milliseconds, measured from attemptStartedAt to now (domain/investigation/evidence's own elapsed_ms). */
+function elapsedSince(attemptStartedAt: number): number {
+  return Date.now() - attemptStartedAt;
 }
 
 /** The serialized call this stage actually made to observe the concept, pinned for replay as recorded bytes — concept, subject and requester together, exactly the three arguments observe-concept itself takes. */
@@ -161,6 +176,8 @@ type EvidenceEnding = {
   readonly result: EvidenceResult;
   readonly observation?: string;
   readonly resultDetail?: string;
+  /** How long this one concept's own collection attempt took, in milliseconds, whatever this ending's own result (domain/investigation/evidence's own elapsed_ms) — every caller of evidenceOf() below supplies it, on every branch. */
+  readonly elapsedMs: number;
 };
 
 /** Assembles one Evidence from what this stage always knows about the concept plus one of the four evidence-result endings — the empty string for observation standing for the recorded absence of data itself where the ending is not ok (domain/investigation/evidence, domain/investigation/evidence-result). */
@@ -176,6 +193,7 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
     result_detail: ending.resultDetail,
     capability_name: base.capabilityName,
     capability_version: base.capabilityVersion,
+    elapsed_ms: ending.elapsedMs,
   };
 }
 
@@ -191,14 +209,28 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
  * — read from the error's own `.name` rather than restated as a free-text
  * literal, so this stage's own pre-check can never report a different
  * result_detail than the port's own later resolution would for the same
- * concept.
+ * concept. elapsed_ms is timed from attemptStartedAt to this determination —
+ * the capability read is the whole of this concept's own attempt where
+ * nothing is held to observe with.
  */
-function unavailableEvidence(concept: string, inputs: string, observedAt: string): Evidence {
+function unavailableEvidence(options: UnavailableEvidenceOptions): Evidence {
+  const { concept, inputs, observedAt, attemptStartedAt } = options;
   return evidenceOf(
     { concept, inputs, observedAt, origin: '', capabilityName: '', capabilityVersion: '' },
-    { result: 'unavailable', resultDetail: new CapabilityNotResolvedForObservationError(concept).name },
+    {
+      result: 'unavailable',
+      resultDetail: new CapabilityNotResolvedForObservationError(concept).name,
+      elapsedMs: elapsedSince(attemptStartedAt),
+    },
   );
 }
+
+type UnavailableEvidenceOptions = {
+  readonly concept: string;
+  readonly inputs: string;
+  readonly observedAt: string;
+  readonly attemptStartedAt: number;
+};
 
 /**
  * Turns what the race answered — a timeout mark, or one of observe-concept's
@@ -212,21 +244,29 @@ function unavailableEvidence(concept: string, inputs: string, observedAt: string
  * rules/integration/an-http-connector-configuration-declares-its-call,
  * domain/investigation/evidence) — denied and timeout endings answered by
  * observe-concept itself carry none today and stay unchanged, and the local
- * race timeout above is this stage's own, not the port's.
+ * race timeout above is this stage's own, not the port's. elapsed_ms is
+ * timed from attemptStartedAt to this determination on every branch,
+ * whatever the ending — including timeout, whose own bound this same value
+ * always meets or exceeds.
  */
-function settledEvidence(
-  base: EvidenceBase,
-  outcome: ObservationOutcome | typeof TIMED_OUT,
-  effectiveBoundMs: number,
-): Evidence {
+function settledEvidence(options: SettledEvidenceOptions): Evidence {
+  const { base, outcome, effectiveBoundMs, attemptStartedAt } = options;
+  const elapsedMs = elapsedSince(attemptStartedAt);
   if (outcome === TIMED_OUT) {
-    return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms` });
+    return evidenceOf(base, { result: 'timeout', resultDetail: `no observation within ${effectiveBoundMs}ms`, elapsedMs });
   }
   if (outcome.result === 'ok') {
-    return evidenceOf(base, { result: 'ok', observation: outcome.observation });
+    return evidenceOf(base, { result: 'ok', observation: outcome.observation, elapsedMs });
   }
   if (outcome.result === 'unavailable') {
-    return evidenceOf(base, { result: 'unavailable', resultDetail: outcome.result_detail });
+    return evidenceOf(base, { result: 'unavailable', resultDetail: outcome.result_detail, elapsedMs });
   }
-  return evidenceOf(base, { result: outcome.result });
+  return evidenceOf(base, { result: outcome.result, elapsedMs });
 }
+
+type SettledEvidenceOptions = {
+  readonly base: EvidenceBase;
+  readonly outcome: ObservationOutcome | typeof TIMED_OUT;
+  readonly effectiveBoundMs: number;
+  readonly attemptStartedAt: number;
+};
