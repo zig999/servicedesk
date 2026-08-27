@@ -925,4 +925,22 @@ entries:
       hypothesis name absent from the one manifest the request names is the same miss, so it
       takes the same status and the same naming idiom, scoped to what is actually absent (a
       manifest entry for that name).
+  - location: domain/investigation/durations.md
+    field: attributes.writing.required
+    unstated: >-
+      Whether writing is always present on durations, or present only when a consolidation call
+      actually happened — planning for case-simulation-backend found simulate-hypothesis needs a
+      durations answer that never includes it, since that operation never reaches consolidation,
+      while the node declared it required unconditionally.
+    decided: >-
+      writing is no longer required; it is present exactly when a consolidation call happened,
+      absent otherwise.
+    why: >-
+      Mirrors the conditional-presence pattern domain/investigation/evaluation already uses for
+      its own per-call attributes (usage, elapsed_ms, prompt, each present exactly when that
+      call happened) — writing is the same kind of fact, a stage that either ran or did not,
+      never a number to invent for a stage that never executed. diagnose's own durations still
+      carry writing on every call, since diagnose always reaches consolidation; only an
+      operation that genuinely skips the stage, like simulate-hypothesis, now has a way to say
+      so truthfully instead of being forced to report a duration for a call that never happened.
 ---
