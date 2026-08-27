@@ -52,6 +52,9 @@ classDiagram
         +Verdict verdict
         +EvaluationReason reason
         +Citation[] citations
+        +Usage usage
+        +integer elapsedMs
+        +string prompt
     }
     class EvaluationReason {
         <<Enumeration>>
@@ -69,6 +72,7 @@ classDiagram
         +string origin
         +EvidenceResult result
         +string resultDetail
+        +integer elapsedMs
     }
     class EvidenceResult {
         <<Enumeration>>
@@ -90,6 +94,11 @@ classDiagram
         <<ValueObject>>
         +SubjectAttribute attribute
         +string value
+    }
+    class Usage {
+        <<ValueObject>>
+        +integer inputTokens
+        +integer outputTokens
     }
     class Verdict {
         <<Enumeration>>

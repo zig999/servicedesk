@@ -838,4 +838,36 @@ entries:
       Same material and reasoning as the case-summary.md entry above — the rule's statement and
       description now say explicitly what was previously left to be inferred from a node that
       presumed a version always exists.
+  - location: domain/investigation/evaluation.md
+    field: attributes
+    unstated: >-
+      The material asks that each judgment call's token usage, duration and materialized prompt
+      be captured and exposed per hypothesis, but leaves open whether these are evaluation's own
+      attributes or a separate value-object, and explicitly defers that choice to this analysis.
+    decided: >-
+      A new value-object domain/investigation/usage (input_tokens, output_tokens) carries the
+      call's token spend, referenced from evaluation's own optional usage attribute; elapsed_ms
+      and prompt stay flat on evaluation itself, alongside reason and citations, none of them
+      required — present exactly when a judgment call happened, absent on reason no-data.
+    why: >-
+      usage mirrors domain/investigation/cost's own token shape at single-call granularity, so a
+      future call site measuring one provider call reuses the same value-object rather than
+      inventing a second one; elapsed_ms and prompt describe the evaluation event itself, not a
+      quantity shared across calls, so they follow the precedent reason and citations already
+      set by staying evaluation's own attributes instead of a wrapper with one member.
+  - location: scenarios/investigation/a-single-hypothesis-is-simulated.md
+    field: subject
+    unstated: >-
+      The material proposes rules/investigation/a-simulation-writes-no-investigation as this
+      scenario's subject by default, then asks the analysis to check whether the contract itself
+      is the better anchor once scenario.json is reread, without deciding between them.
+    decided: >-
+      contracts/investigation/case-simulation is the subject; the other two new scenarios keep
+      the rule as theirs.
+    why: >-
+      What this scenario grounds — that simulate-hypothesis narrows to one hypothesis and
+      resolves no outcome — is a fact about that operation's own shape, not about the
+      no-investigation, no-cache guarantee the rule states and the other two scenarios already
+      ground concretely; anchoring it to the contract keeps one scenario per fact instead of
+      stretching the rule's subject to cover a claim it never makes.
 ---

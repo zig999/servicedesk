@@ -24,6 +24,9 @@ attributes:
     required: true
   - name: result_detail
     type: string
+  - name: elapsed_ms
+    type: integer
+    required: true
 relationships:
   - target: domain/integration/capability
     type: reference
@@ -35,6 +38,7 @@ relationships:
 What one collected concept returned, normalized to the glossary's vocabulary and identified within the investigation by its concept.
 The absence of data is a recorded fact: a timeout, a denial or an unavailability arrives as a result, never as an exception.
 The capability reference pins which registered capability, at which version, produced this observation.
+elapsed_ms is how long the collection itself took, in milliseconds, whatever the result — the same unit `domain/investigation/durations` already keeps its own stage totals in.
 
 ## Responsibility
 
