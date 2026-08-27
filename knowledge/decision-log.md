@@ -870,4 +870,59 @@ entries:
       no-investigation, no-cache guarantee the rule states and the other two scenarios already
       ground concretely; anchoring it to the contract keeps one scenario per fact instead of
       stretching the rule's subject to cover a claim it never makes.
+  - location: domain/investigation/assessment.md
+    field: attributes
+    unstated: >-
+      No attribute anywhere — on the assessment, the investigation, or a dedicated record —
+      carries what one assessment-consolidator call itself spent at the provider.
+    decided: >-
+      assessment gains a required usage attribute, type usage (bare, same-context reference to
+      domain/investigation/usage), carrying the consolidation call's own token spend.
+    why: >-
+      Mirrors evaluation's own usage attribute exactly — the call's own record belongs on the
+      value-object the call produces, and domain/investigation/usage already exists as the
+      call-granularity shape for exactly this purpose. Unlike judgment, which may never run for
+      a hypothesis (reason no-data), consolidation runs exactly once per investigation without
+      exception — cost.md states one writing call, linear in hypotheses, with no conditional —
+      so usage is required here rather than optional the way evaluation's is.
+  - location: domain/investigation/assessment.md
+    field: attributes
+    unstated: >-
+      Whether a case simulation's or diagnosis's response states which consolidation register
+      (formal or plain) the consolidation step actually applied, for a case version that
+      declares no consolidation_register of its own.
+    decided: >-
+      assessment gains a required register attribute, type
+      domain/knowledge/consolidation-register, carrying the register the consolidation step
+      actually used to produce the text — the version's own declared register when it holds one,
+      the consolidation adapter's own default otherwise.
+    why: >-
+      domain/knowledge/case-version.md itself says an absent register leaves the actual choice to
+      "whatever register its own adapter defaults to" — a fact settled at the adapter, outside the
+      domain, and unknowable to a caller in advance; the only way a reader of the response ever
+      learns which register actually produced the text on hand is for the response to state it.
+      This mirrors usage, elapsed_ms and prompt on this same element, decided the same way for the
+      same reason — a call-level fact this one writing call alone produces, with no other
+      addressable home to hold it — and is required rather than optional for the same reason those
+      three are: consolidation runs exactly once per investigation without exception, so the
+      register behind its text is never absent either.
+  - location: rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused.md
+    field: statement
+    unstated: >-
+      What simulate-hypothesis answers when the hypothesis name it is given is absent from the
+      named case version's manifest — contracts/investigation/case-simulation names the
+      operation but, as an api, cannot declare a refusal itself (that field is command-only per
+      the contract schema), and no rule or constraint anywhere in the specification pairs an
+      HTTP status with this particular miss.
+    decided: >-
+      HTTP 404 reporting HypothesisNotInManifestError.
+    why: >-
+      Mirrors this specification's own established idiom for a name absent from the one set a
+      request itself pinned — a-case-read-by-an-unknown-slug-or-version-is-refused,
+      a-connector-configuration-read-by-an-unregistered-name-is-refused and
+      a-glossary-read-by-an-unheld-name-is-refused all resolve an absent name with HTTP 404 and a
+      distinctly-named …NotFoundError/…NotHeldError value rather than an ordinary empty result; a
+      hypothesis name absent from the one manifest the request names is the same miss, so it
+      takes the same status and the same naming idiom, scoped to what is actually absent (a
+      manifest entry for that name).
 ---

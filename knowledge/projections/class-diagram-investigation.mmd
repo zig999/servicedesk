@@ -23,6 +23,10 @@ classDiagram
         +Referral referral
         +string determiningHypothesis
         +string text
+        +ConsolidationRegister register
+        +Usage usage
+        +integer elapsedMs
+        +string prompt
     }
     class AssessmentConsolidator {
         <<Service>>
@@ -122,6 +126,9 @@ classDiagram
         <<external: integration>>
     }
     class Case {
+        <<external: knowledge>>
+    }
+    class ConsolidationRegister {
         <<external: knowledge>>
     }
     class Referral {
