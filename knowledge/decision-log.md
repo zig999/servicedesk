@@ -943,4 +943,46 @@ entries:
       carry writing on every call, since diagnose always reaches consolidation; only an
       operation that genuinely skips the stage, like simulate-hypothesis, now has a way to say
       so truthfully instead of being forced to report a duration for a call that never happened.
+  - location: rules/integration/an-http-connector-configuration-declares-its-call.md
+    field: statement
+    unstated: >-
+      Which further keys an HTTP connector configuration carries beyond method, responseMap and
+      statusMap, and how a call embeds a Subject attribute, the requester or a credential into
+      it — the material is
+      siegard-reconcile/http-connector-address-placeholder-gap.md, whose three independent
+      judgments found src/src/http-connector/connector-call-descriptor.ts and
+      connector-request-resolver.ts already stating this fact, unprompted, with no node holding
+      it.
+    decided: >-
+      The same configuration also declares an address (required, non-empty string), and may
+      declare a query and headers (each an object of string values) and a body of any shape; any
+      of the four may embed one or more `${kind[:argument]}` placeholders naming a Subject
+      attribute (`subject:<attribute>`), the requester (`requester`), or a credential read from
+      environment configuration at resolution time (`credential:<name>`), substituted as plain
+      text and never evaluated as code. A configuration missing its address, declaring query or
+      headers malformed, naming an unrecognized placeholder kind, naming a placeholder with no
+      required argument, or naming a Subject attribute or credential that resolves to nothing, is
+      refused before any call is assembled — a fact about the call's own assembly, left
+      undecided whether it becomes the same unavailable ending the missing-key case above
+      declares, since the source code's own call chain (connector-request-resolver.ts's
+      resolveConnectorRequest, called unguarded inside
+      http-declarative-observation-source.adapter.ts's observeConcept) does not visibly catch
+      what it throws before evidence-collection-stage.ts's own comment states observe-concept
+      "never throws" for the four evidence-result endings — a code-level question this analysis
+      does not resolve.
+    why: >-
+      Read directly from src/src/http-connector/connector-call-descriptor.ts's own JSDoc and
+      connector-request-resolver.ts's own implementation (SUBJECT_PLACEHOLDER_KIND,
+      REQUESTER_PLACEHOLDER_KIND, CREDENTIAL_PLACEHOLDER_KIND, the `${...}` pattern,
+      IncompleteConnectorCallDescriptorError and ConnectorPlaceholderNotResolvedError), confirmed
+      against domain/integration/connector-configuration.md (which already designates this rule
+      as the HTTP connector's own statement of what its configuration's keys mean) and
+      rules/integration/a-diagnostic-response-masks-a-resolved-credential.md (which already
+      presumes a credential placeholder exists, without ever stating the mechanism itself). This
+      is the same rule rather than a new one because domain/integration/connector-configuration.md
+      names no second place for an HTTP connector's own statement to live. The refusal's
+      eventual ending is left undecided rather than assumed to match the missing-key case: the
+      material shows the code raising rather than ending, an apparent tension with this same
+      node's own Description, and inventing a resolution to that tension here would be deciding
+      code behavior this increment did not verify — it is named to a human rather than settled.
 ---
