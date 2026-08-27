@@ -65,9 +65,37 @@ it('answers the text seeded for the evaluations, evidence and consolidation regi
   fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
   const consolidator = consolidatorOver(fake);
 
-  const text = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+  const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
-  expect(text).toBe('the consolidated write-up');
+  expect(outcome.text).toBe('the consolidated write-up');
+});
+
+// ------------------------------------------------------------- criterion 2 (task/investigation-telemetry/widen-judgment-and-consolidation-ports)
+
+it('answers a defined usage, elapsed_ms and prompt on every call, never leaving any of the three undefined', async () => {
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
+  const consolidator = consolidatorOver(fake);
+
+  const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+
+  expect(outcome.usage).toBeDefined();
+  expect(outcome.elapsed_ms).toBeDefined();
+  expect(outcome.prompt).toBeDefined();
+});
+
+// ------------------------------------------------------------- criterion 6: placeholder usage/elapsed_ms, empty-string prompt
+
+it('answers a placeholder zero-valued usage, an elapsed_ms of 0 and an empty-string prompt, regardless of what text was seeded', async () => {
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
+  const consolidator = consolidatorOver(fake);
+
+  const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+
+  expect(outcome.usage).toEqual({ input_tokens: 0, output_tokens: 0 });
+  expect(outcome.elapsed_ms).toBe(0);
+  expect(outcome.prompt).toBe('');
 });
 
 it('accepts empty evaluations and evidence arrays without refusing the call', async () => {
@@ -75,9 +103,9 @@ it('accepts empty evaluations and evidence arrays without refusing the call', as
   fake.seed({ evaluations: [], evidence: [], consolidationRegister: A_REGISTER }, 'nothing was required');
   const consolidator = consolidatorOver(fake);
 
-  const text = await consolidator.consolidate([], [], A_REGISTER);
+  const outcome = await consolidator.consolidate([], [], A_REGISTER);
 
-  expect(text).toBe('nothing was required');
+  expect(outcome.text).toBe('nothing was required');
 });
 
 it('throws naming the unseeded call rather than answering a default text', async () => {
@@ -91,9 +119,9 @@ it('matches a call by its content, not by the object reference the fixture was s
   fake.seed({ evaluations: [A_CONFIRMED_EVALUATION], evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
   const consolidator = consolidatorOver(fake);
 
-  const text = await consolidator.consolidate([{ ...A_CONFIRMED_EVALUATION }], [{ ...SOME_EVIDENCE[0] }], A_REGISTER);
+  const outcome = await consolidator.consolidate([{ ...A_CONFIRMED_EVALUATION }], [{ ...SOME_EVIDENCE[0] }], A_REGISTER);
 
-  expect(text).toBe('the consolidated write-up');
+  expect(outcome.text).toBe('the consolidated write-up');
 });
 
 it('distinguishes a call by its consolidation register alone, answering each register its own seeded text', async () => {
@@ -102,11 +130,11 @@ it('distinguishes a call by its consolidation register alone, answering each reg
   fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: 'plain' }, 'plain write-up');
   const consolidator = consolidatorOver(fake);
 
-  const formalText = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'formal');
-  const plainText = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'plain');
+  const formalOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'formal');
+  const plainOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'plain');
 
-  expect(formalText).toBe('formal write-up');
-  expect(plainText).toBe('plain write-up');
+  expect(formalOutcome.text).toBe('formal write-up');
+  expect(plainOutcome.text).toBe('plain write-up');
 });
 
 it('distinguishes a call by its evaluations, throwing for a set nothing was seeded for', async () => {
@@ -135,9 +163,9 @@ it('a later seed for the same call replaces the earlier one', async () => {
   fake.seed(call, 'the replacing draft');
   const consolidator = consolidatorOver(fake);
 
-  const text = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+  const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
-  expect(text).toBe('the replacing draft');
+  expect(outcome.text).toBe('the replacing draft');
 });
 
 // A test proving domain/knowledge/case's default-register clause against

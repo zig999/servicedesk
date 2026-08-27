@@ -5,10 +5,13 @@
 // seeded with it and whatever citations were seeded alongside — and never
 // throws for any of the three verdicts, throwing only for a criterion
 // nothing seeded, which is a test-setup fault rather than a fourth verdict.
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
+import type { Usage } from '../../../investigation/usage.js';
 
 /** A criterion string, spelled out rather than left implicit. */
 const A_CRITERION = 'a-criterion';
@@ -102,6 +105,30 @@ it('answers the outcome seeded for this criterion, not the one seeded for a diff
     verdict: 'confirmed',
     citations: [{ concept: 'a-concept', field: 'a-field' }],
   });
+});
+
+// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criterion 1
+
+it('carries a seeded usage, elapsed_ms and prompt through unchanged, proving the widened return type declares and accepts all three as optional call-record fields', async () => {
+  const fake = new FakeHypothesisEvaluator();
+  const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];
+  const usage: Usage = { input_tokens: 12, output_tokens: 34 };
+  fake.seed(A_CRITERION, { verdict: 'confirmed', citations, usage, elapsed_ms: 567, prompt: 'the materialized judgment prompt' });
+  const evaluator = evaluatorOver(fake);
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toEqual({ verdict: 'confirmed', citations, usage, elapsed_ms: 567, prompt: 'the materialized judgment prompt' });
+});
+
+// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criterion 5, unchanged
+
+it("FakeHypothesisEvaluator's own source declares no usage or elapsed_ms field, and no prompt field on any answered outcome — proving it was left untouched by the widened port's own new, optional call-record fields", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../investigation/fake-hypothesis-evaluator.adapter.ts', import.meta.url)), 'utf8');
+
+  expect(source).not.toMatch(/\busage\b/);
+  expect(source).not.toMatch(/\belapsed_ms\b/);
+  expect(source).not.toMatch(/prompt:|\.prompt\b/);
 });
 
 it('a later seed for the same criterion replaces the earlier one', async () => {

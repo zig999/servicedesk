@@ -22,6 +22,7 @@
 import type { ObservationOutcome } from './observation-source.port.js';
 import type { Citation } from './citation.js';
 import type { EvaluationReason } from './evaluation-reason.js';
+import type { Usage } from './usage.js';
 import type { Verdict } from './verdict.js';
 
 /**
@@ -61,14 +62,38 @@ export type EvidenceItem = { readonly concept: string; readonly declaredFields: 
  * full per-hypothesis record — naming it — is assembled there
  * (task/hypothesis-judgment/judgment-stage), the same way
  * IObservationSource's ObservationOutcome carries no concept field either.
+ * usage, elapsed_ms and prompt are each optional
+ * (task/investigation-telemetry/widen-judgment-and-consolidation-ports): the
+ * provider's own token usage, the call's own measured elapsed time and the
+ * judgment prompt as materialized for that call, present exactly where an
+ * adapter's own call actually happened and answered them — an adapter that
+ * answers no-data without ever calling the model, or one that has not yet
+ * been widened to report them (this port's own optionality lets today's
+ * adapters keep answering without these three fields at all), leaves them
+ * absent rather than inventing a value for them.
  */
 export type EvaluationOutcome =
-  | { readonly verdict: 'confirmed'; readonly citations: readonly [Citation, ...Citation[]] }
-  | { readonly verdict: 'refuted'; readonly citations: readonly [Citation, ...Citation[]] }
+  | {
+      readonly verdict: 'confirmed';
+      readonly citations: readonly [Citation, ...Citation[]];
+      readonly usage?: Usage;
+      readonly elapsed_ms?: number;
+      readonly prompt?: string;
+    }
+  | {
+      readonly verdict: 'refuted';
+      readonly citations: readonly [Citation, ...Citation[]];
+      readonly usage?: Usage;
+      readonly elapsed_ms?: number;
+      readonly prompt?: string;
+    }
   | {
       readonly verdict: Exclude<Verdict, 'confirmed' | 'refuted'>;
       readonly reason: EvaluationReason;
       readonly citations: readonly Citation[];
+      readonly usage?: Usage;
+      readonly elapsed_ms?: number;
+      readonly prompt?: string;
     };
 
 /**

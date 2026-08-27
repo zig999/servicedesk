@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/investigation-telemetry-widen-judgment-and-consolidation-ports-setup-2",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-aa845742153b0d725/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-27T16:33:41.518+00:00",
+      "ended_at": "2026-08-27T16:33:53.528+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

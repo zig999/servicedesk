@@ -23,17 +23,44 @@
 // criterion or the case's when_to_use, so this adapter's own signature could
 // never receive either, by construction — never assembled by reading a
 // wider object this call was not given. The provider call carries no
-// `tools` field, and consolidate() answers the model's own text content
-// alone, trimmed — never an outcome, a referral or a determining
-// hypothesis, none of which reach this adapter's inputs
+// `tools` field, and consolidate() answers the model's own text content,
+// trimmed, alongside the call's own record — never an outcome, a referral or
+// a determining hypothesis, none of which reach this adapter's inputs
 // (rules/investigation/the-outcome-comes-from-the-case).
+//
+// consolidate() answers a ConsolidationOutcome rather than the text alone
+// (task/investigation-telemetry/widen-judgment-and-consolidation-ports):
+// this task widens the port's required return shape only, so this adapter's
+// own change is the minimum that satisfies it — a placeholder zero-valued
+// usage (input_tokens 0, output_tokens 0), an elapsed_ms of 0, and prompt
+// set to exactly the data block this adapter already assembled and sent as
+// the call's own user message. Reading the provider's own message.usage and
+// measuring this call's own elapsed time are
+// task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing's
+// own declared scope, not touched here.
 
 import Anthropic from '@anthropic-ai/sdk';
 
-import type { IAssessmentConsolidator } from './assessment-consolidator.port.js';
+import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
 import type { ConsolidationRegister } from './consolidation-register.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
+import type { Usage } from './usage.js';
+
+/**
+ * The placeholder usage this adapter answers until
+ * task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing
+ * reads the provider's own message.usage instead — this task's own scope is
+ * the widened return type alone, never real usage reading.
+ */
+const PLACEHOLDER_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
+
+/**
+ * The placeholder elapsed_ms this adapter answers until
+ * task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing
+ * measures this call's own wall-clock time instead.
+ */
+const PLACEHOLDER_ELAPSED_MS = 0;
 
 /**
  * The tag delimiting the one data block the prompt ever carries —
@@ -88,23 +115,27 @@ export class AnthropicAssessmentConsolidator implements IAssessmentConsolidator 
   }
 
   /**
-   * consolidate: writes the assessment's text alone from exactly its own
-   * three arguments, granting the model no tools. Never returns an
-   * outcome, a referral or a determining hypothesis — none of which this
-   * call's own inputs could ever carry.
+   * consolidate: writes the assessment's text from exactly its own three
+   * arguments, granting the model no tools, alongside a placeholder usage
+   * and elapsed_ms and the prompt exactly as sent — the widened port's own
+   * required shape, satisfied minimally rather than with real usage/timing
+   * (this file's own header comment). Never returns an outcome, a referral
+   * or a determining hypothesis — none of which this call's own inputs
+   * could ever carry.
    */
   public async consolidate(
     evaluations: readonly Evaluation[],
     evidence: readonly Evidence[],
     consolidationRegister: ConsolidationRegister,
-  ): Promise<string> {
+  ): Promise<ConsolidationOutcome> {
+    const prompt = buildDataBlock(evaluations, evidence, consolidationRegister);
     const response = await this.client.messages.create({
       model: this.model,
       max_tokens: this.maxTokens,
       system: buildSystemPrompt(consolidationRegister),
-      messages: [{ role: 'user', content: buildDataBlock(evaluations, evidence, consolidationRegister) }],
+      messages: [{ role: 'user', content: prompt }],
     });
-    return textOf(response.content).trim();
+    return { text: textOf(response.content).trim(), usage: PLACEHOLDER_USAGE, elapsed_ms: PLACEHOLDER_ELAPSED_MS, prompt };
   }
 }
 
