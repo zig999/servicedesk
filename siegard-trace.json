@@ -777,7 +777,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:df4d3b429b8edd9fc22ab555bb5adcb14e9fb91433a2a1ae377ea2bfbd85a434"
+          "digest": "sha256:950897895b2ec9fb68c49f4335d9c95f36ebcdcdbdb7710ec5a833bd5f3d116a"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
@@ -1887,7 +1887,7 @@
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
-          "digest": "sha256:df4d3b429b8edd9fc22ab555bb5adcb14e9fb91433a2a1ae377ea2bfbd85a434"
+          "digest": "sha256:950897895b2ec9fb68c49f4335d9c95f36ebcdcdbdb7710ec5a833bd5f3d116a"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-screen.tsx",
