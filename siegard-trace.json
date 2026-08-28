@@ -940,6 +940,10 @@
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
           "digest": "sha256:79e3f15c078cfa15c13c3d389ca4406319d76c0768de5c7b11e2b44e05f858aa"
+        },
+        {
+          "path": "src/src/factories/simulate.factory.ts",
+          "digest": "sha256:7418d375f1f5696ff8a2179e5f0d15ea4cbf64e7c2156124501ee18044cc068e"
         }
       ]
     },
@@ -3942,6 +3946,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:d5de1f9cb4bec4445e6bb41ea354f454490a5f04d07a129efc33f7e6183475e5"
+        },
+        {
+          "path": "src/src/factories/simulate.factory.ts",
+          "digest": "sha256:7418d375f1f5696ff8a2179e5f0d15ea4cbf64e7c2156124501ee18044cc068e"
         }
       ]
     },
@@ -5042,6 +5050,16 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "digest": "sha256:79dc9b3a91f2d296783288eb24746a5549639a8dc171342c9e6439e98f244579",
+      "files": [
+        {
+          "path": "src/src/factories/simulate.factory.ts",
+          "digest": "sha256:7418d375f1f5696ff8a2179e5f0d15ea4cbf64e7c2156124501ee18044cc068e"
         }
       ]
     },

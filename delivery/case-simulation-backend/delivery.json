@@ -10,6 +10,14 @@
       "task": "task/case-simulation-pipeline/extract-shared-investigation-pipeline"
     },
     {
+      "id": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "implementation",
+      "file": "implementation/case-simulation-pipeline/no-cache-simulation-composition.md",
+      "title": "No-cache simulation composition/factory",
+      "summary": "A new simulate.factory.ts wires runInvestigationPipeline as a distinct, unconditional assembly whose own observation source is a freshly constructed HttpDeclarativeObservationSource, never a caller-supplied port that could be a caching decorator.",
+      "task": "task/case-simulation-pipeline/no-cache-simulation-composition"
+    },
+    {
       "id": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "kind": "implementation",
       "file": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
@@ -48,6 +56,14 @@
       "title": "Proof for extracting the shared investigation pipeline",
       "summary": "New tests exercise runInvestigationPipeline's own record shape and sequencing directly, since run-diagnosis.spec.ts's own unmodified, still-valid suite already proves the composition, identical-response and write-ordering criteria but cannot reach fields the diagnose caller never surfaces.",
       "task": "task/case-simulation-pipeline/extract-shared-investigation-pipeline"
+    },
+    {
+      "id": "proof/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "proof",
+      "file": "proof/case-simulation-pipeline/no-cache-simulation-composition.md",
+      "title": "Proof for no-cache simulation composition/factory",
+      "summary": "Fourteen tests over simulate.factory.ts, mocking runInvestigationPipeline and the three adapters it composes (capability query, connector-configuration registry, HttpDeclarativeObservationSource) as the boundaries this factory wires without owning -- proving the wiring, the construct-once discipline, the absence of any observation-source parameter (at the type level, since nothing at runtime could tell a caching decorator apart from the real adapter), and the absence of any import into the production composition's own modules.",
+      "task": "task/case-simulation-pipeline/no-cache-simulation-composition"
     },
     {
       "id": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
@@ -140,6 +156,30 @@
     {
       "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
       "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "task/case-simulation-pipeline/no-cache-simulation-composition",
       "kind": "implements",
       "at": "the path"
     },
@@ -242,6 +282,12 @@
     {
       "from": "proof/case-simulation-pipeline/extract-shared-investigation-pipeline",
       "to": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-simulation-pipeline/no-cache-simulation-composition",
+      "to": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
       "kind": "proves",
       "at": "the path"
     },

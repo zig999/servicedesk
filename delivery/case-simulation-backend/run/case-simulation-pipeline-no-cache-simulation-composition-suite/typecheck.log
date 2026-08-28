@@ -1,0 +1,8 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/factories/simulate.factory.spec.ts(303,3): error TS2578: Unused '@ts-expect-error' directive.
+src/__tests__/unit/factories/simulate.factory.spec.ts(312,5): error TS2353: Object literal may only specify known properties, and 'observationSource' does not exist in type 'SimulationDependencies'.
+src/__tests__/unit/factories/simulate.factory.spec.ts(331,3): error TS2578: Unused '@ts-expect-error' directive.
+src/__tests__/unit/factories/simulate.factory.spec.ts(340,5): error TS2353: Object literal may only specify known properties, and 'narrative' does not exist in type 'SimulationCall'.

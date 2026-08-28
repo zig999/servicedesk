@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src/src/__tests__/unit/factories/simulate.factory.spec.ts
+  58:9  error  Variable name `HttpDeclarativeObservationSourceMock` must match one of the following formats: camelCase, UPPER_CASE  @typescript-eslint/naming-convention
+
+✖ 1 problem (1 error, 0 warnings)
+
