@@ -1,0 +1,58 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-registry-write-upsert-hotfix",
+      "kind": "epic",
+      "file": "epic/capability-registry-write-upsert-hotfix.md",
+      "title": "Capability registry write upsert hotfix",
+      "summary": "A tarefa corretiva única que corrige o writeCapabilities do registry de capabilities para não derrubar a tabela inteira ao salvar."
+    },
+    {
+      "id": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "task",
+      "file": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity.md",
+      "title": "writeCapabilities upserta por identidade, sem apagar a tabela inteira",
+      "summary": "Corrige RelationalCapabilityStore.writeCapabilities para não fazer DELETE sem filtro na tabela capabilities, permitindo salvar qualquer capability mesmo quando outra linha já tem evidência associada.",
+      "epic": "capability-registry-write-upsert-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}
