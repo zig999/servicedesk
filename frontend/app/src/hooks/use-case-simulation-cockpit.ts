@@ -45,9 +45,12 @@
  *
  * ---- Criterion 6: return-from-editing staleness ----
  * CaseVersionRecord (../services/case-version-record.ts) carries no hash or
- * updated_at field, so D8's own "otherwise always mark stale on return" is
- * the branch that always applies here -- no comparison is computed because
- * there is nothing on this record to compare.
+ * updated_at field, so rules/investigation/a-simulation-result-is-stale-once-
+ * its-source-changes's own allowance for "the coarsest safe answer" --
+ * exercised by scenarios/investigation/a-returned-edit-stales-the-shown-
+ * simulation-result's own concrete "returns to the cockpit" case -- is the
+ * branch that always applies here: no comparison is computed because there
+ * is nothing on this record to compare.
  * "Return" is detected without touching the three editing screens themselves
  * (Version Editor, Manifest, Revise Hypothesis -- all outside this task's own
  * depends_on and file set): `visitedSimulationRoutes`, a plain module-level

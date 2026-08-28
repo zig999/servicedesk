@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulation-staleness-binding-bind-cockpit-staleness-citations-and-proof-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-28T20:54:41.510+00:00",
+      "ended_at": "2026-08-28T20:54:50.397+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

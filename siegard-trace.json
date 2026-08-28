@@ -4376,6 +4376,20 @@
       ]
     },
     {
+      "node": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "digest": "sha256:dbeff197ba37dcb8abf0059b9af16c5cc332b5a67d6c00182d36f97c5633a63b",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-simulation-cockpit-staleness.spec.ts",
+          "digest": "sha256:38fafd9373c877371e3c280f0321619a34ca4f89729ee90e44fe21ec37a77dac"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-case-simulation-cockpit.ts",
+          "digest": "sha256:bf81d939adff7511254a0216cce4bd9bde2995b29d82a37cb687c5ef8c73ee14"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-simulation-writes-no-investigation",
       "digest": "sha256:18074fefae973c4817dc50260ef5f789c3cf78c006bf1728690f9cd50f32d065",
       "files": [
@@ -5628,6 +5642,20 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "digest": "sha256:02509e76b6dc825c3ac5dc096a306a25e21901d031ee39fb1abcd8c2de30a143",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-simulation-cockpit-staleness.spec.ts",
+          "digest": "sha256:38fafd9373c877371e3c280f0321619a34ca4f89729ee90e44fe21ec37a77dac"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-case-simulation-cockpit.ts",
+          "digest": "sha256:bf81d939adff7511254a0216cce4bd9bde2995b29d82a37cb687c5ef8c73ee14"
         }
       ]
     },

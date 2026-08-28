@@ -16,9 +16,11 @@ import {
 // use-case-simulation-version.ts's own exact ["case-version", slug, version] key, which the
 // header, the Subject region and the Hypotheses table's own manifest rows all read -- and marks
 // the last run "stale". Every case-version record in this delivery's own fixtures carries no
-// hash or updated_at (case-version-record.ts), so D8's "otherwise always mark stale on return"
-// is the only branch this cockpit can ever take; no comparison is computed anywhere in this
-// file's own proof for that reason.
+// hash or updated_at (case-version-record.ts), so rules/investigation/a-simulation-result-is-stale-
+// once-its-source-changes's own allowance for "the coarsest safe answer" -- exercised by
+// scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result's own concrete
+// "returns to the cockpit" case -- is the only branch this cockpit can ever take; no comparison
+// is computed anywhere in this file's own proof for that reason.
 //
 // This task's own delivery record discloses that useCaseSimulationHistory's own run list is
 // component-scoped React state, so a genuine full-route navigation away and back unmounts and
