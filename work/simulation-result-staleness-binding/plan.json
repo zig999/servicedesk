@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulation-staleness-binding",
+      "kind": "epic",
+      "file": "epic/simulation-staleness-binding.md",
+      "title": "Cockpit simulation staleness specification binding",
+      "summary": "Binds the two newly-written staleness nodes -- the rule and its concrete scenario -- to the already-delivered cockpit mechanism that implements them."
+    },
+    {
+      "id": "inventory/simulation-result-staleness-binding",
+      "kind": "inventory",
+      "file": "inventory/simulation-result-staleness-binding.md",
+      "title": "Cockpit staleness code already delivered; binding a citation and adding one test",
+      "summary": "The return-from-editing staleness mechanism already implements the two nodes this scope binds; the area is the cockpit hook, its history hook, its version-record type and its stale-aware consumer."
+    },
+    {
+      "id": "task/simulation-staleness-binding/bind-cockpit-staleness-citations-and-proof",
+      "kind": "task",
+      "file": "task/simulation-staleness-binding/bind-cockpit-staleness-citations-and-proof.md",
+      "title": "Bind the cockpit's staleness citation and prove the changed-source behavior",
+      "summary": "Replaces the stale \"D8\" citation with the two governing nodes and adds the test proving a return marks the shown result stale.",
+      "epic": "simulation-staleness-binding"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulation-staleness-binding",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulation-staleness-binding",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/simulation-staleness-binding/bind-cockpit-staleness-citations-and-proof",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-staleness-binding/bind-cockpit-staleness-citations-and-proof",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
