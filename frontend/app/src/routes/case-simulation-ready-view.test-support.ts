@@ -15,7 +15,12 @@ import {
 } from "./case-simulation-ready-view";
 import type { CaseVersionRecord, CaseVersionManifestEntry } from "../services/case-version-record";
 import type { SimulateCaseResult, SimulateEvaluation } from "../hooks/use-simulate-case";
-import type { SimulateHypothesisResult, Evaluation as HypothesisEvaluation } from "../hooks/use-simulate-hypothesis";
+import type {
+  Durations as HypothesisDurations,
+  Evidence as HypothesisEvidence,
+  SimulateHypothesisResult,
+  Evaluation as HypothesisEvaluation,
+} from "../hooks/use-simulate-hypothesis";
 
 // Shared fixtures and mounting helper for case-simulation-ready-view.spec.ts,
 // case-simulation-ready-view-dispatch.spec.ts and case-simulation-ready-view-selection.spec.ts
@@ -35,8 +40,13 @@ export const GLOSSARY_SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
 export const GLOSSARY_SUBJECT_ATTRIBUTE_PATH = "/v1/glossary/subject-attribute";
 export const SIMULATE_CASE_PATH = "/v1/simulate";
 
-export function simulateHypothesisPath(slug: string, version: number): string {
-  return `/v1/cases/${slug}/versions/${version}/simulate-hypothesis`;
+/** fix-use-simulate-hypothesis-dispatch (a corrective increment): the hook now dispatches to one
+ * fixed route regardless of slug/version -- the case identity travels in the body instead. Keeps
+ * its own two parameters so every existing call site in this route's own sibling spec files
+ * (`simulateHypothesisPath(SLUG, VERSION)`) still resolves to the one URL the hook actually
+ * calls, without editing those call sites. */
+export function simulateHypothesisPath(_slug: string, _version: number): string {
+  return "/v1/simulate/hypothesis";
 }
 
 export const SLUG = "acme-widgets";
@@ -285,11 +295,36 @@ export function inconclusiveHypothesisEvaluation(hypothesis: string): Hypothesis
     hypothesis,
     verdict: "inconclusive",
     reason: "no-data",
+    citations: [],
   };
+}
+
+/** The evidence array and durations object a simulateHypothesisResult() fixture carries by
+ * default, shaped after the route's own delivered evidenceSchema/durationsSchema
+ * (fix-use-simulate-hypothesis-dispatch's own header comment on use-simulate-hypothesis.ts). */
+function hypothesisEvidence(): readonly HypothesisEvidence[] {
+  return [
+    {
+      concept: "billing-history",
+      inputs: "{}",
+      observation: "the account shows one authorized charge",
+      observed_at: "2026-08-01T00:00:00.000Z",
+      ttl: 3600,
+      origin: "billing-connector",
+      result: "ok",
+      capability_name: "fetch-billing-account",
+      capability_version: "1",
+      elapsed_ms: 120,
+    },
+  ];
+}
+
+function hypothesisDurations(): HypothesisDurations {
+  return { collection: 400, judgment: 300, total: 700 };
 }
 
 export function simulateHypothesisResult(
   evaluation: HypothesisEvaluation = confirmedHypothesisEvaluation("hypothesis-a"),
 ): SimulateHypothesisResult {
-  return { evaluation };
+  return { evidence: hypothesisEvidence(), evaluation, durations: hypothesisDurations() };
 }

@@ -228,7 +228,14 @@ export function useCaseSimulationCockpit(
     if (!canSimulateNow) {
       return;
     }
-    hypSim.onSimulate(hypothesisName, subjectState.subject);
+    // fix-use-simulate-hypothesis-dispatch: hypSim.onSimulate now dispatches
+    // against the live POST /v1/simulate/hypothesis route, whose body
+    // requires a requester the same way caseSim.onSimulate's body already
+    // does (this file's own header comment, "Criterion 3: one subject,
+    // shared" -- subjectState.requester feeds both onSimulate calls
+    // unchanged) -- forwarded through here rather than dropped as it was
+    // before this fix.
+    hypSim.onSimulate(hypothesisName, subjectState.subject, subjectState.requester);
   }
 
   function onSelectHypothesis(hypothesisName: string): void {
