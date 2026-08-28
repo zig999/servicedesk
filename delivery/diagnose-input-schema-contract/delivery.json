@@ -18,6 +18,14 @@
       "task": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements"
     },
     {
+      "id": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "implementation",
+      "file": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute.md",
+      "title": "Diagnose entry gate refusing a subject that misses a required case input",
+      "summary": "handleDiagnoseRequest now reads the pinned case version's derived input requirements and refuses, with a 422 SubjectDoesNotCoverCaseInputsError, before runDiagnose is ever called, if the subject leaves any required attribute missing or empty.",
+      "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
+    },
+    {
       "id": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proof",
       "file": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema.md",
@@ -32,6 +40,14 @@
       "title": "Proof for derive-case-input-requirements",
       "summary": "Tests the pure input-requirements fold, its composition into CaseQueryService's read-case-input-requirements, and the HTTP surface that carries it, over all seven stated criteria and the implementation's three disclosed inferences.",
       "task": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements"
+    },
+    {
+      "id": "proof/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "proof",
+      "file": "proof/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute.md",
+      "title": "Proof for refuse-diagnose-missing-required-attribute",
+      "summary": "Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it.",
+      "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
     }
   ],
   "edges": [
@@ -96,6 +112,42 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "to": "implementation/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proves",
@@ -104,6 +156,12 @@
     {
       "from": "proof/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
       "to": "implementation/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
       "kind": "proves",
       "at": "the path"
     }

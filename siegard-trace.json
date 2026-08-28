@@ -998,12 +998,16 @@
       "digest": "sha256:ff54e5f179f0da47cf2935c5545fd65bd5a08ad516058deacb604fad79cc9556",
       "files": [
         {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:4dc982a2a1782c930acd44ed3be939a0a7d5b5ef91807a48aca2d5508333179d"
+        },
+        {
           "path": "src/src/factories/production-diagnose.factory.ts",
           "digest": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1"
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:4feb4a15ed5b7166479fbdfebf643b987d7c82089ac72f9dbe9b3a9d628b5f80"
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -1082,6 +1086,10 @@
           "digest": "sha256:744cf5416e31f71572a92c31491045dec1a79efa772c539e8f9000a26726f99a"
         },
         {
+          "path": "src/src/factories/diagnose-server.factory.ts",
+          "digest": "sha256:0324e08810b6331645b8caf325b1d9454e626868db708346fb77a8ca406d5134"
+        },
+        {
           "path": "src/src/http/build-app.ts",
           "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
         },
@@ -1092,6 +1100,10 @@
         {
           "path": "src/src/http/case-input-requirements.routes.ts",
           "digest": "sha256:ede9119bfb0e701a4fac343c43e93fb6791f8e9273dfa00f849ec56b047f81ed"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         },
         {
           "path": "src/src/http/dto/case-input-requirements.dto.ts",
@@ -4238,6 +4250,28 @@
       ]
     },
     {
+      "node": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "digest": "sha256:545388d1d226a7c0a08443fbfaa2174d1df26afb9046d9a3257855d248288dc2",
+      "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:4dc982a2a1782c930acd44ed3be939a0a7d5b5ef91807a48aca2d5508333179d"
+        },
+        {
+          "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
+          "digest": "sha256:53541639fc4476158138e679c889e5b825c9c72cc790beab801e073c3ae59b84"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
+        },
+        {
+          "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
+          "digest": "sha256:9188206b5fb1cba52f29ed477c813ef2bed883ca0c08a07cd24fe389f692e29d"
+        }
+      ]
+    },
+    {
       "node": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
       "digest": "sha256:34984f8cd1ed47ef3915642719d1855acdcc5b0b02cd31fb98ba56b88b97526b",
       "files": [
@@ -5328,6 +5362,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         }
       ]
     },
@@ -5374,6 +5412,28 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+      "digest": "sha256:639dfff2324b6fce048755931892f7abda5fd776d8f48700566136d3395f8d82",
+      "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:4dc982a2a1782c930acd44ed3be939a0a7d5b5ef91807a48aca2d5508333179d"
+        },
+        {
+          "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
+          "digest": "sha256:53541639fc4476158138e679c889e5b825c9c72cc790beab801e073c3ae59b84"
+        },
+        {
+          "path": "src/src/http/diagnose.controller.ts",
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
+        },
+        {
+          "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
+          "digest": "sha256:9188206b5fb1cba52f29ed477c813ef2bed883ca0c08a07cd24fe389f692e29d"
         }
       ]
     },

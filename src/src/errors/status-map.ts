@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: five
+// `elsewhere` note). That silence no longer covers every entry below: six
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -16,12 +16,18 @@
 // (rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused,
 // whose own statement refuses a simulate-hypothesis request naming an absent
 // hypothesis "with an HTTP 404 response reporting a
-// HypothesisNotInManifestError"), and MalformedCapabilityInputSchemaError's
+// HypothesisNotInManifestError"), MalformedCapabilityInputSchemaError's
 // HTTP 422
 // (rules/integration/a-capability-input-schema-holds-a-well-formed-object,
 // whose own statement refuses a registration whose input schema departs
 // from the declared shape "with an HTTP 422 response reporting a
-// MalformedCapabilityInputSchemaError naming every departure")
+// MalformedCapabilityInputSchemaError naming every departure"), and
+// SubjectDoesNotCoverCaseInputsError's HTTP 422
+// (rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes,
+// whose own statement refuses a diagnose whose subject leaves a required
+// case input missing or empty "with an HTTP 422 response reporting a
+// SubjectDoesNotCoverCaseInputsError naming every missing attribute
+// together and, for each, the capabilities that require it")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -72,13 +78,18 @@
 // task/connector-configuration-authoring/register-connector-route), or one
 // whose connector name is absent or an empty string
 // (IncompleteConnectorConfigurationError,
-// rules/integration/a-connector-configuration-names-its-connector) — answers
-// 422 Unprocessable Entity: each of the first four reached this table only
-// once register-capability was exposed as a route
+// rules/integration/a-connector-configuration-names-its-connector), or a
+// diagnose request whose subject leaves a required case input missing or
+// empty (SubjectDoesNotCoverCaseInputsError,
+// rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes,
+// task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute)
+// — answers 422 Unprocessable Entity: each of the first four reached this
+// table only once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
 // before that task ever called registerCapability from HTTP; the fifth and
 // sixth reach it the same way, now that register-connector is exposed as a
-// route.
+// route; the seventh reaches it the same way, now that this gate stands
+// inside handleDiagnoseRequest.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -106,6 +117,7 @@ import { IncompleteConnectorConfigurationError } from './incomplete-connector-co
 import { MalformedCapabilityInputSchemaError } from './malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
+import { SubjectDoesNotCoverCaseInputsError } from './subject-does-not-cover-case-inputs.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
 
 /** A constructor of a typed domain error — usable both as a Map key and with `instanceof`, so the table below keys by class rather than by a string a caller could misspell. */
@@ -116,7 +128,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-three extends another, so that never arises today.
+ * twenty-four extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -142,6 +154,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [MalformedCapabilityInputSchemaError, 422],
   [ConnectorConfigurationNotWellFormedError, 422],
   [IncompleteConnectorConfigurationError, 422],
+  [SubjectDoesNotCoverCaseInputsError, 422],
 ]);
 
 /**

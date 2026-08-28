@@ -12,6 +12,8 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
+import type { CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
+import type { ICaseInputRequirementsQuery } from '../../../case/case-input-requirements.port.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
@@ -65,8 +67,16 @@ const REQUEST_BODY = {
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 type RunDiagnoseMock = ReturnType<typeof vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>>;
 
-/** One Fastify instance registering exactly the diagnose route plugin plus the shared error handler — mirrors what build-app.ts wires, the same convention read-case.routes.spec.ts already establishes. */
-function buildTestApp(pinnedCase: Case): { app: FastifyInstance; readCase: ReadCaseMock; runDiagnose: RunDiagnoseMock } {
+/** An empty derived-requirements result: no attribute is named at all, so no gate this task adds ever refuses over it — the default every pre-existing test in this file keeps relying on. */
+function noRequirements(): CaseInputRequirementsResult {
+  return { requirements: [], capabilities_with_malformed_input_schema: [] };
+}
+
+/** One Fastify instance registering exactly the diagnose route plugin plus the shared error handler — mirrors what build-app.ts wires, the same convention read-case.routes.spec.ts already establishes. requirementsResult defaults to noRequirements(), so a test naming none keeps the pre-existing shape. */
+function buildTestApp(
+  pinnedCase: Case,
+  requirementsResult: CaseInputRequirementsResult = noRequirements(),
+): { app: FastifyInstance; readCase: ReadCaseMock; runDiagnose: RunDiagnoseMock } {
   const readCase: ReadCaseMock = vi.fn().mockResolvedValue({ case: pinnedCase });
   const runDiagnose: RunDiagnoseMock = vi.fn();
   const caseQuery: ICaseQuery = {
@@ -76,7 +86,10 @@ function buildTestApp(pinnedCase: Case): { app: FastifyInstance; readCase: ReadC
     listHypotheses: vi.fn(),
     listHypothesisRevisions: vi.fn(),
   };
-  const dependencies: DiagnoseControllerDependencies = { caseQuery, runDiagnose, model: 'a-model', promptVersion: 'a-prompt-version' };
+  const caseInputRequirementsQuery: ICaseInputRequirementsQuery = {
+    readCaseInputRequirements: vi.fn().mockResolvedValue(requirementsResult),
+  };
+  const dependencies: DiagnoseControllerDependencies = { caseQuery, caseInputRequirementsQuery, runDiagnose, model: 'a-model', promptVersion: 'a-prompt-version' };
   const app = Fastify();
   app.setErrorHandler(handleUnexpectedError);
   app.register(createDiagnoseRoutesPlugin(dependencies));
@@ -117,6 +130,60 @@ it('never calls the wired diagnose runner for a draft-state pinned version at th
 
 it('answers 200 with the resolved assessment, unchanged, for a released-state pinned version', async () => {
   const built = buildTestApp(heldCase({ state: 'released' }));
+  app = built.app;
+  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
+  built.runDiagnose.mockResolvedValueOnce(expectedAssessment);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
+
+  expect(response.statusCode).toBe(200);
+  expect(response.json()).toEqual(expectedAssessment);
+});
+
+// ------------------------------------------------------------------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute
+
+const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
+
+/** REQUEST_BODY's own subject, replaced with one attribute this section's own requirement fixtures never name, so the one required entry below is always left uncovered. */
+function requestBodyWithUnrelatedSubjectAttribute(): Record<string, unknown> {
+  return { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-unrelated-attribute', value: 'a-value' }] } };
+}
+
+it('answers 422 with the SubjectDoesNotCoverCaseInputsError envelope naming the missing attribute and the capabilities that require it, for a subject missing a required case input', async () => {
+  const requirements: CaseInputRequirementsResult = {
+    requirements: [{ attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] }],
+    capabilities_with_malformed_input_schema: [],
+  };
+  const built = buildTestApp(heldCase({ state: 'released' }), requirements);
+  app = built.app;
+
+  const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyWithUnrelatedSubjectAttribute() });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: { missing: unknown } } };
+  expect(body.error.code).toBe('SubjectDoesNotCoverCaseInputsError');
+  expect(body.error.details?.missing).toEqual([{ attribute: 'contract-number', capabilities: [A_REQUIRED_CAPABILITY] }]);
+});
+
+it('never calls the wired diagnose runner when the subject fails to cover a required case input, at the route level', async () => {
+  const requirements: CaseInputRequirementsResult = {
+    requirements: [{ attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] }],
+    capabilities_with_malformed_input_schema: [],
+  };
+  const built = buildTestApp(heldCase({ state: 'released' }), requirements);
+  app = built.app;
+
+  await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyWithUnrelatedSubjectAttribute() });
+
+  expect(built.runDiagnose).not.toHaveBeenCalled();
+});
+
+it('answers 200 with the resolved assessment when the subject covers every required attribute the derived requirements name', async () => {
+  const requirements: CaseInputRequirementsResult = {
+    requirements: [{ attribute: 'an-attribute', required: true, capabilities: [A_REQUIRED_CAPABILITY] }],
+    capabilities_with_malformed_input_schema: [],
+  };
+  const built = buildTestApp(heldCase({ state: 'released' }), requirements);
   app = built.app;
   const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
   built.runDiagnose.mockResolvedValueOnce(expectedAssessment);

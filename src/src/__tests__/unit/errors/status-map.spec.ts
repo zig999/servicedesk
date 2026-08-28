@@ -23,6 +23,7 @@ import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-c
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
 import { statusForError } from '../../../errors/status-map.js';
+import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
 
 // ------------------------------------------------------------------ criterion 2
 
@@ -155,6 +156,19 @@ it('resolves MalformedCapabilityInputSchemaError to 422', () => {
   expect(status).toBe(422);
 });
 
+// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute,
+// whose own criterion 1 depends on this exact entry: "... refused with an HTTP 422 response
+// reporting SubjectDoesNotCoverCaseInputsError ...".
+it('resolves SubjectDoesNotCoverCaseInputsError to 422', () => {
+  const error = new SubjectDoesNotCoverCaseInputsError([
+    { attribute: 'contract-number', capabilities: [{ name: 'equipment-status-lookup', version: '1.0.0' }] },
+  ]);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
 it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same non-500 status, pinning "distinct" as specific rather than mutually exclusive across all seven', () => {
   const draftError = new CaseAlreadyHasDraftError('a-slug');
   const positionError = new ManifestPositionOccupiedError('a-slug', 1, 1);
@@ -217,13 +231,19 @@ it("the header comment names the two specification nodes that now fix a status a
 // task/capability-input-schema-contract/refuse-malformed-capability-input-schema then added a
 // fifth specification-fixed status (MalformedCapabilityInputSchemaError) to the same header
 // paragraph, so the count in prose changed again from four to five.
-it("the header comment names five specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
+// task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute then
+// added a sixth specification-fixed status (SubjectDoesNotCoverCaseInputsError) to the same
+// header paragraph, so the count in prose changed again from five to six.
+it("the header comment names six specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('five specification nodes now fix a status as a decided fact');
+  expect(header).toContain('six specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
+  expect(header).toContain("SubjectDoesNotCoverCaseInputsError's HTTP 422");
+  expect(header).toContain('rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes');
+  expect(header).toContain('with an HTTP 422 response reporting a SubjectDoesNotCoverCaseInputsError naming every missing attribute');
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });

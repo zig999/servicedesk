@@ -51,6 +51,7 @@ import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import type { Env } from '../../../config/env.js';
 import { buildAppDependencies } from '../../../factories/build-app.factory.js';
+import { createCaseInputRequirementsQuery } from '../../../factories/case-input-requirements.factory.js';
 import { createCaseLifecycle } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
@@ -177,7 +178,7 @@ async function seedVocabulary(connection: DatabaseConnection, fixture: IFixture)
 async function seedCapability(connection: DatabaseConnection, fixture: IFixture): Promise<void> {
   await connection.query(
     `INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept)
-     VALUES ($1, '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', $2)`,
+     VALUES ($1, '1.0.0', 'read-only', '{}', 'an-output-schema', 5000, 'a-connector', $2)`,
     [fixture.capabilityName, fixture.concept],
   );
 }
@@ -373,6 +374,7 @@ function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IF
   };
   const dependencies: DiagnoseControllerDependencies = {
     caseQuery: createCaseQuery(delayingConnection),
+    caseInputRequirementsQuery: createCaseInputRequirementsQuery(delayingConnection),
     runDiagnose,
     model: 'a-persistence-deadline-test-model',
     promptVersion: 'a-persistence-deadline-test-prompt-version',

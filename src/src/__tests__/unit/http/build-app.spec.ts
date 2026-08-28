@@ -344,6 +344,7 @@ function buildTestApp(): { app: FastifyInstance; runDiagnose: RunDiagnoseMock } 
   const runDiagnose = vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>();
   const dependencies: DiagnoseControllerDependencies = {
     caseQuery: stubCaseQuery(minimalCase()),
+    caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) },
     runDiagnose,
     model: 'a-model',
     promptVersion: 'a-prompt-version',

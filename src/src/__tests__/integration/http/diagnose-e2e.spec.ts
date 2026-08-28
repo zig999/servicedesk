@@ -48,6 +48,7 @@ import type { FastifyInstance } from 'fastify';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import type { Env } from '../../../config/env.js';
 import { buildAppDependencies } from '../../../factories/build-app.factory.js';
+import { createCaseInputRequirementsQuery } from '../../../factories/case-input-requirements.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
@@ -440,6 +441,7 @@ function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; c
   const { runDiagnose, capturedId } = buildRunDiagnose(connection);
   const dependencies: DiagnoseControllerDependencies = {
     caseQuery: createCaseQuery(connection),
+    caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
     runDiagnose,
     model: 'an-end-to-end-test-model',
     promptVersion: 'an-end-to-end-test-prompt-version',

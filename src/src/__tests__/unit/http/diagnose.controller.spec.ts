@@ -24,8 +24,11 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
+import type { CaseInputRequirement, CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
+import type { ICaseInputRequirementsQuery } from '../../../case/case-input-requirements.port.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
+import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { DiagnoseRequestDto } from '../../../http/dto/diagnose.dto.js';
@@ -76,13 +79,33 @@ const REQUEST_BODY: DiagnoseRequestDto = {
 
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 type RunDiagnoseMock = ReturnType<typeof vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>>;
+type ReadCaseInputRequirementsMock = ReturnType<
+  typeof vi.fn<(slug: string, version: number) => Promise<CaseInputRequirementsResult>>
+>;
 
-/** Wires DiagnoseControllerDependencies with a readCase stand-in that always answers the given case, and a runDiagnose stand-in the test configures per case (TST-03). */
+/** An empty derived-requirements result: no attribute is named at all, so no gate this task adds ever refuses over it — the default every existing test in this file (written before this task) keeps relying on. */
+function noRequirements(): CaseInputRequirementsResult {
+  return { requirements: [], capabilities_with_malformed_input_schema: [] };
+}
+
+/**
+ * Wires DiagnoseControllerDependencies with a readCase stand-in that always answers the given case,
+ * a runDiagnose stand-in the test configures per case, and a readCaseInputRequirements stand-in the
+ * test may override (defaulting to noRequirements(), the shape every pre-existing test in this file
+ * relies on) (TST-03).
+ */
 function buildDependencies(
   readCaseResult: ReadCaseResult,
-): { dependencies: DiagnoseControllerDependencies; readCase: ReadCaseMock; runDiagnose: RunDiagnoseMock } {
+  requirementsResult: CaseInputRequirementsResult = noRequirements(),
+): {
+  dependencies: DiagnoseControllerDependencies;
+  readCase: ReadCaseMock;
+  runDiagnose: RunDiagnoseMock;
+  readCaseInputRequirements: ReadCaseInputRequirementsMock;
+} {
   const readCase: ReadCaseMock = vi.fn().mockResolvedValue(readCaseResult);
   const runDiagnose: RunDiagnoseMock = vi.fn();
+  const readCaseInputRequirements: ReadCaseInputRequirementsMock = vi.fn().mockResolvedValue(requirementsResult);
   const caseQuery: ICaseQuery = {
     readCase,
     listCases: vi.fn(),
@@ -90,13 +113,15 @@ function buildDependencies(
     listHypotheses: vi.fn(),
     listHypothesisRevisions: vi.fn(),
   };
+  const caseInputRequirementsQuery: ICaseInputRequirementsQuery = { readCaseInputRequirements };
   const dependencies: DiagnoseControllerDependencies = {
     caseQuery,
+    caseInputRequirementsQuery,
     runDiagnose,
     model: 'a-configured-model',
     promptVersion: 'a-configured-prompt-version',
   };
-  return { dependencies, readCase, runDiagnose };
+  return { dependencies, readCase, runDiagnose, readCaseInputRequirements };
 }
 
 // ------------------------------------------------------------------ criterion 1
@@ -135,6 +160,18 @@ it('never calls runDiagnose — the sole entry into collection, judgment and wri
   await expect(handleDiagnoseRequest(dependencies, REQUEST_BODY)).rejects.toThrow(CaseVersionNotReleasedError);
 
   expect(runDiagnose).not.toHaveBeenCalled();
+});
+
+// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute:
+// the new gate sits after the released-state check, so a draft-state pinned version must still be
+// refused by CaseVersionNotReleasedError alone, without ever consulting the case-input-requirements
+// read the new gate depends on.
+it('never queries the case-input-requirements for a draft-state pinned version, so the existing released-state refusal still runs first', async () => {
+  const { dependencies, readCaseInputRequirements } = buildDependencies({ case: heldCase({ state: 'draft' }) });
+
+  await expect(handleDiagnoseRequest(dependencies, REQUEST_BODY)).rejects.toThrow(CaseVersionNotReleasedError);
+
+  expect(readCaseInputRequirements).not.toHaveBeenCalled();
 });
 
 // ------------------------------------------------------------------ criterion 3
@@ -204,4 +241,98 @@ it('no longer references UNMEASURED_COST or UNMEASURED_DURATIONS anywhere in its
 
   expect(source).not.toMatch(/UNMEASURED_COST/);
   expect(source).not.toMatch(/UNMEASURED_DURATIONS/);
+});
+
+// ------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute
+
+const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
+
+/** A CaseInputRequirementsResult carrying exactly the given requirement entries, malformed list always empty (this task's own tests never exercise that branch). */
+function requirementsWith(...entries: CaseInputRequirement[]): CaseInputRequirementsResult {
+  return { requirements: entries, capabilities_with_malformed_input_schema: [] };
+}
+
+/** REQUEST_BODY's own subject, replaced with one attribute this task's own requirement fixtures never name, so a required entry is always left uncovered. */
+function bodyWithUnrelatedSubjectAttribute(): DiagnoseRequestDto {
+  return { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-unrelated-attribute', value: 'a-value' }] } };
+}
+
+// criterion 1
+
+it('refuses a diagnose request whose subject leaves a required case input missing, throwing exactly a SubjectDoesNotCoverCaseInputsError', async () => {
+  const requirements = requirementsWith({ attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] });
+  const { dependencies } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
+
+  const rejection = handleDiagnoseRequest(dependencies, bodyWithUnrelatedSubjectAttribute());
+
+  await expect(rejection).rejects.toBeInstanceOf(SubjectDoesNotCoverCaseInputsError);
+});
+
+it('never calls runDiagnose when the subject fails to cover a required case input, so no capability is ever called', async () => {
+  const requirements = requirementsWith({ attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] });
+  const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
+
+  await expect(handleDiagnoseRequest(dependencies, bodyWithUnrelatedSubjectAttribute())).rejects.toThrow(SubjectDoesNotCoverCaseInputsError);
+
+  expect(runDiagnose).not.toHaveBeenCalled();
+});
+
+it("reads the case-input-requirements by the pinned case's own slug and version, not a fixed or unrelated value", async () => {
+  const releasedCase = heldCase({ slug: 'a-different-slug', version: 9, state: 'released' });
+  const { dependencies, readCaseInputRequirements } = buildDependencies({ case: releasedCase });
+
+  await handleDiagnoseRequest(dependencies, { ...REQUEST_BODY, case: { slug: 'a-different-slug', version: 9 } });
+
+  expect(readCaseInputRequirements).toHaveBeenCalledWith('a-different-slug', 9);
+});
+
+// criterion 2
+
+it('names every missing required attribute together with the capabilities that require it, on the refusal thrown by the controller', async () => {
+  const secondCapability = { name: 'network-outage-check', version: '2.0.0' };
+  const requirements = requirementsWith(
+    { attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] },
+    { attribute: 'service-area', required: true, capabilities: [secondCapability] },
+  );
+  const { dependencies } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
+
+  let caught: unknown;
+  try {
+    await handleDiagnoseRequest(dependencies, bodyWithUnrelatedSubjectAttribute());
+  } catch (error) {
+    caught = error;
+  }
+
+  expect(caught).toBeInstanceOf(SubjectDoesNotCoverCaseInputsError);
+  expect((caught as SubjectDoesNotCoverCaseInputsError).context.missing).toEqual([
+    { attribute: 'contract-number', capabilities: [A_REQUIRED_CAPABILITY] },
+    { attribute: 'service-area', capabilities: [secondCapability] },
+  ]);
+});
+
+// criterion 3
+
+it('does not refuse a subject missing only an attribute the derived requirements leave optional', async () => {
+  const requirements = requirementsWith({ attribute: 'a-nice-to-have-attribute', required: false, capabilities: [A_REQUIRED_CAPABILITY] });
+  const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
+  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
+  runDiagnose.mockResolvedValueOnce(expectedAssessment);
+
+  const result = await handleDiagnoseRequest(dependencies, bodyWithUnrelatedSubjectAttribute());
+
+  expect(result).toEqual(expectedAssessment);
+});
+
+// criterion 4
+
+it('reaches runDiagnose when the subject covers every required attribute the derived requirements name', async () => {
+  const requirements = requirementsWith({ attribute: 'an-attribute', required: true, capabilities: [A_REQUIRED_CAPABILITY] });
+  const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
+  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
+  runDiagnose.mockResolvedValueOnce(expectedAssessment);
+
+  const result = await handleDiagnoseRequest(dependencies, REQUEST_BODY);
+
+  expect(runDiagnose).toHaveBeenCalledTimes(1);
+  expect(result).toEqual(expectedAssessment);
 });

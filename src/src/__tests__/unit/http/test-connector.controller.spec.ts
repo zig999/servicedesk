@@ -34,3 +34,20 @@ it("the header comment's masking paragraph cites rules/integration/a-diagnostic-
   );
   expect(header).toContain("this project's own standard (SEC-03, SEC-04) independently forbids a credential reaching a client response too");
 });
+
+// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute,
+// whose own criterion 5 states: "test-connector's own diagnostic call is not held to this gate."
+// This module's TestConnectorControllerDependencies declares no case-input-requirements read at
+// all, and handleTestConnectorRequest above calls neither refuseSubjectMissingRequiredCaseInputs
+// nor handleDiagnoseRequest — proved here by scanning this module's own import specifiers, the same
+// convention diagnose-e2e.spec.ts already keeps for proving one composition cannot reach a named
+// module it never imports.
+const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
+
+it('imports neither the new required-case-inputs gate function nor the diagnose controller, so its own diagnostic call has no path into the gate', async () => {
+  const source = await readFile(MODULE_PATH, 'utf8');
+  const specifiers = [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1] ?? '');
+
+  expect(specifiers).not.toContain('../investigation/subject-covers-case-input-requirements.js');
+  expect(specifiers).not.toContain('./diagnose.controller.js');
+});

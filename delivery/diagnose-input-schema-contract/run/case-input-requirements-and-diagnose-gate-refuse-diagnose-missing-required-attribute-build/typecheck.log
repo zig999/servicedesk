@@ -1,0 +1,9 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/http/diagnose-e2e.spec.ts(441,9): error TS2741: Property 'caseInputRequirementsQuery' is missing in type '{ caseQuery: ICaseQuery; runDiagnose: (call: ProductionDiagnoseCall) => Promise<Assessment>; model: string; promptVersion: string; }' but required in type 'DiagnoseControllerDependencies'.
+src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts(374,9): error TS2741: Property 'caseInputRequirementsQuery' is missing in type '{ caseQuery: ICaseQuery; runDiagnose: (call: ProductionDiagnoseCall) => Promise<Assessment>; model: string; promptVersion: string; }' but required in type 'DiagnoseControllerDependencies'.
+src/__tests__/unit/http/build-app.spec.ts(345,9): error TS2741: Property 'caseInputRequirementsQuery' is missing in type '{ caseQuery: ICaseQuery; runDiagnose: Mock<(call: ProductionDiagnoseCall) => Promise<Assessment>>; model: string; promptVersion: string; }' but required in type 'DiagnoseControllerDependencies'.
+src/__tests__/unit/http/diagnose.controller.spec.ts(93,9): error TS2741: Property 'caseInputRequirementsQuery' is missing in type '{ caseQuery: ICaseQuery; runDiagnose: Mock<(call: ProductionDiagnoseCall) => Promise<Assessment>>; model: string; promptVersion: string; }' but required in type 'DiagnoseControllerDependencies'.
+src/__tests__/unit/http/diagnose.routes.spec.ts(79,9): error TS2741: Property 'caseInputRequirementsQuery' is missing in type '{ caseQuery: ICaseQuery; runDiagnose: Mock<(call: ProductionDiagnoseCall) => Promise<Assessment>>; model: string; promptVersion: string; }' but required in type 'DiagnoseControllerDependencies'.

@@ -39,6 +39,7 @@ import type { IObservationSource } from '../investigation/observation-source.por
 import { createDatabaseConnection, type DatabaseConnection } from '../persistence/database-connection.js';
 import { buildAppDependencies } from './build-app.factory.js';
 import { createCapabilityQuery } from './capability-registry.factory.js';
+import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
 import { createCaseQuery } from './case-query.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
 import { createGlossaryQuery } from './glossary.factory.js';
@@ -64,7 +65,14 @@ import { createProductionSimulationRunner, type ProductionSimulationDependencies
  * (task/case-simulation-pipeline/simulate-hypothesis-operation — reusing the
  * identical caseQuery and glossary-query instances rather than a third
  * built), all handed to buildApp already built alongside every other route's
- * own dependencies (build-app.factory.ts's own buildAppDependencies).
+ * own dependencies (build-app.factory.ts's own buildAppDependencies). Also
+ * wires diagnose's own dedicated caseInputRequirementsQuery
+ * (task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute)
+ * through case-input-requirements.factory.ts's own
+ * createCaseInputRequirementsQuery — the same disclosed second-instance
+ * divergence build-app.factory.ts's own composeResources already keeps for
+ * its own read-case-input-requirements route, rather than widening caseQuery's
+ * own declared ICaseQuery type to also carry it.
  */
 export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstance> {
   const connection = createDatabaseConnection(env.DATABASE_URL);
@@ -73,8 +81,15 @@ export async function createDiagnoseHttpServer(env: Env): Promise<FastifyInstanc
     connectorConfigurations: createConnectorConfigurationRegistry(connection),
   });
   const caseQuery = createCaseQuery(connection);
+  const caseInputRequirementsQuery = createCaseInputRequirementsQuery(connection);
   const runDiagnose = createProductionDiagnoseRunner(runnerDependencies(env, connection, observationSource));
-  const diagnose: DiagnoseControllerDependencies = { caseQuery, runDiagnose, model: env.EVALUATOR_MODEL, promptVersion: env.PROMPT_VERSION };
+  const diagnose: DiagnoseControllerDependencies = {
+    caseQuery,
+    caseInputRequirementsQuery,
+    runDiagnose,
+    model: env.EVALUATOR_MODEL,
+    promptVersion: env.PROMPT_VERSION,
+  };
   const runSimulate = createProductionSimulationRunner(simulationRunnerDependencies(env, connection));
   const simulateCase: SimulateCaseControllerDependencies = { caseQuery, glossary: createGlossaryQuery(connection), runSimulate };
   const runSimulateHypothesis = createProductionHypothesisSimulationRunner(hypothesisSimulationRunnerDependencies(env, connection));
