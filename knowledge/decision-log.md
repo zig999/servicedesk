@@ -1073,4 +1073,47 @@ entries:
       pairing for the identical reason and states the human already reviewed and authorized it —
       but a proposal awaiting the specification's own decision is not yet a fact the specification
       holds, so it is recorded as decided rather than merely carried over.
+  - location: rules/investigation/a-simulation-result-is-stale-once-its-source-changes.md
+    field: statement
+    unstated: >-
+      The material (work/case-simulation-frontend/intake/scope.md's own "D8" decision, delivered
+      in use-case-simulation-cockpit.ts) states that a shown simulation result is marked stale on
+      return from editing, and names the mechanism the delivered code actually uses (compare a
+      hash/updated_at if one exists; otherwise always mark stale) -- but never states the
+      underlying fact as one the specification holds, nor whether staleness reaches a
+      simulate-hypothesis result's own evaluation as well as a simulate-case result's assessment,
+      nor whether an edit to a hypothesis-revision the version manifests counts the same as an
+      edit to the version itself.
+    decided: >-
+      Both count, and both kinds of shown result go stale together: a case-simulation result --
+      its evaluations and, where one was produced, its assessment -- is stale once the case
+      version it was produced from, or a hypothesis-revision that version manifests, changes
+      after the result was produced. The specification names this as the fact to hold, not the
+      hash/updated_at-or-else-always mechanism the delivered code detects it by, which stays the
+      implementation's own engineering choice.
+    why: >-
+      The cockpit shows both a case-run's assessment and a hypothesis-run's evaluation from the
+      same history, and D8 draws no line between them -- "mark the last run stale" reads as
+      whichever run is currently shown, not one kind specifically. And case-terms-exist-in-the-glossary's
+      own sibling reasoning already treats a case version's manifested hypothesis-revisions as
+      part of what a version names, so an edit reaching either is one fact, not two.
+  - location: constraints/no-route-enforces-authentication.md
+    field: statement
+    unstated: >-
+      The material (frontend/app/src/shared/components/app-shell.tsx, delivered since the
+      frontend-bootstrap initiative) discloses this build's no-authentication posture to every
+      user on every screen, worded "No auth in this build" -- but no node states that the
+      frontend owes this disclosure at all, and the material does not settle whether that exact
+      wording is itself the fact the specification holds, or only the disclosure's substance.
+    decided: >-
+      The specification holds only the substance -- that the frontend discloses, on every
+      screen, that this build enforces no authentication -- and states no wording. The frontend
+      is free to word and re-word the disclosure without the specification moving.
+    why: >-
+      This project's own routing rule treats a control's label or a screen's exact copy as
+      surface — changeable without deciding anything — while what a person learns or can do is
+      not; requiring a specific sentence here would freeze presentation the same way SPEC-001's
+      own floor already refuses to hold code to an implementation choice nobody but the code
+      picked. The fact worth holding the frontend to is that the disclosure happens at all, on
+      every screen, for as long as this constraint's own backend half stands.
 ---
