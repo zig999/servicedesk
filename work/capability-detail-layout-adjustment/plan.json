@@ -1,0 +1,49 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-detail-layout",
+      "kind": "epic",
+      "file": "epic/capability-detail-layout.md",
+      "title": "Capability detail layout adjustment",
+      "summary": "The row rearrangement of Name, Version and Nature and the height increase of the two schema editors on the capability detail screen."
+    },
+    {
+      "id": "inventory/capability-detail-layout-adjustment",
+      "kind": "inventory",
+      "file": "inventory/capability-detail-layout-adjustment.md",
+      "title": "Capability detail form fields — row and editor-height layout",
+      "summary": "The capability create/edit form's field markup and the shared JSON textarea control, where the two layout changes the scope names land."
+    },
+    {
+      "id": "task/capability-detail-layout/name-version-nature-row",
+      "kind": "task",
+      "file": "task/capability-detail-layout/name-version-nature-row.md",
+      "title": "Group Name, Version and Nature into one row",
+      "summary": "CapabilityFormFields renders Name, Version and Nature as three columns of one row instead of Nature sitting in its own row below.",
+      "epic": "capability-detail-layout"
+    },
+    {
+      "id": "task/capability-detail-layout/schema-editor-height-increase",
+      "kind": "task",
+      "file": "task/capability-detail-layout/schema-editor-height-increase.md",
+      "title": "Increase the capability schema editors' height without affecting the connector-configuration form",
+      "summary": "The capability detail screen's input-schema and output-schema editors grow from 160px to 200px minimum height while the connector-configuration form's editor, which reuses the same shared component, keeps its current height.",
+      "epic": "capability-detail-layout"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-detail-layout",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-detail-layout",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[1]"
+    }
+  ]
+}
