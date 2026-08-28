@@ -247,18 +247,46 @@ it('persists and reads back a registration exactly as given — name, version, n
 });
 
 // ---------------------------------------------------------------- criterion 2
+//
+// Reconciled for task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace:
+// this test used to expect writing capability-b to erase capability-a, proving the whole-table-replace
+// semantics task/capability-registry-write-upsert-hotfix/scope-write-to-identity removed.
+// writeCapabilities now upserts each registration strictly by its own (name, version) identity and
+// never deletes a row belonging to a different identity, so writing capability-b leaves capability-a
+// exactly as it was — the renamed assertion below proves that. The fresh-read (no-cache) guarantee
+// this test used to bundle with it is proven separately, for the same identity rewritten with a new
+// value, by the test that follows it.
 
-it('answers a read as the database holds it right now, never a value an earlier read already answered', async () => {
+it('leaves capability-a exactly as it was when a different capability, capability-b, is written afterward', async () => {
   const conceptA = await aFreshConcept();
   const conceptB = await aFreshConcept();
   const store = new RelationalCapabilityStore(pool);
-  await store.writeCapabilities([capabilityRecord({ name: 'capability-a', concept: conceptA })]);
-  await store.readCapabilities(); // answers capability-a, baiting a memory
+  const capabilityA = capabilityRecord({ name: 'capability-a', concept: conceptA });
+  const capabilityB = capabilityRecord({ name: 'capability-b', concept: conceptB });
+  await store.writeCapabilities([capabilityA]);
 
-  await store.writeCapabilities([capabilityRecord({ name: 'capability-b', concept: conceptB })]);
+  await store.writeCapabilities([capabilityB]);
   const answered = await store.readCapabilities();
 
-  expect(answered).toEqual([capabilityRecord({ name: 'capability-b', concept: conceptB })]);
+  expect(answered).toHaveLength(2);
+  expect(answered.find((capability) => capability.name === capabilityA.name)).toEqual(capabilityA);
+  expect(answered.find((capability) => capability.name === capabilityB.name)).toEqual(capabilityB);
+});
+
+// ---------------------------------------------------------------- task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace, criterion 3
+
+it('answers a rewritten capability with its new value at the very next read, never the value an earlier read of the same identity already answered', async () => {
+  const concept = await aFreshConcept();
+  const store = new RelationalCapabilityStore(pool);
+  const original = capabilityRecord({ concept, timeout: 5000 });
+  await store.writeCapabilities([original]);
+  await store.readCapabilities(); // answers the original timeout, baiting a memory
+
+  const rewritten = { ...original, timeout: 9000 };
+  await store.writeCapabilities([rewritten]);
+  const answered = await store.readCapabilities();
+
+  expect(answered).toEqual([rewritten]);
 });
 
 // ---------------------------------------------------------------- constraints/the-system-persists-to-one-relational-database, EDG-05

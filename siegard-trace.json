@@ -745,7 +745,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:ed681bb9573b30cd7a15d1857292c4d59f15113a2a8aaa9d8398558008d8ee86"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -1927,7 +1927,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:ed681bb9573b30cd7a15d1857292c4d59f15113a2a8aaa9d8398558008d8ee86"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -5216,6 +5216,10 @@
         {
           "path": "src/src/case/validate-case-coherence.ts",
           "digest": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },

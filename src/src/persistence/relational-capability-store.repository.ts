@@ -73,7 +73,17 @@ const CAPABILITIES_TABLE = 'capabilities';
 export class RelationalCapabilityStore implements ICapabilityStore {
   public constructor(private readonly connection: DatabaseConnection) {}
 
-  /** Every registration the table holds right now — name, version, nature, both schemas, timeout, connector and concept (criterion 1, criterion 6) — never a value cached from an earlier call (criterion 2). */
+  /**
+   * Every registration the table holds right now — name, version, nature,
+   * both schemas, timeout, connector and concept (criterion 1, criterion 6)
+   * — never a value cached from an earlier call (criterion 2): the SELECT
+   * below runs fresh on every invocation, so a capability rewritten with a
+   * new value since the last read answers with that new value at the very
+   * next call, for the identity actually rewritten, and a capability written
+   * at a different identity never displaces one this call did not touch
+   * (rules/knowledge/the-contract-check-reads-the-current-registration,
+   * task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace).
+   */
   public async readCapabilities(): Promise<readonly Capability[]> {
     const rows = await runStatement<ICapabilityRow>(
       this.connection,
