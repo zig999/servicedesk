@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/revise-hypothesis-status-map-hotfix-map-status-for-typed-refusals-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1-fix-hypothesis-status-and-layout/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-28T17:05:51.919+00:00",
+      "ended_at": "2026-08-28T17:06:01.731+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-28T17:06:01.731+00:00",
+      "ended_at": "2026-08-28T17:06:09.615+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-28T17:06:09.615+00:00",
+      "ended_at": "2026-08-28T17:06:15.222+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-28T17:06:15.222+00:00",
+      "ended_at": "2026-08-28T17:06:15.694+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

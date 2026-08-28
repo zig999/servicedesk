@@ -26,18 +26,23 @@
 // own refuseWithoutDraft calls ICaseStore.findDraftVersion(slug), which
 // returns undefined both for a slug the "cases" table holds no row for and
 // for an existing case currently holding no draft — both throw
-// CaseHoldsNoDraftError, never CaseNotFoundError, and CaseHoldsNoDraftError
-// has no entry in src/errors/status-map.ts, so it falls through to the
-// generic 500 handler rather than the 404 this criterion states. Writing a
-// test asserting a 404 here would fail against the real call graph, and a
-// test asserting the actual 500 would misrepresent it as what the criterion
-// requires; neither belongs in this file, so the gap is recorded in this
-// proof's own `untested` instead.
+// CaseHoldsNoDraftError, never CaseNotFoundError. task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals
+// later gave CaseHoldsNoDraftError its own entry in src/errors/status-map.ts
+// (409, proved below), but that is still not the 404 this criterion states
+// for CaseNotFoundError — the two classes remain distinct entries mapped to
+// distinct statuses. Writing a test asserting a 404 here would fail against
+// the real call graph, and a test asserting the actual 409 would misrepresent
+// it as what this criterion requires; neither belongs in this file, so the
+// gap is recorded in this proof's own `untested` instead.
 
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
 import type { RevisedHypothesis } from '../../../case/revise-hypothesis.operation.js';
+import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
+import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
+import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
+import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { ReviseHypothesisControllerDependencies } from '../../../http/revise-hypothesis.controller.js';
 import { createReviseHypothesisRoutesPlugin } from '../../../http/revise-hypothesis.routes.js';
@@ -204,4 +209,59 @@ it('answers the unchanged generic envelope, never a partial body or leaked detai
   expect(response.statusCode).toBe(500);
   expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
   expect(response.body).not.toContain('a sensitive internal detail nobody outside the server should see');
+});
+
+// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals, criterion 5
+
+it("answers 409 with CaseHoldsNoDraftError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const error = new CaseHoldsNoDraftError('a-slug');
+  built.reviseHypothesis.mockRejectedValueOnce(error);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: validReviseHypothesisBody() });
+
+  expect(response.statusCode).toBe(409);
+  expect(response.json()).toEqual({ error: { code: 'CaseHoldsNoDraftError', message: error.message, details: error.context } });
+});
+
+it("answers 404 with ConceptNotInGlossaryError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const error = new ConceptNotInGlossaryError('a-slug', 'a-hypothesis', ['an-unknown-concept']);
+  built.reviseHypothesis.mockRejectedValueOnce(error);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: validReviseHypothesisBody() });
+
+  expect(response.statusCode).toBe(404);
+  expect(response.json()).toEqual({ error: { code: 'ConceptNotInGlossaryError', message: error.message, details: error.context } });
+});
+
+it("answers 422 with HypothesisRevisionCollectsNoConceptError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const error = new HypothesisRevisionCollectsNoConceptError('a-slug', 'a-hypothesis');
+  built.reviseHypothesis.mockRejectedValueOnce(error);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: validReviseHypothesisBody() });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toEqual({ error: { code: 'HypothesisRevisionCollectsNoConceptError', message: error.message, details: error.context } });
+});
+
+it("answers 422 with ConceptRefusesSubjectTypeError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const error = new ConceptRefusesSubjectTypeError({
+    slug: 'a-slug',
+    hypothesis_name: 'a-hypothesis',
+    subject: 'a-subject-type',
+    concepts: ['a-concept'],
+  });
+  built.reviseHypothesis.mockRejectedValueOnce(error);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: validReviseHypothesisBody() });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toEqual({ error: { code: 'ConceptRefusesSubjectTypeError', message: error.message, details: error.context } });
 });

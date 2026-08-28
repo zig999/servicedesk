@@ -4955,7 +4955,7 @@
     },
     {
       "node": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
-      "digest": "sha256:4e88ca75f8d4f5251f424cb8113863e905eb477fbc72f228fbfd6f682c236ee1",
+      "digest": "sha256:675661218280bdcce613cc22a9107d5fcafc2161b71176466485e9808e9fb805",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
@@ -4978,6 +4978,10 @@
           "digest": "sha256:4d7e0e4a7ec48466d376bc33b27b5b65b75d900b8fe4521a707aa5245125b82c"
         },
         {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
+        },
+        {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
           "digest": "sha256:d498f772273ed722b9fff9089f6c1f6eb16918e93d6c76637c103e11f69e3514"
         },
@@ -4989,7 +4993,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
-      "digest": "sha256:35e49c53f6f1c973e5afbab204a5c804369fdaa1c6b8889166926b800a55ba04",
+      "digest": "sha256:b125a070b9f193f253c1b4c35db05f0ae225879ec1ade59cfefd968bacd96cf7",
       "files": [
         {
           "path": "frontend/app/src/services/hypothesis-revision-form-schema.ts",
@@ -5014,6 +5018,10 @@
         {
           "path": "src/src/errors/hypothesis-revision-collects-no-concept.error.ts",
           "digest": "sha256:8d466efc931d4db2228dd077c530fdb31c92b358b723ec8401c6469df751d21d"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",
@@ -5049,7 +5057,7 @@
     },
     {
       "node": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
-      "digest": "sha256:ebb8edc61845a260dfe6597eabe2c8455c4745112970c648d22ba7d280963386",
+      "digest": "sha256:a74c143df28cbdc0a1809ef611db13ea8b93655a8ecaf91a21ce276aa7e412eb",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -5066,6 +5074,10 @@
         {
           "path": "src/src/errors/case-holds-no-draft.error.ts",
           "digest": "sha256:9ff9d75667721b97866f9cd7c567352c3d6cdf0d8bcfb083ebb6e83ab56be2ca"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -5225,7 +5237,7 @@
     },
     {
       "node": "rules/knowledge/case-terms-exist-in-the-glossary",
-      "digest": "sha256:7c720043ce7f4d9a8b2ac658dfcd426e0b800642da15a5a3adabcf81e271239d",
+      "digest": "sha256:2745aa6bea6a44bb51a7dc753d202eaef646253c0fa7d9574ad47aeb5301059d",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-options.ts",
@@ -5266,6 +5278,10 @@
         {
           "path": "src/src/errors/concept-not-in-glossary.error.ts",
           "digest": "sha256:114cb8acca78ba8e6f39ba67429f8f5d0db972d3b359dc20f81f952874ecf884"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/fixtures/case/intermittent-connection-outage/1.json",

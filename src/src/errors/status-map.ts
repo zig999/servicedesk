@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: seven
+// `elsewhere` note). That silence no longer covers every entry below: eleven
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -27,7 +27,7 @@
 // whose own statement refuses a diagnose whose subject leaves a required
 // case input missing or empty "with an HTTP 422 response reporting a
 // SubjectDoesNotCoverCaseInputsError naming every missing attribute
-// together and, for each, the capabilities that require it"), and
+// together and, for each, the capabilities that require it"),
 // ConnectorPlaceholderOutsideInputSchemaError's HTTP 422
 // (rules/integration/a-connector-placeholder-is-declared-by-its-capability,
 // whose own statement refuses a connector-configuration registration or
@@ -35,7 +35,24 @@
 // absent from the properties a currently registered capability's own input
 // schema declares "with an HTTP 422 response reporting a
 // ConnectorPlaceholderOutsideInputSchemaError naming every orphaned
-// placeholder together with the capability that fails to declare it")
+// placeholder together with the capability that fails to declare it"),
+// CaseHoldsNoDraftError's HTTP 409
+// (rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft,
+// whose own statement refuses a revision requested while the case holds no
+// draft version "with an HTTP 409 response reporting a
+// CaseHoldsNoDraftError"), ConceptNotInGlossaryError's HTTP 404
+// (rules/knowledge/case-terms-exist-in-the-glossary, whose own statement
+// refuses a hypothesis-revision naming a concept the glossary does not hold
+// "with HTTP 404 reporting ConceptNotInGlossaryError"),
+// HypothesisRevisionCollectsNoConceptError's HTTP 422
+// (rules/knowledge/a-hypothesis-collects-at-least-one-concept, whose own
+// statement refuses a revision that would collect none "with an HTTP 422
+// response reporting a HypothesisRevisionCollectsNoConceptError"), and
+// ConceptRefusesSubjectTypeError's HTTP 422
+// (rules/knowledge/a-concept-accepts-the-declared-subject-type, whose own
+// statement refuses a hypothesis-revision request "with an HTTP 422
+// response reporting a ConceptRefusesSubjectTypeError" when a concept it
+// collects does not accept the case version's declared subject type)
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -57,7 +74,11 @@
 // eighth, once simulate-hypothesis is exposed as a route,
 // task/case-simulation-pipeline/simulate-hypothesis-operation, a fifth typed
 // class for the same structural absence — a manifest entry rather than a
-// case, a capability or a connector configuration); an operation the named resource's own current state forbids
+// case, a capability or a connector configuration; ConceptNotInGlossaryError
+// — the ninth, raised by the same POST /v1/cases/:slug/hypotheses route
+// already handling every other revise-hypothesis refusal, left unmapped
+// until this hotfix closed the gap
+// (rules/knowledge/case-terms-exist-in-the-glossary)); an operation the named resource's own current state forbids
 // — a second open draft, an already occupied manifest position, a mutation
 // against anything but a draft version, a concept a different capability
 // already answers (ConceptAlreadyAnsweredError,
@@ -70,7 +91,10 @@
 // rules/investigation/only-a-released-case-version-is-diagnosed) — this
 // project's own engineering choice, the same way every other entry in this
 // group already is, since this refusal's status is not something any
-// specification node fixes
+// specification node fixes, or a hypothesis-revision requested while the
+// case holds no draft version (CaseHoldsNoDraftError,
+// rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft) — a
+// status that rule fixes rather than this project's own choice
 // — answers 409 Conflict; a request that is well-formed but would violate a
 // business invariant were it applied — a release whose validator rules did
 // not all pass, a removal that would leave a manifest holding no hypothesis,
@@ -96,7 +120,13 @@
 // registered against that connector's name declares in its input schema
 // properties (ConnectorPlaceholderOutsideInputSchemaError,
 // rules/integration/a-connector-placeholder-is-declared-by-its-capability,
-// task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
+// task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder),
+// or a hypothesis-revision that would collect no concept
+// (HypothesisRevisionCollectsNoConceptError,
+// rules/knowledge/a-hypothesis-collects-at-least-one-concept), or a
+// hypothesis-revision collecting a concept that does not accept the case
+// version's declared subject type (ConceptRefusesSubjectTypeError,
+// rules/knowledge/a-concept-accepts-the-declared-subject-type)
 // — answers 422 Unprocessable Entity: each of the first four reached this
 // table only once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
@@ -104,7 +134,11 @@
 // sixth reach it the same way, now that register-connector is exposed as a
 // route; the seventh reaches it the same way, now that this gate stands
 // inside handleDiagnoseRequest; the eighth reaches it the same way, now that
-// registerConnector itself runs this reconciliation before any write.
+// registerConnector itself runs this reconciliation before any write; the
+// ninth and tenth reach it not because a new route was exposed but because
+// this hotfix closes a gap left when revise-hypothesis was first delivered
+// — POST /v1/cases/:slug/hypotheses already raised both, unmapped, before
+// this task.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -116,6 +150,7 @@ import { CapabilityNotReadOnlyError } from './capability-not-read-only.error.js'
 import { CapabilityNotRegisteredForTestError } from './capability-not-registered-for-test.error.js';
 import { CapabilitySchemaNotWellFormedError } from './capability-schema-not-well-formed.error.js';
 import { CaseAlreadyHasDraftError } from './case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from './case-holds-no-draft.error.js';
 import { CaseNotFoundError } from './case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from './case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
@@ -124,10 +159,13 @@ import { CaseVersionNotReleasedError } from './case-version-not-released.error.j
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
+import { ConceptNotInGlossaryError } from './concept-not-in-glossary.error.js';
+import { ConceptRefusesSubjectTypeError } from './concept-refuses-subject-type.error.js';
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from './connector-placeholder-outside-input-schema.error.js';
 import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
+import { HypothesisRevisionCollectsNoConceptError } from './hypothesis-revision-collects-no-concept.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
 import { MalformedCapabilityInputSchemaError } from './malformed-capability-input-schema.error.js';
@@ -144,7 +182,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-five extends another, so that never arises today.
+ * twenty-nine extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -155,6 +193,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [CapabilityNotRegisteredForTestError, 404],
   [CapabilityIdentityNotFoundError, 404],
   [HypothesisNotInManifestError, 404],
+  [ConceptNotInGlossaryError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],
@@ -162,6 +201,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConceptAlreadyAnsweredError, 409],
   [CapabilityConnectorMismatchError, 409],
   [CaseVersionNotReleasedError, 409],
+  [CaseHoldsNoDraftError, 409],
   [CaseVersionNotReleasableError, 422],
   [ManifestWouldHoldNoHypothesisError, 422],
   [IncompleteCapabilityContractError, 422],
@@ -172,6 +212,8 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [IncompleteConnectorConfigurationError, 422],
   [SubjectDoesNotCoverCaseInputsError, 422],
   [ConnectorPlaceholderOutsideInputSchemaError, 422],
+  [HypothesisRevisionCollectsNoConceptError, 422],
+  [ConceptRefusesSubjectTypeError, 422],
 ]);
 
 /**

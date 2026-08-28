@@ -10,14 +10,18 @@ import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
+import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-not-draft-at-release.error.js';
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
+import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
+import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
 import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
+import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
@@ -193,6 +197,47 @@ it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same 
   expect(draftStatus).toBe(positionStatus);
 });
 
+// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals,
+// criteria 1-4: the four revise-hypothesis refusals this hotfix maps, each
+// previously unmapped and falling through to the generic 500.
+
+it('resolves CaseHoldsNoDraftError to 409', () => {
+  const error = new CaseHoldsNoDraftError('a-slug');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(409);
+});
+
+it('resolves ConceptNotInGlossaryError to 404', () => {
+  const error = new ConceptNotInGlossaryError('a-slug', 'a-hypothesis', ['an-unknown-concept']);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(404);
+});
+
+it('resolves HypothesisRevisionCollectsNoConceptError to 422', () => {
+  const error = new HypothesisRevisionCollectsNoConceptError('a-slug', 'a-hypothesis');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
+it('resolves ConceptRefusesSubjectTypeError to 422', () => {
+  const error = new ConceptRefusesSubjectTypeError({
+    slug: 'a-slug',
+    hypothesis_name: 'a-hypothesis',
+    subject: 'a-subject-type',
+    concepts: ['a-concept'],
+  });
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
 // ------------------------------------------------------------------ criterion 3
 
 it('returns undefined for a typed domain error the table does not name', () => {
@@ -251,11 +296,16 @@ it("the header comment names the two specification nodes that now fix a status a
 // task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder
 // then added a seventh specification-fixed status (ConnectorPlaceholderOutsideInputSchemaError) to
 // the same header paragraph, so the count in prose changed again from six to seven.
-it("the header comment names seven specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 and ConnectorPlaceholderOutsideInputSchemaError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
+// task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals then added an eighth
+// through an eleventh specification-fixed status (CaseHoldsNoDraftError, ConceptNotInGlossaryError,
+// HypothesisRevisionCollectsNoConceptError, ConceptRefusesSubjectTypeError) to the same header
+// paragraph, so the count in prose changed again from seven to eleven — asserted here only as the
+// running count; the four new citations themselves are asserted in this hotfix's own tests below.
+it("the header comment names eleven specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 and ConnectorPlaceholderOutsideInputSchemaError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('seven specification nodes now fix a status as a decided fact');
+  expect(header).toContain('eleven specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
@@ -266,4 +316,62 @@ it("the header comment names seven specification nodes that now fix a status as 
   expect(header).toContain('rules/integration/a-connector-placeholder-is-declared-by-its-capability');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder together with the capability that fails to declare it');
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
+});
+
+// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals, criterion 6
+
+it("the header's top paragraph cites each of the four hotfix classes' own governing rule alongside the HTTP status it fixes", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).toContain("CaseHoldsNoDraftError's HTTP 409");
+  expect(header).toContain('rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft');
+  expect(header).toContain('with an HTTP 409 response reporting a CaseHoldsNoDraftError');
+  expect(header).toContain("ConceptNotInGlossaryError's HTTP 404");
+  expect(header).toContain('rules/knowledge/case-terms-exist-in-the-glossary');
+  expect(header).toContain('with HTTP 404 reporting ConceptNotInGlossaryError');
+  expect(header).toContain("HypothesisRevisionCollectsNoConceptError's HTTP 422");
+  expect(header).toContain('rules/knowledge/a-hypothesis-collects-at-least-one-concept');
+  expect(header).toContain('with an HTTP 422 response reporting a HypothesisRevisionCollectsNoConceptError');
+  expect(header).toContain("ConceptRefusesSubjectTypeError's HTTP 422");
+  expect(header).toContain('rules/knowledge/a-concept-accepts-the-declared-subject-type');
+  expect(header).toContain('with an HTTP 422 response reporting a ConceptRefusesSubjectTypeError');
+});
+
+it("the header's own 404/409/422 group enumeration names each of the four hotfix classes under its correct group, alongside the rule that governs it", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).toContain(
+    'ConceptNotInGlossaryError — the ninth, raised by the same POST /v1/cases/:slug/hypotheses route ' +
+      'already handling every other revise-hypothesis refusal, left unmapped until this hotfix closed the gap ' +
+      '(rules/knowledge/case-terms-exist-in-the-glossary)',
+  );
+  expect(header).toContain(
+    "a hypothesis-revision requested while the case holds no draft version (CaseHoldsNoDraftError, " +
+      "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft) — a status that rule fixes rather " +
+      "than this project's own choice",
+  );
+  expect(header).toContain(
+    'a hypothesis-revision that would collect no concept (HypothesisRevisionCollectsNoConceptError, ' +
+      'rules/knowledge/a-hypothesis-collects-at-least-one-concept), or a hypothesis-revision collecting a concept ' +
+      "that does not accept the case version's declared subject type (ConceptRefusesSubjectTypeError, " +
+      'rules/knowledge/a-concept-accepts-the-declared-subject-type)',
+  );
+});
+
+// Proves the record's own disclosed inference: the ninth and tenth entries' own "reached this
+// table" ordinal narrative was extended to explain they arrived via this hotfix rather than a
+// newly-exposed route — the alternative the record considered and rejected was leaving that
+// narrative unextended, silently treating a hotfix addition the same as every prior route-exposure
+// addition.
+it('the header\'s own "reached this table" narrative explains the ninth and tenth entries arrived through this hotfix rather than a newly-exposed route', async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).toContain(
+    'the ninth and tenth reach it not because a new route was exposed but because this hotfix closes ' +
+      'a gap left when revise-hypothesis was first delivered — POST /v1/cases/:slug/hypotheses already ' +
+      'raised both, unmapped, before this task.',
+  );
 });

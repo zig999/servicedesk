@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "kind": "implementation",
+      "file": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals.md",
+      "title": "Map revise-hypothesis's four unmapped errors to typed HTTP statuses",
+      "summary": "Adds CaseHoldsNoDraftError (409), ConceptNotInGlossaryError (404), HypothesisRevisionCollectsNoConceptError (422) and ConceptRefusesSubjectTypeError (422) to status-map.ts's STATUS_BY_ERROR_CLASS table and updates the file's own header comment to name all four under their correct group, so revise-hypothesis's typed refusals stop falling through to the generic 500.",
+      "task": "task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals"
+    },
+    {
+      "id": "proof/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "kind": "proof",
+      "file": "proof/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals.md",
+      "title": "Proof for map-status-for-typed-refusals",
+      "summary": "Tests that statusForError resolves each of the four hotfix classes to its stated status, that the whole HTTP stack answers with that status and the standard domain envelope instead of the generic 500, and that status-map.ts's header comment now names all four under their correct group.",
+      "task": "task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "to": "implementation/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
