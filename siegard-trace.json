@@ -2281,11 +2281,11 @@
     },
     {
       "node": "domain/investigation/assessment-consolidator",
-      "digest": "sha256:057021c6f59e8f00d38909557be2e977440a32292881b01b30cc698dc2b171fd",
+      "digest": "sha256:1f9d722fd9676eb856d45dd13cab3cc4f850b47d53842a9b7ff57bac6c51abec",
       "files": [
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:6a08258e700e58f0c4530275aed031d04bbca3665684959e24dae8f6d1ecb243"
+          "digest": "sha256:dd7d946a72f40e632efd551468098d7bf12d01267a1af794978f801d23bd5e2b"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
@@ -2293,11 +2293,11 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
+          "digest": "sha256:8e69b5fbd3ac052036b2cb55e07d23de1b5901d3d92c33d024a7570f3e9fa0ff"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:81f5f3c38fbb7d3addff90065d5c83aec6675c4d0673f872cec3b6d0e796d2c3"
+          "digest": "sha256:041cf6e98b6a48b40fadeebf67d4a24764d6700231a3291d7863897d1dd236d7"
         }
       ]
     },
@@ -2501,7 +2501,7 @@
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+          "digest": "sha256:041cf6e98b6a48b40fadeebf67d4a24764d6700231a3291d7863897d1dd236d7"
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
