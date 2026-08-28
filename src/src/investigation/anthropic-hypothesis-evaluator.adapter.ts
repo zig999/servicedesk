@@ -25,6 +25,19 @@
 // foreign citation rather than this adapter pre-empting it. This class sits
 // beside the existing fake adapter, never imported by the domain layer
 // itself (constraints/the-domain-depends-on-no-infrastructure).
+//
+// evaluate() also reports the call's own record
+// (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing):
+// the prompt is built once, before the provider call, and returned exactly as
+// materialized regardless of what the call answers; elapsed_ms is measured
+// with Date.now() around that one call, this file's own established
+// convention (connector-http-issuer.ts's own startedAt/elapsedMs), whether
+// the call answers or throws; usage is read from the provider response's own
+// message.usage, so it is present only where a response actually came back —
+// a call that throws before answering (requestJudgment's own undefined) has
+// elapsed_ms and prompt to report but no response to read usage from. A
+// no-data outcome, answered without ever reaching the provider, carries none
+// of the three, unchanged.
 
 import Anthropic from '@anthropic-ai/sdk';
 import type { Citation } from './citation.js';
@@ -34,6 +47,7 @@ import type {
   EvidenceItem,
   IHypothesisEvaluator,
 } from './hypothesis-evaluator.port.js';
+import type { Usage } from './usage.js';
 import { VERDICTS, type Verdict } from './verdict.js';
 
 /**
@@ -96,9 +110,13 @@ export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {
   /**
    * evaluate: the port's own call (domain/investigation/hypothesis-evaluator).
    * Evidence carrying even one non-ok result grounds nothing, so it is
-   * answered no-data without ever calling the model; otherwise the model is
-   * called once and its answer, or its absence, is turned into one of the
-   * three declared outcomes — never a thrown exception.
+   * answered no-data without ever calling the model; otherwise the prompt is
+   * built once, the model is called exactly once with elapsed_ms measured
+   * around that call, and its answer, or its absence, is turned into one of
+   * the three declared outcomes — never a thrown exception — carrying that
+   * same call's own elapsed_ms and prompt, plus usage wherever a response
+   * actually came back
+   * (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing).
    */
   public async evaluate(
     criterion: string,
@@ -109,36 +127,49 @@ export class AnthropicHypothesisEvaluator implements IHypothesisEvaluator {
     if (nonOkEvidence.length > 0) {
       return noDataOutcome(nonOkEvidence);
     }
-    const message = await this.requestJudgment(criterion, evidence, caseContext);
+    const prompt = buildUserPrompt(criterion, evidence, caseContext);
+    const startedAt = Date.now();
+    const message = await this.requestJudgment(prompt);
+    const elapsedMs = Date.now() - startedAt;
     if (message === undefined) {
-      return judgmentFailureOutcome();
+      return judgmentFailureOutcome({ elapsed_ms: elapsedMs, prompt });
     }
-    return outcomeFromModelText(textOf(message));
+    return outcomeFromModelText(textOf(message), { usage: message.usage, elapsed_ms: elapsedMs, prompt });
   }
 
   /**
-   * Calls the provider exactly once, granting the model no tools at all —
-   * the field is never declared, never an empty array forcing a choice — and
-   * answers undefined rather than throwing on any provider failure,
-   * evaluate()'s own contract never throwing.
+   * Calls the provider exactly once with the given, already-materialized
+   * prompt, granting the model no tools at all — the field is never
+   * declared, never an empty array forcing a choice — and answers undefined
+   * rather than throwing on any provider failure, evaluate()'s own contract
+   * never throwing.
    */
-  private async requestJudgment(
-    criterion: string,
-    evidence: readonly EvidenceItem[],
-    caseContext: CaseContext,
-  ): Promise<Anthropic.Message | undefined> {
+  private async requestJudgment(prompt: string): Promise<Anthropic.Message | undefined> {
     try {
       return await this.client.messages.create({
         model: this.model,
         max_tokens: this.maxTokens,
         system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: buildUserPrompt(criterion, evidence, caseContext) }],
+        messages: [{ role: 'user', content: prompt }],
       });
     } catch {
       return undefined;
     }
   }
 }
+
+/**
+ * One provider call's own record, as evaluate() itself measured and
+ * materialized it: elapsed_ms and prompt are always known once a call has
+ * been attempted, whether or not it answered; usage is present only where a
+ * response actually came back to read message.usage from
+ * (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing).
+ */
+type CallRecord = {
+  readonly usage?: Usage;
+  readonly elapsed_ms: number;
+  readonly prompt: string;
+};
 
 /**
  * Inconclusive with reason no-data, citing every evidence item whose own
@@ -161,10 +192,13 @@ function noDataOutcome(nonOkEvidence: readonly EvidenceItem[]): EvaluationOutcom
  * one of the three declared shapes, or a model answer that itself declined
  * to ground a verdict from evidence that was not missing — none of these a
  * distinction the closed evaluation-reason vocabulary draws any finer than
- * this, once no-data's own evidence-result condition does not hold.
+ * this, once no-data's own evidence-result condition does not hold. Carries
+ * whatever call record it is given — present for every path once a call has
+ * actually been attempted, absent only where this function is never reached
+ * (the no-data path above, which never calls this).
  */
-function judgmentFailureOutcome(): EvaluationOutcome {
-  return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
+function judgmentFailureOutcome(callRecord?: CallRecord): EvaluationOutcome {
+  return { verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
 }
 
 /** The text of every text content block the model answered, concatenated in order — the only content this adapter ever reads, since no tool is ever declared on the request. */
@@ -179,17 +213,19 @@ function textOf(message: Anthropic.Message): string {
  * Reads the model's whole answer as one JSON object matching one of the
  * three declared shapes, falling back to judgment-failure for anything else
  * — an empty response, prose around the object, or a shape this adapter's
- * own contract does not recognize.
+ * own contract does not recognize. Carries the given call record — a
+ * response did come back by the time this is called, so it always includes
+ * usage alongside elapsed_ms and prompt.
  */
-function outcomeFromModelText(text: string): EvaluationOutcome {
+function outcomeFromModelText(text: string, callRecord: CallRecord): EvaluationOutcome {
   const parsed = parseJudgment(text);
   if (parsed === undefined || parsed.verdict === 'inconclusive') {
-    return judgmentFailureOutcome();
+    return judgmentFailureOutcome(callRecord);
   }
   if (parsed.verdict === 'confirmed') {
-    return { verdict: 'confirmed', citations: parsed.citations };
+    return { verdict: 'confirmed', citations: parsed.citations, ...callRecord };
   }
-  return { verdict: 'refuted', citations: parsed.citations };
+  return { verdict: 'refuted', citations: parsed.citations, ...callRecord };
 }
 
 /** What one well-formed model answer parses into: a bare inconclusive marker, or a decided verdict with the non-empty citation tuple the port's own EvaluationOutcome type requires. */

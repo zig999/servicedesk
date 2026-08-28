@@ -6,8 +6,6 @@
 // this adapter's own prompt-assembly, no-data short-circuit and
 // response-parsing behavior, since none of those are exported from the
 // module under test.
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-hypothesis-evaluator.adapter.js';
 import type { CaseContext, EvidenceItem } from '../../../investigation/hypothesis-evaluator.port.js';
@@ -21,8 +19,17 @@ type MockedCreateParams = {
   readonly tools?: unknown;
 };
 
-/** What one mocked messages.create() call answers — only the shape textOf() reads. */
-type MockedMessage = { readonly content: readonly { readonly type: string; readonly text: string }[] };
+/**
+ * What one mocked messages.create() call answers — the content shape
+ * textOf()/parseJudgment() read, plus the optional usage field this suite's
+ * own criteria-1/2/3 tests give a mocked response so evaluate() has
+ * message.usage to read from
+ * (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing).
+ */
+type MockedMessage = {
+  readonly content: readonly { readonly type: string; readonly text: string }[];
+  readonly usage?: { readonly input_tokens: number; readonly output_tokens: number };
+};
 
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
   const createMock = vi.fn<(params: MockedCreateParams) => Promise<MockedMessage>>();
@@ -180,7 +187,10 @@ it('parses a well-formed confirmed answer into the confirmed verdict with its ci
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome).toMatchObject({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('parses a well-formed refuted answer into the refuted verdict with its citations', async () => {
@@ -190,7 +200,10 @@ it('parses a well-formed refuted answer into the refuted verdict with its citati
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'refuted', citations: [citation] });
+  expect(outcome).toMatchObject({ verdict: 'refuted', citations: [citation] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('parses a confirmed answer wrapped in a ```json code fence, despite the system prompt asking for none', async () => {
@@ -202,7 +215,10 @@ it('parses a confirmed answer wrapped in a ```json code fence, despite the syste
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome).toMatchObject({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('parses a refuted answer wrapped in an untagged ``` code fence', async () => {
@@ -214,7 +230,10 @@ it('parses a refuted answer wrapped in an untagged ``` code fence', async () => 
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'refuted', citations: [citation] });
+  expect(outcome).toMatchObject({ verdict: 'refuted', citations: [citation] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it("maps the model's own well-formed inconclusive answer to reason judgment-failure", async () => {
@@ -223,7 +242,10 @@ it("maps the model's own well-formed inconclusive answer to reason judgment-fail
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('answers inconclusive with reason judgment-failure when the model response is not valid JSON', async () => {
@@ -232,7 +254,10 @@ it('answers inconclusive with reason judgment-failure when the model response is
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('answers inconclusive with reason judgment-failure when the model response is valid JSON but matches none of the three declared shapes', async () => {
@@ -241,7 +266,10 @@ it('answers inconclusive with reason judgment-failure when the model response is
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('answers inconclusive with reason judgment-failure when a confirmed answer carries no citations', async () => {
@@ -250,7 +278,10 @@ it('answers inconclusive with reason judgment-failure when a confirmed answer ca
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('answers inconclusive with reason judgment-failure, never throwing, when the provider call itself rejects', async () => {
@@ -259,7 +290,10 @@ it('answers inconclusive with reason judgment-failure, never throwing, when the 
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
 it('reads the credential from ANTHROPIC_API_KEY when the constructor is given no apiKey', async () => {
@@ -299,9 +333,12 @@ it('sends exactly the model the caller configured, not a hardcoded default', asy
   expect(createMock.mock.calls[0]?.[0]).toMatchObject({ model: 'a-configured-model' });
 });
 
-// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criterion 5, unchanged
+// ---------- task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing:
+// ---------- criteria 1-3, replacing this suite's own now-obsolete placeholder-behavior tests
+// ---------- above (task/investigation-telemetry/widen-judgment-and-consolidation-ports' own
+// ---------- criterion 5, which this task deliberately replaced)
 
-it("answers a decided verdict carrying no usage, elapsed_ms or prompt property, even when the provider's own mocked response itself carries a usage field — this adapter never reads message.usage or reports one", async () => {
+it("answers a decided verdict carrying usage read exactly from the provider response's own message.usage, alongside the measured elapsed_ms and the sent prompt", async () => {
   const citation = { concept: 'concept-one', field: 'field-one' };
   const responseCarryingProviderUsage = {
     content: [{ type: 'text', text: JSON.stringify({ verdict: 'confirmed', citations: [citation] }) }],
@@ -312,16 +349,78 @@ it("answers a decided verdict carrying no usage, elapsed_ms or prompt property, 
 
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
-  expect(outcome).toEqual({ verdict: 'confirmed', citations: [citation] });
+  expect(outcome).toMatchObject({ verdict: 'confirmed', citations: [citation], usage: { input_tokens: 77, output_tokens: 88 } });
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
+});
+
+it("reads a different usage value per call, exactly matching that call's own mocked response, rather than any fixed placeholder value", async () => {
+  const firstCitation = { concept: 'concept-one', field: 'field-one' };
+  const secondCitation = { concept: 'concept-two', field: 'field-two' };
+  createMock.mockResolvedValueOnce({
+    content: [{ type: 'text', text: JSON.stringify({ verdict: 'confirmed', citations: [firstCitation] }) }],
+    usage: { input_tokens: 10, output_tokens: 4 },
+  });
+  createMock.mockResolvedValueOnce({
+    content: [{ type: 'text', text: JSON.stringify({ verdict: 'confirmed', citations: [secondCitation] }) }],
+    usage: { input_tokens: 99, output_tokens: 32 },
+  });
+  const evaluator = createEvaluator();
+
+  const first = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+  const second = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(first.usage).toEqual({ input_tokens: 10, output_tokens: 4 });
+  expect(second.usage).toEqual({ input_tokens: 99, output_tokens: 32 });
+});
+
+it("still carries usage read from the response's own message.usage when the model answered but the text could not be parsed into a recognized shape", async () => {
+  createMock.mockResolvedValueOnce({
+    content: [{ type: 'text', text: 'this is not json at all' }],
+    usage: { input_tokens: 10, output_tokens: 5 },
+  });
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', usage: { input_tokens: 10, output_tokens: 5 } });
+});
+
+it('measures elapsed_ms as the real wall-clock time the provider call itself took, rather than a fixed value', async () => {
+  createMock.mockImplementationOnce(
+    () => new Promise((resolve) => setTimeout(() => resolve(messageWithText('{"verdict":"inconclusive"}')), 20)),
+  );
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(20);
+});
+
+it("reports elapsed_ms and the exact prompt sent, but never invents a usage field, when the provider call itself throws before any response arrives", async () => {
+  createMock.mockImplementationOnce(
+    () => new Promise<MockedMessage>((_resolve, reject) => setTimeout(() => reject(new Error('the provider is unavailable')), 15)),
+  );
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure' });
+  expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(15);
+  expect(outcome.prompt).toContain('<judgment_input>');
+  expect(outcome).not.toHaveProperty('usage');
+});
+
+it('a no-data outcome, answered without ever reaching the provider, still carries none of usage, elapsed_ms or prompt', async () => {
+  const mixedEvidence: readonly EvidenceItem[] = [
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
+    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
+  ];
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, mixedEvidence, A_CASE_CONTEXT);
+
   expect(outcome).not.toHaveProperty('usage');
   expect(outcome).not.toHaveProperty('elapsed_ms');
   expect(outcome).not.toHaveProperty('prompt');
-});
-
-it("this adapter's own source declares no usage or elapsed_ms field, and no prompt field on any answered outcome — proving it was left untouched by the widened port's own new, optional call-record fields (its own pre-existing, unrelated prose use of the word \"prompt\" for the judgment prompt itself is not what this checks)", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../investigation/anthropic-hypothesis-evaluator.adapter.ts', import.meta.url)), 'utf8');
-
-  expect(source).not.toMatch(/\busage\b/);
-  expect(source).not.toMatch(/\belapsed_ms\b/);
-  expect(source).not.toMatch(/prompt:|\.prompt\b/);
 });

@@ -33,8 +33,23 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
 
+/**
+ * Every call this suite's mocked @anthropic-ai/sdk answers now carries a realistic, non-zero
+ * usage field (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing):
+ * both AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator read this exact field
+ * (message.usage/response.usage) rather than discarding it or falling back to a placeholder, and
+ * investigation-pipeline.ts's own costOf() reads consolidation.usage.input_tokens
+ * unconditionally — a mocked response carrying no usage field at all left that read undefined,
+ * throwing before any of this file's own assertions could run. Mirrors the same fix
+ * diagnose-server.factory.spec.ts's own hoisted mock already carries for this same task; no test
+ * in this file reads cost or duration values, so no delay is added here the way that file's own
+ * mock adds one for its own duration assertions.
+ */
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
-  const createMock = vi.fn().mockResolvedValue({ content: [{ type: 'text', text: 'the drafted assessment write-up' }] });
+  const createMock = vi.fn().mockResolvedValue({
+    content: [{ type: 'text', text: 'the drafted assessment write-up' }],
+    usage: { input_tokens: 120, output_tokens: 45 },
+  });
   const anthropicConstructorMock = vi.fn().mockImplementation(() => ({ messages: { create: createMock } }));
   return { createMock, anthropicConstructorMock };
 });

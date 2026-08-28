@@ -2116,6 +2116,10 @@
           "digest": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d"
         },
         {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:dd7d946a72f40e632efd551468098d7bf12d01267a1af794978f801d23bd5e2b"
+        },
+        {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
           "digest": "sha256:72743542e9f02838df17652d0d1c66401bd169e24b3d3e3b76ef6f1c64918728"
         },
@@ -2312,6 +2316,10 @@
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:b340b2965596bbe12b6ef8fe3e60fadefed2ba433f4673a9e89711ff91bfa38d"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
@@ -2640,6 +2648,14 @@
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
           "digest": "sha256:0fc1458086fa2cc03b279ab01fd09642bbf14ebd76cdfb6ebac11df19e04a8cf"
+        },
+        {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:dd7d946a72f40e632efd551468098d7bf12d01267a1af794978f801d23bd5e2b"
+        },
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:b340b2965596bbe12b6ef8fe3e60fadefed2ba433f4673a9e89711ff91bfa38d"
         },
         {
           "path": "src/src/investigation/usage.ts",

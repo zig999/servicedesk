@@ -175,28 +175,32 @@ it("returns exactly the model's own text content, trimmed of surrounding whitesp
   expect(outcome.text).toBe('The consolidated assessment.');
 });
 
-// ------------------------------------------------------------- criterion 2 and criterion 6 (task/investigation-telemetry/widen-judgment-and-consolidation-ports)
+// ------------------------------------------------------------- task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing:
+// ------------------------------------------------------------- criteria 4-5, replacing this suite's own now-obsolete
+// ------------------------------------------------------------- placeholder-zero tests above (task/investigation-telemetry/widen-judgment-and-consolidation-ports' own criterion 6, which this task deliberately replaced)
 
-it('answers a placeholder zero-valued usage and an elapsed_ms of 0 on a successful call', async () => {
-  create.mockResolvedValueOnce(textResponse('the write-up'));
+it("answers usage read exactly from the provider response's own usage on a successful call", async () => {
+  create.mockResolvedValueOnce({ content: [{ type: 'text', text: 'the write-up' }], usage: { input_tokens: 200, output_tokens: 80 } });
   const consolidator = new AnthropicAssessmentConsolidator(A_CONFIG);
 
   const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
-  expect(outcome.usage).toEqual({ input_tokens: 0, output_tokens: 0 });
-  expect(outcome.elapsed_ms).toBe(0);
+  expect(outcome.usage).toEqual({ input_tokens: 200, output_tokens: 80 });
 });
 
-it("answers a usage of zero even when the provider's own mocked response itself carries a non-zero usage field — this adapter never reads message.usage", async () => {
-  create.mockResolvedValueOnce({ content: [{ type: 'text', text: 'the write-up' }], usage: { input_tokens: 123, output_tokens: 456 } });
+it("reads a different usage value per call, exactly matching that call's own mocked response, rather than any fixed placeholder", async () => {
+  create.mockResolvedValueOnce({ content: [{ type: 'text', text: 'first write-up' }], usage: { input_tokens: 11, output_tokens: 3 } });
+  create.mockResolvedValueOnce({ content: [{ type: 'text', text: 'second write-up' }], usage: { input_tokens: 250, output_tokens: 99 } });
   const consolidator = new AnthropicAssessmentConsolidator(A_CONFIG);
 
-  const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+  const first = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
+  const second = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
-  expect(outcome.usage).toEqual({ input_tokens: 0, output_tokens: 0 });
+  expect(first.usage).toEqual({ input_tokens: 11, output_tokens: 3 });
+  expect(second.usage).toEqual({ input_tokens: 250, output_tokens: 99 });
 });
 
-it('answers an elapsed_ms of 0 even when the provider call itself takes measurable time — this adapter never measures the call', async () => {
+it('answers an elapsed_ms reflecting the real wall-clock time the provider call itself took, rather than a fixed value', async () => {
   create.mockImplementationOnce(
     () => new Promise((resolve) => setTimeout(() => resolve(textResponse('the write-up')), 20)),
   );
@@ -204,7 +208,7 @@ it('answers an elapsed_ms of 0 even when the provider call itself takes measurab
 
   const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
-  expect(outcome.elapsed_ms).toBe(0);
+  expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(20);
 });
 
 it('answers a prompt equal to exactly the same data block sent as the call\'s own user message content', async () => {

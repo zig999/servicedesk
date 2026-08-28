@@ -26,6 +26,14 @@
       "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
     },
     {
+      "id": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "kind": "implementation",
+      "file": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing.md",
+      "title": "Anthropic adapters read the provider's own usage, measure elapsed time and report the materialized prompt",
+      "summary": "anthropic-hypothesis-evaluator.adapter.ts's evaluate() and anthropic-assessment-consolidator.adapter.ts's consolidate() each measure their own provider call with Date.now(), read the response's own message.usage, and return the exact prompt they already assembled, instead of discarding all three or answering a placeholder.",
+      "task": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing"
+    },
+    {
       "id": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
       "kind": "implementation",
       "file": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations.md",
@@ -72,6 +80,14 @@
       "title": "proof — diagnose refuses a draft-state case version",
       "summary": "Nine vitest tests across three files prove that a draft-pinned diagnose request is refused with CaseVersionNotReleasedError before the pipeline runs, that the error is registered in status-map.ts at 409, and that a released-pinned request proceeds unchanged, both at the unit level and on the wire.",
       "task": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version"
+    },
+    {
+      "id": "proof/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "kind": "proof",
+      "file": "proof/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing.md",
+      "title": "Proof that both Anthropic adapters report the provider's own usage, timing and prompt",
+      "summary": "Rewrites the three now-obsolete placeholder/no-usage unit tests across both adapters' own suites, updates nine further pre-existing hypothesis-evaluator parsing/judgment-failure tests whose own expected-value literals were never widened for the new telemetry fields, fixes the diagnose-server.factory.spec.ts integration suite's mocked provider response to carry real usage and a real measured delay, fixes production-diagnose.factory.spec.ts's own sibling mock (a different task's fixture, broken by this task's own legitimate removal of the consolidator's placeholder usage) to carry a realistic usage field, and adds unit tests proving usage/elapsed_ms/prompt are genuinely read from the provider's own response — including the judgment call's own throw-before-response boundary.",
+      "task": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing"
     },
     {
       "id": "proof/investigation-telemetry/diagnose-reports-real-cost-and-durations",
@@ -202,6 +218,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/investigation-telemetry/diagnose-reports-real-cost-and-durations",
       "to": "domain/investigation/cost",
       "kind": "encodes",
@@ -294,6 +334,12 @@
     {
       "from": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "to": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "to": "implementation/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
       "kind": "proves",
       "at": "the path"
     },

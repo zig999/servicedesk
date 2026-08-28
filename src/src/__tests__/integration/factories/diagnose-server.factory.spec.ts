@@ -57,8 +57,43 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
+/**
+ * Every call this suite's mocked @anthropic-ai/sdk answers — both judgment
+ * calls and the one consolidation call alike, since createMock backs the
+ * single shared client both AnthropicHypothesisEvaluator and
+ * AnthropicAssessmentConsolidator construct — now carries a realistic,
+ * non-zero usage field (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing:
+ * both adapters read this exact field, message.usage/response.usage, rather
+ * than discarding or placeholding it) and answers after a real, deliberate
+ * delay (MOCK_RESPONSE_DELAY_MS) so every adapter's own Date.now()-measured
+ * elapsed_ms is genuinely, deterministically non-zero rather than reading a
+ * lucky same-millisecond 0. The token counts and delay below are declared
+ * again as literals inside vi.hoisted()'s own callback rather than read from
+ * the named constants beneath it: vitest hoists that whole call above every
+ * other module-level statement, including these declarations, so a closure
+ * over them would read past their own temporal dead zone. The two copies are
+ * kept equal by hand; the named constants exist so the cost/duration
+ * assertions below read as the values they are rather than the same magic
+ * numbers spelled out twice with no name (TYP-04).
+ */
+const MOCK_INPUT_TOKENS_PER_CALL = 120;
+const MOCK_OUTPUT_TOKENS_PER_CALL = 45;
+const MOCK_RESPONSE_DELAY_MS = 10;
+
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
-  const createMock = vi.fn().mockResolvedValue({ content: [{ type: 'text', text: 'the drafted assessment write-up' }] });
+  const createMock = vi.fn(
+    (_options: { model: string }) =>
+      new Promise((resolve) =>
+        setTimeout(
+          () =>
+            resolve({
+              content: [{ type: 'text', text: 'the drafted assessment write-up' }],
+              usage: { input_tokens: 120, output_tokens: 45 },
+            }),
+          10,
+        ),
+      ),
+  );
   const anthropicConstructorMock = vi.fn().mockImplementation(() => ({ messages: { create: createMock } }));
   return { createMock, anthropicConstructorMock };
 });
@@ -457,50 +492,58 @@ it("sends the caller-configured evaluator and consolidator models to the provide
   expect(sentModels).toContain('a-test-consolidator-model');
 });
 
-// ----- task/investigation-telemetry/diagnose-reports-real-cost-and-durations: real consolidation
-// ----- cost and real collection duration, judgment/evaluator usage and writing still zero
+// ----- task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing: real
+// ----- judgment and writing cost and duration, now that both adapters read the provider's own
+// ----- response instead of discarding it or answering a placeholder
 
 /**
- * run-diagnosis.ts (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) no
- * longer stamps the old UNMEASURED_COST/UNMEASURED_DURATIONS placeholders at all — it now counts
- * and sums real usage/elapsed_ms off the pipeline's own stages. Against today's tree this still
- * reads as partly zero, not because anything stamps a placeholder, but because the two Anthropic
- * adapters this suite's own mocked @anthropic-ai/sdk stands behind
- * (AnthropicHypothesisEvaluator, AnthropicAssessmentConsolidator) do not yet report real
- * usage/elapsed_ms themselves — that is task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing's
- * own separate, not-yet-delivered scope:
- * - AnthropicHypothesisEvaluator.evaluate() never sets usage or elapsed_ms on the EvaluationOutcome
- *   it answers (confirmed, refuted or inconclusive alike), so no Evaluation ever carries a defined
- *   usage or elapsed_ms here — costOf() counts zero judgment calls, and durationsOf() reads
- *   judgment as 0.
- * - AnthropicAssessmentConsolidator.consolidate() answers a hardcoded PLACEHOLDER_USAGE
- *   ({ input_tokens: 0, output_tokens: 0 }) and PLACEHOLDER_ELAPSED_MS (0), so writing reads 0 too,
- *   and the one consolidation call it always makes contributes no tokens — but it still counts as
- *   the one call costOf() always adds regardless of usage, so cost.calls reads 1, not 0.
- * - evidence-collection-stage.ts, by contrast, already measures real wall-clock elapsed_ms per
- *   concept (task/investigation-telemetry/evidence-collection-measures-elapsed-ms, already
- *   delivered) regardless of which adapter answers the observation, so durations.collection is
- *   real and positive here — the one value in this row that is not a leftover zero.
- * total is exactly durations.collection, since judgment and writing both still read 0.
+ * run-diagnosis.ts (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) counts
+ * and sums real usage/elapsed_ms off the pipeline's own stages; until this task, the two Anthropic
+ * adapters this suite's own mocked @anthropic-ai/sdk stands behind still fed it placeholders or
+ * nothing at all for the judgment and consolidation calls, so this row read partly zero. Now that
+ * both adapters read message.usage/response.usage and measure elapsed_ms with Date.now() around
+ * their own call, every provider call this fixture's own investigation makes contributes real,
+ * non-zero cost and duration:
+ * - The fixture case (fixtures/case/intermittent-connection-outage/1.json) declares exactly two
+ *   hypotheses, both collecting a concept this suite's own fetchMock answers 200/ok for — so both
+ *   are judged (no no-data degrade), and the model's own deliberately-invalid-JSON answer resolves
+ *   each to inconclusive/judgment-failure via outcomeFromModelText's own fallback, which still
+ *   carries the call's own usage since a response did come back. Neither citation validation nor a
+ *   retry ever runs (that path is only for a decided verdict), so this is exactly two judgment
+ *   calls, never more.
+ * - Exactly one consolidation call always runs (domain/investigation/assessment).
+ * - createMock's own hoisted mock answers every one of those three calls alike (the same shared
+ *   client backs both adapters), each carrying MOCK_INPUT_TOKENS_PER_CALL/MOCK_OUTPUT_TOKENS_PER_CALL
+ *   and a real MOCK_RESPONSE_DELAY_MS-long delay — so cost.calls is exactly TOTAL_PROVIDER_CALLS,
+ *   cost.input_tokens/output_tokens are exactly that many multiples of the per-call token counts
+ *   (investigation-pipeline.ts's own costOf sums every judged evaluation's own usage plus the one
+ *   consolidation usage), and durations.judgment/writing are each individually measured but bounded
+ *   below by MOCK_RESPONSE_DELAY_MS, the one guarantee a real wall-clock measurement can make
+ *   without asserting an exact millisecond count nothing pins.
+ * - durations.total is exactly the sum of the three stage durations, unchanged from before this
+ *   task (investigation-pipeline.ts's own durationsOf).
  */
+const TOTAL_PROVIDER_CALLS = 3;
+
 it(
-  'persists cost.calls as the one real consolidation call and a real, non-zero collection duration, ' +
-    'while judgment usage, writing and judgment duration still read zero until the Anthropic adapters ' +
-    'themselves report real usage and elapsed_ms',
+  'persists real, non-zero cost and durations for the judgment and consolidation calls, ' +
+    'now that the Anthropic adapters themselves report real usage and elapsed_ms',
   async () => {
     await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
 
     const [written] = await investigationsFor(seedingConnection, requester);
     expect(written).toBeDefined();
     expect({ calls: written?.cost_calls, input_tokens: written?.cost_input_tokens, output_tokens: written?.cost_output_tokens }).toEqual({
-      calls: 1,
-      input_tokens: 0,
-      output_tokens: 0,
+      calls: TOTAL_PROVIDER_CALLS,
+      input_tokens: TOTAL_PROVIDER_CALLS * MOCK_INPUT_TOKENS_PER_CALL,
+      output_tokens: TOTAL_PROVIDER_CALLS * MOCK_OUTPUT_TOKENS_PER_CALL,
     });
-    expect(written?.durations_judgment).toBe(0);
-    expect(written?.durations_writing).toBe(0);
+    expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
+    expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
     expect(written?.durations_collection).toBeGreaterThan(0);
-    expect(written?.durations_total).toBe(written?.durations_collection);
+    expect(written?.durations_total).toBe(
+      (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
+    );
   },
 );
 
