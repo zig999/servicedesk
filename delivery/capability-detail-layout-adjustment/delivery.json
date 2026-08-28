@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-detail-layout/name-version-nature-row",
+      "kind": "implementation",
+      "file": "implementation/capability-detail-layout/name-version-nature-row.md",
+      "title": "Group Name, Version and Nature into one row",
+      "summary": "CapabilityFormFields now wraps Name, Version and Nature in one grid grid-cols-3 gap-4 row instead of Nature sitting in its own row beneath a separate Name/Version flex row.",
+      "task": "task/capability-detail-layout/name-version-nature-row"
+    },
+    {
+      "id": "proof/capability-detail-layout/name-version-nature-row",
+      "kind": "proof",
+      "file": "proof/capability-detail-layout/name-version-nature-row.md",
+      "title": "Proof for grouping Name, Version and Nature into one row",
+      "summary": "Adds the one structural test criterion 1 needs -- that Name, Version and Nature share one row container a later field (Timeout) sits outside of -- leaving criteria 2-4 to the existing, unmodified capability-detail-screen.spec.ts and capability-detail-screen-save.spec.ts suites that already prove them.",
+      "task": "task/capability-detail-layout/name-version-nature-row"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-detail-layout/name-version-nature-row",
+      "to": "task/capability-detail-layout/name-version-nature-row",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-detail-layout/name-version-nature-row",
+      "to": "implementation/capability-detail-layout/name-version-nature-row",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -127,7 +127,7 @@ export function CapabilityFormFields({
 
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
-      <div className="flex gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <FormField label="Name" errorId="name-error" error={errors.name?.message}>
           <Input
             {...register("name")}
@@ -145,25 +145,25 @@ export function CapabilityFormFields({
             aria-describedby={errors.version != null ? "version-error" : undefined}
           />
         </FormField>
-      </div>
 
-      <FormField label="Nature" errorId="nature-error" error={errors.nature?.message}>
-        <Controller
-          control={control}
-          name="nature"
-          render={({ field }) => (
-            <Select
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              options={NATURE_OPTIONS}
-              disabled={isSubmitting}
-              aria-invalid={errors.nature != null}
-              aria-describedby={errors.nature != null ? "nature-error" : undefined}
-            />
-          )}
-        />
-      </FormField>
+        <FormField label="Nature" errorId="nature-error" error={errors.nature?.message}>
+          <Controller
+            control={control}
+            name="nature"
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                options={NATURE_OPTIONS}
+                disabled={isSubmitting}
+                aria-invalid={errors.nature != null}
+                aria-describedby={errors.nature != null ? "nature-error" : undefined}
+              />
+            )}
+          />
+        </FormField>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <JsonTextareaField

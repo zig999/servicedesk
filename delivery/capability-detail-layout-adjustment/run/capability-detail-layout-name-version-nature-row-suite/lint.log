@@ -1,0 +1,10 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1-fix-hypothesis-status-and-layout/frontend/app/src/routes/capability-detail-screen-name-version-nature-row.spec.ts
+  41:27  error  Avoid direct Node access. Prefer using the methods from Testing Library  testing-library/no-node-access
+
+✖ 1 problem (1 error, 0 warnings)
+
