@@ -2,11 +2,26 @@
   "contract_version": "siegard-plan/3",
   "nodes": [
     {
+      "id": "epic/detail-evidence-capability-reference-hotfix",
+      "kind": "epic",
+      "file": "epic/detail-evidence-capability-reference-hotfix.md",
+      "title": "Detail evidence capability-reference shape hotfix",
+      "summary": "The one corrective task that fixes case-simulation-cockpit-adapters.ts's own Detail evidence reading its capability reference as a nested object no simulate response ever sends."
+    },
+    {
       "id": "epic/detail-panel-judgment-comment-fix",
       "kind": "epic",
       "file": "epic/detail-panel-judgment-comment-fix.md",
       "title": "Detail panel Criterion 6 comment-wording hotfix",
       "summary": "The one corrective task that rewords case-simulation-detail-panel.tsx's own Criterion 6 comment so it no longer conflates a per-hypothesis fact with an investigation-wide one."
+    },
+    {
+      "id": "task/detail-evidence-capability-reference-hotfix/flatten-detail-evidence-capability-reference",
+      "kind": "task",
+      "file": "task/detail-evidence-capability-reference-hotfix/flatten-detail-evidence-capability-reference.md",
+      "title": "Read the Detail evidence's capability reference as the two flat fields the wire actually sends",
+      "summary": "Fixes toDetailEvidence (case-simulation-cockpit-adapters.ts) and the Evidence tab's capability line (case-simulation-detail-evidence-tab.tsx) to read capability_name/capability_version as flat fields, matching both simulate endpoints' real wire shape, instead of a nested capability: { name, version } object that neither endpoint ever sends.",
+      "epic": "detail-evidence-capability-reference-hotfix"
     },
     {
       "id": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
@@ -19,6 +34,18 @@
   ],
   "edges": [
     {
+      "from": "epic/detail-evidence-capability-reference-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/detail-evidence-capability-reference-hotfix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
       "from": "epic/detail-panel-judgment-comment-fix",
       "to": "domain/investigation/evaluation",
       "kind": "covers",
@@ -29,6 +56,18 @@
       "to": "domain/investigation/investigation",
       "kind": "covers",
       "at": "covers[1]"
+    },
+    {
+      "from": "task/detail-evidence-capability-reference-hotfix/flatten-detail-evidence-capability-reference",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/detail-evidence-capability-reference-hotfix/flatten-detail-evidence-capability-reference",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
