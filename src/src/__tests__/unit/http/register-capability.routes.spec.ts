@@ -29,6 +29,7 @@ import type { Capability, CapabilityRegistration } from '../../../capability-reg
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../../../errors/concept-already-answered.error.js';
+import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
@@ -255,6 +256,41 @@ it('refuses with the status the status map assigns ConceptAlreadyAnsweredError w
     concept: 'a-concept',
     answeredBy: { name: 'another-name', version: '1.0.0' },
     registering: { name: 'a-name', version: '1.0.0' },
+  });
+});
+
+// ------------------------------------------------------------------ task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder
+//
+// This task's own criterion 1 depends on the status map's ConnectorPlaceholderOutsideInputSchemaError
+// entry (already wired, and proven generically against 422 by status-map.spec.ts for the reciprocal
+// register-connector direction) reaching this route exactly the way CapabilityNotReadOnlyError already
+// does above: the route carries whatever registerCapability rejects with straight to the shared error
+// handler, untouched by this task.
+
+it('refuses with the status the status map assigns ConnectorPlaceholderOutsideInputSchemaError, naming every orphaned placeholder together with the capability that fails to declare it', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockRejectedValueOnce(
+    new ConnectorPlaceholderOutsideInputSchemaError([
+      {
+        placeholder: 'customer_document',
+        capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }],
+      },
+    ]),
+  );
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/capabilities/a-name/1.0.0', payload: validBody() });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('ConnectorPlaceholderOutsideInputSchemaError');
+  expect(body.error.details).toEqual({
+    orphaned: [
+      {
+        placeholder: 'customer_document',
+        capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }],
+      },
+    ],
   });
 });
 

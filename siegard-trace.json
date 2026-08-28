@@ -681,7 +681,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -2037,7 +2037,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:b4e277dff0272cdcf1814cd0d94861a9a834b03a0d0a6240468eb82d42e82583"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/capability-registry/connector-configurations-reader.port.ts",
@@ -4143,6 +4143,10 @@
       "node": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
       "digest": "sha256:5badc08744c9ca8793f157866d2362fe367af6993e9e093430ff09522793e676",
       "files": [
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
+        },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"

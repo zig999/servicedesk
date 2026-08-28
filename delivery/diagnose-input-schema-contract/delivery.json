@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
     },
     {
+      "id": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder.md",
+      "title": "Refuse register-capability when its connector already holds an orphaning configuration",
+      "summary": "registerCapability now refuses a capability registration whose named connector already holds a registered configuration embedding a Subject-attribute placeholder this registration's own input_schema properties does not declare, raising the same typed 422 error the reciprocal register-connector refusal already raises, naming every orphaned placeholder together with the capability being registered.",
+      "task": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder"
+    },
+    {
       "id": "implementation/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
       "kind": "implementation",
       "file": "implementation/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder.md",
@@ -72,6 +80,14 @@
       "title": "Proof for build-placeholder-declaration-check",
       "summary": "Tests the pure orphaned-placeholder check, its Subject-attribute-placeholder extraction, and both registries' narrow cross-reads (default-empty, delegating, failure-propagating, and store-backed through the real factories).",
       "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
+    },
+    {
+      "id": "proof/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "kind": "proof",
+      "file": "proof/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder.md",
+      "title": "Proof for refusing a capability registration with an orphaned placeholder",
+      "summary": "Tests proving registerCapability refuses a registration whose named connector already holds a configuration embedding an undeclared Subject-attribute placeholder, names every such placeholder with the registering capability, succeeds once the capability declares it, and is untouched when the connector holds no configuration — plus the three disclosed inferences and the malformed-input-schema-declares-nothing edge case.",
+      "task": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder"
     },
     {
       "id": "proof/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
@@ -222,6 +238,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
       "to": "domain/integration/connector-configuration-registry",
       "kind": "encodes",
@@ -272,6 +312,12 @@
     {
       "from": "proof/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
       "to": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
       "kind": "proves",
       "at": "the path"
     },

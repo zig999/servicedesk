@@ -1,7 +1,12 @@
+import { orphanedPlaceholders } from '../connector-registry/connector-placeholder-declaration-check.js';
 import { CapabilityIdentityNotFoundError } from '../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../errors/concept-already-answered.error.js';
+import {
+  ConnectorPlaceholderOutsideInputSchemaError,
+  type OrphanedPlaceholder,
+} from '../errors/connector-placeholder-outside-input-schema.error.js';
 import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { IncompleteCapabilityContractError } from '../errors/incomplete-capability-contract.error.js';
 import { MalformedCapabilityInputSchemaError } from '../errors/malformed-capability-input-schema.error.js';
@@ -79,6 +84,11 @@ export class CapabilityRegistryService implements ICapabilityQuery {
    * names a required key absent from properties
    * (rules/integration/a-capability-input-schema-holds-a-well-formed-object),
    * whose nature is not read-only (rules/integration/a-capability-is-read-only),
+   * whose named connector already holds a registered configuration embedding
+   * a Subject-attribute placeholder this registration's own input schema
+   * properties does not declare
+   * (rules/integration/a-connector-placeholder-is-declared-by-its-capability,
+   * task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder),
    * or whose concept a different capability already answers
    * (rules/integration/one-capability-answers-one-concept) — every refusal
    * raised before any write. The rest is held — a re-registration under an
@@ -88,6 +98,7 @@ export class CapabilityRegistryService implements ICapabilityQuery {
    */
   public async registerCapability(registration: CapabilityRegistration): Promise<Capability> {
     const capability = heldCapability(registration);
+    await this.refuseOrphanedPlaceholders(capability);
     const held = await this.store.readCapabilities();
     const kept = held.filter((candidate) => !sameIdentity(candidate, capability));
     refuseAnsweredConcept(kept, capability);
@@ -191,18 +202,86 @@ export class CapabilityRegistryService implements ICapabilityQuery {
    * (factories/connector-configuration-registry.factory.ts's own
    * createConnectorConfigurationsReader, backed by the same
    * RelationalConnectorConfigurationStore the connector-configuration
-   * registry itself reads and writes through). Running the shared
+   * registry itself reads and writes through). registerCapability's own
+   * refuseOrphanedPlaceholders below is what actually runs the shared
    * orphaned-placeholder check
    * (connector-registry/connector-placeholder-declaration-check.ts) against
-   * a registration in progress, and raising a refusal over what it names, is
-   * a sibling task's own concern (this task's own Notes) — this method only
-   * answers the read.
+   * a registration in progress and raises the refusal over what it names
+   * (task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder)
+   * — this method stays the plain read for any other consumer that needs it.
    */
   public async readRegisteredConnectorConfigurations(): Promise<
     readonly RegisteredConnectorConfigurationForPlaceholderCheck[]
   > {
     return this.connectorConfigurationsReader.readConnectorConfigurations();
   }
+
+  /**
+   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+   * own capability-registration direction: refuses a registration whose
+   * named connector already holds a registered configuration whose own call
+   * text embeds a Subject-attribute placeholder this registration's own
+   * input schema properties does not declare
+   * (task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder).
+   * Reads every connector configuration currently registered against this
+   * same connector through readRegisteredConnectorConfigurations above —
+   * a connector this registration names that holds none is never refused
+   * over this at all (orphanedAcrossEveryConfiguration's own empty-list
+   * answer), since there is nothing yet to reconcile it against (the rule's
+   * own Description: "reconciles only what already exists on both sides at
+   * the moment of a write, never forcing an order"). Runs after
+   * heldCapability has already confirmed the registration's own shape, since
+   * this refusal reads the other registry's current state rather than this
+   * registration's own well-formedness.
+   */
+  private async refuseOrphanedPlaceholders(capability: Capability): Promise<void> {
+    const configurations = (await this.connectorConfigurationsReader.readConnectorConfigurations()).filter(
+      (configuration) => configuration.connector === capability.connector,
+    );
+    const orphaned = orphanedAcrossEveryConfiguration(capability, configurations);
+    if (orphaned.length > 0) {
+      throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
+    }
+  }
+}
+
+/**
+ * Every Subject-attribute placeholder embedded in any connector
+ * configuration currently registered against the registering capability's
+ * own connector that this capability's declared input-schema properties
+ * does not hold — the union across every one of that connector's registered
+ * configurations, since a single embedding either of them fails to declare
+ * is enough to refuse
+ * (task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder's
+ * own "if any placeholder comes back orphaned across ANY registered
+ * configuration for that connector"). Unlike the reciprocal register-connector
+ * check (connector-configuration-registry.service.ts's own
+ * orphanedAcrossEveryCapability, an intersection over many capabilities
+ * checked against one configuration), there is exactly one capability here —
+ * the one being registered — so nothing to intersect: each configuration's
+ * own orphanedPlaceholders answer (connector-registry/connector-placeholder-declaration-check.ts)
+ * is reused directly, deduplicated by name, and named together with this
+ * one registering capability — the same OrphanedPlaceholder shape
+ * (errors/connector-placeholder-outside-input-schema.error.ts) the reciprocal
+ * check already raises, reused rather than a new shape invented for this
+ * direction. An empty configurations list answers no orphaned placeholder at
+ * all — a connector this registration names that holds no registered
+ * configuration has nothing this reconciliation checks it against.
+ */
+function orphanedAcrossEveryConfiguration(
+  capability: Capability,
+  configurations: readonly RegisteredConnectorConfigurationForPlaceholderCheck[],
+): readonly OrphanedPlaceholder[] {
+  const names = new Set<string>();
+  for (const configuration of configurations) {
+    for (const name of orphanedPlaceholders(configuration.configuration, capability.input_schema)) {
+      names.add(name);
+    }
+  }
+  return [...names].map((placeholder) => ({
+    placeholder,
+    capabilities: [{ connector: capability.connector, input_schema: capability.input_schema }],
+  }));
 }
 
 /** A registration that declared every required attribute, as the type then knows it. */

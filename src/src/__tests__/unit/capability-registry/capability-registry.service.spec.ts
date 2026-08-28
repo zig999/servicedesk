@@ -10,10 +10,15 @@ import { expect, it } from 'vitest';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
 import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
-import type { IConnectorConfigurationsReader } from '../../../capability-registry/connector-configurations-reader.port.js';
+import type {
+  IConnectorConfigurationsReader,
+  RegisteredConnectorConfigurationForPlaceholderCheck,
+} from '../../../capability-registry/connector-configurations-reader.port.js';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
+import { ConceptAlreadyAnsweredError } from '../../../errors/concept-already-answered.error.js';
+import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
 import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 
@@ -687,5 +692,280 @@ it('propagates a failure the injected connector-configurations reader itself rai
   const outcome = await registry.readRegisteredConnectorConfigurations().catch((error: unknown) => error);
 
   expect(outcome).toBeInstanceOf(Error);
+  expect((outcome as Error).message).toBe('the connector-configuration store is unavailable');
+});
+
+// ------------------------------------------------------------------ refuseOrphanedPlaceholders (registerCapability)
+// Proof for task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder:
+// registerCapability refuses a registration naming a connector that already holds a registered
+// configuration whose own call text embeds a Subject-attribute placeholder this registration's own
+// input_schema properties does not declare, naming every such orphaned placeholder together with the
+// capability being registered, and never refusing a connector holding no registered configuration at all.
+
+/** A connector configuration as this registry's own narrow reader would answer it, for seeding refuseOrphanedPlaceholders — defaults to embedding no placeholder at all, so a test only has to state what it does embed. */
+function registeredConfiguration(
+  overrides: Partial<RegisteredConnectorConfigurationForPlaceholderCheck> = {},
+): RegisteredConnectorConfigurationForPlaceholderCheck {
+  return {
+    connector: 'erp-http',
+    configuration: '{"address":"https://api.example.test/records"}',
+    ...overrides,
+  };
+}
+
+// ------------------------------------------------------------------ criterion 1
+
+it('refuses a registration naming a connector that already holds a registered configuration embedding a Subject-attribute placeholder its own input_schema properties does not declare, as ConnectorPlaceholderOutsideInputSchemaError', async () => {
+  const configuration = registeredConfiguration({
+    configuration: '{"address":"https://api.example.test/records/${subject:customer_document}"}',
+  });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{"contract_number":{}}}' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+});
+
+it('writes nothing to the store when it refuses a registration for an orphaned placeholder', async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const alreadyHeld = heldCapability({ connector: 'an-unrelated-connector' });
+  const store = new InMemoryCapabilityStore([alreadyHeld]);
+  const registry = new CapabilityRegistryService(store, reader);
+
+  await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }))
+    .catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+// ------------------------------------------------------------------ criterion 2
+
+it('names the orphaned placeholder together with the capability being registered', async () => {
+  const configuration = registeredConfiguration({
+    configuration: '{"address":"https://api.example.test/records/${subject:customer_document}"}',
+  });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{"contract_number":{}}}' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect((refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned).toEqual([
+    {
+      placeholder: 'customer_document',
+      capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{"contract_number":{}}}' }],
+    },
+  ]);
+});
+
+it("names both orphaned placeholders together when the connector's registered configuration embeds two the registration does not declare", async () => {
+  const configuration = registeredConfiguration({
+    configuration: '{"a":"${subject:customer_document}","b":"${subject:policy_number}"}',
+  });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }))
+    .catch((error: unknown) => error);
+
+  const orphaned = [...(refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned].sort((a, b) =>
+    a.placeholder.localeCompare(b.placeholder),
+  );
+  expect(orphaned).toEqual([
+    { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
+    { placeholder: 'policy_number', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
+  ]);
+});
+
+it('names one orphaned placeholder once, not once per occurrence, when the registered configuration embeds it more than once', async () => {
+  const configuration = registeredConfiguration({
+    configuration: '{"a":"${subject:customer_document}","b":"${subject:customer_document}"}',
+  });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }))
+    .catch((error: unknown) => error);
+
+  expect((refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned).toEqual([
+    { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
+  ]);
+});
+
+it('unions the orphaned placeholder across every registered configuration for the connector, named once even though only one of two configurations embeds it', async () => {
+  const orphaning = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const notOrphaning = registeredConfiguration({
+    configuration: '{"address":"https://api.example.test/records"}',
+  });
+  const reader: IConnectorConfigurationsReader = {
+    readConnectorConfigurations: async () => [notOrphaning, orphaning],
+  };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }))
+    .catch((error: unknown) => error);
+
+  expect((refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned).toEqual([
+    { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
+  ]);
+});
+
+it('names the registering capability by exactly its connector and input_schema, in a one-element capabilities array, adding no wider identity of its own', async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }))
+    .catch((error: unknown) => error);
+
+  const [entry] = (refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned;
+  expect(entry.capabilities).toHaveLength(1);
+  expect(Object.keys(entry.capabilities[0]).sort()).toEqual(['connector', 'input_schema']);
+});
+
+// ------------------------------------------------------------------ criterion 3
+
+it("succeeds when the registration's own input_schema properties declares the placeholder's attribute, even though the connector already holds a configuration embedding it", async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{"customer_document":{}}}' }),
+  );
+
+  expect(registered.input_schema).toBe('{"properties":{"customer_document":{}}}');
+});
+
+// ------------------------------------------------------------------ criterion 4
+
+it('is not refused by this check when the connector it names holds no registered configuration at all', async () => {
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }),
+  );
+
+  expect(registered.connector).toBe('erp-http');
+});
+
+it('is not refused by this check when every registered configuration names a different connector', async () => {
+  const configuration = registeredConfiguration({
+    connector: 'a-different-connector',
+    configuration: '{"address":"${subject:customer_document}"}',
+  });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }),
+  );
+
+  expect(registered.connector).toBe('erp-http');
+});
+
+it('succeeds when constructed with the default (no) connector-configurations reader, since every pre-existing single-argument construction of this class has no use for this capacity', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const registered = await registry.registerCapability(completeRegistration());
+
+  expect(registered.connector).toBe('a-connector');
+});
+
+// ------------------------------------------------------------------ ordering: this check runs after the sync contract/well-formedness checks and before the concept-uniqueness refusal
+
+it('refuses a registration missing a required attribute as IncompleteCapabilityContractError, even though the named connector already holds a configuration that would also embed an orphaned placeholder', async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', name: undefined }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(IncompleteCapabilityContractError);
+  expect(refusal).not.toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+});
+
+it('refuses a registration whose connector holds an orphaning configuration as ConnectorPlaceholderOutsideInputSchemaError even though its concept is already answered by another capability, since this check runs before the concept-uniqueness refusal', async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const alreadyAnswering = heldCapability({ name: 'another-capability', connector: 'erp-http', concept: 'a-concept' });
+  const store = new InMemoryCapabilityStore([alreadyAnswering]);
+  const registry = new CapabilityRegistryService(store, reader);
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({
+        name: 'a-new-capability',
+        connector: 'erp-http',
+        input_schema: '{"properties":{}}',
+        concept: 'a-concept',
+      }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+  expect(refusal).not.toBeInstanceOf(ConceptAlreadyAnsweredError);
+});
+
+// ------------------------------------------------------------------ edge case: a malformed/absent input_schema reads as declaring nothing
+
+it("treats a registration whose own input_schema declares no properties key at all as declaring nothing, so every placeholder the connector's registered configuration embeds is orphaned", async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ connector: 'erp-http', input_schema: '{}' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
+  expect((refusal as ConnectorPlaceholderOutsideInputSchemaError).context.orphaned).toEqual([
+    { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{}' }] },
+  ]);
+});
+
+// ------------------------------------------------------------------ edge case: no placeholder embedded at all
+
+it("succeeds without any orphaned-placeholder refusal when the connector's registered configuration embeds no placeholder at all", async () => {
+  const configuration = registeredConfiguration({ configuration: '{"address":"https://api.example.test/records"}' });
+  const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ connector: 'erp-http', input_schema: '{"properties":{}}' }),
+  );
+
+  expect(registered.connector).toBe('erp-http');
+});
+
+it('propagates a failure the connector-configurations reader itself raises while checking for an orphaned placeholder during registerCapability, rather than swallowing it', async () => {
+  const failingReader: IConnectorConfigurationsReader = {
+    readConnectorConfigurations: async () => {
+      throw new Error('the connector-configuration store is unavailable');
+    },
+  };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), failingReader);
+
+  const outcome = await registry.registerCapability(completeRegistration()).catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(Error);
+  expect(outcome).not.toBeInstanceOf(ConnectorPlaceholderOutsideInputSchemaError);
   expect((outcome as Error).message).toBe('the connector-configuration store is unavailable');
 });
