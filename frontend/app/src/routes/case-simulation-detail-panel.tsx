@@ -20,9 +20,12 @@ import type {
  * built with the same tabs primitive (@tui/ui/tabs) case-detail-screen.tsx
  * and glossary-browser-screen.tsx already compose.
  *
- * Criterion 6 (the judgment's model, prompt version, token usage and
- * elapsed time) renders inside the Evidence tab, beneath the evidence list
- * -- this task's own reference, layout/simulation-screen.md, places the
+ * Criterion 6 (usage, elapsed_ms and prompt are domain/investigation/evaluation's
+ * own call-level record, present per hypothesis evaluation; model and
+ * prompt_version are domain/investigation/investigation's own
+ * investigation-wide facts -- one pinned pair per whole investigation, never
+ * a per-hypothesis one) renders inside the Evidence tab, beneath the
+ * evidence list -- this task's own reference, layout/simulation-screen.md, places the
  * "Judgment ..." summary line there, within its own "Detail" region; no
  * criterion of this task ties it to a specific tab, so this placement is
  * this task's own inference drawn from that reference (a reference decides

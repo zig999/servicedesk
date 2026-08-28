@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "kind": "implementation",
+      "file": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment.md",
+      "title": "Reword the Detail panel's Criterion 6 comment to separate the per-hypothesis fact from the investigation-wide fact",
+      "summary": "Corrects case-simulation-detail-panel.tsx's own header comment, which grouped model, prompt version, token usage and elapsed time as one undifferentiated \"judgment\" set, into two correctly-attributed facts.",
+      "task": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment"
+    },
+    {
+      "id": "proof/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "kind": "proof",
+      "file": "proof/detail-panel-judgment-comment-fix/reword-criterion-6-comment.md",
+      "title": "Proof for reword-criterion-6-comment",
+      "summary": "Proves case-simulation-detail-panel.tsx's own Criterion 6 comment now separately attributes usage/elapsed_ms/prompt to domain/investigation/evaluation and model/prompt_version to domain/investigation/investigation, no longer groups the four as one \"judgment\" set, and that this rewording changed no executable code -- following the same source-text-reading convention cases-list-screen-comment-cites-the-current-nodes.spec.ts already established for a comment-prose criterion.",
+      "task": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

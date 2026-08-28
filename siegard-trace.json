@@ -2469,7 +2469,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
-          "digest": "sha256:6d3b5acf4d069d8791cbba1bdfeea6ebac2bcaf502e129206ddd9fbb27d50a4f"
+          "digest": "sha256:3e0c4a1fa8108e54682fb22a4d40ec839d01c98b0b6cf2fab605b194dd27a190"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-prompt-tab.tsx",
@@ -2748,6 +2748,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
           "digest": "sha256:06e3a17809d40cdf88ffbe77f2219e622c1c571e99fc8ff51c468c9b99b32db0"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
+          "digest": "sha256:3e0c4a1fa8108e54682fb22a4d40ec839d01c98b0b6cf2fab605b194dd27a190"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
