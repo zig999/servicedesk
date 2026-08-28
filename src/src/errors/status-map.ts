@@ -2,16 +2,21 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: three
+// `elsewhere` note). That silence no longer covers every entry below: four
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
 // ConnectorConfigurationNotFoundError's HTTP 404
-// (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)
-// and ConnectorConfigurationNotWellFormedError's HTTP 422
+// (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused),
+// ConnectorConfigurationNotWellFormedError's HTTP 422
 // (rules/integration/a-connector-configuration-holds-a-well-formed-object,
 // whose own statement refuses a not-well-formed configuration "with an HTTP
-// 422 response reporting a ConnectorConfigurationNotWellFormedError")
+// 422 response reporting a ConnectorConfigurationNotWellFormedError") and
+// HypothesisNotInManifestError's HTTP 404
+// (rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused,
+// whose own statement refuses a simulate-hypothesis request naming an absent
+// hypothesis "with an HTTP 404 response reporting a
+// HypothesisNotInManifestError")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -29,7 +34,11 @@
 // task/registry-reads/read-capability-by-identity-route, a fourth typed
 // class for the same structural absence rather than a reuse of
 // ConceptNotAnsweredError, ConnectorConfigurationNotFoundError or
-// CapabilityNotRegisteredForTestError); an operation the named resource's own current state forbids
+// CapabilityNotRegisteredForTestError; HypothesisNotInManifestError — the
+// eighth, once simulate-hypothesis is exposed as a route,
+// task/case-simulation-pipeline/simulate-hypothesis-operation, a fifth typed
+// class for the same structural absence — a manifest entry rather than a
+// case, a capability or a connector configuration); an operation the named resource's own current state forbids
 // — a second open draft, an already occupied manifest position, a mutation
 // against anything but a draft version, a concept a different capability
 // already answers (ConceptAlreadyAnsweredError,
@@ -84,6 +93,7 @@ import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
+import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
@@ -98,7 +108,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-one extends another, so that never arises today.
+ * twenty-two extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -108,6 +118,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConnectorConfigurationNotFoundError, 404],
   [CapabilityNotRegisteredForTestError, 404],
   [CapabilityIdentityNotFoundError, 404],
+  [HypothesisNotInManifestError, 404],
   [CaseAlreadyHasDraftError, 409],
   [ManifestPositionOccupiedError, 409],
   [CaseVersionNotDraftError, 409],

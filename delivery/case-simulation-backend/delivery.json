@@ -26,6 +26,14 @@
       "task": "task/case-simulation-pipeline/simulate-case-operation"
     },
     {
+      "id": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "kind": "implementation",
+      "file": "implementation/case-simulation-pipeline/simulate-hypothesis-operation.md",
+      "title": "POST /v1/simulate/hypothesis narrows the shared engine to one named hypothesis",
+      "summary": "A new simulate-hypothesis DTO, route, controller, narrower pipeline and production factory restrict collection and judgment to one named hypothesis's own manifest entry and return exactly one evaluation with no outcome or assessment resolved.",
+      "task": "task/case-simulation-pipeline/simulate-hypothesis-operation"
+    },
+    {
       "id": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "kind": "implementation",
       "file": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
@@ -96,6 +104,14 @@
       "title": "Proof for POST /v1/simulate returning the complete record without writing an investigation",
       "summary": "Unit tests against handleSimulateCaseRequest and createProductionSimulationRunner directly, plus a real-composition integration proof against createDiagnoseHttpServer, together proving every one of this task's eight criteria and excluding the UNDERDETERMINED cache-reuse implementation its own Notes name.",
       "task": "task/case-simulation-pipeline/simulate-case-operation"
+    },
+    {
+      "id": "proof/case-simulation-pipeline/simulate-hypothesis-operation",
+      "kind": "proof",
+      "file": "proof/case-simulation-pipeline/simulate-hypothesis-operation.md",
+      "title": "Proof for POST /v1/simulate/hypothesis returning one hypothesis's own evaluation",
+      "summary": "Unit tests against runSimulateHypothesisPipeline, handleSimulateHypothesisRequest and createProductionHypothesisSimulationRunner directly, one added status-map entry, and a real-composition integration proof against createDiagnoseHttpServer, together proving every one of this task's nine criteria.",
+      "task": "task/case-simulation-pipeline/simulate-hypothesis-operation"
     },
     {
       "id": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
@@ -352,6 +368,132 @@
       "at": "the path"
     },
     {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[18]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[19]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-simulation-writes-no-investigation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[20]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
       "kind": "encodes",
@@ -510,6 +652,12 @@
     {
       "from": "proof/case-simulation-pipeline/simulate-case-operation",
       "to": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-simulation-pipeline/simulate-hypothesis-operation",
+      "to": "implementation/case-simulation-pipeline/simulate-hypothesis-operation",
       "kind": "proves",
       "at": "the path"
     },

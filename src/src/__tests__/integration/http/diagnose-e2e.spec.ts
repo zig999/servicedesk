@@ -58,6 +58,7 @@ import { NON_CONCLUSION_OUTCOMES } from '../../../glossary/terms.js';
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
+import type { SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
@@ -424,6 +425,17 @@ function buildSimulateCase(connection: DatabaseConnection, caseQuery: DiagnoseCo
   };
 }
 
+/** simulateHypothesis's own dependencies, companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, mirroring buildSimulateCase's own purpose exactly: none of this file's own tests exercises the simulate-hypothesis route, only diagnose is, so runSimulateHypothesis is a stand-in never expected to be called (this task's own disclosed companion fix, mirroring the identical companion fix build-app.spec.ts's own stubBuildAppDependencies already makes and diagnose-persistence-deadline-e2e.spec.ts's own equivalent buildSimulateHypothesis makes). */
+function buildSimulateHypothesis(connection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateHypothesisControllerDependencies {
+  return {
+    caseQuery,
+    glossary: createGlossaryQuery(connection),
+    runSimulateHypothesis: () => {
+      throw new Error("simulate-hypothesis is not exercised by this file's own tests");
+    },
+  };
+}
+
 function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; capturedId: () => string | undefined } {
   const { runDiagnose, capturedId } = buildRunDiagnose(connection);
   const dependencies: DiagnoseControllerDependencies = {
@@ -438,6 +450,7 @@ function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; c
     caseQuery: dependencies.caseQuery,
     diagnose: dependencies,
     simulateCase: buildSimulateCase(connection, dependencies.caseQuery),
+    simulateHypothesis: buildSimulateHypothesis(connection, dependencies.caseQuery),
   });
   return { app: buildApp(fullDependencies), capturedId };
 }

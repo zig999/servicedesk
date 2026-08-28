@@ -17,6 +17,7 @@
 // field-access path from one manifest entry down to its own adopted
 // hypothesis-revision changed.
 
+import { HypothesisNotInManifestError } from '../errors/hypothesis-not-in-manifest.error.js';
 import type { Case, ManifestEntry, Referral } from './case.js';
 
 /**
@@ -114,4 +115,28 @@ export function resolveOutcome(theCase: Case, verdicts: Verdicts): ResolvedOutco
     referral: revision.resolution.referral,
     determining: revision.hypothesis.name,
   };
+}
+
+/**
+ * The named hypothesis's own current manifest entry within this case version
+ * (domain/knowledge/case-version, domain/knowledge/manifest-entry): what
+ * simulate-hypothesis's own narrowing needs — one entry's own
+ * hypothesis-revision, with its own collects and criterion — to restrict
+ * collection and judgment to exactly this one hypothesis
+ * (task/case-simulation-pipeline/simulate-hypothesis-operation). Refuses with
+ * HypothesisNotInManifestError where the named hypothesis is not in this
+ * version's manifest at all
+ * (rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused)
+ * — a miss read as a refusal, never as an ordinary empty result the caller
+ * could mistake for something that answered. Read by array order, not by
+ * declared position: unlike collectionPlan and resolveOutcome, this lookup
+ * consults no precedence at all — it names one entry by its hypothesis, not
+ * a first-among-many.
+ */
+export function manifestEntryNamed(theCase: Case, hypothesisName: string): ManifestEntry {
+  const entry = theCase.manifest.find((candidate) => candidate.hypothesis_revision.hypothesis.name === hypothesisName);
+  if (entry === undefined) {
+    throw new HypothesisNotInManifestError(theCase.slug, theCase.version, hypothesisName);
+  }
+  return entry;
 }

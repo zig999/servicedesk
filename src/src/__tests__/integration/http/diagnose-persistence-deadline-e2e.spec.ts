@@ -59,6 +59,7 @@ import type { ProductionDiagnoseCall } from '../../../factories/production-diagn
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
 import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
+import type { SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
@@ -350,6 +351,17 @@ function buildSimulateCase(delayingConnection: DatabaseConnection, caseQuery: Di
   };
 }
 
+/** simulateHypothesis's own dependencies, companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, mirroring buildSimulateCase's own purpose exactly: the one test in this file exercises only the diagnose route, so runSimulateHypothesis is a stand-in never expected to be called (this task's own disclosed companion fix, mirroring the identical companion fix build-app.spec.ts's own stubBuildAppDependencies already makes and diagnose-e2e.spec.ts's own equivalent buildSimulateHypothesis makes). */
+function buildSimulateHypothesis(delayingConnection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateHypothesisControllerDependencies {
+  return {
+    caseQuery,
+    glossary: createGlossaryQuery(delayingConnection),
+    runSimulateHypothesis: () => {
+      throw new Error("simulate-hypothesis is not exercised by this file's own test");
+    },
+  };
+}
+
 /** Composes createDiagnoseRunner and buildApp against the given (already delaying) connection, capturing the id the controller generates for this one call so the test can read it back afterward. */
 function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IFixture): IBuiltApp {
   const runner = createDiagnoseRunner({ connection: delayingConnection, poolSize: 1, defaultConsolidationRegister: 'plain', ...buildFakes(fixture) });
@@ -371,6 +383,7 @@ function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IF
     caseQuery: dependencies.caseQuery,
     diagnose: dependencies,
     simulateCase: buildSimulateCase(delayingConnection, dependencies.caseQuery),
+    simulateHypothesis: buildSimulateHypothesis(delayingConnection, dependencies.caseQuery),
   });
   return { app: buildApp(fullDependencies), capturedId: () => capturedId };
 }

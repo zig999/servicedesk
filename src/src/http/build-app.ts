@@ -34,6 +34,8 @@ import { createDiagnoseRoutesPlugin } from './diagnose.routes.js';
 import type { DiagnoseControllerDependencies } from './diagnose.controller.js';
 import { createSimulateCaseRoutesPlugin } from './simulate-case.routes.js';
 import type { SimulateCaseControllerDependencies } from './simulate-case.controller.js';
+import { createSimulateHypothesisRoutesPlugin } from './simulate-hypothesis.routes.js';
+import type { SimulateHypothesisControllerDependencies } from './simulate-hypothesis.controller.js';
 import type { DiscardControllerDependencies } from './discard.controller.js';
 import { createDiscardRoutesPlugin } from './discard.routes.js';
 import type { ListCapabilitiesControllerDependencies } from './list-capabilities.controller.js';
@@ -89,7 +91,7 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * pre-existing diagnose route: one named field per route, each carrying
  * exactly that route's own controller-dependencies type, so a caller must
  * hand this function a fully wired dependency for every one of the
- * twenty-seven routes it registers — no route here is optional.
+ * twenty-eight routes it registers — no route here is optional.
  * registerCapability (task/capability-authoring/register-capability-route)
  * was the twentieth; registerConcept
  * (task/concept-authoring/register-concept-route) was the twenty-first;
@@ -107,11 +109,15 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * with no dependency on listCapabilities having already run;
  * simulateCase (task/case-simulation-pipeline/simulate-case-operation) is the
  * twenty-seventh, additive to contracts/investigation/case-simulation's own
- * published surface, with no dependency on diagnose having already run.
+ * published surface, with no dependency on diagnose having already run;
+ * simulateHypothesis (task/case-simulation-pipeline/simulate-hypothesis-operation)
+ * is the twenty-eighth, the same published surface's other operation, with no
+ * dependency on simulateCase having already run.
  */
 export type BuildAppDependencies = {
   readonly diagnose: DiagnoseControllerDependencies;
   readonly simulateCase: SimulateCaseControllerDependencies;
+  readonly simulateHypothesis: SimulateHypothesisControllerDependencies;
   readonly testConnector: TestConnectorControllerDependencies;
   readonly readCapability: ReadCapabilityControllerDependencies;
   readonly readCapabilityByIdentity: ReadCapabilityByIdentityControllerDependencies;
@@ -153,6 +159,7 @@ const routePluginFactories: ReadonlyArray<
 > = [
   (dependencies) => createDiagnoseRoutesPlugin(dependencies.diagnose),
   (dependencies) => createSimulateCaseRoutesPlugin(dependencies.simulateCase),
+  (dependencies) => createSimulateHypothesisRoutesPlugin(dependencies.simulateHypothesis),
   (dependencies) => createTestConnectorRoutesPlugin(dependencies.testConnector),
   (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
   (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
@@ -191,7 +198,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
 
 /**
  * Assembles the whole HTTP surface this initiative exposes: one Fastify
- * instance with every one of the twenty-seven route plugins registered and the
+ * instance with every one of the twenty-eight route plugins registered and the
  * one generic error handler set (COR-04, SEC-04). Constructs the Fastify
  * instance itself — this is the composition boundary ARC-02 expects, not a
  * service or a controller — but none of any route's own dependencies:

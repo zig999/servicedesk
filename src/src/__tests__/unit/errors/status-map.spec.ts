@@ -16,6 +16,7 @@ import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
+import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
@@ -48,6 +49,17 @@ it('resolves ConceptNotAnsweredError to 404', () => {
 // is refused ... mapped through status-map.ts".
 it('resolves CapabilityIdentityNotFoundError to 404', () => {
   const error = new CapabilityIdentityNotFoundError('a-name', '1.0.0');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(404);
+});
+
+// Added for task/case-simulation-pipeline/simulate-hypothesis-operation, whose own criterion 4
+// depends on this exact entry: "A hypothesis name absent from the version's manifest is refused
+// with an HTTP 404 response reporting a HypothesisNotInManifestError."
+it('resolves HypothesisNotInManifestError to 404', () => {
+  const error = new HypothesisNotInManifestError('a-slug', 1, 'an-absent-hypothesis');
 
   const status = statusForError(error);
 
@@ -187,11 +199,14 @@ it("the header comment names the two specification nodes that now fix a status a
 // ConnectorConfigurationNotWellFormedError's own citation; round two adds a third
 // specification-fixed status to the same header paragraph, so the count in prose changed
 // from two to three and the count itself is asserted only here rather than duplicated above.
-it("the header comment names three specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
+// task/case-simulation-pipeline/simulate-hypothesis-operation then added a fourth
+// specification-fixed status (HypothesisNotInManifestError) to the same header paragraph, so the
+// count in prose changed again from three to four.
+it("the header comment names four specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('three specification nodes now fix a status as a decided fact');
+  expect(header).toContain('four specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');

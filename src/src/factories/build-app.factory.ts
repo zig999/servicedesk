@@ -36,6 +36,7 @@ import type { GlossaryService } from '../glossary/glossary.service.js';
 import type { BuildAppDependencies } from '../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../http/diagnose.controller.js';
 import type { SimulateCaseControllerDependencies } from '../http/simulate-case.controller.js';
+import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
 import { createCapabilityRegistry } from './capability-registry.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
@@ -51,6 +52,8 @@ export type BuildAppDependenciesInputs = {
   readonly diagnose: DiagnoseControllerDependencies;
   /** simulateCase's own dependencies, built the same way diagnose's are — entirely by createDiagnoseHttpServer, since both wire a production, adapter-fixed run of the shared investigation pipeline (task/case-simulation-pipeline/simulate-case-operation). */
   readonly simulateCase: SimulateCaseControllerDependencies;
+  /** simulateHypothesis's own dependencies, built the same way simulateCase's are — entirely by createDiagnoseHttpServer, wiring a production, adapter-fixed run of this operation's own narrower pipeline (task/case-simulation-pipeline/simulate-hypothesis-operation). */
+  readonly simulateHypothesis: SimulateHypothesisControllerDependencies;
 };
 
 /**
@@ -245,18 +248,21 @@ function testConnectorDependencies(resources: ComposedResources): Pick<BuildAppD
 }
 
 /**
- * Assembles buildApp's own BuildAppDependencies whole: the diagnose and
- * simulateCase routes' own dependencies exactly as their own caller already
- * built them (task/case-simulation-pipeline/simulate-case-operation), plus
- * every other route's own slice of the shared resources composed from the
- * same connection and environment.
+ * Assembles buildApp's own BuildAppDependencies whole: the diagnose,
+ * simulateCase and simulateHypothesis routes' own dependencies exactly as
+ * their own caller already built them
+ * (task/case-simulation-pipeline/simulate-case-operation,
+ * task/case-simulation-pipeline/simulate-hypothesis-operation), plus every
+ * other route's own slice of the shared resources composed from the same
+ * connection and environment.
  */
 export function buildAppDependencies(inputs: BuildAppDependenciesInputs): BuildAppDependencies {
-  const { env, connection, caseQuery, diagnose, simulateCase } = inputs;
+  const { env, connection, caseQuery, diagnose, simulateCase, simulateHypothesis } = inputs;
   const resources = composeResources(env, connection, caseQuery);
   return {
     diagnose,
     simulateCase,
+    simulateHypothesis,
     ...readDependencies(resources),
     ...listDependencies(resources),
     ...lifecycleDependencies(resources),

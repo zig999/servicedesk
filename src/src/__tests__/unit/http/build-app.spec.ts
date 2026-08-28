@@ -45,9 +45,11 @@ import type { RegisterCapabilityControllerDependencies } from '../../../http/reg
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
 import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
 import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
+import type { SimulateHypothesisControllerDependencies } from '../../../http/simulate-hypothesis.controller.js';
 import type { TestConnectorControllerDependencies } from '../../../http/test-connector.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { InvestigationPipelineResult } from '../../../investigation/investigation-pipeline.js';
+import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
 /** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed; manifest stays empty for the same reason (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
@@ -249,6 +251,22 @@ function stubSimulateCase(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery):
   };
 }
 
+/** A minimally valid SimulateHypothesisPipelineResult, sufficient for simulateHypothesisResponseSchema's own answer to validate — companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, mirroring MINIMAL_SIMULATION_RESULT's own purpose exactly: never asserted on for its own content by any test in this file. */
+const MINIMAL_HYPOTHESIS_SIMULATION_RESULT: SimulateHypothesisPipelineResult = {
+  evidence: [],
+  evaluation: { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', citations: [] },
+  durations: { collection: 0, judgment: 0, total: 0 },
+};
+
+/** A minimally valid SimulateHypothesisControllerDependencies stand-in (TST-03), companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, disclosed in that task's own implementation record under `preserved`: BuildAppDependencies and BuildAppDependenciesInputs both gained a new required simulateHypothesis field, so this file's own stubBuildAppDependencies() needs a companion stub the same way stubSimulateCase already supplies one for simulateCase — reuses the same caseQuery and glossaryQuery instances, and resolves a minimally valid record through runSimulateHypothesis, never asserted on for its own returned content by any test in this file. */
+function stubSimulateHypothesis(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateHypothesisControllerDependencies {
+  return {
+    caseQuery,
+    glossary: glossaryQuery,
+    runSimulateHypothesis: vi.fn().mockResolvedValue(MINIMAL_HYPOTHESIS_SIMULATION_RESULT),
+  };
+}
+
 /** The named shape of stubQueryDependentFields()'s own return value, held as a module-level type
  * alias rather than written inline in that function's own signature so the type's own line span
  * is never counted against its function's max-lines-per-function budget. */
@@ -302,6 +320,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
   return {
     diagnose,
     simulateCase: stubSimulateCase(caseQuery, glossaryQuery),
+    simulateHypothesis: stubSimulateHypothesis(caseQuery, glossaryQuery),
     ...stubQueryDependentFields(caseQuery, glossaryQuery),
     readCapability: { capabilityQuery: stubCapabilityQuery() }, readCapabilityByIdentity: stubReadCapabilityByIdentity(),
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },

@@ -61,9 +61,12 @@ import type { Usage } from './usage.js';
  * intersection evidence-collection-stage.ts already performs on its own
  * behalf with COLLECTION_STAGE_BUDGET_MS. Moved here unchanged from
  * run-diagnosis.ts, since judgeHypothesesOptions below is the one place it
- * is used.
+ * is used. Exported so simulate-hypothesis's own narrower orchestration
+ * (task/case-simulation-pipeline/simulate-hypothesis-operation) intersects
+ * its own judgment call against the identical nominal share, rather than
+ * declaring the same literal a second time (MNT-03).
  */
-const JUDGMENT_STAGE_BUDGET_MS = 5_000;
+export const JUDGMENT_STAGE_BUDGET_MS = 5_000;
 
 /**
  * Everything stages 1–4 need to run, whatever composes them afterwards
@@ -258,8 +261,15 @@ function durationsOf(evidence: readonly Evidence[], evaluations: readonly Evalua
   return { collection, judgment, writing: writingElapsedMs, total: collection + judgment + writingElapsedMs };
 }
 
-/** The largest of the given elapsed_ms readings, or 0 where there are none — a stage with nothing to time took no time. */
-function maxElapsedMs(values: readonly number[]): number {
+/**
+ * The largest of the given elapsed_ms readings, or 0 where there are none —
+ * a stage with nothing to time took no time. Exported so simulate-hypothesis's
+ * own narrower duration computation
+ * (task/case-simulation-pipeline/simulate-hypothesis-operation) can reuse
+ * this exact arithmetic over collection and judgment alone, rather than
+ * restating it (MNT-03).
+ */
+export function maxElapsedMs(values: readonly number[]): number {
   return values.length === 0 ? 0 : Math.max(...values);
 }
 
