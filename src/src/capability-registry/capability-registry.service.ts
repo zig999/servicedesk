@@ -4,7 +4,9 @@ import { CapabilitySchemaNotWellFormedError } from '../errors/capability-schema-
 import { ConceptAlreadyAnsweredError } from '../errors/concept-already-answered.error.js';
 import { DuplicateConceptAnswerError } from '../errors/duplicate-concept-answer.error.js';
 import { IncompleteCapabilityContractError } from '../errors/incomplete-capability-contract.error.js';
+import { MalformedCapabilityInputSchemaError } from '../errors/malformed-capability-input-schema.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+import { inputSchemaShapeProblems } from './capability-input-schema-shape.js';
 import type { CapabilityResolution, ICapabilityQuery } from './capability-query.port.js';
 import type { ICapabilityStore } from './capability-store.port.js';
 import {
@@ -21,8 +23,10 @@ import {
  * register-capability holds every registration to the declared contract —
  * only read-only registers, a registration lacking its contract is refused,
  * a schema that is not syntactically valid JSON is refused
- * (rules/integration/a-capability-declares-well-formed-schemas), and a
- * concept a different capability already answers is refused
+ * (rules/integration/a-capability-declares-well-formed-schemas), an input
+ * schema that parses but does not hold a well-formed shape is refused
+ * (rules/integration/a-capability-input-schema-holds-a-well-formed-object),
+ * and a concept a different capability already answers is refused
  * (rules/integration/one-capability-answers-one-concept) — before anything
  * is written; resolve-concept is the one lookup from a concept to the
  * capability that answers it, provided as the published capability-registry
@@ -51,7 +55,10 @@ export class CapabilityRegistryService implements ICapabilityQuery {
    * contract completely (rules/integration/a-capability-declares-its-contract),
    * whose input schema or output schema is not syntactically valid JSON
    * (rules/integration/a-capability-declares-well-formed-schemas), whose
-   * nature is not read-only (rules/integration/a-capability-is-read-only),
+   * input schema parses but does not declare properties as an object or
+   * names a required key absent from properties
+   * (rules/integration/a-capability-input-schema-holds-a-well-formed-object),
+   * whose nature is not read-only (rules/integration/a-capability-is-read-only),
    * or whose concept a different capability already answers
    * (rules/integration/one-capability-answers-one-concept) — every refusal
    * raised before any write. The rest is held — a re-registration under an
@@ -174,6 +181,7 @@ type DeclaredRegistration = CapabilityRegistration & {
 function heldCapability(registration: CapabilityRegistration): Capability {
   refuseContractDepartures(registration);
   refuseMalformedSchemas(registration);
+  refuseMalformedInputSchemaShape(registration);
   if (registration.nature !== READ_ONLY_NATURE) {
     throw new CapabilityNotReadOnlyError(registration.nature);
   }
@@ -246,6 +254,26 @@ function isWellFormedJson(value: string): boolean {
     return true;
   } catch {
     return false;
+  }
+}
+
+/**
+ * Refuses a registration whose input schema, once refuseMalformedSchemas
+ * above already confirmed it is syntactically valid JSON, does not hold the
+ * declared shape — a top-level properties object, and, where declared, a
+ * required array that is a subset of properties' own keys
+ * (rules/integration/a-capability-input-schema-holds-a-well-formed-object).
+ * Reuses inputSchemaShapeProblems (capability-input-schema-shape.ts), the
+ * same shared reader declaredInputSchemaShape answers a pre-existing
+ * malformed input_schema through, rather than a second JSON-shape parser
+ * (MNT-03). Every departure the input schema makes at once is named
+ * together in one refusal.
+ */
+function refuseMalformedInputSchemaShape(registration: DeclaredRegistration): void {
+  const parsed: unknown = JSON.parse(registration.input_schema);
+  const problems = inputSchemaShapeProblems(parsed);
+  if (problems.length > 0) {
+    throw new MalformedCapabilityInputSchemaError(problems);
   }
 }
 

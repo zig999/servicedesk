@@ -14,6 +14,7 @@ import { CapabilityIdentityNotFoundError } from '../../../errors/capability-iden
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
+import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 
 /**
  * The default the criterion states as sixty seconds, spelled here in the
@@ -339,6 +340,91 @@ it('accepts a registration whose input_schema and output_schema are syntacticall
 
   expect(registered.input_schema).toBe(WELL_FORMED_SCHEMA);
   expect(registered.output_schema).toBe('{"type":"string"}');
+});
+
+// ------------------------------------------------------------------ input schema shape
+// Proof for task/capability-input-schema-contract/refuse-malformed-capability-input-schema:
+// registerCapability now refuses an input_schema that parses as valid JSON but does not hold
+// the declared shape — a top-level properties object, and, where declared, a required array
+// that is a subset of properties' own keys — reporting MalformedCapabilityInputSchemaError
+// naming every departure together, run before the nature check and before any write. An
+// input_schema declaring no properties key at all, or an empty properties object and no
+// required array, is not a departure at all.
+
+it('refuses a registration whose input_schema declares properties as something other than an object, reporting MalformedCapabilityInputSchemaError', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(completeRegistration({ input_schema: '{"properties":"not-an-object"}' }))
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(MalformedCapabilityInputSchemaError);
+  expect(refusal).toMatchObject({ context: { problems: ['properties is not declared as an object'] } });
+});
+
+it('refuses a registration whose input_schema declares a required array naming a key absent from properties, reporting MalformedCapabilityInputSchemaError', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ input_schema: '{"properties":{"a":{}},"required":["a","b"]}' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(MalformedCapabilityInputSchemaError);
+  expect(refusal).toMatchObject({
+    context: { problems: ['required names a key absent from properties: b'] },
+  });
+});
+
+it('refuses a registration whose input_schema departs from the shape in more than one way with one MalformedCapabilityInputSchemaError naming every departure together', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const refusal = await registry
+    .registerCapability(
+      completeRegistration({ input_schema: '{"properties":"not-an-object","required":["a"]}' }),
+    )
+    .catch((error: unknown) => error);
+
+  expect(refusal).toBeInstanceOf(MalformedCapabilityInputSchemaError);
+  expect(refusal).toMatchObject({
+    context: {
+      problems: [
+        'properties is not declared as an object',
+        'required names a key absent from properties: a',
+      ],
+    },
+  });
+});
+
+it('writes nothing to the store when it refuses a registration for a malformed input schema shape', async () => {
+  const alreadyHeld = heldCapability({ input_schema: WELL_FORMED_SCHEMA, output_schema: WELL_FORMED_SCHEMA });
+  const store = new InMemoryCapabilityStore([alreadyHeld]);
+  const registry = new CapabilityRegistryService(store);
+
+  await registry
+    .registerCapability(completeRegistration({ input_schema: '{"properties":"not-an-object"}' }))
+    .catch(() => undefined);
+
+  expect(store.held()).toEqual([alreadyHeld]);
+});
+
+it('accepts a registration whose input_schema declares an empty properties object and no required array', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const registered = await registry.registerCapability(
+    completeRegistration({ input_schema: '{"properties":{}}' }),
+  );
+
+  expect(registered.input_schema).toBe('{"properties":{}}');
+});
+
+it('accepts a registration whose input_schema declares no properties key at all, reading the omission as declaring it empty rather than refusing it as a shape departure', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const registered = await registry.registerCapability(completeRegistration({ input_schema: '{}' }));
+
+  expect(registered.input_schema).toBe('{}');
 });
 
 // ------------------------------------------------------------------ list-capabilities

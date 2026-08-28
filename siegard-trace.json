@@ -1835,7 +1835,7 @@
     },
     {
       "node": "domain/integration/capability",
-      "digest": "sha256:86ac935d0f415c8739d3e9464154c981a615b68d266786177948bc495f02dd4c",
+      "digest": "sha256:e3431be5a3749f49dced75b443dbdb81c2fd890b4c55fdc8974a713e30d47713",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capabilities.ts",
@@ -1884,6 +1884,10 @@
         {
           "path": "src/migrations/0007-capability-concept.sql",
           "digest": "sha256:2518d97115e7ffa8cc8856c52abb8ee5741532c8c6f556b0759e2d43e31b3a96"
+        },
+        {
+          "path": "src/src/capability-registry/capability-input-schema-shape.ts",
+          "digest": "sha256:2ebfb36f60ccf355dba718fa7e69b8c70ccbba5bd30a8d0578142e5efbb886c1"
         },
         {
           "path": "src/src/capability-registry/capability-query.port.ts",
@@ -1959,7 +1963,7 @@
     },
     {
       "node": "domain/integration/capability-registry",
-      "digest": "sha256:dc6621d36ac0c8e05e84eb7a7b416de1022e36591f30dddcd952318e90fb13ea",
+      "digest": "sha256:11a403dea9ee135a3356ddb93b32216443f04c22700e4bfe415b583c2eb125f2",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -1971,7 +1975,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:cd3ee37883900154bbd72108bf9cb524f26f8346b1ae8482c1c5c712f73f28db"
         },
         {
           "path": "src/src/http/read-capability.controller.ts",
@@ -3852,6 +3856,28 @@
         {
           "path": "src/src/errors/capability-schema-not-well-formed.error.ts",
           "digest": "sha256:ae7cb6d44e7d2b4401a823dd08261937c8a910b9c3c59d81e178d78af66c25d4"
+        }
+      ]
+    },
+    {
+      "node": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "digest": "sha256:27f4292cd0038c21fcfdf2f1d279737901d3f561ce7c4f1a2563e8d6b5e7e71c",
+      "files": [
+        {
+          "path": "src/src/capability-registry/capability-input-schema-shape.ts",
+          "digest": "sha256:2ebfb36f60ccf355dba718fa7e69b8c70ccbba5bd30a8d0578142e5efbb886c1"
+        },
+        {
+          "path": "src/src/capability-registry/capability-registry.service.ts",
+          "digest": "sha256:cd3ee37883900154bbd72108bf9cb524f26f8346b1ae8482c1c5c712f73f28db"
+        },
+        {
+          "path": "src/src/errors/malformed-capability-input-schema.error.ts",
+          "digest": "sha256:279507f508c6cdc3c734bf95bf041b54f5bba34fddceedfc30a5f909f95a9713"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:5542fc919a474ed142df49f2c492d50d9bb2b9e2e9259bcfb78a3a940c4cf21e"
         }
       ]
     },

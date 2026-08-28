@@ -29,6 +29,7 @@ import type { Capability, CapabilityRegistration } from '../../../capability-reg
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
 import { ConceptAlreadyAnsweredError } from '../../../errors/concept-already-answered.error.js';
+import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import { createRegisterCapabilityRoutesPlugin } from '../../../http/register-capability.routes.js';
@@ -173,6 +174,34 @@ it('refuses with the status the status map assigns CapabilitySchemaNotWellFormed
   const body = response.json() as { error: { code: string; details?: unknown } };
   expect(body.error.code).toBe('CapabilitySchemaNotWellFormedError');
   expect(body.error.details).toEqual({ attributes: ['input_schema'] });
+});
+
+// Added for task/capability-input-schema-contract/refuse-malformed-capability-input-schema,
+// whose own criteria 1-3 depend on this exact wiring: the status map's own new
+// MalformedCapabilityInputSchemaError entry reaches this route the same way
+// CapabilitySchemaNotWellFormedError already does above.
+
+it('refuses with the status the status map assigns MalformedCapabilityInputSchemaError, naming every departure in the details', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerCapability.mockRejectedValueOnce(
+    new MalformedCapabilityInputSchemaError([
+      'properties is not declared as an object',
+      'required names a key absent from properties: a',
+    ]),
+  );
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/capabilities/a-name/1.0.0', payload: validBody() });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: unknown } };
+  expect(body.error.code).toBe('MalformedCapabilityInputSchemaError');
+  expect(body.error.details).toEqual({
+    problems: [
+      'properties is not declared as an object',
+      'required names a key absent from properties: a',
+    ],
+  });
 });
 
 // ------------------------------------------------------------------ criterion 4

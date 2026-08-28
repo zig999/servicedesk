@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: four
+// `elsewhere` note). That silence no longer covers every entry below: five
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -11,12 +11,17 @@
 // ConnectorConfigurationNotWellFormedError's HTTP 422
 // (rules/integration/a-connector-configuration-holds-a-well-formed-object,
 // whose own statement refuses a not-well-formed configuration "with an HTTP
-// 422 response reporting a ConnectorConfigurationNotWellFormedError") and
+// 422 response reporting a ConnectorConfigurationNotWellFormedError"),
 // HypothesisNotInManifestError's HTTP 404
 // (rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused,
 // whose own statement refuses a simulate-hypothesis request naming an absent
 // hypothesis "with an HTTP 404 response reporting a
-// HypothesisNotInManifestError")
+// HypothesisNotInManifestError"), and MalformedCapabilityInputSchemaError's
+// HTTP 422
+// (rules/integration/a-capability-input-schema-holds-a-well-formed-object,
+// whose own statement refuses a registration whose input schema departs
+// from the declared shape "with an HTTP 422 response reporting a
+// MalformedCapabilityInputSchemaError naming every departure")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -57,20 +62,22 @@
 // not all pass, a removal that would leave a manifest holding no hypothesis,
 // a capability registration that does not declare its contract completely
 // (IncompleteCapabilityContractError), whose nature is not read-only
-// (CapabilityNotReadOnlyError), or whose schema is not syntactically valid
-// JSON (CapabilitySchemaNotWellFormedError), or a connector-configuration
-// registration whose configuration text is not syntactically valid JSON
-// object text (ConnectorConfigurationNotWellFormedError,
+// (CapabilityNotReadOnlyError), whose schema is not syntactically valid
+// JSON (CapabilitySchemaNotWellFormedError), or whose input schema parses
+// but does not hold a well-formed shape (MalformedCapabilityInputSchemaError,
+// rules/integration/a-capability-input-schema-holds-a-well-formed-object),
+// or a connector-configuration registration whose configuration text is not
+// syntactically valid JSON object text (ConnectorConfigurationNotWellFormedError,
 // rules/integration/a-connector-configuration-holds-a-well-formed-object,
 // task/connector-configuration-authoring/register-connector-route), or one
 // whose connector name is absent or an empty string
 // (IncompleteConnectorConfigurationError,
 // rules/integration/a-connector-configuration-names-its-connector) — answers
-// 422 Unprocessable Entity: each of the first three reached this table only
+// 422 Unprocessable Entity: each of the first four reached this table only
 // once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
-// before that task ever called registerCapability from HTTP; the fourth and
-// fifth reach it the same way, now that register-connector is exposed as a
+// before that task ever called registerCapability from HTTP; the fifth and
+// sixth reach it the same way, now that register-connector is exposed as a
 // route.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
@@ -96,6 +103,7 @@ import { ConnectorConfigurationNotWellFormedError } from './connector-configurat
 import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
+import { MalformedCapabilityInputSchemaError } from './malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
 import { VocabularyTermNotHeldError } from './vocabulary-term-not-held.error.js';
@@ -108,7 +116,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-two extends another, so that never arises today.
+ * twenty-three extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -131,6 +139,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [IncompleteCapabilityContractError, 422],
   [CapabilityNotReadOnlyError, 422],
   [CapabilitySchemaNotWellFormedError, 422],
+  [MalformedCapabilityInputSchemaError, 422],
   [ConnectorConfigurationNotWellFormedError, 422],
   [IncompleteConnectorConfigurationError, 422],
 ]);

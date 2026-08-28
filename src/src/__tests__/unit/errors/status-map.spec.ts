@@ -19,6 +19,7 @@ import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.er
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
+import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
 import { statusForError } from '../../../errors/status-map.js';
@@ -143,6 +144,17 @@ it('resolves IncompleteConnectorConfigurationError to 422', () => {
   expect(status).toBe(422);
 });
 
+// Added for task/capability-input-schema-contract/refuse-malformed-capability-input-schema,
+// whose own criterion 6 depends on this exact entry: "MalformedCapabilityInputSchemaError
+// resolves to 422 through the shared status map."
+it('resolves MalformedCapabilityInputSchemaError to 422', () => {
+  const error = new MalformedCapabilityInputSchemaError(['a problem']);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
 it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same non-500 status, pinning "distinct" as specific rather than mutually exclusive across all seven', () => {
   const draftError = new CaseAlreadyHasDraftError('a-slug');
   const positionError = new ManifestPositionOccupiedError('a-slug', 1, 1);
@@ -202,11 +214,14 @@ it("the header comment names the two specification nodes that now fix a status a
 // task/case-simulation-pipeline/simulate-hypothesis-operation then added a fourth
 // specification-fixed status (HypothesisNotInManifestError) to the same header paragraph, so the
 // count in prose changed again from three to four.
-it("the header comment names four specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
+// task/capability-input-schema-contract/refuse-malformed-capability-input-schema then added a
+// fifth specification-fixed status (MalformedCapabilityInputSchemaError) to the same header
+// paragraph, so the count in prose changed again from four to five.
+it("the header comment names five specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 as a fact rules/integration/a-connector-configuration-holds-a-well-formed-object decides rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('four specification nodes now fix a status as a decided fact');
+  expect(header).toContain('five specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
