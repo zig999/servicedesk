@@ -16,6 +16,22 @@
       "title": "Proof for fix-use-simulate-hypothesis-dispatch",
       "summary": "Proves the corrected POST /v1/simulate/hypothesis dispatch (route, body shape, requester forwarding, response envelope, and the cockpit's own call-site forwarding), and repairs the six pre-existing test/fixture files that modeled the defective dispatch this task replaces.",
       "task": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch"
+    },
+    {
+      "id": "review/simulate-hypothesis-endpoint-hotfix",
+      "kind": "review",
+      "file": "review/simulate-hypothesis-endpoint-hotfix.md",
+      "title": "Review: simulate-hypothesis-endpoint-hotfix",
+      "summary": "What four passes found over the corrective fix wiring use-simulate-hypothesis.ts to the delivered POST /v1/simulate/hypothesis route.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A dispatch against the live backend route for a case version whose manifest holds the named hypothesis returns exactly one evaluation for that hypothesis."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -114,6 +130,12 @@
       "to": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/simulate-hypothesis-endpoint-hotfix",
+      "to": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
