@@ -32,6 +32,23 @@
       "title": "relational-capability-store test reconciled to upsert-by-identity, not whole-table-replace",
       "summary": "Rewrites the one stale assertion in relational-capability-store.repository.spec.ts that expected a second write to erase a different identity, and adds one distinct test proving the fresh-read (no-cache) guarantee for a capability rewritten under its own identity.",
       "task": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace"
+    },
+    {
+      "id": "review/capability-registry-write-upsert-hotfix",
+      "kind": "review",
+      "file": "review/capability-registry-write-upsert-hotfix.md",
+      "title": "Capability registry write upsert hotfix, first review",
+      "summary": "What four passes found over the writeCapabilities upsert-by-identity fix, its port doc, and the two capability-store spec files it touched or reconciled.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A suíte inteira (npm test) passa, incluindo esse arquivo, sem nenhum teste afirmando que uma escrita de uma identidade apaga uma identidade diferente.",
+        "PUT /v1/capabilities/perfil-mobile-tecnico-reader/1.0.0 com um input_schema alterado, contra um banco onde essa identidade já tem ao menos uma linha em investigation_evidence citando-a, responde 200 com a capability atualizada, nunca 500."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -94,6 +111,18 @@
       "to": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-registry-write-upsert-hotfix",
+      "to": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-registry-write-upsert-hotfix",
+      "to": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
