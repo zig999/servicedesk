@@ -9,5 +9,6 @@
     "backend": "src",
     "frontend": "frontend/app"
   },
+  "telemetry_root": "./telemetry",
   "work_root": "work"
 }
