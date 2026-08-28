@@ -10,6 +10,14 @@ export interface ICapabilityStore {
   /** Answers every registration the registry holds, exactly as persisted. */
   readCapabilities(): Promise<readonly Capability[]>;
 
-  /** Replaces the registry's persisted registrations, whole. */
+  /**
+   * Upserts each given registration by its own identity (name, version) —
+   * creating it fresh where the identity is new, replacing the record
+   * already held there where it is not — without deleting any registration
+   * this call does not name (task/capability-registry-write-upsert-hotfix):
+   * a table-wide replace-and-reinsert previously left a persisted store
+   * unable to write any registration once any capability was referenced
+   * elsewhere, however unrelated to the identity being written.
+   */
   writeCapabilities(capabilities: readonly Capability[]): Promise<void>;
 }

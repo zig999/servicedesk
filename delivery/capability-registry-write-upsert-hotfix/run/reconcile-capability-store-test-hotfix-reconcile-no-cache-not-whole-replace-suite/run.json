@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/reconcile-capability-store-test-hotfix-reconcile-no-cache-not-whole-replace-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/input-schema-diagnose-contract/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-28T21:29:53.907+00:00",
+      "ended_at": "2026-08-28T21:29:57.592+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-28T21:29:57.592+00:00",
+      "ended_at": "2026-08-28T21:30:02.133+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-28T21:30:02.133+00:00",
+      "ended_at": "2026-08-28T21:30:06.412+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-28T21:30:06.412+00:00",
+      "ended_at": "2026-08-28T21:30:06.836+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-08-28T21:30:06.836+00:00",
+      "ended_at": "2026-08-28T21:32:11.401+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

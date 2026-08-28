@@ -156,6 +156,7 @@ DELIVERY_GRAPH_CONTRACT = PLUGIN_ROOT / "schemas" / "delivery.json"
 STANDARD_CONTRACT = PLUGIN_ROOT / "schemas" / "standard.json"
 DELIVERY_FILE = "delivery.json"
 RUN_DIR = "run"
+ORCHESTRATION_FILE = "orchestration.md"
 
 KINDS = ("implementation", "proof", "review")
 PAIRED = ("implementation", "proof")
@@ -1019,6 +1020,8 @@ def collect(root: Path, validator, names: list[str]) -> tuple[dict[str, dict],
         relative = path.relative_to(root)
         if relative.parts[0] == RUN_DIR:
             continue  # what a run printed: material, never a node
+        if relative.parts == (ORCHESTRATION_FILE,):
+            continue  # a /deliver-scope run's own log: a marker, never a node
         nid = id_of(relative)
         if nid is None:
             problems.append(f"{relative.as_posix()}: not implementation/<epic>/<slug>.md, "
@@ -1121,6 +1124,10 @@ def check_single(root: Path, named: str, validator, names: list[str]) -> int:
     if relative.parts[0] == RUN_DIR:
         print(f"{relative.as_posix()}: sits under {RUN_DIR}/, which holds what the commands "
               f"printed and is never validated as a node")
+        return 0
+    if relative.parts == (ORCHESTRATION_FILE,):
+        print(f"{relative.as_posix()}: a /deliver-scope run's own log, a marker never "
+              f"validated as a node")
         return 0
     nid = id_of(relative)
     if nid is None:

@@ -1,0 +1,128 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "implementation",
+      "file": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity.md",
+      "title": "writeCapabilities upserts by identity instead of deleting the whole table",
+      "summary": "RelationalCapabilityStore.writeCapabilities now upserts each given capability by its own (name, version) identity through INSERT ... ON CONFLICT DO UPDATE, issuing no DELETE at all, so a registration no longer fails or destroys unrelated rows when any capability is referenced by investigation_evidence.",
+      "task": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity"
+    },
+    {
+      "id": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "implementation",
+      "file": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace.md",
+      "title": "Confirm upsert-by-identity source guarantee; no behavior change needed",
+      "summary": "Verified RelationalCapabilityStore already implements upsert-by-identity and fresh-read reads (delivered by scope-write-to-identity), and clarified the readCapabilities docstring to state that guarantee explicitly for this task's own criteria.",
+      "task": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace"
+    },
+    {
+      "id": "proof/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "proof",
+      "file": "proof/capability-registry-write-upsert-hotfix/scope-write-to-identity.md",
+      "title": "Proof for the writeCapabilities upsert-by-identity hotfix",
+      "summary": "Reconciles the capability-store unit and integration specs with the new upsert-by-identity mechanics and adds a real, foreign-key-backed reproduction of the original DELETE-triggered 23503 failure, proving all four criteria.",
+      "task": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity"
+    },
+    {
+      "id": "proof/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "proof",
+      "file": "proof/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace.md",
+      "title": "relational-capability-store test reconciled to upsert-by-identity, not whole-table-replace",
+      "summary": "Rewrites the one stale assertion in relational-capability-store.repository.spec.ts that expected a second write to erase a different identity, and adds one distinct test proving the fresh-read (no-cache) guarantee for a capability rewritten under its own identity.",
+      "task": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace"
+    },
+    {
+      "id": "review/capability-registry-write-upsert-hotfix",
+      "kind": "review",
+      "file": "review/capability-registry-write-upsert-hotfix.md",
+      "title": "Capability registry write upsert hotfix, first review",
+      "summary": "What four passes found over the writeCapabilities upsert-by-identity fix, its port doc, and the two capability-store spec files it touched or reconciled.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A suíte inteira (npm test) passa, incluindo esse arquivo, sem nenhum teste afirmando que uma escrita de uma identidade apaga uma identidade diferente.",
+        "PUT /v1/capabilities/perfil-mobile-tecnico-reader/1.0.0 com um input_schema alterado, contra um banco onde essa identidade já tem ao menos uma linha em investigation_evidence citando-a, responde 200 com a capability atualizada, nunca 500."
+      ],
+      "findings": 3
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "implementation/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/capability-registry-write-upsert-hotfix",
+      "to": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/capability-registry-write-upsert-hotfix",
+      "to": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    }
+  ]
+}

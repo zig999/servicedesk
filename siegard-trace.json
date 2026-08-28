@@ -684,6 +684,10 @@
           "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
+          "path": "src/src/capability-registry/capability-store.port.ts",
+          "digest": "sha256:b5035da3b642db62ff7ebed048658b0f36b58a1a0ae45d647f6d230627f25756"
+        },
+        {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
@@ -738,6 +742,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -1985,7 +1993,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:74b4ab5ba3bd7bbfe42ce8404901018bf325f58def2661c0a88c0bb491b8f2ae"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -2638,6 +2646,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -5482,6 +5494,10 @@
         {
           "path": "src/src/http/diagnose.controller.ts",
           "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },

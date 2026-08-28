@@ -1,0 +1,109 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-registry-write-upsert-hotfix",
+      "kind": "epic",
+      "file": "epic/capability-registry-write-upsert-hotfix.md",
+      "title": "Capability registry write upsert hotfix",
+      "summary": "A tarefa corretiva única que corrige o writeCapabilities do registry de capabilities para não derrubar a tabela inteira ao salvar."
+    },
+    {
+      "id": "epic/reconcile-capability-store-test-hotfix",
+      "kind": "epic",
+      "file": "epic/reconcile-capability-store-test-hotfix.md",
+      "title": "Reconcile capability store test hotfix",
+      "summary": "A tarefa corretiva única que corrige a asserção de relational-capability-store.repository.spec.ts que ainda afirma o whole-table-replace removido pelo hotfix anterior."
+    },
+    {
+      "id": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "task",
+      "file": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity.md",
+      "title": "writeCapabilities upserta por identidade, sem apagar a tabela inteira",
+      "summary": "Corrige RelationalCapabilityStore.writeCapabilities para não fazer DELETE sem filtro na tabela capabilities, permitindo salvar qualquer capability mesmo quando outra linha já tem evidência associada.",
+      "epic": "capability-registry-write-upsert-hotfix"
+    },
+    {
+      "id": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "kind": "task",
+      "file": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace.md",
+      "title": "relational-capability-store test asserts upsert-by-identity, not whole-table-replace",
+      "summary": "Corrige a asserção de src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts:251 para provar leitura fresca por chamada e upsert por identidade, em vez do whole-table-replace que o incremento anterior removeu.",
+      "epic": "reconcile-capability-store-test-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-registry-write-upsert-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/reconcile-capability-store-test-hotfix",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/reconcile-capability-store-test-hotfix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/reconcile-capability-store-test-hotfix",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/reconcile-capability-store-test-hotfix/reconcile-no-cache-not-whole-replace",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

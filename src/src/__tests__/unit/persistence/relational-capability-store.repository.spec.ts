@@ -2,11 +2,21 @@
 // driver boundary TST-03 permits a stand-in for — so RelationalCapabilityStore's own mechanics are
 // observed independently of any real database: which statement text and params reach the
 // connection, how a read row maps onto a Capability, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK
-// happen relative to writeCapabilities' own replace, and how a driver failure reaches the caller as
-// this store's own typed error. The real-effect half — that a write actually persists, that the
-// whole replace really rolls back together against a real constraint, and that the database itself
-// excludes a registration with an absent schema or connector — is proven separately, against a real
-// database, in this file's own integration-level sibling.
+// happen relative to writeCapabilities' own per-identity upsert, and how a driver failure reaches
+// the caller as this store's own typed error. The real-effect half — that a write actually
+// persists, that the whole batch really rolls back together against a real constraint, and that
+// the database itself excludes a registration with an absent schema or connector — is proven
+// separately, against a real database, in this file's own integration-level sibling.
+//
+// The two write-mechanics tests below were rewritten for
+// task/capability-registry-write-upsert-hotfix: writeCapabilities no longer issues a table-wide
+// DELETE followed by one INSERT per kept-and-incoming capability (the mechanism that failed with a
+// Postgres 23503 the moment any capabilities row was referenced by investigation_evidence); it now
+// issues one INSERT ... ON CONFLICT (name, version) DO UPDATE per given capability, and no DELETE
+// statement at all, ever. The reproduction of the original failure — a capability row already
+// referenced by investigation_evidence, written again, succeeding and never being deleted — is
+// proven against a real database and a real foreign key in this file's own integration-level
+// sibling, since a stand-in connection cannot enforce a foreign key.
 import { expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import { CapabilityStoreError } from '../../../errors/capability-store.error.js';
@@ -115,9 +125,9 @@ it("raises this store's own typed error rather than answering a row whose nature
   await expect(store.readCapabilities()).rejects.toBeInstanceOf(CapabilityStoreError);
 });
 
-// ---------------------------------------------------------------- write mechanics: whole replace inside one transaction
+// ---------------------------------------------------------------- write mechanics: per-identity upsert inside one transaction, criterion 4
 
-it('deletes every existing row and inserts exactly the given capabilities, in that order, inside one transaction', async () => {
+it('upserts each given capability by its own (name, version) identity, inside one transaction, and never sends a DELETE', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection, client } = fakeTransactionConnection(async (text, params) => {
     recorded.push({ text, params });
@@ -130,18 +140,20 @@ it('deletes every existing row and inserts exactly the given capabilities, in th
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toContain('DELETE FROM capabilities');
+  expect(texts[1]).toContain('INSERT INTO capabilities');
+  expect(texts[1]).toContain('ON CONFLICT (name, version) DO UPDATE');
   expect(texts[2]).toContain('INSERT INTO capabilities');
-  expect(texts[3]).toContain('INSERT INTO capabilities');
-  expect(texts[4]).toBe('COMMIT');
-  expect(recorded[2]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
-  expect(recorded[3]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
+  expect(texts[2]).toContain('ON CONFLICT (name, version) DO UPDATE');
+  expect(texts[3]).toBe('COMMIT');
+  expect(texts.some((text) => text.includes('DELETE'))).toBe(false);
+  expect(recorded[1]?.params).toEqual(['a-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
+  expect(recorded[2]?.params).toEqual(['another-capability', '1.0.0', 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', 'a-concept']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
-// ---------------------------------------------------------------- edge case: replacing the whole table with an empty set
+// ---------------------------------------------------------------- edge case: writing an empty set, criterion 4
 
-it('issues only the DELETE and still commits, when replacing the whole table with an empty set', async () => {
+it('sends no statement but BEGIN and COMMIT, and in particular no DELETE, when writing an empty set', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection, client } = fakeTransactionConnection(async (text, params) => {
     recorded.push({ text, params });
@@ -151,7 +163,7 @@ it('issues only the DELETE and still commits, when replacing the whole table wit
 
   await store.writeCapabilities([]);
 
-  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'DELETE FROM capabilities', 'COMMIT']);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
