@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "implementation",
+      "file": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline.md",
+      "title": "Stages 1-4 extracted into a shared investigation-pipeline function",
+      "summary": "run-diagnosis.ts's own buildSubject-through-draftAssessment body moves verbatim into a new investigation-pipeline.ts, whose runInvestigationPipeline() diagnose's own runDiagnosis now calls before adding only buildInvestigation and writeWithinDeadline, with run-diagnosis.ts's own exported surface and every already-delivered behavior it proves unchanged.",
+      "task": "task/case-simulation-pipeline/extract-shared-investigation-pipeline"
+    },
+    {
       "id": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "kind": "implementation",
       "file": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
@@ -32,6 +40,14 @@
       "title": "Widened judgment and consolidation ports carrying usage, elapsed time and prompt",
       "summary": "IHypothesisEvaluator.evaluate() gains an optional call record and IAssessmentConsolidator.consolidate() a required one; judgment-stage.ts attaches it onto every Evaluation whose call actually happened.",
       "task": "task/investigation-telemetry/widen-judgment-and-consolidation-ports"
+    },
+    {
+      "id": "proof/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "proof",
+      "file": "proof/case-simulation-pipeline/extract-shared-investigation-pipeline.md",
+      "title": "Proof for extracting the shared investigation pipeline",
+      "summary": "New tests exercise runInvestigationPipeline's own record shape and sequencing directly, since run-diagnosis.spec.ts's own unmodified, still-valid suite already proves the composition, identical-response and write-ordering criteria but cannot reach fields the diagnose caller never surfaces.",
+      "task": "task/case-simulation-pipeline/extract-shared-investigation-pipeline"
     },
     {
       "id": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
@@ -67,6 +83,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "rules/investigation/the-response-follows-the-record",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
@@ -161,6 +237,12 @@
       "from": "implementation/investigation-telemetry/widen-judgment-and-consolidation-ports",
       "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "to": "implementation/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "proves",
       "at": "the path"
     },
     {

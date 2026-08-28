@@ -8,20 +8,27 @@
 // it runs is exactly the case its caller already read and pinned by slug
 // and version at the start of the request (contracts/investigation/case-source).
 //
+// Stages 1–4 (buildSubject, collectEvidence, judgeHypotheses, resolveAndNarrow,
+// draftAssessment) no longer live here: they are extracted into
+// investigation-pipeline.ts's own runInvestigationPipeline
+// (task/case-simulation-pipeline/extract-shared-investigation-pipeline), so a
+// future simulate composition can call exactly that function rather than
+// this one re-deciding any one stage's own logic a second time. This module
+// keeps only what is specific to diagnose's own composition: calling that
+// shared function, then building and writing the Investigation
+// (buildInvestigation, writeWithinDeadline) — the two steps a simulate
+// composition never adds.
+//
 // Takes `now` and `deadline` as explicit parameters and never reads the
 // system clock internally, the same discipline every stage it composes
 // already keeps (constraints/the-deadline-is-an-absolute-propagated-instant):
 // the same (now, deadline) pair given to this whole call is the one pair
-// every stage-bound call below is computed from, each intersected with its
-// own nominal budget where one is declared
+// every stage-bound call is computed from inside runInvestigationPipeline,
+// each intersected with its own nominal budget where one is declared
 // (rules/investigation/an-answer-arrives-within-the-declared-deadline's own
-// stage breakdown) — collection intersects its own seven-second budget
-// internally (evidence-collection-stage.ts's own COLLECTION_STAGE_BUDGET_MS);
-// judgment and persistence have no such intersection of their own, so this
-// module performs it on their behalf, the same way evidence-collection-stage.ts
-// already performs it on its own. Drafting (draft-assessment-text.ts) takes
-// no deadline parameter at all and is called unbounded — an existing gap in
-// that already-delivered module, not one this composition can close without
+// stage breakdown). Drafting (draft-assessment-text.ts) takes no deadline
+// parameter at all and is called unbounded — an existing gap in that
+// already-delivered module, not one this composition can close without
 // widening past its own objective; see this delivery's own `deferred` entry.
 //
 // Persistence is the one stage rules/investigation/no-stage-aborts-on-its-deadline
@@ -54,40 +61,17 @@
 // internal one — reused, at the integration level, to prove criterion 5's
 // deadline-exceeded branch against a real, deliberately slowed write.
 
-import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
-import type { Case } from '../case/case.js';
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
-import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
-import type { ConsolidationRegister } from './consolidation-register.js';
-import type { Cost } from './cost.js';
-import { draftAssessment } from './draft-assessment-text.js';
-import type { Durations } from './durations.js';
-import type { Evaluation } from './evaluation.js';
-import { collectEvidence, type CollectEvidenceOptions } from './evidence-collection-stage.js';
-import type { Evidence } from './evidence.js';
-import type { IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
+import { runInvestigationPipeline, type InvestigationPipelineOptions } from './investigation-pipeline.js';
 import { buildInvestigation, type BuildInvestigationOptions } from './investigation-factory.js';
 import type { IInvestigationStore } from './investigation-store.port.js';
 import type { Investigation } from './investigation.js';
-import { judgeHypotheses, type JudgeHypothesesOptions } from './judgment-stage.js';
-import type { IObservationSource, Subject } from './observation-source.port.js';
-import { resolveAndNarrow } from './resolve-and-narrow-input.js';
-import { buildSubject } from './subject.js';
-import type { SubjectAttributeValue } from './subject-attribute-value.js';
-import type { Usage } from './usage.js';
-
-/**
- * Judgment's own nominal budget inside the declared total deadline
- * (rules/investigation/an-answer-arrives-within-the-declared-deadline's own
- * five-second slice). judgment-stage.ts owns no such constant itself — its
- * own module comment trusts whoever composes it to intersect the overall
- * deadline with this stage's own share before calling it, the same
- * intersection evidence-collection-stage.ts already performs on its own
- * behalf with COLLECTION_STAGE_BUDGET_MS.
- */
-const JUDGMENT_STAGE_BUDGET_MS = 5_000;
+import type { Cost } from './cost.js';
+import type { Durations } from './durations.js';
+import type { Evaluation } from './evaluation.js';
+import type { Evidence } from './evidence.js';
 
 /**
  * Persistence's own nominal budget inside the declared total deadline
@@ -106,9 +90,17 @@ const PERSISTENCE_STAGE_BUDGET_MS = 2_000;
  */
 const WRITE_TIMED_OUT = Symbol('investigation-write-timeout');
 
-export type RunDiagnosisOptions = {
+/**
+ * Everything runDiagnosis needs beyond what runInvestigationPipeline itself
+ * already declares (investigation-pipeline.ts's own InvestigationPipelineOptions):
+ * the fields buildInvestigation and the write step need and nothing stage
+ * 1–4 reads — the investigation's own id, the optional ticket reference, the
+ * narrative, which prompt version and model were used, the glossary-source
+ * port buildInvestigation checks the subject's attributes against, and the
+ * store the written investigation goes to.
+ */
+export type RunDiagnosisOptions = InvestigationPipelineOptions & {
   readonly id: string;
-  readonly requester: string;
   /**
    * Correlation with the ticketing system, never a matching key
    * (contracts/investigation/diagnosis's own "case, subject, narrative and
@@ -121,80 +113,39 @@ export type RunDiagnosisOptions = {
    */
   readonly ticket_ref?: string;
   readonly narrative: string;
-  /** The subject's governed type, exactly as this call's own caller assembled it — raw, unvalidated input, the same convention BuildInvestigationOptions already keeps. */
-  readonly subjectType: string;
-  /** The subject's whole attribute-value set, exactly as this call's own caller assembled it — raw, unvalidated input. */
-  readonly subjectAttributes: readonly SubjectAttributeValue[];
-  /** The pinned case, already read and validated by this call's own caller — never fetched or re-resolved here (contracts/investigation/case-source). */
-  readonly case: Case;
   readonly prompt_version: string;
   readonly model: string;
-  /**
-   * The register to consolidate in where the pinned case leaves
-   * consolidation_register undeclared (domain/knowledge/case's own "the
-   * consolidation step keeps whatever register its own adapter defaults
-   * to"): the published assessment-consolidator port always requires a
-   * concrete formal-or-plain value, so this call's own caller supplies the
-   * fallback rather than this module deciding one of its own.
-   */
-  readonly defaultConsolidationRegister: ConsolidationRegister;
   readonly glossary: IGlossaryQuery;
-  readonly capabilities: ICapabilityQuery;
-  readonly observationSource: IObservationSource;
-  readonly evaluator: IHypothesisEvaluator;
-  /** The configured pool bound judgeHypotheses judges under (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "the pool bound is configuration") — never a number this module invents. */
-  readonly poolSize: number;
-  readonly consolidator: IAssessmentConsolidator;
   readonly store: IInvestigationStore;
-  /** The instant this whole run starts, as epoch milliseconds — read once by this call's own caller, never by this module. */
-  readonly now: number;
-  /** The absolute deadline instant propagated from the whole request, as epoch milliseconds (constraints/the-deadline-is-an-absolute-propagated-instant). */
-  readonly deadline: number;
 };
 
 /**
  * Runs one already-resolved, fresh investigation end to end
- * (task/diagnose-entry-point/diagnose-pipeline-composition): assembles and
- * validates the subject once up front (subject.ts's own buildSubject, the
- * one place a subject's own at-least-one-attribute invariant is enforced,
- * reused here rather than re-decided), collects evidence, judges every
- * required hypothesis, resolves the outcome and drafts the assessment's
- * text, builds the whole Investigation — the one factory that can build a
- * valid one, which re-validates the subject against the glossary and the
- * case's own totality requirements before anything is constructed — writes
- * it, racing that write against what remains of its own nominal budget, and
- * answers with the written investigation's own assessment only once that
- * write has concluded (rules/investigation/the-response-follows-the-record,
+ * (task/diagnose-entry-point/diagnose-pipeline-composition): calls
+ * investigation-pipeline.ts's own runInvestigationPipeline for stages 1–4
+ * (buildSubject, collectEvidence, judgeHypotheses, resolveAndNarrow,
+ * draftAssessment — task/case-simulation-pipeline/extract-shared-investigation-pipeline),
+ * builds the whole Investigation from its answered record — the one factory
+ * that can build a valid one, which re-validates the subject against the
+ * glossary and the case's own totality requirements before anything is
+ * constructed — writes it, racing that write against what remains of its
+ * own nominal budget, and answers with the written investigation's own
+ * assessment only once that write has concluded
+ * (rules/investigation/the-response-follows-the-record,
  * scenarios/investigation/no-response-without-a-record).
  *
- * cost and durations are no longer given by this call's own caller
- * (task/investigation-telemetry/diagnose-reports-real-cost-and-durations):
- * this composition now accumulates domain/investigation/cost from every
- * judged evaluation's own usage and the one consolidation call's own usage
- * (costOf below), and assembles domain/investigation/durations from the same
- * already-measured, real wall-clock data evidence-collection-stage.ts and
- * judgment-stage.ts each already keep on their own items and the
- * consolidation call's own measured elapsed_ms (durationsOf below) — never a
- * fresh clock read of this module's own, preserving this composition's own
- * "never reads the system clock internally" (task/diagnose-entry-point/diagnose-pipeline-composition,
+ * cost and durations are never computed here: runInvestigationPipeline
+ * already accumulates both from every judged evaluation's own usage and the
+ * one consolidation call's own usage/elapsed_ms, and from every concept's
+ * and hypothesis's own already-measured elapsed_ms
+ * (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) —
+ * this composition only carries the answered values through into
+ * buildInvestigation, preserving this module's own "never reads the system
+ * clock internally" (task/diagnose-entry-point/diagnose-pipeline-composition,
  * proved by run-diagnosis.spec.ts's own criterion 5).
  */
 export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {
-  const subject = buildSubject(options.subjectType, options.subjectAttributes);
-  const evidence = await collectEvidence(collectEvidenceOptions(options, subject));
-  const evidenceByHypothesis = evidenceByHypothesisOf(options.case, evidence);
-  const evaluations = await judgeHypotheses(judgeHypothesesOptions(options, evidenceByHypothesis));
-  const { resolved, narrowedInput } = resolveAndNarrow({ case: options.case, evaluations, evidenceByHypothesis });
-  const consolidationCapture: ConsolidationCapture = {};
-  const assessment = await draftAssessment({
-    resolved,
-    narrowedInput,
-    consolidationRegister: options.case.consolidation_register ?? options.defaultConsolidationRegister,
-    consolidator: capturingConsolidator(options.consolidator, consolidationCapture),
-  });
-  const consolidation = consolidatedOutcomeOf(consolidationCapture);
-  const cost = costOf(evaluations, consolidation.usage);
-  const durations = durationsOf(evidence, evaluations, consolidation.elapsed_ms);
+  const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);
   const investigation = await buildInvestigation(
     buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
   );
@@ -202,148 +153,14 @@ export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assess
   return investigation.assessment;
 }
 
-/** Holds the one ConsolidationOutcome capturingConsolidator below records, once draftAssessment has called consolidate() through it. */
-type ConsolidationCapture = { outcome?: ConsolidationOutcome };
-
-/**
- * Wraps the given consolidator so this composition can read its one call's
- * own ConsolidationOutcome — usage and elapsed_ms — for cost and durations,
- * without ever changing what draftAssessment itself calls or answers:
- * draftAssessment keeps calling consolidate() exactly once, unchanged
- * (this codebase's own must-not-duplicate convention for draftAssessment),
- * and its own answered Assessment still carries no usage, elapsed_ms or
- * prompt property (draft-assessment-text.spec.ts's own delivered guarantee)
- * — this wrapper only ever forwards to the real consolidator and records
- * what it answered, as a side effect invisible to draftAssessment.
- */
-function capturingConsolidator(consolidator: IAssessmentConsolidator, capture: ConsolidationCapture): IAssessmentConsolidator {
-  return {
-    consolidate: async (evaluations, evidence, consolidationRegister) => {
-      const outcome = await consolidator.consolidate(evaluations, evidence, consolidationRegister);
-      capture.outcome = outcome;
-      return outcome;
-    },
-  };
-}
-
-/**
- * The captured consolidation outcome, once draftAssessment has resolved —
- * never absent in practice, since draftAssessment always calls consolidate()
- * exactly once through capturingConsolidator's own wrapper before it can
- * answer at all; thrown rather than silently treated as a zero-cost,
- * zero-duration call if this invariant is ever violated.
- */
-function consolidatedOutcomeOf(capture: ConsolidationCapture): ConsolidationOutcome {
-  if (capture.outcome === undefined) {
-    throw new Error('draftAssessment resolved without ever calling consolidate()');
-  }
-  return capture.outcome;
-}
-
-/**
- * What this investigation cost at the provider (domain/investigation/cost):
- * one judgment call per required hypothesis actually judged — an Evaluation
- * carrying usage, present exactly where the underlying evaluate() call's own
- * answer was threaded through (judgment-stage.ts's own asEvaluation/callRecordOf),
- * never for a hypothesis that degraded to no-data, deadline-exceeded or
- * judgment-failure without an answer to thread through — plus exactly one
- * consolidation call, which always happens
- * (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "one
- * provider call per hypothesis appears in the recorded cost"; cost.ts's own
- * "one writing call, linear in hypotheses").
- */
-function costOf(evaluations: readonly Evaluation[], consolidationUsage: Usage): Cost {
-  const judgmentUsages = evaluations.flatMap((evaluation): Usage[] => (evaluation.usage === undefined ? [] : [evaluation.usage]));
-  const usages = [...judgmentUsages, consolidationUsage];
-  return {
-    calls: judgmentUsages.length + 1,
-    input_tokens: usages.reduce((sum, usage) => sum + usage.input_tokens, 0),
-    output_tokens: usages.reduce((sum, usage) => sum + usage.output_tokens, 0),
-  };
-}
-
-/**
- * How long each stage took (domain/investigation/durations), from
- * already-measured, real wall-clock data alone — never a fresh clock read of
- * this module's own: collection and judgment each run their own units
- * (concepts, hypotheses) in parallel, so a stage is not done until its
- * slowest unit is — the largest of every concept's own Evidence.elapsed_ms
- * (evidence-collection-stage.ts) for collection, and the largest of every
- * judged hypothesis's own Evaluation.elapsed_ms (judgment-stage.ts) for
- * judgment. writing is the one consolidation call's own measured elapsed_ms
- * directly, there being exactly one. total is the sum of the three: the
- * whole time from the first delivery through the end of writing.
- */
-function durationsOf(evidence: readonly Evidence[], evaluations: readonly Evaluation[], writingElapsedMs: number): Durations {
-  const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
-  const judgment = maxElapsedMs(evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms])));
-  return { collection, judgment, writing: writingElapsedMs, total: collection + judgment + writingElapsedMs };
-}
-
-/** The largest of the given elapsed_ms readings, or 0 where there are none — a stage with nothing to time took no time. */
-function maxElapsedMs(values: readonly number[]): number {
-  return values.length === 0 ? 0 : Math.max(...values);
-}
-
-/** collectEvidence's own options, assembled from this call's given options and the subject already built above. */
-function collectEvidenceOptions(options: RunDiagnosisOptions, subject: Subject): CollectEvidenceOptions {
-  return {
-    case: options.case,
-    subject,
-    requester: options.requester,
-    capabilities: options.capabilities,
-    observationSource: options.observationSource,
-    now: options.now,
-    deadline: options.deadline,
-  };
-}
-
-/**
- * judgeHypotheses's own options: the same (now, deadline) pair given to this
- * whole run, its own deadline tightened to no more than
- * JUDGMENT_STAGE_BUDGET_MS beyond now — evidence-collection-stage.ts's own
- * COLLECTION_STAGE_BUDGET_MS intersection, mirrored here since
- * judgment-stage.ts performs no such intersection on its own behalf.
- */
-function judgeHypothesesOptions(
-  options: RunDiagnosisOptions,
-  evidenceByHypothesis: ReadonlyMap<string, readonly Evidence[]>,
-): JudgeHypothesesOptions {
-  return {
-    case: options.case,
-    evidenceByHypothesis,
-    evaluator: options.evaluator,
-    capabilities: options.capabilities,
-    poolSize: options.poolSize,
-    now: options.now,
-    deadline: Math.min(options.deadline, options.now + JUDGMENT_STAGE_BUDGET_MS),
-  };
-}
-
-/**
- * Every required hypothesis's own collected evidence, matched by concept to
- * that hypothesis's own collects — judgment-stage.ts's and
- * resolve-and-narrow-input.ts's own shared evidenceByHypothesis convention,
- * built here since neither stage reaches the other's output on its own and
- * this composition is the one place that holds both the case and
- * collectEvidence's own flat, by-concept result.
- */
-function evidenceByHypothesisOf(theCase: Case, evidence: readonly Evidence[]): ReadonlyMap<string, readonly Evidence[]> {
-  const byHypothesis = new Map<string, readonly Evidence[]>();
-  for (const hypothesis of theCase.hypotheses) {
-    byHypothesis.set(hypothesis.name, evidence.filter((item) => hypothesis.collects.includes(item.concept)));
-  }
-  return byHypothesis;
-}
-
 type BuildInvestigationArgs = {
   readonly options: RunDiagnosisOptions;
   readonly evidence: readonly Evidence[];
   readonly evaluations: readonly Evaluation[];
   readonly assessment: Assessment;
-  /** This run's own accumulated cost, computed above by costOf — never read from options, which no longer carries one (task/investigation-telemetry/diagnose-reports-real-cost-and-durations). */
+  /** This run's own accumulated cost, answered above by runInvestigationPipeline — never read from options, which no longer carries one (task/investigation-telemetry/diagnose-reports-real-cost-and-durations). */
   readonly cost: Cost;
-  /** This run's own measured durations, computed above by durationsOf — never read from options, for the same reason. */
+  /** This run's own measured durations, answered above by runInvestigationPipeline — never read from options, for the same reason. */
   readonly durations: Durations;
 };
 
