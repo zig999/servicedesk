@@ -203,7 +203,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -797,7 +797,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1007,7 +1007,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
@@ -1913,7 +1913,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -1999,7 +1999,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
         {
           "path": "frontend/app/src/services/capability-form-schema.ts",
@@ -3975,7 +3975,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -3983,7 +3983,7 @@
         },
         {
           "path": "frontend/app/src/shared/components/json-textarea-field.tsx",
-          "digest": "sha256:dba272c03c466aa4d91c36d63e64e6ed2305bb5d3b42e470b7d2a60f3087a25c"
+          "digest": "sha256:4f07b8e5f5e788c4059a3f96236ae17133cafddbe80e98b254149a35552de4ff"
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
@@ -4013,7 +4013,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         }
       ]
     },
@@ -4027,7 +4027,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -4131,7 +4131,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -4169,7 +4169,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -4265,7 +4265,7 @@
         },
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
-          "digest": "sha256:51f363eb25717ceba2b837238fd00aad670d76cce552d227ed819120b781dc5d"
+          "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
         },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
@@ -4341,7 +4341,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
@@ -4371,7 +4371,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         }
       ]
     },
@@ -5551,7 +5551,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
         {
           "path": "src/src/errors/subject-does-not-cover-case-inputs.error.ts",
