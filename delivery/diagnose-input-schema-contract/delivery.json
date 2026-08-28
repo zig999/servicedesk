@@ -26,6 +26,14 @@
       "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
     },
     {
+      "id": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check.md",
+      "title": "Shared placeholder-declared-by-its-capability check and cross-registry read ports",
+      "summary": "A pure check names every Subject-attribute placeholder a connector configuration's call text embeds that a capability's declared input-schema properties does not hold, and the capability and connector-configuration registries can each read the other's currently registered records through a narrow port the composition root supplies.",
+      "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
+    },
+    {
       "id": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proof",
       "file": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema.md",
@@ -48,6 +56,14 @@
       "title": "Proof for refuse-diagnose-missing-required-attribute",
       "summary": "Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it.",
       "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
+    },
+    {
+      "id": "proof/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "proof",
+      "file": "proof/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check.md",
+      "title": "Proof for build-placeholder-declaration-check",
+      "summary": "Tests the pure orphaned-placeholder check, its Subject-attribute-placeholder extraction, and both registries' narrow cross-reads (default-empty, delegating, failure-propagating, and store-backed through the real factories).",
+      "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
     }
   ],
   "edges": [
@@ -148,6 +164,48 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "to": "implementation/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proves",
@@ -162,6 +220,12 @@
     {
       "from": "proof/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
       "to": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
       "kind": "proves",
       "at": "the path"
     }

@@ -39,11 +39,14 @@ import type { DiagnoseControllerDependencies } from '../http/diagnose.controller
 import type { SimulateCaseControllerDependencies } from '../http/simulate-case.controller.js';
 import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
-import { createCapabilityRegistry } from './capability-registry.factory.js';
+import { createCapabilitiesReader, createCapabilityRegistry } from './capability-registry.factory.js';
 import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
 import { createCaseStore } from './case-store.factory.js';
-import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
+import {
+  createConnectorConfigurationRegistry,
+  createConnectorConfigurationsReader,
+} from './connector-configuration-registry.factory.js';
 import { createGlossary } from './glossary.factory.js';
 
 /** Everything buildAppDependencies needs, bundled as one object so it stays within MNT-01's parameter bound. */
@@ -116,11 +119,25 @@ type ComposedResources = {
  * case-input-requirements.factory.ts's own createCaseInputRequirementsQuery
  * rather than reusing the given caseQuery — that factory's own header
  * comment discloses why this one divergence is safe.
+ *
+ * Builds capabilityRegistry and connectorConfigurationRegistry each with
+ * the other's own narrow reader
+ * (rules/integration/a-connector-placeholder-is-declared-by-its-capability;
+ * task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check):
+ * capabilityRegistry's own createConnectorConfigurationsReader (backed by a
+ * RelationalConnectorConfigurationStore over this same connection) and
+ * connectorConfigurationRegistry's own createCapabilitiesReader (backed by
+ * a RelationalCapabilityStore over this same connection) — no new store,
+ * query or operation construction beyond what those two factories already
+ * expose is introduced here.
  */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
-  const capabilityRegistry = createCapabilityRegistry(connection);
+  const capabilityRegistry = createCapabilityRegistry(connection, createConnectorConfigurationsReader(connection));
   const glossary = createGlossary(connection);
-  const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection);
+  const connectorConfigurationRegistry = createConnectorConfigurationRegistry(
+    connection,
+    createCapabilitiesReader(connection),
+  );
   return {
     caseQuery,
     caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),

@@ -2,6 +2,7 @@ import { ConnectorConfigurationNotFoundError } from '../errors/connector-configu
 import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
 import { IncompleteConnectorConfigurationError } from '../errors/incomplete-connector-configuration.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+import type { ICapabilitiesReader, RegisteredCapabilityForPlaceholderCheck } from './capabilities-reader.port.js';
 import type {
   ConnectorConfiguration,
   ConnectorConfigurationRegistration,
@@ -38,8 +39,24 @@ export type ConnectorConfigurationResolution =
  * replace by identity — per the inventory's own must_not_duplicate entry
  * for that pattern.
  */
+/**
+ * The default capabilities reader a construction naming none answers with —
+ * every one of this codebase's own pre-existing single-argument
+ * constructions of this class among them (both its own test suite and every
+ * other composition root that has no use for this capacity yet): the empty
+ * list, never a thrown error, since none of those callers exercises
+ * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+ * own reconciliation at all.
+ */
+const NO_REGISTERED_CAPABILITIES: ICapabilitiesReader = {
+  readCapabilities: () => Promise.resolve([]),
+};
+
 export class ConnectorConfigurationRegistryService {
-  public constructor(private readonly store: IConnectorConfigurationStore) {}
+  public constructor(
+    private readonly store: IConnectorConfigurationStore,
+    private readonly capabilitiesReader: ICapabilitiesReader = NO_REGISTERED_CAPABILITIES,
+  ) {}
 
   /**
    * register-connector: refuses a registration that departs from the
@@ -130,6 +147,24 @@ export class ConnectorConfigurationRegistryService {
       offset: pagination.offset,
       pageCount: pageCountOf(total, pagination.limit),
     };
+  }
+
+  /**
+   * The narrow read capacity
+   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+   * own reconciliation needs from the other side: every capability currently
+   * registered, through the narrow port the composition root supplies
+   * (factories/capability-registry.factory.ts's own createCapabilitiesReader,
+   * backed by the same RelationalCapabilityStore the capability registry
+   * itself reads and writes through). Running the shared
+   * orphaned-placeholder check
+   * (connector-placeholder-declaration-check.ts, this same directory)
+   * against a registration in progress, and raising a refusal over what it
+   * names, is a sibling task's own concern (this task's own Notes) — this
+   * method only answers the read.
+   */
+  public async readRegisteredCapabilities(): Promise<readonly RegisteredCapabilityForPlaceholderCheck[]> {
+    return this.capabilitiesReader.readCapabilities();
   }
 }
 

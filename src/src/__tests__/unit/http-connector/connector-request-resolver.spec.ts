@@ -10,7 +10,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { AssembledConnectorRequest } from '../../../http-connector/connector-call-descriptor.js';
-import { resolveConnectorRequest } from '../../../http-connector/connector-request-resolver.js';
+import { resolveConnectorRequest, subjectAttributePlaceholderNamesIn } from '../../../http-connector/connector-request-resolver.js';
 import { ConnectorPlaceholderNotResolvedError } from '../../../errors/connector-placeholder-not-resolved.error.js';
 import { IncompleteConnectorCallDescriptorError } from '../../../errors/incomplete-connector-call-descriptor.error.js';
 import type { Subject } from '../../../investigation/subject.js';
@@ -252,4 +252,54 @@ it('leaves the body absent when the descriptor declares none, rather than defaul
   const assembled = resolveConnectorRequest({ configuration, subject: A_SUBJECT, requester: A_REQUESTER });
 
   expect(assembled.body).toBeUndefined();
+});
+
+// ------------------------------------------------------------------ subjectAttributePlaceholderNamesIn
+// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check:
+// every Subject-attribute placeholder name embedded anywhere in one connector configuration's own
+// call text, reused by the shared orphaned-placeholder check (connector-placeholder-declaration-check.spec.ts)
+// rather than proven twice.
+
+it("extracts a Subject-attribute placeholder's own attribute name from call text", () => {
+  const names = subjectAttributePlaceholderNamesIn('https://api.example.com/records/${subject:customer_document}');
+
+  expect(names).toEqual(['customer_document']);
+});
+
+it('extracts every Subject-attribute placeholder name when several sit inside one piece of call text', () => {
+  const names = subjectAttributePlaceholderNamesIn(
+    '${subject:id} and ${subject:customer_document} but not ${requester} or ${credential:API_KEY}',
+  );
+
+  expect(names).toEqual(['id', 'customer_document']);
+});
+
+it('extracts no name at all for a requester placeholder', () => {
+  const names = subjectAttributePlaceholderNamesIn('${requester}');
+
+  expect(names).toEqual([]);
+});
+
+it('extracts no name at all for a credential placeholder', () => {
+  const names = subjectAttributePlaceholderNamesIn('${credential:ACME_API_KEY}');
+
+  expect(names).toEqual([]);
+});
+
+it('answers the empty array for call text embedding no placeholder at all', () => {
+  const names = subjectAttributePlaceholderNamesIn('https://api.example.com/records');
+
+  expect(names).toEqual([]);
+});
+
+it('skips a bare "${subject}" placeholder naming no attribute, rather than throwing or naming an empty attribute', () => {
+  const names = subjectAttributePlaceholderNamesIn('${subject}');
+
+  expect(names).toEqual([]);
+});
+
+it('skips a "${subject:}" placeholder naming an empty attribute, rather than throwing or naming the empty string', () => {
+  const names = subjectAttributePlaceholderNamesIn('${subject:}');
+
+  expect(names).toEqual([]);
 });

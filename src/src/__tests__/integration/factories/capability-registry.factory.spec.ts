@@ -20,6 +20,10 @@ import { randomUUID } from 'node:crypto';
 import { afterEach, beforeAll, afterAll, expect, it } from 'vitest';
 import type { CapabilityRegistration } from '../../../capability-registry/capability.js';
 import { createCapabilityRegistry } from '../../../factories/capability-registry.factory.js';
+import {
+  createConnectorConfigurationRegistry,
+  createConnectorConfigurationsReader,
+} from '../../../factories/connector-configuration-registry.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCapabilityStore } from '../../../persistence/relational-capability-store.repository.js';
 
@@ -63,6 +67,7 @@ afterEach(async () => {
     await pool.query('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
     conceptsWrittenByThisTest = [];
   }
+  await pool.query("DELETE FROM connector_configurations WHERE connector LIKE 'capability-registry-factory-connector-%'");
 });
 
 /** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
@@ -92,4 +97,28 @@ it('replaces the persisted record when the same name and version register again 
 
   const answered = (await new RelationalCapabilityStore(pool).readCapabilities()).filter((capability) => capability.concept === concept);
   expect(answered).toEqual([replaced]);
+});
+
+// ------------------------------------------------------------------ readRegisteredConnectorConfigurations
+// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
+// (criterion 4): the capability registry can read every currently registered connector
+// configuration through the narrow port the composition root supplies, backed by the same
+// connector-configuration store the connector-configuration registry itself reads and writes
+// through — createConnectorConfigurationsReader, over the same pool.
+
+it("reads a connector configuration registered through the connector-configuration registry's own real wiring, through readRegisteredConnectorConfigurations backed by the same store", async () => {
+  const connector = `capability-registry-factory-connector-${randomUUID()}`;
+  const connectorConfigurationRegistry = createConnectorConfigurationRegistry(pool);
+  await connectorConfigurationRegistry.registerConnector({
+    connector,
+    configuration: { address: 'https://example.test' },
+  });
+  const registry = createCapabilityRegistry(pool, createConnectorConfigurationsReader(pool));
+
+  const configurations = await registry.readRegisteredConnectorConfigurations();
+
+  expect(configurations).toContainEqual({
+    connector,
+    configuration: JSON.stringify({ address: 'https://example.test' }),
+  });
 });

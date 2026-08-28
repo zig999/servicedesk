@@ -8,6 +8,7 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
+import type { ICapabilitiesReader } from '../../../connector-registry/capabilities-reader.port.js';
 import {
   ConnectorConfigurationRegistryService,
   parsedConnectorConfiguration,
@@ -543,4 +544,49 @@ it("wellFormedConfiguration's own doc comment states the node's own decided clas
     'a registration whose configuration is entirely absent is refused as incomplete (IncompleteConnectorConfigurationError)',
   );
   expect(prose).toContain('distinct from a present value that fails the well-formedness check above');
+});
+
+// ------------------------------------------------------------------ readRegisteredCapabilities
+// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
+// (criterion 5): the connector-configuration registry can read every currently registered
+// capability through a narrow port the composition root supplies. The port is exercised here as a
+// stand-in for the boundary it declares (TST-03) — the real, store-backed implementation is
+// proven separately, against a real database, in
+// __tests__/integration/factories/connector-configuration-registry.factory.spec.ts.
+
+it('answers every capability the injected reader currently holds, exactly as that reader answers it', async () => {
+  const registeredCapabilities = [
+    { connector: 'a-connector', input_schema: '{"properties":{"id":{}}}' },
+    { connector: 'another-connector', input_schema: '{"properties":{}}' },
+  ];
+  const reader: ICapabilitiesReader = {
+    readCapabilities: async () => registeredCapabilities,
+  };
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore(), reader);
+
+  const answered = await registry.readRegisteredCapabilities();
+
+  expect(answered).toEqual(registeredCapabilities);
+});
+
+it('answers the empty array from readRegisteredCapabilities when constructed with no capabilities reader at all', async () => {
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore());
+
+  const answered = await registry.readRegisteredCapabilities();
+
+  expect(answered).toEqual([]);
+});
+
+it('propagates a failure the injected capabilities reader itself raises, rather than swallowing it', async () => {
+  const failingReader: ICapabilitiesReader = {
+    readCapabilities: async () => {
+      throw new Error('the capability store is unavailable');
+    },
+  };
+  const registry = new ConnectorConfigurationRegistryService(new InMemoryConnectorConfigurationStore(), failingReader);
+
+  const outcome = await registry.readRegisteredCapabilities().catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(Error);
+  expect((outcome as Error).message).toBe('the capability store is unavailable');
 });

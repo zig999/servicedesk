@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/src/src/factories/capability-registry.factory.ts
+  67:58  error  Parameter name `input_schema` must match one of the following formats: camelCase  @typescript-eslint/naming-convention
+
+✖ 1 problem (1 error, 0 warnings)
+

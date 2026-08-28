@@ -10,6 +10,7 @@ import { expect, it } from 'vitest';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
 import type { Capability, CapabilityRegistration } from '../../../capability-registry/capability.js';
+import type { IConnectorConfigurationsReader } from '../../../capability-registry/connector-configurations-reader.port.js';
 import { CapabilityIdentityNotFoundError } from '../../../errors/capability-identity-not-found.error.js';
 import { CapabilityNotReadOnlyError } from '../../../errors/capability-not-read-only.error.js';
 import { CapabilitySchemaNotWellFormedError } from '../../../errors/capability-schema-not-well-formed.error.js';
@@ -643,4 +644,48 @@ it("refuseContractDepartures' own doc comment describes both the non-integer and
   expect(prose).toContain('not an integer count of milliseconds, or an integer that is zero or less');
   expect(prose).toContain('a timeout of zero or less bounds nothing');
   expect(prose).toContain("registerCapabilityBodySchema's own timeout: z.number().int().positive()");
+});
+
+// ------------------------------------------------------------------ readRegisteredConnectorConfigurations
+// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
+// (criterion 4): the capability registry can read every currently registered connector
+// configuration through a narrow port the composition root supplies. The port is exercised here
+// as a stand-in for the boundary it declares (TST-03) — the real, store-backed implementation is
+// proven separately, against a real database, in __tests__/integration/factories/capability-registry.factory.spec.ts.
+
+it('answers every connector configuration the injected reader currently holds, exactly as that reader answers it', async () => {
+  const registeredConfigurations = [
+    { connector: 'a-connector', configuration: '{"address":"https://a.example.test"}' },
+    { connector: 'another-connector', configuration: '{"address":"https://b.example.test"}' },
+  ];
+  const reader: IConnectorConfigurationsReader = {
+    readConnectorConfigurations: async () => registeredConfigurations,
+  };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), reader);
+
+  const answered = await registry.readRegisteredConnectorConfigurations();
+
+  expect(answered).toEqual(registeredConfigurations);
+});
+
+it('answers the empty array from readRegisteredConnectorConfigurations when constructed with no connector-configurations reader at all', async () => {
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
+
+  const answered = await registry.readRegisteredConnectorConfigurations();
+
+  expect(answered).toEqual([]);
+});
+
+it('propagates a failure the injected connector-configurations reader itself raises, rather than swallowing it', async () => {
+  const failingReader: IConnectorConfigurationsReader = {
+    readConnectorConfigurations: async () => {
+      throw new Error('the connector-configuration store is unavailable');
+    },
+  };
+  const registry = new CapabilityRegistryService(new InMemoryCapabilityStore(), failingReader);
+
+  const outcome = await registry.readRegisteredConnectorConfigurations().catch((error: unknown) => error);
+
+  expect(outcome).toBeInstanceOf(Error);
+  expect((outcome as Error).message).toBe('the connector-configuration store is unavailable');
 });

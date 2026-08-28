@@ -1948,6 +1948,14 @@
           "digest": "sha256:2818977a314140703451a271308f02e5bc5fbf1ab2c890030c20c959cae718c0"
         },
         {
+          "path": "src/src/connector-registry/capabilities-reader.port.ts",
+          "digest": "sha256:01edeee5e40a072957dee8afd2f16d6540b470d84dd0e9cb8c9b82bc39e1f0b1"
+        },
+        {
+          "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
+          "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
+        },
+        {
           "path": "src/src/fixtures/capability/capability.json",
           "digest": "sha256:8d725dc05056095f56346920954a5e37be728fa6ebcdf292f095380e8eb47cf7"
         },
@@ -2021,7 +2029,15 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:cd3ee37883900154bbd72108bf9cb524f26f8346b1ae8482c1c5c712f73f28db"
+          "digest": "sha256:b4e277dff0272cdcf1814cd0d94861a9a834b03a0d0a6240468eb82d42e82583"
+        },
+        {
+          "path": "src/src/capability-registry/connector-configurations-reader.port.ts",
+          "digest": "sha256:3699ef22e9994ca1232bf63fcd2388cbfa6d826a5e65ec986d6983d87715a598"
+        },
+        {
+          "path": "src/src/factories/capability-registry.factory.ts",
+          "digest": "sha256:61acbdfd7705bee6c5973fd86fc01b8e0558a4914f9344ff356bb424373b7a53"
         },
         {
           "path": "src/src/http/read-capability.controller.ts",
@@ -2094,12 +2110,20 @@
           "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
         },
         {
+          "path": "src/src/capability-registry/connector-configurations-reader.port.ts",
+          "digest": "sha256:3699ef22e9994ca1232bf63fcd2388cbfa6d826a5e65ec986d6983d87715a598"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
         },
         {
           "path": "src/src/connector-registry/connector-configuration.ts",
           "digest": "sha256:1ba2d66a15f541cf88c83ead94e8f7445d79f4c340918ebd0bfac5e3c829ac92"
+        },
+        {
+          "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
+          "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
         },
         {
           "path": "src/src/http/dto/read-connector-configuration.dto.ts",
@@ -2137,19 +2161,27 @@
     },
     {
       "node": "domain/integration/connector-configuration-registry",
-      "digest": "sha256:28ffba3415b410c219dd54735ae3081ea79ef04c6253052f728af8d6321c8535",
+      "digest": "sha256:132eff4e502ceeeaa7af5e043066b1c5ba1198f100c70637eed447eeebfdaf4c",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
         },
         {
+          "path": "src/src/connector-registry/capabilities-reader.port.ts",
+          "digest": "sha256:01edeee5e40a072957dee8afd2f16d6540b470d84dd0e9cb8c9b82bc39e1f0b1"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:48bc3ab78b3797e6e18f62cdbabb58c3642874229028b3c5e6f3bd220143d962"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+        },
+        {
+          "path": "src/src/factories/connector-configuration-registry.factory.ts",
+          "digest": "sha256:05e0bc62cc687ce4a5bb313acc54b658dc30495498e5cb130f4d2de47d200cca"
         },
         {
           "path": "src/src/http/build-app.ts",
@@ -4100,6 +4132,20 @@
       ]
     },
     {
+      "node": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "digest": "sha256:5badc08744c9ca8793f157866d2362fe367af6993e9e093430ff09522793e676",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
+          "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
+        },
+        {
+          "path": "src/src/http-connector/connector-request-resolver.ts",
+          "digest": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d"
+        }
+      ]
+    },
+    {
       "node": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
       "digest": "sha256:22a3d4284c1904d0bf7c940cea5076e1133a1be23e8e2fa6054a75ab8ad411cb",
       "files": [
@@ -5384,6 +5430,16 @@
         {
           "path": "src/src/case/release.operation.ts",
           "digest": "sha256:a49fdb9a777430969fa3fc322c559ebb447c369ce9fae6510f48b6ea8ac08f48"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "digest": "sha256:0ccd819c9d992e54d1eb47918f43e196236d61b4ea19e000b459eec726c5e435",
+      "files": [
+        {
+          "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
+          "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
         }
       ]
     },

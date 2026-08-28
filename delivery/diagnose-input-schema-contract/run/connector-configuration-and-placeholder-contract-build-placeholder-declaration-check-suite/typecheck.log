@@ -1,0 +1,6 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/capability-registry.factory.spec.ts(22,36): error TS2305: Module '"../../../factories/capability-registry.factory.js"' has no exported member 'createConnectorConfigurationsReader'.
+src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts(17,3): error TS2305: Module '"../../../factories/connector-configuration-registry.factory.js"' has no exported member 'createCapabilitiesReader'.

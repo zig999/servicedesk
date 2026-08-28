@@ -194,6 +194,34 @@ function splitPlaceholderToken(token: string): readonly [string, string | undefi
   return separatorIndex === -1 ? [token, undefined] : [token.slice(0, separatorIndex), token.slice(separatorIndex + 1)];
 }
 
+/**
+ * Every Subject-attribute placeholder name embedded anywhere inside one
+ * connector configuration's own call text —
+ * (task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check,
+ * rules/integration/a-connector-placeholder-is-declared-by-its-capability)
+ * never a requester or credential placeholder, since that rule's own "only a
+ * placeholder naming a Subject attribute is held to this" leaves nothing for
+ * a capability's declared properties to check either against. Shares
+ * PLACEHOLDER_PATTERN and splitPlaceholderToken with substituteString above
+ * rather than a second regex over the same text (the inventory's own
+ * must_not_duplicate note). Never throws: a bare "${subject}" naming no
+ * attribute at all is skipped rather than refused, since raising a refusal
+ * over what this reads is the reconciliation check's own consumer's concern
+ * (connector-registry/connector-placeholder-declaration-check.ts), not this
+ * read itself.
+ */
+export function subjectAttributePlaceholderNamesIn(configurationText: string): readonly string[] {
+  return [...configurationText.matchAll(PLACEHOLDER_PATTERN)]
+    .map((match) => splitPlaceholderToken(match[1]))
+    .filter(isSubjectAttributeToken)
+    .map(([, argument]) => argument);
+}
+
+/** Narrows one split placeholder token to a Subject-attribute placeholder naming a non-empty attribute — see subjectAttributePlaceholderNamesIn above for why a bare "${subject}" is skipped rather than refused here. */
+function isSubjectAttributeToken(parts: readonly [string, string | undefined]): parts is readonly [string, string] {
+  return parts[0] === SUBJECT_PLACEHOLDER_KIND && parts[1] !== undefined && parts[1] !== '';
+}
+
 /** Requires a placeholder's own argument to be declared and non-empty — a "subject" or "credential" placeholder naming nothing to resolve is a malformed descriptor, not a resolution failure. */
 function requireArgument(token: string, argument: string | undefined): string {
   if (argument === undefined || argument === '') {

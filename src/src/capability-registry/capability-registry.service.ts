@@ -9,6 +9,10 @@ import type { PaginatedResponse, PaginationRequest } from '../types/pagination.j
 import { inputSchemaShapeProblems } from './capability-input-schema-shape.js';
 import type { CapabilityResolution, ICapabilityQuery } from './capability-query.port.js';
 import type { ICapabilityStore } from './capability-store.port.js';
+import type {
+  IConnectorConfigurationsReader,
+  RegisteredConnectorConfigurationForPlaceholderCheck,
+} from './connector-configurations-reader.port.js';
 import {
   DEFAULT_CAPABILITY_TIMEOUT_MS,
   READ_ONLY_NATURE,
@@ -47,8 +51,24 @@ export type CapabilityIdentityResolution =
   | { readonly held: true; readonly capability: Capability }
   | { readonly held: false; readonly name: string; readonly version: string };
 
+/**
+ * The default connector-configurations reader a construction naming none
+ * answers with — every one of this codebase's own pre-existing
+ * single-argument constructions of this class among them (both its own test
+ * suite and every other composition root that has no use for this
+ * capacity yet): the empty list, never a thrown error, since none of those
+ * callers exercises rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+ * own reconciliation at all.
+ */
+const NO_REGISTERED_CONNECTOR_CONFIGURATIONS: IConnectorConfigurationsReader = {
+  readConnectorConfigurations: () => Promise.resolve([]),
+};
+
 export class CapabilityRegistryService implements ICapabilityQuery {
-  public constructor(private readonly store: ICapabilityStore) {}
+  public constructor(
+    private readonly store: ICapabilityStore,
+    private readonly connectorConfigurationsReader: IConnectorConfigurationsReader = NO_REGISTERED_CONNECTOR_CONFIGURATIONS,
+  ) {}
 
   /**
    * register-capability: refuses a registration that does not declare its
@@ -160,6 +180,28 @@ export class CapabilityRegistryService implements ICapabilityQuery {
       offset: pagination.offset,
       pageCount: pageCountOf(total, pagination.limit),
     };
+  }
+
+  /**
+   * The narrow read capacity
+   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+   * own reconciliation needs from the other side: every connector
+   * configuration currently registered, through the narrow port the
+   * composition root supplies
+   * (factories/connector-configuration-registry.factory.ts's own
+   * createConnectorConfigurationsReader, backed by the same
+   * RelationalConnectorConfigurationStore the connector-configuration
+   * registry itself reads and writes through). Running the shared
+   * orphaned-placeholder check
+   * (connector-registry/connector-placeholder-declaration-check.ts) against
+   * a registration in progress, and raising a refusal over what it names, is
+   * a sibling task's own concern (this task's own Notes) — this method only
+   * answers the read.
+   */
+  public async readRegisteredConnectorConfigurations(): Promise<
+    readonly RegisteredConnectorConfigurationForPlaceholderCheck[]
+  > {
+    return this.connectorConfigurationsReader.readConnectorConfigurations();
   }
 }
 
