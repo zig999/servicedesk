@@ -1059,7 +1059,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -4181,7 +4181,7 @@
     },
     {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
-      "digest": "sha256:2598018958cff7c496b1cb70eb410e4b36075b64030604cc2cbcebf0749d4683",
+      "digest": "sha256:406c7941370665e5df7c6bd612b3ac7f037322281d6e3ac2200974d54fbabf1c",
       "files": [
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
@@ -4193,7 +4193,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -4209,7 +4209,7 @@
     },
     {
       "node": "rules/integration/an-unresolvable-observation-ends-unavailable",
-      "digest": "sha256:2a8eb065e51a135b072c83b88f981c6ba7ea5d47f48fe76af6231698dd26a90f",
+      "digest": "sha256:2183e0f8fb19a80b9d76edd3a9bcdb03a9d53d770c1aa59a43eae7f9d5c7d79e",
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -4217,7 +4217,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -5482,6 +5482,16 @@
         {
           "path": "src/src/case/case-input-requirements.ts",
           "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "digest": "sha256:876d284446d3dca715a10dbf7876839de52bb705ea508a3c1aa3d2b509bc58f6",
+      "files": [
+        {
+          "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },

@@ -20,7 +20,9 @@ import type { CapabilityResolution, ICapabilityQuery } from '../../../capability
 import type { ConnectorConfigurationResolution } from '../../../connector-registry/connector-configuration-registry.service.js';
 import { CapabilityNotResolvedForObservationError } from '../../../errors/capability-not-resolved-for-observation.error.js';
 import { ConnectorConfigurationNotRegisteredError } from '../../../errors/connector-configuration-not-registered.error.js';
+import { ConnectorPlaceholderNotResolvedError } from '../../../errors/connector-placeholder-not-resolved.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
+import { IncompleteConnectorCallDescriptorError } from '../../../errors/incomplete-connector-call-descriptor.error.js';
 import { MalformedHttpConnectorConfigurationError } from '../../../errors/malformed-http-connector-configuration.error.js';
 import {
   asHttpConnectorCallConfiguration,
@@ -662,6 +664,146 @@ it("answers unavailable naming MalformedHttpConnectorConfigurationError, issuing
 
   expect(outcome).toEqual({ result: 'unavailable', result_detail: MalformedHttpConnectorConfigurationError.name });
   expect(httpClient).not.toHaveBeenCalled();
+});
+
+// ------------------------------------------------------------------ task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable
+//
+// Each condition below is one of the two typed assembly failures
+// connector-request-resolver.ts's own resolveConnectorRequest can throw once
+// asConnectorCallDescriptor and its own placeholder substitution run, now
+// caught by this adapter's own resolveAssembledRequest and degraded to the
+// unavailable ending it names — issuing no HTTP call for any of them — rather
+// than propagating as a rejection the way each did before this task.
+
+it('answers unavailable naming ConnectorPlaceholderNotResolvedError, issuing no call, when the connector call embeds a Subject-attribute placeholder the given Subject does not carry', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({
+      address: 'https://api.example.com/${subject:an-attribute-the-subject-does-not-carry}',
+    }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: ConnectorPlaceholderNotResolvedError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming ConnectorPlaceholderNotResolvedError, issuing no call, when the connector call embeds a credential placeholder naming an environment variable that is not set', async () => {
+  const envVarName = 'A_CREDENTIAL_ENV_VAR_THIS_TEST_NEVER_SETS';
+  delete process.env[envVarName];
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ headers: { authorization: `\${credential:${envVarName}}` } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: ConnectorPlaceholderNotResolvedError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming IncompleteConnectorCallDescriptorError, issuing no call, when the connector configuration is missing its address', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ address: undefined }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: IncompleteConnectorCallDescriptorError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming IncompleteConnectorCallDescriptorError, issuing no call, when the connector configuration declares headers as an object whose own value is not a string', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ headers: { 'x-count': 7 } }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: IncompleteConnectorCallDescriptorError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming IncompleteConnectorCallDescriptorError, issuing no call, when the connector configuration declares query as something other than an object of string values', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ query: 'not-an-object' }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: IncompleteConnectorCallDescriptorError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming IncompleteConnectorCallDescriptorError, issuing no call, when the connector configuration embeds a placeholder naming a kind this connector does not recognize', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ address: 'https://api.example.com/${an-unrecognized-kind:something}' }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: IncompleteConnectorCallDescriptorError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it('answers unavailable naming IncompleteConnectorCallDescriptorError, issuing no call, when the connector configuration embeds a subject placeholder naming no attribute at all', async () => {
+  const httpClient = newHttpClient();
+  const adapter = anAdapter({
+    capability: aCapability({ concept: 'a-concept' }),
+    connectorConfiguration: anHttpConfiguration({ address: 'https://api.example.com/${subject}' }),
+    httpClient,
+  });
+
+  const outcome = await adapter.observeConcept({ concept: 'a-concept', subject: A_SUBJECT, requester: A_REQUESTER });
+
+  expect(outcome).toEqual({ result: 'unavailable', result_detail: IncompleteConnectorCallDescriptorError.name });
+  expect(httpClient).not.toHaveBeenCalled();
+});
+
+it("proceeds with every other concept unaffected — settling to its own ok ending — when one concept collected in the same Promise.all batch degrades to unavailable through this catch", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  const degradingCapability = aCapability({ concept: 'a-degrading-concept', connector: 'a-degrading-connector' });
+  const healthyCapability = aCapability({ concept: 'a-healthy-concept', connector: 'a-healthy-connector' });
+  capabilities.hold(degradingCapability);
+  capabilities.hold(healthyCapability);
+  const connectorConfigurations = new FakeConnectorConfigurationQuery();
+  connectorConfigurations.hold(
+    'a-degrading-connector',
+    anHttpConfiguration({ address: 'https://api.example.com/${subject:an-attribute-the-subject-does-not-carry}' }),
+  );
+  connectorConfigurations.hold('a-healthy-connector', anHttpConfiguration());
+  const httpClient = newHttpClient().mockResolvedValue(okResponse({ status: 'operational' }));
+  const adapter = new HttpDeclarativeObservationSource({
+    capabilities,
+    connectorConfigurations,
+    httpClient: httpClient as unknown as typeof fetch,
+  });
+
+  const [degradingOutcome, healthyOutcome] = await Promise.all([
+    adapter.observeConcept({ concept: 'a-degrading-concept', subject: A_SUBJECT, requester: A_REQUESTER }),
+    adapter.observeConcept({ concept: 'a-healthy-concept', subject: A_SUBJECT, requester: A_REQUESTER }),
+  ]);
+
+  expect(degradingOutcome).toEqual({ result: 'unavailable', result_detail: ConnectorPlaceholderNotResolvedError.name });
+  expect(healthyOutcome).toEqual({ result: 'ok', observation: JSON.stringify({ status: 'operational' }) });
+  expect(httpClient).toHaveBeenCalledTimes(1);
 });
 
 // ------------------------------------------------------------------ inference: asHttpConnectorCallConfiguration itself still throws

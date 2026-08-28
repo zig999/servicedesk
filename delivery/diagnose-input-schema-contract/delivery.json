@@ -34,6 +34,14 @@
       "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
     },
     {
+      "id": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable.md",
+      "title": "Degrade every unassemblable connector-request call to unavailable inside observe-concept",
+      "summary": "The one uncaught call to resolveConnectorRequest inside HttpDeclarativeObservationSource's own observeConcept now catches both typed assembly failures it can throw and answers an unavailable evidence outcome naming the failing class, while test-connector's own direct call is left untouched.",
+      "task": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable"
+    },
+    {
       "id": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
       "kind": "implementation",
       "file": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder.md",
@@ -80,6 +88,14 @@
       "title": "Proof for build-placeholder-declaration-check",
       "summary": "Tests the pure orphaned-placeholder check, its Subject-attribute-placeholder extraction, and both registries' narrow cross-reads (default-empty, delegating, failure-propagating, and store-backed through the real factories).",
       "task": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check"
+    },
+    {
+      "id": "proof/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "kind": "proof",
+      "file": "proof/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable.md",
+      "title": "Degrade-unresolved-connector-call-to-unavailable — proof",
+      "summary": "Tests proving http-declarative-observation-source.adapter.ts's own resolveAssembledRequest degrades both typed connector-assembly failures to an unavailable evidence outcome naming the failing class, that every other concurrently-collected concept settles unaffected, and that test-connector.controller.ts's own two direct resolveConnectorRequest calls still propagate either failure uncaught.",
+      "task": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable"
     },
     {
       "id": "proof/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
@@ -238,6 +254,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "contracts/investigation/observation-source",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
       "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
       "kind": "encodes",
@@ -312,6 +358,12 @@
     {
       "from": "proof/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
       "to": "implementation/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "implementation/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
       "kind": "proves",
       "at": "the path"
     },

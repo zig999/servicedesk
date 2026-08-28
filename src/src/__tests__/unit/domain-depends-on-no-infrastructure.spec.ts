@@ -298,11 +298,12 @@ it('none of these modules imports the connector-request-resolver module or its c
   expect(offenders).toEqual([]);
 });
 
-it('none of these modules imports either error the connector-request-resolver raises, by any relative path', async () => {
+it('none of these modules imports either error the connector-request-resolver raises, by any relative path, except this epic\'s own legitimate HTTP adapter', async () => {
   const imports = await domainModuleImports();
 
   const offenders: string[] = [];
   for (const [file, specifiers] of imports) {
+    if (file === HTTP_DECLARATIVE_OBSERVATION_SOURCE_ADAPTER_KEY) continue;
     for (const specifier of specifiers.filter(reachesTheConnectorPlaceholderErrors)) {
       offenders.push(`${file} imports ${specifier}`);
     }
