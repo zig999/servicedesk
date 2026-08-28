@@ -160,6 +160,26 @@
       "title": "Proof for widening the judgment and consolidation ports",
       "summary": "Tests proving the widened EvaluationOutcome/ConsolidationOutcome shapes, judgment-stage's own call-record attachment and its absence for stage-decided fallbacks, both hypothesis-evaluator adapters staying untouched, and both consolidator adapters carrying only placeholder zero-valued usage/elapsed_ms with no real provider-reading or timing.",
       "task": "task/investigation-telemetry/widen-judgment-and-consolidation-ports"
+    },
+    {
+      "id": "review/case-simulation-backend",
+      "kind": "review",
+      "file": "review/case-simulation-backend.md",
+      "title": "Review of case-simulation-backend",
+      "summary": "What four passes found over all ten tasks of case-simulation-backend, delivered end to end: the shared investigation pipeline extraction, the no-cache simulation composition, the two simulate-case/simulate-hypothesis HTTP operations, the draft-diagnose release gate, and the four investigation-telemetry tasks widening the judgment/consolidation ports and reporting real usage, elapsed time and cost.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "IAssessmentConsolidator.consolidate()'s return type declares usage, elapsed_ms and prompt, not optional.",
+        "IHypothesisEvaluator.evaluate()'s return type declares an optional usage ({input_tokens, output_tokens}), an optional elapsed_ms and an optional prompt.",
+        "The assessment-consolidator adapters (Anthropic and fake) change only enough to satisfy the widened, required ConsolidationOutcome return type — a placeholder usage of input_tokens 0 and output_tokens 0, and elapsed_ms of 0, with prompt as whatever the adapter already had assembled before this task touched it. Neither adapter gains real provider-usage reading or real call timing here — that is task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing's and task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's own declared scope, and duplicating it here is exactly the over-reach this criterion now exists to rule out.",
+        "The hypothesis-evaluator adapters (Anthropic and fake) are byte-for-byte unchanged — their optional usage/elapsed_ms/prompt fields being absent still satisfies the widened return type."
+      ],
+      "findings": 13
     }
   ],
   "edges": [
@@ -696,6 +716,66 @@
       "to": "implementation/investigation-telemetry/widen-judgment-and-consolidation-ports",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/case-simulation-pipeline/extract-shared-investigation-pipeline",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/case-simulation-pipeline/simulate-case-operation",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/case-simulation-pipeline/simulate-hypothesis-operation",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/investigation-telemetry/diagnose-reports-real-cost-and-durations",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/case-simulation-backend",
+      "to": "task/investigation-telemetry/widen-judgment-and-consolidation-ports",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }
