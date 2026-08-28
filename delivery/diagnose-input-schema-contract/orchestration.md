@@ -1,0 +1,3 @@
+# Orchestration log — diagnose-input-schema-contract
+
+Invoked /plan-work with scope "aplicar o contrato de entrada do diagnose derivado dos input_schemas das capabilities" over target backend, slug diagnose-input-schema-contract (derived, not named in the ask). Committed as 6d37d2f, "deliver-scope diagnose-input-schema-contract: plan". No BLOCKING notes stood; deliverable set after this step: task/capability-input-schema-contract/refuse-malformed-capability-input-schema, task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check, task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable.
