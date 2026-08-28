@@ -22,7 +22,7 @@
       "kind": "implementation",
       "file": "implementation/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute.md",
       "title": "Diagnose entry gate refusing a subject that misses a required case input",
-      "summary": "handleDiagnoseRequest now reads the pinned case version's derived input requirements and refuses, with a 422 SubjectDoesNotCoverCaseInputsError, before runDiagnose is ever called, if the subject leaves any required attribute missing or empty.",
+      "summary": "handleDiagnoseRequest reads the pinned case version's derived input requirements and refuses, with a 422 SubjectDoesNotCoverCaseInputsError, before runDiagnose is ever called, if the subject leaves any required attribute missing or empty; test-connector's own diagnostic call stays structurally unable to reach this gate.",
       "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
     },
     {
@@ -86,7 +86,7 @@
       "kind": "proof",
       "file": "proof/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute.md",
       "title": "Proof for refuse-diagnose-missing-required-attribute",
-      "summary": "Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it.",
+      "summary": "Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it — now including a genuine behavioral test, not only a source scan, for the exclusion itself.",
       "task": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute"
     },
     {

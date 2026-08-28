@@ -160,3 +160,33 @@ it("propagates IncompleteConnectorCallDescriptorError uncaught, issuing no HTTP 
   await expect(handleTestConnectorRequest(dependencies, aRequestBody())).rejects.toBeInstanceOf(IncompleteConnectorCallDescriptorError);
   expect(httpClient).not.toHaveBeenCalled();
 });
+
+// ------------------------------------------------------------------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute, criterion 5
+//
+// The prior proof for this criterion only scanned test-connector.controller.ts's own import
+// specifiers for the gate function and the diagnose controller — an absence of an import, not a
+// behavior. This test drives handleTestConnectorRequest itself: aDependencies() below builds a
+// TestConnectorControllerDependencies value using only the three fields that type declares
+// (readCapabilityByIdentity, readConnectorConfiguration, httpClient) — there is no fourth field to
+// fill with a case-input-requirements read, because the type carries no such capacity at all. The
+// request body's subject carries only "id", the same attribute subject-covers-case-input-requirements.spec.ts's
+// own sibling suite uses when proving refuseSubjectMissingRequiredCaseInputs throws for a subject
+// that leaves "contract-number" uncovered where a requirement marks it required — exactly the
+// subject shape that would refuse a diagnose 422 before collection, were this call held to that
+// gate. handleTestConnectorRequest here still issues its one HTTP call and returns its ordinary
+// response outcome, proving behaviorally that this controller's own call path never reaches the
+// gate, rather than merely that its source never names the gate's module.
+it('still issues its call and returns its ordinary response outcome for a subject missing "contract-number" — an attribute-value a case-input requirement would mark required and that would refuse a diagnose before collection were this call held to that gate', async () => {
+  const httpClient = vi
+    .fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>()
+    .mockResolvedValue(new Response(null, { status: 200 }));
+  const dependencies = aDependencies({ httpClient: httpClient as unknown as typeof fetch });
+  const body = aRequestBody({
+    subject: { type: 'a-subject-type', attributes: [{ attribute: 'id', value: 'a-subject-value' }] },
+  });
+
+  const outcome = await handleTestConnectorRequest(dependencies, body);
+
+  expect(httpClient).toHaveBeenCalledTimes(1);
+  expect(outcome.response).toMatchObject({ kind: 'response', status: 200 });
+});
