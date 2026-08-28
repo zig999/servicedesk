@@ -4166,6 +4166,14 @@
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
           "digest": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d"
+        },
+        {
+          "path": "src/src/http/dto/test-connector.dto.ts",
+          "digest": "sha256:64fcb2ea2ff9305a1e88b55e478f22e1ec793899728a9b7a1981e6fc9b8a553c"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         }
       ]
     },

@@ -37,6 +37,16 @@
 // operation is diagnostic-only and answers to no investigation
 // (contracts/integration/connector-diagnostics's own "no investigation ever
 // reads what it returned").
+//
+// orphaned_placeholders names, for the pair under test, every
+// Subject-attribute placeholder the tested connector configuration's own
+// call text embeds that the tested capability's own input_schema properties
+// does not declare
+// (rules/integration/a-connector-placeholder-is-declared-by-its-capability) —
+// snake_case, matching this route's own capabilities_with_malformed_input_schema
+// sibling in case-input-requirements.dto.ts. Always present, an empty array
+// where every embedded placeholder is already declared: this diagnostic
+// reports the gap, it never refuses the test on account of it.
 
 import { z } from 'zod';
 
@@ -102,10 +112,18 @@ const testConnectorOutcomeSchema = z.discriminatedUnion('kind', [
   }),
 ]);
 
-/** The whole test-connector response: the raw request sent and the raw outcome received (criterion 1). */
+/**
+ * The whole test-connector response: the raw request sent and the raw
+ * outcome received (criterion 1), plus every Subject-attribute placeholder
+ * the tested connector configuration's own call text embeds that the tested
+ * capability's own input_schema does not declare
+ * (rules/integration/a-connector-placeholder-is-declared-by-its-capability),
+ * named rather than refusing the test.
+ */
 export const testConnectorResponseSchema = z.object({
   request: testConnectorRequestEchoSchema,
   response: testConnectorOutcomeSchema,
+  orphaned_placeholders: z.array(z.string()).readonly(),
 });
 
 export type TestConnectorResponseDto = z.infer<typeof testConnectorResponseSchema>;

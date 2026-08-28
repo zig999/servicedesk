@@ -58,6 +58,14 @@
       "task": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder"
     },
     {
+      "id": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test.md",
+      "title": "Report orphaned placeholders in the connector test response",
+      "summary": "test-connector's response now names, for the pair under test, every Subject-attribute placeholder the connector configuration's call text embeds that the tested capability's input_schema does not declare, computed through the shared orphanedPlaceholders check and never refusing the test.",
+      "task": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test"
+    },
+    {
       "id": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proof",
       "file": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema.md",
@@ -112,6 +120,14 @@
       "title": "Proof for refusing register-connector when a placeholder escapes every capability's properties",
       "summary": "Tests proving that registerConnector refuses a connector-configuration registration or edit embedding an orphaned Subject-attribute placeholder, names it with the failing capabilities, exempts requester/credential placeholders, succeeds once any capability declares the attribute, and holds edits to the same refusal — all traced to the HTTP 422 envelope.",
       "task": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder"
+    },
+    {
+      "id": "proof/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "kind": "proof",
+      "file": "proof/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test.md",
+      "title": "Proof for reporting orphaned placeholders in the connector test response",
+      "summary": "Wire-level tests over POST /v1/test-connector proving orphaned_placeholders names an undeclared Subject-attribute placeholder, is empty when every embedded one is declared, and is never itself a reason the test is refused — including when the underlying call fails.",
+      "task": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test"
     }
   ],
   "edges": [
@@ -338,6 +354,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "to": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "to": "implementation/capability-input-schema-contract/refuse-malformed-capability-input-schema",
       "kind": "proves",
@@ -376,6 +404,12 @@
     {
       "from": "proof/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
       "to": "implementation/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "to": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
       "kind": "proves",
       "at": "the path"
     }

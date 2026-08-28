@@ -351,3 +351,85 @@ it('answers 400 for a request whose body omits the capability identity entirely,
   expect(built.readCapabilityByIdentity).not.toHaveBeenCalled();
   expect(built.httpClient).not.toHaveBeenCalled();
 });
+
+// -------------------------------- task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test
+//
+// The tested capability's own input_schema declares properties distinct from
+// "id" for the first two tests below, so a reader can tell the reported gap
+// comes from a schema that actually declares something rather than from the
+// shared check's own defensive "malformed reads as declaring nothing"
+// posture (already proven separately in
+// connector-placeholder-declaration-check.spec.ts).
+
+it("names, in its own orphaned_placeholders, a Subject-attribute placeholder the tested connector configuration's call text embeds that the tested capability's own input schema does not declare", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({
+    held: true,
+    capability: heldCapability({ input_schema: JSON.stringify({ type: 'object', properties: { unrelated_attribute: {} } }) }),
+  });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfigurationResolution());
+  built.httpClient.mockResolvedValueOnce(new Response(null, { status: 200 }));
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as TestConnectorResponseDto;
+  expect(body.orphaned_placeholders).toEqual(['id']);
+});
+
+it("names none in its own orphaned_placeholders when the tested capability's own input schema declares every Subject-attribute placeholder the tested connector configuration's call text embeds", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({
+    held: true,
+    capability: heldCapability({ input_schema: JSON.stringify({ type: 'object', properties: { id: {} } }) }),
+  });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfigurationResolution());
+  built.httpClient.mockResolvedValueOnce(new Response(null, { status: 200 }));
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as TestConnectorResponseDto;
+  expect(body.orphaned_placeholders).toEqual([]);
+});
+
+it('is not refused, and still issues the call and returns the outcome, for a test whose own response reports an orphaned placeholder', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({
+    held: true,
+    capability: heldCapability({ input_schema: JSON.stringify({ type: 'object', properties: { unrelated_attribute: {} } }) }),
+  });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfigurationResolution());
+  built.httpClient.mockResolvedValueOnce(new Response(JSON.stringify({ value: 1 }), { status: 200 }));
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as TestConnectorResponseDto & { error?: unknown };
+  expect(body.orphaned_placeholders).toEqual(['id']);
+  expect(body.error).toBeUndefined();
+  expect(body.response.kind).toBe('response');
+  expect(built.httpClient).toHaveBeenCalledTimes(1);
+});
+
+it('still names the orphaned placeholder in its own response, without itself refusing the test, when the underlying HTTP call fails', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.readCapabilityByIdentity.mockResolvedValueOnce({
+    held: true,
+    capability: heldCapability({ input_schema: JSON.stringify({ type: 'object', properties: { unrelated_attribute: {} } }) }),
+  });
+  built.readConnectorConfiguration.mockResolvedValueOnce(heldConnectorConfigurationResolution());
+  built.httpClient.mockRejectedValueOnce(new Error('a genuine network failure'));
+
+  const response = await app.inject({ method: 'POST', url: '/v1/test-connector', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  const body = response.json() as TestConnectorResponseDto & { error?: unknown };
+  expect(body.response.kind).toBe('error');
+  expect(body.orphaned_placeholders).toEqual(['id']);
+  expect(body.error).toBeUndefined();
+});

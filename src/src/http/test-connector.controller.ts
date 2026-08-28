@@ -42,6 +42,20 @@
 // uses the real, unredacted resolution — the credential travels to the
 // external system exactly as a real observation's would; only what is
 // reported back is masked.
+//
+// The response also names, for the pair under test, every Subject-attribute
+// placeholder the tested connector configuration's own call text embeds that
+// the tested capability's own input_schema properties does not declare
+// (rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+// own "testing a connector configuration through its capability reports
+// this same check for the pairing under test, since that diagnostic exists
+// exactly to expose this seam to an operator") — computed through the same
+// shared, pure orphanedPlaceholders check either registration's own
+// write-time refusal reuses
+// (connector-registry/connector-placeholder-declaration-check.ts), reported
+// as data on this route's own 2xx response rather than ever refusing the
+// test on that account: an empty list where every embedded placeholder is
+// already declared.
 
 import type { Capability } from '../capability-registry/capability.js';
 import type { CapabilityIdentityResolution } from '../capability-registry/capability-registry.service.js';
@@ -49,6 +63,8 @@ import {
   parsedConnectorConfiguration,
   type ConnectorConfigurationResolution,
 } from '../connector-registry/connector-configuration-registry.service.js';
+import type { ConnectorConfiguration } from '../connector-registry/connector-configuration.js';
+import { orphanedPlaceholders } from '../connector-registry/connector-placeholder-declaration-check.js';
 import type { AssembledConnectorRequest } from '../http-connector/connector-call-descriptor.js';
 import { connectorRequestUrl, issueConnectorHttpCall } from '../http-connector/connector-http-issuer.js';
 import { resolveConnectorRequest } from '../http-connector/connector-request-resolver.js';
@@ -74,8 +90,12 @@ export type TestConnectorControllerDependencies = {
  * Handles one test-connector request end to end (criteria 1, 2, 5, 6):
  * resolves and validates the named capability and connector (criteria 3,
  * 4), assembles the outbound request from the request's own subject, issues
- * it once, and answers the raw request sent (credential-redacted) and the
- * raw outcome received.
+ * it once, and answers the raw request sent (credential-redacted), the raw
+ * outcome received, and every Subject-attribute placeholder the tested
+ * connector configuration's own call text embeds that the tested
+ * capability's own input_schema does not declare
+ * (rules/integration/a-connector-placeholder-is-declared-by-its-capability),
+ * named rather than refused.
  */
 export async function handleTestConnectorRequest(
   dependencies: TestConnectorControllerDependencies,
@@ -83,17 +103,27 @@ export async function handleTestConnectorRequest(
 ): Promise<TestConnectorResponseDto> {
   const capability = await resolveTestedCapability(dependencies, body);
   const configuration = await resolveTestedConnectorConfiguration(dependencies, body.connector);
-  const httpFields = asHttpConnectorCallConfiguration(body.connector, configuration);
+  const httpFields = asHttpConnectorCallConfiguration(body.connector, configuration.parsed);
   const subject = buildSubject(body.subject.type, body.subject.attributes);
-  const issuedRequest = resolveConnectorRequest({ configuration, subject, requester: body.requester });
-  const echoedRequest = resolveConnectorRequest({ configuration, subject, requester: body.requester, env: redactingEnv() });
+  const issuedRequest = resolveConnectorRequest({ configuration: configuration.parsed, subject, requester: body.requester });
+  const echoedRequest = resolveConnectorRequest({
+    configuration: configuration.parsed,
+    subject,
+    requester: body.requester,
+    env: redactingEnv(),
+  });
   const response = await issueOutcome({
     httpClient: dependencies.httpClient,
     method: httpFields.method,
     request: issuedRequest,
     timeoutMs: capability.timeout,
   });
-  return { request: requestEcho(httpFields.method, echoedRequest), response };
+  const orphanedPlaceholderNames = orphanedPlaceholders(configuration.raw.configuration, capability.input_schema);
+  return {
+    request: requestEcho(httpFields.method, echoedRequest),
+    response,
+    orphaned_placeholders: orphanedPlaceholderNames,
+  };
 }
 
 /** Resolves the named capability by its own identity, refusing one that is not registered (criterion 3) or whose own connector does not match the connector the request named (criterion 4). */
@@ -112,6 +142,22 @@ async function resolveTestedCapability(
 }
 
 /**
+ * The named connector's own configuration, resolved once and held two ways:
+ * raw, exactly as the registry holds it (its own JSON object text —
+ * domain/integration/connector-configuration), and parsed, the plain object
+ * this route derives a call from. Both are needed downstream — the parsed
+ * object to assemble and issue the call, the raw text as
+ * orphanedPlaceholders's own placeholder-token walk requires
+ * (connector-registry/connector-placeholder-declaration-check.ts) — so
+ * resolving the connector configuration a second time to recover the text is
+ * never necessary.
+ */
+type ResolvedTestConnectorConfiguration = {
+  readonly raw: ConnectorConfiguration;
+  readonly parsed: Readonly<Record<string, unknown>>;
+};
+
+/**
  * Resolves the named connector's own opaque call configuration, refusing
  * where the registry holds none for it, and parses the registry's own held
  * JSON object text back into the plain object this route derives a call
@@ -120,24 +166,25 @@ async function resolveTestedCapability(
  * text representation
  * (task/connector-configuration-registration-conformance/configuration-held-as-text)
  * and this consumer, reused rather than re-derived (MNT-03). Returning that
- * parsed object, never the stored text itself, is what lets
- * handleTestConnectorRequest below derive method, responseMap and statusMap
- * from it through asHttpConnectorCallConfiguration
+ * parsed object alongside the raw configuration it was parsed from is what
+ * lets handleTestConnectorRequest below derive method, responseMap and
+ * statusMap through asHttpConnectorCallConfiguration
  * (task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration,
  * domain/integration/connector-configuration,
  * rules/integration/a-connector-configuration-holds-a-well-formed-object) —
  * a call derived from the parsed configuration rather than from an
- * assumed-already-parsed object.
+ * assumed-already-parsed object — while still handing the raw call text to
+ * orphanedPlaceholders below.
  */
 async function resolveTestedConnectorConfiguration(
   dependencies: TestConnectorControllerDependencies,
   connector: string,
-): Promise<Readonly<Record<string, unknown>>> {
+): Promise<ResolvedTestConnectorConfiguration> {
   const resolution = await dependencies.readConnectorConfiguration(connector);
   if (!resolution.held) {
     throw new ConnectorConfigurationNotFoundError(connector);
   }
-  return parsedConnectorConfiguration(resolution.configuration);
+  return { raw: resolution.configuration, parsed: parsedConnectorConfiguration(resolution.configuration) };
 }
 
 /** An env substitute answering every credential placeholder's own lookup with the redaction marker rather than a real secret value, so resolveConnectorRequest's own substitution mechanism produces a redacted echo without this module re-deriving it (MNT-03). */
