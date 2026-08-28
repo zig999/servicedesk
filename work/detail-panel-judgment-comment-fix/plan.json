@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/detail-panel-judgment-comment-fix",
+      "kind": "epic",
+      "file": "epic/detail-panel-judgment-comment-fix.md",
+      "title": "Detail panel Criterion 6 comment-wording hotfix",
+      "summary": "The one corrective task that rewords case-simulation-detail-panel.tsx's own Criterion 6 comment so it no longer conflates a per-hypothesis fact with an investigation-wide one."
+    },
+    {
+      "id": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "kind": "task",
+      "file": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment.md",
+      "title": "Reword the Detail panel's Criterion 6 comment to separate the per-hypothesis fact from the investigation-wide one",
+      "summary": "Corrects case-simulation-detail-panel.tsx's own header comment, which currently groups model, prompt version, token usage and elapsed time as one undifferentiated \"judgment\" set, into two correctly-attributed facts.",
+      "epic": "detail-panel-judgment-comment-fix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/detail-panel-judgment-comment-fix",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/detail-panel-judgment-comment-fix",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
