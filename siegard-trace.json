@@ -7,7 +7,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -65,7 +65,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },
@@ -79,7 +79,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -89,7 +89,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -115,7 +115,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -125,11 +125,11 @@
       "files": [
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -171,7 +171,7 @@
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:4ab367bd580f7e29670579cba6ebe713775125c496685d13084dd3fde3a0e78a"
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         },
         {
           "path": "src/src/http/test-connector.routes.ts",
@@ -199,11 +199,11 @@
       "files": [
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:66399ab52c6817d46e1e04771480e4d89886172483129081ea5c8fb9794f1d0d"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         },
         {
           "path": "src/src/http/read-capability-by-identity.controller.ts",
@@ -231,7 +231,7 @@
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
-          "digest": "sha256:47235f70bdfec38040616283ce2b78c3d34be4f3f35eb612bf3143677395f954"
+          "digest": "sha256:0324e08810b6331645b8caf325b1d9454e626868db708346fb77a8ca406d5134"
         },
         {
           "path": "src/src/migrate.ts",
@@ -279,7 +279,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
@@ -299,7 +299,7 @@
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
-          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+          "digest": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
@@ -339,7 +339,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -381,7 +381,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -483,7 +483,7 @@
         },
         {
           "path": "src/src/factories/capability-registry.factory.ts",
-          "digest": "sha256:d269385b710014cf5c40bc460537849d0912133b6cc13ccaaf04bdef7153bb9f"
+          "digest": "sha256:61acbdfd7705bee6c5973fd86fc01b8e0558a4914f9344ff356bb424373b7a53"
         },
         {
           "path": "src/src/factories/case-query.factory.ts",
@@ -495,7 +495,7 @@
         },
         {
           "path": "src/src/factories/diagnose-server.factory.ts",
-          "digest": "sha256:47235f70bdfec38040616283ce2b78c3d34be4f3f35eb612bf3143677395f954"
+          "digest": "sha256:0324e08810b6331645b8caf325b1d9454e626868db708346fb77a8ca406d5134"
         },
         {
           "path": "src/src/factories/diagnose.factory.ts",
@@ -541,7 +541,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
@@ -553,7 +553,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:77535e5301fb1081d07081ccdb6c001247f0a91b170c82fe6666abde0b742198"
+          "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
@@ -685,11 +685,11 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:77535e5301fb1081d07081ccdb6c001247f0a91b170c82fe6666abde0b742198"
+          "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
         },
         {
           "path": "src/src/http/dto/list-capabilities.dto.ts",
@@ -737,7 +737,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -755,7 +755,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -801,7 +801,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/http/dto/list-connector-configurations.dto.ts",
@@ -855,11 +855,11 @@
         },
         {
           "path": "src/src/http/dto/test-connector.dto.ts",
-          "digest": "sha256:a71694baf6e6e9eb3ff63958e01710134e80a102c977ed1fbbb88fc29d1b59dc"
+          "digest": "sha256:64fcb2ea2ff9305a1e88b55e478f22e1ec793899728a9b7a1981e6fc9b8a553c"
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:4ab367bd580f7e29670579cba6ebe713775125c496685d13084dd3fde3a0e78a"
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         },
         {
           "path": "src/src/http/test-connector.routes.ts",
@@ -877,11 +877,11 @@
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
-          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+          "digest": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -997,7 +997,7 @@
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },
@@ -1051,7 +1051,7 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -1087,7 +1087,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:42dc8c5b9da14961d3843b22556daf9a5df7519f4116903b9f0539ca92419d39"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/factories/case-input-requirements.factory.ts",
@@ -1311,7 +1311,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -1403,7 +1403,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -1445,7 +1445,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -1455,7 +1455,7 @@
       "files": [
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:4feb4a15ed5b7166479fbdfebf643b987d7c82089ac72f9dbe9b3a9d628b5f80"
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -1949,7 +1949,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
@@ -1981,7 +1981,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -2123,7 +2123,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/connector-registry/connector-configuration.ts",
@@ -2151,7 +2151,7 @@
         },
         {
           "path": "src/src/http/register-connector.controller.ts",
-          "digest": "sha256:a535b4e167696c8590cc71c5e79a452f5d2a57561d80308cf3d7980537d2da33"
+          "digest": "sha256:3687d1e9775aa3b0607e9f9ba9ba06c23807f2c18eab7d22600ac18d4809cfe8"
         },
         {
           "path": "src/src/http/register-connector.routes.ts",
@@ -2159,7 +2159,7 @@
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:4ab367bd580f7e29670579cba6ebe713775125c496685d13084dd3fde3a0e78a"
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
@@ -2185,7 +2185,7 @@
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/factories/connector-configuration-registry.factory.ts",
@@ -2193,7 +2193,7 @@
         },
         {
           "path": "src/src/http/build-app.ts",
-          "digest": "sha256:77535e5301fb1081d07081ccdb6c001247f0a91b170c82fe6666abde0b742198"
+          "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
         }
       ]
     },
@@ -2369,7 +2369,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -2419,7 +2419,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:04262bed77a7d8b4bfeb6e3267baba0b115a4020e882197e118079da26de2ebd"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
@@ -2567,7 +2567,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -2679,7 +2679,7 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/evidence-result.ts",
@@ -2691,7 +2691,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -2717,7 +2717,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -2805,7 +2805,7 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -2987,7 +2987,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         },
         {
           "path": "src/src/investigation/verdict.ts",
@@ -3045,7 +3045,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -3307,7 +3307,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -3489,7 +3489,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/case-resolution.ts",
@@ -3929,7 +3929,7 @@
     },
     {
       "node": "rules/integration/a-capability-declares-its-contract",
-      "digest": "sha256:98985a299da07e316ea2b45a91f2fc55ebd5f901439530fe7237826ee5a7fb31",
+      "digest": "sha256:7ecef635d660efe9a8a3c30cc4b7ae900b90a7b7c681bb2a46a2a6fd529256af",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-capability-form.ts",
@@ -3941,7 +3941,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/capability-registry/capability.ts",
@@ -3983,7 +3983,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/errors/capability-schema-not-well-formed.error.ts",
@@ -4001,7 +4001,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:cd3ee37883900154bbd72108bf9cb524f26f8346b1ae8482c1c5c712f73f28db"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/errors/malformed-capability-input-schema.error.ts",
@@ -4009,7 +4009,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:5542fc919a474ed142df49f2c492d50d9bb2b9e2e9259bcfb78a3a940c4cf21e"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         }
       ]
     },
@@ -4031,7 +4031,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/errors/capability-not-read-only.error.ts",
@@ -4065,7 +4065,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/errors/connector-configuration-not-well-formed.error.ts",
@@ -4073,7 +4073,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:66399ab52c6817d46e1e04771480e4d89886172483129081ea5c8fb9794f1d0d"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         }
       ]
     },
@@ -4103,7 +4103,7 @@
         },
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:4ab367bd580f7e29670579cba6ebe713775125c496685d13084dd3fde3a0e78a"
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         }
       ]
     },
@@ -4113,7 +4113,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:66399ab52c6817d46e1e04771480e4d89886172483129081ea5c8fb9794f1d0d"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         }
       ]
     },
@@ -4123,19 +4123,23 @@
       "files": [
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:66399ab52c6817d46e1e04771480e4d89886172483129081ea5c8fb9794f1d0d"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
-          "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
+          "digest": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14"
         },
         {
           "path": "src/src/http/read-connector-configuration.controller.ts",
           "digest": "sha256:205e5ae5a44d6f5b9418662e57f1a8826b2230b8c89f5091ed6621f9498b7a88"
+        },
+        {
+          "path": "src/src/http/test-connector.controller.ts",
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         }
       ]
     },
@@ -4183,7 +4187,7 @@
       "files": [
         {
           "path": "src/src/http/test-connector.controller.ts",
-          "digest": "sha256:4ab367bd580f7e29670579cba6ebe713775125c496685d13084dd3fde3a0e78a"
+          "digest": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f"
         }
       ]
     },
@@ -4197,7 +4201,7 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
@@ -4211,7 +4215,7 @@
       "files": [
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -4221,7 +4225,7 @@
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
@@ -4243,7 +4247,7 @@
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -4265,7 +4269,7 @@
         },
         {
           "path": "src/src/capability-registry/capability-registry.service.ts",
-          "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
+          "digest": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f"
         },
         {
           "path": "src/src/errors/concept-already-answered.error.ts",
@@ -4287,7 +4291,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -4301,7 +4305,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -4323,7 +4327,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -4363,7 +4367,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:1f9e8aa6c7768ff24ffd7b3d94daa8babd3a838f1e6ca930bb86e8d441669031"
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         }
       ]
     },
@@ -4479,7 +4483,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },
@@ -4497,7 +4501,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -4515,7 +4519,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -4529,11 +4533,11 @@
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -4547,15 +4551,15 @@
       "files": [
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
-          "digest": "sha256:94ecae21a5269ed2eb2f14dd302dbf909eac315524384703a262d358057c2a89"
+          "digest": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -4605,7 +4609,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -4615,7 +4619,7 @@
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -4633,7 +4637,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:0437c477096b2c3a81729e6059b735f17535ef22a2351ecb7c223fd72f8911b2"
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         }
       ]
     },
@@ -4647,7 +4651,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -4659,7 +4663,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },
@@ -5203,7 +5207,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/case.ts",
@@ -5453,7 +5457,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -5509,15 +5513,15 @@
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -5583,7 +5587,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:0437c477096b2c3a81729e6059b735f17535ef22a2351ecb7c223fd72f8911b2"
+          "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
         }
       ]
     },
@@ -5593,7 +5597,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -5603,7 +5607,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
         }
       ]
     },
@@ -5661,11 +5665,11 @@
       "files": [
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:d5db58a922cd70066058561e4557727bde71acda82951b4d2e8031ccd459c6a1"
+          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
         },
         {
           "path": "src/src/investigation/http-declarative-observation-source.adapter.ts",
-          "digest": "sha256:20c17e580a9d038e524701644e8d636f2969e02ba2ba7da26d90d932b7e6122c"
+          "digest": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551"
         }
       ]
     },
@@ -5679,7 +5683,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ed4c27d73fd5a1797a6c48be54f2b8839079148aa37940bd1f7c8473fab68351"
+          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
         }
       ]
     },
