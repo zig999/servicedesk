@@ -1,0 +1,141 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "implementation",
+      "file": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch.md",
+      "title": "Fix use-simulate-hypothesis dispatch to the delivered backend route",
+      "summary": "Rewires the simulate-hypothesis dispatch hook and its cockpit call site to POST /v1/simulate/hypothesis with the case/subject/requester/hypothesis body and the evidence/evaluation/durations response shape the backend actually delivered, replacing the never-registered nested per-case-version URL that produced a 404.",
+      "task": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch"
+    },
+    {
+      "id": "proof/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "proof",
+      "file": "proof/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch.md",
+      "title": "Proof for fix-use-simulate-hypothesis-dispatch",
+      "summary": "Proves the corrected POST /v1/simulate/hypothesis dispatch (route, body shape, requester forwarding, response envelope, and the cockpit's own call-site forwarding), and repairs the six pre-existing test/fixture files that modeled the defective dispatch this task replaces.",
+      "task": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch"
+    },
+    {
+      "id": "review/simulate-hypothesis-endpoint-hotfix",
+      "kind": "review",
+      "file": "review/simulate-hypothesis-endpoint-hotfix.md",
+      "title": "Review: simulate-hypothesis-endpoint-hotfix",
+      "summary": "What four passes found over the corrective fix wiring use-simulate-hypothesis.ts to the delivered POST /v1/simulate/hypothesis route.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A dispatch against the live backend route for a case version whose manifest holds the named hypothesis returns exactly one evaluation for that hypothesis."
+      ],
+      "findings": 2
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/case",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "implementation/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/simulate-hypothesis-endpoint-hotfix",
+      "to": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}

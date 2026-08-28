@@ -1,19 +1,27 @@
 import { createElement, type ReactElement, type ReactNode } from "react";
 import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { Evaluation, SimulateHypothesisResult } from "./use-simulate-hypothesis";
+import type {
+  Durations,
+  Evaluation,
+  Evidence,
+  SimulateHypothesisResult,
+} from "./use-simulate-hypothesis";
 
 // Shared fixtures and helpers for use-simulate-hypothesis's own split spec files
 // (use-simulate-hypothesis-request.spec.ts, use-simulate-hypothesis-dispatch-safety.spec.ts),
 // mirroring use-capability-detail.test-support.ts's own established one-support-file-per-unit
 // pattern and connector-configurations-screen.test-support.ts's own parsedPutBody guard-not-cast
-// convention. No live simulate-hypothesis backend exists yet (the task's own Notes), so every
-// response below is a mocked stand-in for the operation's own declared contract shape, never a
-// read of a real endpoint.
+// convention. fix-use-simulate-hypothesis-dispatch (a corrective increment): the backend route
+// this hook now dispatches to (POST /v1/simulate/hypothesis) is live, and every response fixture
+// below models its own delivered simulateHypothesisResponseSchema shape -- still a mocked
+// fetch response rather than a call against a running backend, matching how this app's own
+// sibling use-simulate-case.ts hook is proven.
 
 export const SLUG = "some-case";
 export const VERSION = 3;
-export const SIMULATE_PATH = `/v1/cases/${SLUG}/versions/${VERSION}/simulate-hypothesis`;
+export const REQUESTER = "someone";
+export const SIMULATE_PATH = "/v1/simulate/hypothesis";
 
 export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
@@ -93,6 +101,7 @@ export function inconclusiveEvaluation(): Evaluation {
     hypothesis: "hypothesis-a",
     verdict: "inconclusive",
     reason: "no-data",
+    citations: [],
   };
 }
 
@@ -111,10 +120,34 @@ export function confirmedEvaluationWithJudgmentCall(): Evaluation {
   };
 }
 
+/** The evidence array a simulateHypothesisResult() fixture carries by default -- one collected
+ * concept, shaped after the route's own delivered evidenceSchema (flat capability_name/
+ * capability_version fields, this file's own header comment). */
+export function evidenceItem(): Evidence {
+  return {
+    concept: "billing-account",
+    inputs: "{}",
+    observation: "the account is in good standing",
+    observed_at: "2026-08-01T00:00:00.000Z",
+    ttl: 3600,
+    origin: "billing-connector",
+    result: "ok",
+    capability_name: "fetch-billing-account",
+    capability_version: "1",
+    elapsed_ms: 120,
+  };
+}
+
+/** The durations object a simulateHypothesisResult() fixture carries by default -- no writing
+ * figure, since this operation never consolidates (this file's own header comment). */
+export function hypothesisDurations(): Durations {
+  return { collection: 400, judgment: 300, total: 700 };
+}
+
 export function simulateHypothesisResult(
   evaluation: Evaluation = confirmedEvaluation(),
 ): SimulateHypothesisResult {
-  return { evaluation };
+  return { evidence: [evidenceItem()], evaluation, durations: hypothesisDurations() };
 }
 
 /** Narrows a possibly-null result the way readyState/loadErrorState narrow

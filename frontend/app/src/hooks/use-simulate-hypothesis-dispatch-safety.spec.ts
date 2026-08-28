@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { useSimulateHypothesis } from "./use-simulate-hypothesis";
 import {
+  REQUESTER,
   SIMULATE_PATH,
   SLUG,
   SUBJECT,
@@ -34,7 +35,7 @@ describe("useSimulateHypothesis — nothing it dispatches invalidates any cached
     const { result } = renderHook(() => useSimulateHypothesis(SLUG, VERSION), { wrapper: Wrapper });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.result).not.toBeNull());
 
@@ -48,7 +49,7 @@ describe("useSimulateHypothesis — nothing it dispatches invalidates any cached
     const { result } = renderHook(() => useSimulateHypothesis(SLUG, VERSION), { wrapper: Wrapper });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.simulationError).not.toBeNull());
 
@@ -65,7 +66,7 @@ describe("useSimulateHypothesis — a dispatch failure resolves through uiStateF
       wrapper: createWrapper().Wrapper,
     });
     act(() => {
-      firstResult.current.onSimulate("hypothesis-a", SUBJECT);
+      firstResult.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(firstResult.current.simulationError).not.toBeNull());
     const firstMessage = firstResult.current.simulationError;
@@ -78,7 +79,7 @@ describe("useSimulateHypothesis — a dispatch failure resolves through uiStateF
       wrapper: createWrapper().Wrapper,
     });
     act(() => {
-      secondResult.current.onSimulate("hypothesis-a", SUBJECT);
+      secondResult.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(secondResult.current.simulationError).not.toBeNull());
     const secondMessage = secondResult.current.simulationError;
@@ -100,7 +101,7 @@ describe("useSimulateHypothesis — a dispatch failure resolves through uiStateF
     });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.simulationError).not.toBeNull());
 
@@ -124,7 +125,7 @@ describe("useSimulateHypothesis — isSimulating reflects the mutation's pending
     expect(result.current.isSimulating).toBe(false);
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.isSimulating).toBe(true));
 
@@ -143,8 +144,8 @@ describe("useSimulateHypothesis — isSimulating reflects the mutation's pending
     });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.isSimulating).toBe(true));
 
@@ -165,13 +166,13 @@ describe("useSimulateHypothesis — isSimulating reflects the mutation's pending
     });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.simulationError).not.toBeNull());
 
     shouldFail = false;
     act(() => {
-      result.current.onSimulate("hypothesis-a", SUBJECT);
+      result.current.onSimulate("hypothesis-a", SUBJECT, REQUESTER);
     });
     await waitFor(() => expect(result.current.result).not.toBeNull());
 
@@ -189,7 +190,7 @@ describe("useSimulateHypothesis — refuses to dispatch for an incomplete hypoth
     });
 
     act(() => {
-      result.current.onSimulate("   ", SUBJECT);
+      result.current.onSimulate("   ", SUBJECT, REQUESTER);
     });
 
     expect(fetchMock.mock.calls.length).toBe(0);
@@ -205,7 +206,7 @@ describe("useSimulateHypothesis — refuses to dispatch for an incomplete hypoth
     });
 
     act(() => {
-      result.current.onSimulate("hypothesis-a", { type: "billing-dispute", attributes: [] });
+      result.current.onSimulate("hypothesis-a", { type: "billing-dispute", attributes: [] }, REQUESTER);
     });
 
     expect(fetchMock.mock.calls.length).toBe(0);

@@ -1,0 +1,33 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-case-simulation-cockpit.test-support.ts(210,3): error TS2322: Type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' is not assignable to type 'Evaluation'.
+  Property 'citations' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type '{ readonly hypothesis: string; readonly verdict: "inconclusive"; readonly reason: EvaluationReason; readonly citations: readonly Citation[]; readonly usage?: Usage | undefined; readonly elapsed_ms?: number | undefined; readonly prompt?: string | undefined; }'.
+src/hooks/use-case-simulation-cockpit.test-support.ts(220,3): error TS2739: Type '{ evaluation: Evaluation; }' is missing the following properties from type 'SimulateHypothesisResult': evidence, durations
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(37,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(51,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(68,27): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(81,28): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(103,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(127,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(146,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(147,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(168,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(174,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(192,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-dispatch-safety.spec.ts(208,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(47,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(66,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(81,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(99,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(118,22): error TS2554: Expected 3 arguments, but got 2.
+src/hooks/use-simulate-hypothesis-request.spec.ts(139,9): error TS2578: Unused '@ts-expect-error' directive.
+src/hooks/use-simulate-hypothesis.test-support.ts(92,3): error TS2322: Type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' is not assignable to type 'Evaluation'.
+  Property 'citations' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type '{ readonly hypothesis: string; readonly verdict: "inconclusive"; readonly reason: EvaluationReason; readonly citations: readonly Citation[]; readonly usage?: Usage | undefined; readonly elapsed_ms?: number | undefined; readonly prompt?: string | undefined; }'.
+src/hooks/use-simulate-hypothesis.test-support.ts(117,3): error TS2739: Type '{ evaluation: Evaluation; }' is missing the following properties from type 'SimulateHypothesisResult': evidence, durations
+src/routes/case-simulation-cockpit-adapters.spec.ts(114,11): error TS2322: Type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' is not assignable to type 'Evaluation'.
+  Property 'citations' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type '{ readonly hypothesis: string; readonly verdict: "inconclusive"; readonly reason: EvaluationReason; readonly citations: readonly Citation[]; readonly usage?: Usage | undefined; readonly elapsed_ms?: number | undefined; readonly prompt?: string | undefined; }'.
+src/routes/case-simulation-ready-view.test-support.ts(284,3): error TS2322: Type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' is not assignable to type 'Evaluation'.
+  Property 'citations' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type '{ readonly hypothesis: string; readonly verdict: "inconclusive"; readonly reason: EvaluationReason; readonly citations: readonly Citation[]; readonly usage?: Usage | undefined; readonly elapsed_ms?: number | undefined; readonly prompt?: string | undefined; }'.
+src/routes/case-simulation-ready-view.test-support.ts(294,3): error TS2739: Type '{ evaluation: Evaluation; }' is missing the following properties from type 'SimulateHypothesisResult': evidence, durations

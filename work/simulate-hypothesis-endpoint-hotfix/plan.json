@@ -1,0 +1,190 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulate-hypothesis-endpoint-hotfix",
+      "kind": "epic",
+      "file": "epic/simulate-hypothesis-endpoint-hotfix.md",
+      "title": "simulate-hypothesis endpoint wiring hotfix",
+      "summary": "The one corrective task that rewires the frontend simulate-hypothesis dispatch to the backend route actually delivered."
+    },
+    {
+      "id": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "kind": "task",
+      "file": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch.md",
+      "title": "Fix use-simulate-hypothesis dispatch to the delivered backend route",
+      "summary": "Rewires the frontend simulate-hypothesis dispatch to POST /v1/simulate/hypothesis with the body the backend route requires, instead of a nested per-case-version URL that was never registered.",
+      "epic": "simulate-hypothesis-endpoint-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-endpoint-hotfix",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/case",
+      "kind": "implements",
+      "at": "implements[10]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[11]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[12]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "scenarios/investigation/a-single-hypothesis-is-simulated",
+      "kind": "implements",
+      "at": "implements[13]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/simulate-hypothesis-endpoint-hotfix/fix-use-simulate-hypothesis-dispatch",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[9]"
+    }
+  ]
+}

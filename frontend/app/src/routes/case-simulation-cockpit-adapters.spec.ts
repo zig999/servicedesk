@@ -110,11 +110,12 @@ describe("fromHypothesisEvaluation -- normalizing a single-hypothesis run's own 
     expect(normalized.citations).toEqual([{ concept: "billing-history", field: "observation" }]);
   });
 
-  it("normalizes an inconclusive hypothesis-level evaluation to an empty citations array, since that branch carries no citations field at all", () => {
+  it("normalizes an inconclusive hypothesis-level evaluation to an empty citations array, discarding whatever the response itself carried for that branch", () => {
     const evaluation: HypothesisEvaluation = {
       hypothesis: "hypothesis-a",
       verdict: "inconclusive",
       reason: "no-data",
+      citations: [{ concept: "billing-history", field: "observation" }],
     };
 
     const normalized = fromHypothesisEvaluation(evaluation);

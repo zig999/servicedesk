@@ -4,7 +4,12 @@ import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { CaseVersionRecord, CaseVersionManifestEntry } from "../services/case-version-record";
 import type { SimulateCaseResult, SimulateEvaluation } from "./use-simulate-case";
-import type { SimulateHypothesisResult, Evaluation as HypothesisEvaluation } from "./use-simulate-hypothesis";
+import type {
+  Durations as HypothesisDurations,
+  Evidence as HypothesisEvidence,
+  SimulateHypothesisResult,
+  Evaluation as HypothesisEvaluation,
+} from "./use-simulate-hypothesis";
 import type { CaseSimulationCockpitState } from "./use-case-simulation-cockpit";
 
 // Shared fixtures and helpers for use-case-simulation-cockpit.ts's own split proof
@@ -13,8 +18,10 @@ import type { CaseSimulationCockpitState } from "./use-case-simulation-cockpit";
 // use-simulate-case.test-support.ts's own method/body-capturing handler shape. This hook
 // composes exactly four network boundaries through its own four already-delivered composed
 // hooks (useSimulationSubject's capabilities/connector-configurations, useSimulateCase's
-// /v1/simulate, useSimulateHypothesis's own per-slug/version endpoint) -- this file stands in
-// for those four boundaries only (TST-03), never for this hook's own composition logic
+// /v1/simulate, useSimulateHypothesis's own POST /v1/simulate/hypothesis --
+// fix-use-simulate-hypothesis-dispatch's own corrected, fixed route, superseding this file's own
+// prior per-slug/version URL) -- this file stands in for those four boundaries only (TST-03),
+// never for this hook's own composition logic
 // (the gating, the shared subject, the per-hypothesis evaluation map, the case-result and
 // staleness bookkeeping), which each spec file exercises directly against the real hook.
 
@@ -22,8 +29,13 @@ export const CAPABILITIES_PATH = "/v1/capabilities";
 export const CONNECTORS_PATH = "/v1/connectors";
 export const SIMULATE_CASE_PATH = "/v1/simulate";
 
-export function simulateHypothesisPath(slug: string, version: number): string {
-  return `/v1/cases/${slug}/versions/${version}/simulate-hypothesis`;
+/** fix-use-simulate-hypothesis-dispatch (a corrective increment): the hook now dispatches to one
+ * fixed route regardless of slug/version -- the case identity travels in the body instead
+ * (this task's own header comment). Keeps its own two parameters so every existing call site in
+ * this hooks directory's own sibling spec files (`simulateHypothesisPath(SLUG, VERSION)`) still
+ * resolves to the one URL the hook actually calls, without editing those call sites. */
+export function simulateHypothesisPath(_slug: string, _version: number): string {
+  return "/v1/simulate/hypothesis";
 }
 
 /** Mirrors use-simulation-subject.test-support.ts's own identical fixture pair exactly -- that
@@ -211,13 +223,38 @@ export function inconclusiveHypothesisEvaluation(hypothesis: string): Hypothesis
     hypothesis,
     verdict: "inconclusive",
     reason: "no-data",
+    citations: [],
   };
+}
+
+/** The evidence array and durations object a simulateHypothesisResult() fixture carries by
+ * default, shaped after the route's own delivered evidenceSchema/durationsSchema
+ * (fix-use-simulate-hypothesis-dispatch's own header comment on use-simulate-hypothesis.ts). */
+function hypothesisEvidence(): readonly HypothesisEvidence[] {
+  return [
+    {
+      concept: "billing-history",
+      inputs: "{}",
+      observation: "the account shows one authorized charge",
+      observed_at: "2026-08-01T00:00:00.000Z",
+      ttl: 3600,
+      origin: "billing-connector",
+      result: "ok",
+      capability_name: "fetch-billing-account",
+      capability_version: "1",
+      elapsed_ms: 120,
+    },
+  ];
+}
+
+function hypothesisDurations(): HypothesisDurations {
+  return { collection: 400, judgment: 300, total: 700 };
 }
 
 export function simulateHypothesisResult(
   evaluation: HypothesisEvaluation = confirmedHypothesisEvaluation("hypothesis-a"),
 ): SimulateHypothesisResult {
-  return { evaluation };
+  return { evidence: hypothesisEvidence(), evaluation, durations: hypothesisDurations() };
 }
 
 /** Fills the shared subject's own one derived required field and requester so
