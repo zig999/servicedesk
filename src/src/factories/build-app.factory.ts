@@ -24,6 +24,7 @@
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { CapabilityRegistryService } from '../capability-registry/capability-registry.service.js';
+import type { ICaseInputRequirementsQuery } from '../case/case-input-requirements.port.js';
 import type { ICaseQuery } from '../case/case-query.port.js';
 import type { ICaseStore } from '../case/case-store.port.js';
 import type { Env } from '../config/env.js';
@@ -39,6 +40,7 @@ import type { SimulateCaseControllerDependencies } from '../http/simulate-case.c
 import type { SimulateHypothesisControllerDependencies } from '../http/simulate-hypothesis.controller.js';
 import type { DatabaseConnection } from '../persistence/database-connection.js';
 import { createCapabilityRegistry } from './capability-registry.factory.js';
+import { createCaseInputRequirementsQuery } from './case-input-requirements.factory.js';
 import { createCaseLifecycle, type CaseLifecycleOperations } from './case-lifecycle.factory.js';
 import { createCaseStore } from './case-store.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
@@ -65,6 +67,7 @@ export type BuildAppDependenciesInputs = {
  */
 type ComposedResources = {
   readonly caseQuery: ICaseQuery;
+  readonly caseInputRequirementsQuery: ICaseInputRequirementsQuery;
   readonly caseStore: ICaseStore;
   readonly capabilityQuery: ICapabilityQuery;
   readonly registerCapability: CapabilityRegistryService['registerCapability'];
@@ -108,7 +111,11 @@ type ComposedResources = {
  * (task/connector-configuration-authoring/list-connector-configurations-route),
  * the same shared-instance convention the capability and glossary registries
  * already hold, rather than a second instance built for the read or the
- * listing.
+ * listing. caseInputRequirementsQuery is the one deliberate exception: a
+ * second CaseQueryService instance, built from this same connection through
+ * case-input-requirements.factory.ts's own createCaseInputRequirementsQuery
+ * rather than reusing the given caseQuery — that factory's own header
+ * comment discloses why this one divergence is safe.
  */
 function composeResources(env: Env, connection: DatabaseConnection, caseQuery: ICaseQuery): ComposedResources {
   const capabilityRegistry = createCapabilityRegistry(connection);
@@ -116,6 +123,7 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
   const connectorConfigurationRegistry = createConnectorConfigurationRegistry(connection);
   return {
     caseQuery,
+    caseInputRequirementsQuery: createCaseInputRequirementsQuery(connection),
     caseStore: createCaseStore(connection),
     capabilityQuery: capabilityRegistry,
     registerCapability: (registration) => capabilityRegistry.registerCapability(registration),
@@ -133,10 +141,14 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
 }
 
 /**
- * The six read-one routes' own dependencies: read-capability,
- * read-capability-by-identity, read-case, read-vocabulary-term, read-concept
- * and read-connector-configuration, each carrying only the published read it
- * resolves against. readCapabilityByIdentity
+ * The seven read-one routes' own dependencies: read-capability,
+ * read-capability-by-identity, read-case, read-case-input-requirements,
+ * read-vocabulary-term, read-concept and read-connector-configuration, each
+ * carrying only the published read it resolves against.
+ * readCaseInputRequirements
+ * (task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements)
+ * carries the dedicated caseInputRequirementsQuery instance
+ * composeResources builds above, never the given caseQuery. readCapabilityByIdentity
  * (task/registry-reads/read-capability-by-identity-route) carries
  * readCapabilityByIdentityOrThrow — CapabilityRegistryService's own
  * service-level wrapper that raises CapabilityIdentityNotFoundError on a
@@ -162,11 +174,12 @@ function composeResources(env: Env, connection: DatabaseConnection, caseQuery: I
  */
 function readDependencies(
   resources: ComposedResources,
-): Pick<BuildAppDependencies, 'readCapability' | 'readCapabilityByIdentity' | 'readCase' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
+): Pick<BuildAppDependencies, 'readCapability' | 'readCapabilityByIdentity' | 'readCase' | 'readCaseInputRequirements' | 'readVocabularyTerm' | 'readConcept' | 'readConnectorConfiguration'> {
   return {
     readCapability: { capabilityQuery: resources.capabilityQuery },
     readCapabilityByIdentity: { readCapabilityByIdentity: resources.readCapabilityByIdentityOrThrow },
     readCase: { caseQuery: resources.caseQuery },
+    readCaseInputRequirements: { caseInputRequirementsQuery: resources.caseInputRequirementsQuery },
     readVocabularyTerm: { glossaryQuery: resources.glossaryQuery },
     readConcept: { glossaryQuery: resources.glossaryQuery },
     readConnectorConfiguration: { readConnectorConfiguration: resources.readConnectorConfigurationOrThrow },

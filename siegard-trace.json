@@ -1066,6 +1066,40 @@
       ]
     },
     {
+      "node": "contracts/knowledge/case-input-requirements",
+      "digest": "sha256:8a0c1ffc9f06cbe9dc73c6657f21226dcdec5e2a7906630845d81e8a66b9eb31",
+      "files": [
+        {
+          "path": "src/src/case/case-input-requirements.port.ts",
+          "digest": "sha256:148eb1f8059b90e6faba471ee2da2c4c0b8e8abf7874f3a6e49aabd7374afb45"
+        },
+        {
+          "path": "src/src/factories/build-app.factory.ts",
+          "digest": "sha256:42dc8c5b9da14961d3843b22556daf9a5df7519f4116903b9f0539ca92419d39"
+        },
+        {
+          "path": "src/src/factories/case-input-requirements.factory.ts",
+          "digest": "sha256:744cf5416e31f71572a92c31491045dec1a79efa772c539e8f9000a26726f99a"
+        },
+        {
+          "path": "src/src/http/build-app.ts",
+          "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
+        },
+        {
+          "path": "src/src/http/case-input-requirements.controller.ts",
+          "digest": "sha256:f5d93aa852b62951d0129f3494c485fc89d4051acb625afc607ae0a129f5e11b"
+        },
+        {
+          "path": "src/src/http/case-input-requirements.routes.ts",
+          "digest": "sha256:ede9119bfb0e701a4fac343c43e93fb6791f8e9273dfa00f849ec56b047f81ed"
+        },
+        {
+          "path": "src/src/http/dto/case-input-requirements.dto.ts",
+          "digest": "sha256:6cd47b35124bf8c3d48fbc8366c7d4b7f086f5e24ac6882a3effa3b35e280127"
+        }
+      ]
+    },
+    {
       "node": "contracts/knowledge/case-lifecycle",
       "digest": "sha256:d9b5568ba3e0b6a94006cf81c96647fd003f4cdbfad5e477b874bc7c8af248cd",
       "files": [
@@ -3040,6 +3074,20 @@
       ]
     },
     {
+      "node": "domain/knowledge/case-input-requirement",
+      "digest": "sha256:eb26a59c9f66f7c4982919e2d042a1049c7e46096bf71830abd77f22bf9f3989",
+      "files": [
+        {
+          "path": "src/src/case/case-input-requirements.ts",
+          "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
+        },
+        {
+          "path": "src/src/http/dto/case-input-requirements.dto.ts",
+          "digest": "sha256:6cd47b35124bf8c3d48fbc8366c7d4b7f086f5e24ac6882a3effa3b35e280127"
+        }
+      ]
+    },
+    {
       "node": "domain/knowledge/case-summary",
       "digest": "sha256:c2b2d98f97f6607f794e095db5afc5c58e162da0b68ce9c132fccdeacbbd9606",
       "files": [
@@ -4762,6 +4810,20 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "digest": "sha256:eec35fab8696b317d8ab50782eb58ce5f9406db1d979249ff64cd4f5f89edf6e",
+      "files": [
+        {
+          "path": "src/src/case/case-input-requirements.ts",
+          "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
+        },
+        {
+          "path": "src/src/case/case-query.service.ts",
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-collected-concept-declares-a-ttl",
       "digest": "sha256:44ec933a59c405884955f1cc5f500fe84d7be567db638d3cdffca2e23c301172",
       "files": [
@@ -5252,8 +5314,12 @@
       "digest": "sha256:df11e0cf29f5361fb9f82ad56bf88db3f8463ce6ce25bf3cfd63d7de364cff99",
       "files": [
         {
+          "path": "src/src/case/case-input-requirements.ts",
+          "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
+        },
+        {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -5280,6 +5346,16 @@
         {
           "path": "src/src/case/release.operation.ts",
           "digest": "sha256:a49fdb9a777430969fa3fc322c559ebb447c369ce9fae6510f48b6ea8ac08f48"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/integration/a-legacy-capability-declares-no-input-attributes",
+      "digest": "sha256:ddb46301f3f2dc92ec9258dc825e2618d404926d3d1c5a401660e8dd4607823e",
+      "files": [
+        {
+          "path": "src/src/case/case-input-requirements.ts",
+          "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
         }
       ]
     },

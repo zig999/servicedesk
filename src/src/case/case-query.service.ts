@@ -45,6 +45,12 @@ import { CaseNotValidError } from '../errors/case-not-valid.error.js';
 import { InvalidCaseDocumentError } from '../errors/invalid-case-document.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
+import {
+  deriveCaseInputRequirements,
+  everyRegisteredCapability,
+  type CaseInputRequirementsResult,
+} from './case-input-requirements.js';
+import type { ICaseInputRequirementsQuery } from './case-input-requirements.port.js';
 import type { Case, Hypothesis, ManifestEntry } from './case.js';
 import type { ICaseQuery, ReadCaseResult } from './case-query.port.js';
 import type {
@@ -65,7 +71,7 @@ import { caseCoherenceViolations } from './validate-case-coherence.js';
  * ICaseQuery answers a validated case without depending on any of the three
  * or on how each is persisted.
  */
-export class CaseQueryService implements ICaseQuery {
+export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery {
   public constructor(
     private readonly caseStore: ICaseStore,
     private readonly glossary: IGlossaryQuery,
@@ -85,6 +91,28 @@ export class CaseQueryService implements ICaseQuery {
     const theCase = structuralCase(assembled, slug, version);
     await this.refuseIncoherence(theCase, version);
     return { case: theCase };
+  }
+
+  /**
+   * read-case-input-requirements
+   * (contracts/knowledge/case-input-requirements): resolves the named
+   * version's own structurally valid case through the same
+   * heldVersion/structuralCase pipeline readCase uses above, but never runs
+   * refuseIncoherence — a draft not yet coherent against the glossary or the
+   * capability registry is exactly what a curator composing it still wants
+   * this read to answer for (case-input-requirements.port.ts's own header
+   * comment) — and derives its input requirements
+   * (case-input-requirements.ts's own deriveCaseInputRequirements) over
+   * every capability currently registered, read fresh on every call
+   * (rules/knowledge/the-contract-check-reads-the-current-registration).
+   * Available for either state, draft or released, unchanged: only a
+   * diagnose itself ever refuses a draft.
+   */
+  public async readCaseInputRequirements(slug: string, version: number): Promise<CaseInputRequirementsResult> {
+    const assembled = await heldVersion(this.caseStore, slug, version);
+    const theCase = structuralCase(assembled, slug, version);
+    const registeredCapabilities = await everyRegisteredCapability(this.capabilities);
+    return deriveCaseInputRequirements(theCase, registeredCapabilities);
   }
 
   /**

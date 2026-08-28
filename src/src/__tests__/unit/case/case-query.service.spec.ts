@@ -449,11 +449,26 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
 
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
-  // (task/capability-registry-http/list-capabilities-query-extension): this
-  // file's own scenarios never call listCapabilities.
-  public async listCapabilities(): Promise<never> {
-    throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
+  /**
+   * Answers from the same held-capabilities map hold()/forget() already maintain — the same map
+   * readCapability already reads from — windowed and paginated the same way the real
+   * CapabilityRegistryService.listCapabilities computes it in memory over its own store's full
+   * read (capability-registry.service.ts): slice by offset/limit, total the full held count, and
+   * a page count of 0 for a non-positive limit rather than dividing by it. Read fresh from the map
+   * on every call, never remembered, since readCaseInputRequirements (task/case-input-requirements
+   * -and-diagnose-gate/derive-case-input-requirements) depends on exactly that freshness.
+   */
+  public async listCapabilities(pagination: PaginationRequest): Promise<PaginatedResponse<Capability>> {
+    const held = [...this.capabilities.values()];
+    const total = held.length;
+    const data = held.slice(pagination.offset, pagination.offset + pagination.limit);
+    return {
+      data,
+      total,
+      limit: pagination.limit,
+      offset: pagination.offset,
+      pageCount: pagination.limit > 0 ? Math.ceil(total / pagination.limit) : 0,
+    };
   }
 }
 
@@ -792,4 +807,87 @@ it('answers a version written directly to the store as its very next read, with 
 
   expect(result.case.slug).toBe(SLUG);
   expect(result.case.state).toBe('draft');
+});
+
+// -------------------------------------------------------------------------------- task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements
+
+/** A capability answering the fixture concept with one declared subject attribute, carrying syntactically valid JSON in its own input_schema — unlike coherentCapability()'s own 'an-input-schema' placeholder, which readCaseInputRequirements's own hasWellFormedInputSchema would fail to JSON.parse. */
+function inputSchemaCapability(overrides: Partial<Capability> = {}): Capability {
+  return coherentCapability({ input_schema: '{"properties":{"an-attribute":{}}}', ...overrides });
+}
+
+// ---------------------------------------------------------------- criterion 6
+
+it('answers identical input requirements for a draft version and the same version once released', async () => {
+  const store = new FakeCaseStore();
+  const version = await seedCase(store, { release: false });
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(inputSchemaCapability());
+  const service = new CaseQueryService(store, coherentGlossary(), capabilities);
+
+  const draftResult = await service.readCaseInputRequirements(SLUG, version);
+  await store.release(SLUG, version);
+  const releasedResult = await service.readCaseInputRequirements(SLUG, version);
+
+  expect(draftResult.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
+  expect(releasedResult).toEqual(draftResult);
+});
+
+// ---------------------------------------------------------------- contracts/knowledge/case-input-requirements, rules/knowledge/a-case-versions-input-requirements-are-derived
+
+it("answers a draft version's input requirements even though the same content currently fails read-case's own coherence check", async () => {
+  const store = new FakeCaseStore();
+  const version = await seedCase(store, { release: false });
+  const glossary = coherentGlossary();
+  glossary.forgetConcept(CONCEPT);
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(inputSchemaCapability());
+  const service = new CaseQueryService(store, glossary, capabilities);
+  await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
+
+  const result = await service.readCaseInputRequirements(SLUG, version);
+
+  expect(result.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
+});
+
+// ---------------------------------------------------------------- criterion 7
+
+it('derives from the currently registered capabilities read fresh at every call, answering differently once a capability is registered between two calls for the same version', async () => {
+  const store = new FakeCaseStore();
+  const version = await seedCase(store);
+  const capabilities = new FakeCapabilityQuery(); // answers nothing yet
+  const service = new CaseQueryService(store, coherentGlossary(), capabilities);
+
+  const before = await service.readCaseInputRequirements(SLUG, version);
+  capabilities.hold(inputSchemaCapability());
+  const after = await service.readCaseInputRequirements(SLUG, version);
+
+  expect(before.requirements).toEqual([]);
+  expect(after.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
+});
+
+// ---------------------------------------------------------------- inference: reuses read-case's own not-found/not-valid refusals
+
+it('refuses with CaseNotFoundError, naming the slug and version, when no version is stored at all', async () => {
+  const service = new CaseQueryService(new FakeCaseStore(), coherentGlossary(), coherentCapabilities());
+
+  const refusal = await readAsError(service.readCaseInputRequirements('never-authored', 7));
+
+  expect(refusal).toBeInstanceOf(CaseNotFoundError);
+  expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
+});
+
+it('refuses a structurally invalid case version the same way read-case does, naming the violation in a CaseNotValidError', async () => {
+  const store = new FakeCaseStore();
+  const version = await seedCase(store, { hypotheses: [] });
+  const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
+
+  const refusal = await readAsError(service.readCaseInputRequirements(SLUG, version));
+
+  expect(refusal).toBeInstanceOf(CaseNotValidError);
+  expect((refusal as CaseNotValidError).context).toEqual({
+    slug: SLUG,
+    version,
+    violations: ['the case declares no hypothesis'],
+  });
 });

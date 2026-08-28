@@ -28,6 +28,8 @@
 // call, which changes nothing Fastify or a caller can observe.
 
 import Fastify, { type FastifyInstance, type FastifyPluginAsync } from 'fastify';
+import type { CaseInputRequirementsControllerDependencies } from './case-input-requirements.controller.js';
+import { createCaseInputRequirementsRoutesPlugin } from './case-input-requirements.routes.js';
 import type { CreateDraftControllerDependencies } from './create-draft.controller.js';
 import { createCreateDraftRoutesPlugin } from './create-draft.routes.js';
 import { createDiagnoseRoutesPlugin } from './diagnose.routes.js';
@@ -91,7 +93,7 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * pre-existing diagnose route: one named field per route, each carrying
  * exactly that route's own controller-dependencies type, so a caller must
  * hand this function a fully wired dependency for every one of the
- * twenty-eight routes it registers — no route here is optional.
+ * twenty-nine routes it registers — no route here is optional.
  * registerCapability (task/capability-authoring/register-capability-route)
  * was the twentieth; registerConcept
  * (task/concept-authoring/register-concept-route) was the twenty-first;
@@ -112,7 +114,11 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * published surface, with no dependency on diagnose having already run;
  * simulateHypothesis (task/case-simulation-pipeline/simulate-hypothesis-operation)
  * is the twenty-eighth, the same published surface's other operation, with no
- * dependency on simulateCase having already run.
+ * dependency on simulateCase having already run; readCaseInputRequirements
+ * (task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements)
+ * is the twenty-ninth, additive to
+ * contracts/knowledge/case-input-requirements's own published surface, with
+ * no dependency on read-case having already run.
  */
 export type BuildAppDependencies = {
   readonly diagnose: DiagnoseControllerDependencies;
@@ -133,6 +139,7 @@ export type BuildAppDependencies = {
   readonly placeHypothesis: PlaceHypothesisControllerDependencies;
   readonly removeHypothesis: RemoveHypothesisControllerDependencies;
   readonly readCase: ReadCaseControllerDependencies;
+  readonly readCaseInputRequirements: CaseInputRequirementsControllerDependencies;
   readonly listCases: ListCasesControllerDependencies;
   readonly listCaseVersions: ListCaseVersionsControllerDependencies;
   readonly listHypotheses: ListHypothesesControllerDependencies;
@@ -175,6 +182,7 @@ const routePluginFactories: ReadonlyArray<
   (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
   (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
   (dependencies) => createReadCaseRoutesPlugin(dependencies.readCase),
+  (dependencies) => createCaseInputRequirementsRoutesPlugin(dependencies.readCaseInputRequirements),
   (dependencies) => createListCasesRoutesPlugin(dependencies.listCases),
   (dependencies) => createListCaseVersionsRoutesPlugin(dependencies.listCaseVersions),
   (dependencies) => createListHypothesesRoutesPlugin(dependencies.listHypotheses),
@@ -198,7 +206,7 @@ function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] 
 
 /**
  * Assembles the whole HTTP surface this initiative exposes: one Fastify
- * instance with every one of the twenty-eight route plugins registered and the
+ * instance with every one of the twenty-nine route plugins registered and the
  * one generic error handler set (COR-04, SEC-04). Constructs the Fastify
  * instance itself — this is the composition boundary ARC-02 expects, not a
  * service or a controller — but none of any route's own dependencies:

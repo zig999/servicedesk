@@ -323,6 +323,7 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
     simulateHypothesis: stubSimulateHypothesis(caseQuery, glossaryQuery),
     ...stubQueryDependentFields(caseQuery, glossaryQuery),
     readCapability: { capabilityQuery: stubCapabilityQuery() }, readCapabilityByIdentity: stubReadCapabilityByIdentity(),
+    readCaseInputRequirements: { caseInputRequirementsQuery: { readCaseInputRequirements: async () => ({ requirements: [], capabilities_with_malformed_input_schema: [] }) } },
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
@@ -718,3 +719,18 @@ it('refuses with 400 a simulate-case request whose subject carries no attribute 
 
   expect(response.statusCode).toBe(400);
 });
+
+// ------------------------------------------------------- diagnose-input-schema-contract/derive-case-input-requirements
+
+it(
+  "reaches read-case-input-requirements's own controller through buildApp()'s registration, answering the query's own result unchanged, on the very first request a freshly built app instance ever receives",
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const response = await app.inject({ method: 'GET', url: '/v1/cases/a-slug/versions/1/input-requirements' });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({ requirements: [], capabilities_with_malformed_input_schema: [] });
+  },
+);
