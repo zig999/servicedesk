@@ -335,6 +335,37 @@ describe("JsonTextareaField", () => {
   });
 });
 
+// Proof for task/capability-detail-layout/schema-editor-height-increase's own criterion 4:
+// JsonTextareaField's own default rendered height, used by any consumer that does not
+// explicitly opt into the taller `tall` variant, remains 160px/10rem. Criteria 1-2 (the
+// capability form's input-schema/output-schema fields render at 200px/12.5rem) and criterion 3
+// (the connector-configuration form's configuration field keeps 160px/10rem) are each proven at
+// the call site that criterion names -- capability-detail-screen-schema-editor-height.spec.ts and
+// connector-configuration-detail-screen-configuration-height.spec.ts -- since each is a claim
+// about how a specific consumer wires this prop, not about this component in isolation.
+describe("JsonTextareaField -- default height when tall is not passed (task/capability-detail-layout/schema-editor-height-increase, criterion 4)", () => {
+  it("renders the shared 10rem/160px minimum-height class when the tall prop is left unset entirely", () => {
+    render(
+      createElement(JsonTextareaField, {
+        id: "schema",
+        label: "Schema",
+        value: "{}",
+        onChange: vi.fn(),
+      }),
+    );
+
+    const textarea = screen.getByRole("textbox");
+    // min-h-40 is Tailwind's own 10rem/160px minimum-height utility -- the class this component
+    // carried before this task and the one every consumer not explicitly opting into the taller
+    // variant still renders.
+    expect(textarea.className).toContain("min-h-40");
+    // Asserted as an explicit exclusion, not merely "min-h-40 present": a build that applied both
+    // classes at once would leave Tailwind's own cascade order, rather than this component's own
+    // conditional, to decide which minimum height actually wins.
+    expect(textarea.className).not.toContain("min-h-[12.5rem]");
+  });
+});
+
 describe("getJsonTextareaMinifiedValue", () => {
   it("strips insignificant whitespace from indented, pretty-printed text", () => {
     const pretty = '{\n  "a": 1,\n  "b": [\n    1,\n    2\n  ]\n}';

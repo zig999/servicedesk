@@ -10,12 +10,28 @@
       "task": "task/capability-detail-layout/name-version-nature-row"
     },
     {
+      "id": "implementation/capability-detail-layout/schema-editor-height-increase",
+      "kind": "implementation",
+      "file": "implementation/capability-detail-layout/schema-editor-height-increase.md",
+      "title": "Scope the schema-editor height increase to the capability screen via an opt-in JsonTextareaField prop",
+      "summary": "JsonTextareaField grows a `tall` prop that raises its Textarea's minimum height from 10rem/160px to 12.5rem/200px only when set; the capability form's input-schema and output-schema fields pass it, and every other consumer (connector-configuration form, connector test panel) is left untouched and keeps the 160px default.",
+      "task": "task/capability-detail-layout/schema-editor-height-increase"
+    },
+    {
       "id": "proof/capability-detail-layout/name-version-nature-row",
       "kind": "proof",
       "file": "proof/capability-detail-layout/name-version-nature-row.md",
       "title": "Proof for grouping Name, Version and Nature into one row",
       "summary": "Adds the one structural test criterion 1 needs -- that Name, Version and Nature share one row container a later field (Timeout) sits outside of -- leaving criteria 2-4 to the existing, unmodified capability-detail-screen.spec.ts and capability-detail-screen-save.spec.ts suites that already prove them.",
       "task": "task/capability-detail-layout/name-version-nature-row"
+    },
+    {
+      "id": "proof/capability-detail-layout/schema-editor-height-increase",
+      "kind": "proof",
+      "file": "proof/capability-detail-layout/schema-editor-height-increase.md",
+      "title": "Proof for the capability schema editors' height increase, scoped away from connector-configuration",
+      "summary": "Four tests proving JsonTextareaField's opt-in tall prop raises the capability form's input-schema and output-schema fields to 200px/12.5rem while leaving the connector-configuration form's configuration field and the component's own default at 160px/10rem, each asserted on the rendered Textarea's className at the call site the criterion names.",
+      "task": "task/capability-detail-layout/schema-editor-height-increase"
     }
   ],
   "edges": [
@@ -26,8 +42,20 @@
       "at": "the path"
     },
     {
+      "from": "implementation/capability-detail-layout/schema-editor-height-increase",
+      "to": "task/capability-detail-layout/schema-editor-height-increase",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-detail-layout/name-version-nature-row",
       "to": "implementation/capability-detail-layout/name-version-nature-row",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-detail-layout/schema-editor-height-increase",
+      "to": "implementation/capability-detail-layout/schema-editor-height-increase",
       "kind": "proves",
       "at": "the path"
     }

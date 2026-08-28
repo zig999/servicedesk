@@ -30,7 +30,12 @@ import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
  * fields are tracked as plain component state instead of react-hook-form
  * fields. The Save button is disabled while either is invalid, on top of
  * the hook's own submit-time guard, so an operator sees why Save will not
- * act rather than clicking it and observing nothing happen.
+ * act rather than clicking it and observing nothing happen. Both pass
+ * `tall` (task/capability-detail-layout/schema-editor-height-increase), so
+ * only this screen's two schema editors render at 12.5rem/200px minimum
+ * height rather than JsonTextareaField's own 10rem/160px default -- the
+ * connector-configuration form's own `configuration` field, the same
+ * shared component's third consumer, is untouched and keeps that default.
  *
  * concept is a single-select (criterion 4) over a plain {value, label}
  * option list built from `conceptOptions` -- deliberately a Select, never
@@ -172,6 +177,7 @@ export function CapabilityFormFields({
           value={inputSchema.value}
           onChange={inputSchema.onChange}
           disabled={isSubmitting}
+          tall
         />
 
         <JsonTextareaField
@@ -180,6 +186,7 @@ export function CapabilityFormFields({
           value={outputSchema.value}
           onChange={outputSchema.onChange}
           disabled={isSubmitting}
+          tall
         />
       </div>
 

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, type ChangeEvent, type JSX } from "react";
 import { Textarea } from "@tui/ui/textarea";
 import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
+import { cn } from "@tui/lib/cn";
 
 /**
  * Shared JSON beautify/minify/inline-error textarea control
@@ -54,6 +55,19 @@ export function getJsonTextareaMinifiedValue(value: string): string | null {
  * text and whether it is syntactically valid JSON together, in the same
  * call, so a caller's own value state and its own validity state can never
  * fall out of sync with each other the way two independent callbacks could.
+ *
+ * `tall` (task/capability-detail-layout/schema-editor-height-increase) is an
+ * opt-in: left unset, the Textarea keeps this control's own default 10rem/
+ * 160px minimum height (`min-h-40`), exactly as every consumer today
+ * renders it -- connector-configuration-form-fields.tsx's `configuration`
+ * field and connector-test-panel-fields.tsx's sample-input field among them.
+ * Set true, the minimum height becomes 12.5rem/200px instead. The increase
+ * is scoped this way, as an explicit choice each call site makes, rather
+ * than by raising the shared default, because raising the default would
+ * have raised every other consumer's rendered height along with it -- this
+ * component carries one Textarea height class, shared verbatim by every
+ * caller, and only a caller-level switch keeps that sharing from also
+ * sharing a change one screen asked for and the others did not.
  */
 export type JsonTextareaFieldProps = {
   readonly id: string;
@@ -61,6 +75,7 @@ export type JsonTextareaFieldProps = {
   readonly value: string;
   readonly onChange: (value: string, isValid: boolean) => void;
   readonly disabled?: boolean;
+  readonly tall?: boolean;
 };
 
 /**
@@ -80,6 +95,7 @@ export function JsonTextareaField({
   value,
   onChange,
   disabled,
+  tall,
 }: JsonTextareaFieldProps): JSX.Element {
   const parsed = useMemo(() => parseJsonText(value), [value]);
   const errorId = `${id}-error`;
@@ -147,7 +163,7 @@ export function JsonTextareaField({
         value={value}
         onChange={handleChange}
         disabled={disabled}
-        className="min-h-40 font-mono"
+        className={cn(tall ? "min-h-[12.5rem]" : "min-h-40", "font-mono")}
         aria-invalid={!parsed.ok}
         aria-describedby={!parsed.ok ? errorId : undefined}
       />
