@@ -7,7 +7,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -1311,7 +1311,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -2365,7 +2365,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:3012162baf55c45981b0e1af8acf963b26aa84d03934fad3987d939a1100624a"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -2415,7 +2415,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -2509,7 +2509,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
@@ -2629,7 +2629,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/observation-source.port.ts",
@@ -2817,7 +2817,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:3012162baf55c45981b0e1af8acf963b26aa84d03934fad3987d939a1100624a"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
@@ -2970,6 +2970,10 @@
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
         {
+          "path": "src/src/case/case-resolution.ts",
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
+        },
+        {
           "path": "src/src/http/dto/simulate-case.dto.ts",
           "digest": "sha256:51ea2aa6871db748a43b73fbd32f4830939f5d934bdc52f827cbcc67fa5b8ea5"
         },
@@ -3045,11 +3049,11 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:541f26e9b3db850969ae8339760aa1a2e4612d5448607f28b525ecaea1e67072"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3489,11 +3493,11 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3603,7 +3607,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3697,7 +3701,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -3787,7 +3791,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3857,7 +3861,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3893,7 +3897,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:3012162baf55c45981b0e1af8acf963b26aa84d03934fad3987d939a1100624a"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         }
       ]
     },
@@ -4359,7 +4363,7 @@
       "files": [
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/errors/hypothesis-not-in-manifest.error.ts",
@@ -4465,7 +4469,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:3012162baf55c45981b0e1af8acf963b26aa84d03934fad3987d939a1100624a"
+          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -4651,7 +4655,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -4935,7 +4939,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         }
       ]
     },
@@ -5207,7 +5211,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case.ts",
@@ -5303,7 +5307,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:a731dcd407842ce629c85e3eb3d739a5556880c80e6a7c1f1b0e770e908d7c75"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/case-store.port.ts",
@@ -5369,7 +5373,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/case/case.ts",
@@ -5435,7 +5439,7 @@
         },
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/release.operation.ts",
@@ -5457,7 +5461,7 @@
       "files": [
         {
           "path": "src/src/case/case-query.service.ts",
-          "digest": "sha256:9162969afc222edc9ea7f151e1bd7fb255935a8f3046455297ee3e77070f43ba"
+          "digest": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859"
         },
         {
           "path": "src/src/case/parse-case-document.ts",
@@ -5651,7 +5655,7 @@
         },
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
@@ -5723,7 +5727,7 @@
       "files": [
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -5737,7 +5741,7 @@
       "files": [
         {
           "path": "src/src/case/case-resolution.ts",
-          "digest": "sha256:ce6fada757643c95c528d2347cbd5db1cf2d154a2f4903237fd0081a1ffa4044"
+          "digest": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",

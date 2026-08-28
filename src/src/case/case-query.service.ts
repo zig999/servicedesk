@@ -231,7 +231,7 @@ export async function replayCase(slug: string, version: number, caseStore: ICase
  * own content here would have to test the same structural facts
  * parseCaseDocument's own refusal already tests, which is exactly the
  * validation replay exists to skip. A version is written once and never
- * altered (rules/knowledge/every-case-version-remains-readable), so the row
+ * altered (rules/knowledge/a-case-version-is-written-once), so the row
  * this call reads is the exact content an investigation once pinned, and
  * reshaping it without running any refusal is what "without revalidation"
  * means for replay.

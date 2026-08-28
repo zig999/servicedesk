@@ -22,18 +22,18 @@ import type { Case, ManifestEntry, Referral } from './case.js';
 
 /**
  * What one hypothesis's judgment concluded, as the plain value it arrives
- * here as: confirmed, refuted or inconclusive.
+ * here as: confirmed, refuted or inconclusive (domain/investigation/verdict).
  */
 export type Verdict = 'confirmed' | 'refuted' | 'inconclusive';
 
 /** The verdicts resolve-outcome consults, one plain value per hypothesis name. */
 export type Verdicts = Readonly<Record<string, Verdict>>;
 
-/** The one verdict that lets a hypothesis determine the outcome (domain/knowledge/case). */
+/** The one verdict that lets a hypothesis determine the outcome (domain/knowledge/case-version). */
 const CONFIRMED: Verdict = 'confirmed';
 
 /**
- * What resolve-outcome answers (domain/knowledge/case): the deciding
+ * What resolve-outcome answers (domain/knowledge/case-version): the deciding
  * position's outcome and referral — one resolution's pair, never one half
  * of it (domain/knowledge/resolution) — and, where a hypothesis determined
  * them, that hypothesis's name. When the fallback answers, no determining
