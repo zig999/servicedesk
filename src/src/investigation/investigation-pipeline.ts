@@ -97,7 +97,7 @@ export type InvestigationPipelineOptions = {
   readonly consolidator: IAssessmentConsolidator;
   /**
    * The register to consolidate in where the pinned case leaves
-   * consolidation_register undeclared (domain/knowledge/case's own "the
+   * consolidation_register undeclared (domain/knowledge/case-version's own "the
    * consolidation step keeps whatever register its own adapter defaults
    * to"): the published assessment-consolidator port always requires a
    * concrete formal-or-plain value, so this call's own caller supplies the

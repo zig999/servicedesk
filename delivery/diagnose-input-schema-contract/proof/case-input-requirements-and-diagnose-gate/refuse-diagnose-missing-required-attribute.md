@@ -1,12 +1,13 @@
 ---
 title: Proof for refuse-diagnose-missing-required-attribute
 summary: Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its
-  wire route, its 422 status mapping, and test-connector's exclusion from it.
-implementation: sha256:73c20672de19af625dcb09b86c23574258625c90e787b9d4e9fe06897fbf5f05
+  wire route, its 422 status mapping, and test-connector's exclusion from it — now including a genuine
+  behavioral test, not only a source scan, for the exclusion itself.
+implementation: sha256:ab28302993dc125efd6ed9f22481bdcb79d6ca56a0b344a858174d975995dd38
 standard:
   at: ../standards/backend-node-service.yaml
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3
-run: run/case-input-requirements-and-diagnose-gate-refuse-diagnose-missing-required-attribute-suite-2
+run: run/case-input-requirements-and-diagnose-gate-refuse-diagnose-missing-required-attribute-suite-3
 tests:
 - file: src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts
   name: throws a SubjectDoesNotCoverCaseInputsError when the subject holds no attribute-value for an attribute
@@ -123,12 +124,19 @@ tests:
   proves: test-connector's own diagnostic call is not held to this gate.
   fails_when: test-connector.controller.ts starts importing refuseSubjectMissingRequiredCaseInputs or
     handleDiagnoseRequest, signalling the gate has been wired into its own diagnostic call path
+- file: src/__tests__/unit/http/test-connector.controller.spec.ts
+  name: still issues its call and returns its ordinary response outcome for a subject missing "contract-number"
+    — an attribute-value a case-input requirement would mark required and that would refuse a diagnose
+    before collection were this call held to that gate
+  proves: test-connector's own diagnostic call is not held to this gate. (behaviorally — TestConnectorControllerDependencies
+    declares no case-input-requirements capacity at all, so aDependencies() cannot even be built with
+    one, and a subject shaped to trip the gate still reaches an ordinary outcome, not just an absent import)
+  fails_when: handleTestConnectorRequest, given a subject missing an attribute-value a case-input requirement
+    would mark required, stops issuing its one HTTP call or stops returning an ordinary 'response' outcome
+    — rejecting, refusing, or otherwise short-circuiting instead
 untested:
 - criterion 2's 'together' clause is exercised only with two missing attributes at once; a third or more
   entry would exercise the same single filter/map pass without adding new evidence.
-- 'criterion 5 is proven only by a static scan of test-connector.controller.ts''s own import specifiers:
-  TestConnectorRequestDto carries no case reference at all, so no runtime scenario exists through which
-  the gate could even be attempted against that route.'
 - 'that the case-input-requirements read is never cached across separate diagnose requests (rules/knowledge/the-contract-check-reads-the-current-registration)
   is not directly tested: no criterion of this task states it, and no caching code exists in the gate
   to exercise.'
@@ -150,7 +158,7 @@ not_applicable:
 ---
 
 ## What it is
-Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it.
+Tests the case-input-requirements gate in isolation and through handleDiagnoseRequest and its wire route, its 422 status mapping, and test-connector's exclusion from it — now including a genuine behavioral test, not only a source scan, for the exclusion itself.
 
 ## Notes
-The first suite attempt (run/case-input-requirements-and-diagnose-gate-refuse-diagnose-missing-required-attribute-suite) failed on two independent assertions, neither in a file this delivery's own producers wrote: diagnose-persistence-deadline-e2e.spec.ts's fixture seeded a capability with a syntactically invalid input_schema ('an-input-schema'), which this task's new gate now parses ahead of the delayed write the test exists to exercise (owning task/service-on-the-database/diagnose-end-to-end, work root work/relational-persistence, closed); and status-map.spec.ts's own stale-count assertion, previously bumped from "four" to "five" earlier in this same delivery, needed bumping again to "six" for this task's own legitimate sixth citation (owning task/stale-specification-citations-round-two/citations-corrected-again, work root work/backend-spec-conformance-corrections, closed). Both routes were formally blocked by their owning work roots being closed; the human explicitly authorized direct, minimal fixes to both — the fixture's input_schema changed to '{}', and the stale-count test's literal, title and assertions updated the same way the two prior increments already did. Second suite attempt (recorded above) passed.
+This is a re-delivery. The only change is one added behavioral test in src/__tests__/unit/http/test-connector.controller.spec.ts, prompted by a /review-change coverage finding: criterion 5 ("test-connector's own diagnostic call is not held to this gate") was previously proven only by a source-scan test checking the module's import list, not by a test that behaviorally drives handleTestConnectorRequest with a subject that would trip the gate. The pre-existing source-scan test still stands alongside the new one. No other test changed, and the implementation did not change.
