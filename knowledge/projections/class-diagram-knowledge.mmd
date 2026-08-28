@@ -46,6 +46,11 @@ classDiagram
             +Resolution resolution
         }
     }
+    class CaseInputRequirement {
+        <<ValueObject>>
+        +SubjectAttribute attribute
+        +boolean required
+    }
     class CaseSummary {
         <<ValueObject>>
         +CaseVersionState currentState
@@ -88,9 +93,16 @@ classDiagram
     class Recipient {
         <<external: glossary>>
     }
+    class SubjectAttribute {
+        <<external: glossary>>
+    }
     class SubjectType {
         <<external: glossary>>
     }
+    class Capability {
+        <<external: integration>>
+    }
+    CaseInputRequirement "0..*" --> "1..*" Capability
     CaseVersion "0..*" --> "1" Case
     Hypothesis "0..*" --> "1" Case
     HypothesisRevision "0..*" --> "1" Hypothesis

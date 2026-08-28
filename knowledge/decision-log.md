@@ -985,4 +985,75 @@ entries:
       material shows the code raising rather than ending, an apparent tension with this same
       node's own Description, and inventing a resolution to that tension here would be deciding
       code behavior this increment did not verify — it is named to a human rather than settled.
+  - location: rules/integration/a-capability-input-schema-holds-a-well-formed-object.md
+    field: statement
+    unstated: >-
+      How a capability already registered before this rule existed, whose stored input schema
+      does not hold the properties/required shape this rule now demands, reads once something
+      needs its declared input attributes — whether that malformed shape is a fault when read, or
+      something else.
+    decided: >-
+      Read as declaring properties and required both empty — malformed is nothing declared, never
+      a fault at read.
+    why: >-
+      Mirrors the reading a-capability-declares-well-formed-schemas already gives a schema that
+      fails to parse at all, wherever a citation reads an output schema's content; the shape this
+      rule states did not exist when an already-registered row was written, so a stored value now
+      short of it is read the same way a stored value that never parsed already is, never invented
+      and never faulted.
+  - location: rules/knowledge/a-case-versions-input-requirements-are-derived.md
+    field: statement
+    unstated: >-
+      The material's own decision D7 asks that a capability whose stored input schema does not
+      currently declare this shape be marked for an operator in the same read that lists a case
+      version's input requirements, without saying where that mark attaches — nested under an
+      attribute, or apart from every attribute — and a capability read as declaring nothing (by
+      this same rule's own posture) never names any attribute to nest it under.
+    decided: >-
+      The read names such a capability apart from the attributes, never nested under one.
+    why: >-
+      A capability that declares nothing never appears among any case-input-requirement's own
+      capabilities, so nesting the mark under an attribute has nowhere to attach it; naming the
+      capability on its own is the only place left where the fact is still reachable.
+  - location: domain/knowledge/case-input-requirement.md
+    field: attributes
+    unstated: >-
+      The material's own worked example nests, per asking capability, that capability's version,
+      connector and answered concept, and a schema hint (the property's own declared type and
+      description), alongside the attribute and whether it is required.
+    decided: >-
+      The element declares only attribute and required; the capability itself is a relationship,
+      by reference, to domain/integration/capability — never a restatement of its version,
+      connector or concept, each already that capability's own declared fact, and never the
+      schema's hint, which is presentation guidance for an operator's panel rather than a domain
+      fact this specification holds.
+    why: >-
+      constraints/the-stored-schema-mirrors-the-declared-model already refuses a column no
+      attribute declares for a stored fact; the same reasoning, applied to a derived read instead
+      of a stored one, refuses a field that only restates what the referenced capability's own
+      aggregate already answers, and SPEC-001's own floor admits no technical artifact such as a
+      schema's free-text hint.
+  - location: rules/integration/an-http-connector-configuration-declares-its-call.md
+    field: statement
+    unstated: >-
+      This specification's own decision log already named, and left to a human, whether the
+      assembly-failure conditions this rule's own third sentence lists — a missing address,
+      malformed query or headers, an unrecognized placeholder kind, a missing required argument,
+      or a Subject-attribute or credential placeholder that resolves to nothing — end unavailable
+      the same way the missing-key case above already does, or remain an undecided fact about the
+      call's own assembly.
+    decided: >-
+      All of them end unavailable: the four shape failures (missing address, malformed query or
+      headers, unrecognized placeholder kind, missing required argument) report an
+      IncompleteConnectorCallDescriptorError; a placeholder that is well-formed but resolves to
+      nothing reports the ConnectorPlaceholderNotResolvedError an-unresolvable-observation-ends-unavailable
+      now names for that condition.
+    why: >-
+      The material supplied for this increment states, as a fact verified against the delivered
+      code on 2026-08-27, that IncompleteConnectorCallDescriptorError already degrades to
+      unavailable and is unaffected by this change, and asks only that the
+      placeholder-resolves-to-nothing case join it rather than continue propagating as an unmapped
+      exception; resolving the whole sentence the same way closes the standing decision this
+      specification's own log already deferred to a human, rather than settling one fifth of it
+      and leaving the rest exactly as undecided as before.
 ---

@@ -7,5 +7,5 @@ constrains:
 
 ## Description
 
-The output schema is what bounds citations; the timeout is what bounds the collection stage; a capability without either cannot be held to anything.
+The input schema, once its own shape is declared, is what a diagnose's entry point and a case's derived input requirements hold the subject to; the output schema is what bounds citations; the timeout is what bounds the collection stage; a capability without any of the three cannot be held to anything.
 A timeout of zero or less bounds nothing — there would be no time left for a call to answer in — so a stated timeout is refused the same way a non-integer one already is, distinctly from the absent-timeout default.
