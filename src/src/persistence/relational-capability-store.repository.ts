@@ -4,13 +4,25 @@
 // domain/integration/capability declares, including the concept it answers
 // (constraints/the-stored-schema-mirrors-the-declared-model,
 // migrations/0007-capability-concept.sql) — read fresh from the database on
-// every call and replaced whole on every write
+// every call
 // (constraints/the-system-persists-to-one-relational-database). The domain
 // declares ICapabilityStore and this class is the infrastructure behind it
 // (constraints/the-domain-depends-on-no-infrastructure): no registry module
 // imports a driver or opens a file. It implements the same port
 // persistence/file-capability-store.repository.ts already implements,
 // rather than replacing it.
+//
+// writeCapabilities upserts each given registration by its own identity
+// (name, version) — INSERT ... ON CONFLICT (name, version) DO UPDATE —
+// rather than deleting the whole table and reinserting the kept and
+// incoming set (task/capability-registry-write-upsert-hotfix): "capabilities"
+// (name, version) is referenced by the non-deferrable
+// investigation_evidence_capability_fkey (migrations/0005-investigation.sql),
+// so a table-wide DELETE failed with Postgres 23503 the moment any row was
+// referenced by any investigation_evidence row, however unrelated to the
+// identity actually being written. No statement below ever deletes a row of
+// "capabilities": a row this call's own given set does not name, including
+// one investigation_evidence still cites, is left exactly as it stood.
 //
 // Names no import of 'pg': DatabaseConnection, database-connection.ts's own
 // exported type, and the runStatement/runInTransaction helpers
@@ -51,9 +63,12 @@ const CAPABILITIES_TABLE = 'capabilities';
 /**
  * The relational adapter of the registry's store port: every registration
  * lives in one row of "capabilities", read fresh on every call (criterion
- * 2) and replaced whole on every write, inside one transaction (EDG-05), so
- * a failure partway through a replace never leaves the table holding a mix
- * of the old and the new set.
+ * 2) and upserted by its own identity (name, version) on every write, inside
+ * one transaction (EDG-05), so a failure partway through a batch of
+ * registrations never leaves the table holding some of them applied and
+ * some not. No write ever deletes a row: one write never touches, let alone
+ * removes, a row belonging to a different identity
+ * (task/capability-registry-write-upsert-hotfix).
  */
 export class RelationalCapabilityStore implements ICapabilityStore {
   public constructor(private readonly connection: DatabaseConnection) {}
@@ -71,12 +86,20 @@ export class RelationalCapabilityStore implements ICapabilityStore {
     return rows.map(toCapability);
   }
 
-  /** Replaces every registration the table holds with exactly the given set, as one unit of work: the existing rows are gone and the new ones are all present, or neither happened. */
+  /**
+   * Upserts each given registration into its own row, scoped by identity
+   * (name, version): a new identity is inserted, an already-held one is
+   * replaced in place — never by deleting it first
+   * (task/capability-registry-write-upsert-hotfix). Every upsert in the
+   * given set runs as one unit of work, so a failure partway through leaves
+   * none of this call's own writes applied (EDG-05); a row this call does
+   * not name, including one investigation_evidence references, is never
+   * read, written or deleted by it.
+   */
   public async writeCapabilities(capabilities: readonly Capability[]): Promise<void> {
     await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
-      await runStatement(tx, { text: `DELETE FROM ${CAPABILITIES_TABLE}` }, raiseWriteFailure);
       for (const capability of capabilities) {
-        await runStatement(tx, insertStatementFor(capability), raiseWriteFailure);
+        await runStatement(tx, upsertStatementFor(capability), raiseWriteFailure);
       }
     });
   }
@@ -106,12 +129,26 @@ function toCapability(row: ICapabilityRow): Capability {
   };
 }
 
-/** The one INSERT every kept and incoming registration runs through writeCapabilities' own whole replace. */
-function insertStatementFor(capability: Capability): IStatement {
+/**
+ * The one upsert every given registration runs through writeCapabilities'
+ * own per-identity write: inserts a new (name, version) row, or replaces
+ * every other attribute of the row already held at that identity — the
+ * primary key migrations/0003-capability-registry.sql declares over exactly
+ * (name, version) is what ON CONFLICT resolves against — without ever
+ * deleting a row (task/capability-registry-write-upsert-hotfix).
+ */
+function upsertStatementFor(capability: Capability): IStatement {
   return {
     text: `INSERT INTO ${CAPABILITIES_TABLE}
              (name, version, nature, input_schema, output_schema, timeout, connector, concept)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+           ON CONFLICT (name, version) DO UPDATE SET
+             nature = EXCLUDED.nature,
+             input_schema = EXCLUDED.input_schema,
+             output_schema = EXCLUDED.output_schema,
+             timeout = EXCLUDED.timeout,
+             connector = EXCLUDED.connector,
+             concept = EXCLUDED.concept`,
     params: [
       capability.name,
       capability.version,

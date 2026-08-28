@@ -1,0 +1,39 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "implementation",
+      "file": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity.md",
+      "title": "writeCapabilities upserts by identity instead of deleting the whole table",
+      "summary": "RelationalCapabilityStore.writeCapabilities now upserts each given capability by its own (name, version) identity through INSERT ... ON CONFLICT DO UPDATE, issuing no DELETE at all, so a registration no longer fails or destroys unrelated rows when any capability is referenced by investigation_evidence.",
+      "task": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "to": "task/capability-registry-write-upsert-hotfix/scope-write-to-identity",
+      "kind": "implements",
+      "at": "the path"
+    }
+  ]
+}

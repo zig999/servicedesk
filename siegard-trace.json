@@ -684,6 +684,10 @@
           "digest": "sha256:10c935ff9032cf4e1c8f59334fb6ba3a3131e0f5aae0f6226ac58b9c9f2ef0cb"
         },
         {
+          "path": "src/src/capability-registry/capability-store.port.ts",
+          "digest": "sha256:b5035da3b642db62ff7ebed048658b0f36b58a1a0ae45d647f6d230627f25756"
+        },
+        {
           "path": "src/src/factories/build-app.factory.ts",
           "digest": "sha256:fcf2e3400d2c344ad36eef64e78b8c94d84931ccc3c7a519760192dc5d98bad0"
         },
@@ -738,6 +742,10 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:0434574cae28887d10aaacb593c0b9ae34dc73606474947815b5962e690cd21a"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:ed681bb9573b30cd7a15d1857292c4d59f15113a2a8aaa9d8398558008d8ee86"
         }
       ]
     },
@@ -1919,7 +1927,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:74b4ab5ba3bd7bbfe42ce8404901018bf325f58def2661c0a88c0bb491b8f2ae"
+          "digest": "sha256:ed681bb9573b30cd7a15d1857292c4d59f15113a2a8aaa9d8398558008d8ee86"
         }
       ]
     },
@@ -2540,6 +2548,10 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6"
+        },
+        {
+          "path": "src/src/persistence/relational-capability-store.repository.ts",
+          "digest": "sha256:ed681bb9573b30cd7a15d1857292c4d59f15113a2a8aaa9d8398558008d8ee86"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
