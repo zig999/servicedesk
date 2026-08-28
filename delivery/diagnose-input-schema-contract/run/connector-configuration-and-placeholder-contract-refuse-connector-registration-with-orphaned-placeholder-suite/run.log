@@ -1,0 +1,316 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 4s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> servicedeskn1@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/src
+
+ ✓ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (43 tests) 12759ms
+   ✓ assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects  470ms
+   ✓ returns every case currently held, with no filter narrowing it, so all three freshly created cases show up on one wide-enough page  346ms
+   ✓ returns every version the named case currently holds, by its own number and lifecycle state, ordered by version regardless of how many of them have since been released  350ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own versions — the given limit and offset echoed back, the page itself held to that limit even though the case holds more versions, and pageCount computed from total and limit  458ms
+   ✓ excludes another case's own hypotheses from the page, naming only the slug it was asked for  339ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own hypotheses — the given limit and offset echoed back, the page itself held to that limit even though the case holds more hypotheses, and pageCount computed from total and limit  320ms
+   ✓ returns every revision the named hypothesis currently holds, by its own full content, each revision's own collects grouped to it alone and never conflated with another revision of the same hypothesis  369ms
+   ✓ excludes another hypothesis's own revisions from the page, within the same case, naming only the hypothesis name it was asked for  307ms
+   ✓ excludes a different case's own revisions of a hypothesis sharing the same name, naming only the slug it was asked for  382ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named hypothesis's own revisions — the given limit and offset echoed back, the page itself held to that limit even though the hypothesis holds more revisions, and pageCount computed from total and limit  441ms
+   ✓ refuses, through CaseNotFoundError naming the slug, a known case that has never originated a hypothesis by the given name  367ms
+   ✓ assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded  524ms
+   ✓ copies a named source version's manifest into the new draft's own manifest, entry for entry  666ms
+   ✓ copies the case's own latest released version's manifest when naming no source version at all  722ms
+   ✓ records the instant of release, and a second call to release leaves that instant unchanged  366ms
+   ✓ leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it  532ms
+   ✓ removes a draft version and its own manifest entries, without deleting any hypothesis-revision  302ms
+   ✓ leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's  481ms
+   ✓ refuses a version already released, through CaseVersionNotDraftError, and leaves its five attributes exactly as they were — the guard runs before any write is attempted  453ms
+   ✓ leaves no hypothesis-revision behind when one of its own collects violates a real foreign key on an unregistered concept  344ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (56 tests) 22ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (30 tests) 27ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (30 tests) 25ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (30 tests) 17ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (37 tests) 379ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (25 tests) 14ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (33 tests) 43ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (6 tests) 5481ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  943ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env  734ms
+   ✓ persists real, non-zero cost and durations for the judgment and consolidation calls, now that the Anthropic adapters themselves report real usage and elapsed_ms  669ms
+   ✓ reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture  867ms
+   ✓ calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one  784ms
+   ✓ answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it  611ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (30 tests) 20ms
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 2434ms
+   ✓ applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  583ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (47 tests) 14ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 1519ms
+   ✓ writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment  845ms
+ ✓ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests) 2681ms
+   ✓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column  767ms
+ ✓ src/__tests__/integration/seed.spec.ts (12 tests) 3819ms
+   ✓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names  357ms
+   ✓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded  648ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 8ms
+ ✓ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test) 11465ms
+   ✓ answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline  10557ms
+ ✓ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts (11 tests) 3221ms
+   ✓ originates a never-named hypothesis's own identity and its first revision, numbered 1  330ms
+   ✓ numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered  412ms
+   ✓ refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only version is already released rather than in draft state, writing no hypothesis or revision row  322ms
+   ✓ succeeds for a case that holds both an already-released earlier version and a currently open draft version — the draft gate finds the draft rather than being confused by the case's own release history  682ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (25 tests) 15ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (63 tests) 10ms
+ ✓ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests) 4101ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  425ms
+   ✓ writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column  412ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  423ms
+   ✓ lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError  327ms
+   ✓ does not refuse a write for an id not already stored  392ms
+   ✓ reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with  471ms
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  373ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  431ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  443ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored  354ms
+ ✓ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (10 tests) 676ms
+   ✓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows  322ms
+ ✓ src/__tests__/integration/factories/simulate-case-server.factory.spec.ts (3 tests) 2455ms
+   ✓ reaches simulate-case's own controller through createDiagnoseHttpServer's real composition and answers 200 with the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a released-state pinned case version  526ms
+   ✓ answers 200 with the complete record likewise for a draft-state pinned case version, never released  348ms
+   ✓ writes no investigation row for the requester a real simulate-case call ran under, even though the call itself succeeds  469ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (20 tests) 15ms
+ ✓ src/__tests__/unit/http/register-capability.routes.spec.ts (25 tests) 173ms
+ ✓ src/__tests__/integration/case/release.operation.spec.ts (5 tests) 4593ms
+   ✓ refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, naming both structural violations together, leaving the version in draft state with no release recorded  400ms
+   ✓ refuses releasing a draft whose collected concept both rejects the declared subject type and answers no capability, naming both coherence violations together, leaving the version in draft state with no release recorded  515ms
+   ✓ marks a draft that holds against every rule released, recording the instant of release  1699ms
+   ✓ refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged  770ms
+   ✓ releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed  1207ms
+ ✓ src/__tests__/integration/case/manifest-composition.operations.spec.ts (12 tests) 4198ms
+   ✓ places a hypothesis-revision at a position not yet occupied in a draft manifest  318ms
+   ✓ does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead  356ms
+   ✓ refuses placing a hypothesis-revision against a version that is not in draft state  517ms
+   ✓ refuses removing a manifest entry against a version that is not in draft state  526ms
+   ✓ refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis  351ms
+   ✓ never deletes the hypothesis-revision a removed manifest entry referenced  387ms
+   ✓ swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either  445ms
+   ✓ refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them  358ms
+   ✓ does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry  315ms
+   ✓ lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError  309ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (26 tests) 46ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (20 tests) 11ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (27 tests) 10ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 107ms
+ ✓ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts (5 tests) 3086ms
+   ✓ reaches simulate-hypothesis's own controller through createDiagnoseHttpServer's real composition and answers 200 with exactly evidence, one evaluation and durations — collecting only the named hypothesis's own revision's concept, never the case's other hypothesis's own concept  756ms
+   ✓ collects the other hypothesis's own concept instead when that one is named, proving the real composition's narrowing follows the given hypothesis rather than a fixed one  538ms
+   ✓ refuses with 404 reporting HypothesisNotInManifestError, for a hypothesis name absent from the pinned case version manifest  477ms
+   ✓ writes no investigation row for the requester a real simulate-hypothesis call ran under, even though the call itself succeeds  504ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 3092ms
+   ✓ writes two independent investigation records for two calls sharing the same case, subject, narrative and requester  779ms
+   ✓ collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result  791ms
+   ✓ passes the given requester straight through to the observation source, substituting none of its own  571ms
+   ✓ reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake  509ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source  440ms
+ ✓ src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts (18 tests) 99ms
+ ✓ src/__tests__/unit/http/test-connector.routes.spec.ts (12 tests) 96ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 4751ms
+   ✓ answers a case written directly to the real store, matching what is currently stored, with no publish step in between  991ms
+   ✓ refuses through the real wiring a case document declaring no hypothesis, naming the structural violation  398ms
+   ✓ refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table  954ms
+   ✓ replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table  2117ms
+ ✓ src/__tests__/unit/factories/simulate.factory.spec.ts (14 tests) 10ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 4ms
+ ✓ src/__tests__/unit/http/diagnose.controller.spec.ts (13 tests) 9ms
+ ✓ src/__tests__/integration/case/create-draft.operation.spec.ts (6 tests) 2781ms
+   ✓ assigns a new draft a version number greater than every version the case has ever held, including one later discarded  573ms
+   ✓ copies the case's own latest released version's manifest when a draft is created naming no source version  526ms
+   ✓ copies the named historical version's own manifest instead of the case's latest released version, when a draft is created naming a source version  1025ms
+ ✓ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts (2 tests) 2354ms
+   ✓ reads back each of two released hypothesis-revisions' own collects exactly as given, never empty, even after an ordinary DELETE against those exact rows is attempted  1269ms
+   ✓ releases a new draft that inherits an earlier released version's own manifest without refusing through the structural "collects no concept" problem, even though an ordinary DELETE against the inherited revision's own collects row was already attempted  1084ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 1177ms
+   ✓ reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data  405ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (20 tests) 23ms
+ ✓ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests) 508ms
+ ✓ src/__tests__/unit/http/register-connector.routes.spec.ts (11 tests) 101ms
+ ✓ src/__tests__/unit/http/simulate-case.controller.spec.ts (11 tests) 8ms
+ ✓ src/__tests__/unit/factories/production-simulate.factory.spec.ts (12 tests) 11ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (16 tests) 29ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (29 tests) 7ms
+ ✓ src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts (9 tests) 17ms
+ ✓ src/__tests__/unit/case/case-input-requirements.spec.ts (14 tests) 6ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (10 tests) 13ms
+ ✓ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests) 1670ms
+   ✓ answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached  981ms
+   ✓ answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection  687ms
+ ✓ src/__tests__/integration/case/discard.operation.spec.ts (6 tests) 1969ms
+   ✓ removes the discarded draft version itself, so no later read answers it at all  374ms
+   ✓ refuses to discard a version that is not in draft state, naming the state it actually holds  347ms
+   ✓ leaves a released version and its manifest entry in place after refusing to discard it  608ms
+   ✓ never removes a hypothesis-revision the discarded draft's manifest referenced, even though no other version ever adopted it  358ms
+ ✓ src/__tests__/unit/http/list-case-versions.routes.spec.ts (16 tests) 105ms
+ ✓ src/__tests__/unit/http/list-hypotheses.routes.spec.ts (16 tests) 164ms
+ ❯ src/__tests__/unit/errors/status-map.spec.ts (20 tests | 1 failed) 18ms
+   ✓ resolves CaseNotFoundError to 404 1ms
+   ✓ resolves ConceptNotAnsweredError to 404 0ms
+   ✓ resolves CapabilityIdentityNotFoundError to 404 0ms
+   ✓ resolves HypothesisNotInManifestError to 404 0ms
+   ✓ resolves CaseAlreadyHasDraftError to 409 0ms
+   ✓ resolves ManifestPositionOccupiedError to 409 0ms
+   ✓ resolves CaseVersionNotDraftError to 409 0ms
+   ✓ resolves CaseVersionNotDraftAtReleaseError to 409 0ms
+   ✓ resolves CaseVersionNotReleasedError to 409 0ms
+   ✓ resolves CaseVersionNotReleasableError to 422 0ms
+   ✓ resolves ManifestWouldHoldNoHypothesisError to 422 0ms
+   ✓ resolves IncompleteConnectorConfigurationError to 422 0ms
+   ✓ resolves MalformedCapabilityInputSchemaError to 422 0ms
+   ✓ resolves SubjectDoesNotCoverCaseInputsError to 422 0ms
+   ✓ resolves ConnectorPlaceholderOutsideInputSchemaError to 422 0ms
+   ✓ maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same non-500 status, pinning "distinct" as specific rather than mutually exclusive across all seven 0ms
+   ✓ returns undefined for a typed domain error the table does not name 0ms
+   ✓ returns undefined for a thrown value that is not an Error at all 0ms
+   ✓ the header comment names the two specification nodes that now fix a status as a decided fact, rather than claiming no node does 3ms
+   × the header comment names six specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 as facts their own rules decide rather than as this project's own engineering decision 10ms
+     → expected 'The one table COR-04 requires ("every…' to contain 'six specification nodes now fix a sta…'
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 5ms
+ ✓ src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts (11 tests) 6ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts (21 tests) 111ms
+ ✓ src/__tests__/unit/investigation/investigation-pipeline.spec.ts (4 tests) 10ms
+ ✓ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts (3 tests) 1289ms
+ ✓ src/__tests__/unit/http/update-draft.routes.spec.ts (9 tests) 111ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 9ms
+ ✓ src/__tests__/unit/http/list-connector-configurations.routes.spec.ts (13 tests) 129ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts (8 tests) 8ms
+ ✓ src/__tests__/unit/http/create-draft.routes.spec.ts (9 tests) 115ms
+ ✓ src/__tests__/unit/http/release.routes.spec.ts (9 tests) 112ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 122ms
+ ✓ src/__tests__/unit/http/read-case.routes.spec.ts (10 tests) 116ms
+ ✓ src/__tests__/unit/http/list-capabilities.routes.spec.ts (14 tests) 122ms
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (9 tests) 715ms
+ ✓ src/__tests__/unit/http/place-hypothesis.routes.spec.ts (12 tests) 140ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (10 tests) 6ms
+ ✓ src/__tests__/unit/http/list-concepts.routes.spec.ts (13 tests) 123ms
+ ✓ src/__tests__/unit/http/revise-hypothesis.routes.spec.ts (9 tests) 171ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (9 tests) 6ms
+ ✓ src/__tests__/unit/http/diagnose.routes.spec.ts (6 tests) 97ms
+ ✓ src/__tests__/unit/http/list-cases.routes.spec.ts (13 tests) 107ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts (10 tests) 114ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (7 tests) 10ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (10 tests) 5ms
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 1618ms
+   ✓ creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real "test" schema already has recorded  741ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  749ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (7 tests) 13ms
+ ✓ src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts (12 tests) 114ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.routes.spec.ts (9 tests) 105ms
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 207ms
+ ✓ src/__tests__/unit/http/register-concept.routes.spec.ts (7 tests) 107ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts (7 tests) 140ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 50ms
+ ✓ src/__tests__/unit/http/remove-hypothesis.routes.spec.ts (9 tests) 117ms
+ ✓ src/__tests__/unit/http/read-concept.routes.spec.ts (6 tests) 93ms
+ ✓ src/__tests__/unit/http/discard.routes.spec.ts (8 tests) 98ms
+ ✓ src/__tests__/unit/http/read-capability.routes.spec.ts (6 tests) 96ms
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 202ms
+ ✓ src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts (6 tests) 322ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (7 tests) 8ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure-bypass-mention-scan.spec.ts (6 tests) 41ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 13ms
+ ✓ src/__tests__/unit/config/env.spec.ts (8 tests) 6ms
+ ✓ src/__tests__/unit/http/case-input-requirements.routes.spec.ts (6 tests) 98ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (3 tests) 339ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 346ms
+ ✓ src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts (7 tests) 4ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 13ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts (5 tests) 5ms
+ ✓ src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts (3 tests) 296ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 11ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 6ms
+ ✓ src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts (11 tests) 4ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 235ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 14ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.controller.spec.ts (4 tests) 5ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 5ms
+ ✓ src/__tests__/unit/seed.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 4ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (3 tests) 12ms
+ ✓ src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts (13 tests) 4ms
+ ✓ src/__tests__/unit/types/pagination.spec.ts (7 tests) 3ms
+ ✓ src/__tests__/unit/http/error-handler.middleware.spec.ts (6 tests) 81ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 7ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 169ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 11ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (2 tests) 3ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (6 tests) 10ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/http/test-connector.controller.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (4 tests) 11ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 12ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 42ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 7ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 5ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 7ms
+ ✓ src/__tests__/unit/investigation/fake-observation-source.adapter.spec.ts (1 test) 3ms
+ ✓ src/__tests__/unit/glossary/glossary-store.port.spec.ts (2 tests) 4ms
+ ✓ src/__tests__/unit/capability-registry/capability.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/errors/status-map.spec.ts > the header comment names six specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 as facts their own rules decide rather than as this project's own engineering decision
+AssertionError: expected 'The one table COR-04 requires ("every…' to contain 'six specification nodes now fix a sta…'
+
+Expected: [32m"six specification nodes now fix a status as a decided fact"[39m
+Received: [31m"The one table COR-04 requires ("every domain error maps to a transport status in one place, and no handler chooses a status inline") — this project's own standard states that COR-04 requires the table to exist without stating what it contains (backend-node-service.yaml's own `elsewhere` note). That silence no longer covers every entry below: seven specification nodes now fix a status as a decided fact — CapabilityIdentityNotFoundError's HTTP 404 (constraints/the-capability-identity-read-refuses-an-unregistered-identity), ConnectorConfigurationNotFoundError's HTTP 404 (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused), ConnectorConfigurationNotWellFormedError's HTTP 422 (rules/integration/a-connector-configuration-holds-a-well-formed-object, whose own statement refuses a not-well-formed configuration "with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError"), HypothesisNotInManifestError's HTTP 404 (rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused, whose own statement refuses a simulate-hypothesis request naming an absent hypothesis "with an HTTP 404 response reporting a HypothesisNotInManifestError"), MalformedCapabilityInputSchemaError's HTTP 422 (rules/integration/a-capability-input-schema-holds-a-well-formed-object, whose own statement refuses a registration whose input schema departs from the declared shape "with an HTTP 422 response reporting a MalformedCapabilityInputSchemaError naming every departure"), and SubjectDoesNotCoverCaseInputsError's HTTP 422 (rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes, whose own statement refuses a diagnose whose subject leaves a required case input missing or empty "with an HTTP 422 response reporting a SubjectDoesNotCoverCaseInputsError naming every missing attribute together and, for each, the capabilities that require it"), and ConnectorPlaceholderOutsideInputSchemaError's HTTP 422 (rules/integration/a-connector-placeholder-is-declared-by-its-capability, whose own statement refuses a connector-configuration registration or edit whose call text embeds a placeholder naming a Subject attribute absent from the properties a currently registered capability's own input schema declares "with an HTTP 422 response reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder together with the capability that fails to declare it") — while every other entry's status stays this project's own engineering decision, not a fact the specification holds or should hold, so it is written here rather than left for a handler to pick inline. Grouped by what the refusal means for the caller: a resource that plainly does not exist answers 404 (CaseNotFoundError, ConceptNotAnsweredError, ConceptNotHeldError, VocabularyTermNotHeldError, ConnectorConfigurationNotFoundError — the fifth, once read-connector-configuration is exposed as a route, task/connector-configuration-authoring/read-connector-configuration-route; CapabilityNotRegisteredForTestError — the sixth, once test-connector is exposed as a route, task/connector-diagnostics/test-connector-route, criterion 3; CapabilityIdentityNotFoundError — the seventh, once read-capability-by-identity is exposed as its own route, task/registry-reads/read-capability-by-identity-route, a fourth typed class for the same structural absence rather than a reuse of ConceptNotAnsweredError, ConnectorConfigurationNotFoundError or CapabilityNotRegisteredForTestError; HypothesisNotInManifestError — the eighth, once simulate-hypothesis is exposed as a route, task/case-simulation-pipeline/simulate-hypothesis-operation, a fifth typed class for the same structural absence — a manifest entry rather than a case, a capability or a connector configuration); an operation the named resource's own current state forbids — a second open draft, an already occupied manifest position, a mutation against anything but a draft version, a concept a different capability already answers (ConceptAlreadyAnsweredError, rules/integration/one-capability-answers-one-concept), or a test-connector request naming a connector the capability's own connector does not match (CapabilityConnectorMismatchError, task/connector-diagnostics/test-connector-route, criterion 4), or a diagnose request pinned to a draft-state case version (CaseVersionNotReleasedError, rules/investigation/only-a-released-case-version-is-diagnosed) — this project's own engineering choice, the same way every other entry in this group already is, since this refusal's status is not something any specification node fixes — answers 409 Conflict; a request that is well-formed but would violate a business invariant were it applied — a release whose validator rules did not all pass, a removal that would leave a manifest holding no hypothesis, a capability registration that does not declare its contract completely (IncompleteCapabilityContractError), whose nature is not read-only (CapabilityNotReadOnlyError), whose schema is not syntactically valid JSON (CapabilitySchemaNotWellFormedError), or whose input schema parses but does not hold a well-formed shape (MalformedCapabilityInputSchemaError, rules/integration/a-capability-input-schema-holds-a-well-formed-object), or a connector-configuration registration whose configuration text is not syntactically valid JSON object text (ConnectorConfigurationNotWellFormedError, rules/integration/a-connector-configuration-holds-a-well-formed-object, task/connector-configuration-authoring/register-connector-route), or one whose connector name is absent or an empty string (IncompleteConnectorConfigurationError, rules/integration/a-connector-configuration-names-its-connector), or a diagnose request whose subject leaves a required case input missing or empty (SubjectDoesNotCoverCaseInputsError, rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes, task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute), or a connector-configuration registration or edit whose own call text embeds a placeholder naming a Subject attribute no capability currently registered against that connector's name declares in its input schema properties (ConnectorPlaceholderOutsideInputSchemaError, rules/integration/a-connector-placeholder-is-declared-by-its-capability, task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder) — answers 422 Unprocessable Entity: each of the first four reached this table only once register-capability was exposed as a route (task/capability-authoring/register-capability-route), since nothing before that task ever called registerCapability from HTTP; the fifth and sixth reach it the same way, now that register-connector is exposed as a route; the seventh reaches it the same way, now that this gate stands inside handleDiagnoseRequest; the eighth reaches it the same way, now that registerConnector itself runs this reconciliation before any write. An error class this table does not name is left unmapped, and error-handler.middleware.ts keeps answering it with 500, exactly as it does today (COR-04's own note that none of this codebase's errors is mapped to a status yet)."[39m
+
+ ❯ src/__tests__/unit/errors/status-map.spec.ts:255:18
+    253|   const header = proseOf(source.slice(0, source.indexOf('import {')));
+    254| 
+    255|   expect(header).toContain('six specification nodes now fix a status a…
+       |                  ^
+    256|   expect(header).toContain("ConnectorConfigurationNotWellFormedError's…
+    257|   expect(header).toContain('rules/integration/a-connector-configuratio…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 139 passed (140)
+      Tests  1 failed | 1566 passed (1567)
+   Start at  11:43:50
+   Duration  120.13s (transform 1.97s, setup 0ms, collect 8.50s, tests 91.39s, environment 23ms, prepare 6.31s)
+
+

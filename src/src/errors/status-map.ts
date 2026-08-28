@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: six
+// `elsewhere` note). That silence no longer covers every entry below: seven
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -27,7 +27,15 @@
 // whose own statement refuses a diagnose whose subject leaves a required
 // case input missing or empty "with an HTTP 422 response reporting a
 // SubjectDoesNotCoverCaseInputsError naming every missing attribute
-// together and, for each, the capabilities that require it")
+// together and, for each, the capabilities that require it"), and
+// ConnectorPlaceholderOutsideInputSchemaError's HTTP 422
+// (rules/integration/a-connector-placeholder-is-declared-by-its-capability,
+// whose own statement refuses a connector-configuration registration or
+// edit whose call text embeds a placeholder naming a Subject attribute
+// absent from the properties a currently registered capability's own input
+// schema declares "with an HTTP 422 response reporting a
+// ConnectorPlaceholderOutsideInputSchemaError naming every orphaned
+// placeholder together with the capability that fails to declare it")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -82,14 +90,21 @@
 // diagnose request whose subject leaves a required case input missing or
 // empty (SubjectDoesNotCoverCaseInputsError,
 // rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes,
-// task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute)
+// task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute),
+// or a connector-configuration registration or edit whose own call text
+// embeds a placeholder naming a Subject attribute no capability currently
+// registered against that connector's name declares in its input schema
+// properties (ConnectorPlaceholderOutsideInputSchemaError,
+// rules/integration/a-connector-placeholder-is-declared-by-its-capability,
+// task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
 // — answers 422 Unprocessable Entity: each of the first four reached this
 // table only once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
 // before that task ever called registerCapability from HTTP; the fifth and
 // sixth reach it the same way, now that register-connector is exposed as a
 // route; the seventh reaches it the same way, now that this gate stands
-// inside handleDiagnoseRequest.
+// inside handleDiagnoseRequest; the eighth reaches it the same way, now that
+// registerConnector itself runs this reconciliation before any write.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -111,6 +126,7 @@ import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConnectorConfigurationNotFoundError } from './connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from './connector-configuration-not-well-formed.error.js';
+import { ConnectorPlaceholderOutsideInputSchemaError } from './connector-placeholder-outside-input-schema.error.js';
 import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
@@ -128,7 +144,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-four extends another, so that never arises today.
+ * twenty-five extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -155,6 +171,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConnectorConfigurationNotWellFormedError, 422],
   [IncompleteConnectorConfigurationError, 422],
   [SubjectDoesNotCoverCaseInputsError, 422],
+  [ConnectorPlaceholderOutsideInputSchemaError, 422],
 ]);
 
 /**

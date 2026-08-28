@@ -25,6 +25,7 @@ import type {
   ConnectorConfigurationRegistration,
 } from '../../../connector-registry/connector-configuration.js';
 import { ConnectorConfigurationNotWellFormedError } from '../../../errors/connector-configuration-not-well-formed.error.js';
+import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
@@ -170,6 +171,39 @@ it('refuses with the status the status map assigns ConnectorConfigurationNotWell
   const body = response.json() as { error: { code: string; details?: unknown } };
   expect(body.error.code).toBe('ConnectorConfigurationNotWellFormedError');
   expect(body.error.details).toEqual({ reason: 'configuration does not parse to a JSON object' });
+});
+
+// ------------------------------------------------------------------ orphaned Subject-attribute placeholder
+// Proof for task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder,
+// criteria 1 and 2: the route surfaces ConnectorPlaceholderOutsideInputSchemaError exactly as every
+// other typed refusal registerConnector raises already is above — the status the status map assigns
+// it, and its own context (every orphaned placeholder together with the capability that fails to
+// declare it) as the envelope's details, unchanged.
+
+it('refuses with the status the status map assigns ConnectorPlaceholderOutsideInputSchemaError, naming every orphaned placeholder together with the capability that fails to declare it', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const failingCapability = { connector: 'erp-http', input_schema: JSON.stringify({ properties: { contract_number: {} } }) };
+  built.registerConnector.mockRejectedValueOnce(
+    new ConnectorPlaceholderOutsideInputSchemaError([
+      { placeholder: 'customer_document', capabilities: [failingCapability] },
+    ]),
+  );
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/connectors/erp-http',
+    payload: validBody({
+      configuration: '{"address":"https://api.example.test/records/${subject:customer_document}"}',
+    }),
+  });
+
+  expect(response.statusCode).toBe(422);
+  const body = response.json() as { error: { code: string; details?: { orphaned: unknown } } };
+  expect(body.error.code).toBe('ConnectorPlaceholderOutsideInputSchemaError');
+  expect(body.error.details).toEqual({
+    orphaned: [{ placeholder: 'customer_document', capabilities: [failingCapability] }],
+  });
 });
 
 // ------------------------------------------------------------------ absent or empty connector name

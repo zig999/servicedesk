@@ -1,8 +1,13 @@
 import { ConnectorConfigurationNotFoundError } from '../errors/connector-configuration-not-found.error.js';
 import { ConnectorConfigurationNotWellFormedError } from '../errors/connector-configuration-not-well-formed.error.js';
+import {
+  ConnectorPlaceholderOutsideInputSchemaError,
+  type OrphanedPlaceholder,
+} from '../errors/connector-placeholder-outside-input-schema.error.js';
 import { IncompleteConnectorConfigurationError } from '../errors/incomplete-connector-configuration.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { ICapabilitiesReader, RegisteredCapabilityForPlaceholderCheck } from './capabilities-reader.port.js';
+import { orphanedPlaceholders } from './connector-placeholder-declaration-check.js';
 import type {
   ConnectorConfiguration,
   ConnectorConfigurationRegistration,
@@ -63,15 +68,24 @@ export class ConnectorConfigurationRegistryService {
    * minimum shape this registry requires, or whose configuration text is
    * not well-formed
    * (rules/integration/a-connector-configuration-holds-a-well-formed-object,
-   * task/connector-configuration-authoring/register-connector-route), before
-   * any write. The rest is held — a re-registration under an already-held
-   * connector identity replaces the row it holds, since one connector
-   * configuration is identified by its connector value alone.
+   * task/connector-configuration-authoring/register-connector-route), or
+   * whose own call text embeds a Subject-attribute placeholder that no
+   * capability currently registered against this connector's name declares
+   * in its input schema properties
+   * (rules/integration/a-connector-placeholder-is-declared-by-its-capability,
+   * task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
+   * — before any write, and held to the same refusal whether the connector
+   * name is new or already registered, since editing replaces the row
+   * whole rather than merging into it. The rest is held — a re-registration
+   * under an already-held connector identity replaces the row it holds,
+   * since one connector configuration is identified by its connector value
+   * alone.
    */
   public async registerConnector(
     registration: ConnectorConfigurationRegistration,
   ): Promise<ConnectorConfiguration> {
     const configuration = heldConfiguration(registration);
+    await this.refuseOrphanedPlaceholders(configuration);
     const held = await this.store.readConnectorConfigurations();
     const kept = held.filter((candidate) => candidate.connector !== configuration.connector);
     await this.store.writeConnectorConfigurations([...kept, configuration]);
@@ -156,16 +170,72 @@ export class ConnectorConfigurationRegistryService {
    * registered, through the narrow port the composition root supplies
    * (factories/capability-registry.factory.ts's own createCapabilitiesReader,
    * backed by the same RelationalCapabilityStore the capability registry
-   * itself reads and writes through). Running the shared
-   * orphaned-placeholder check
-   * (connector-placeholder-declaration-check.ts, this same directory)
-   * against a registration in progress, and raising a refusal over what it
-   * names, is a sibling task's own concern (this task's own Notes) — this
-   * method only answers the read.
+   * itself reads and writes through). registerConnector's own
+   * refuseOrphanedPlaceholders below is what actually runs the shared
+   * orphaned-placeholder check against this read and raises the refusal
+   * over what it names
+   * (task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
+   * — this method stays the plain read for any other consumer that needs it
+   * (a future test-connector-style diagnostic among them).
    */
   public async readRegisteredCapabilities(): Promise<readonly RegisteredCapabilityForPlaceholderCheck[]> {
     return this.capabilitiesReader.readCapabilities();
   }
+
+  /**
+   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
+   * own connector-configuration-registration direction: refuses a
+   * registration or edit whose own call text embeds a Subject-attribute
+   * placeholder that no capability currently registered against this same
+   * connector's name declares in its input schema properties — "a
+   * placeholder must be declared by at least one of them to not be
+   * orphaned", so a capability registered against a different connector is
+   * never consulted (the filter below), and a connector no capability
+   * currently names is never refused over this at all
+   * (orphanedAcrossEveryCapability's own empty-list answer). Runs after
+   * heldConfiguration has already confirmed the configuration's own shape,
+   * since this refusal reads the other registry's current state rather than
+   * this registration's own well-formedness.
+   */
+  private async refuseOrphanedPlaceholders(configuration: ConnectorConfiguration): Promise<void> {
+    const capabilities = (await this.capabilitiesReader.readCapabilities()).filter(
+      (capability) => capability.connector === configuration.connector,
+    );
+    const orphaned = orphanedAcrossEveryCapability(configuration.configuration, capabilities);
+    if (orphaned.length > 0) {
+      throw new ConnectorPlaceholderOutsideInputSchemaError(orphaned);
+    }
+  }
+}
+
+/**
+ * Every Subject-attribute placeholder configurationText embeds that not one
+ * of the given capabilities declares in its own input schema properties —
+ * the intersection of each capability's own orphanedPlaceholders answer
+ * (connector-placeholder-declaration-check.ts), paired with the full list of
+ * capabilities, since a placeholder surviving that intersection is, by
+ * construction, one none of them declares
+ * (task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder's
+ * own "a placeholder must be declared by at least one of them to not be
+ * orphaned"). An empty capabilities list answers no orphaned placeholder at
+ * all — a connector no capability currently names has nothing this
+ * reconciliation checks it against, the same "not forcing an order" the
+ * rule's own Description already states for a connector configured before
+ * any capability names it.
+ */
+function orphanedAcrossEveryCapability(
+  configurationText: string,
+  capabilities: readonly RegisteredCapabilityForPlaceholderCheck[],
+): readonly OrphanedPlaceholder[] {
+  if (capabilities.length === 0) {
+    return [];
+  }
+  const perCapabilityOrphaned = capabilities.map(
+    (capability) => new Set(orphanedPlaceholders(configurationText, capability.input_schema)),
+  );
+  const [first, ...rest] = perCapabilityOrphaned;
+  const orphanedEverywhere = [...first].filter((placeholder) => rest.every((set) => set.has(placeholder)));
+  return orphanedEverywhere.map((placeholder) => ({ placeholder, capabilities }));
 }
 
 /**

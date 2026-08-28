@@ -16,6 +16,7 @@ import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
+import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/connector-placeholder-outside-input-schema.error.js';
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
@@ -169,6 +170,19 @@ it('resolves SubjectDoesNotCoverCaseInputsError to 422', () => {
   expect(status).toBe(422);
 });
 
+// Added for task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder,
+// whose own criterion 1 depends on this exact entry: "... refused with an HTTP 422 response
+// reporting ConnectorPlaceholderOutsideInputSchemaError."
+it('resolves ConnectorPlaceholderOutsideInputSchemaError to 422', () => {
+  const error = new ConnectorPlaceholderOutsideInputSchemaError([
+    { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
+  ]);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
 it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same non-500 status, pinning "distinct" as specific rather than mutually exclusive across all seven', () => {
   const draftError = new CaseAlreadyHasDraftError('a-slug');
   const positionError = new ManifestPositionOccupiedError('a-slug', 1, 1);
@@ -234,16 +248,22 @@ it("the header comment names the two specification nodes that now fix a status a
 // task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute then
 // added a sixth specification-fixed status (SubjectDoesNotCoverCaseInputsError) to the same
 // header paragraph, so the count in prose changed again from five to six.
-it("the header comment names six specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
+// task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder
+// then added a seventh specification-fixed status (ConnectorPlaceholderOutsideInputSchemaError) to
+// the same header paragraph, so the count in prose changed again from six to seven.
+it("the header comment names seven specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 and ConnectorPlaceholderOutsideInputSchemaError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('six specification nodes now fix a status as a decided fact');
+  expect(header).toContain('seven specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
   expect(header).toContain("SubjectDoesNotCoverCaseInputsError's HTTP 422");
   expect(header).toContain('rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes');
   expect(header).toContain('with an HTTP 422 response reporting a SubjectDoesNotCoverCaseInputsError naming every missing attribute');
+  expect(header).toContain("ConnectorPlaceholderOutsideInputSchemaError's HTTP 422");
+  expect(header).toContain('rules/integration/a-connector-placeholder-is-declared-by-its-capability');
+  expect(header).toContain('with an HTTP 422 response reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder together with the capability that fails to declare it');
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });

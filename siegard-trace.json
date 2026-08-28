@@ -793,7 +793,11 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:38221ff969136a37f1bbda26e09ca0ec6a2823da28ee6ef8449927ebf0ea5d26"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -822,6 +826,10 @@
         {
           "path": "src/src/http/read-connector-configuration.routes.ts",
           "digest": "sha256:2ca2e764472bb015c8860b44b7a6630ff27f3a083fc3b622c3206391707646be"
+        },
+        {
+          "path": "src/src/http/register-connector.controller.ts",
+          "digest": "sha256:3687d1e9775aa3b0607e9f9ba9ba06c23807f2c18eab7d22600ac18d4809cfe8"
         },
         {
           "path": "src/src/http/register-connector.routes.ts",
@@ -2173,7 +2181,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
-          "digest": "sha256:48bc3ab78b3797e6e18f62cdbabb58c3642874229028b3c5e6f3bd220143d962"
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -4136,8 +4144,20 @@
       "digest": "sha256:5badc08744c9ca8793f157866d2362fe367af6993e9e093430ff09522793e676",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
+        },
+        {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
           "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
+        },
+        {
+          "path": "src/src/errors/connector-placeholder-outside-input-schema.error.ts",
+          "digest": "sha256:65350dd2ff097174b7326b1e5250a71e6a2b4b698be0f7ad43a1ae6b91464ba3"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
         },
         {
           "path": "src/src/http-connector/connector-request-resolver.ts",
@@ -5438,8 +5458,16 @@
       "digest": "sha256:0ccd819c9d992e54d1eb47918f43e196236d61b4ea19e000b459eec726c5e435",
       "files": [
         {
+          "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
+          "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
+        },
+        {
           "path": "src/src/connector-registry/connector-placeholder-declaration-check.ts",
           "digest": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc"
+        },
+        {
+          "path": "src/src/errors/connector-placeholder-outside-input-schema.error.ts",
+          "digest": "sha256:65350dd2ff097174b7326b1e5250a71e6a2b4b698be0f7ad43a1ae6b91464ba3"
         }
       ]
     },

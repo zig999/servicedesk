@@ -39,8 +39,10 @@ export type RegisterConnectorControllerDependencies = {
  * published registerConnector operation, answering with the registered
  * connector configuration exactly as the registry returns it. Every refusal
  * the registry raises (IncompleteConnectorConfigurationError,
- * ConnectorConfigurationNotWellFormedError) is left to propagate to the
- * app's shared error handler.
+ * ConnectorConfigurationNotWellFormedError,
+ * ConnectorPlaceholderOutsideInputSchemaError — rules/integration/a-connector-placeholder-is-declared-by-its-capability,
+ * task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
+ * is left to propagate to the app's shared error handler.
  */
 export async function handleRegisterConnectorRequest(
   dependencies: RegisterConnectorControllerDependencies,
