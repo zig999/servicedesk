@@ -139,11 +139,11 @@
     },
     {
       "node": "constraints/no-route-enforces-authentication",
-      "digest": "sha256:6a6bbf9399f504a42cb96abe79d00793135ae491db8b3e81fda54819fa8d57b4",
+      "digest": "sha256:2b7f68463a9b689b91284165f513f9dc17063778dab978aaec4be03be7b33489",
       "files": [
         {
           "path": "frontend/app/src/shared/components/app-shell.tsx",
-          "digest": "sha256:f055886a7514a04a976dc8bfe67f8313f71651a7de62dd1b7ffa035d8a23e95a"
+          "digest": "sha256:9b68143bbfeee6dd975e576f4a3948ba950fa998d4398d5a85dc4c7f05d62f1f"
         },
         {
           "path": "src/src/http/list-connector-configurations.routes.ts",
