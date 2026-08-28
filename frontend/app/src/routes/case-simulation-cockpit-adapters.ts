@@ -54,6 +54,24 @@ export type CockpitEvaluation = {
   readonly source: CockpitEvaluationSource;
   /** The exact wire object this evaluation was read from, unmodified -- the Detail region's own JSON tab renders this verbatim for the selected hypothesis. */
   readonly raw: unknown;
+  /**
+   * rules/investigation/a-simulation-result-is-stale-once-its-source-changes,
+   * symmetric to the Case Result region's own `CaseResultRun.stale`
+   * (use-case-simulation-history.ts) -- never part of either dispatch hook's
+   * own wire response (there is no such fact to normalize out of it), always
+   * `false` when this evaluation is freshly produced, and flipped to `true`
+   * in place by use-case-simulation-cockpit.ts's own return-from-editing
+   * effect, the same way `markLastRunStale()` flips a run's own flag rather
+   * than appending a new entry. Optional rather than required: several
+   * already-existing spec/fixture files across this cockpit's own test
+   * suites construct a literal of this shape that predates this field
+   * entirely and was never stale to begin with; every site that reads this
+   * field (`row.evaluation?.stale`, `evaluation.stale &&`) already treats an
+   * absent value the same as an explicit `false`, so optional states the
+   * same fact those fixtures would state by omission without editing them
+   * (this task never edits a `.spec.ts`/`.test-support.ts` file).
+   */
+  readonly stale?: boolean;
 };
 
 /** Normalizes one evaluation out of a completed full-case run (use-simulate-case.ts's own SimulateEvaluation). */
@@ -68,6 +86,7 @@ export function fromCaseEvaluation(evaluation: SimulateEvaluation): CockpitEvalu
     prompt: evaluation.prompt,
     source: "case",
     raw: evaluation,
+    stale: false,
   };
 }
 
@@ -83,6 +102,7 @@ export function fromHypothesisEvaluation(evaluation: HypothesisEvaluation): Cock
     prompt: evaluation.prompt,
     source: "hypothesis",
     raw: evaluation,
+    stale: false,
   };
 }
 
@@ -93,6 +113,7 @@ export function toRowEvaluation(evaluation: CockpitEvaluation): SimulationHypoth
     verdict: evaluation.verdict,
     reason: evaluation.reason,
     usage: evaluation.usage,
+    stale: evaluation.stale,
   };
 }
 
@@ -192,6 +213,7 @@ export function toDetailEvaluation(evaluation: CockpitEvaluation): DetailEvaluat
     verdict: evaluation.verdict,
     citations: evaluation.citations,
     judgmentCall: toDetailJudgmentCall(),
+    stale: evaluation.stale,
   };
 }
 

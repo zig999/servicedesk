@@ -188,6 +188,35 @@ describe("CaseSimulationHypothesesTable -- token cost column", () => {
   });
 });
 
+describe("CaseSimulationHypothesesTable -- the Stale indicator (rules/investigation/a-simulation-result-is-stale-once-its-source-changes)", () => {
+  it('shows a "Stale" indicator for a row whose evaluation is marked stale', async () => {
+    const staleRow: SimulationManifestRow = {
+      position: 1,
+      hypothesisName: "H1",
+      collects: [],
+      evaluation: { hypothesis: "The customer overpaid", verdict: "confirmed", stale: true },
+    };
+    await mount(baseProps({ rows: [staleRow] }));
+    const rows = (await screen.findAllByRole("row")).slice(1);
+
+    expect(within(findRowByPosition(rows, 1)).getByText("Stale")).toBeTruthy();
+  });
+
+  it('shows no "Stale" indicator for a row whose evaluation has run this session but is not marked stale', async () => {
+    await mount(baseProps({ rows: [CONFIRMED_ROW] }));
+    const rows = (await screen.findAllByRole("row")).slice(1);
+
+    expect(within(findRowByPosition(rows, 1)).queryByText("Stale")).toBeNull();
+  });
+
+  it('shows no "Stale" indicator for a row that has not run this session at all', async () => {
+    await mount(baseProps({ rows: [NOT_RUN_ROW] }));
+    const rows = (await screen.findAllByRole("row")).slice(1);
+
+    expect(within(findRowByPosition(rows, 2)).queryByText("Stale")).toBeNull();
+  });
+});
+
 describe("CaseSimulationHypothesesTable -- the edit action's own route (criterion 4)", () => {
   it("addresses a row's own Edit link to that hypothesis's manifest-hypothesis route with ?back=simulate", async () => {
     await mount(baseProps({ slug: "acme-widgets", version: 7 }));

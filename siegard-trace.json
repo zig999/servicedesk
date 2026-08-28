@@ -4397,7 +4397,27 @@
         },
         {
           "path": "frontend/app/src/hooks/use-case-simulation-cockpit.ts",
-          "digest": "sha256:bf81d939adff7511254a0216cce4bd9bde2995b29d82a37cb687c5ef8c73ee14"
+          "digest": "sha256:1398dec4d16cc2ca9c05a2e9d68d30e0247d45f89fccd86be081da34138364e6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
+          "digest": "sha256:e9a28535afcc5fd59413e83be46485925230df9cdfd0c44d7fe7d607b48f18b6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
+          "digest": "sha256:82c305a425497cceef894174e9efd5998f10bd89c640aa3091dfe7fc492e3342"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
+          "digest": "sha256:abeb0803d96a3af387e7b85ec7fb8c19a4c8f84dbc71e9fdae987e38ce8085c1"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:b0dbbf336f3ffdd73e8e76ade4c75cc0de8307825aa584a9a6062a63bb221f18"
         }
       ]
     },
@@ -5671,7 +5691,15 @@
         },
         {
           "path": "frontend/app/src/hooks/use-case-simulation-cockpit.ts",
-          "digest": "sha256:bf81d939adff7511254a0216cce4bd9bde2995b29d82a37cb687c5ef8c73ee14"
+          "digest": "sha256:1398dec4d16cc2ca9c05a2e9d68d30e0247d45f89fccd86be081da34138364e6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
+          "digest": "sha256:e9a28535afcc5fd59413e83be46485925230df9cdfd0c44d7fe7d607b48f18b6"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
+          "digest": "sha256:b0dbbf336f3ffdd73e8e76ade4c75cc0de8307825aa584a9a6062a63bb221f18"
         }
       ]
     },

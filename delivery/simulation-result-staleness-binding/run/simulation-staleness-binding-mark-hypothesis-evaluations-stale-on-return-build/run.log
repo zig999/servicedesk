@@ -1,0 +1,65 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+> case-authoring-console@0.1.0 postinstall
+> node scripts/dedupe-tui-react.mjs
+
+dedupe-tui-react: react already deduped
+dedupe-tui-react: react-dom already deduped
+
+added 577 packages, and audited 578 packages in 7s
+
+196 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/case-simulation-cockpit-adapters.spec.ts(130,11): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; citations: { concept: string; field: string; }[]; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; source: "case"; raw: {}; }' but required in type 'CockpitEvaluation'.
+src/routes/case-simulation-cockpit-adapters.spec.ts(164,7): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "refuted"; citations: never[]; source: "hypothesis"; raw: {}; }' but required in type 'CockpitEvaluation'.
+src/routes/case-simulation-cockpit-adapters.spec.ts(231,11): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; citations: { concept: string; field: string; }[]; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; source: "case"; raw: {}; }' but required in type 'CockpitEvaluation'.
+src/routes/case-simulation-detail-panel.test-support.ts(68,3): error TS2322: Type '{ hypothesis: string; verdict: SimulationVerdict; citations: readonly SimulationCitation[]; judgmentCall: SimulationJudgmentCall; stale?: boolean | undefined; }' is not assignable to type 'SimulationEvaluation'.
+  Types of property 'stale' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(54,27): error TS2345: Argument of type '{ hypothesis: string; verdict: "confirmed"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(71,20): error TS2345: Argument of type '{ hypothesis: string; verdict: "inconclusive"; reason: "judgment-failure"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "judgment-failure"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(76,25): error TS2345: Argument of type '{ hypothesis: string; verdict: "inconclusive"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "inconclusive"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(80,25): error TS2345: Argument of type '{ hypothesis: string; verdict: "confirmed"; reason: "no-data"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; reason: "no-data"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(87,20): error TS2345: Argument of type '{ hypothesis: string; verdict: "refuted"; reason: "deadline-exceeded"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "refuted"; reason: "deadline-exceeded"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(97,30): error TS2345: Argument of type '{ hypothesis: string; verdict: "confirmed"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(105,30): error TS2345: Argument of type '{ hypothesis: string; verdict: "refuted"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "refuted"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(113,30): error TS2345: Argument of type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(129,21): error TS2345: Argument of type '{ hypothesis: string; verdict: "confirmed"; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table-row.spec.ts(134,16): error TS2345: Argument of type '{ hypothesis: string; verdict: "confirmed"; usage: { input_tokens: number; output_tokens: number; }; }' is not assignable to parameter of type 'SimulationHypothesisEvaluation'.
+  Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; usage: { input_tokens: number; output_tokens: number; }; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table.spec.ts(71,3): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; usage: { input_tokens: number; output_tokens: number; }; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table.spec.ts(82,3): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "inconclusive"; reason: "no-data"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table.spec.ts(150,7): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "inconclusive"; }' but required in type 'SimulationHypothesisEvaluation'.
+src/routes/case-simulation-hypotheses-table.spec.ts(162,7): error TS2741: Property 'stale' is missing in type '{ hypothesis: string; verdict: "confirmed"; reason: "no-data"; }' but required in type 'SimulationHypothesisEvaluation'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== style :: npm run lint:css :: not_run =====
+
+===== build :: npm run build :: not_run =====
+
+===== a11y :: npm run test:a11y :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

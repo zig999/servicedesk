@@ -88,6 +88,26 @@ describe("CaseSimulationDetailPanel -- the verdict's own color (inference)", () 
   });
 });
 
+describe("CaseSimulationDetailPanel -- the Stale indicator (rules/investigation/a-simulation-result-is-stale-once-its-source-changes)", () => {
+  it('shows a "Stale" indicator beside the verdict dot when the evaluation is marked stale', () => {
+    mount({ evaluation: testEvaluation({ stale: true }) });
+
+    expect(screen.getByText("Stale")).toBeTruthy();
+  });
+
+  it('shows no "Stale" indicator when the evaluation is explicitly not marked stale', () => {
+    mount({ evaluation: testEvaluation({ stale: false }) });
+
+    expect(screen.queryByText("Stale")).toBeNull();
+  });
+
+  it('shows no "Stale" indicator when the evaluation carries no `stale` field at all', () => {
+    mount({ evaluation: testEvaluation() });
+
+    expect(screen.queryByText("Stale")).toBeNull();
+  });
+});
+
 describe("CaseSimulationDetailPanel -- the hypothesis revision's own criterion text (criterion 2)", () => {
   it("shows the hypothesis revision's own criterion text", () => {
     mount({

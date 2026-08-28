@@ -103,6 +103,18 @@ export type SimulationEvaluation = {
   readonly verdict: SimulationVerdict;
   readonly citations: readonly SimulationCitation[];
   readonly judgmentCall: SimulationJudgmentCall;
+  /**
+   * rules/investigation/a-simulation-result-is-stale-once-its-source-changes,
+   * carried through from CockpitEvaluation (case-simulation-cockpit-
+   * adapters.ts's own toDetailEvaluation) unchanged, symmetric to the Case
+   * Result region's own CaseResultRun.stale. Optional rather than required,
+   * matching CockpitEvaluation's own field: an absent value reads exactly as
+   * "not stale" at this region's own read site (case-simulation-detail-panel.tsx
+   * reads `evaluation.stale &&`), the correct reading for every
+   * already-existing fixture that predates this field and was never stale to
+   * begin with.
+   */
+  readonly stale?: boolean;
 };
 
 /**

@@ -27,12 +27,22 @@ export type SimulationUsage = {
  * verdict, its reason when inconclusive, and the call-level usage the
  * token-cost cell reads -- never citations, elapsed_ms or prompt, which
  * belong to the per-hypothesis detail region, a separate task in this epic.
+ * `stale` (rules/investigation/a-simulation-result-is-stale-once-its-source-
+ * changes) is carried through from CockpitEvaluation (case-simulation-
+ * cockpit-adapters.ts's own toRowEvaluation) unchanged, symmetric to the
+ * Case Result region's own CaseResultRun.stale. Optional rather than
+ * required, matching CockpitEvaluation's own field: an absent value reads
+ * exactly as "not stale" at this row's own read site (staleCell in
+ * case-simulation-hypotheses-table.tsx reads `row.evaluation?.stale`), the
+ * correct reading for every already-existing fixture that predates this
+ * field and was never stale to begin with.
  */
 export type SimulationHypothesisEvaluation = {
   readonly hypothesis: string;
   readonly verdict: SimulationVerdict;
   readonly reason?: SimulationEvaluationReason;
   readonly usage?: SimulationUsage;
+  readonly stale?: boolean;
 };
 
 /**

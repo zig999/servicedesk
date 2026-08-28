@@ -37,6 +37,13 @@ import type {
  * Wiring this component into the simulate route is
  * task/simulation-cockpit/screen-assembly's own job, itself scoped to the
  * same operator-facing app.
+ *
+ * A `Stale` indicator (rules/investigation/a-simulation-result-is-stale-once-
+ * its-source-changes) renders beside the verdict dot when `evaluation.stale`
+ * is true, using the same CaseSimulationStatusDot(color="bg-warning",
+ * label="Stale") convention case-simulation-case-result-panel.tsx already
+ * uses for the Case Result region's own last run -- task/simulation-
+ * staleness-binding/mark-hypothesis-evaluations-stale-on-return.
  */
 
 /**
@@ -65,6 +72,7 @@ export function CaseSimulationDetailPanel({
       <div className="flex flex-wrap items-center gap-4">
         <h3 className="font-semibold text-foreground">{evaluation.hypothesis}</h3>
         <CaseSimulationStatusDot {...VERDICT_CELL[evaluation.verdict]} />
+        {evaluation.stale && <CaseSimulationStatusDot color="bg-warning" label="Stale" />}
       </div>
 
       <div>

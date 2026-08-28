@@ -67,20 +67,37 @@
  * the version's own query is invalidated (reloading the header, the Subject
  * region's own derivation and the Hypotheses table's own manifest rows
  * together, since all three read the same `["case-version", slug, version]`
- * query, use-case-simulation-version.ts's own key) and `markLastRunStale()`
- * is called.
- * A limitation this mechanism does not hide: `useCaseSimulationHistory`'s own
- * run list is component-scoped React state (use-case-simulation-history.ts,
- * reused rather than duplicated here), so a genuine full-route navigation to
- * any of the three editing routes and back unmounts and remounts this whole
- * cockpit, resetting `evaluations`/`runs` to empty before `markLastRunStale`
- * is ever called against them -- the call is correct and fires, but has
- * nothing to mark on a real round trip today (markLastRunStale's own "a
- * no-op when no run has completed yet" applies). Fixing that needs either
- * widening use-case-simulation-history.ts's own signature to accept a seed,
- * or lifting this cockpit's session state above the router's Outlet
+ * query, use-case-simulation-version.ts's own key), `markLastRunStale()` is
+ * called for the Case Result region's own last run, and -- symmetrically,
+ * task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-
+ * return, cut once /reconcile found the rule and scenario above cover a
+ * result's own evaluations and not only its assessment -- every entry
+ * currently held in `evaluations` (the per-hypothesis map criterion 4 above
+ * describes) is flipped to `stale: true` in place, in this same effect and
+ * alongside that call, never instead of it. `setEvaluations`'s own identity
+ * is stable across renders the same way a useState setter always is, so
+ * calling it here needs no addition to this effect's own dependency array,
+ * for the same reason `queryClient`/`history`/`slug`/`version` already need
+ * none.
+ * A limitation this mechanism does not hide, and which now applies
+ * symmetrically to both regions rather than to history alone:
+ * `useCaseSimulationHistory`'s own run list and this hook's own `evaluations`
+ * state are both component-scoped React state (use-case-simulation-
+ * history.ts, reused rather than duplicated here, and the `useState` above),
+ * so a genuine full-route navigation to any of the three editing routes and
+ * back unmounts and remounts this whole cockpit, resetting `evaluations`/
+ * `runs` to empty before `markLastRunStale` or the per-hypothesis marking
+ * above is ever called against them -- both calls are correct and fire, but
+ * neither has anything left to mark on a real round trip today
+ * (`markLastRunStale`'s own "a no-op when no run has completed yet" applies,
+ * and marking an empty `evaluations` map stale is the same no-op for the
+ * per-hypothesis case). Fixing that needs either widening
+ * use-case-simulation-history.ts's own signature to accept a seed, or
+ * lifting this cockpit's session state above the router's Outlet
  * (app-shell.tsx) -- both outside this task's own file and reach; recorded
- * as a deferred limitation in this task's own delivery record.
+ * as a deferred limitation in this task's own delivery record, the same
+ * limitation the earlier, case-level-only delivery already recorded, now
+ * disclosed for both regions rather than only for history.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -208,6 +225,18 @@ export function useCaseSimulationCockpit(
     if (isReturn) {
       void queryClient.invalidateQueries({ queryKey: ["case-version", slug, version] });
       history.markLastRunStale();
+      // Symmetric to the call above (this file's own header comment on
+      // criterion 6): every hypothesis this session currently holds an
+      // evaluation for is marked stale in place, alongside -- never instead
+      // of -- markLastRunStale().
+      setEvaluations((current) =>
+        Object.fromEntries(
+          Object.entries(current).map(([hypothesisName, evaluation]) => [
+            hypothesisName,
+            { ...evaluation, stale: true },
+          ]),
+        ),
+      );
     }
     // Intentionally empty: this effect is meant to run once per mount only
     // (this file's own header comment on criterion 6's return detection).

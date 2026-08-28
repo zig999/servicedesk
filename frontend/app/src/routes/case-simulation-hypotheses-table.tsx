@@ -6,6 +6,7 @@ import {
   type StatusTableColumn,
   type StatusTableRow,
 } from "../shared/components/status-table";
+import { CaseSimulationStatusDot } from "./case-simulation-status-dot";
 import {
   costCell,
   hypothesisLabel,
@@ -101,6 +102,7 @@ const COLUMNS: StatusTableColumn[] = [
   { key: "verdict", header: "Verdict" },
   { key: "cost", header: "Cost (tok)" },
   { key: "actions", header: "Actions" },
+  { key: "stale", header: "Stale" },
 ];
 
 /**
@@ -153,6 +155,22 @@ function RowActions({
   );
 }
 
+/**
+ * rules/investigation/a-simulation-result-is-stale-once-its-source-changes,
+ * scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result:
+ * the same CaseSimulationStatusDot(color="bg-warning", label="Stale")
+ * convention case-simulation-case-result-panel.tsx already renders for the
+ * Case Result region's own last run, shown here beside the row's verdict --
+ * blank for a row with no evaluation at all (an evaluation freshly produced
+ * this session is never stale, case-simulation-cockpit-adapters.ts's own
+ * fromCaseEvaluation/fromHypothesisEvaluation).
+ */
+function staleCell(row: SimulationManifestRow): JSX.Element | null {
+  return row.evaluation?.stale ? (
+    <CaseSimulationStatusDot color="bg-warning" label="Stale" />
+  ) : null;
+}
+
 function toTableRow(
   slug: string,
   version: number,
@@ -166,6 +184,7 @@ function toTableRow(
     hypothesis: hypothesisLabel(row),
     collects: row.collects.length,
     verdict: verdictCell(row.evaluation),
+    stale: staleCell(row),
     cost: costCell(row.evaluation),
     actions: (
       <RowActions

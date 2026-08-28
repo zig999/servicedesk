@@ -22,6 +22,8 @@ import type { CaseVersionManifestEntry } from "../services/case-version-record";
 // per-hypothesis evaluation, and shaping a completed run into each region's own already-declared
 // props. Proven directly here, as pure functions, rather than only indirectly through the
 // composed hook -- a narrower failure here names exactly which transform broke.
+// The stale-field tests for fromCaseEvaluation/fromHypothesisEvaluation/toRowEvaluation/
+// toDetailEvaluation split out to case-simulation-cockpit-adapters-stale.spec.ts (MNT-01).
 
 const MANIFEST: readonly CaseVersionManifestEntry[] = [
   {
