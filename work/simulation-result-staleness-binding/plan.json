@@ -22,6 +22,14 @@
       "title": "Bind the cockpit's staleness citation and prove the changed-source behavior",
       "summary": "Replaces the stale \"D8\" citation with the two governing nodes and adds the test proving a return marks the shown result stale.",
       "epic": "simulation-staleness-binding"
+    },
+    {
+      "id": "task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-return",
+      "kind": "task",
+      "file": "task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-return.md",
+      "title": "Mark per-hypothesis evaluations stale on a detected return, symmetric to the Case Result region",
+      "summary": "Extends the cockpit's return-from-editing staleness mechanism to also mark every currently-held per-hypothesis evaluation stale, mirroring the existing history.markLastRunStale() call rather than replacing it, and threads the resulting `stale` field through to both consuming regions' own display.",
+      "epic": "simulation-staleness-binding"
     }
   ],
   "edges": [
@@ -45,6 +53,18 @@
     },
     {
       "from": "task/simulation-staleness-binding/bind-cockpit-staleness-citations-and-proof",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-return",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-return",
       "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
       "kind": "implements",
       "at": "implements[1]"
