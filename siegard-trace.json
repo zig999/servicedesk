@@ -515,7 +515,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:74b4ab5ba3bd7bbfe42ce8404901018bf325f58def2661c0a88c0bb491b8f2ae"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
@@ -2027,7 +2027,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:74b4ab5ba3bd7bbfe42ce8404901018bf325f58def2661c0a88c0bb491b8f2ae"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -2069,7 +2069,7 @@
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
-          "digest": "sha256:74b4ab5ba3bd7bbfe42ce8404901018bf325f58def2661c0a88c0bb491b8f2ae"
+          "digest": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f"
         }
       ]
     },
@@ -3207,7 +3207,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:a9754c7f0903f00f8b53618e017667e4b5a5430ce3d9a33bde0f7565fdfe88a8"
+          "digest": "sha256:67e3f921c245f51907123f7c28c478bf142937758aab48872a1da04a31f81f70"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -4093,7 +4093,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         }
       ]
     },
@@ -4133,7 +4133,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:773c0e72a29c353417443ae1232c19e98409604085f35578e52e1b96b910c7d8"
+          "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         }
       ]
     },
