@@ -1,0 +1,755 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-input-schema-contract",
+      "kind": "epic",
+      "file": "epic/capability-input-schema-contract.md",
+      "title": "Capability input-schema shape contract",
+      "summary": "The capability registry's refusal pipeline, extended by the well-formed input-schema shape check and its legacy-read posture for capabilities registered before the check existed."
+    },
+    {
+      "id": "epic/case-input-requirements-and-diagnose-gate",
+      "kind": "epic",
+      "file": "epic/case-input-requirements-and-diagnose-gate.md",
+      "title": "Derived case-version input requirements and the diagnose entry gate",
+      "summary": "The derived read of a case version's input requirements from its collection plan's capabilities, and the diagnose entry-point refusal that holds a subject to what those requirements name required."
+    },
+    {
+      "id": "epic/connector-configuration-and-placeholder-contract",
+      "kind": "epic",
+      "file": "epic/connector-configuration-and-placeholder-contract.md",
+      "title": "Connector configuration, call assembly, and the placeholder reconciliation",
+      "summary": "The connector-configuration registry, the HTTP connector's call assembly and degrade behavior, and the two-point placeholder-declared-by-its-capability reconciliation across both registries."
+    },
+    {
+      "id": "inventory/diagnose-input-schema-contract",
+      "kind": "inventory",
+      "file": "inventory/diagnose-input-schema-contract.md",
+      "title": "Capability, connector and diagnose surfaces the input-schema contract touches",
+      "summary": "The capability and connector-configuration registries, the HTTP connector adapter, the diagnose controller, and the case-query read surface, all wired through one composition root, where the input-schema shape check, the derived case-input-requirements read, the diagnose entry gate, the placeholder degrade fix and the two-point reconciliation check land."
+    },
+    {
+      "id": "inventory/existing-conventions-and-reuse",
+      "kind": "inventory",
+      "file": "inventory/existing-conventions-and-reuse.md",
+      "title": "Conventions and reusable helpers this contract must not re-derive",
+      "summary": "The evidenced patterns for schema-shape reading, registration refusal ordering, and cross-registry composition, plus what would be duplicated by inventing new ones."
+    },
+    {
+      "id": "inventory/risks",
+      "kind": "inventory",
+      "file": "inventory/risks.md",
+      "title": "Risks the input-schema contract change surfaces",
+      "summary": "Named consumers that would observe a break if the shape check, the cross-registry reconciliation, or the placeholder degrade change behaves differently than these existing call sites expect."
+    },
+    {
+      "id": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "kind": "task",
+      "file": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema.md",
+      "title": "Refuse a malformed capability input schema, and read a legacy one as empty",
+      "summary": "registerCapability gains a well-formed-input-schema shape check, and a shared shape reader answers a pre-existing malformed input_schema as declaring properties and required both empty.",
+      "epic": "capability-input-schema-contract"
+    },
+    {
+      "id": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "kind": "task",
+      "file": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements.md",
+      "title": "Derive a case version's input requirements from its collection plan",
+      "summary": "A published read-case-input-requirements route answers, per case version, the union of subject attributes its collection plan's capabilities declare, which are required, and which capabilities ask for each.",
+      "epic": "case-input-requirements-and-diagnose-gate"
+    },
+    {
+      "id": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "task",
+      "file": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute.md",
+      "title": "Refuse a diagnose whose subject misses a required case input",
+      "summary": "The diagnose entry point refuses, before any collection, a subject that leaves any of the pinned case version's required attributes missing or empty.",
+      "epic": "case-input-requirements-and-diagnose-gate"
+    },
+    {
+      "id": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "task",
+      "file": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check.md",
+      "title": "Build the shared placeholder-declared-by-its-capability check",
+      "summary": "A reusable check names every Subject-attribute placeholder a connector configuration's call text embeds that a capability's declared input-schema properties does not hold, and each registry can read the other's current registrations to run it.",
+      "epic": "connector-configuration-and-placeholder-contract"
+    },
+    {
+      "id": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "kind": "task",
+      "file": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable.md",
+      "title": "Degrade every unassemblable connector call to an unavailable evidence result",
+      "summary": "The one uncaught call to resolveConnectorRequest inside observeConcept is wrapped so every typed assembly failure it throws ends the concept's evidence unavailable instead of propagating.",
+      "epic": "connector-configuration-and-placeholder-contract"
+    },
+    {
+      "id": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "kind": "task",
+      "file": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder.md",
+      "title": "Refuse a capability registration that leaves its connector's placeholder orphaned",
+      "summary": "register-capability refuses a registration whose named connector already holds a configuration embedding a placeholder this registration's own input-schema properties does not declare.",
+      "epic": "connector-configuration-and-placeholder-contract"
+    },
+    {
+      "id": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "kind": "task",
+      "file": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder.md",
+      "title": "Refuse a connector configuration whose placeholder escapes every capability's properties",
+      "summary": "register-connector refuses a configuration embedding a Subject-attribute placeholder no capability currently registered against that connector's name declares in properties.",
+      "epic": "connector-configuration-and-placeholder-contract"
+    },
+    {
+      "id": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "kind": "task",
+      "file": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test.md",
+      "title": "Report orphaned placeholders in the connector test response",
+      "summary": "test-connector's response names, for the pair under test, any placeholder the tested capability's input schema does not declare, without refusing the test.",
+      "epic": "connector-configuration-and-placeholder-contract"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/capability-input-schema-contract",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/investigation/only-a-released-case-version-is-diagnosed",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "scenarios/integration/a-legacy-capability-declares-no-input-attributes",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/case-input-requirements-and-diagnose-gate",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "contracts/integration/concept-observation",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "contracts/investigation/observation-source",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "domain/investigation/evidence-result",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-configuration-and-placeholder-contract",
+      "to": "rules/integration/a-connector-configuration-names-its-connector",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "to": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "to": "scenarios/integration/a-legacy-capability-declares-no-input-attributes",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "rules/knowledge/the-contract-check-reads-the-current-registration",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "contracts/investigation/diagnosis",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "to": "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "contracts/integration/concept-observation",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "contracts/investigation/observation-source",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "to": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
