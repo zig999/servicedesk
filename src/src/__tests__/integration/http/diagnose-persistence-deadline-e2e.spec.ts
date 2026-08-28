@@ -272,7 +272,27 @@ function fixtureSubject(fixture: IFixture): Subject {
   return { type: fixture.subjectType, attributes: [{ attribute: fixture.subjectAttribute, value: 'a-value' }] };
 }
 
-/** The three fakes standing behind observation, judgment and consolidation (TST-03): the one hypothesis judges inconclusive, so consolidation is seeded for exactly the narrowed input a citation-free inconclusive evaluation produces — no evidence, since resolve-and-narrow-input.ts's own narrowedEvidenceOf carries only what a citation names. */
+/**
+ * The three fakes standing behind observation, judgment and consolidation (TST-03): the one
+ * hypothesis judges inconclusive, so consolidation is seeded for exactly the narrowed input a
+ * citation-free inconclusive evaluation produces — no evidence, since resolve-and-narrow-input.ts's
+ * own narrowedEvidenceOf carries only what a citation names.
+ *
+ * Traced against judgment-stage.ts and investigation-pipeline.ts (this file's own delay only holds
+ * up persistence's own investigation-root INSERT, which run-diagnosis.ts's runDiagnosis calls only
+ * after runInvestigationPipeline — judgment and drafting — has already settled): this one required
+ * hypothesis's own evidence is seeded 'ok' above, so judgeOneHypothesis's own no-data pre-check never
+ * fires and the evaluator's evaluate() genuinely runs, answering the seeded inconclusive/no-data
+ * outcome. FakeHypothesisEvaluator now attaches a deterministic zero-valued usage and elapsed_ms to
+ * every seeded answer, unconditionally
+ * (task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's own criterion 1), so
+ * judgment-stage.ts's asEvaluation carries that usage/elapsed_ms onto the Evaluation it builds before
+ * this file's own drafting stage ever reaches FakeAssessmentConsolidator — the consolidator's own
+ * fixture key must include them or consolidate() throws for a call nothing seeded well before
+ * persistence (and this file's own delaying connection) is ever reached at all. The comment's own
+ * "unreachable" names the seeded text, never returned once persistence errors afterward — not that
+ * this fixture's own key is unreached; consolidate() is still genuinely called here.
+ */
 function buildFakes(fixture: IFixture): {
   readonly observationSource: FakeObservationSource;
   readonly evaluator: FakeHypothesisEvaluator;
@@ -284,7 +304,13 @@ function buildFakes(fixture: IFixture): {
   evaluator.seed(fixture.hypothesisCriterion, { verdict: 'inconclusive', reason: 'no-data', citations: [] });
   const consolidator = new FakeAssessmentConsolidator();
   consolidator.seed(
-    { evaluations: [{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [] }], evidence: [], consolidationRegister: 'plain' },
+    {
+      evaluations: [
+        { hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
+      ],
+      evidence: [],
+      consolidationRegister: 'plain',
+    },
     'unreachable — persistence should refuse this request before drafting is ever read back',
   );
   return { observationSource, evaluator, consolidator };

@@ -94,10 +94,23 @@ const AREA_OUTAGE_CRITERION = "An active network outage is currently registered 
 
 const CONSOLIDATED_TEXT = 'an end-to-end drafted assessment write-up';
 
-/** Both required hypotheses' own resolved evaluation, exactly as judgment-stage.ts's asEvaluation assembles it from the inconclusive outcome each is seeded with below — the exact evaluations resolve-and-narrow-input.ts will narrow to, since neither citations list is non-empty. */
+/**
+ * Both required hypotheses' own resolved evaluation, exactly as judgment-stage.ts's asEvaluation
+ * assembles it from the inconclusive outcome each is seeded with below — the exact evaluations
+ * resolve-and-narrow-input.ts will narrow to, since neither citations list is non-empty. Each also
+ * carries the deterministic zero-valued usage and elapsed_ms FakeHypothesisEvaluator now attaches to
+ * every seeded call (task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's own
+ * criterion 1): buildEvaluator() below seeds an inconclusive/no-data answer directly (never the
+ * judgeOneHypothesis pre-check's own no-data degrade, which never calls evaluate() at all), so a call
+ * genuinely happens here and asEvaluation's own callRecordOf carries the fake's usage/elapsed_ms
+ * through onto the Evaluation it builds, in the exact key order asEvaluation's own object literal
+ * spread produces (hypothesis, verdict, reason, citations, then the spread-in usage/elapsed_ms) —
+ * the same order this array's own object literals below are written in, since buildConsolidator()
+ * keys its own fixture by this exact array's JSON-serialized content.
+ */
 const EXPECTED_NARROWED_EVALUATIONS: readonly Evaluation[] = [
-  { hypothesis: 'customer-equipment-fault', verdict: 'inconclusive', reason: 'no-data', citations: [] },
-  { hypothesis: 'area-network-outage', verdict: 'inconclusive', reason: 'no-data', citations: [] },
+  { hypothesis: 'customer-equipment-fault', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
+  { hypothesis: 'area-network-outage', verdict: 'inconclusive', reason: 'no-data', citations: [], usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0 },
 ];
 
 /** The assessment this whole run must produce: neither hypothesis confirms, so case-resolution.ts's resolveOutcome answers the fixture case's own declared fallback, and text is exactly the seeded consolidated text. */

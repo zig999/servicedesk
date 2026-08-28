@@ -8,18 +8,16 @@
 //
 // consolidate() answers a ConsolidationOutcome rather than the text alone
 // (task/investigation-telemetry/widen-judgment-and-consolidation-ports):
-// this task widens the port's required return shape only, so this fake's
-// own change is the minimum that satisfies it — seed() still keys and stores
-// the seeded text alone, unchanged, and consolidate() wraps it at the point
-// of return with a placeholder zero-valued usage (input_tokens 0,
-// output_tokens 0), an elapsed_ms of 0 and an empty-string prompt, this
-// fake's own established convention for a value it computes nothing
-// meaningful to fill (fixtureKey's own comment; judgment-stage.ts's
-// noDataEvaluation keeps the same convention for a citation field). A real,
-// deterministic zero-valued usage/elapsed_ms and a placeholder prompt string
-// beyond the empty string are
-// task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's
-// own declared scope, not touched here.
+// seed() still keys and stores the seeded text alone, unchanged, and
+// consolidate() wraps it at the point of return with this fake's own
+// deterministic zero-valued usage (input_tokens 0, output_tokens 0), a
+// zero-valued elapsed_ms and an empty-string prompt
+// (task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing):
+// this fake never calls a model, so there is no provider spend to report, no
+// wall-clock time to measure and no prompt of its own to assemble, and the
+// empty string is this fake's own established convention for a value with
+// nothing meaningful to fill (fixtureKey's own comment; judgment-stage.ts's
+// noDataEvaluation keeps the same convention for a citation field).
 
 import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
 import type { ConsolidationRegister } from './consolidation-register.js';
@@ -27,16 +25,11 @@ import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { Usage } from './usage.js';
 
-/**
- * The placeholder usage this fake answers until
- * task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing
- * gives it its own declared, deterministic zero-valued shape — this task's
- * own scope is the widened return type alone.
- */
-const PLACEHOLDER_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
+/** The zero-valued usage this fake answers for every call: it never calls a model, so there is no provider spend to report. */
+const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
 
-/** The placeholder elapsed_ms this fake answers, for the same reason. */
-const PLACEHOLDER_ELAPSED_MS = 0;
+/** The zero-valued elapsed_ms this fake answers, for the same reason: no real call is ever made, so there is no wall-clock time to report. */
+const ZEROED_ELAPSED_MS = 0;
 
 /** The placeholder prompt this fake answers: the empty string, since this fake assembles no prompt of its own to report — the same "nothing meaningful to put there" convention fixtureKey's own comment and judgment-stage.ts's noDataEvaluation already keep for a value with nothing real behind it. */
 const PLACEHOLDER_PROMPT = '';
@@ -76,13 +69,13 @@ export class FakeAssessmentConsolidator implements IAssessmentConsolidator {
   /**
    * consolidate: answers the seeded text for this evaluations/evidence/register
    * triple as plain data, wrapped in the widened port's own required
-   * ConsolidationOutcome shape with a placeholder usage, elapsed_ms and
-   * prompt (this file's own header comment) — never deciding or returning an
-   * outcome, a referral or a determining hypothesis. The evaluations and
-   * evidence are accepted, as the port requires on every call, but this fake
-   * computes nothing from them — grounding the text in what they actually
-   * say is the real adapter's concern, left to this epic's declared
-   * remainder.
+   * ConsolidationOutcome shape with a deterministic zero-valued usage and
+   * elapsed_ms and an empty-string placeholder prompt (this file's own
+   * header comment) — never deciding or returning an outcome, a referral or
+   * a determining hypothesis. The evaluations and evidence are accepted, as
+   * the port requires on every call, but this fake computes nothing from
+   * them — grounding the text in what they actually say is the real
+   * adapter's concern, left to this epic's declared remainder.
    */
   public async consolidate(
     evaluations: readonly Evaluation[],
@@ -94,7 +87,7 @@ export class FakeAssessmentConsolidator implements IAssessmentConsolidator {
     if (text === undefined) {
       throw new Error(`FakeAssessmentConsolidator has no fixture seeded for this evaluations/evidence/register call: ${key}`);
     }
-    return { text, usage: PLACEHOLDER_USAGE, elapsed_ms: PLACEHOLDER_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };
+    return { text, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };
   }
 }
 

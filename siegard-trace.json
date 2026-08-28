@@ -2132,6 +2132,10 @@
           "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
         },
         {
+          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
+          "digest": "sha256:041cf6e98b6a48b40fadeebf67d4a24764d6700231a3291d7863897d1dd236d7"
+        },
+        {
           "path": "src/src/investigation/investigation-pipeline.ts",
           "digest": "sha256:36cbcb24d607e3e5b70d73851a63a4e43a9e4e58b3bfe3cd3134a8c750a56620"
         },
@@ -2332,6 +2336,10 @@
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:ae34479f70456daec31869f068020bb4714be0d14babace0bdda92724150534d"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:e4bf8f311897ddc4f73f97944e03e2188e6e2aa796f845686880e54a1209a82f"
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
@@ -2656,6 +2664,14 @@
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
           "digest": "sha256:b340b2965596bbe12b6ef8fe3e60fadefed2ba433f4673a9e89711ff91bfa38d"
+        },
+        {
+          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
+          "digest": "sha256:041cf6e98b6a48b40fadeebf67d4a24764d6700231a3291d7863897d1dd236d7"
+        },
+        {
+          "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:e4bf8f311897ddc4f73f97944e03e2188e6e2aa796f845686880e54a1209a82f"
         },
         {
           "path": "src/src/investigation/usage.ts",

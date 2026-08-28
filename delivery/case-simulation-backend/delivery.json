@@ -50,6 +50,14 @@
       "task": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms"
     },
     {
+      "id": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "kind": "implementation",
+      "file": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing.md",
+      "title": "Fake adapters answer deterministic zero-valued usage and timing",
+      "summary": "FakeHypothesisEvaluator's evaluate() now attaches a deterministic zero-valued usage and elapsed_ms to every seeded answer, and FakeAssessmentConsolidator's own already-zeroed shape is formalized as this task's own settled behavior rather than a forward reference to it.",
+      "task": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing"
+    },
+    {
       "id": "implementation/investigation-telemetry/widen-judgment-and-consolidation-ports",
       "kind": "implementation",
       "file": "implementation/investigation-telemetry/widen-judgment-and-consolidation-ports.md",
@@ -104,6 +112,14 @@
       "title": "Evidence carries its own collection elapsed_ms — proof",
       "summary": "Proves that evidenceOf()/EvidenceEnding supplies a real, wall-clock elapsed_ms on every branch it can return, that both of the tree's two Evidence construction sites (the collection stage's own evidenceOf() and the persistence read-path's evidenceOf(row)) carry it, and that the field survives RelationalInvestigationStore's own write/read round trip.",
       "task": "task/investigation-telemetry/evidence-collection-measures-elapsed-ms"
+    },
+    {
+      "id": "proof/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "kind": "proof",
+      "file": "proof/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing.md",
+      "title": "Proof that both fakes answer deterministic zero-valued usage and timing",
+      "summary": "Rewrites the eight pre-existing FakeHypothesisEvaluator tests the implementation record named as stale, fixes the two integration e2e fixtures (diagnose-e2e.spec.ts, diagnose-persistence-deadline-e2e.spec.ts) whose seeded evaluations arrays no longer match what judgment-stage.ts's asEvaluation genuinely attaches, and verifies the pre-existing FakeAssessmentConsolidator coverage for criteria 2 and 3 is still accurate rather than rewriting it.",
+      "task": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing"
     },
     {
       "id": "proof/investigation-telemetry/widen-judgment-and-consolidation-ports",
@@ -284,6 +300,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/investigation-telemetry/widen-judgment-and-consolidation-ports",
       "to": "domain/investigation/usage",
       "kind": "encodes",
@@ -352,6 +392,12 @@
     {
       "from": "proof/investigation-telemetry/evidence-collection-measures-elapsed-ms",
       "to": "implementation/investigation-telemetry/evidence-collection-measures-elapsed-ms",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
+      "to": "implementation/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing",
       "kind": "proves",
       "at": "the path"
     },
