@@ -128,6 +128,22 @@
       "title": "Proof for reporting orphaned placeholders in the connector test response",
       "summary": "Wire-level tests over POST /v1/test-connector proving orphaned_placeholders names an undeclared Subject-attribute placeholder, is empty when every embedded one is declared, and is never itself a reason the test is refused — including when the underlying call fails.",
       "task": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test"
+    },
+    {
+      "id": "review/diagnose-input-schema-contract",
+      "kind": "review",
+      "file": "review/diagnose-input-schema-contract.md",
+      "title": "Review of the diagnose input-schema contract change",
+      "summary": "Coverage, specification-conformance and standard-conformance passes over the 8 tasks that make a capability's input_schema an enforced, well-formed contract, derive case-level input requirements from it, gate diagnose on subject coverage, and reconcile connector-configuration placeholders against it in both registration directions and at test time; the captured full suite passed clean, so the failures pass found nothing to diagnose.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "test-connector's own diagnostic call is not held to this gate."
+      ],
+      "findings": 5
     }
   ],
   "edges": [
@@ -412,6 +428,54 @@
       "to": "implementation/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/capability-input-schema-contract/refuse-malformed-capability-input-schema",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/diagnose-input-schema-contract",
+      "to": "task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test",
+      "kind": "reviews",
+      "at": "tasks[7]"
     }
   ]
 }
