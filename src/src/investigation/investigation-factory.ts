@@ -183,8 +183,16 @@ export async function buildInvestigation(options: BuildInvestigationOptions): Pr
  * together, the same refuse-once-with-every-violation-named convention
  * refuseTotalityViolations below already keeps, rather than on the first one
  * found.
+ *
+ * Exported (task/case-simulation-pipeline/simulate-case-operation) so
+ * simulate-case.controller.ts can apply this exact rule too: simulate's own
+ * composition (simulate.factory.ts's createSimulationRunner) calls only
+ * runInvestigationPipeline and never buildInvestigation, so this check would
+ * otherwise never run for a simulation at all (MNT-03 — called, not
+ * copied). Behavior for buildInvestigation's own existing callers is
+ * unchanged; only this function's visibility widened.
  */
-async function refuseAttributesNotInGlossary(subject: Subject, glossary: IGlossaryQuery): Promise<void> {
+export async function refuseAttributesNotInGlossary(subject: Subject, glossary: IGlossaryQuery): Promise<void> {
   const missing: string[] = [];
   for (const name of new Set(subject.attributes.map((pair) => pair.attribute))) {
     const resolution = await glossary.readVocabularyTerm('subject-attribute', name);

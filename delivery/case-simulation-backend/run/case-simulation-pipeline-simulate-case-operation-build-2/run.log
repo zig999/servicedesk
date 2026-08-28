@@ -1,0 +1,22 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 7s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/http/build-app.spec.ts(223,7): error TS2741: Property 'prompts' is missing in type '{ evidence: never[]; evaluations: never[]; resolved: { outcome: string; referral: { action: string; recipient: string; }; }; assessment: { outcome: string; referral: { action: string; recipient: string; }; text: string; }; cost: { ...; }; durations: { ...; }; }' but required in type 'InvestigationPipelineResult'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

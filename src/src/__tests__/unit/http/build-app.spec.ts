@@ -44,8 +44,10 @@ import type { ReadConnectorConfigurationControllerDependencies } from '../../../
 import type { RegisterCapabilityControllerDependencies } from '../../../http/register-capability.controller.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
 import type { RegisterConnectorControllerDependencies } from '../../../http/register-connector.controller.js';
+import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
 import type { TestConnectorControllerDependencies } from '../../../http/test-connector.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
+import type { InvestigationPipelineResult } from '../../../investigation/investigation-pipeline.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
 /** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed; manifest stays empty for the same reason (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
@@ -217,6 +219,76 @@ function stubTestConnector(): TestConnectorControllerDependencies {
   };
 }
 
+/** A minimally valid InvestigationPipelineResult, sufficient for simulateCaseResponseSchema's own answer to validate — never asserted on for its own content by any test in this file besides this task's own new tests below, which build their own instead. */
+const MINIMAL_SIMULATION_RESULT: InvestigationPipelineResult = {
+  evidence: [],
+  evaluations: [],
+  resolved: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } },
+  assessment: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' },
+  cost: { calls: 0, input_tokens: 0, output_tokens: 0 },
+  durations: { collection: 0, judgment: 0, writing: 0, total: 0 },
+  prompts: { writing: 'a prompt' },
+};
+
+/** The HTTP response simulateCaseResponseSchema actually admits for MINIMAL_SIMULATION_RESULT: the identical six fields, minus `prompts` — the response DTO's own field never carried in the wire body — so the reachability assertion below compares against what the controller's real response shape can hold, not against runSimulate's own internal stub value. */
+const EXPECTED_SIMULATE_RESPONSE_BODY = {
+  evidence: MINIMAL_SIMULATION_RESULT.evidence,
+  evaluations: MINIMAL_SIMULATION_RESULT.evaluations,
+  resolved: MINIMAL_SIMULATION_RESULT.resolved,
+  assessment: MINIMAL_SIMULATION_RESULT.assessment,
+  cost: MINIMAL_SIMULATION_RESULT.cost,
+  durations: MINIMAL_SIMULATION_RESULT.durations,
+};
+
+/** A minimally valid SimulateCaseControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: reuses the same caseQuery and glossaryQuery this file already builds for diagnose's own sibling stubs, and resolves a minimally valid complete record through runSimulate — so simulate-case-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file except this task's own new tests below, which do assert on it. */
+function stubSimulateCase(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateCaseControllerDependencies {
+  return {
+    caseQuery,
+    glossary: glossaryQuery,
+    runSimulate: vi.fn().mockResolvedValue(MINIMAL_SIMULATION_RESULT),
+  };
+}
+
+/** The named shape of stubQueryDependentFields()'s own return value, held as a module-level type
+ * alias rather than written inline in that function's own signature so the type's own line span
+ * is never counted against its function's max-lines-per-function budget. */
+type QueryDependentFields = Pick<
+  BuildAppDependencies,
+  | 'updateDraft'
+  | 'release'
+  | 'readCase'
+  | 'listCases'
+  | 'listCaseVersions'
+  | 'listHypotheses'
+  | 'listHypothesisRevisions'
+  | 'readVocabularyTerm'
+  | 'listVocabularyTerms'
+  | 'readConcept'
+  | 'listConcepts'
+>;
+
+/** The eleven BuildAppDependencies fields that resolve from caseQuery and/or glossaryQuery alone
+ * (update-draft, release, read-case, the four case-listing routes, and the four glossary-reading
+ * routes), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies:
+ * same stand-ins, same caseQuery/glossaryQuery instances stubBuildAppDependencies() already builds
+ * for diagnose and simulateCase, only grouped here to keep stubBuildAppDependencies() itself within
+ * the standard's max-lines-per-function rule — no dependency or value changes. */
+function stubQueryDependentFields(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): QueryDependentFields {
+  return {
+    updateDraft: { caseStore: stubCaseStore(), caseQuery },
+    release: { release: async () => undefined, caseQuery },
+    readCase: { caseQuery },
+    listCases: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listCaseVersions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listHypotheses: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    listHypothesisRevisions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
+    readVocabularyTerm: { glossaryQuery },
+    listVocabularyTerms: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
+    readConcept: { glossaryQuery },
+    listConcepts: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
+  };
+}
+
 /**
  * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
  * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
@@ -229,25 +301,16 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
   const caseQuery = stubCaseQuery(minimalCase()); const glossaryQuery = stubGlossaryQuery();
   return {
     diagnose,
+    simulateCase: stubSimulateCase(caseQuery, glossaryQuery),
+    ...stubQueryDependentFields(caseQuery, glossaryQuery),
     readCapability: { capabilityQuery: stubCapabilityQuery() }, readCapabilityByIdentity: stubReadCapabilityByIdentity(),
     listCapabilities: { capabilityQuery: stubCapabilityQuery(), defaultLimit: 10, maxLimit: 100 },
     registerCapability: stubRegisterCapability(),
     createDraft: { createDraft: async () => ({ slug: 'a-slug', version: 1 }) },
-    updateDraft: { caseStore: stubCaseStore(), caseQuery },
-    release: { release: async () => undefined, caseQuery },
     discard: { discard: async () => undefined },
     reviseHypothesis: { reviseHypothesis: async () => ({ hypothesis_name: 'a-hypothesis', revision: 1 }) },
     placeHypothesis: { placeHypothesis: async () => undefined },
     removeHypothesis: { removeHypothesis: async () => undefined },
-    readCase: { caseQuery },
-    listCases: { caseQuery, defaultLimit: 10, maxLimit: 100 },
-    listCaseVersions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
-    listHypotheses: { caseQuery, defaultLimit: 10, maxLimit: 100 },
-    listHypothesisRevisions: { caseQuery, defaultLimit: 10, maxLimit: 100 },
-    readVocabularyTerm: { glossaryQuery },
-    listVocabularyTerms: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
-    readConcept: { glossaryQuery },
-    listConcepts: { glossaryQuery, defaultLimit: 10, maxLimit: 100 },
     registerConcept: stubRegisterConcept(),
     registerConnector: stubRegisterConnector(),
     readConnectorConfiguration: stubReadConnectorConfiguration(),
@@ -599,3 +662,40 @@ it(
     expect(putResponse.statusCode).toBe(200);
   },
 );
+
+// ------------------------------------------------------- case-simulation-pipeline/simulate-case-operation, criterion 8
+
+/** Everything simulateCaseRequestSchema requires, as a plain object — this file's own registration proof only, not simulate-case's own domain behavior (proven separately in simulate-case.controller.spec.ts and the real-composition integration proof against diagnose-server.factory.ts). */
+function validSimulateRequestBody(): Record<string, unknown> {
+  return {
+    case: { slug: 'a-case', version: 1 },
+    subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-attribute', value: 'a-value' }] },
+    requester: 'a-requester',
+  };
+}
+
+it(
+  "reaches simulate-case's own controller through the identical routePlugins()/BuildAppDependencies/buildAppDependencies() convention every other route in this file is proven through, on the very first request a freshly built app instance ever receives, answering exactly the complete record runSimulate resolved — no narrative or ticket_ref field",
+  async () => {
+    const built = buildTestApp();
+    app = built.app;
+
+    const response = await app.inject({ method: 'POST', url: '/v1/simulate', payload: validSimulateRequestBody() });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual(EXPECTED_SIMULATE_RESPONSE_BODY);
+  },
+);
+
+it('refuses with 400 a simulate-case request whose subject carries no attribute at all, at the wire, before the route ever reaches its own controller', async () => {
+  const built = buildTestApp();
+  app = built.app;
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/v1/simulate',
+    payload: { ...validSimulateRequestBody(), subject: { type: 'a-subject-type', attributes: [] } },
+  });
+
+  expect(response.statusCode).toBe(400);
+});

@@ -1,0 +1,34 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 8s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: failed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src/src/__tests__/unit/http/build-app.spec.ts
+  250:1  error  Function 'stubBuildAppDependencies' has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/agent-a2ebfc8cb138feb30/src/src/http/build-app.ts
+  148:1  error  Function 'routePlugins' has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+✖ 2 problems (2 errors, 0 warnings)
+
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

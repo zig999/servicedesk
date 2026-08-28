@@ -52,10 +52,12 @@ import { createCaseLifecycle, type CaseLifecycleOperations } from '../../../fact
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
+import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { NON_CONCLUSION_OUTCOMES } from '../../../glossary/terms.js';
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
@@ -411,6 +413,17 @@ function placeholderEnv(): Env {
   };
 }
 
+/** simulateCase's own dependencies, built the same way diagnose's own dependencies are above — none of this task's own routes is ever exercised by a test in this file, only diagnose is, so runSimulate is a stand-in never expected to be called (sibling companion fix disclosed in task/case-simulation-pipeline/simulate-case-operation's own proof record, mirroring the identical companion fix build-app.spec.ts's own stubBuildAppDependencies already makes). */
+function buildSimulateCase(connection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateCaseControllerDependencies {
+  return {
+    caseQuery,
+    glossary: createGlossaryQuery(connection),
+    runSimulate: () => {
+      throw new Error("simulate-case is not exercised by this file's own tests");
+    },
+  };
+}
+
 function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; capturedId: () => string | undefined } {
   const { runDiagnose, capturedId } = buildRunDiagnose(connection);
   const dependencies: DiagnoseControllerDependencies = {
@@ -419,7 +432,13 @@ function buildTestApp(connection: DatabaseConnection): { app: FastifyInstance; c
     model: 'an-end-to-end-test-model',
     promptVersion: 'an-end-to-end-test-prompt-version',
   };
-  const fullDependencies = buildAppDependencies({ env: placeholderEnv(), connection, caseQuery: dependencies.caseQuery, diagnose: dependencies });
+  const fullDependencies = buildAppDependencies({
+    env: placeholderEnv(),
+    connection,
+    caseQuery: dependencies.caseQuery,
+    diagnose: dependencies,
+    simulateCase: buildSimulateCase(connection, dependencies.caseQuery),
+  });
   return { app: buildApp(fullDependencies), capturedId };
 }
 

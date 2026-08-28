@@ -32,6 +32,8 @@ import type { CreateDraftControllerDependencies } from './create-draft.controlle
 import { createCreateDraftRoutesPlugin } from './create-draft.routes.js';
 import { createDiagnoseRoutesPlugin } from './diagnose.routes.js';
 import type { DiagnoseControllerDependencies } from './diagnose.controller.js';
+import { createSimulateCaseRoutesPlugin } from './simulate-case.routes.js';
+import type { SimulateCaseControllerDependencies } from './simulate-case.controller.js';
 import type { DiscardControllerDependencies } from './discard.controller.js';
 import { createDiscardRoutesPlugin } from './discard.routes.js';
 import type { ListCapabilitiesControllerDependencies } from './list-capabilities.controller.js';
@@ -87,7 +89,7 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * pre-existing diagnose route: one named field per route, each carrying
  * exactly that route's own controller-dependencies type, so a caller must
  * hand this function a fully wired dependency for every one of the
- * twenty-six routes it registers — no route here is optional.
+ * twenty-seven routes it registers — no route here is optional.
  * registerCapability (task/capability-authoring/register-capability-route)
  * was the twentieth; registerConcept
  * (task/concept-authoring/register-concept-route) was the twenty-first;
@@ -100,12 +102,16 @@ import { handleUnexpectedError } from './error-handler.middleware.js';
  * was the twenty-fourth; testConnector
  * (task/connector-diagnostics/test-connector-route) was the twenty-fifth;
  * readCapabilityByIdentity (task/registry-reads/read-capability-by-identity-route)
- * is the twenty-sixth, added on top of it — additive to
+ * was the twenty-sixth, additive to
  * contracts/integration/capability-registry's own published surface, and
- * with no dependency on listCapabilities having already run.
+ * with no dependency on listCapabilities having already run;
+ * simulateCase (task/case-simulation-pipeline/simulate-case-operation) is the
+ * twenty-seventh, additive to contracts/investigation/case-simulation's own
+ * published surface, with no dependency on diagnose having already run.
  */
 export type BuildAppDependencies = {
   readonly diagnose: DiagnoseControllerDependencies;
+  readonly simulateCase: SimulateCaseControllerDependencies;
   readonly testConnector: TestConnectorControllerDependencies;
   readonly readCapability: ReadCapabilityControllerDependencies;
   readonly readCapabilityByIdentity: ReadCapabilityByIdentityControllerDependencies;
@@ -137,42 +143,55 @@ export type BuildAppDependencies = {
  * The one aggregation convention this file declares (criterion 1): every
  * route plugin, already built from its own slice of the given dependencies,
  * as a flat list buildApp registers in one loop rather than one call site
- * per route.
+ * per route. Held at module scope, one factory per route in registration
+ * order, so routePlugins() below stays "one list, one loop" (ARC-02) without
+ * the list itself counting against that function's own line budget
+ * (MNT-01) as the route count grows.
+ */
+const routePluginFactories: ReadonlyArray<
+  (dependencies: BuildAppDependencies) => FastifyPluginAsync
+> = [
+  (dependencies) => createDiagnoseRoutesPlugin(dependencies.diagnose),
+  (dependencies) => createSimulateCaseRoutesPlugin(dependencies.simulateCase),
+  (dependencies) => createTestConnectorRoutesPlugin(dependencies.testConnector),
+  (dependencies) => createReadCapabilityRoutesPlugin(dependencies.readCapability),
+  (dependencies) => createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
+  (dependencies) => createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
+  (dependencies) => createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
+  (dependencies) => createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
+  (dependencies) => createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
+  (dependencies) => createCreateDraftRoutesPlugin(dependencies.createDraft),
+  (dependencies) => createUpdateDraftRoutesPlugin(dependencies.updateDraft),
+  (dependencies) => createReleaseRoutesPlugin(dependencies.release),
+  (dependencies) => createDiscardRoutesPlugin(dependencies.discard),
+  (dependencies) => createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
+  (dependencies) => createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
+  (dependencies) => createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
+  (dependencies) => createReadCaseRoutesPlugin(dependencies.readCase),
+  (dependencies) => createListCasesRoutesPlugin(dependencies.listCases),
+  (dependencies) => createListCaseVersionsRoutesPlugin(dependencies.listCaseVersions),
+  (dependencies) => createListHypothesesRoutesPlugin(dependencies.listHypotheses),
+  (dependencies) => createListHypothesisRevisionsRoutesPlugin(dependencies.listHypothesisRevisions),
+  (dependencies) => createReadVocabularyTermRoutesPlugin(dependencies.readVocabularyTerm),
+  (dependencies) => createListVocabularyTermsRoutesPlugin(dependencies.listVocabularyTerms),
+  (dependencies) => createReadConceptRoutesPlugin(dependencies.readConcept),
+  (dependencies) => createListConceptsRoutesPlugin(dependencies.listConcepts),
+  (dependencies) => createRegisterConceptRoutesPlugin(dependencies.registerConcept),
+  (dependencies) => createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
+];
+
+/**
+ * routePlugins() itself: builds every plugin listed above from the given
+ * dependencies, in the same order the list declares them. buildApp's own
+ * loop below registers whatever this returns.
  */
 function routePlugins(dependencies: BuildAppDependencies): FastifyPluginAsync[] {
-  return [
-    createDiagnoseRoutesPlugin(dependencies.diagnose),
-    createTestConnectorRoutesPlugin(dependencies.testConnector),
-    createReadCapabilityRoutesPlugin(dependencies.readCapability),
-    createReadCapabilityByIdentityRoutesPlugin(dependencies.readCapabilityByIdentity),
-    createReadConnectorConfigurationRoutesPlugin(dependencies.readConnectorConfiguration),
-    createListCapabilitiesRoutesPlugin(dependencies.listCapabilities),
-    createListConnectorConfigurationsRoutesPlugin(dependencies.listConnectorConfigurations),
-    createRegisterCapabilityRoutesPlugin(dependencies.registerCapability),
-    createCreateDraftRoutesPlugin(dependencies.createDraft),
-    createUpdateDraftRoutesPlugin(dependencies.updateDraft),
-    createReleaseRoutesPlugin(dependencies.release),
-    createDiscardRoutesPlugin(dependencies.discard),
-    createReviseHypothesisRoutesPlugin(dependencies.reviseHypothesis),
-    createPlaceHypothesisRoutesPlugin(dependencies.placeHypothesis),
-    createRemoveHypothesisRoutesPlugin(dependencies.removeHypothesis),
-    createReadCaseRoutesPlugin(dependencies.readCase),
-    createListCasesRoutesPlugin(dependencies.listCases),
-    createListCaseVersionsRoutesPlugin(dependencies.listCaseVersions),
-    createListHypothesesRoutesPlugin(dependencies.listHypotheses),
-    createListHypothesisRevisionsRoutesPlugin(dependencies.listHypothesisRevisions),
-    createReadVocabularyTermRoutesPlugin(dependencies.readVocabularyTerm),
-    createListVocabularyTermsRoutesPlugin(dependencies.listVocabularyTerms),
-    createReadConceptRoutesPlugin(dependencies.readConcept),
-    createListConceptsRoutesPlugin(dependencies.listConcepts),
-    createRegisterConceptRoutesPlugin(dependencies.registerConcept),
-    createRegisterConnectorRoutesPlugin(dependencies.registerConnector),
-  ];
+  return routePluginFactories.map((factory) => factory(dependencies));
 }
 
 /**
  * Assembles the whole HTTP surface this initiative exposes: one Fastify
- * instance with every one of the twenty-six route plugins registered and the
+ * instance with every one of the twenty-seven route plugins registered and the
  * one generic error handler set (COR-04, SEC-04). Constructs the Fastify
  * instance itself — this is the composition boundary ARC-02 expects, not a
  * service or a controller — but none of any route's own dependencies:

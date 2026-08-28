@@ -54,9 +54,11 @@ import { buildAppDependencies } from '../../../factories/build-app.factory.js';
 import { createCaseLifecycle } from '../../../factories/case-lifecycle.factory.js';
 import { createCaseQuery } from '../../../factories/case-query.factory.js';
 import { createDiagnoseRunner } from '../../../factories/diagnose.factory.js';
+import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { buildApp } from '../../../http/build-app.js';
 import type { DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
+import type { SimulateCaseControllerDependencies } from '../../../http/simulate-case.controller.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
@@ -337,6 +339,17 @@ function placeholderEnv(): Env {
   };
 }
 
+/** simulateCase's own dependencies, built the same way diagnose's own dependencies are above — the one test in this file exercises only the diagnose route, so runSimulate is a stand-in never expected to be called (sibling companion fix disclosed in task/case-simulation-pipeline/simulate-case-operation's own proof record, mirroring the identical companion fix build-app.spec.ts's own stubBuildAppDependencies already makes). */
+function buildSimulateCase(delayingConnection: DatabaseConnection, caseQuery: DiagnoseControllerDependencies['caseQuery']): SimulateCaseControllerDependencies {
+  return {
+    caseQuery,
+    glossary: createGlossaryQuery(delayingConnection),
+    runSimulate: () => {
+      throw new Error("simulate-case is not exercised by this file's own test");
+    },
+  };
+}
+
 /** Composes createDiagnoseRunner and buildApp against the given (already delaying) connection, capturing the id the controller generates for this one call so the test can read it back afterward. */
 function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IFixture): IBuiltApp {
   const runner = createDiagnoseRunner({ connection: delayingConnection, poolSize: 1, defaultConsolidationRegister: 'plain', ...buildFakes(fixture) });
@@ -357,6 +370,7 @@ function buildDelayedTestApp(delayingConnection: DatabaseConnection, fixture: IF
     connection: delayingConnection,
     caseQuery: dependencies.caseQuery,
     diagnose: dependencies,
+    simulateCase: buildSimulateCase(delayingConnection, dependencies.caseQuery),
   });
   return { app: buildApp(fullDependencies), capturedId: () => capturedId };
 }

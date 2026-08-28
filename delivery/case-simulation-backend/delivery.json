@@ -18,6 +18,14 @@
       "task": "task/case-simulation-pipeline/no-cache-simulation-composition"
     },
     {
+      "id": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "kind": "implementation",
+      "file": "implementation/case-simulation-pipeline/simulate-case-operation.md",
+      "title": "POST /v1/simulate -- simulate-case controller, route, DTO and production composition",
+      "summary": "A new simulate-case.dto.ts/controller/route pair reads the pinned case (either state) through ICaseQuery, applies diagnose's own subject-glossary and at-least-one-attribute rules, calls the already-delivered no-cache composition through a new production-simulate.factory.ts, and returns evidence/evaluations/resolved/assessment/cost/durations unchanged, wired into build-app.ts/build-app.factory.ts/diagnose-server.factory.ts's existing registration convention.",
+      "task": "task/case-simulation-pipeline/simulate-case-operation"
+    },
+    {
       "id": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
       "kind": "implementation",
       "file": "implementation/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version.md",
@@ -80,6 +88,14 @@
       "title": "Proof for no-cache simulation composition/factory",
       "summary": "Fourteen tests over simulate.factory.ts, mocking runInvestigationPipeline and the three adapters it composes (capability query, connector-configuration registry, HttpDeclarativeObservationSource) as the boundaries this factory wires without owning -- proving the wiring, the construct-once discipline, the absence of any observation-source parameter (at the type level, since nothing at runtime could tell a caching decorator apart from the real adapter), and the absence of any import into the production composition's own modules.",
       "task": "task/case-simulation-pipeline/no-cache-simulation-composition"
+    },
+    {
+      "id": "proof/case-simulation-pipeline/simulate-case-operation",
+      "kind": "proof",
+      "file": "proof/case-simulation-pipeline/simulate-case-operation.md",
+      "title": "Proof for POST /v1/simulate returning the complete record without writing an investigation",
+      "summary": "Unit tests against handleSimulateCaseRequest and createProductionSimulationRunner directly, plus a real-composition integration proof against createDiagnoseHttpServer, together proving every one of this task's eight criteria and excluding the UNDERDETERMINED cache-reuse implementation its own Notes name.",
+      "task": "task/case-simulation-pipeline/simulate-case-operation"
     },
     {
       "id": "proof/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version",
@@ -212,6 +228,126 @@
     {
       "from": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
       "to": "task/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/subject",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[11]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[12]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[13]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[14]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[15]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/cost",
+      "kind": "encodes",
+      "at": "nodes[16]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[17]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "encodes",
+      "at": "nodes[19]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/resolution",
+      "kind": "encodes",
+      "at": "nodes[22]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/knowledge/referral",
+      "kind": "encodes",
+      "at": "nodes[23]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "scenarios/investigation/a-draft-case-version-is-simulated",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evidence-result",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/case-simulation-pipeline/simulate-case-operation",
+      "to": "task/case-simulation-pipeline/simulate-case-operation",
       "kind": "implements",
       "at": "the path"
     },
@@ -368,6 +504,12 @@
     {
       "from": "proof/case-simulation-pipeline/no-cache-simulation-composition",
       "to": "implementation/case-simulation-pipeline/no-cache-simulation-composition",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-simulation-pipeline/simulate-case-operation",
+      "to": "implementation/case-simulation-pipeline/simulate-case-operation",
       "kind": "proves",
       "at": "the path"
     },
