@@ -1,0 +1,505 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/concept-description",
+      "kind": "epic",
+      "file": "epic/concept-description.md",
+      "title": "Concept vocabulary carries a description",
+      "summary": "The glossary's concept vocabulary gains a required description — refused missing at registration, tolerated absent on a legacy row, and returned wherever a concept is read."
+    },
+    {
+      "id": "epic/evidence-semantics-snapshot",
+      "kind": "epic",
+      "file": "epic/evidence-semantics-snapshot.md",
+      "title": "Evidence snapshots concept and field semantics at collection",
+      "summary": "Evidence records its own snapshot of the producing capability's field semantics and the collected concept's own description, exactly as they stood at the moment of collection, durable across the relational investigation store."
+    },
+    {
+      "id": "epic/judgment-reads-the-snapshot",
+      "kind": "epic",
+      "file": "epic/judgment-reads-the-snapshot.md",
+      "title": "Judgment reads only the evidence snapshot",
+      "summary": "A hypothesis's judgment, and the citation check over its answer, become a pure function of the evidence's own snapshotted semantics — never a live read of the glossary or the capability registry."
+    },
+    {
+      "id": "inventory/pinned-evidence-semantics",
+      "kind": "inventory",
+      "file": "inventory/pinned-evidence-semantics.md",
+      "title": "Pinned evidence semantics across glossary, capability registry and investigation",
+      "summary": "One backend territory spanning glossary concepts, capability output-schema reading and the evidence-collection/judgment pipeline, where semantics must move from live reads to a collection-time snapshot."
+    },
+    {
+      "id": "task/concept-description/concept-persistence-carries-description",
+      "kind": "task",
+      "file": "task/concept-description/concept-persistence-carries-description.md",
+      "title": "Concept persistence carries a description, tolerant of a legacy row",
+      "summary": "The relational glossary store persists a concept's description and reads a row written before this column existed without failing.",
+      "epic": "concept-description"
+    },
+    {
+      "id": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "task",
+      "file": "task/concept-description/concept-registration-requires-a-description.md",
+      "title": "Concept registration refuses a submission naming no description",
+      "summary": "register-concept refuses a registration with no description, with a typed 422 error, and accepts one that states it.",
+      "epic": "concept-description"
+    },
+    {
+      "id": "task/concept-description/read-concept-returns-description",
+      "kind": "task",
+      "file": "task/concept-description/read-concept-returns-description.md",
+      "title": "read-concept returns a concept's description",
+      "summary": "GET /v1/glossary/concepts/{name} answers a held concept's description alongside its existing attributes, empty for a legacy concept.",
+      "epic": "concept-description"
+    },
+    {
+      "id": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "task",
+      "file": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics.md",
+      "title": "Evidence collection snapshots concept and field semantics",
+      "summary": "Collecting a concept records, on its evidence, the producing capability's own declared field semantics and the concept's own declared description, exactly as they stood at that moment.",
+      "epic": "evidence-semantics-snapshot"
+    },
+    {
+      "id": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "task",
+      "file": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot.md",
+      "title": "The investigation store persists an evidence item's snapshotted semantics",
+      "summary": "The relational investigation store persists and reads back an evidence item's fields and concept_description, additively over what it already stores.",
+      "epic": "evidence-semantics-snapshot"
+    },
+    {
+      "id": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "task",
+      "file": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
+      "title": "The evaluator port and its prompt carry the snapshotted semantics",
+      "summary": "EvidenceItem widens to carry each item's own snapshotted field semantics and concept description, and the production prompt renders them inside the closed data block.",
+      "epic": "judgment-reads-the-snapshot"
+    },
+    {
+      "id": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "kind": "task",
+      "file": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry.md",
+      "title": "Judgment stops re-reading the capability registry",
+      "summary": "Citation validation checks a field against its own cited evidence item's snapshot, and judgment-stage no longer resolves capabilities to judge a hypothesis.",
+      "epic": "judgment-reads-the-snapshot"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/concept-description",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/knowledge/a-collected-concept-declares-a-ttl",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "scenarios/knowledge/a-subject-mismatch-refuses-the-case",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/glossary/a-glossary-read-by-an-unheld-name-is-refused",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/concept-description",
+      "to": "rules/knowledge/case-terms-exist-in-the-glossary",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "domain/investigation/field-semantics",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/integration/an-unclassified-status-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "scenarios/investigation/a-simulation-never-enters-the-cache",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/investigation/collection-runs-in-the-requester-scope",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/evidence-semantics-snapshot",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "constraints/the-consolidation-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "rules/investigation/a-decided-evaluation-cites-evidence",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/judgment-reads-the-snapshot",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/concept-description/concept-persistence-carries-description",
+      "to": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-description/concept-persistence-carries-description",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-description/concept-persistence-carries-description",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-description/concept-registration-requires-a-description",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-description/concept-registration-requires-a-description",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/concept-description/concept-registration-requires-a-description",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/concept-description/read-concept-returns-description",
+      "to": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/concept-description/read-concept-returns-description",
+      "to": "task/concept-description/concept-persistence-carries-description",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/concept-description/read-concept-returns-description",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/concept-description/read-concept-returns-description",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "domain/investigation/field-semantics",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "implements",
+      "at": "implements[5]"
+    }
+  ]
+}
