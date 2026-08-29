@@ -1143,4 +1143,24 @@ entries:
       concept it is), so the glossary lookup that fills concept_description has nothing blocking
       it that the capability read blocks; carving it out the same way as fields would degrade a
       fact nothing prevents recording.
+  - location: domain/investigation/evidence.md
+    field: attributes.elapsed_ms
+    unstated: >-
+      migrations/0011-investigation-evidence-elapsed-ms.sql's own comment states the assumption
+      that no environment holds a pre-existing investigation_evidence row when elapsed_ms
+      becomes required, so nothing anywhere states what an evidence item collected before this
+      attribute existed reads as for it. That assumption held for every environment this
+      migration was run against until now: this project's own production database already held
+      four real investigation_evidence rows, collected before elapsed_ms existed, discovered
+      when applying that migration against it failed on exactly those rows.
+    decided: >-
+      An evidence item collected before elapsed_ms existed reads it as 0, meaning not measured —
+      never a read failure, never an invented duration.
+    why: >-
+      Mirrors this specification's own already-decided reading for concept_description on the
+      very same element (a fact collected before its own attribute existed degrades to an
+      honest, meaningless-by-construction value rather than failing the read or inventing a real
+      one) — 0 is not a claim that the collection took no time, the same way an empty
+      concept_description is not a claim the concept has no meaning; both are the specification's
+      own marker for "this was never recorded," in the type each attribute already holds.
 ---
