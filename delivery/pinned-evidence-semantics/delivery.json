@@ -58,6 +58,14 @@
       "task": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot"
     },
     {
+      "id": "implementation/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "implementation",
+      "file": "implementation/investigation-json-guard-consolidation/export-shared-json-guards.md",
+      "title": "citation-validation.ts's parseJsonOrUndefined and isPlainObject become importable",
+      "summary": "citation-validation.ts's own private parseJsonOrUndefined and isPlainObject functions are now exported, with no other change to either function's body or to any of citation-validation.ts's own existing call sites.",
+      "task": "task/investigation-json-guard-consolidation/export-shared-json-guards"
+    },
+    {
       "id": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "implementation",
       "file": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
@@ -80,6 +88,14 @@
       "title": "applyMigrationFile strips comments before sending SQL, and vitest's testTimeout is raised for a full replay",
       "summary": "migration-runner.ts's applyMigrationFile strips every -- comment line and blank line from a migration file's text before sending it to the connection (via stripCommentsAndBlankLines), shrinking a migration query's own wire size — a real, independently worthwhile improvement, though this task's own suite-run history later traced the actual hang this correction was cut to address to a developer host's own Path MTU Discovery black hole (a query large enough to exceed the network path's real MTU was silently dropped, with no ICMP fragmentation-needed reply, so it hung rather than failing) rather than to the connection endpoint itself. vitest.config.ts's testTimeout is raised from 40000ms to 120000ms to tolerate a full sequential replay of every migration script against the real database, and its stale comment naming a database provider ('Neon') this project no longer uses is corrected to a generic, no-vendor description.",
       "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    },
+    {
+      "id": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "implementation",
+      "file": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions.md",
+      "title": "runInTransaction and openTransaction retyped to a connect()-capable interface",
+      "summary": "database-access.ts declares IConnectableQueryable, capturing exactly the connect()-then-query()-then-release() shape runInTransaction and openTransaction actually use, and both functions' own connection parameter is retyped to it instead of the concrete DatabaseConnection, with no other change to either function's own body.",
+      "task": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions"
     },
     {
       "id": "proof/concept-description/concept-persistence-carries-description",
@@ -138,6 +154,14 @@
       "task": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot"
     },
     {
+      "id": "proof/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "proof",
+      "file": "proof/investigation-json-guard-consolidation/export-shared-json-guards.md",
+      "title": "parseJsonOrUndefined and isPlainObject proven importable and behavior-preserved",
+      "summary": "New tests import parseJsonOrUndefined and isPlainObject directly from citation-validation.ts and show each still behaves exactly as its pre-existing internal behavior did, while the file's existing assertions are left untouched.",
+      "task": "task/investigation-json-guard-consolidation/export-shared-json-guards"
+    },
+    {
       "id": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "proof",
       "file": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
@@ -160,6 +184,43 @@
       "title": "applyMigrationFile strips comments before applying, and vitest's testTimeout raise — proof",
       "summary": "Six new unit tests over migration-runner.ts prove the comment-stripping behavior across four criteria (plus two pre-existing, unmodified integration tests cited as the replay-fitness proof); two new meta-tests over vitest.config.ts's own source text prove the testTimeout raise and the corrected fileParallelism comment.",
       "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    },
+    {
+      "id": "proof/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "proof",
+      "file": "proof/persistence-store-connection-typing/widen-connection-interface-for-transactions.md",
+      "title": "runInTransaction and openTransaction retyped to IConnectableQueryable — proof",
+      "summary": "One new unit test drives runInTransaction (and, through it, the unexported openTransaction) with a value built directly to IConnectableQueryable's own two-member shape, with no DatabaseConnection cast; direct reading of database-access.ts's own declaration and of the six untouched call sites, corroborated by the already-captured build's clean typecheck over the tree as delivered, covers the remaining compile-time criteria; the two criteria that need an actual execution are left unconfirmed, since this proof holds no shell and the one captured run for this task never ran the suite.",
+      "task": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions"
+    },
+    {
+      "id": "review/pinned-evidence-semantics",
+      "kind": "review",
+      "file": "review/pinned-evidence-semantics.md",
+      "title": "pinned-evidence-semantics, first review",
+      "summary": "What four passes found over the source and tests delivering pinned-evidence-semantics's ten tasks: concept description (persistence, registration refusal, read), fixture-maintenance verification, the migration-runner comment-hang corrective, the evidence-semantics snapshot (collection and persistence), and judgment reading that snapshot instead of the live capability registry.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A concept registration naming no description is refused with an HTTP 422 response reporting ConceptDescriptionRequiredError.",
+        "No assertion in these four files changes in outcome beyond the added description key and its placeholder value.",
+        "None of the seven files' existing test assertions changes in value or outcome.",
+        "Reading a held concept by name answers its description alongside its name, accepts and ttl.",
+        "The project's configured PROMPT_VERSION value for judgment differs from its value before this change.",
+        "npm run typecheck completes without error against both writeConcepts call sites in src/src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts.",
+        "npm run typecheck completes without error against the Concept literal(s) in src/src/__tests__/unit/case/case-query.service.spec.ts.",
+        "npm run typecheck completes without error against the Concept literal(s) in src/src/__tests__/unit/case/validate-case-coherence.spec.ts.",
+        "npm run typecheck completes without error against the heldConcept() fixture builder in src/src/__tests__/unit/http/list-concepts.routes.spec.ts.",
+        "npm run typecheck completes without error against the heldConcept() fixture builder in src/src/__tests__/unit/http/read-concept.routes.spec.ts.",
+        "npm run typecheck completes without error against the heldConcept() fixture builder in src/src/__tests__/unit/http/register-concept.routes.spec.ts.",
+        "npm run typecheck completes without error against the stubGlossaryQuery() and stubRegisterConcept() helpers in src/src/__tests__/unit/http/build-app.spec.ts.",
+        "npm run typecheck exits 0 for the whole backend target source root.",
+        "vitest.config.ts's testTimeout is raised from its current 40000ms to a value that tolerates a full, sequential, from-scratch replay of every migration script in migrations/ against the real database this suite's DATABASE_URL names."
+      ],
+      "findings": 12
     }
   ],
   "edges": [
@@ -272,6 +333,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-json-guard-consolidation/export-shared-json-guards",
+      "to": "task/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -356,6 +423,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "to": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/concept-description/concept-persistence-carries-description",
       "to": "implementation/concept-description/concept-persistence-carries-description",
       "kind": "proves",
@@ -398,6 +471,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/investigation-json-guard-consolidation/export-shared-json-guards",
+      "to": "implementation/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "to": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "proves",
@@ -414,6 +493,72 @@
       "to": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "proof/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "to": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/concept-description/concept-persistence-carries-description",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/concept-description/read-concept-returns-description",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "reviews",
+      "at": "tasks[5]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "reviews",
+      "at": "tasks[6]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "reviews",
+      "at": "tasks[7]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "kind": "reviews",
+      "at": "tasks[8]"
+    },
+    {
+      "from": "review/pinned-evidence-semantics",
+      "to": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "reviews",
+      "at": "tasks[9]"
     }
   ]
 }

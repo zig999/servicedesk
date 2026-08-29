@@ -119,7 +119,7 @@ export function declaredFieldsOf(outputSchema: string | undefined): readonly str
 }
 
 /** Parses text as JSON, answering undefined rather than throwing where it is not valid JSON at all. */
-function parseJsonOrUndefined(text: string): unknown {
+export function parseJsonOrUndefined(text: string): unknown {
   try {
     return JSON.parse(text);
   } catch {
@@ -128,6 +128,6 @@ function parseJsonOrUndefined(text: string): unknown {
 }
 
 /** Whether a parsed JSON value is a non-null, non-array object — the only shape this check reads keys from, for a schema's own top level or its `properties` value alike. */
-function isPlainObject(value: unknown): value is Record<string, unknown> {
+export function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

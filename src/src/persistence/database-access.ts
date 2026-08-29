@@ -13,11 +13,14 @@
 // constraints/a-case-is-read-whole undeliverable by whichever adapter
 // answers the case read.
 //
-// Names no import of 'pg': DatabaseConnection, database-connection.ts's own
-// exported type, is the only thing this file names for the pool it is
-// given — the same convention persistence/migration-runner.ts and
-// persistence/isolated-connection.ts already follow, so database-connection.ts
-// remains the only module that imports the driver (STK-05).
+// Names no import of 'pg', and no longer even names database-connection.ts's
+// own DatabaseConnection: runInTransaction and openTransaction below declare
+// their own connect()-capable interface (IConnectableQueryable) instead,
+// wide enough to cover the connect()-then-query()-then-release() shape they
+// actually use and narrow enough to exclude the rest of the concrete pool's
+// surface — a shape the concrete DatabaseConnection (pg Pool) already
+// satisfies structurally, with no change to database-connection.ts itself,
+// which remains the only module that imports the driver (STK-05).
 //
 // runInTransaction opens no search_path of its own on the connection it
 // checks out of the pool — a caller's own unqualified statement resolves
@@ -39,8 +42,6 @@
 // control, never a CREATE, ALTER or DROP. Every statement a caller runs
 // through runStatement or queryOneOrAbsent is parameterized text the caller
 // supplies, never text this module builds by concatenation (SEC-02).
-import type { DatabaseConnection } from './database-connection.js';
-
 /**
  * The one statement shape runStatement and queryOneOrAbsent run: parameterized
  * text and, where the statement takes none, no params at all — nothing this
@@ -59,6 +60,21 @@ export interface IStatement {
  */
 export interface IQueryable {
   query<R = Record<string, unknown>>(text: string, params?: readonly unknown[]): Promise<{ rows: R[] }>;
+}
+
+/**
+ * The connect()-then-query()-then-release() shape runInTransaction and
+ * openTransaction actually need from the connection they are given: query()
+ * (IQueryable's own shape, unchanged) plus connect(), which checks a client
+ * out of the pool for the caller's own exclusive use and answers that same
+ * query() shape alongside release(), the one way that client is ever handed
+ * back. This is narrower than the concrete pg Pool's own surface and wider
+ * than IQueryable alone — exactly the two functions' own actual usage below,
+ * nothing more — and the concrete DatabaseConnection (pg Pool) already
+ * satisfies it today without any change to database-connection.ts.
+ */
+export interface IConnectableQueryable extends IQueryable {
+  connect(): Promise<IQueryable & { release(error?: Error): void }>;
 }
 
 /**
@@ -118,7 +134,7 @@ export async function queryOneOrAbsent<R = Record<string, unknown>>(
  * write — so the one transaction this opens can serve either.
  */
 export async function runInTransaction<T>(
-  connection: DatabaseConnection,
+  connection: IConnectableQueryable,
   raise: RaiseStoreError,
   work: (tx: IQueryable) => Promise<T>,
 ): Promise<T> {
@@ -142,7 +158,7 @@ export async function runInTransaction<T>(
  * BEGIN — reaches the caller through raise, the same as any other statement
  * this module runs.
  */
-async function openTransaction(connection: DatabaseConnection, raise: RaiseStoreError) {
+async function openTransaction(connection: IConnectableQueryable, raise: RaiseStoreError) {
   try {
     const client = await connection.connect();
     try {

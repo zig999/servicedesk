@@ -23,6 +23,13 @@
       "summary": "Evidence records its own snapshot of the producing capability's field semantics and the collected concept's own description, exactly as they stood at the moment of collection, durable across the relational investigation store."
     },
     {
+      "id": "epic/investigation-json-guard-consolidation",
+      "kind": "epic",
+      "file": "epic/investigation-json-guard-consolidation.md",
+      "title": "Investigation's JSON-parse-and-guard helpers converge on one declaration",
+      "summary": "citation-validation.ts's own private parseJsonOrUndefined and isPlainObject become importable, and field-semantics.ts's byte-identical pair and anthropic-hypothesis-evaluator.adapter.ts's byte-identical isRecord guard are replaced by imports of them, with anthropic-hypothesis-evaluator.adapter.ts's own fence-stripping parseJsonOrUndefined left exactly as it is."
+    },
+    {
       "id": "epic/judgment-reads-the-snapshot",
       "kind": "epic",
       "file": "epic/judgment-reads-the-snapshot.md",
@@ -35,6 +42,27 @@
       "file": "epic/migration-runner-comment-hang-corrective.md",
       "title": "migration-runner comment-hang corrective",
       "summary": "The one corrective task that stops applyMigrationFile from depending on the connection tolerating a query beginning with SQL comments."
+    },
+    {
+      "id": "epic/persistence-store-connection-typing",
+      "kind": "epic",
+      "file": "epic/persistence-store-connection-typing.md",
+      "title": "Persistence stores' constructor typed to an interface, not the concrete pool",
+      "summary": "relational-glossary-store.repository.ts's and relational-investigation-store.repository.ts's own constructors, and the connect()-capable interface database-access.ts's runInTransaction/openTransaction gain to reach them, so neither store's own constructor is typed against the concrete DatabaseConnection (pg Pool) type."
+    },
+    {
+      "id": "inventory/investigation-json-guard-duplication",
+      "kind": "inventory",
+      "file": "inventory/investigation-json-guard-duplication.md",
+      "title": "Duplicated JSON-guard helpers across investigation/ adapters",
+      "summary": "field-semantics.ts and anthropic-hypothesis-evaluator.adapter.ts each declare a byte-identical parseJsonOrUndefined/isPlainObject (or isRecord) pair already declared in citation-validation.ts, and the same guard shape recurs independently in at least five more files outside investigation/."
+    },
+    {
+      "id": "inventory/persistence-store-connection-typing",
+      "kind": "inventory",
+      "file": "inventory/persistence-store-connection-typing.md",
+      "title": "Persistence stores' constructor binding to the concrete pg Pool",
+      "summary": "Five relational store repositories under src/persistence bind their constructor to DatabaseConnection (the concrete pg Pool type), of which the scope names two for correction, forcing every one's own unit spec through an unsafe cast."
     },
     {
       "id": "inventory/pinned-evidence-semantics",
@@ -107,6 +135,30 @@
       "epic": "evidence-semantics-snapshot"
     },
     {
+      "id": "task/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "task",
+      "file": "task/investigation-json-guard-consolidation/export-shared-json-guards.md",
+      "title": "citation-validation.ts's parseJsonOrUndefined and isPlainObject become importable",
+      "summary": "citation-validation.ts's own private parseJsonOrUndefined and isPlainObject functions are exported, with no change to their own behavior or to any of citation-validation.ts's own existing call sites.",
+      "epic": "investigation-json-guard-consolidation"
+    },
+    {
+      "id": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "kind": "task",
+      "file": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards.md",
+      "title": "field-semantics.ts imports citation-validation.ts's parseJsonOrUndefined and isPlainObject",
+      "summary": "field-semantics.ts's own byte-identical parseJsonOrUndefined and isPlainObject declarations are removed, its own call sites import citation-validation.ts's exported versions instead, and its header/docstring comments claiming a deliberate independence from them are corrected to match.",
+      "epic": "investigation-json-guard-consolidation"
+    },
+    {
+      "id": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "kind": "task",
+      "file": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard.md",
+      "title": "anthropic-hypothesis-evaluator.adapter.ts imports citation-validation.ts's isPlainObject in place of its own isRecord",
+      "summary": "anthropic-hypothesis-evaluator.adapter.ts's own isRecord function is removed and its call sites import citation-validation.ts's exported isPlainObject instead; its own fence-stripping parseJsonOrUndefined is left declared locally, exactly as it is.",
+      "epic": "investigation-json-guard-consolidation"
+    },
+    {
       "id": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "task",
       "file": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
@@ -129,6 +181,30 @@
       "title": "applyMigrationFile strips leading comments before sending a migration's SQL to the connection",
       "summary": "A migration file's own -- comment lines and blank lines are removed before its text reaches the connection, so applying it never depends on the endpoint tolerating a comment-prefixed query; the same SQL statement(s) still run, in the same order. vitest's own testTimeout is raised enough to tolerate a full sequential replay of every migration script against the real database, and a stale code comment naming the wrong database provider is corrected.",
       "epic": "migration-runner-comment-hang-corrective"
+    },
+    {
+      "id": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "kind": "task",
+      "file": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface.md",
+      "title": "relational-glossary-store.repository.ts's constructor accepts the connect()-capable interface",
+      "summary": "RelationalGlossaryStore's own constructor parameter is typed to the interface widen-connection-interface-for-transactions declares in database-access.ts, instead of the concrete DatabaseConnection type, with every existing method's own behavior unchanged.",
+      "epic": "persistence-store-connection-typing"
+    },
+    {
+      "id": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "kind": "task",
+      "file": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface.md",
+      "title": "relational-investigation-store.repository.ts's constructor accepts the connect()-capable interface",
+      "summary": "RelationalInvestigationStore's own constructor parameter is typed to the interface widen-connection-interface-for-transactions declares in database-access.ts, instead of the concrete DatabaseConnection type, with every existing method's own behavior unchanged.",
+      "epic": "persistence-store-connection-typing"
+    },
+    {
+      "id": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "task",
+      "file": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions.md",
+      "title": "runInTransaction and openTransaction accept a connect()-capable interface instead of the concrete pool type",
+      "summary": "database-access.ts declares an interface capturing exactly the connect()-then-query()-then-release() shape runInTransaction and openTransaction actually use, and both functions' own connection parameter is typed to it instead of the concrete DatabaseConnection.",
+      "epic": "persistence-store-connection-typing"
     }
   ],
   "edges": [
@@ -307,6 +383,18 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/investigation-json-guard-consolidation",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-json-guard-consolidation",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
       "from": "epic/judgment-reads-the-snapshot",
       "to": "domain/investigation/citation",
       "kind": "covers",
@@ -389,6 +477,18 @@
       "to": "constraints/the-schema-replays-from-its-scripts",
       "kind": "covers",
       "at": "covers[0]"
+    },
+    {
+      "from": "epic/persistence-store-connection-typing",
+      "to": "constraints/the-system-persists-to-one-relational-database",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/persistence-store-connection-typing",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "covers",
+      "at": "covers[1]"
     },
     {
       "from": "task/concept-description/concept-persistence-carries-description",
@@ -487,6 +587,18 @@
       "at": "implements[1]"
     },
     {
+      "from": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "to": "task/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "to": "task/investigation-json-guard-consolidation/export-shared-json-guards",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
       "from": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
       "kind": "depends_on",
@@ -575,6 +687,18 @@
       "to": "constraints/the-schema-replays-from-its-scripts",
       "kind": "implements",
       "at": "implements[0]"
+    },
+    {
+      "from": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "to": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "to": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
     }
   ]
 }

@@ -20,6 +20,8 @@ import type { Citation } from '../../../investigation/citation.js';
 import {
   acceptedCitations,
   isCitationValid,
+  isPlainObject,
+  parseJsonOrUndefined,
   type HypothesisCitationContext,
   type ValidateCitationsOptions,
 } from '../../../investigation/citation-validation.js';
@@ -176,4 +178,35 @@ it("HypothesisCitationContext's doc comment cites domain/knowledge/hypothesis-re
 
   expect(comment).toContain('domain/knowledge/hypothesis-revision');
   expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
+});
+
+// ---------- task/investigation-json-guard-consolidation/export-shared-json-guards:
+// parseJsonOrUndefined and isPlainObject are now importable from this module, each
+// still behaving exactly as it did while module-private.
+
+it('parseJsonOrUndefined, imported directly from citation-validation.ts, parses valid JSON text into its value', () => {
+  const parsed = parseJsonOrUndefined('{"a":1}');
+
+  expect(parsed).toEqual({ a: 1 });
+});
+
+it('parseJsonOrUndefined, imported directly from citation-validation.ts, answers undefined rather than throwing for text that is not valid JSON', () => {
+  expect(() => parseJsonOrUndefined('not json')).not.toThrow();
+  expect(parseJsonOrUndefined('not json')).toBeUndefined();
+});
+
+it('isPlainObject, imported directly from citation-validation.ts, accepts a plain object', () => {
+  expect(isPlainObject({ a: 1 })).toBe(true);
+});
+
+it('isPlainObject, imported directly from citation-validation.ts, refuses null', () => {
+  expect(isPlainObject(null)).toBe(false);
+});
+
+it('isPlainObject, imported directly from citation-validation.ts, refuses an array', () => {
+  expect(isPlainObject(['a', 'b'])).toBe(false);
+});
+
+it('isPlainObject, imported directly from citation-validation.ts, refuses a primitive', () => {
+  expect(isPlainObject('a-string')).toBe(false);
 });

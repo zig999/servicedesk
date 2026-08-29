@@ -19,6 +19,7 @@ import {
   queryOneOrAbsent,
   runInTransaction,
   runStatement,
+  type IConnectableQueryable,
   type IQueryable,
 } from '../../../persistence/database-access.js';
 
@@ -142,6 +143,29 @@ it('commits once the whole unit of work resolves, answering with the value work 
 
   expect(result).toBe('the-callers-own-result');
   expect(client.query).toHaveBeenCalledWith('COMMIT');
+  expect(client.release).toHaveBeenCalledTimes(1);
+});
+
+// ---------------------------------------------------------------- criteria 2 and 3 (task/persistence-store-connection-typing/widen-connection-interface-for-transactions): runInTransaction's and openTransaction's own connection parameter, retyped to IConnectableQueryable
+
+it("drives a connection built directly to IConnectableQueryable's own query()-plus-connect() shape, with no DatabaseConnection cast and no member beyond what that interface declares, exactly the same as any other connection: BEGIN before the unit of work, COMMIT once it resolves, release() exactly once", async () => {
+  const recordedTexts: string[] = [];
+  const client = {
+    query: vi.fn(async (text: string) => {
+      recordedTexts.push(text);
+      return { rows: [] };
+    }),
+    release: vi.fn(),
+  };
+  const narrowConnection: IConnectableQueryable = {
+    query: vi.fn().mockResolvedValue({ rows: [] }),
+    connect: vi.fn().mockResolvedValue(client),
+  };
+
+  const result = await runInTransaction(narrowConnection, raiseAsCaseStoreError, async () => 'the-callers-own-result');
+
+  expect(result).toBe('the-callers-own-result');
+  expect(recordedTexts).toEqual(['BEGIN', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
