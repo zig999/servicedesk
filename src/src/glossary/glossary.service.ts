@@ -1,3 +1,4 @@
+import { ConceptDescriptionRequiredError } from '../errors/concept-description-required.error.js';
 import { DuplicateGlossaryNameError } from '../errors/duplicate-glossary-name.error.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { ConceptResolution, IGlossaryQuery, TermResolution } from './glossary-query.port.js';
@@ -43,7 +44,15 @@ export class GlossaryService implements IGlossaryQuery {
    * Answers the concepts as the glossary holds them: each name exactly once,
    * each declaring its accepted subject types and its ttl in seconds — the
    * default of sixty where its registration stated none
-   * (rules/knowledge/a-collected-concept-declares-a-ttl).
+   * (rules/knowledge/a-collected-concept-declares-a-ttl) — and its
+   * description exactly as stored, or the empty string where the
+   * registration carries none: a concept registered before concepts
+   * declared a description holds an empty one rather than an absence
+   * (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone),
+   * the same store-may-answer-none, glossary-answers-a-value shape ttl's own
+   * default already establishes, but with the empty string rather than a
+   * computed default, since a description has no value the registry could
+   * default to.
    */
   public async concepts(): Promise<readonly Concept[]> {
     const registrations = await this.store.readConcepts();
@@ -52,6 +61,7 @@ export class GlossaryService implements IGlossaryQuery {
       name: registration.name,
       accepts: registration.accepts,
       ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+      description: registration.description ?? '',
     }));
   }
 
@@ -62,8 +72,15 @@ export class GlossaryService implements IGlossaryQuery {
    * name in place, never leaving a second entry for it
    * (domain/glossary/concept) — its ttl defaulted the same way a read
    * already defaults it where the registration states none
-   * (rules/knowledge/a-collected-concept-declares-a-ttl). Reads the
-   * currently held set through this.concepts (MNT-03, the same helper
+   * (rules/knowledge/a-collected-concept-declares-a-ttl). Refuses a
+   * registration naming no description before anything is read or written
+   * (rules/glossary/a-concept-declares-its-description, EDG-04) — the
+   * registry never resolves a default for description the way it does for
+   * ttl, because a description is not something the registry could ever
+   * default: an absent one means the caller stated no meaning, not a
+   * meaning the registry may guess at. A registration that does name one
+   * stores it exactly as given, with no trimming or normalization. Reads
+   * the currently held set through this.concepts (MNT-03, the same helper
    * readConcept and listConcepts already reuse), excludes whatever entry
    * already shares the registered name, and writes the whole resulting set
    * back through the store's own whole-replace writeConcepts — the same
@@ -71,10 +88,14 @@ export class GlossaryService implements IGlossaryQuery {
    * already run for their own registries.
    */
   public async registerConcept(registration: ConceptRegistration): Promise<Concept> {
+    if (namesNoDescription(registration.description)) {
+      throw new ConceptDescriptionRequiredError(registration.name, registration.description);
+    }
     const concept: Concept = {
       name: registration.name,
       accepts: registration.accepts,
       ttl: registration.ttl ?? DEFAULT_CONCEPT_TTL_SECONDS,
+      description: registration.description,
     };
     const held = await this.concepts();
     const kept = held.filter((candidate) => candidate.name !== concept.name);
@@ -201,6 +222,20 @@ export class GlossaryService implements IGlossaryQuery {
  */
 function pageCountOf(total: number, limit: number): number {
   return limit > 0 ? Math.ceil(total / limit) : 0;
+}
+
+/**
+ * Whether a registration named no description: absent or the empty string
+ * alike, since an empty description states no meaning
+ * (rules/glossary/a-concept-declares-its-description) — the same
+ * absent-or-empty-names-nothing reading
+ * connector-configuration-registry.service.ts's own isUndeclared already
+ * applies to a connector's identity (MNT-03). A type predicate rather than a
+ * plain boolean so registerConcept's own construction of Concept.description
+ * narrows to string once this guard has thrown.
+ */
+function namesNoDescription(description: string | undefined): description is undefined | '' {
+  return description === undefined || description === '';
 }
 
 /**

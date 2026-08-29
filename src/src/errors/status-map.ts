@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: eleven
+// `elsewhere` note). That silence no longer covers every entry below: twelve
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -47,12 +47,17 @@
 // HypothesisRevisionCollectsNoConceptError's HTTP 422
 // (rules/knowledge/a-hypothesis-collects-at-least-one-concept, whose own
 // statement refuses a revision that would collect none "with an HTTP 422
-// response reporting a HypothesisRevisionCollectsNoConceptError"), and
+// response reporting a HypothesisRevisionCollectsNoConceptError"),
 // ConceptRefusesSubjectTypeError's HTTP 422
 // (rules/knowledge/a-concept-accepts-the-declared-subject-type, whose own
 // statement refuses a hypothesis-revision request "with an HTTP 422
 // response reporting a ConceptRefusesSubjectTypeError" when a concept it
-// collects does not accept the case version's declared subject type)
+// collects does not accept the case version's declared subject type), and
+// ConceptDescriptionRequiredError's HTTP 422
+// (rules/glossary/a-concept-declares-its-description, whose own statement
+// refuses the registry registering or updating a concept with no
+// description "with an HTTP 422 response reporting a
+// ConceptDescriptionRequiredError")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -126,7 +131,11 @@
 // rules/knowledge/a-hypothesis-collects-at-least-one-concept), or a
 // hypothesis-revision collecting a concept that does not accept the case
 // version's declared subject type (ConceptRefusesSubjectTypeError,
-// rules/knowledge/a-concept-accepts-the-declared-subject-type)
+// rules/knowledge/a-concept-accepts-the-declared-subject-type), or a
+// concept registration naming no description
+// (ConceptDescriptionRequiredError,
+// rules/glossary/a-concept-declares-its-description,
+// task/concept-description/concept-registration-requires-a-description)
 // — answers 422 Unprocessable Entity: each of the first four reached this
 // table only once register-capability was exposed as a route
 // (task/capability-authoring/register-capability-route), since nothing
@@ -138,7 +147,10 @@
 // ninth and tenth reach it not because a new route was exposed but because
 // this hotfix closes a gap left when revise-hypothesis was first delivered
 // — POST /v1/cases/:slug/hypotheses already raised both, unmapped, before
-// this task.
+// this task; the eleventh reaches it not because a new route was exposed —
+// PUT /v1/glossary/concepts/{name} already existed — but because
+// GlossaryService.registerConcept now raises it, since a concept's
+// description is a newly required domain attribute this task adds.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -157,6 +169,7 @@ import { CaseVersionNotDraftError } from './case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from './case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from './case-version-not-released.error.js';
 import { ConceptAlreadyAnsweredError } from './concept-already-answered.error.js';
+import { ConceptDescriptionRequiredError } from './concept-description-required.error.js';
 import { ConceptNotAnsweredError } from './concept-not-answered.error.js';
 import { ConceptNotHeldError } from './concept-not-held.error.js';
 import { ConceptNotInGlossaryError } from './concept-not-in-glossary.error.js';
@@ -182,7 +195,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * twenty-nine extends another, so that never arises today.
+ * thirty extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -214,6 +227,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [ConnectorPlaceholderOutsideInputSchemaError, 422],
   [HypothesisRevisionCollectsNoConceptError, 422],
   [ConceptRefusesSubjectTypeError, 422],
+  [ConceptDescriptionRequiredError, 422],
 ]);
 
 /**

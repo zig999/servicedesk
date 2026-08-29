@@ -1,0 +1,29 @@
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(485,24): error TS2345: Argument of type '{ name: string; accepts: string[]; ttl: number; }' is not assignable to parameter of type 'Concept'.
+  Property 'description' is missing in type '{ name: string; accepts: string[]; ttl: number; }' but required in type 'Concept'.
+src/__tests__/unit/case/validate-case-coherence.spec.ts(221,24): error TS2345: Argument of type '{ name: string; accepts: string[]; ttl: number; }' is not assignable to parameter of type 'Concept'.
+  Property 'description' is missing in type '{ name: string; accepts: string[]; ttl: number; }' but required in type 'Concept'.
+src/__tests__/unit/http/build-app.spec.ts(141,34): error TS2322: Type 'Promise<{ held: true; concept: { name: string; accepts: string[]; ttl: number; }; }>' is not assignable to type 'Promise<ConceptResolution>'.
+  Type '{ held: true; concept: { name: string; accepts: string[]; ttl: number; }; }' is not assignable to type 'ConceptResolution'.
+    Type '{ held: true; concept: { name: string; accepts: string[]; ttl: number; }; }' is not assignable to type '{ readonly held: true; readonly concept: Concept; }'.
+      Types of property 'concept' are incompatible.
+        Property 'description' is missing in type '{ name: string; accepts: string[]; ttl: number; }' but required in type 'Concept'.
+src/__tests__/unit/http/build-app.spec.ts(175,34): error TS2322: Type 'Promise<{ name: string; accepts: string[]; ttl: number; }>' is not assignable to type 'Promise<Concept>'.
+  Property 'description' is missing in type '{ name: string; accepts: string[]; ttl: number; }' but required in type 'Concept'.
+src/__tests__/unit/http/list-concepts.routes.spec.ts(28,3): error TS2322: Type '{ name: string; accepts: readonly string[]; ttl: number; description?: string | undefined; }' is not assignable to type 'Concept'.
+  Types of property 'description' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/http/read-concept.routes.spec.ts(26,3): error TS2322: Type '{ name: string; accepts: readonly string[]; ttl: number; description?: string | undefined; }' is not assignable to type 'Concept'.
+  Types of property 'description' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/http/register-concept.routes.spec.ts(36,3): error TS2322: Type '{ name: string; accepts: readonly string[]; ttl: number; description?: string | undefined; }' is not assignable to type 'Concept'.
+  Types of property 'description' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts(295,30): error TS2741: Property 'description' is missing in type '{ name: string; accepts: never[]; ttl: number; }' but required in type 'Concept'.
+src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts(310,30): error TS2741: Property 'description' is missing in type '{ name: string; accepts: string[]; ttl: number; }' but required in type 'Concept'.

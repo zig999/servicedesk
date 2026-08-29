@@ -45,8 +45,12 @@ export type TermVocabulary = (typeof TERM_VOCABULARIES)[number];
 
 /**
  * A named observation a hypothesis may collect (domain/glossary/concept), as
- * the glossary holds it: its name, the subject types it accepts, and its ttl
- * in seconds — the constraints the glossary guarantees for it.
+ * the glossary holds it: its name, the subject types it accepts, its ttl in
+ * seconds and its description — the constraints the glossary guarantees for
+ * it, and the meaning it publishes for the name
+ * (rules/glossary/a-concept-declares-its-description). description is
+ * required here: the registry never holds a concept with none
+ * (GlossaryService.registerConcept refuses one before it is ever written).
  */
 export type Concept = {
   readonly name: string;
@@ -54,17 +58,23 @@ export type Concept = {
   readonly accepts: readonly string[];
   /** Freshness tolerance in seconds. */
   readonly ttl: number;
+  /** What the named observation means — a published term nobody could otherwise read (rules/glossary/a-concept-declares-its-description). */
+  readonly description: string;
 };
 
 /**
  * A concept as its registration states it: the ttl may be absent, and the
  * glossary then holds the default below
- * (rules/knowledge/a-collected-concept-declares-a-ttl).
+ * (rules/knowledge/a-collected-concept-declares-a-ttl). description may also
+ * be absent on the wire — a registration naming none is refused rather than
+ * defaulted (rules/glossary/a-concept-declares-its-description), so this
+ * type states only what a submission may carry, never a default for it.
  */
 export type ConceptRegistration = {
   readonly name: string;
   readonly accepts: readonly string[];
   readonly ttl?: number;
+  readonly description?: string;
 };
 
 /**
