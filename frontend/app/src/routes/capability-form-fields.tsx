@@ -11,7 +11,9 @@ import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
 
 /**
  * The Capability create/edit form's own field markup
- * (task/capability-authoring/capability-create-edit-form): name, version,
+ * (task/capability-authoring/capability-create-edit-form, widened by
+ * task/capability-output-schema-guidance/output-schema-field-guidance's own
+ * per-field semantics guidance beside output_schema): name, version,
  * nature, input_schema, output_schema, timeout, connector and concept
  * (criterion 1) -- kept in its own file, apart from the Dialog composing
  * it, matching this app's own established split
@@ -180,14 +182,33 @@ export function CapabilityFormFields({
           tall
         />
 
-        <JsonTextareaField
-          id="output_schema"
-          label="Output schema"
-          value={outputSchema.value}
-          onChange={outputSchema.onChange}
-          disabled={isSubmitting}
-          tall
-        />
+        <div className="flex flex-col gap-1">
+          <JsonTextareaField
+            id="output_schema"
+            label="Output schema"
+            value={outputSchema.value}
+            onChange={outputSchema.onChange}
+            disabled={isSubmitting}
+            tall
+          />
+          {/*
+            task/capability-output-schema-guidance/output-schema-field-guidance's own
+            criteria 1-4: guidance beside the shared JsonTextareaField rather than inside it
+            (JsonTextareaField itself is untouched, criterion 5 -- it has three other
+            consumers this scope does not reach), stating what
+            domain/investigation/field-semantics reads and what
+            rules/glossary/a-description-states-meaning-never-policy holds a description to.
+            A hint, never enforced (criterion 6): nothing here validates properties, so a
+            schema whose fields declare no description still saves.
+          */}
+          <p className="text-sm text-muted-foreground">
+            For each field under <code>properties</code>, the platform reads its own{" "}
+            <code>type</code> and <code>description</code> as that field&apos;s declared
+            meaning — no other content of this schema is read or validated. A description
+            states what a value means (&quot;2 = suspended for delinquency&quot;), never a
+            decision (&quot;when 2, confirm the hypothesis&quot;).
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4">

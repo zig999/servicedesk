@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
+      "kind": "implementation",
+      "file": "implementation/capability-output-schema-guidance/output-schema-field-guidance.md",
+      "title": "Per-field semantics guidance beside the capability form's output_schema editor",
+      "summary": "A short guidance paragraph, rendered beside the shared JsonTextareaField in the one CapabilityFormFields component both the dialog and the routed detail screen compose, states what the platform reads from output_schema and what a description may say — a hint, never enforced.",
+      "task": "task/capability-output-schema-guidance/output-schema-field-guidance"
+    },
+    {
       "id": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
       "kind": "implementation",
       "file": "implementation/glossary-concept-description/browser-description-and-legacy-marker.md",
@@ -24,6 +32,14 @@
       "title": "Concept form authors and validates the description, and its refusal reaches the operator by name",
       "summary": "The existing concept create/edit form gains a required description field through create and edit, submits it in the registration body, and its failure path renders the concept-description-required UiErrorState with its own wording while every other failure still falls through to the generic toast.",
       "task": "task/glossary-concept-description/concept-form-description-field"
+    },
+    {
+      "id": "proof/capability-output-schema-guidance/output-schema-field-guidance",
+      "kind": "proof",
+      "file": "proof/capability-output-schema-guidance/output-schema-field-guidance.md",
+      "title": "Output_schema field-semantics guidance — proof",
+      "summary": "Three new tests prove the guidance renders in both compositions of CapabilityFormFields and states meaning-versus-decision; criteria 5 and 6 are not independently tested, with why recorded.",
+      "task": "task/capability-output-schema-guidance/output-schema-field-guidance"
     },
     {
       "id": "proof/glossary-concept-description/browser-description-and-legacy-marker",
@@ -51,6 +67,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
+      "to": "rules/glossary/a-description-states-meaning-never-policy",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
+      "to": "task/capability-output-schema-guidance/output-schema-field-guidance",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
       "to": "domain/glossary/concept",
@@ -115,6 +149,12 @@
       "from": "implementation/glossary-concept-description/concept-form-description-field",
       "to": "task/glossary-concept-description/concept-form-description-field",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-output-schema-guidance/output-schema-field-guidance",
+      "to": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
+      "kind": "proves",
       "at": "the path"
     },
     {

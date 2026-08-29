@@ -2764,6 +2764,10 @@
       "digest": "sha256:2c31f8d54409ebf444b7fa9b07a19e420c229b2ae62590903bbab921f39b56da",
       "files": [
         {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+        },
+        {
           "path": "src/migrations/0013-investigation-evidence-semantics-snapshot.sql",
           "digest": "sha256:201acb95872f0d5c232f531be93d1f8e5c465a5e05b29304221c0b268ccc1743"
         },
@@ -4024,6 +4028,16 @@
         {
           "path": "frontend/app/src/routes/glossary-concepts-panel.tsx",
           "digest": "sha256:e169fcc60fb9b17ed0e6e8e08e42515ddf9ff6cf3384261ba403862e232e11fb"
+        }
+      ]
+    },
+    {
+      "node": "rules/glossary/a-description-states-meaning-never-policy",
+      "digest": "sha256:65fa4fc07584ab89d5e4e973494bc278c4ce1701e20ae2f90086fd2939015073",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/capability-form-fields.tsx",
+          "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
         }
       ]
     },
