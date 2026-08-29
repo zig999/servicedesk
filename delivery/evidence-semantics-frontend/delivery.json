@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/glossary-concept-description/concept-description-error-kind",
+      "kind": "implementation",
+      "file": "implementation/glossary-concept-description/concept-description-error-kind.md",
+      "title": "Named UiErrorState kind for ConceptDescriptionRequiredError",
+      "summary": "The central error-ui-state table gains a distinct concept-description-required kind for the backend's ConceptDescriptionRequiredError, carrying no wording, with every existing mapping left untouched.",
+      "task": "task/glossary-concept-description/concept-description-error-kind"
+    },
+    {
+      "id": "proof/glossary-concept-description/concept-description-error-kind",
+      "kind": "proof",
+      "file": "proof/glossary-concept-description/concept-description-error-kind.md",
+      "title": "Proof for the concept-description-required UiErrorState kind",
+      "summary": "Two new tests in the existing error-ui-state.spec.ts, in the same per-entry style already used for every prior single-entry addition, prove the new table entry resolves to its own distinct kind and carries no wording; the third criterion is already proven by the untouched pre-existing suite.",
+      "task": "task/glossary-concept-description/concept-description-error-kind"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/glossary-concept-description/concept-description-error-kind",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-description-error-kind",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-description-error-kind",
+      "to": "task/glossary-concept-description/concept-description-error-kind",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-concept-description/concept-description-error-kind",
+      "to": "implementation/glossary-concept-description/concept-description-error-kind",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

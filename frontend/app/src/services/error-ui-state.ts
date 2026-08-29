@@ -5,7 +5,7 @@
  *
  * Keyed by `ApiError.code` (./api-client.ts), which carries the backend's thrown domain
  * error's own class name verbatim (src/src/http/error-handler.middleware.ts's
- * domainEnvelope()). The nineteen keys below are the original ten class names
+ * domainEnvelope()). The twenty keys below are the original ten class names
  * src/src/errors/status-map.ts mapped to a transport status when this table was first
  * written, plus the four it does not map (CaseHoldsNoDraftError, ConceptNotInGlossaryError,
  * ConceptRefusesSubjectTypeError, CaseNotValidError), plus four more status-map.ts has
@@ -16,7 +16,13 @@
  * status-map.ts now also maps for the connector configuration registry's own
  * register-connector surface (ConnectorConfigurationNotWellFormedError,
  * task/connector-configuration-authoring/connector-configuration-create-edit-form's own
- * criterion set) -- each read from that file and confirmed against it directly, never
+ * criterion set), plus one more status-map.ts now also maps for the glossary registry's
+ * own register-concept surface (ConceptDescriptionRequiredError,
+ * task/glossary-concept-description/concept-description-error-kind, its own distinct
+ * state so the operator console can tell the operator specifically that the description
+ * is missing rather than only a generic failure notice --
+ * scenarios/glossary/a-concept-with-no-description-is-refused, whose exact wording stays
+ * the console's own) -- each read from that file and confirmed against it directly, never
  * re-derived or renamed, so a reader can hold the two tables side by side. Three further
  * classes status-map.ts now also maps (ConnectorConfigurationNotFoundError,
  * CapabilityNotRegisteredForTestError, CapabilityConnectorMismatchError) are not yet named
@@ -62,6 +68,7 @@ export type UiErrorStateKind =
   | "capability-schema-not-well-formed"
   | "case-not-valid"
   | "connector-configuration-not-well-formed"
+  | "concept-description-required"
   | "generic-error";
 
 /**
@@ -76,8 +83,8 @@ export type UiErrorState = {
 const GENERIC_ERROR_STATE: UiErrorState = { kind: "generic-error" };
 
 /**
- * The table itself: every one of the nineteen named error classes, keyed by its own
- * class name exactly as src/src/errors/status-map.ts (the fifteen mapped classes named
+ * The table itself: every one of the twenty named error classes, keyed by its own
+ * class name exactly as src/src/errors/status-map.ts (the sixteen mapped classes named
  * here) and the inventory's confirmed list (the four originally-unmapped classes) spell
  * it. Iteration order carries no meaning here -- unlike statusForError()'s Map, this is a
  * plain lookup by exact key, never by instanceof/subclass matching, so no entry can
@@ -121,6 +128,14 @@ const UI_STATE_BY_ERROR_CODE: Readonly<Record<string, UiErrorState>> = {
   // criterion set, its own distinct state so the operator can tell it apart from an
   // unrelated failure.
   ConnectorConfigurationNotWellFormedError: { kind: "connector-configuration-not-well-formed" },
+  // A concept registration or update naming no description
+  // (rules/glossary/a-concept-declares-its-description) --
+  // task/glossary-concept-description/concept-description-error-kind, its own distinct
+  // state so the operator console can tell the operator specifically that the
+  // description is missing rather than only a generic failure notice
+  // (scenarios/glossary/a-concept-with-no-description-is-refused); the exact wording
+  // stays the console's own, not this table's.
+  ConceptDescriptionRequiredError: { kind: "concept-description-required" },
 
   // Unmapped in status-map.ts -- the backend answers all three with the same
   // indistinguishable INTERNAL_ERROR, so they share the one fallback state rather than

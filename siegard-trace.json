@@ -3984,6 +3984,10 @@
       "digest": "sha256:85ca25247e9e21843d54a7e9d5fd471543c056443b2c473383f2971d671ffccc",
       "files": [
         {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:40a64de9bcf29a70efeb9e8d940b18b38a5a3b9365528fc84af8cc4f8743818e"
+        },
+        {
           "path": "src/src/errors/concept-description-required.error.ts",
           "digest": "sha256:5f847fc4dccfd3847910d8a569134a2036a43bee4e600b57744cd0cbb62df338"
         },
@@ -5651,8 +5655,12 @@
     },
     {
       "node": "scenarios/glossary/a-concept-with-no-description-is-refused",
-      "digest": "sha256:9cd1598bcb17b582076b56da09e897e01c64cd293e8c25c11af09b218e8b5993",
+      "digest": "sha256:d1b6ef001a1e87a836c27b5843c292a3637bc47ecf7c5f4e631c6e084feb48b5",
       "files": [
+        {
+          "path": "frontend/app/src/services/error-ui-state.ts",
+          "digest": "sha256:40a64de9bcf29a70efeb9e8d940b18b38a5a3b9365528fc84af8cc4f8743818e"
+        },
         {
           "path": "src/src/errors/concept-description-required.error.ts",
           "digest": "sha256:5f847fc4dccfd3847910d8a569134a2036a43bee4e600b57744cd0cbb62df338"
