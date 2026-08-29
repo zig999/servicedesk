@@ -64,10 +64,20 @@ describe("GlossaryBrowserScreen — a successful create registers the concept an
     fireEvent.change(within(dialog).getByLabelText("TTL (seconds)"), {
       target: { value: "300" },
     });
+    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
+    // description is now required, so a create submission fills it the same way name/ttl are
+    // filled above -- domain/glossary/concept's fourth attribute.
+    fireEvent.change(within(dialog).getByLabelText("Description"), {
+      target: { value: "Tracks a customer-raised dispute over a billing charge." },
+    });
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
-    expect(parsedPutBody(fetchMock)).toEqual({ accepts: ["customer-account"], ttl: 300 });
+    expect(parsedPutBody(fetchMock)).toEqual({
+      accepts: ["customer-account"],
+      ttl: 300,
+      description: "Tracks a customer-raised dispute over a billing charge.",
+    });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(await screen.findByText("billing-dispute")).toBeTruthy();
   });
@@ -102,9 +112,14 @@ describe("GlossaryBrowserScreen — a successful edit replaces the concept at th
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    // task/glossary-concept-description/concept-form-description-field's own criterion 2:
+    // the submitted body now also carries description, pre-filled here from the edited
+    // concept's own fixture default (glossaryConcept()'s own description), left untouched by
+    // this test.
     expect(parsedPutBody(fetchMock)).toEqual({
       accepts: ["customer-account", "merchant"],
       ttl: 120,
+      description: "Tracks a customer-raised dispute over a billing charge.",
     });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(await screen.findByText("customer-account, merchant")).toBeTruthy();

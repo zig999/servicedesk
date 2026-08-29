@@ -18,6 +18,14 @@
       "task": "task/glossary-concept-description/concept-description-error-kind"
     },
     {
+      "id": "implementation/glossary-concept-description/concept-form-description-field",
+      "kind": "implementation",
+      "file": "implementation/glossary-concept-description/concept-form-description-field.md",
+      "title": "Concept form authors and validates the description, and its refusal reaches the operator by name",
+      "summary": "The existing concept create/edit form gains a required description field through create and edit, submits it in the registration body, and its failure path renders the concept-description-required UiErrorState with its own wording while every other failure still falls through to the generic toast.",
+      "task": "task/glossary-concept-description/concept-form-description-field"
+    },
+    {
       "id": "proof/glossary-concept-description/browser-description-and-legacy-marker",
       "kind": "proof",
       "file": "proof/glossary-concept-description/browser-description-and-legacy-marker.md",
@@ -32,6 +40,14 @@
       "title": "Proof for the concept-description-required UiErrorState kind",
       "summary": "Two new tests in the existing error-ui-state.spec.ts, in the same per-entry style already used for every prior single-entry addition, prove the new table entry resolves to its own distinct kind and carries no wording; the third criterion is already proven by the untouched pre-existing suite.",
       "task": "task/glossary-concept-description/concept-description-error-kind"
+    },
+    {
+      "id": "proof/glossary-concept-description/concept-form-description-field",
+      "kind": "proof",
+      "file": "proof/glossary-concept-description/concept-form-description-field.md",
+      "title": "Concept form description field — proof",
+      "summary": "New tests prove the description field populates on edit, is required, and its own missing-description refusal reaches the operator by name; three sibling spec files from a closed initiative's own delivery are corrected (with the human's explicit authorization) since this task's own required description field legitimately widens the PUT body and the validation surface they exercise.",
+      "task": "task/glossary-concept-description/concept-form-description-field"
     }
   ],
   "edges": [
@@ -72,6 +88,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/glossary-concept-description/concept-form-description-field",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-form-description-field",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-form-description-field",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-form-description-field",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/concept-form-description-field",
+      "to": "task/glossary-concept-description/concept-form-description-field",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/glossary-concept-description/browser-description-and-legacy-marker",
       "to": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
       "kind": "proves",
@@ -80,6 +126,12 @@
     {
       "from": "proof/glossary-concept-description/concept-description-error-kind",
       "to": "implementation/glossary-concept-description/concept-description-error-kind",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-concept-description/concept-form-description-field",
+      "to": "implementation/glossary-concept-description/concept-form-description-field",
       "kind": "proves",
       "at": "the path"
     }

@@ -58,12 +58,19 @@ describe("GlossaryBrowserScreen — accepts persists exactly the selected set of
     fireEvent.change(within(dialog).getByLabelText("TTL (seconds)"), {
       target: { value: "60" },
     });
+    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
+    // description is now required, so a create submission fills it the same way name/ttl are
+    // filled above.
+    fireEvent.change(within(dialog).getByLabelText("Description"), {
+      target: { value: "Tracks a customer-raised dispute over a billing charge." },
+    });
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     expect(parsedPutBody(fetchMock)).toEqual({
       accepts: ["customer-account", "merchant"],
       ttl: 60,
+      description: "Tracks a customer-raised dispute over a billing charge.",
     });
   });
 
@@ -91,9 +98,13 @@ describe("GlossaryBrowserScreen — accepts persists exactly the selected set of
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    // task/glossary-concept-description/concept-form-description-field's own criterion 2: the
+    // submitted body now also carries description, pre-filled from the edited concept's own
+    // fixture default, left untouched by this test.
     expect(parsedPutBody(fetchMock)).toEqual({
       accepts: ["customer-account", "onboarding"],
       ttl: 60,
+      description: "Tracks a customer-raised dispute over a billing charge.",
     });
   });
 });
@@ -132,6 +143,12 @@ describe("GlossaryBrowserScreen — ttl is required client-side, with no default
       target: { value: "billing-dispute" },
     });
     fireEvent.click(within(dialog).getByRole("checkbox", { name: "customer-account" }));
+    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
+    // description is now required too, filled here so only ttl is left invalid -- otherwise
+    // this test's own single getByRole("alert") below would find two.
+    fireEvent.change(within(dialog).getByLabelText("Description"), {
+      target: { value: "Tracks a customer-raised dispute over a billing charge." },
+    });
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     const ttlInput = within(dialog).getByLabelText<HTMLInputElement>("TTL (seconds)");

@@ -1,7 +1,9 @@
 /**
  * The Concept create/edit form's own state
- * (task/concept-authoring/concept-create-edit-form): name, accepts and ttl,
- * for the Glossary screen's Concepts tab. Mirrors this app's own
+ * (task/concept-authoring/concept-create-edit-form, widened by
+ * task/glossary-concept-description/concept-form-description-field): name,
+ * accepts, ttl and description, for the Glossary screen's Concepts tab.
+ * Mirrors this app's own
  * create(null)/edit(identity) shared-hook shape (use-edit-draft-version-form.ts,
  * use-new-draft-version-form.ts, this app's own inventory) -- `existing` is
  * the nullable identity: `null` selects create mode, a real GlossaryConcept
@@ -30,12 +32,15 @@
  *
  * Needs no identity-loading query of its own: the Concepts tab's own list
  * read (use-glossary-concepts.ts) already holds every field this form edits
- * (name, accepts, ttl), so a caller opening the edit form passes that already-
- * loaded GlossaryConcept straight through as `existing` rather than this hook
- * issuing a second GET for the one concept being edited -- no such
- * single-concept read is part of this task's own scope. The only load this
- * hook's own "ready"/"loading"/"load-error" phases gate on is the accepts
- * multi-select's own vocabulary read.
+ * (name, accepts, ttl, description -- the fourth added to that hook's own
+ * GlossaryConcept by this task's own dependency
+ * task/glossary-concept-description/browser-description-and-legacy-marker), so
+ * a caller opening the edit form passes that already-loaded GlossaryConcept
+ * straight through as `existing` rather than this hook issuing a second GET
+ * for the one concept being edited -- no such single-concept read is part of
+ * this task's own scope. The only load this hook's own
+ * "ready"/"loading"/"load-error" phases gate on is the accepts multi-select's
+ * own vocabulary read.
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -43,7 +48,8 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useRef, type BaseSyntheticEvent } from "react";
-import { apiFetch } from "../services/api-client";
+import { apiFetch, ApiError } from "../services/api-client";
+import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
 import { conceptFormSchema, type ConceptFormValues } from "../services/concept-form-schema";
 import {
   useGlossaryVocabularyOptions,
@@ -70,6 +76,36 @@ export type ConceptFormState =
     };
 
 const GENERIC_SAVE_FAILURE_MESSAGE = "Something went wrong while saving this concept. Try again.";
+
+/**
+ * The wording for the one domain refusal register-concept can now return
+ * (rules/glossary/a-concept-declares-its-description,
+ * scenarios/glossary/a-concept-with-no-description-is-refused, this task's
+ * own criterion set, confirmed against error-ui-state.ts's own
+ * ConceptDescriptionRequiredError -> "concept-description-required" entry,
+ * added by this task's own dependency
+ * task/glossary-concept-description/concept-description-error-kind): the
+ * scenario requires the console to tell the operator specifically that the
+ * description is missing rather than only a generic failure notice, while
+ * leaving the exact wording to the console -- mirroring
+ * use-capability-form.ts's and use-connector-configuration-form.ts's own
+ * SAVE_FAILURE_MESSAGE_BY_KIND convention for the same reason. No criterion
+ * states exact wording, so this message is this task's own inference,
+ * disclosed in its delivery record.
+ */
+const SAVE_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {
+  "concept-description-required":
+    "A concept must state what it means; add a description before saving.",
+};
+
+/** Resolves a save failure to the message it should show the operator -- the specific wording above for the one named refusal, or the generic fallback for anything else (including a non-ApiError thrown value). Mirrors use-capability-form.ts's and use-connector-configuration-form.ts's own saveFailureMessage exactly. */
+function saveFailureMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    const state = uiStateForApiError(error);
+    return SAVE_FAILURE_MESSAGE_BY_KIND[state.kind] ?? GENERIC_SAVE_FAILURE_MESSAGE;
+  }
+  return GENERIC_SAVE_FAILURE_MESSAGE;
+}
 
 /**
  * `existing`: `null` for create mode, or the concept being edited (edit
@@ -108,6 +144,7 @@ export function useConceptForm(
       name: existing?.name ?? "",
       accepts: existing ? [...existing.accepts] : [],
       ttl: existing?.ttl,
+      description: existing?.description ?? "",
     },
   });
 
@@ -116,7 +153,11 @@ export function useConceptForm(
       apiFetch<GlossaryConcept>(`/v1/glossary/concepts/${encodeURIComponent(values.name)}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ accepts: values.accepts, ttl: values.ttl }),
+        body: JSON.stringify({
+          accepts: values.accepts,
+          ttl: values.ttl,
+          description: values.description,
+        }),
       }),
     onSuccess: () => {
       // criterion 5: the Concepts tab reflects the change afterward --
@@ -137,21 +178,21 @@ export function useConceptForm(
       void queryClient.invalidateQueries({ queryKey: ["glossary", "concepts"] });
       onSaved();
     },
-    onError: () => {
-      // register-concept (GlossaryService.registerConcept, confirmed
-      // directly against src/src/glossary/glossary.service.ts) throws no
-      // domain error of its own -- it writes whatever registration it is
-      // given, so no new entry is needed in error-ui-state.ts's own registry
-      // (this task's own inventory risk names adding one only "for any new
-      // refusal this task's backend surface can return", and this surface
-      // returns none beyond the route's own generic body-validation 400,
-      // already surfaced through react-hook-form's own field errors before
-      // this mutation is ever dispatched). This mirrors
-      // use-edit-draft-version-form.ts's own generic, non-domain fallback for
-      // the same reason: something must tell the operator the save did not
-      // happen, and no criterion of this task names wording for a failure
-      // this specific.
-      toast.error(GENERIC_SAVE_FAILURE_MESSAGE);
+    onError: (error) => {
+      // register-concept (GlossaryService.registerConcept) can now refuse a
+      // registration naming no description with its own typed
+      // ConceptDescriptionRequiredError
+      // (rules/glossary/a-concept-declares-its-description) -- the inventory's
+      // own risk this task's Notes name: this onError no longer assumes
+      // register-concept throws no domain error. saveFailureMessage above
+      // resolves that one refusal to its own specific wording
+      // (scenarios/glossary/a-concept-with-no-description-is-refused) and
+      // every other failure -- including the route's own generic
+      // body-validation 400, already surfaced through react-hook-form's own
+      // field errors before this mutation is ever dispatched -- to the same
+      // generic fallback use-edit-draft-version-form.ts's own non-domain path
+      // already uses.
+      toast.error(saveFailureMessage(error));
     },
   });
 

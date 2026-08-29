@@ -541,7 +541,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-form.ts",
-          "digest": "sha256:5238d9fd2a4a68b48c1ab28b76ec839a606bbdb82f96996163967ba3b036739c"
+          "digest": "sha256:ebde16ca973e20f01501efab24e90c66a816e204f3ecb85967da0e85554b9ee4"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -1551,7 +1551,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-form.ts",
-          "digest": "sha256:5238d9fd2a4a68b48c1ab28b76ec839a606bbdb82f96996163967ba3b036739c"
+          "digest": "sha256:ebde16ca973e20f01501efab24e90c66a816e204f3ecb85967da0e85554b9ee4"
         },
         {
           "path": "frontend/app/src/hooks/use-concept-options.ts",
@@ -1571,7 +1571,7 @@
         },
         {
           "path": "frontend/app/src/routes/concept-form-fields.tsx",
-          "digest": "sha256:eccc3a1ce190dd3a6ba0981a730c1e259ed88de0c4e0763b9a76908cbe84d9d3"
+          "digest": "sha256:d1b313cf4e1deb4ed68a3f4be81170d2b68960408e95d7536d92f6e8c9108a73"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -1587,7 +1587,7 @@
         },
         {
           "path": "frontend/app/src/services/concept-form-schema.ts",
-          "digest": "sha256:a2fce50852ea588b376dad46d2f92e8f8fe5357870ee4bde177bf5ecff09384d"
+          "digest": "sha256:5aa0aad69416ee4357770bc819f009241088e46c9c096490474cf8bc994b9b2a"
         },
         {
           "path": "src/migrations/0002-glossary-vocabulary.sql",
@@ -3988,6 +3988,14 @@
       "digest": "sha256:85ca25247e9e21843d54a7e9d5fd471543c056443b2c473383f2971d671ffccc",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-concept-form.ts",
+          "digest": "sha256:ebde16ca973e20f01501efab24e90c66a816e204f3ecb85967da0e85554b9ee4"
+        },
+        {
+          "path": "frontend/app/src/services/concept-form-schema.ts",
+          "digest": "sha256:5aa0aad69416ee4357770bc819f009241088e46c9c096490474cf8bc994b9b2a"
+        },
+        {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:40a64de9bcf29a70efeb9e8d940b18b38a5a3b9365528fc84af8cc4f8743818e"
         },
@@ -5671,6 +5679,10 @@
       "node": "scenarios/glossary/a-concept-with-no-description-is-refused",
       "digest": "sha256:d1b6ef001a1e87a836c27b5843c292a3637bc47ecf7c5f4e631c6e084feb48b5",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-concept-form.ts",
+          "digest": "sha256:ebde16ca973e20f01501efab24e90c66a816e204f3ecb85967da0e85554b9ee4"
+        },
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:40a64de9bcf29a70efeb9e8d940b18b38a5a3b9365528fc84af8cc4f8743818e"
