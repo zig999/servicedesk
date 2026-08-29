@@ -1,0 +1,31 @@
+-- domain/glossary/concept gains a required description attribute
+-- (task/concept-description/concept-persistence-carries-description):
+-- "its description states what the named observation means" — the meaning
+-- the glossary publishes for the concept's name, alongside its already-
+-- stored accepts and ttl (migrations/0002-glossary-vocabulary.sql).
+--
+-- DEFAULT '' backfills every concepts row this script finds already stored
+-- (task/concept-description/concept-registration-requires-a-description was
+-- delivered against a store that could not yet write one), and stays on the
+-- column afterward rather than being dropped once the backfill runs: every
+-- write path that inserts into "concepts" without naming description keeps
+-- working unchanged — vitest-global-setup.ts's own repair insert and
+-- seed.ts's own seedConcepts both name only (name, ttl)
+-- (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
+-- reads exactly this: a concept stored before this column existed holds an
+-- empty description, not a read failure) — the same DEFAULT-kept-permanently
+-- shape migrations/0009-case-version-lifecycle-schema.sql's own
+-- case_versions.state already establishes for a column whose existing write
+-- paths this task does not rewrite. NOT NULL rather than nullable, because
+-- domain/glossary/concept declares description required
+-- (constraints/the-stored-schema-mirrors-the-declared-model) — a legacy row
+-- holds the empty string as its description, never SQL NULL, so a read never
+-- has to translate an absence the domain model does not have.
+--
+-- Additive only: no column of any other table is touched, no row of
+-- "concepts" or "concept_accepts" is removed, and every already-stored
+-- concepts row keeps its own name, ttl and concept_accepts entries exactly as
+-- they were, gaining only this one new column.
+
+ALTER TABLE concepts
+  ADD COLUMN description TEXT NOT NULL DEFAULT '';

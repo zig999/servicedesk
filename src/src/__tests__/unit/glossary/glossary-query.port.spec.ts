@@ -105,7 +105,7 @@ it('answers a held concept with its accepted subject types and its ttl', async (
 
   expect(resolution).toEqual({
     held: true,
-    concept: { name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 300 },
+    concept: { name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 300, description: '' },
   });
 });
 

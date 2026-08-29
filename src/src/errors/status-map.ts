@@ -147,7 +147,7 @@
 // ninth and tenth reach it not because a new route was exposed but because
 // this hotfix closes a gap left when revise-hypothesis was first delivered
 // — POST /v1/cases/:slug/hypotheses already raised both, unmapped, before
-// this task; the eleventh reaches it not because a new route was exposed —
+// this task. the eleventh reaches it not because a new route was exposed —
 // PUT /v1/glossary/concepts/{name} already existed — but because
 // GlossaryService.registerConcept now raises it, since a concept's
 // description is a newly required domain attribute this task adds.

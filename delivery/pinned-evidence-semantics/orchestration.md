@@ -42,3 +42,23 @@ The plan (fba1650) stands; delivery has not started for real. Next: the human re
 bringing the pre-existing test suite's `Concept` literals up to the widened, specification-required
 shape — with real inputs an execution-contract-binder and, later, a proper task-implementer/
 test-author pair can act on — before this task is attempted again.
+
+## Resumed: /deliver-scope pinned-evidence-semantics (2)
+
+Human authorization (command args): "continue com o plan-work recomendado e siga para as próximas
+ações até o review-change". Tree was dirty at the gate (the previous attempt's uncommitted `src/`
+and `delivery/pinned-evidence-semantics/` state) — human chose to commit it as-is; committed
+c70c5d8 "wip pinned-evidence-semantics: partial concept-registration-requires-a-description
+implementation". Gate then passed clean.
+
+- Invoked /plan-work with the scope the previous report recommended (pre-existing Concept literals
+  across the tree must satisfy the widened, required description, without changing any assertion).
+  codebase-surveyor swept the whole target for every Concept-shaped literal site, finding four more
+  typecheck-breaking sites beyond the three already known, plus a distinct runtime-only risk (four
+  files whose `.toEqual` assertions will mismatch once `description` populates). backlog-decomposer
+  cut one new epic (`concept-literal-fixture-maintenance`, covers == uncovered by design — the
+  widening it references was already implemented by an earlier epic) and two tasks, both carrying
+  `rationale` with no `implements` (pure fixture maintenance, no specification node governs it) —
+  execution-contract-binder was not spawned, since the epic's covers-less-uncovered candidate set is
+  empty by design, leaving no candidate file for it to reread. Committed 0ac5c04
+  "deliver-scope pinned-evidence-semantics: plan".

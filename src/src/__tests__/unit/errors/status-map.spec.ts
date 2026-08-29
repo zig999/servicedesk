@@ -16,6 +16,7 @@ import { CaseVersionNotDraftAtReleaseError } from '../../../errors/case-version-
 import { CaseVersionNotDraftError } from '../../../errors/case-version-not-draft.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-released.error.js';
+import { ConceptDescriptionRequiredError } from '../../../errors/concept-description-required.error.js';
 import { ConceptNotAnsweredError } from '../../../errors/concept-not-answered.error.js';
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
@@ -238,6 +239,19 @@ it('resolves ConceptRefusesSubjectTypeError to 422', () => {
   expect(status).toBe(422);
 });
 
+// ------------------------------------------------------------------ task/concept-description/concept-registration-requires-a-description,
+// criterion 1: "A concept registration naming no description is refused with an HTTP 422 response
+// reporting ConceptDescriptionRequiredError." GlossaryService.registerConcept's own throw of this
+// class is proved separately, in glossary.service.spec.ts; this is the mapping half.
+
+it('resolves ConceptDescriptionRequiredError to 422', () => {
+  const error = new ConceptDescriptionRequiredError('a-concept', undefined);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(422);
+});
+
 // ------------------------------------------------------------------ criterion 3
 
 it('returns undefined for a typed domain error the table does not name', () => {
@@ -305,7 +319,7 @@ it("the header comment names eleven specification nodes that now fix a status as
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('eleven specification nodes now fix a status as a decided fact');
+  expect(header).toContain('twelve specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');

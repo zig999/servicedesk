@@ -190,9 +190,9 @@ it("raises this store's own typed error, carrying the driver failure as its caus
 
 // ---------------------------------------------------------------- criterion 2
 
-it('answers each concept with its name, the subject types it accepts and its ttl', async () => {
+it('answers each concept with its name, the subject types it accepts, its ttl and its description', async () => {
   const { handleQuery } = recordingConceptQuery({
-    concepts: [{ name: 'a-concept', ttl: 120 }],
+    concepts: [{ name: 'a-concept', ttl: 120, description: 'what this concept means for the glossary' }],
     accepts: [{ concept_name: 'a-concept', subject_type_name: 'a-subject-type' }],
   });
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -200,14 +200,16 @@ it('answers each concept with its name, the subject types it accepts and its ttl
 
   const answered = await store.readConcepts();
 
-  expect(answered).toEqual([{ name: 'a-concept', accepts: ['a-subject-type'], ttl: 120 }]);
+  expect(answered).toEqual([
+    { name: 'a-concept', accepts: ['a-subject-type'], ttl: 120, description: 'what this concept means for the glossary' },
+  ]);
 });
 
 it("groups each concept's own accepts by that concept's name, even where concept_accepts interleaves rows across concepts", async () => {
   const { handleQuery } = recordingConceptQuery({
     concepts: [
-      { name: 'concept-a', ttl: 60 },
-      { name: 'concept-b', ttl: 90 },
+      { name: 'concept-a', ttl: 60, description: 'concept a, described' },
+      { name: 'concept-b', ttl: 90, description: 'concept b, described' },
     ],
     accepts: [
       { concept_name: 'concept-a', subject_type_name: 'alpha' },
@@ -221,19 +223,22 @@ it("groups each concept's own accepts by that concept's name, even where concept
   const answered = await store.readConcepts();
 
   expect(answered).toEqual([
-    { name: 'concept-a', accepts: ['alpha', 'gamma'], ttl: 60 },
-    { name: 'concept-b', accepts: ['beta'], ttl: 90 },
+    { name: 'concept-a', accepts: ['alpha', 'gamma'], ttl: 60, description: 'concept a, described' },
+    { name: 'concept-b', accepts: ['beta'], ttl: 90, description: 'concept b, described' },
   ]);
 });
 
 it('answers a concept with an empty accepts array when concept_accepts holds no row for it', async () => {
-  const { handleQuery } = recordingConceptQuery({ concepts: [{ name: 'a-lonely-concept', ttl: 45 }], accepts: [] });
+  const { handleQuery } = recordingConceptQuery({
+    concepts: [{ name: 'a-lonely-concept', ttl: 45, description: 'a lonely concept, described' }],
+    accepts: [],
+  });
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalGlossaryStore(connection);
 
   const answered = await store.readConcepts();
 
-  expect(answered).toEqual([{ name: 'a-lonely-concept', accepts: [], ttl: 45 }]);
+  expect(answered).toEqual([{ name: 'a-lonely-concept', accepts: [], ttl: 45, description: 'a lonely concept, described' }]);
 });
 
 it('reads concept_accepts ordered by concept name and subject type name, for a deterministic accepts array', async () => {
@@ -251,7 +256,7 @@ it('reads concept_accepts ordered by concept name and subject type name, for a d
 
 it('assembles concepts and concept_accepts inside the one transaction it opens, in that order', async () => {
   const { handleQuery, recorded } = recordingConceptQuery({
-    concepts: [{ name: 'a-concept', ttl: 60 }],
+    concepts: [{ name: 'a-concept', ttl: 60, description: 'a concept, described' }],
     accepts: [{ concept_name: 'a-concept', subject_type_name: 'a-subject-type' }],
   });
   const { connection, client } = fakeTransactionConnection(handleQuery);
@@ -262,7 +267,7 @@ it('assembles concepts and concept_accepts inside the one transaction it opens, 
   const texts = collapsedTexts(recorded);
   expect(texts).toEqual([
     'BEGIN',
-    'SELECT name, ttl FROM concepts',
+    'SELECT name, ttl, description FROM concepts',
     'SELECT concept_name, subject_type_name FROM concept_accepts ORDER BY concept_name, subject_type_name',
     'COMMIT',
   ]);
@@ -284,7 +289,7 @@ it("raises this store's own typed error, carrying the driver failure as its caus
 
 // ---------------------------------------------------------------- task/concept-authoring/glossary-store-concept-write, criterion 3
 
-it("inserts each given concept's own name and ttl into concepts, and no concept_accepts row where it accepts nothing", async () => {
+it("inserts each given concept's own name, ttl and description into concepts, and no concept_accepts row where it accepts nothing", async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection } = fakeTransactionConnection(async (text, params) => {
     recorded.push({ text, params });
@@ -292,10 +297,10 @@ it("inserts each given concept's own name and ttl into concepts, and no concept_
   });
   const store = new RelationalGlossaryStore(connection);
 
-  await store.writeConcepts([{ name: 'a-concept', accepts: [], ttl: 120 }]);
+  await store.writeConcepts([{ name: 'a-concept', accepts: [], ttl: 120, description: 'a fixture concept' }]);
 
   const conceptInsert = recorded.find((entry) => entry.text.includes('INSERT INTO concepts'));
-  expect(conceptInsert?.params).toEqual(['a-concept', 120]);
+  expect(conceptInsert?.params).toEqual(['a-concept', 120, 'a fixture concept']);
   expect(recorded.filter((entry) => entry.text.includes('INSERT INTO concept_accepts'))).toEqual([]);
 });
 
@@ -307,7 +312,7 @@ it('inserts one concept_accepts row per subject type the given concept accepts, 
   });
   const store = new RelationalGlossaryStore(connection);
 
-  await store.writeConcepts([{ name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 60 }]);
+  await store.writeConcepts([{ name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 60, description: 'a fixture concept' }]);
 
   const acceptInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO concept_accepts'));
   expect(acceptInserts.map((entry) => entry.params)).toEqual([

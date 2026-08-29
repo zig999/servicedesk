@@ -62,8 +62,8 @@ it('answers a page of the registered concepts with the full pagination envelope,
 
   expect(page).toEqual({
     data: [
-      { name: 'concept-a', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
-      { name: 'concept-b', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
+      { name: 'concept-a', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
+      { name: 'concept-b', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
     ],
     total: 5,
     limit: 2,
@@ -80,8 +80,8 @@ it('answers a page from the middle of a larger concept list, windowed by offset 
 
   expect(page).toEqual({
     data: [
-      { name: 'concept-c', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
-      { name: 'concept-d', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
+      { name: 'concept-c', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
+      { name: 'concept-d', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
     ],
     total: 5,
     limit: 2,
@@ -117,7 +117,7 @@ it('holds the default of sixty seconds, read through listConcepts, for a concept
   const page = await glossary.listConcepts({ offset: 0, limit: 10 });
 
   expect(page.data).toEqual([
-    { name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
+    { name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
   ]);
 });
 

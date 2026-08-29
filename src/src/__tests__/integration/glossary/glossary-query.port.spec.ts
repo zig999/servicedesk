@@ -124,6 +124,6 @@ it("answers a concept's ttl as the data now states it, not as it stood at the pr
 
   expect(resolution).toEqual({
     held: true,
-    concept: { name: concept, accepts: [subjectType], ttl: 600 },
+    concept: { name: concept, accepts: [subjectType], ttl: 600, description: '' },
   });
 });

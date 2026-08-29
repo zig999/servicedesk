@@ -1,0 +1,51 @@
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/src
+
+No test files found, exiting with code 0
+
+include: **/*.{test,spec}.?(c|m)[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+
+⎯⎯⎯⎯⎯⎯ Unhandled Error ⎯⎯⎯⎯⎯⎯⎯
+MigrationStepError: migration 0012-glossary-concept-description.sql could not be applied
+ ❯ applyMigrationFile src/persistence/migration-runner.ts:47:11
+     46| import type { DatabaseConnection } from './database-connection.js';
+     47| 
+     48| const DEFAULT_BOOKKEEPING_SCHEMA = 'public';
+       |          ^
+     49| 
+     50| /** The bookkeeping relation's own schema-qualified name for the given…
+ ❯ process.processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ applyPendingMigrations src/persistence/migration-runner.ts:21:5
+ ❯ Object.setup src/vitest-global-setup.ts:70:5
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:21
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+ ❯ startVitest node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:10520:8
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { context: { filename: '0012-glossary-concept-description.sql' } }
+Caused by: Error: read ETIMEDOUT
+ ❯ node_modules/pg-pool/index.js:45:11
+ ❯ process.processTicksAndRejections node:internal/process/task_queues:103:5
+ ❯ applyMigrationFile src/persistence/migration-runner.ts:44:5
+ ❯ applyPendingMigrations src/persistence/migration-runner.ts:21:5
+ ❯ Object.setup src/vitest-global-setup.ts:70:5
+ ❯ TestProject._initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:7084:21
+ ❯ Vitest.initializeGlobalSetup node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9734:35
+ ❯ node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9646:5
+ ❯ Vitest.runFiles node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9676:10
+ ❯ Vitest.start node_modules/vitest/dist/chunks/cli-api.DVe0nWUx.js:9564:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -110, code: 'ETIMEDOUT', syscall: 'read' }
+
+
+

@@ -29,6 +29,7 @@ function heldConcept(overrides: Partial<Concept> = {}): Concept {
     name: 'a-concept',
     accepts: ['a-subject-type', 'another-subject-type'],
     ttl: 120,
+    description: 'a fixture concept',
     ...overrides,
   };
 }

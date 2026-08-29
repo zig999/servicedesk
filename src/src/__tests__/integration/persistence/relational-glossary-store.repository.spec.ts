@@ -223,14 +223,16 @@ it('answers the empty vocabulary when the real table currently holds no row', as
   await expect(store.readTerms('subject-attribute')).resolves.toEqual([]);
 });
 
-// ---------------------------------------------------------------- criterion 2
+// ---------------------------------------------------------------- criterion 2, and
+// task/concept-description/concept-persistence-carries-description's own criterion 1
 
-it('answers each concept with its name, the subject types it accepts and its ttl, as the real tables hold them', async () => {
+it('answers each concept with its name, the subject types it accepts, its ttl and its description, exactly as the real tables hold them', async () => {
   const subjectA = freshTerm('glossary-store-concept-subject-a', subjectTypesWrittenByThisTest);
   const subjectB = freshTerm('glossary-store-concept-subject-b', subjectTypesWrittenByThisTest);
   await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [subjectA.name, subjectB.name]);
   const concept = freshTerm('glossary-store-concept', conceptsWrittenByThisTest);
-  await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, $2)', [concept.name, 120]);
+  const description = 'what glossary-store-concept means for this suite';
+  await pool.query('INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)', [concept.name, 120, description]);
   await pool.query(
     'INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2), ($1, $3)',
     [concept.name, subjectA.name, subjectB.name],
@@ -239,7 +241,7 @@ it('answers each concept with its name, the subject types it accepts and its ttl
 
   const answered = await store.readConcepts();
 
-  expect(answered).toContainEqual({ name: concept.name, accepts: [subjectA.name, subjectB.name], ttl: 120 });
+  expect(answered).toContainEqual({ name: concept.name, accepts: [subjectA.name, subjectB.name], ttl: 120, description });
 });
 
 it('answers a concept with an empty accepts array when it currently accepts no subject type', async () => {
@@ -249,7 +251,7 @@ it('answers a concept with an empty accepts array when it currently accepts no s
 
   const answered = await store.readConcepts();
 
-  expect(answered).toContainEqual({ name: concept.name, accepts: [], ttl: 45 });
+  expect(answered).toContainEqual({ name: concept.name, accepts: [], ttl: 45, description: '' });
 });
 
 it('answers no concepts, not a rejection, when no row was ever stored under a given name', async () => {

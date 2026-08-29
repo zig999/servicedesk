@@ -218,7 +218,7 @@ function coherentGlossary(): FakeGlossaryQuery {
   glossary.holdTerm('action', FALLBACK_ACTION);
   glossary.holdTerm('recipient', RECIPIENT);
   glossary.holdTerm('recipient', FALLBACK_RECIPIENT);
-  glossary.holdConcept({ name: CONCEPT, accepts: [SUBJECT_CONTRACT], ttl: 60 });
+  glossary.holdConcept({ name: CONCEPT, accepts: [SUBJECT_CONTRACT], ttl: 60, description: 'a fixture concept' });
   return glossary;
 }
 

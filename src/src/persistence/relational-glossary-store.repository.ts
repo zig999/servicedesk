@@ -47,6 +47,14 @@
 // (migrations/0002-glossary-vocabulary.sql) requires the concepts row it
 // names to already exist.
 //
+// readWholeConcepts and insertConceptStatement (task/concept-description/
+// concept-persistence-carries-description) also carry "concepts".description
+// (migrations/0012-glossary-concept-description.sql), read and written
+// exactly as the column holds it: NOT NULL DEFAULT '', so a concept row
+// stored before this column existed reads back holding the empty string
+// rather than failing
+// (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone).
+//
 // Names no import of 'pg': DatabaseConnection, database-connection.ts's own
 // exported type, and the runStatement/runInTransaction helpers
 // database-access.ts already declares, are the only things this file names
@@ -67,10 +75,20 @@ import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from 
 import { runInTransaction, runStatement, type IQueryable, type IStatement } from './database-access.js';
 import type { DatabaseConnection } from './database-connection.js';
 
-/** One row of "concepts", exactly the columns migrations/0002-glossary-vocabulary.sql declares. */
+/**
+ * One row of "concepts": migrations/0002-glossary-vocabulary.sql's own name
+ * and ttl, plus description, which migrations/0012-glossary-concept-
+ * description.sql adds NOT NULL DEFAULT '' — a legacy row this store reads
+ * back before a description was ever written to it holds the empty string
+ * here, never SQL NULL
+ * (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone),
+ * so this column is always a plain string and never needs translating an
+ * absence the domain model does not have.
+ */
 interface IConceptRow {
   readonly name: string;
   readonly ttl: number;
+  readonly description: string;
 }
 
 /** One row of "concept_accepts": which concept accepts which subject type (domain/glossary/concept's own accepts). */
@@ -188,9 +206,12 @@ function insertMissingTermStatement(table: string, term: GlossaryTerm): IStateme
   return { text: `INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, params: [term.name] };
 }
 
-/** The one INSERT each given concept runs through writeConcepts' own whole replace, carrying every field the port method declares (criterion 3): its name and its ttl. */
+/** The one INSERT each given concept runs through writeConcepts' own whole replace, carrying every field the port method declares (criterion 3): its name, its ttl and its description. */
 function insertConceptStatement(concept: Concept): IStatement {
-  return { text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl) VALUES ($1, $2)`, params: [concept.name, concept.ttl] };
+  return {
+    text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3)`,
+    params: [concept.name, concept.ttl, concept.description],
+  };
 }
 
 /** The one INSERT each subject type a given concept accepts runs through writeConcepts' own whole replace, carrying the "accepts" field the port method declares (criterion 3). */
@@ -203,9 +224,13 @@ function insertConceptAcceptStatement(conceptName: string, subjectTypeName: stri
 
 /** Reads "concepts" and "concept_accepts" through the one connection the caller's own transaction checked out, and assembles them into the shape readConcepts promises. */
 async function readWholeConcepts(tx: IQueryable): Promise<readonly ConceptRegistration[]> {
-  const rows = await runStatement<IConceptRow>(tx, { text: `SELECT name, ttl FROM ${CONCEPTS_TABLE}` }, raiseReadFailure);
+  const rows = await runStatement<IConceptRow>(
+    tx,
+    { text: `SELECT name, ttl, description FROM ${CONCEPTS_TABLE}` },
+    raiseReadFailure,
+  );
   const accepts = await acceptsByConceptName(tx);
-  return rows.map((row) => ({ name: row.name, accepts: accepts.get(row.name) ?? [], ttl: row.ttl }));
+  return rows.map((row) => ({ name: row.name, accepts: accepts.get(row.name) ?? [], ttl: row.ttl, description: row.description }));
 }
 
 /** Every subject type each concept accepts, grouped by the concept's own name — concept_accepts carries no order of its own, so each group is read back sorted by subject type name for a deterministic result. */

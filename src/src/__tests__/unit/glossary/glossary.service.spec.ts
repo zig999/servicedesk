@@ -6,6 +6,7 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
+import { ConceptDescriptionRequiredError } from '../../../errors/concept-description-required.error.js';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
@@ -156,7 +157,7 @@ it('answers a concept with its name, its accepted subject types and its ttl in s
   const answered = await glossary.concepts();
 
   expect(answered).toEqual([
-    { name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 300 },
+    { name: 'a-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 300, description: '' },
   ]);
 });
 
@@ -167,7 +168,7 @@ it('holds the default of sixty seconds for a concept whose registration states n
   const answered = await glossary.concepts();
 
   expect(answered).toEqual([
-    { name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS },
+    { name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '' },
   ]);
 });
 
@@ -181,11 +182,22 @@ it('creates a concept with its accepted subject types and its ttl, at a name the
     name: 'a-new-concept',
     accepts: ['a-subject-type', 'another-subject-type'],
     ttl: 120,
+    description: 'A new concept fixture describes for the test.',
   });
 
-  expect(registered).toEqual({ name: 'a-new-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 120 });
+  expect(registered).toEqual({
+    name: 'a-new-concept',
+    accepts: ['a-subject-type', 'another-subject-type'],
+    ttl: 120,
+    description: 'A new concept fixture describes for the test.',
+  });
   expect(await store.readConcepts()).toEqual([
-    { name: 'a-new-concept', accepts: ['a-subject-type', 'another-subject-type'], ttl: 120 },
+    {
+      name: 'a-new-concept',
+      accepts: ['a-subject-type', 'another-subject-type'],
+      ttl: 120,
+      description: 'A new concept fixture describes for the test.',
+    },
   ]);
 });
 
@@ -193,15 +205,24 @@ it('defaults a newly created concept\'s ttl to sixty seconds when its registrati
   const store = new InMemoryGlossaryStore();
   const glossary = new GlossaryService(store);
 
-  const registered = await glossary.registerConcept({ name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'] });
+  const registered = await glossary.registerConcept({
+    name: 'an-undeclared-ttl-concept',
+    accepts: ['a-subject-type'],
+    description: 'An undeclared-ttl concept fixture describes for the test.',
+  });
 
-  expect(registered).toEqual({ name: 'an-undeclared-ttl-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS });
+  expect(registered).toEqual({
+    name: 'an-undeclared-ttl-concept',
+    accepts: ['a-subject-type'],
+    ttl: SIXTY_SECONDS,
+    description: 'An undeclared-ttl concept fixture describes for the test.',
+  });
 });
 
 it('replaces a concept in place at a name the glossary already holds, rather than creating a second entry for it', async () => {
   const store = new InMemoryGlossaryStore([
-    { name: 'a-held-concept', accepts: ['an-old-subject-type'], ttl: 90 },
-    { name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60 },
+    { name: 'a-held-concept', accepts: ['an-old-subject-type'], ttl: 90, description: 'The held concept fixture, before its replacement.' },
+    { name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An unrelated concept fixture, left untouched.' },
   ]);
   const glossary = new GlossaryService(store);
 
@@ -209,17 +230,110 @@ it('replaces a concept in place at a name the glossary already holds, rather tha
     name: 'a-held-concept',
     accepts: ['a-new-subject-type'],
     ttl: 240,
+    description: 'The held concept fixture, after its replacement.',
   });
 
-  expect(registered).toEqual({ name: 'a-held-concept', accepts: ['a-new-subject-type'], ttl: 240 });
+  expect(registered).toEqual({
+    name: 'a-held-concept',
+    accepts: ['a-new-subject-type'],
+    ttl: 240,
+    description: 'The held concept fixture, after its replacement.',
+  });
   const persisted = await store.readConcepts();
   expect(persisted).toHaveLength(2);
   expect(persisted.filter((concept) => concept.name === 'a-held-concept')).toEqual([
-    { name: 'a-held-concept', accepts: ['a-new-subject-type'], ttl: 240 },
+    { name: 'a-held-concept', accepts: ['a-new-subject-type'], ttl: 240, description: 'The held concept fixture, after its replacement.' },
   ]);
   expect(persisted).toEqual(
-    expect.arrayContaining([{ name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60 }]),
+    expect.arrayContaining([
+      { name: 'an-unrelated-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An unrelated concept fixture, left untouched.' },
+    ]),
   );
+});
+
+// -------------------- task/concept-description/concept-registration-requires-a-description
+
+it('refuses a concept registration naming no description, with a typed ConceptDescriptionRequiredError (criterion 1)', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const refusal = await rejectionOf(
+    glossary.registerConcept({ name: 'a-description-less-concept', accepts: ['a-subject-type'] }),
+  );
+
+  expect(refusal).toBeInstanceOf(ConceptDescriptionRequiredError);
+  expect(refusal).toMatchObject({ context: { name: 'a-description-less-concept', given: undefined } });
+});
+
+it('refuses a concept registration naming an empty-string description exactly as it refuses an absent one (criterion 1)', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const refusal = await rejectionOf(
+    glossary.registerConcept({ name: 'an-empty-description-concept', accepts: ['a-subject-type'], description: '' }),
+  );
+
+  expect(refusal).toBeInstanceOf(ConceptDescriptionRequiredError);
+  expect(refusal).toMatchObject({ context: { name: 'an-empty-description-concept', given: '' } });
+});
+
+it('leaves the glossary\'s held concepts unchanged when a registration naming no description is refused (criterion 2)', async () => {
+  const store = new InMemoryGlossaryStore([
+    { name: 'a-held-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An existing, already-described concept.' },
+  ]);
+  const glossary = new GlossaryService(store);
+
+  const refusal = await rejectionOf(
+    glossary.registerConcept({ name: 'a-new-description-less-concept', accepts: ['a-subject-type'] }),
+  );
+
+  expect(refusal).toBeInstanceOf(ConceptDescriptionRequiredError);
+  expect(await store.readConcepts()).toEqual([
+    { name: 'a-held-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An existing, already-described concept.' },
+  ]);
+});
+
+it('succeeds for a concept registration naming a description, and the glossary\'s held concept for that name carries exactly that description (criterion 3)', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const registered = await glossary.registerConcept({
+    name: 'a-described-concept',
+    accepts: ['a-subject-type'],
+    ttl: 120,
+    description: 'What this named observation means, stated for a reader downstream.',
+  });
+
+  expect(registered).toEqual({
+    name: 'a-described-concept',
+    accepts: ['a-subject-type'],
+    ttl: 120,
+    description: 'What this named observation means, stated for a reader downstream.',
+  });
+  expect(await store.readConcepts()).toEqual([
+    {
+      name: 'a-described-concept',
+      accepts: ['a-subject-type'],
+      ttl: 120,
+      description: 'What this named observation means, stated for a reader downstream.',
+    },
+  ]);
+});
+
+it('does not treat a whitespace-only description as naming none: it is stored exactly as given, with no trimming and no refusal', async () => {
+  const store = new InMemoryGlossaryStore();
+  const glossary = new GlossaryService(store);
+
+  const registered = await glossary.registerConcept({
+    name: 'a-whitespace-description-concept',
+    accepts: ['a-subject-type'],
+    description: '   ',
+  });
+
+  expect(registered.description).toBe('   ');
+  expect(await store.readConcepts()).toEqual([
+    { name: 'a-whitespace-description-concept', accepts: ['a-subject-type'], ttl: SIXTY_SECONDS, description: '   ' },
+  ]);
 });
 
 it('answers no concepts as an empty list rather than an absence', async () => {

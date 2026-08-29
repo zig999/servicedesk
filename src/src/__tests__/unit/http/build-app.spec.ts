@@ -138,7 +138,7 @@ function stubCapabilityQuery(): ICapabilityQuery {
 function stubGlossaryQuery(): IGlossaryQuery {
   return {
     readVocabularyTerm: async (_vocabulary, name) => ({ held: true, term: { name } }),
-    readConcept: async (name) => ({ held: true, concept: { name, accepts: ['a-subject-type'], ttl: 60 } }),
+    readConcept: async (name) => ({ held: true, concept: { name, accepts: ['a-subject-type'], ttl: 60, description: 'a fixture concept' } }),
     listVocabularyTerms: async () => emptyPage(),
     listConcepts: async () => emptyPage(),
   };
@@ -176,6 +176,7 @@ function stubRegisterConcept(): RegisterConceptControllerDependencies {
       name: 'a-concept',
       accepts: ['a-subject-type'],
       ttl: 60,
+      description: 'a fixture concept',
     }),
   };
 }
