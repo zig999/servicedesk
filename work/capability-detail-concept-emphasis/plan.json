@@ -1,0 +1,95 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-detail-concept-emphasis",
+      "kind": "epic",
+      "file": "epic/capability-detail-concept-emphasis.md",
+      "title": "Capability detail concept emphasis",
+      "summary": "The capability create/edit form's shared field markup is revised so concept reads with clear visual priority over the form's other attributes."
+    },
+    {
+      "id": "inventory/capability-detail-concept-emphasis",
+      "kind": "inventory",
+      "file": "inventory/capability-detail-concept-emphasis.md",
+      "title": "Capability detail screen's concept-field emphasis",
+      "summary": "The capability detail/edit form's shared field markup, its routed ready-view wrapper, and this app's own TUI/token wiring -- where concept currently sits as an equal-weight third field in a three-column row."
+    },
+    {
+      "id": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "task",
+      "file": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis.md",
+      "title": "Give the concept field visual priority in the capability form",
+      "summary": "The capability create/edit form's shared field markup renders concept with a visual weight the form's other seven fields do not carry.",
+      "epic": "capability-detail-concept-emphasis"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "contracts/knowledge/capability-check",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "domain/integration/capability-nature",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "rules/integration/a-capability-declares-its-contract",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "rules/integration/a-capability-is-read-only",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/capability-detail-concept-emphasis",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[9]"
+    }
+  ]
+}
