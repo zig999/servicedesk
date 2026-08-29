@@ -98,6 +98,20 @@ it("answers each of two requests naming different concepts with that request's o
   expect((second.json() as Concept).name).toBe('concept-b');
 });
 
+// ---------------------- task/concept-description/read-concept-returns-description
+
+it('answers 200 with the empty string for description, when the glossary holds a legacy concept with no stored description, never a refusal', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const concept = heldConcept({ name: 'a-legacy-concept', description: '' });
+  built.readConcept.mockResolvedValueOnce({ held: true, concept });
+
+  const response = await app.inject({ method: 'GET', url: '/v1/glossary/concepts/a-legacy-concept' });
+
+  expect(response.statusCode).toBe(200);
+  expect((response.json() as Concept).description).toBe('');
+});
+
 // ------------------------------------------------------------------ criterion 2
 
 it('refuses with the status the status map assigns ConceptNotHeldError, when the glossary does not currently hold the named concept', async () => {

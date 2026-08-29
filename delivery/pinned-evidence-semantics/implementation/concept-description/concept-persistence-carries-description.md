@@ -9,7 +9,7 @@ standard:
   pin: sha256:ed25b4e50ea3e50032136f968eff6a6bb363faec8ced93ef9309466d381cdca3
 run: run/concept-description-concept-persistence-carries-description-build
 files:
-- path: src/migrations/0012-glossary-concept-description.sql
+- path: migrations/0012-glossary-concept-description.sql
   effect: 'New additive migration: ALTER TABLE concepts ADD COLUMN description TEXT
     NOT NULL DEFAULT ''''. The DEFAULT backfills every already-stored row and is kept
     permanently so every write path that inserts into concepts without naming description
@@ -41,7 +41,7 @@ criteria:
 nodes:
 - node: domain/glossary/concept
   encoded_at:
-  - src/migrations/0012-glossary-concept-description.sql
+  - migrations/0012-glossary-concept-description.sql
   - src/persistence/relational-glossary-store.repository.ts
   how: This task answers the description attribute's persistence half — a required
     attribute of the value object, stored and read back through the relational store
@@ -50,7 +50,7 @@ nodes:
     at the schema level.
 - node: scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone
   encoded_at:
-  - src/migrations/0012-glossary-concept-description.sql
+  - migrations/0012-glossary-concept-description.sql
   - src/persistence/relational-glossary-store.repository.ts
   how: 'This task''s own falsifiable half of that scenario is the persistence side:
     the migration backfills every existing concepts row to '''' rather than leaving

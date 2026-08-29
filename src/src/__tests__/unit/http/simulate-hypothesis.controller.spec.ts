@@ -78,6 +78,8 @@ function completeRecord(): SimulateHypothesisPipelineResult {
         capability_name: 'a-capability',
         capability_version: '1.0.0',
         elapsed_ms: 10,
+        fields: [],
+        concept_description: '',
       },
     ],
     evaluation: { hypothesis: 'hypothesis-a', verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'a-field' }] },

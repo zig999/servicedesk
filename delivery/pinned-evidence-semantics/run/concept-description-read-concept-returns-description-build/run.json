@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/concept-description-read-concept-returns-description-build",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-29T17:38:05.224+00:00",
+      "ended_at": "2026-08-29T17:38:14.360+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-29T17:38:14.360+00:00",
+      "ended_at": "2026-08-29T17:38:21.366+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-29T17:38:21.366+00:00",
+      "ended_at": "2026-08-29T17:38:27.160+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-29T17:38:27.160+00:00",
+      "ended_at": "2026-08-29T17:38:27.787+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

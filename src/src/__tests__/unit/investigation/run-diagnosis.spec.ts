@@ -316,7 +316,15 @@ class RejectingInvestigationStore implements IInvestigationStore {
   }
 }
 
-/** The Evidence a held capability's ok observation assembles for `concept`, at now=0 — the shape every base fixture's collection actually produces. */
+/**
+ * The Evidence a held capability's ok observation assembles for `concept`, at now=0 — the shape
+ * every base fixture's collection actually produces. fields is always [{ name: 'a-field', type:
+ * 'string' }]: every aCapability() fixture in this file declares that exact output schema
+ * (schemaDeclaring('a-field')), read structurally by field-semantics.ts's own fieldSemanticsOf.
+ * concept_description is always '': this file's own FakeGlossaryQuery.readConcept always answers
+ * held: false (no test here is about the description snapshot itself —
+ * evidence-collection-stage.spec.ts is).
+ */
 function expectedOkEvidence(concept: string, observation: string): Evidence {
   return {
     concept,
@@ -333,6 +341,8 @@ function expectedOkEvidence(concept: string, observation: string): Evidence {
     // fire), so attemptStartedAt and the settling Date.now() read the same
     // instant and elapsed_ms is always exactly 0 here.
     elapsed_ms: 0,
+    fields: [{ name: 'a-field', type: 'string' }],
+    concept_description: '',
   };
 }
 

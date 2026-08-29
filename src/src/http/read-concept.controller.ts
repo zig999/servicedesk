@@ -38,5 +38,10 @@ export async function handleReadConceptRequest(
   if (!resolution.held) {
     throw new ConceptNotHeldError(resolution.name);
   }
-  return { name: resolution.concept.name, accepts: resolution.concept.accepts, ttl: resolution.concept.ttl };
+  return {
+    name: resolution.concept.name,
+    accepts: resolution.concept.accepts,
+    ttl: resolution.concept.ttl,
+    description: resolution.concept.description,
+  };
 }

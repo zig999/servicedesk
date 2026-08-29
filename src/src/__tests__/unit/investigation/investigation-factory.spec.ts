@@ -159,6 +159,8 @@ function anEvidence(concept: string, overrides: Partial<Evidence> = {}): Evidenc
     capability_name: `capability-for-${concept}`,
     capability_version: '1.0.0',
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
     ...overrides,
   };
 }

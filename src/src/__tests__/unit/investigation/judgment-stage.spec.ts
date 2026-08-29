@@ -108,7 +108,7 @@ function aCaseWithMismatchedHypotheses(
   };
 }
 
-/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. */
+/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. fields/concept_description default empty: this file's own tests are about judgeHypotheses, never about the snapshot itself (evidence-collection-stage.spec.ts and field-semantics.spec.ts are). */
 function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
   return {
     inputs: 'an-input',
@@ -120,6 +120,8 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
     capability_name: `capability-for-${overrides.concept}`,
     capability_version: '1.0.0',
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
     ...overrides,
   };
 }

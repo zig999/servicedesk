@@ -1,0 +1,263 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/concept-description/concept-persistence-carries-description",
+      "kind": "implementation",
+      "file": "implementation/concept-description/concept-persistence-carries-description.md",
+      "title": "Concept persistence carries a description, tolerant of a legacy row",
+      "summary": "A new additive migration adds a NOT NULL DEFAULT '' description column to \"concepts\", and RelationalGlossaryStore reads and writes it, so a concept row stored before this migration reads back with an empty description instead of failing.",
+      "task": "task/concept-description/concept-persistence-carries-description"
+    },
+    {
+      "id": "implementation/concept-description/concept-registration-requires-a-description",
+      "kind": "implementation",
+      "file": "implementation/concept-description/concept-registration-requires-a-description.md",
+      "title": "register-concept refuses a description-less submission",
+      "summary": "GlossaryService.registerConcept now requires a description, refusing an absent or empty one with a typed 422 ConceptDescriptionRequiredError before any read or write, and storing one exactly as given on success.",
+      "task": "task/concept-description/concept-registration-requires-a-description"
+    },
+    {
+      "id": "implementation/concept-description/read-concept-returns-description",
+      "kind": "implementation",
+      "file": "implementation/concept-description/read-concept-returns-description.md",
+      "title": "read-concept returns a concept's description",
+      "summary": "GET /v1/glossary/concepts/{name} now answers a held concept's description alongside its name, accepts and ttl, empty for a legacy concept holding none.",
+      "task": "task/concept-description/read-concept-returns-description"
+    },
+    {
+      "id": "implementation/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "implementation",
+      "file": "implementation/concept-literal-fixture-maintenance/concept-assertion-description-repair.md",
+      "title": "Concept assertion description repair — no change required",
+      "summary": "Verification that the four named test files' .toEqual assertions already carry the description value GlossaryService's read-back now answers, so this task's scope resolves to test-file maintenance outside this role rather than any source write.",
+      "task": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair"
+    },
+    {
+      "id": "implementation/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "implementation",
+      "file": "implementation/concept-literal-fixture-maintenance/concept-literal-typecheck-repair.md",
+      "title": "Concept literal typecheck repair — no change required",
+      "summary": "All seven named Concept-literal sites already carry a description value on their Concept-shaped literal(s); the tree already satisfies every criterion and no edit was written.",
+      "task": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair"
+    },
+    {
+      "id": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "implementation",
+      "file": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics.md",
+      "title": "Evidence collection snapshots concept and field semantics",
+      "summary": "The collection stage now reads the glossary alongside the capability registry and snapshots each concept's own declared description and its resolved capability's own declared field-by-field semantics onto every Evidence item it produces, honestly degraded where either source is absent.",
+      "task": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics"
+    },
+    {
+      "id": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "implementation",
+      "file": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying.md",
+      "title": "applyMigrationFile strips comments before sending SQL, and vitest's testTimeout is raised for a full replay",
+      "summary": "migration-runner.ts's applyMigrationFile strips every -- comment line and blank line from a migration file's text before sending it to the connection (via stripCommentsAndBlankLines), shrinking a migration query's own wire size — a real, independently worthwhile improvement, though this task's own suite-run history later traced the actual hang this correction was cut to address to a developer host's own Path MTU Discovery black hole (a query large enough to exceed the network path's real MTU was silently dropped, with no ICMP fragmentation-needed reply, so it hung rather than failing) rather than to the connection endpoint itself. vitest.config.ts's testTimeout is raised from 40000ms to 120000ms to tolerate a full sequential replay of every migration script against the real database, and its stale comment naming a database provider ('Neon') this project no longer uses is corrected to a generic, no-vendor description.",
+      "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    },
+    {
+      "id": "proof/concept-description/concept-persistence-carries-description",
+      "kind": "proof",
+      "file": "proof/concept-description/concept-persistence-carries-description.md",
+      "title": "Proof for concept persistence carries a description, tolerant of a legacy row",
+      "summary": "Existing, unmodified tests over the migration and RelationalGlossaryStore already prove all three criteria; the implementation record's own deferred item — that the RelationalGlossaryStore spec files disagree with the new behavior — no longer holds, since both files already assert description correctly.",
+      "task": "task/concept-description/concept-persistence-carries-description"
+    },
+    {
+      "id": "proof/concept-description/concept-registration-requires-a-description",
+      "kind": "proof",
+      "file": "proof/concept-description/concept-registration-requires-a-description.md",
+      "title": "Proof for register-concept refusing a description-less submission",
+      "summary": "Confirms this task's three criteria and its three disclosed inferences are each covered by an existing, already-passing test, and adds the one test that was missing — that the DTO's own optional description field lets a description-less request reach GlossaryService.registerConcept rather than refusing it at 400.",
+      "task": "task/concept-description/concept-registration-requires-a-description"
+    },
+    {
+      "id": "proof/concept-description/read-concept-returns-description",
+      "kind": "proof",
+      "file": "proof/concept-description/read-concept-returns-description.md",
+      "title": "read-concept returns a concept's description",
+      "summary": "Proves that GET /v1/glossary/concepts/{name} carries a held concept's description alongside its name, accepts and ttl, and answers the empty string for a legacy concept holding none rather than refusing the read.",
+      "task": "task/concept-description/read-concept-returns-description"
+    },
+    {
+      "id": "proof/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "proof",
+      "file": "proof/concept-literal-fixture-maintenance/concept-assertion-description-repair.md",
+      "title": "Concept assertion description repair — pre-existing assertions confirmed passing",
+      "summary": "Verifies, by independently reading all four named test files and a full, clean whole-suite run, that every .toEqual assertion comparing a description-less registration's read-back already carries the matching description value GlossaryService now answers, with no other assertion in those files disturbed.",
+      "task": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair"
+    },
+    {
+      "id": "proof/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "proof",
+      "file": "proof/concept-literal-fixture-maintenance/concept-literal-typecheck-repair.md",
+      "title": "Concept literal typecheck repair — proof of no-change verification",
+      "summary": "The whole-tree typecheck step of an already-captured, passing suite run proves every one of the seven named sites already compiles without error; this proof's own independent re-reading of each of the seven files confirms no existing assertion, name, accepts value or ttl value differs from what the implementation record described.",
+      "task": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair"
+    },
+    {
+      "id": "proof/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "proof",
+      "file": "proof/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics.md",
+      "title": "Proof for evidence collection snapshots concept and field semantics",
+      "summary": "Tests proving fields/concept_description snapshotting in collectEvidence and fieldSemanticsOf's own reader, plus the typecheck-fallout repairs the widened Evidence/CollectEvidenceOptions/InvestigationPipelineOptions/SimulateHypothesisPipelineOptions types required across the pre-existing suite.",
+      "task": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics"
+    },
+    {
+      "id": "proof/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "proof",
+      "file": "proof/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying.md",
+      "title": "applyMigrationFile strips comments before applying, and vitest's testTimeout raise — proof",
+      "summary": "Six new unit tests over migration-runner.ts prove the comment-stripping behavior across four criteria (plus two pre-existing, unmodified integration tests cited as the replay-fitness proof); two new meta-tests over vitest.config.ts's own source text prove the testTimeout raise and the corrected fileParallelism comment.",
+      "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/concept-description/concept-persistence-carries-description",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-description/concept-persistence-carries-description",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-description/concept-persistence-carries-description",
+      "to": "task/concept-description/concept-persistence-carries-description",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-description/concept-registration-requires-a-description",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-description/concept-registration-requires-a-description",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-description/concept-registration-requires-a-description",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/concept-description/concept-registration-requires-a-description",
+      "to": "task/concept-description/concept-registration-requires-a-description",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-description/read-concept-returns-description",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/concept-description/read-concept-returns-description",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/concept-description/read-concept-returns-description",
+      "to": "task/concept-description/read-concept-returns-description",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "to": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "to": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "to": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-description/concept-persistence-carries-description",
+      "to": "implementation/concept-description/concept-persistence-carries-description",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-description/concept-registration-requires-a-description",
+      "to": "implementation/concept-description/concept-registration-requires-a-description",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-description/read-concept-returns-description",
+      "to": "implementation/concept-description/read-concept-returns-description",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "to": "implementation/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "to": "implementation/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "to": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "to": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

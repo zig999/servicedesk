@@ -75,3 +75,116 @@ it('sends no further statement once every migration file is already recorded as 
 
   expect(readFileMock).not.toHaveBeenCalled();
 });
+
+// ------------------------------------------------------------------------------------------
+// Proof for task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying:
+// applyMigrationFile strips a migration file's own `--` comment lines and blank lines before its
+// text ever reaches connection.query, over the same filesystem/connection stand-ins as above
+// (TST-03), so what actually reaches the connection is observed without a real database.
+
+it('executes the real statement in a file whose text is entirely comment lines and blank lines above it, never sending any comment line to the connection', async () => {
+  readdirMock.mockResolvedValue(['0001-a.sql']);
+  readFileMock.mockResolvedValue('-- a leading comment\n-- another comment\n\nSELECT 1;');
+  const executedTexts: string[] = [];
+  queryMock.mockImplementation(async (text: string) => {
+    executedTexts.push(text);
+    if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
+      return { rows: [{ exists: false }] };
+    }
+    return { rows: [] };
+  });
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+
+  await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
+
+  expect(executedTexts).toContain('SELECT 1;');
+  expect(executedTexts.some((text) => text.includes('a leading comment'))).toBe(false);
+  expect(executedTexts.some((text) => text.includes('another comment'))).toBe(false);
+});
+
+it('sends a migration file holding no comment line and no blank line to the connection completely unchanged', async () => {
+  readdirMock.mockResolvedValue(['0001-a.sql']);
+  const originalSql = 'DROP TABLE t (\n  id INTEGER\n);';
+  readFileMock.mockResolvedValue(originalSql);
+  const executedTexts: string[] = [];
+  queryMock.mockImplementation(async (text: string) => {
+    executedTexts.push(text);
+    if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
+      return { rows: [{ exists: false }] };
+    }
+    return { rows: [] };
+  });
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+
+  await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
+
+  expect(executedTexts).toContain(originalSql);
+});
+
+it('drops only the whole comment line inside a multi-line statement, leaving every other line of that statement exactly as the file wrote it', async () => {
+  readdirMock.mockResolvedValue(['0001-a.sql']);
+  readFileMock.mockResolvedValue('SELECT\n-- a column comment\n  id,\n  name\nFROM t;');
+  const executedTexts: string[] = [];
+  queryMock.mockImplementation(async (text: string) => {
+    executedTexts.push(text);
+    if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
+      return { rows: [{ exists: false }] };
+    }
+    return { rows: [] };
+  });
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+
+  await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
+
+  expect(executedTexts).toContain('SELECT\n  id,\n  name\nFROM t;');
+});
+
+/**
+ * Pins the implementation's own recorded inference: stripping reaches a comment block sitting
+ * between two statements, not only a block leading the whole file. An implementation that
+ * stripped only a leading comment block would still send this migration's second statement
+ * prefixed by its own untouched "-- comment for the second statement" line — this project's own
+ * migration scripts place a comment block ahead of nearly every individual statement, not only at
+ * the top of the file (see migration-runner.ts's own header comment on stripCommentsAndBlankLines).
+ */
+it('strips a comment block sitting between two statements, not only a comment block leading the whole file', async () => {
+  readdirMock.mockResolvedValue(['0001-a.sql']);
+  readFileMock.mockResolvedValue(
+    '-- comment for the first statement\nDROP TABLE a (id INTEGER);\n\n-- comment for the second statement\nDROP TABLE b (id INTEGER);',
+  );
+  const executedTexts: string[] = [];
+  queryMock.mockImplementation(async (text: string) => {
+    executedTexts.push(text);
+    if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
+      return { rows: [{ exists: false }] };
+    }
+    return { rows: [] };
+  });
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+
+  await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
+
+  expect(executedTexts).toContain('DROP TABLE a (id INTEGER);\nDROP TABLE b (id INTEGER);');
+  expect(executedTexts.some((text) => text.includes('comment for the second statement'))).toBe(false);
+});
+
+it("still records the bookkeeping row naming this file's own filename, after its comment lines are stripped from the SQL that ran", async () => {
+  readdirMock.mockResolvedValue(['0007-with-comments.sql']);
+  readFileMock.mockResolvedValue('-- explains the statement below\nSELECT 1;');
+  let insertCall: { text: string; params?: unknown[] } | undefined;
+  queryMock.mockImplementation(async (text: string, params?: unknown[]) => {
+    if (text.includes(BOOKKEEPING_EXISTENCE_QUERY_MARKER)) {
+      return { rows: [{ exists: false }] };
+    }
+    if (text.startsWith('INSERT INTO')) {
+      insertCall = { text, params };
+    }
+    return { rows: [] };
+  });
+  const connection = createDatabaseConnection('postgres://a-placeholder-connection-url');
+
+  await applyPendingMigrations(connection, MIGRATIONS_DIRECTORY);
+
+  expect(insertCall?.text).toBe('INSERT INTO "public".schema_migrations (filename) VALUES ($1)');
+  expect(insertCall?.params).toEqual(['0007-with-comments.sql']);
+});

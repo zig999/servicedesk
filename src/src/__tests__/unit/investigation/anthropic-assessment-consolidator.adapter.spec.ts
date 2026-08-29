@@ -76,6 +76,8 @@ const SOME_EVIDENCE: readonly Evidence[] = [
     capability_name: 'a-capability',
     capability_version: '1',
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
   },
 ];
 

@@ -80,6 +80,8 @@ function completeRecord(): InvestigationPipelineResult {
         capability_name: 'a-capability',
         capability_version: '1.0.0',
         elapsed_ms: 10,
+        fields: [],
+        concept_description: '',
       },
     ],
     evaluations: [

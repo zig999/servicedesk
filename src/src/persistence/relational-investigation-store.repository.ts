@@ -371,7 +371,22 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   return rows.map(evidenceOf);
 }
 
-/** One evidence row assembled into the shape domain/investigation/evidence declares, including the capability pin this task's own UNDERDETERMINED note requires and elapsed_ms (task/investigation-telemetry/evidence-collection-measures-elapsed-ms). */
+/**
+ * One evidence row assembled into the shape domain/investigation/evidence
+ * declares, including the capability pin this task's own UNDERDETERMINED
+ * note requires and elapsed_ms
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ * fields and concept_description are not yet columns of this table — no
+ * migration for them exists yet
+ * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's
+ * own objective, which adds both and this function's own read of them) — so
+ * a row read back here always answers the same honest empty snapshot
+ * domain/investigation/evidence already allows for an evidence item
+ * collected before this attribute existed (this delivery's own inference:
+ * the sibling task's own second criterion already commits to exactly this
+ * degradation for a row stored before its migration runs, and every row
+ * this function reads today lacks both columns).
+ */
 function evidenceOf(row: IEvidenceRow): Evidence {
   return {
     concept: row.concept,
@@ -385,6 +400,8 @@ function evidenceOf(row: IEvidenceRow): Evidence {
     capability_name: row.capability_name,
     capability_version: row.capability_version,
     elapsed_ms: row.elapsed_ms,
+    fields: [],
+    concept_description: '',
   };
 }
 

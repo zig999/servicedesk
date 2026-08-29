@@ -28,6 +28,7 @@
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { manifestEntryNamed } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
+import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Evaluation } from './evaluation.js';
 import { collectEvidence } from './evidence-collection-stage.js';
 import type { Evidence } from './evidence.js';
@@ -41,10 +42,13 @@ import type { SubjectAttributeValue } from './subject-attribute-value.js';
 /**
  * Everything this narrower run needs: the same subject/case/requester/port
  * shape investigation-pipeline.ts's own InvestigationPipelineOptions
- * declares, plus the one hypothesis name this call narrows to, and minus
- * every field only consolidation needs (consolidator,
- * defaultConsolidationRegister) — this operation never consolidates
- * (contracts/investigation/case-simulation).
+ * declares — including the published glossary-query read collectEvidence
+ * itself now resolves each concept's own description through
+ * (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics),
+ * which this narrower run needs for the identical reason — plus the one
+ * hypothesis name this call narrows to, and minus every field only
+ * consolidation needs (consolidator, defaultConsolidationRegister) — this
+ * operation never consolidates (contracts/investigation/case-simulation).
  */
 export type SimulateHypothesisPipelineOptions = {
   readonly subjectType: string;
@@ -54,6 +58,8 @@ export type SimulateHypothesisPipelineOptions = {
   /** The one hypothesis name this run narrows to (domain/knowledge/hypothesis-revision, domain/knowledge/manifest-entry). */
   readonly hypothesis: string;
   readonly capabilities: ICapabilityQuery;
+  /** The published glossary-query read collectEvidence resolves each concept's own description through, once per concept, at the moment of collection (domain/investigation/evidence). */
+  readonly glossary: IGlossaryQuery;
   readonly observationSource: IObservationSource;
   readonly evaluator: IHypothesisEvaluator;
   readonly poolSize: number;
@@ -105,6 +111,7 @@ export async function runSimulateHypothesisPipeline(
     subject,
     requester: options.requester,
     capabilities: options.capabilities,
+    glossary: options.glossary,
     observationSource: options.observationSource,
     now: options.now,
     deadline: options.deadline,

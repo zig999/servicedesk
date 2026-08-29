@@ -36,11 +36,15 @@
 // is ever added to diagnose's own, separate observation-source composition
 // (scenarios/investigation/a-simulation-never-enters-the-cache).
 //
-// Every adapter below — capabilities, connectorConfigurations and the
-// observation source itself — is constructed exactly once per call to this
-// outer factory function, the same per-deployment convention
+// Every adapter below — capabilities, glossary, connectorConfigurations and
+// the observation source itself — is constructed exactly once per call to
+// this outer factory function, the same per-deployment convention
 // createDiagnoseRunner and createProductionDiagnoseRunner already keep for
-// their own leaf dependencies, never once per request.
+// their own leaf dependencies, never once per request. glossary joins this
+// set for task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics:
+// collectEvidence itself now reads the published glossary-query port too,
+// not only buildInvestigation's own subject-attribute check, which this
+// factory never reaches anyway (it never calls buildInvestigation at all).
 
 import type { IAssessmentConsolidator } from '../investigation/assessment-consolidator.port.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
@@ -54,6 +58,7 @@ import {
 import type { DatabaseConnection } from '../persistence/database-connection.js';
 import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
+import { createGlossaryQuery } from './glossary.factory.js';
 
 /**
  * What one simulation run's own caller still chooses, once this factory has
@@ -78,19 +83,29 @@ export type SimulationDependencies = {
  * Everything one simulation call still needs to supply once this factory
  * has wired every fixed dependency above: runInvestigationPipeline's own
  * InvestigationPipelineOptions minus exactly the fields this factory itself
- * wires (capabilities, observationSource, evaluator, consolidator,
+ * wires (capabilities, glossary, observationSource, evaluator, consolidator,
  * poolSize, defaultConsolidationRegister) — subjectType, subjectAttributes,
  * the pinned case, the requester and the propagated (now, deadline) pair
- * are this call's own to supply. Carries no id, ticket_ref, narrative,
- * prompt_version, model, glossary or store: those are RunDiagnosisOptions'
- * own persistence-only fields, never reached here since this factory never
+ * are this call's own to supply. glossary joins the wired set here for the
+ * same reason capabilities already sits there: collectEvidence itself now
+ * reads it too (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics),
+ * not only buildInvestigation's own subject-attribute check, which this
+ * factory never reaches anyway. Carries no id, ticket_ref, narrative,
+ * prompt_version, model or store: those are RunDiagnosisOptions' own
+ * persistence-only fields, never reached here since this factory never
  * calls runDiagnosis or buildInvestigation
  * (contracts/investigation/case-simulation's own "neither operation carries
  * a narrative or a ticket reference").
  */
 export type SimulationCall = Omit<
   InvestigationPipelineOptions,
-  'capabilities' | 'observationSource' | 'evaluator' | 'consolidator' | 'poolSize' | 'defaultConsolidationRegister'
+  | 'capabilities'
+  | 'glossary'
+  | 'observationSource'
+  | 'evaluator'
+  | 'consolidator'
+  | 'poolSize'
+  | 'defaultConsolidationRegister'
 >;
 
 /**
@@ -112,12 +127,14 @@ export function createSimulationRunner(
   dependencies: SimulationDependencies,
 ): (call: SimulationCall) => Promise<InvestigationPipelineResult> {
   const capabilities = createCapabilityQuery(dependencies.connection);
+  const glossary = createGlossaryQuery(dependencies.connection);
   const connectorConfigurations = createConnectorConfigurationRegistry(dependencies.connection);
   const observationSource = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations });
   return (call: SimulationCall): Promise<InvestigationPipelineResult> =>
     runInvestigationPipeline({
       ...call,
       capabilities,
+      glossary,
       observationSource,
       evaluator: dependencies.evaluator,
       consolidator: dependencies.consolidator,

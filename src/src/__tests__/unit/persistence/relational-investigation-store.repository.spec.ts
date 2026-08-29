@@ -134,7 +134,14 @@ function citationRow(overrides: Record<string, unknown> = {}): Record<string, un
   return { hypothesis: 'a-hypothesis', concept: 'a-concept', field: 'a-field', ...overrides };
 }
 
-/** One Evidence item, matching evidenceRow()'s own defaults, so a test may build one side from the document and the other from the row and compare them directly. */
+/**
+ * One Evidence item, matching evidenceRow()'s own defaults, so a test may build one side from the
+ * document and the other from the row and compare them directly. fields/concept_description default
+ * to the same empty snapshot the read path (evidenceOf()) answers for every row today — no migration
+ * yet backs either column (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's
+ * own objective), so write()'s own params are unaffected by them and read() always answers this same
+ * empty pair, whatever a caller wrote.
+ */
 function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
   return {
     concept: 'a-concept',
@@ -147,6 +154,8 @@ function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
     capability_name: 'a-capability',
     capability_version: '1.0.0',
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
     ...overrides,
   };
 }
@@ -634,5 +643,43 @@ it("assembles the stored row's own elapsed_ms into the read Evidence's own elaps
   const answered = (await store.read('an-investigation-id'))?.document as Investigation;
 
   expect(answered.evidence[0]?.elapsed_ms).toBe(777);
+});
+
+// ---------------------------------------------------------------- task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics
+//
+// Neither fields nor concept_description has a migration yet
+// (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's own objective, not
+// this task's), so evidenceOf(row) always answers the same empty snapshot on read regardless of the
+// row, and evidenceStatement() never forwards either value into the insert's own params regardless
+// of what the given Evidence carries — the two tests below isolate exactly that disclosed
+// degradation, distinct from the whole-object equality assertions above (criterion 6's own read
+// assembly, criterion 1's own params assertion), which would fail on a mismatch of any of Evidence's
+// other eleven attributes for an unrelated reason too.
+
+it('answers fields as an empty array and concept_description as the empty string for every read evidence item, since no migration yet backs either column', async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evidence: [evidenceRow({ concept: 'concept-a' })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evidence[0]).toMatchObject({ fields: [], concept_description: '' });
+});
+
+it("never forwards fields or concept_description into the evidence insert's own params, even when the given evidence carries non-empty values for both — the insert still carries exactly its own twelve params", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const investigation = anInvestigation({
+    evidence: [anEvidence({ fields: [{ name: 'a-field', type: 'string' }], concept_description: 'a real description' })],
+  });
+
+  await store.write(investigation);
+
+  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
+  expect(evidenceInsert?.params).toHaveLength(12);
 });
 

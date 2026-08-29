@@ -125,10 +125,47 @@ async function bookkeepingTableExists(connection: DatabaseConnection, schema: st
 }
 
 /**
- * Runs one migration file's text verbatim — Postgres's own simple-query
- * protocol treats the file's own semicolon-separated statements as one
- * implicit transaction, so a script of several statements applies as a
- * whole — then records it as applied. Either half's failure is raised
+ * A migration file's own `--` comment lines and blank lines, removed
+ * (task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying)
+ * before its text ever reaches the connection. This project's own migration
+ * scripts document themselves densely, comment lines ahead of nearly every
+ * statement (migrations/0009-case-version-lifecycle-schema.sql,
+ * migrations/0012-glossary-concept-description.sql) — every developer
+ * environment reaching this project's DATABASE_URL over a network path with
+ * a reduced MTU is one where that density can push an ordinary migration
+ * query's own wire size past whatever that path's real MTU is, which this
+ * session traced to a Path MTU Discovery black hole rather than to anything
+ * about a comment or the connection endpoint itself: an oversized packet was
+ * silently dropped with no ICMP fragmentation-needed reply, so the sending
+ * TCP stack never learned to shrink it and the query hung indefinitely
+ * rather than failing. Correcting that MTU mismatch at the network layer
+ * (this session's own fix, once diagnosed, was lowering the developer
+ * host's own interface MTU to match the path) is the real fix and this
+ * project's source cannot make it. Stripping comment and blank lines here
+ * still stands on its own merits independent of that diagnosis: every
+ * migration file this project has ever written spends real bytes on
+ * documentation no statement needs, and shrinking a query's own wire size is
+ * a plain, harmless improvement whatever the transport turns out to
+ * tolerate. Only whole comment lines and whole blank lines are dropped; a
+ * statement's own text, however many lines it spans, is left exactly as the
+ * file wrote it, so the same statement(s) still run in the same order.
+ */
+function stripCommentsAndBlankLines(sql: string): string {
+  return sql
+    .split('\n')
+    .filter((line) => {
+      const trimmed = line.trim();
+      return trimmed.length > 0 && !trimmed.startsWith('--');
+    })
+    .join('\n');
+}
+
+/**
+ * Runs one migration file's own SQL — its comment lines and blank lines
+ * stripped first (stripCommentsAndBlankLines, above) — then records it as
+ * applied. Postgres's own simple-query protocol still treats the remaining,
+ * semicolon-separated statements as one implicit transaction, so a script of
+ * several statements applies as a whole. Either half's failure is raised
  * through this module's own typed error, wrapping the original as its cause
  * (COR-01).
  */
@@ -140,9 +177,9 @@ interface IApplyMigrationFileOptions {
 }
 
 async function applyMigrationFile({ connection, migrationsDirectory, filename, schema }: IApplyMigrationFileOptions): Promise<void> {
-  const sql = await readFile(join(migrationsDirectory, filename), 'utf8');
+  const rawSql = await readFile(join(migrationsDirectory, filename), 'utf8');
   try {
-    await connection.query(sql);
+    await connection.query(stripCommentsAndBlankLines(rawSql));
     await connection.query(`INSERT INTO ${bookkeepingTable(schema)} (filename) VALUES ($1)`, [filename]);
   } catch (error) {
     throw new MigrationStepError(`migration ${filename} could not be applied`, { filename }, { cause: error });

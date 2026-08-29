@@ -35,6 +35,7 @@
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { ResolvedOutcome } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
+import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
 import type { ConsolidationRegister } from './consolidation-register.js';
@@ -73,13 +74,17 @@ export const JUDGMENT_STAGE_BUDGET_MS = 5_000;
  * (diagnose's own write-then-respond composition today, a future simulate
  * composition that never writes): the subject's raw, unvalidated type and
  * attribute-value set, the pinned case, the requester (collectEvidence's own
- * required correlation), every port stage 1–4 reads through, the configured
- * judgment pool bound, the register to fall back to where the pinned case
- * leaves consolidation_register undeclared, and the propagated (now,
- * deadline) pair. Deliberately excludes everything only persistence needs
- * (id, ticket_ref, narrative, prompt_version, model, glossary, store) —
- * run-diagnosis.ts's own RunDiagnosisOptions extends this shape with exactly
- * those.
+ * required correlation), every port stage 1–4 reads through — including,
+ * since task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics,
+ * the published glossary-query read collectEvidence itself now resolves each
+ * concept's own description through, no longer a persistence-only need
+ * (investigation-factory.ts's own subject-attribute check is a second,
+ * independent reader of the same port) — the configured judgment pool bound,
+ * the register to fall back to where the pinned case leaves
+ * consolidation_register undeclared, and the propagated (now, deadline)
+ * pair. Deliberately excludes everything only persistence needs (id,
+ * ticket_ref, narrative, prompt_version, model, store) — run-diagnosis.ts's
+ * own RunDiagnosisOptions extends this shape with exactly those.
  */
 export type InvestigationPipelineOptions = {
   /** The subject's governed type, exactly as this call's own caller assembled it — raw, unvalidated input. */
@@ -90,6 +95,8 @@ export type InvestigationPipelineOptions = {
   readonly case: Case;
   readonly requester: string;
   readonly capabilities: ICapabilityQuery;
+  /** The published glossary-query read collectEvidence resolves each concept's own description through, once per concept, at the moment of collection (domain/investigation/evidence). */
+  readonly glossary: IGlossaryQuery;
   readonly observationSource: IObservationSource;
   readonly evaluator: IHypothesisEvaluator;
   /** The configured pool bound judgeHypotheses judges under (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "the pool bound is configuration") — never a number this module invents. */
@@ -280,6 +287,7 @@ function collectEvidenceOptions(options: InvestigationPipelineOptions, subject: 
     subject,
     requester: options.requester,
     capabilities: options.capabilities,
+    glossary: options.glossary,
     observationSource: options.observationSource,
     now: options.now,
     deadline: options.deadline,

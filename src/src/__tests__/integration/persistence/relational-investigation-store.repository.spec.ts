@@ -161,7 +161,15 @@ interface IInvestigationOptions {
   readonly fixtures: IFixtures;
 }
 
-/** One evidence item as a caller of this store would submit it, referencing exactly the capability freshFixtures() just registered — split out of anIntegrationInvestigation below so that function stays within a function's own line budget (MNT-01). */
+/**
+ * One evidence item as a caller of this store would submit it, referencing exactly the capability
+ * freshFixtures() just registered — split out of anIntegrationInvestigation below so that function
+ * stays within a function's own line budget (MNT-01). fields/concept_description are the same empty
+ * snapshot the read path always answers today, since no migration yet backs either column
+ * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's own objective) — the
+ * roundtrip assertions below compare the written and read documents directly, so both sides must
+ * agree on this same empty pair.
+ */
 function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][number] {
   return {
     concept: fixtures.concept,
@@ -174,6 +182,8 @@ function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][n
     capability_name: fixtures.capabilityName,
     capability_version: fixtures.capabilityVersion,
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
   };
 }
 

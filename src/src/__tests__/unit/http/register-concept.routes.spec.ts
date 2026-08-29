@@ -146,6 +146,28 @@ it('answers 200 for a request carrying an authorization header naming no credent
   expect(response.statusCode).toBe(200);
 });
 
+// ------------------------------------------------------------------ task/concept-description/concept-registration-requires-a-description
+//
+// registerConceptBodySchema's own description field is Zod-optional (the
+// implementation's own disclosed inference: deliberately deferring the
+// refusal for an absent description to GlossaryService.registerConcept
+// itself, so its own typed 422 ConceptDescriptionRequiredError is what
+// answers it, rather than this route's generic 400 VALIDATION_ERROR
+// envelope). registerConcept itself is a stand-in here, so this proves only
+// that a body naming no description clears this boundary rather than being
+// refused before ever reaching it.
+
+it('lets a request whose body names no description at all reach registerConcept unmodified, rather than refusing it here with a 400', async () => {
+  const built = buildTestApp();
+  app = built.app;
+  built.registerConcept.mockResolvedValueOnce(heldConcept());
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/glossary/concepts/a-name', payload: validBody() });
+
+  expect(response.statusCode).toBe(200);
+  expect(built.registerConcept).toHaveBeenCalledWith({ name: 'a-name', accepts: ['a-subject-type'] });
+});
+
 // ------------------------------------------------------------------ basic validation
 
 it('answers 400 for a wholly empty body, without ever reaching registerConcept', async () => {

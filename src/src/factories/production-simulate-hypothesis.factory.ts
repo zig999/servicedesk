@@ -28,6 +28,7 @@ import {
 import type { DatabaseConnection } from '../persistence/database-connection.js';
 import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
+import { createGlossaryQuery } from './glossary.factory.js';
 
 /**
  * The same total deadline budget production-simulate.factory.ts's own
@@ -67,11 +68,14 @@ export type ProductionHypothesisSimulationDependencies = {
  * once this factory has wired every fixed dependency above and computed its
  * own (now, deadline) pair — simulate-hypothesis-pipeline.ts's own
  * SimulateHypothesisPipelineOptions minus the fields this factory itself
- * wires.
+ * wires. glossary joins that wired set the same way capabilities already
+ * does: collectEvidence itself now reads it too
+ * (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics),
+ * built once per call to this outer factory from the same given connection.
  */
 export type ProductionHypothesisSimulationCall = Omit<
   SimulateHypothesisPipelineOptions,
-  'capabilities' | 'observationSource' | 'evaluator' | 'poolSize' | 'now' | 'deadline'
+  'capabilities' | 'glossary' | 'observationSource' | 'evaluator' | 'poolSize' | 'now' | 'deadline'
 >;
 
 /**
@@ -90,6 +94,7 @@ export function createProductionHypothesisSimulationRunner(
   dependencies: ProductionHypothesisSimulationDependencies,
 ): (call: ProductionHypothesisSimulationCall) => Promise<SimulateHypothesisPipelineResult> {
   const capabilities = createCapabilityQuery(dependencies.connection);
+  const glossary = createGlossaryQuery(dependencies.connection);
   const connectorConfigurations = createConnectorConfigurationRegistry(dependencies.connection);
   const observationSource = new HttpDeclarativeObservationSource({ capabilities, connectorConfigurations });
   const evaluator = new AnthropicHypothesisEvaluator({
@@ -101,6 +106,7 @@ export function createProductionHypothesisSimulationRunner(
     return runSimulateHypothesisPipeline({
       ...call,
       capabilities,
+      glossary,
       observationSource,
       evaluator,
       poolSize: dependencies.poolSize,

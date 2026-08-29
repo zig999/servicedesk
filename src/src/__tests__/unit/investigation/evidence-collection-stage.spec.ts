@@ -17,6 +17,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import type { Case } from '../../../case/case.js';
+import type { ConceptResolution, IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import { COLLECTION_STAGE_BUDGET_MS, collectEvidence } from '../../../investigation/evidence-collection-stage.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS } from '../../../investigation/evidence.js';
 import { FakeObservationSource } from '../../../investigation/fake-observation-source.adapter.js';
@@ -42,6 +43,16 @@ afterEach(() => {
 /** The subject and requester most tests reuse; neither is what any test is about. */
 const A_SUBJECT: Subject = { type: 'ont', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
 const A_REQUESTER = 'a-requester';
+
+/** A subject carrying several attribute-value pairs, pulled out only so its own test stays inside the standard's max-lines-per-function rule. */
+const MULTI_ATTRIBUTE_SUBJECT: Subject = {
+  type: 'person',
+  attributes: [
+    { attribute: 'id', value: '12345' },
+    { attribute: 'phone', value: '555-0100' },
+    { attribute: 'email', value: 'person@example.com' },
+  ],
+};
 
 /**
  * A minimally valid Case whose collection plan is exactly the given
@@ -120,6 +131,57 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
+/**
+ * Holds a description for whatever concept a test registers, resolving every other concept as
+ * unheld — the collection stage's own glossary upstream, standing in for the published
+ * glossary-query port. hold() takes the description directly, including the empty string, so a test
+ * can register a concept the glossary holds with no description (GlossaryService's own
+ * honest-empty-description reading for a legacy concept — task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics's
+ * own criterion 3) distinctly from a concept the glossary never held at all (nothing registered).
+ */
+class FakeGlossaryQuery implements IGlossaryQuery {
+  private readonly descriptions = new Map<string, string>();
+
+  public hold(concept: string, description: string): void {
+    this.descriptions.set(concept, description);
+  }
+
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    const description = this.descriptions.get(name);
+    return description === undefined ? { held: false, name } : { held: true, concept: { name, accepts: [], ttl: 60, description } };
+  }
+
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+  // task/glossary-query-http/list-concepts-query-extension): this file's own
+  // scenarios never call any of the three.
+  public async readVocabularyTerm(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.readVocabularyTerm is not scripted for this file');
+  }
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+  public async listConcepts(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
+  }
+}
+
+/** An IGlossaryQuery whose readConcept always rejects with the given failure — for the one test proving a genuine glossary rejection propagates rather than being swallowed as an empty description. */
+function rejectingGlossaryQuery(failure: Error): IGlossaryQuery {
+  return {
+    readConcept: () => Promise.reject(failure),
+    readVocabularyTerm: () => {
+      throw new Error('rejectingGlossaryQuery.readVocabularyTerm is not scripted for this test');
+    },
+    listVocabularyTerms: () => {
+      throw new Error('rejectingGlossaryQuery.listVocabularyTerms is not scripted for this test');
+    },
+    listConcepts: () => {
+      throw new Error('rejectingGlossaryQuery.listConcepts is not scripted for this test');
+    },
+  };
+}
+
 /** Holds every capability in the map and seeds the fake observation source to answer ok with `observed-${concept}` for each — for a test whose whole plan is expected to succeed. */
 function holdAndSeedOk(
   capabilities: FakeCapabilityQuery,
@@ -173,6 +235,33 @@ class DelayedUnheldCapabilityQuery implements ICapabilityQuery {
   // file's own scenarios never call listCapabilities.
   public async listCapabilities(): Promise<never> {
     throw new Error('DelayedUnheldCapabilityQuery.listCapabilities is not scripted for this file');
+  }
+}
+
+/**
+ * Answers "concept not held" for whatever concept it is asked about, but only after the given delay
+ * under fake timers — the glossary-side counterpart to DelayedUnheldCapabilityQuery above, for a
+ * proof that the capability read and the glossary-concept read settle together rather than one
+ * strictly before the other (this task's own recorded inference).
+ */
+class DelayedGlossaryQuery implements IGlossaryQuery {
+  public constructor(private readonly delayMs: number) {}
+
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    await new Promise<void>((resolve) => setTimeout(resolve, this.delayMs));
+    return { held: false, name };
+  }
+
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface: this file's own
+  // scenarios never call any of the three.
+  public async readVocabularyTerm(): Promise<never> {
+    throw new Error('DelayedGlossaryQuery.readVocabularyTerm is not scripted for this file');
+  }
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('DelayedGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+  public async listConcepts(): Promise<never> {
+    throw new Error('DelayedGlossaryQuery.listConcepts is not scripted for this file');
   }
 }
 
@@ -269,6 +358,14 @@ function expectedInputs(context: EvidenceContext): string {
  * stage's own attemptStartedAt and this ending being determined, so under
  * this file's own vi.useFakeTimers() discipline Date.now() reads the same
  * frozen instant twice (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
+ * fields defaults to [] and concept_description to '': every aCapability()
+ * fixture below defaults output_schema to the non-JSON literal 'output-schema'
+ * (fieldSemanticsOf answers [] for it) and every call site below defaults its
+ * glossary to a fresh FakeGlossaryQuery holding no concept at all — neither
+ * default is what this file's own snapshot-specific tests are about
+ * (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics),
+ * so those tests build their own expectation directly instead of overloading
+ * this shared helper with a fourth positional concern.
  */
 function expectedOkEvidence(
   context: EvidenceContext & { readonly capability: Capability },
@@ -286,6 +383,8 @@ function expectedOkEvidence(
     capability_name: context.capability.name,
     capability_version: context.capability.version,
     elapsed_ms: elapsedMs,
+    fields: [],
+    concept_description: '',
   };
 }
 
@@ -317,6 +416,8 @@ function expectedNonOkEvidence(
     capability_name: context.capability.name,
     capability_version: context.capability.version,
     elapsed_ms: elapsedMs,
+    fields: [],
+    concept_description: '',
   };
 }
 
@@ -340,6 +441,8 @@ function expectedUnavailableEvidence(context: EvidenceContext, resultDetail: str
     capability_name: '',
     capability_version: '',
     elapsed_ms: 0,
+    fields: [],
+    concept_description: '',
   };
 }
 
@@ -359,7 +462,7 @@ it('produces exactly one evidence per concept in the collection plan, deduplicat
   const now = 1_700_000_000_000;
 
   const result = await collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now, deadline: now + 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now, deadline: now + 20_000,
   });
 
   const base = { subject: A_SUBJECT, requester: A_REQUESTER, observedAt: new Date(now).toISOString() };
@@ -383,6 +486,7 @@ it('records a denied ending as the evidence result with an empty observation, ra
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -402,6 +506,7 @@ it('records a concept nothing currently answers as unavailable, carrying result_
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -430,6 +535,7 @@ it("reports the same result_detail, character for character, whichever of the tw
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities: stageCapabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -468,6 +574,7 @@ it.each([
       subject: A_SUBJECT,
       requester: A_REQUESTER,
       capabilities,
+      glossary: new FakeGlossaryQuery(),
       observationSource,
       now: 0,
       deadline: 20_000,
@@ -491,6 +598,7 @@ it('carries no result_detail for an unavailable ending the observation reported 
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -515,6 +623,7 @@ it('drops a result_detail the observation reported on a denied ending, leaving e
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -537,6 +646,7 @@ it("drops a result_detail the observation reported on its own timeout ending, di
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -570,6 +680,7 @@ async function collectEvidenceAtTheStageBudget(
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -610,6 +721,7 @@ it('records a timeout at a ceiling smaller than the nominal seven seconds when t
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 3_000,
@@ -634,6 +746,7 @@ it('clamps the effective bound to zero, timing out immediately, once the propaga
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 1_000,
     deadline: 500,
@@ -656,6 +769,7 @@ it("propagates the stage's own seven-second budget as observe-concept's remainin
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -676,6 +790,7 @@ it('propagates the smaller, deadline-derived ceiling as remaining-budget when th
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 3_000,
@@ -695,6 +810,7 @@ it('propagates zero as remaining-budget, never undefined or a negative value, on
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 1_000,
     deadline: 500,
@@ -720,6 +836,7 @@ it('carries the requester unmodified into every observe-concept call, never a su
     subject: A_SUBJECT,
     requester: 'requester-alpha',
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -733,21 +850,14 @@ it('passes a subject carrying several attribute-value pairs to every concept\'s 
   capabilities.hold(aCapability({ concept: 'concept-one' }));
   capabilities.hold(aCapability({ concept: 'concept-two' }));
   const observationSource = new RecordingObservationSource();
-  const multiAttributeSubject: Subject = {
-    type: 'person',
-    attributes: [
-      { attribute: 'id', value: '12345' },
-      { attribute: 'phone', value: '555-0100' },
-      { attribute: 'email', value: 'person@example.com' },
-    ],
-  };
   const theCase = aCase([{ name: 'h1', collects: ['concept-one', 'concept-two'] }]);
 
   await collectEvidence({
     case: theCase,
-    subject: multiAttributeSubject,
+    subject: MULTI_ATTRIBUTE_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -755,8 +865,8 @@ it('passes a subject carrying several attribute-value pairs to every concept\'s 
 
   expect(observationSource.subjectReceivedByConcept).toEqual(
     new Map([
-      ['concept-one', multiAttributeSubject],
-      ['concept-two', multiAttributeSubject],
+      ['concept-one', MULTI_ATTRIBUTE_SUBJECT],
+      ['concept-two', MULTI_ATTRIBUTE_SUBJECT],
     ]),
   );
 });
@@ -777,6 +887,7 @@ it('calls observe-concept exactly once for each concept in the plan, never more'
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 20_000,
@@ -807,7 +918,7 @@ it('runs every concept in parallel: a slow capability that has to time out never
 
   let settled = false;
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   }).then((evidences) => {
     settled = true;
     return evidences;
@@ -836,6 +947,7 @@ it('propagates a genuine rejection from observe-concept rather than swallowing i
       subject: A_SUBJECT,
       requester: A_REQUESTER,
       capabilities,
+      glossary: new FakeGlossaryQuery(),
       observationSource,
       now: 0,
       deadline: 20_000,
@@ -856,6 +968,7 @@ it("keeps the effective observation bound at the stage's own fixed seven-second 
     subject: A_SUBJECT,
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     now: 0,
     deadline: 10_000,
@@ -868,6 +981,226 @@ it("keeps the effective observation bound at the stage's own fixed seven-second 
     result: 'timeout',
     result_detail: `no observation within ${COLLECTION_STAGE_BUDGET_MS}ms`,
   });
+});
+
+// ------------ task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics
+
+/** An output schema declaring two top-level fields, one with a description, one without — pulled out only so its own test stays inside the standard's max-lines-per-function rule. */
+const TWO_FIELD_OUTPUT_SCHEMA = JSON.stringify({
+  type: 'object',
+  properties: {
+    'field-one': { type: 'string', description: 'the first field' },
+    'field-two': { type: 'number' },
+  },
+});
+
+it("records fields as one entry per top-level property the resolved capability's own output schema declares, carrying each key's own type and description exactly where the schema states them as strings", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept', output_schema: TWO_FIELD_OUTPUT_SCHEMA }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.fields).toEqual([
+    { name: 'field-one', type: 'string', description: 'the first field' },
+    { name: 'field-two', type: 'number' },
+  ]);
+});
+
+it("records concept_description exactly as the glossary held that concept's description at the moment of collection", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const glossary = new FakeGlossaryQuery();
+  glossary.hold('a-concept', "what a-concept means, exactly as the glossary holds it");
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.concept_description).toBe("what a-concept means, exactly as the glossary holds it");
+});
+
+it('records concept_description as the empty string, never a refusal, for a concept the glossary holds with none — a legacy concept registered before it declared one', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const glossary = new FakeGlossaryQuery();
+  glossary.hold('a-concept', ''); // held, but with no description — GlossaryService's own honest-empty reading for a legacy row
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.concept_description).toBe('');
+  expect(result[0]?.result).toBe('ok');
+});
+
+it('records concept_description on a denied ending too, not only where the observation itself answers ok — the description is snapshotted from resolving the concept, not from how the observation itself ended', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'denied' });
+  const glossary = new FakeGlossaryQuery();
+  glossary.hold('a-concept', 'what a-concept means');
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]).toMatchObject({ result: 'denied', concept_description: 'what a-concept means' });
+});
+
+it("records fields on a denied ending too, since the capability still resolved even though the observation itself was denied — fields is a fact of the resolved capability, not of how the observation ended", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(
+    aCapability({
+      concept: 'a-concept',
+      output_schema: JSON.stringify({ type: 'object', properties: { 'a-field': { type: 'string' } } }),
+    }),
+  );
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'denied' });
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]).toMatchObject({ result: 'denied', fields: [{ name: 'a-field', type: 'string' }] });
+});
+
+it("records concept_description as the empty string for a concept the glossary has never held at all, the same honest degradation as one registered with none", async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const glossary = new FakeGlossaryQuery(); // holds nothing at all — never registered, distinct from registered-with-none
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.concept_description).toBe('');
+});
+
+it("settles the capability read and the glossary-concept read together, so a concept nothing currently answers is timed by whichever of the two takes longer, never their sum", async () => {
+  const capabilities = new DelayedUnheldCapabilityQuery(300);
+  const glossary = new DelayedGlossaryQuery(100);
+  const observationSource = new FakeObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
+
+  const resultPromise = collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary,
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+  await vi.advanceTimersByTimeAsync(300);
+  const result = await resultPromise;
+
+  // Had the two reads settled one strictly after the other rather than together, this concept's
+  // own elapsed_ms would be 400 (300 + 100), not 300 (the larger of the two alone).
+  expect(result[0]).toMatchObject({ result: 'unavailable', elapsed_ms: 300 });
+});
+
+it('propagates a genuine rejection from the glossary-concept read rather than swallowing it as an empty description', async () => {
+  const capabilities = new FakeCapabilityQuery();
+  capabilities.hold(aCapability({ concept: 'a-concept' }));
+  const observationSource = new FakeObservationSource();
+  observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
+  const failure = new Error('glossary temporarily unavailable');
+  const glossary = rejectingGlossaryQuery(failure);
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+
+  await expect(
+    collectEvidence({
+      case: theCase,
+      subject: A_SUBJECT,
+      requester: A_REQUESTER,
+      capabilities,
+      glossary,
+      observationSource,
+      now: 0,
+      deadline: 20_000,
+    }),
+  ).rejects.toBe(failure);
+});
+
+it('records fields as an empty array for a concept whose capability never resolved, there being no output schema to read', async () => {
+  const capabilities = new FakeCapabilityQuery(); // holds nothing at all
+  const observationSource = new FakeObservationSource();
+  const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
+
+  const result = await collectEvidence({
+    case: theCase,
+    subject: A_SUBJECT,
+    requester: A_REQUESTER,
+    capabilities,
+    glossary: new FakeGlossaryQuery(),
+    observationSource,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  expect(result[0]?.result).toBe('unavailable');
+  expect(result[0]?.fields).toEqual([]);
 });
 
 // --------------------------------------------------------------- elapsed_ms
@@ -895,7 +1228,7 @@ it('carries a defined, non-negative integer elapsed_ms on every Evidence item, w
   ]);
 
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
   await vi.advanceTimersByTimeAsync(COLLECTION_STAGE_BUDGET_MS);
   const result = await resultPromise;
@@ -912,7 +1245,7 @@ it('measures elapsed_ms as exactly zero when a concept settles within the same i
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
 
   const result = await collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
 
   expect(result[0].elapsed_ms).toBe(0);
@@ -931,7 +1264,7 @@ it("measures elapsed_ms as each concept's own real collection duration, distinct
   const theCase = aCase([{ name: 'h1', collects: ['fast-concept', 'slow-concept'] }]);
 
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
   await vi.advanceTimersByTimeAsync(3_000);
   const result = await resultPromise;
@@ -949,7 +1282,7 @@ it("measures elapsed_ms from before the capability read for a concept nothing cu
   const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
 
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
   await vi.advanceTimersByTimeAsync(250);
   const result = await resultPromise;
@@ -966,7 +1299,7 @@ it('measures elapsed_ms for a denied ending as the real time observe-concept its
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
 
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
   await vi.advanceTimersByTimeAsync(1_500);
   const result = await resultPromise;
@@ -983,7 +1316,7 @@ it('measures elapsed_ms for an observation-reported unavailable ending as the re
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
 
   const resultPromise = collectEvidence({
-    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, observationSource, now: 0, deadline: 20_000,
+    case: theCase, subject: A_SUBJECT, requester: A_REQUESTER, capabilities, glossary: new FakeGlossaryQuery(), observationSource, now: 0, deadline: 20_000,
   });
   await vi.advanceTimersByTimeAsync(800);
   const result = await resultPromise;

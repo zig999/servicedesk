@@ -19,6 +19,8 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
+import type { ConceptResolution, IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
+import type { TermVocabulary } from '../../../glossary/terms.js';
 import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS, type Evidence } from '../../../investigation/evidence.js';
 import type { EvaluationOutcome, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
@@ -115,6 +117,26 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
+/** Stands in for the published glossary-query port, holding no concept at all — this file's own tests are about pipeline sequencing, never about the description snapshot itself (evidence-collection-stage.spec.ts is). */
+class FakeGlossaryQuery implements IGlossaryQuery {
+  public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
+    return { held: false, vocabulary, name };
+  }
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    return { held: false, name };
+  }
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+  // task/glossary-query-http/list-concepts-query-extension): this file's own
+  // scenarios never call either.
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+  public async listConcepts(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
+  }
+}
+
 /** Answers the given fixed outcome for every criterion, immediately — a stand-in for a fast, always-decided evaluator. */
 class ImmediateHypothesisEvaluator implements IHypothesisEvaluator {
   public constructor(private readonly outcome: EvaluationOutcome) {}
@@ -149,7 +171,12 @@ class ScriptedAssessmentConsolidator implements IAssessmentConsolidator {
   }
 }
 
-/** The Evidence a held capability's ok observation assembles for `concept`, at now=0 under frozen fake timers. */
+/**
+ * The Evidence a held capability's ok observation assembles for `concept`, at now=0 under frozen
+ * fake timers. fields is always [{ name: 'a-field', type: 'string' }]: every aCapability() fixture
+ * in this file declares that exact output schema. concept_description is always '': FakeGlossaryQuery
+ * above holds no concept at all.
+ */
 function expectedOkEvidence(concept: string, observation: string): Evidence {
   return {
     concept,
@@ -162,6 +189,8 @@ function expectedOkEvidence(concept: string, observation: string): Evidence {
     capability_name: `capability-for-${concept}`,
     capability_version: '1.0.0',
     elapsed_ms: 0,
+    fields: [{ name: 'a-field', type: 'string' }],
+    concept_description: '',
   };
 }
 
@@ -192,6 +221,7 @@ function baseOptions(overrides: Partial<InvestigationPipelineOptions> = {}): Inv
     case: aCase(),
     requester: A_REQUESTER,
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource,
     evaluator: new ImmediateHypothesisEvaluator(BASE_EVALUATOR_OUTCOME),
     poolSize: 4,

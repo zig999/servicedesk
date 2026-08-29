@@ -16,14 +16,31 @@
 // one concept's own attempt exactly as connector-http-issuer.ts's own
 // issueConnectorHttpCall already reads it around one HTTP call, and it plays
 // no part in any deadline or budget decision this module makes.
+//
+// task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics:
+// every Evidence this stage produces also carries fields — the resolved
+// capability's own output schema read structurally, field-semantics.ts's own
+// fieldSemanticsOf, a third reader deliberately independent of
+// citation-validation.ts's declaredFieldsOf and
+// capability-input-schema-shape.ts's declaredInputSchemaShape — and
+// concept_description, read once per concept from the glossary-query port
+// this stage now also takes, alongside the capability-registry read, rather
+// than at judgment time (rules the judgment stage's own sibling task closes:
+// judgment reads only this snapshot afterward). Both reads settle together,
+// through Promise.all, since neither depends on the other's answer; a
+// concept nothing currently answers still gets its own concept_description
+// snapshotted (the glossary and the capability registry are two independent
+// vocabularies), but carries no fields at all, there being no schema to read.
 
 import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import type { Capability } from '../capability-registry/capability.js';
 import { collectionPlan } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
 import { CapabilityNotResolvedForObservationError } from '../errors/capability-not-resolved-for-observation.error.js';
+import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import { DEFAULT_EVIDENCE_TTL_SECONDS, type Evidence } from './evidence.js';
 import type { EvidenceResult } from './evidence-result.js';
+import { fieldSemanticsOf, type FieldSemantics } from './field-semantics.js';
 import type { IObservationSource, ObservationOutcome, Subject } from './observation-source.port.js';
 
 /** The collection stage's own nominal budget inside the declared total deadline, in milliseconds (rules/investigation/collection-has-its-own-budget-within-the-total). */
@@ -38,6 +55,8 @@ export type CollectEvidenceOptions = {
   /** The requester's own authorization scope, passed straight through to every observe-concept call, never substituted (rules/investigation/collection-runs-in-the-requester-scope). */
   readonly requester: string;
   readonly capabilities: ICapabilityQuery;
+  /** The published glossary-query read this stage resolves each concept's own description through, once per concept, at the moment of collection (domain/investigation/evidence, task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics) — never re-read afterward. */
+  readonly glossary: IGlossaryQuery;
   readonly observationSource: IObservationSource;
   /** The instant this stage starts, as epoch milliseconds. */
   readonly now: number;
@@ -57,12 +76,12 @@ export type CollectEvidenceOptions = {
  * (rules/investigation/no-stage-aborts-on-its-deadline).
  */
 export async function collectEvidence(options: CollectEvidenceOptions): Promise<readonly Evidence[]> {
-  const { case: theCase, subject, requester, capabilities, observationSource, now, deadline } = options;
+  const { case: theCase, subject, requester, capabilities, glossary, observationSource, now, deadline } = options;
   const stageCeilingMs = Math.max(0, Math.min(COLLECTION_STAGE_BUDGET_MS, deadline - now));
   const concepts = collectionPlan(theCase);
   return Promise.all(
     concepts.map((concept) =>
-      collectOneEvidence({ concept, subject, requester, capabilities, observationSource, stageCeilingMs, now }),
+      collectOneEvidence({ concept, subject, requester, capabilities, glossary, observationSource, stageCeilingMs, now }),
     ),
   );
 }
@@ -72,46 +91,47 @@ type CollectOneEvidenceOptions = {
   readonly subject: Subject;
   readonly requester: string;
   readonly capabilities: ICapabilityQuery;
+  readonly glossary: IGlossaryQuery;
   readonly observationSource: IObservationSource;
   readonly stageCeilingMs: number;
   readonly now: number;
 };
 
 /**
- * Resolves one concept's evidence: reads its capability, then — only where
- * one is currently held — races observe-concept against the smaller of its
- * own declared timeout and the stage's own ceiling, and hands observe-concept
- * itself the stage's own ceiling as its remaining-budget bound, so an
- * implementer never lets the capability's own declared timeout govern the
- * call past what the stage's own seven-second-derived budget still allows
- * (rules/investigation/collection-has-its-own-budget-within-the-total). The
- * local race stays the stage's own backstop regardless of whether a given
- * implementer honors that bound. A concept nothing currently answers never
- * reaches the race at all, since there is nothing to call
- * (domain/investigation/evidence, domain/investigation/evidence-result).
+ * Resolves one concept's evidence: reads its capability and its glossary
+ * description together (neither answer depends on the other), then — only
+ * where a capability is currently held — races observe-concept against the
+ * smaller of its own declared timeout and the stage's own ceiling, and hands
+ * observe-concept itself the stage's own ceiling as its remaining-budget
+ * bound, so an implementer never lets the capability's own declared timeout
+ * govern the call past what the stage's own seven-second-derived budget
+ * still allows (rules/investigation/collection-has-its-own-budget-within-the-total).
+ * The local race stays the stage's own backstop regardless of whether a
+ * given implementer honors that bound. A concept nothing currently answers
+ * never reaches the race at all, since there is nothing to call
+ * (domain/investigation/evidence, domain/investigation/evidence-result) —
+ * but its own concept_description is still snapshotted, since the glossary
+ * and the capability registry are two independent vocabularies
+ * (domain/investigation/evidence, task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics).
  * attemptStartedAt marks the start of this one concept's own collection
- * attempt — before the capability read, since resolving whether anything can
- * even be called is part of that attempt — and every ending below is timed
- * against it (domain/investigation/evidence's own elapsed_ms).
+ * attempt — before either read, since resolving whether anything can even be
+ * called is part of that attempt — and every ending below is timed against
+ * it (domain/investigation/evidence's own elapsed_ms).
  */
 async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<Evidence> {
-  const { concept, subject, requester, capabilities, observationSource, stageCeilingMs, now } = options;
+  const { concept, subject, requester, capabilities, glossary, observationSource, stageCeilingMs, now } = options;
   const inputs = serializeInputs(concept, subject, requester);
   const observedAt = new Date(now).toISOString();
   const attemptStartedAt = Date.now();
-  const resolution = await capabilities.readCapability(concept);
+  const [resolution, conceptDescription] = await Promise.all([
+    capabilities.readCapability(concept),
+    conceptDescriptionOf(glossary, concept),
+  ]);
   if (!resolution.held) {
-    return unavailableEvidence({ concept, inputs, observedAt, attemptStartedAt });
+    return unavailableEvidence({ concept, inputs, observedAt, attemptStartedAt, conceptDescription });
   }
   const capability = resolution.capability;
-  const base: EvidenceBase = {
-    concept,
-    inputs,
-    observedAt,
-    origin: capability.connector,
-    capabilityName: capability.name,
-    capabilityVersion: capability.version,
-  };
+  const base = resolvedBaseOf({ concept, inputs, observedAt, capability, conceptDescription });
   const effectiveBoundMs = effectiveBoundMsFor(capability, stageCeilingMs);
   const outcome = await raceObservation(
     observationSource.observeConcept({ concept, subject, requester, remainingBudgetMs: stageCeilingMs }),
@@ -120,9 +140,36 @@ async function collectOneEvidence(options: CollectOneEvidenceOptions): Promise<E
   return settledEvidence({ base, outcome, effectiveBoundMs, attemptStartedAt });
 }
 
+/** The EvidenceBase for a concept whose capability currently resolves: the capability's own connector, name and version, its output schema's own field semantics (domain/investigation/field-semantics), and the concept_description already read alongside it — split out of collectOneEvidence above only to keep that function within the standard's own max-lines-per-function rule (MNT-01); the values themselves are exactly what collectOneEvidence read before this split (this delivery's own inference — the extraction changes nothing but where the lines are counted). */
+function resolvedBaseOf(args: {
+  readonly concept: string;
+  readonly inputs: string;
+  readonly observedAt: string;
+  readonly capability: Capability;
+  readonly conceptDescription: string;
+}): EvidenceBase {
+  const { concept, inputs, observedAt, capability, conceptDescription } = args;
+  return {
+    concept,
+    inputs,
+    observedAt,
+    origin: capability.connector,
+    capabilityName: capability.name,
+    capabilityVersion: capability.version,
+    fields: fieldSemanticsOf(capability.output_schema),
+    conceptDescription,
+  };
+}
+
 /** How long this one concept's own collection attempt has taken so far, in whole milliseconds, measured from attemptStartedAt to now (domain/investigation/evidence's own elapsed_ms). */
 function elapsedSince(attemptStartedAt: number): number {
   return Date.now() - attemptStartedAt;
+}
+
+/** The concept's own declared description, exactly as the glossary holds it right now — read once, at the start of this concept's own collection attempt (domain/investigation/evidence). The empty string where the glossary does not hold this concept at all, or holds it with none, the same honest-degradation reading GlossaryService.concepts() already applies to an absent stored description. */
+async function conceptDescriptionOf(glossary: IGlossaryQuery, concept: string): Promise<string> {
+  const resolution = await glossary.readConcept(concept);
+  return resolution.held ? resolution.concept.description : '';
 }
 
 /** The serialized call this stage actually made to observe the concept, pinned for replay as recorded bytes — concept, subject and requester together, exactly the three arguments observe-concept itself takes. */
@@ -170,6 +217,10 @@ type EvidenceBase = {
   readonly origin: string;
   readonly capabilityName: string;
   readonly capabilityVersion: string;
+  /** The producing capability's own declared field-by-field semantics, snapshotted at this moment (domain/investigation/evidence, domain/investigation/field-semantics) — empty for a concept nothing currently answers, since there is no schema to read. */
+  readonly fields: readonly FieldSemantics[];
+  /** The concept's own declared description, snapshotted at this moment (domain/investigation/evidence) — the empty string where the glossary holds none, or does not hold this concept at all. */
+  readonly conceptDescription: string;
 };
 
 type EvidenceEnding = {
@@ -180,7 +231,7 @@ type EvidenceEnding = {
   readonly elapsedMs: number;
 };
 
-/** Assembles one Evidence from what this stage always knows about the concept plus one of the four evidence-result endings — the empty string for observation standing for the recorded absence of data itself where the ending is not ok (domain/investigation/evidence, domain/investigation/evidence-result). */
+/** Assembles one Evidence from what this stage always knows about the concept plus one of the four evidence-result endings — the empty string for observation standing for the recorded absence of data itself where the ending is not ok (domain/investigation/evidence, domain/investigation/evidence-result). fields and concept_description travel from base unchanged, on every ending alike: they are this concept's own snapshotted semantics, not a fact of how the observation itself ended (domain/investigation/evidence, domain/investigation/field-semantics). */
 function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
   return {
     concept: base.concept,
@@ -194,6 +245,8 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
     capability_name: base.capabilityName,
     capability_version: base.capabilityVersion,
     elapsed_ms: ending.elapsedMs,
+    fields: base.fields,
+    concept_description: base.conceptDescription,
   };
 }
 
@@ -211,12 +264,15 @@ function evidenceOf(base: EvidenceBase, ending: EvidenceEnding): Evidence {
  * result_detail than the port's own later resolution would for the same
  * concept. elapsed_ms is timed from attemptStartedAt to this determination —
  * the capability read is the whole of this concept's own attempt where
- * nothing is held to observe with.
+ * nothing is held to observe with. fields is always empty here, there being
+ * no capability output schema to read; conceptDescription still carries
+ * whatever the glossary read already answered, since the two reads are
+ * independent (domain/investigation/evidence, task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics).
  */
 function unavailableEvidence(options: UnavailableEvidenceOptions): Evidence {
-  const { concept, inputs, observedAt, attemptStartedAt } = options;
+  const { concept, inputs, observedAt, attemptStartedAt, conceptDescription } = options;
   return evidenceOf(
-    { concept, inputs, observedAt, origin: '', capabilityName: '', capabilityVersion: '' },
+    { concept, inputs, observedAt, origin: '', capabilityName: '', capabilityVersion: '', fields: [], conceptDescription },
     {
       result: 'unavailable',
       resultDetail: new CapabilityNotResolvedForObservationError(concept).name,
@@ -230,6 +286,7 @@ type UnavailableEvidenceOptions = {
   readonly inputs: string;
   readonly observedAt: string;
   readonly attemptStartedAt: number;
+  readonly conceptDescription: string;
 };
 
 /**

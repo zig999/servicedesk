@@ -8,6 +8,7 @@
 // port's answer, since none of those three alone holds the whole record.
 
 import type { EvidenceResult } from './evidence-result.js';
+import type { FieldSemantics } from './field-semantics.js';
 
 /**
  * The freshness tolerance a collected concept declares in the glossary
@@ -54,4 +55,25 @@ export type Evidence = {
    * return, never left off.
    */
   readonly elapsed_ms: number;
+  /**
+   * The producing capability's own declared field-by-field semantics,
+   * snapshotted from its output schema at the exact moment this item was
+   * collected — never re-read afterward (domain/investigation/evidence,
+   * domain/investigation/field-semantics). Empty for a concept whose
+   * capability never resolved, since there is no schema to read
+   * (domain/investigation/evidence's own "a concept whose capability never
+   * resolved snapshots no fields at all").
+   */
+  readonly fields: readonly FieldSemantics[];
+  /**
+   * The concept's own declared description, exactly as the glossary held it
+   * at the moment this item was collected — never re-read afterward
+   * (domain/investigation/evidence). The empty string for a concept
+   * collected before it declared one, or for one the glossary does not hold
+   * at all, the same honest-degradation reading GlossaryService.concepts()
+   * already keeps for an absent stored description
+   * (domain/investigation/evidence's own "a concept collected before it
+   * declared a description snapshots an empty one").
+   */
+  readonly concept_description: string;
 };

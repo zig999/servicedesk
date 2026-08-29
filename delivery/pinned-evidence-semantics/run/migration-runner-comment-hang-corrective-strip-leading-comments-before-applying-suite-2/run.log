@@ -1,0 +1,1086 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 6s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> servicedeskn1@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: failed =====
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/src
+
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (43 tests | 7 failed) 158570ms
+   ✓ assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects  328ms
+   ✓ answers absence, not a rejection, for a slug and version nothing was ever stored under 12ms
+   ✓ returns every case currently held, with no filter narrowing it, so all three freshly created cases show up on one wide-enough page  329ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares — the given limit and offset echoed back, the page itself held to that limit even though more cases exist, and pageCount computed from total and limit rather than hardcoded 189ms
+   ✓ answers an empty page — data: [] — rather than an error or an absent value, for a page far beyond anything the table could hold 32ms
+   ✓ returns every version the named case currently holds, by its own number and lifecycle state, ordered by version regardless of how many of them have since been released 290ms
+   ✓ excludes another case's own versions from the page, naming only the slug it was asked for 231ms
+   × answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own versions — the given limit and offset echoed back, the page itself held to that limit even though the case holds more versions, and pageCount computed from total and limit 10184ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ refuses, through CaseNotFoundError naming the slug, a slug that names no case at all 150ms
+   × answers an empty page, never CaseNotFoundError, for a case that currently holds no version at all because the only one it ever held was discarded — its own identity row survives that, told apart here from a slug naming no case at all 50014ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ returns every hypothesis the named case has ever originated, by its own bare name, regardless of how many revisions each one holds 280ms
+   ✓ excludes another case's own hypotheses from the page, naming only the slug it was asked for 247ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own hypotheses — the given limit and offset echoed back, the page itself held to that limit even though the case holds more hypotheses, and pageCount computed from total and limit 241ms
+   ✓ refuses, through CaseNotFoundError naming the slug, a slug that names no case at all 15ms
+   ✓ answers an empty page, never CaseNotFoundError, for a case that has originated no hypothesis yet 144ms
+   ✓ still returns a hypothesis originated but never placed into any manifest, and one placed into the case's own current version and then removed from it — case membership does not depend on that version's own manifest 214ms
+   ✓ returns every revision the named hypothesis currently holds, by its own full content, each revision's own collects grouped to it alone and never conflated with another revision of the same hypothesis 282ms
+   ✓ excludes another hypothesis's own revisions from the page, within the same case, naming only the hypothesis name it was asked for 209ms
+   ✓ excludes a different case's own revisions of a hypothesis sharing the same name, naming only the slug it was asked for 217ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named hypothesis's own revisions — the given limit and offset echoed back, the page itself held to that limit even though the hypothesis holds more revisions, and pageCount computed from total and limit 218ms
+   ✓ refuses, through CaseNotFoundError naming the slug, a slug that names no case at all 13ms
+   ✓ refuses, through CaseNotFoundError naming the slug, a known case that has never originated a hypothesis by the given name 135ms
+   ✓ assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded  312ms
+   × copies a named source version's manifest into the new draft's own manifest, entry for entry 10231ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × copies the case's own latest released version's manifest when naming no source version at all 10220ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × starts a case's very first draft with an empty manifest, since no released version exists yet to copy from 10145ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × refuses a second draft for a case that already holds one in draft state 40228ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ lets only one of two concurrent draft-creation calls for the same case succeed, the other refused through CaseAlreadyHasDraftError 183ms
+   ✓ creates a hypothesis's own identity row only the first time its name is used for a case, never a second one for a name already held 159ms
+   ✓ numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis 182ms
+   ✓ refuses placing a revision at a manifest position already occupied by a different hypothesis in the same version 206ms
+   ✓ removes only the named manifest entry, never the hypothesis-revision it referenced 202ms
+   ✓ records the instant of release, and a second call to release leaves that instant unchanged 284ms
+   ✓ leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it  398ms
+   ✓ removes a draft version and its own manifest entries, without deleting any hypothesis-revision 215ms
+   × leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's 10132ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ persists the corrected title, when_to_use, subject, fallback and consolidation_register attributes against a version in draft state  436ms
+   ✓ leaves everything beyond its own five declared attributes untouched — the manifest, the version number and the draft state itself 278ms
+   ✓ refuses a version already released, through CaseVersionNotDraftError, and leaves its five attributes exactly as they were — the guard runs before any write is attempted  344ms
+   ✓ refuses, through CaseNotFoundError naming the slug, a slug that names no case at all 42ms
+   ✓ refuses, through CaseNotFoundError naming both the slug and the version, a known case that never held the given version number 148ms
+   ✓ leaves nothing behind — no cases row, no case_versions row — when the draft-row insert violates a real foreign key on an unregistered fallback outcome, even though the case-identity insert runs first 50ms
+   ✓ leaves no hypothesis-revision behind when one of its own collects violates a real foreign key on an unregistered concept 194ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (56 tests) 48ms
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (30 tests) 45ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (63 tests) 39ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (30 tests) 40ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (30 tests) 28ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (41 tests) 83ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (37 tests) 549ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (25 tests) 16ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (6 tests) 5840ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  883ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env  854ms
+   ✓ persists real, non-zero cost and durations for the judgment and consolidation calls, now that the Anthropic adapters themselves report real usage and elapsed_ms  972ms
+   ✓ reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture  950ms
+   ✓ calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one  898ms
+   ✓ answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it  681ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (30 tests) 22ms
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests | 23 skipped) 20018ms
+   ↓ applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not
+   ↓ persists and reads back a full case, hypothesis revision, resolution, referral and its collects
+   ↓ persists and reads back a full investigation together with its evidence, evaluation, citation and subject-attribute-value
+   ↓ persists and reads back concept, subject-type, subject-attribute, action, outcome, recipient and capability rows the suite seeded once
+   ↓ holds every domain column NOT NULL except exactly the six columns the model declares optional
+   ↓ refuses storing a case version whose title is absent
+   ↓ accepts and stores an investigation with no ticket_ref, one of the five attributes the model declares optional
+   ↓ accepts exactly the three values verdict declares and refuses one it does not
+   ↓ accepts exactly the four values evidence-result declares and refuses one it does not
+   ↓ accepts exactly the three values evaluation-reason declares and refuses one it does not
+   ↓ accepts exactly the two values capability-nature declares and refuses one it does not
+   ↓ accepts exactly the two values consolidation-register declares, besides its own absence, and refuses one it does not
+   ↓ declares each of the five enumeration columns as plain text, not a native Postgres enum type
+   ↓ refuses a case version whose subject names a subject type the glossary does not hold
+   ↓ refuses a non-numeric value for a case version's integer-typed version column
+   ↓ shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts
+   ↓ refuses a second evidence row for one investigation under a concept it already collected
+   ↓ refuses a second evaluation row for one investigation under a hypothesis already judged
+   ↓ refuses a second case stored under a slug already in use
+   ↓ refuses storing the same case version a second time under its own slug and version
+   ↓ refuses a second manifest entry of one case version sharing an already-used position
+   ↓ refuses a second hypothesis of one case sharing an already-used name
+   ↓ leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests | 2 skipped) 20019ms
+   ↓ writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment
+   ↓ imports @anthropic-ai/sdk nowhere across every file this test's own composition reaches, so the run above never made or could make a call to the Anthropic API
+ ❯ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests | 31 skipped) 20016ms
+   ↓ stores a draft case_versions row with released_at absent
+   ↓ stores a released case_versions row with released_at present
+   ↓ refuses a case_versions row whose state names a value outside draft or released
+   ↓ keeps cases.next_version writable to a value independent of any stored case_versions row, proving it is a stored counter rather than one computed from MAX(version)
+   ↓ defaults a newly created case row (no case_versions row at all) to next_version 1
+   ↓ refuses inserting a second draft case_versions row for a case that already has one
+   ↓ permits two released case_versions rows to coexist for the same case, since the one-draft constraint is scoped to draft state alone
+   ↓ shapes hypotheses as exactly case_slug and name, carrying no content column
+   ↓ stores and reads back a hypothesis by its identity alone
+   ↓ refuses a second hypothesis stored under an already-used (case_slug, name) key
+   ↓ stores and reads back a hypothesis revision's own criterion and resolution
+   ↓ refuses a second row under an already-used (case_slug, hypothesis_name, revision) key
+   ↓ leaves an already-stored hypothesis revision's own columns unchanged after an ordinary UPDATE attempts to alter them
+   ↓ stores and reads back the concepts one hypothesis revision collects, referencing that exact revision
+   ↓ refuses a collect row naming a revision that was never stored
+   ↓ stores and reads back a manifest entry's hypothesis, revision and position
+   ↓ refuses a second manifest entry at a position already used within the same case version's manifest
+   ↓ permits the same position to be reused across two different case versions of the same case, since uniqueness is scoped per version
+   ↓ leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them
+   ↓ changes an ordinary column of a still-draft case_versions row on UPDATE
+   ↓ lets an UPDATE transition a draft case_versions row to released
+   ↓ drops hypothesis_collects (migration 0004) entirely, leaving no table for any old row to have been carried into
+   ↓ arrives as the next-numbered script after 0008, with 0006's own file still holding its original, unconditional rule text
+   ↓ refuses to alter a manifest entry belonging to a released case version
+   ↓ refuses to delete a manifest entry belonging to a released case version
+   ↓ updates a draft case version's own manifest entry ordinarily
+   ↓ deletes a draft case version's own manifest entry ordinarily
+   ↓ refuses to delete a released case_versions row
+   ↓ permits deleting a draft case_versions row that carries no manifest entries
+   ↓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column
+   ↓ defaults a newly-inserted case_versions row that does not name its own state to 'released', since the column's own DEFAULT is kept permanently rather than dropped after backfill — every currently-shipped write path that inserts without naming state depends on this
+ ❯ src/__tests__/integration/seed.spec.ts (12 tests) 62995ms
+   ✓ holds both non-conclusion outcomes, having run against a database this file had itself confirmed lacked them beforehand 8ms
+   ✓ holds exactly the fixture's own outcome names, the case-specific ones and the two non-conclusion ones together 8ms
+   ✓ holds exactly the fixture's own subject-type name, the one the curated case declares as its subject 6ms
+   ✓ holds exactly the fixture's own subject-attribute name, even though the curated case document names no subject attribute of its own 7ms
+   ✓ holds exactly the fixture's own action names, every one the curated case's hypotheses and fallback declare 9ms
+   ✓ holds exactly the fixture's own recipient names, every one the curated case's hypotheses and fallback declare 8ms
+   ✓ holds every concept the curated case collects, each with the subject types it accepts and its ttl, matching the fixture exactly 23ms
+   ✓ registers one read-only capability, with every attribute the fixture declares, for each of the two concepts the curated case collects 9ms
+   ✓ the case is stored, once seed.ts has run against a database this file had confirmed lacked it beforehand 27ms
+   ✓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names  563ms
+   ✓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded  864ms
+   ✓ holds no second case version, having run seed.ts a second time in a row against the version it already released 39ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 11ms
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test) 20887ms
+   ✓ answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline  10432ms
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts (11 tests | 1 failed) 22570ms
+   ✓ originates a never-named hypothesis's own identity and its first revision, numbered 1 300ms
+   ✓ numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered  324ms
+   ✓ refuses revising with an empty collects list, naming that the revision collects no concept, and never reaches the store 131ms
+   ✓ refuses revising with a collected concept the glossary does not currently hold, naming the concept, and never reaches the store 177ms
+   ✓ refuses revising with a collected concept that does not accept the declared subject type, naming both the concept and the subject type, and never reaches the store 179ms
+   ✓ changes no version's manifest on its own — an existing manifest entry stays exactly as it was, and the newly originated revision is placed nowhere 213ms
+   ✓ refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case that has never held any version at all, writing no hypothesis or revision row 169ms
+   × refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only version is already released rather than in draft state, writing no hypothesis or revision row 10071ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only draft version has already been discarded, writing no hypothesis or revision row  495ms
+   ✓ succeeds for a case that holds both an already-released earlier version and a currently open draft version — the draft gate finds the draft rather than being confused by the case's own release history  341ms
+   ✓ excludes an implementation that originates a hypothesis identity and revision for a case holding no draft version at all, without refusing 169ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (25 tests) 19ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (63 tests) 17ms
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests | 4 failed) 65165ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  440ms
+   × writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column 15006ms
+     → Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  508ms
+   × lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError 15002ms
+     → Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   × does not refuse a write for an id not already stored 12186ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × answers undefined, not a rejection, for an id nothing was ever written under 10049ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with  597ms
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  359ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  358ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  365ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored 291ms
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (12 tests) 1171ms
+   ✓ updates a capability already referenced by investigation_evidence without failing, and the reference still resolves to the updated identity afterward  303ms
+   ✓ registers a brand-new identity while a different capability remains referenced by investigation_evidence, leaving the referenced row exactly as it was  360ms
+ ✓ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (10 tests) 778ms
+   ✓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows  415ms
+ ✓ src/__tests__/unit/http/register-capability.routes.spec.ts (26 tests) 179ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (32 tests) 24ms
+ ❯ src/__tests__/integration/factories/simulate-case-server.factory.spec.ts (3 tests | 1 failed) 42058ms
+   ✓ reaches simulate-case's own controller through createDiagnoseHttpServer's real composition and answers 200 with the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a released-state pinned case version  782ms
+   ✓ answers 200 with the complete record likewise for a draft-state pinned case version, never released  390ms
+   × writes no investigation row for the requester a real simulate-case call ran under, even though the call itself succeeds 40015ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (20 tests) 18ms
+ ✓ src/__tests__/unit/http/test-connector.routes.spec.ts (16 tests) 232ms
+ ❯ src/__tests__/integration/case/release.operation.spec.ts (5 tests | 2 failed) 62138ms
+   ✓ refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, naming both structural violations together, leaving the version in draft state with no release recorded 287ms
+   ✓ refuses releasing a draft whose collected concept both rejects the declared subject type and answers no capability, naming both coherence violations together, leaving the version in draft state with no release recorded  426ms
+   ✓ marks a draft that holds against every rule released, recording the instant of release  657ms
+   × refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged 10455ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed 40312ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/case/manifest-composition.operations.spec.ts (12 tests | 1 failed) 23337ms
+   ✓ places a hypothesis-revision at a position not yet occupied in a draft manifest 278ms
+   ✓ refuses placing a hypothesis-revision at a position already occupied by a different hypothesis 248ms
+   ✓ does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead 276ms
+   × refuses placing a hypothesis-revision against a version that is not in draft state 10190ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ refuses removing a manifest entry against a version that is not in draft state  448ms
+   ✓ refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis  364ms
+   ✓ never deletes the hypothesis-revision a removed manifest entry referenced  374ms
+   ✓ swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either  381ms
+   ✓ refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them 290ms
+   ✓ does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry 231ms
+   ✓ refuses placing a hypothesis-revision against a version that was never stored 13ms
+   ✓ lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError 239ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (26 tests) 49ms
+ ✓ src/__tests__/unit/errors/status-map.spec.ts (28 tests) 11ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (20 tests) 19ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 312ms
+ ❯ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts (5 tests | 5 skipped) 40028ms
+   ↓ reaches simulate-hypothesis's own controller through createDiagnoseHttpServer's real composition and answers 200 with exactly evidence, one evaluation and durations — collecting only the named hypothesis's own revision's concept, never the case's other hypothesis's own concept
+   ↓ collects the other hypothesis's own concept instead when that one is named, proving the real composition's narrowing follows the given hypothesis rather than a fixed one
+   ↓ refuses with 400 a simulate-hypothesis request whose body names no hypothesis at all, at the wire, before the route ever reaches its own controller
+   ↓ refuses with 404 reporting HypothesisNotInManifestError, for a hypothesis name absent from the pinned case version manifest
+   ↓ writes no investigation row for the requester a real simulate-hypothesis call ran under, even though the call itself succeeds
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 1950ms
+   ✓ writes two independent investigation records for two calls sharing the same case, subject, narrative and requester  477ms
+   ✓ collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result  386ms
+   ✓ passes the given requester straight through to the observation source, substituting none of its own  409ms
+   ✓ reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake  347ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source  328ms
+ ✓ src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts (18 tests) 155ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 3503ms
+   ✓ answers a case written directly to the real store, matching what is currently stored, with no publish step in between  830ms
+   ✓ refuses through the real wiring a case document declaring no hypothesis, naming the structural violation  309ms
+   ✓ refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table  1052ms
+   ✓ replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table  1039ms
+ ✓ src/__tests__/unit/factories/simulate.factory.spec.ts (14 tests) 11ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 15ms
+ ✓ src/__tests__/unit/http/diagnose.controller.spec.ts (13 tests) 19ms
+ ❯ src/__tests__/integration/case/create-draft.operation.spec.ts (6 tests | 3 failed) 71466ms
+   × assigns a new draft a version number greater than every version the case has ever held, including one later discarded 10199ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × refuses a second draft creation while the case already holds one open, naming that a draft already exists 40181ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ lets only one of two concurrent draft creations for the same case succeed, the other refused through CaseAlreadyHasDraftError 179ms
+   ✓ creates a draft with an empty manifest when naming no source version and the case holds no released version yet 150ms
+   × copies the case's own latest released version's manifest when a draft is created naming no source version 10167ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ copies the named historical version's own manifest instead of the case's latest released version, when a draft is created naming a source version  586ms
+ ❯ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts (2 tests | 1 failed) 21779ms
+   × reads back each of two released hypothesis-revisions' own collects exactly as given, never empty, even after an ordinary DELETE against those exact rows is attempted 10851ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   ✓ releases a new draft that inherits an earlier released version's own manifest without refusing through the structural "collects no concept" problem, even though an ordinary DELETE against the inherited revision's own collects row was already attempted  926ms
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 30655ms
+   ✓ reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data  452ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (20 tests) 40ms
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests | 1 failed) 50366ms
+   ✓ leaves the cases table holding no row for the slug it wrote, once it releases the isolated connection it wrote through 79ms
+   ✓ lets a first integration test write a case under a slug a second test in this run will also write, without a unique-key collision 25ms
+   ✓ lets a second integration test write a case under the same slug the first one already wrote, in the same suite run 27ms
+   ✓ lets a first integration test write an investigation under an id a second test in this run will also write, without a primary-key collision 61ms
+   ✓ lets a second integration test write an investigation under the same id the first one already wrote, in the same suite run 49ms
+   ✓ writes a case under a slug the next test below reads back — this pair proves criterion 4 and is the one place in this file where a test's own pass depends on the previous one having already run, disclosed in this file's own header 30ms
+   ✓ observes no row for the slug the previous test wrote, once that test had already released its own connection 21ms
+   ✓ still refuses a second case written under an already-used slug within one still-open isolated connection, since isolation scopes visibility rather than disabling constraints 26ms
+   ✓ resolves release() without error when nothing was ever begun or written on the checked-out connection 9ms
+   ✓ resolves release() without error when the caller already sent its own ROLLBACK before calling it 21ms
+   × keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release 40005ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ src/__tests__/unit/http/register-connector.routes.spec.ts (11 tests) 143ms
+ ✓ src/__tests__/unit/http/simulate-case.controller.spec.ts (11 tests) 15ms
+ ✓ src/__tests__/unit/factories/production-simulate.factory.spec.ts (12 tests) 17ms
+ ✓ src/__tests__/unit/http/revise-hypothesis.routes.spec.ts (13 tests) 148ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (16 tests) 35ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (29 tests) 28ms
+ ✓ src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts (9 tests) 22ms
+ ✓ src/__tests__/unit/case/case-input-requirements.spec.ts (14 tests) 18ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (10 tests) 9ms
+ ✓ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests) 1170ms
+   ✓ answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached  747ms
+   ✓ answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection  421ms
+ ✓ src/__tests__/integration/case/discard.operation.spec.ts (6 tests) 1412ms
+   ✓ leaves a released version and its manifest entry in place after refusing to discard it  395ms
+ ✓ src/__tests__/unit/http/list-case-versions.routes.spec.ts (16 tests) 158ms
+ ✓ src/__tests__/unit/http/list-hypotheses.routes.spec.ts (16 tests) 156ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 9ms
+ ✓ src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts (11 tests) 14ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts (21 tests) 161ms
+ ✓ src/__tests__/unit/investigation/investigation-pipeline.spec.ts (4 tests) 13ms
+ ❯ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts (3 tests | 3 skipped) 20017ms
+   ↓ removes a hypothesis-revision's own collects row on an ordinary DELETE where its revision belongs only to a still-draft case version's manifest
+   ↓ leaves a hypothesis-revision's own collects row present after an ordinary DELETE attempts to remove it, where its revision belongs to a released case version's manifest
+   ↓ leaves a hypothesis-revision's own collects row naming its original concept after an ordinary UPDATE attempts to change which concept it names
+ ✓ src/__tests__/unit/http/update-draft.routes.spec.ts (9 tests) 125ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (13 tests) 14ms
+ ✓ src/__tests__/unit/http/list-connector-configurations.routes.spec.ts (13 tests) 136ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts (8 tests) 9ms
+ ✓ src/__tests__/unit/http/create-draft.routes.spec.ts (9 tests) 141ms
+ ✓ src/__tests__/unit/http/release.routes.spec.ts (9 tests) 139ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 230ms
+ ✓ src/__tests__/unit/http/test-connector.controller.spec.ts (5 tests) 11ms
+ ✓ src/__tests__/unit/http/read-case.routes.spec.ts (10 tests) 139ms
+ ✓ src/__tests__/unit/http/list-capabilities.routes.spec.ts (14 tests) 140ms
+ ✓ src/__tests__/unit/http/place-hypothesis.routes.spec.ts (12 tests) 144ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (10 tests) 7ms
+ ✓ src/__tests__/unit/http/list-concepts.routes.spec.ts (13 tests) 130ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (9 tests) 8ms
+ ✓ src/__tests__/unit/http/diagnose.routes.spec.ts (6 tests) 131ms
+ ✓ src/__tests__/unit/http/list-cases.routes.spec.ts (13 tests) 133ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (7 tests) 8ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts (10 tests) 131ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (7 tests) 13ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (10 tests) 6ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (7 tests) 7ms
+(node:132689) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests | 3 failed) 90129ms
+   × creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real "test" schema already has recorded 50054ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × applies no script twice and fails nothing when run again against a database that already holds the schema 20012ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+   × raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied 20022ms
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+     → Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ✓ src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts (12 tests) 131ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.routes.spec.ts (9 tests) 125ms
+ ❯ src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts (2 tests | 2 failed) 80059ms
+   × reads a concepts row stored before this migration back with an honest empty description, never a read failure — the row's own name, ttl and concept_accepts entries all survive the same way 40036ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   × leaves every pre-existing row of six other tables exactly as it was, altering and removing nothing outside the new column this migration adds to concepts 40022ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 151ms
+ ✓ src/__tests__/unit/http/register-concept.routes.spec.ts (7 tests) 137ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts (7 tests) 172ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 62ms
+ ✓ src/__tests__/unit/http/remove-hypothesis.routes.spec.ts (9 tests) 204ms
+ ❯ src/__tests__/unit/http/read-concept.routes.spec.ts (6 tests | 1 failed) 138ms
+   × answers 200 with the concept currently held by the glossary, including its accepted subject types and its ttl 120ms
+     → expected { name: 'a-known-concept', …(2) } to deeply equal { name: 'a-known-concept', …(3) }
+   ✓ resolves the concept exactly as the path spelled it, case and hyphenation preserved, never normalized 4ms
+   ✓ answers each of two requests naming different concepts with that request's own resolution, never a cached or joined value 3ms
+   ✓ refuses with the status the status map assigns ConceptNotHeldError, when the glossary does not currently hold the named concept 3ms
+   ✓ answers 400 via validation for a request with an empty concept segment, never reaching the glossary query 4ms
+   ✓ answers 500 with a generic message, never the rejected call's own error text, when the glossary query itself rejects 3ms
+ ✓ src/__tests__/unit/http/discard.routes.spec.ts (8 tests) 119ms
+ ✓ src/__tests__/unit/http/read-capability.routes.spec.ts (6 tests) 115ms
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 203ms
+ ✓ src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts (6 tests) 313ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (7 tests) 6ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure-bypass-mention-scan.spec.ts (6 tests) 55ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 27ms
+ ✓ src/__tests__/unit/config/env.spec.ts (8 tests) 7ms
+ ✓ src/__tests__/unit/http/case-input-requirements.routes.spec.ts (6 tests) 107ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 421ms
+ ❯ src/__tests__/integration/factories/capability-registry.factory.spec.ts (3 tests | 1 failed) 50220ms
+   × persists a registered capability as a row RelationalCapabilityStore reads back, through the real factory wiring 40072ms
+     → Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ replaces the persisted record when the same name and version register again through the real wiring 102ms
+   ✓ reads a connector configuration registered through the connector-configuration registry's own real wiring, through readRegisteredConnectorConfigurations backed by the same store 41ms
+ ✓ src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts (7 tests) 4ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 24ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts (5 tests) 6ms
+ ✓ src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts (3 tests) 211ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 33ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 13ms
+ ✓ src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts (11 tests) 9ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 241ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 11ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.controller.spec.ts (4 tests) 6ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 8ms
+ ✓ src/__tests__/unit/seed.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts (6 tests) 5ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 5ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (3 tests) 27ms
+ ✓ src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts (13 tests) 5ms
+ ✓ src/__tests__/unit/types/pagination.spec.ts (7 tests) 5ms
+ ✓ src/__tests__/unit/http/error-handler.middleware.spec.ts (6 tests) 109ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 9ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 134ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 9ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (6 tests) 10ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (6 tests) 4ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (4 tests) 15ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 23ms
+ ❯ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test | 1 failed) 87ms
+   × no test in the tree writes a table-creating or table-altering statement of its own 87ms
+     → expected [ Array(1) ] to deeply equal []
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 10ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 14ms
+ ✓ src/__tests__/unit/investigation/fake-observation-source.adapter.spec.ts (1 test) 5ms
+ ✓ src/__tests__/unit/glossary/glossary-store.port.spec.ts (2 tests) 5ms
+ ✓ src/__tests__/unit/capability-registry/capability.spec.ts (1 test) 4ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 17 ⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/integration/seed.spec.ts [ src/__tests__/integration/seed.spec.ts ]
+Error: Hook timed out in 60000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/seed.spec.ts:358:1
+    356| }, 60000);
+    357| 
+    358| afterAll(async () => {
+       | ^
+    359|   await cleanupSeededRows(connection);
+    360|   restoreEnv();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/55]⎯
+
+ FAIL  src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts [ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts ]
+Error: Hook timed out in 30000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts:251:1
+    249|  * passes cleanly in isolation, so the failure is accumulated latency …
+    250|  * rather than a genuine hang. 30000ms gives real headroom without mas…
+    251| afterAll(async () => {
+       | ^
+    252|   await cleanupFixtureSeeded(connection);
+    253|   await connection.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/55]⎯
+
+ FAIL  src/__tests__/integration/case/create-draft.operation.spec.ts [ src/__tests__/integration/case/create-draft.operation.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/create-draft.operation.spec.ts:64:1
+     62| });
+     63| 
+     64| afterAll(async () => {
+       | ^
+     65|   await pool.end();
+     66| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/55]⎯
+
+ FAIL  src/__tests__/integration/case/manifest-collects-survive-release.spec.ts [ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts:86:1
+     84| });
+     85| 
+     86| afterAll(async () => {
+       | ^
+     87|   await pool.end();
+     88| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/55]⎯
+
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts [ src/__tests__/integration/case/manifest-composition.operations.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/manifest-composition.operations.spec.ts:85:1
+     83| });
+     84| 
+     85| afterAll(async () => {
+       | ^
+     86|   await pool.end();
+     87| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/55]⎯
+
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts [ src/__tests__/integration/case/release.operation.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/release.operation.spec.ts:95:1
+     93| });
+     94| 
+     95| afterAll(async () => {
+       | ^
+     96|   await pool.end();
+     97| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/55]⎯
+
+ FAIL  src/__tests__/integration/case/revise-hypothesis.operation.spec.ts [ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts:104:1
+    102| });
+    103| 
+    104| afterAll(async () => {
+       | ^
+    105|   await pool.end();
+    106| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/55]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-e2e.spec.ts [ src/__tests__/integration/http/diagnose-e2e.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:465:1
+    463| let originalAnthropicApiKey: string | undefined;
+    464| 
+    465| beforeAll(async () => {
+       | ^
+    466|   connection = createDatabaseConnection(requireDatabaseUrl());
+    467|   await ensureFixtureSeeded(connection);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/55]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-e2e.spec.ts [ src/__tests__/integration/http/diagnose-e2e.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/http/diagnose-e2e.spec.ts:470:1
+    468| });
+    469| 
+    470| afterAll(async () => {
+       | ^
+    471|   await cleanupFixtureSeeded(connection);
+    472|   await connection.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/55]⎯
+
+ FAIL  src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts [ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts:454:1
+    452| });
+    453| 
+    454| afterAll(async () => {
+       | ^
+    455|   await cleanupFixture(connection, fixture);
+    456|   await connection.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/55]⎯
+
+ FAIL  src/__tests__/integration/factories/capability-registry.factory.spec.ts [ src/__tests__/integration/factories/capability-registry.factory.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/factories/capability-registry.factory.spec.ts:60:1
+     58| });
+     59| 
+     60| afterAll(async () => {
+       | ^
+     61|   await pool.end();
+     62| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/55]⎯
+
+ FAIL  src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts [ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts:284:1
+    282| let requester: string;
+    283| 
+    284| beforeAll(async () => {
+       | ^
+    285|   vi.stubGlobal('fetch', fetchMock);
+    286|   seedingConnection = createDatabaseConnection(requireDatabaseUrl());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/55]⎯
+
+ FAIL  src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts [ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts ]
+Error: Hook timed out in 30000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts:290:1
+    288| });
+    289| 
+    290| afterAll(async () => {
+       | ^
+    291|   await cleanupReleasedFixtureCase(seedingConnection);
+    292|   await cleanupConnectorConfigurations(seedingConnection);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts [ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts:161:1
+    159| let glossary: IGlossary;
+    160| 
+    161| beforeAll(async () => {
+       | ^
+    162|   client = new Client({ connectionString: requireDatabaseUrl() });
+    163|   await client.connect();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts [ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts:179:1
+    177| });
+    178| 
+    179| afterAll(async () => {
+       | ^
+    180|   await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+    181|   await client.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/isolated-connection.spec.ts [ src/__tests__/integration/persistence/isolated-connection.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts:154:1
+    152| });
+    153| 
+    154| afterAll(async () => {
+       | ^
+    155|   await pool.end();
+    156| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts [ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts:167:1
+    165| let glossary: IGlossary;
+    166| 
+    167| beforeAll(async () => {
+       | ^
+    168|   client = new Client({ connectionString: requireDatabaseUrl() });
+    169|   await client.connect();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts [ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts:186:1
+    184| });
+    185| 
+    186| afterAll(async () => {
+       | ^
+    187|   await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+    188|   await client.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts [ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:106:1
+    104| });
+    105| 
+    106| afterAll(async () => {
+       | ^
+    107|   await pool.end();
+    108| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts [ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:103:1
+    101| });
+    102| 
+    103| afterAll(async () => {
+       | ^
+    104|   await pool.end();
+    105| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts [ src/__tests__/integration/persistence/schema-migrations.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:310:1
+    308| let capability: ICapability;
+    309| 
+    310| beforeAll(async () => {
+       | ^
+    311|   client = new Client({ connectionString: requireDatabaseUrl() });
+    312|   await client.connect();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/schema-migrations.spec.ts [ src/__tests__/integration/persistence/schema-migrations.spec.ts ]
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/schema-migrations.spec.ts:339:1
+    337| });
+    338| 
+    339| afterAll(async () => {
+       | ^
+    340|   await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+    341|   await client.end();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/55]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 29 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts > no test in the tree writes a table-creating or table-altering statement of its own
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- [][39m
+[31m+ [[39m
+[31m+   "/home/siegfriedneto/projects/servicedeskn1/src/src/__tests__/unit/persistence/migration-runner.spec.ts",[39m
+[31m+ ][39m
+
+ ❯ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts:52:21
+     50|   }
+     51| 
+     52|   expect(offenders).toEqual([]);
+       |                     ^
+     53| });
+     54| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/55]⎯
+
+ FAIL  src/__tests__/integration/case/create-draft.operation.spec.ts > assigns a new draft a version number greater than every version the case has ever held, including one later discarded
+ FAIL  src/__tests__/integration/case/create-draft.operation.spec.ts > copies the case's own latest released version's manifest when a draft is created naming no source version
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/create-draft.operation.spec.ts:207:1
+    205| }
+    206| 
+    207| afterEach(async () => {
+       | ^
+    208|   await cleanupWrittenCases();
+    209|   await cleanupWrittenGlossary();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/55]⎯
+
+ FAIL  src/__tests__/integration/case/create-draft.operation.spec.ts > refuses a second draft creation while the case already holds one open, naming that a draft already exists
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/case/create-draft.operation.spec.ts:233:1
+    231| // ---------------------------------------------------------------- cr…
+    232| 
+    233| it('refuses a second draft creation while the case already holds one o…
+       | ^
+    234|   const slug = `create-draft-already-open-${randomUUID()}`;
+    235|   slugsWrittenByThisTest.push(slug);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/55]⎯
+
+ FAIL  src/__tests__/integration/case/manifest-collects-survive-release.spec.ts > reads back each of two released hypothesis-revisions' own collects exactly as given, never empty, even after an ordinary DELETE against those exact rows is attempted
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts:230:1
+    228| }
+    229| 
+    230| afterEach(async () => {
+       | ^
+    231|   await cleanupCaseRows();
+    232|   await cleanupGlossaryRows();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/55]⎯
+
+ FAIL  src/__tests__/integration/case/manifest-composition.operations.spec.ts > refuses placing a hypothesis-revision against a version that is not in draft state
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/manifest-composition.operations.spec.ts:188:1
+    186| }
+    187| 
+    188| afterEach(async () => {
+       | ^
+    189|   await cleanupWrittenCases();
+    190|   await cleanupWrittenGlossary();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/55]⎯
+
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts > refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/release.operation.spec.ts:236:1
+    234| }
+    235| 
+    236| afterEach(async () => {
+       | ^
+    237|   await cleanupCaseRows();
+    238|   await cleanupGlossaryRows();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/55]⎯
+
+ FAIL  src/__tests__/integration/case/release.operation.spec.ts > releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/case/release.operation.spec.ts:364:1
+    362| // -------------------------------------------------------------------…
+    363| 
+    364| it(
+       | ^
+    365|   "releasing version 2 with a new hypothesis-revision leaves version 1…
+    366|     'revision reading exactly as they read before version 2 ever exist…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/55]⎯
+
+ FAIL  src/__tests__/integration/case/revise-hypothesis.operation.spec.ts > refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only version is already released rather than in draft state, writing no hypothesis or revision row
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts:214:1
+    212| }
+    213| 
+    214| afterEach(async () => {
+       | ^
+    215|   for (const fixture of fixturesWrittenByThisTest) {
+    216|     await cleanupFixture(fixture);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/55]⎯
+
+ FAIL  src/__tests__/integration/factories/capability-registry.factory.spec.ts > persists a registered capability as a row RelationalCapabilityStore reads back, through the real factory wiring
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/factories/capability-registry.factory.spec.ts:81:1
+     79| }
+     80| 
+     81| it('persists a registered capability as a row RelationalCapabilityStor…
+       | ^
+     82|   const concept = await aFreshConcept();
+     83|   const registry = createCapabilityRegistry(pool);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/55]⎯
+
+ FAIL  src/__tests__/integration/factories/simulate-case-server.factory.spec.ts > writes no investigation row for the requester a real simulate-case call ran under, even though the call itself succeeds
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/factories/simulate-case-server.factory.spec.ts:430:1
+    428| // -------------------------------------------------------------------…
+    429| 
+    430| it(
+       | ^
+    431|   'writes no investigation row for the requester a real simulate-case …
+    432|   async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts > reads a concepts row stored before this migration back with an honest empty description, never a read failure — the row's own name, ttl and concept_accepts entries all survive the same way
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts:66:1
+     64| // ---------------------------------------------------------------- cr…
+     65| 
+     66| it(
+       | ^
+     67|   "reads a concepts row stored before this migration back with an hone…
+     68|   async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts > leaves every pre-existing row of six other tables exactly as it was, altering and removing nothing outside the new column this migration adds to concepts
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts:123:1
+    121| }
+    122| 
+    123| it(
+       | ^
+    124|   'leaves every pre-existing row of six other tables exactly as it was…
+    125|   async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/isolated-connection.spec.ts > keeps two isolated connections checked out from the same pool at once from seeing each other's uncommitted writes, and leaves neither write behind once both release
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/isolated-connection.spec.ts:252:1
+    250| // ---------------------------------------------------------------- ed…
+    251| 
+    252| it("keeps two isolated connections checked out from the same pool at o…
+       | ^
+    253|   const slugA = `concurrent-a-${randomUUID()}`;
+    254|   const slugB = `concurrent-b-${randomUUID()}`;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real "test" schema already has recorded
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts:108:1
+    106| // ------------------------------------------- documents: bookkeeping …
+    107| 
+    108| it("creates its own bookkeeping and its own domain tables in the schem…
+       | ^
+    109|   await applyPendingMigrations(asMigrationConnection(client), MIGRATIO…
+    110| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real "test" schema already has recorded
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > applies no script twice and fails nothing when run again against a database that already holds the schema
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts:102:1
+    100| });
+    101| 
+    102| afterEach(async () => {
+       | ^
+    103|   await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+    104| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > applies no script twice and fails nothing when run again against a database that already holds the schema
+ FAIL  src/__tests__/integration/persistence/migration-runner.spec.ts > raises MigrationStepError naming the file and wrapping the original error as its cause, when a script cannot be applied
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/migration-runner.spec.ts:96:1
+     94| });
+     95| 
+     96| beforeEach(async () => {
+       | ^
+     97|   schemaName = `migration_runner_test_${randomUUID().replace(/-/g, '_'…
+     98|   await client.query(`CREATE SCHEMA "${schemaName}"`);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own versions — the given limit and offset echoed back, the page itself held to that limit even though the case holds more versions, and pageCount computed from total and limit
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > answers an empty page, never CaseNotFoundError, for a case that currently holds no version at all because the only one it ever held was discarded — its own identity row survives that, told apart here from a slug naming no case at all
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > copies a named source version's manifest into the new draft's own manifest, entry for entry
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > copies the case's own latest released version's manifest when naming no source version at all
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > starts a case's very first draft with an empty manifest, since no released version exists yet to copy from
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:189:1
+    187| }
+    188| 
+    189| afterEach(async () => {
+       | ^
+    190|   await cleanupWrittenCases();
+    191|   await cleanupWrittenGlossary();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > answers an empty page, never CaseNotFoundError, for a case that currently holds no version at all because the only one it ever held was discarded — its own identity row survives that, told apart here from a slug naming no case at all
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:413:1
+    411| });
+    412| 
+    413| it(
+       | ^
+    414|   'answers an empty page, never CaseNotFoundError, for a case that cur…
+    415|     'all because the only one it ever held was discarded — its own ide…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-case-store.repository.spec.ts > refuses a second draft for a case that already holds one in draft state
+Error: Test timed out in 40000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts:814:1
+    812| // ---------------------------------------------------------------- cr…
+    813| 
+    814| it('refuses a second draft for a case that already holds one in draft …
+       | ^
+    815|   const slug = `case-lifecycle-store-second-draft-${randomUUID()}`;
+    816|   slugsWrittenByThisTest.push(slug);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column
+Error: Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:264:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError
+Error: Test timed out in 15000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:303:1
+    301| );
+    302| 
+    303| it(
+       | ^
+    304|   'lets only one of two concurrent writes to the same id succeed, the …
+    305|   async () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/55]⎯
+
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > does not refuse a write for an id not already stored
+ FAIL  src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts > answers undefined, not a rejection, for an id nothing was ever written under
+Error: Hook timed out in 10000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts:232:1
+    230| }
+    231| 
+    232| afterEach(async () => {
+       | ^
+    233|   await cleanupWrittenInvestigations();
+    234|   await cleanupWrittenFixtures();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/55]⎯
+
+ FAIL  src/__tests__/unit/http/read-concept.routes.spec.ts > answers 200 with the concept currently held by the glossary, including its accepted subject types and its ttl
+AssertionError: expected { name: 'a-known-concept', …(2) } to deeply equal { name: 'a-known-concept', …(3) }
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "accepts": [[22m
+[2m      "a-subject-type",[22m
+[2m      "another-subject-type",[22m
+[2m    ],[22m
+[32m-   "description": "a fixture concept",[39m
+[2m    "name": "a-known-concept",[22m
+[2m    "ttl": 120,[22m
+[2m  }[22m
+
+ ❯ src/__tests__/unit/http/read-concept.routes.spec.ts:73:27
+     71| 
+     72|   expect(response.statusCode).toBe(200);
+     73|   expect(response.json()).toEqual(concept);
+       |                           ^
+     74|   expect(Object.keys(response.json() as object).sort()).toEqual(Object…
+     75| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/55]⎯
+
+
+ Test Files  22 failed | 119 passed (141)
+      Tests  29 failed | 1533 passed | 64 skipped (1626)
+   Start at  12:39:06
+   Duration  1035.86s (transform 2.97s, setup 0ms, collect 12.48s, tests 996.63s, environment 35ms, prepare 8.95s)
+
+

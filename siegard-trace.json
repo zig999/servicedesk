@@ -419,11 +419,15 @@
         },
         {
           "path": "src/src/persistence/migration-runner.ts",
-          "digest": "sha256:35013830a3e86fbd61bde696025b32a690166222cd134b9646552b67eba67296"
+          "digest": "sha256:1e906ba668e1b1bd02b8bc201f7c4f32187c1d01f0bc24ab7ff8c42346b6cd98"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
           "digest": "sha256:003ced3c62403d3f3c7f46dee9048e34484ed8a6608a088ce925492c686ef2d1"
+        },
+        {
+          "path": "src/vitest.config.ts",
+          "digest": "sha256:704ae3c2c3475c8f8514c4f9e655a1bc399c6789cc9e7de8861f54be5d60c754"
         }
       ]
     },
@@ -1543,7 +1547,7 @@
     },
     {
       "node": "domain/glossary/concept",
-      "digest": "sha256:bacfce81580dad7e4bd19448c8c7e1474f62f07d0bda54065cbc79cda121e37a",
+      "digest": "sha256:3d67d2df55f4442a50e5ff3740b7229e0b34059033d27903dff72c5de61a5dd1",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-concept-form.ts",
@@ -1586,6 +1590,10 @@
           "digest": "sha256:91d0af86ed23365daa9dd617602c4c6c0ae06c25cd5cc0324818caade112d162"
         },
         {
+          "path": "src/migrations/0012-glossary-concept-description.sql",
+          "digest": "sha256:9d0909b2ec0410d7eff97ad15f871fddb150f09f658e602a577ffbfb7b241ebb"
+        },
+        {
           "path": "src/src/__tests__/integration/seed.spec.ts",
           "digest": "sha256:f6bbbfc8275dc1e24fce1d92096716e01a82e1a53a4b4eee3c4ddb1a6519501a"
         },
@@ -1607,15 +1615,15 @@
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
-          "digest": "sha256:b3a565280f318989fa89767433496d893eb3581ce4b260ffcaeb47413d094032"
+          "digest": "sha256:d90e54f0899e58773f9f56f20cfd7edd374ed913ec2976d96db301408c4ba19c"
         },
         {
           "path": "src/src/glossary/terms.ts",
-          "digest": "sha256:13326e8a28f092bc03f9c28e1837bed4e69d9baee25f480bb137af050a86c86d"
+          "digest": "sha256:4a06ef9be45aa484a09ab92316bff03fabaa8fbecdc0dfbbc9d29765848569af"
         },
         {
           "path": "src/src/http/dto/read-concept.dto.ts",
-          "digest": "sha256:a68422d689635559704488c4a434b1eba158d8cf038d607be22b8f2c9dee2f25"
+          "digest": "sha256:97826313959e934484e725f706ad853f7a016db48f2af569925f2f8256199397"
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
@@ -1624,6 +1632,10 @@
         {
           "path": "src/src/http/list-concepts.controller.ts",
           "digest": "sha256:15f869ab7a7229cc4d4ca97ca9aa77811e8521681603bdc7e9295f4565cd0692"
+        },
+        {
+          "path": "src/src/http/read-concept.controller.ts",
+          "digest": "sha256:d53319a752558c8ef5d99043f82e80c9dcba03c8938387685db6a975e380d9e4"
         },
         {
           "path": "src/src/http/register-concept.controller.ts",
@@ -1635,7 +1647,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:716753c25344bed090963fce4567e474312486c3788a4a88410dc0ceb32dd60c"
+          "digest": "sha256:e9e21545d0633f59aaf015847cccafc6cf268db6778bbed7fdc7f8ac9603e5b8"
         }
       ]
     },
@@ -2645,11 +2657,11 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
+          "digest": "sha256:5b1adaf13b6ac078b181425b02619bce98534ec0de7176facfa6cee9b3a7177f"
         },
         {
           "path": "src/src/investigation/evidence.ts",
-          "digest": "sha256:54a73e7fc52251d4425f2e86cf29326610942736f943665e5e73d33f323dbced"
+          "digest": "sha256:338967b6e8d5f759cadc40c6c294cab84a327726ff702bd645d23cc8bbbf5f3c"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -2673,7 +2685,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:4c41d74c94cebc18dbd328acbce5f18785171a50cf86bdcbfc490de6c633a2c0"
+          "digest": "sha256:3c59cd8ea33cd55efa4763c4e69eb71eb9394304222f1e3dd5c60c233f874895"
         }
       ]
     },
@@ -2732,6 +2744,20 @@
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
           "digest": "sha256:4c41d74c94cebc18dbd328acbce5f18785171a50cf86bdcbfc490de6c633a2c0"
+        }
+      ]
+    },
+    {
+      "node": "domain/investigation/field-semantics",
+      "digest": "sha256:2c31f8d54409ebf444b7fa9b07a19e420c229b2ae62590903bbab921f39b56da",
+      "files": [
+        {
+          "path": "src/src/investigation/evidence-collection-stage.ts",
+          "digest": "sha256:5b1adaf13b6ac078b181425b02619bce98534ec0de7176facfa6cee9b3a7177f"
+        },
+        {
+          "path": "src/src/investigation/field-semantics.ts",
+          "digest": "sha256:df4ed16b964cf530e390fa61df0f2bdaf88e5d9ac8881e2abcc5f788e6022bda"
         }
       ]
     },
@@ -3934,6 +3960,28 @@
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
           "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
+        }
+      ]
+    },
+    {
+      "node": "rules/glossary/a-concept-declares-its-description",
+      "digest": "sha256:85ca25247e9e21843d54a7e9d5fd471543c056443b2c473383f2971d671ffccc",
+      "files": [
+        {
+          "path": "src/src/errors/concept-description-required.error.ts",
+          "digest": "sha256:5f847fc4dccfd3847910d8a569134a2036a43bee4e600b57744cd0cbb62df338"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:ff522e80c7afda5a464c51d3013372620977d3b1318d2876c3260abb502c4623"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:d90e54f0899e58773f9f56f20cfd7edd374ed913ec2976d96db301408c4ba19c"
+        },
+        {
+          "path": "src/src/http/dto/register-concept.dto.ts",
+          "digest": "sha256:6fb0735f1e272e76820e541bb0969345bd375de4c45c4b0a7062856307255d56"
         }
       ]
     },
@@ -5564,6 +5612,24 @@
       ]
     },
     {
+      "node": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "digest": "sha256:9cd1598bcb17b582076b56da09e897e01c64cd293e8c25c11af09b218e8b5993",
+      "files": [
+        {
+          "path": "src/src/errors/concept-description-required.error.ts",
+          "digest": "sha256:5f847fc4dccfd3847910d8a569134a2036a43bee4e600b57744cd0cbb62df338"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:ff522e80c7afda5a464c51d3013372620977d3b1318d2876c3260abb502c4623"
+        },
+        {
+          "path": "src/src/glossary/glossary.service.ts",
+          "digest": "sha256:d90e54f0899e58773f9f56f20cfd7edd374ed913ec2976d96db301408c4ba19c"
+        }
+      ]
+    },
+    {
       "node": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
       "digest": "sha256:0ccd819c9d992e54d1eb47918f43e196236d61b4ea19e000b459eec726c5e435",
       "files": [
@@ -5692,6 +5758,28 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "digest": "sha256:1c07ef9879de39935d03d78e8acc05f19f82dfb5eb31e7294ec4b58567f9ed31",
+      "files": [
+        {
+          "path": "src/migrations/0012-glossary-concept-description.sql",
+          "digest": "sha256:9d0909b2ec0410d7eff97ad15f871fddb150f09f658e602a577ffbfb7b241ebb"
+        },
+        {
+          "path": "src/src/http/dto/read-concept.dto.ts",
+          "digest": "sha256:97826313959e934484e725f706ad853f7a016db48f2af569925f2f8256199397"
+        },
+        {
+          "path": "src/src/http/read-concept.controller.ts",
+          "digest": "sha256:d53319a752558c8ef5d99043f82e80c9dcba03c8938387685db6a975e380d9e4"
+        },
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:e9e21545d0633f59aaf015847cccafc6cf268db6778bbed7fdc7f8ac9603e5b8"
         }
       ]
     },

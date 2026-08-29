@@ -62,7 +62,6 @@
 // deadline-exceeded branch against a real, deliberately slowed write.
 
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
-import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import { runInvestigationPipeline, type InvestigationPipelineOptions } from './investigation-pipeline.js';
 import { buildInvestigation, type BuildInvestigationOptions } from './investigation-factory.js';
@@ -93,11 +92,15 @@ const WRITE_TIMED_OUT = Symbol('investigation-write-timeout');
 /**
  * Everything runDiagnosis needs beyond what runInvestigationPipeline itself
  * already declares (investigation-pipeline.ts's own InvestigationPipelineOptions):
- * the fields buildInvestigation and the write step need and nothing stage
- * 1–4 reads — the investigation's own id, the optional ticket reference, the
- * narrative, which prompt version and model were used, the glossary-source
- * port buildInvestigation checks the subject's attributes against, and the
- * store the written investigation goes to.
+ * the fields buildInvestigation and the write step need — the investigation's
+ * own id, the optional ticket reference, the narrative, which prompt version
+ * and model were used, and the store the written investigation goes to.
+ * glossary is no longer declared here of its own: it is inherited from
+ * InvestigationPipelineOptions, which collectEvidence itself now also reads
+ * through (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics)
+ * — the one instance this call's own caller supplies serves both
+ * buildInvestigation's subject-attribute check and collectEvidence's
+ * concept-description reads.
  */
 export type RunDiagnosisOptions = InvestigationPipelineOptions & {
   readonly id: string;
@@ -115,7 +118,6 @@ export type RunDiagnosisOptions = InvestigationPipelineOptions & {
   readonly narrative: string;
   readonly prompt_version: string;
   readonly model: string;
-  readonly glossary: IGlossaryQuery;
   readonly store: IInvestigationStore;
 };
 

@@ -17,6 +17,8 @@ import type { Capability } from '../../../capability-registry/capability.js';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-manifest.error.js';
 import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
+import type { ConceptResolution, IGlossaryQuery, TermResolution } from '../../../glossary/glossary-query.port.js';
+import type { TermVocabulary } from '../../../glossary/terms.js';
 import type { EvaluationOutcome, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import type { ObservationOutcome, ObserveConceptOptions, IObservationSource } from '../../../investigation/observation-source.port.js';
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
@@ -114,6 +116,26 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
+/** Stands in for the published glossary-query port, holding no concept at all — this file's own tests are about the narrowing, never about the description snapshot itself (evidence-collection-stage.spec.ts is). */
+class FakeGlossaryQuery implements IGlossaryQuery {
+  public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
+    return { held: false, vocabulary, name };
+  }
+  public async readConcept(name: string): Promise<ConceptResolution> {
+    return { held: false, name };
+  }
+  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
+  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
+  // task/glossary-query-http/list-concepts-query-extension): this file's own
+  // scenarios never call either.
+  public async listVocabularyTerms(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
+  }
+  public async listConcepts(): Promise<never> {
+    throw new Error('FakeGlossaryQuery.listConcepts is not scripted for this file');
+  }
+}
+
 /** Records every concept it was asked to observe, answering ok unconditionally — the spy criterion 1 reads to prove which concept(s) were ever collected. */
 class RecordingObservationSource implements IObservationSource {
   public readonly observedConcepts: string[] = [];
@@ -144,6 +166,7 @@ function baseOptions(overrides: Partial<SimulateHypothesisPipelineOptions> = {})
     requester: A_REQUESTER,
     hypothesis: 'h1',
     capabilities,
+    glossary: new FakeGlossaryQuery(),
     observationSource: new RecordingObservationSource(),
     evaluator: new RecordingHypothesisEvaluator(),
     poolSize: 4,
@@ -210,6 +233,7 @@ it('never consolidates: SimulateHypothesisPipelineOptions declares no consolidat
     readonly requester: string;
     readonly hypothesis: string;
     readonly capabilities: ICapabilityQuery;
+    readonly glossary: IGlossaryQuery;
     readonly observationSource: IObservationSource;
     readonly evaluator: IHypothesisEvaluator;
     readonly poolSize: number;
