@@ -120,7 +120,6 @@ export async function runSimulateHypothesisPipeline(
     case: narrowedCase,
     evidenceByHypothesis: new Map([[options.hypothesis, evidence]]),
     evaluator: options.evaluator,
-    capabilities: options.capabilities,
     poolSize: options.poolSize,
     now: options.now,
     deadline: Math.min(options.deadline, options.now + JUDGMENT_STAGE_BUDGET_MS),

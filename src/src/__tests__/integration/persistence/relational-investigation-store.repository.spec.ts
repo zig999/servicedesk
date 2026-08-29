@@ -164,11 +164,13 @@ interface IInvestigationOptions {
 /**
  * One evidence item as a caller of this store would submit it, referencing exactly the capability
  * freshFixtures() just registered — split out of anIntegrationInvestigation below so that function
- * stays within a function's own line budget (MNT-01). fields/concept_description are the same empty
- * snapshot the read path always answers today, since no migration yet backs either column
- * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's own objective) — the
- * roundtrip assertions below compare the written and read documents directly, so both sides must
- * agree on this same empty pair.
+ * stays within a function's own line budget (MNT-01). fields/concept_description carry real,
+ * non-empty values on purpose: every test below that writes and reads this item back through the
+ * real database compares the written and read documents directly
+ * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot), so a non-empty pair
+ * is what actually exercises fields' own real JSONB round trip through node-postgres — an empty
+ * array would round-trip identically whether or not the driver's own serialize/parse pair ran at
+ * all (migrations/0013-investigation-evidence-semantics-snapshot.sql).
  */
 function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][number] {
   return {
@@ -182,8 +184,8 @@ function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][n
     capability_name: fixtures.capabilityName,
     capability_version: fixtures.capabilityVersion,
     elapsed_ms: 12,
-    fields: [],
-    concept_description: '',
+    fields: [{ name: 'a-field', type: 'string', description: 'a field description' }],
+    concept_description: 'a concept description',
   };
 }
 

@@ -106,7 +106,13 @@ function investigationRow(overrides: Record<string, unknown> = {}): Record<strin
   };
 }
 
-/** One row of "investigation_evidence", matching anEvidence()'s own defaults. */
+/**
+ * One row of "investigation_evidence", matching anEvidence()'s own defaults. fields/concept_description
+ * default to the same empty pair anEvidence() defaults to — node-postgres already parses a jsonb
+ * column into a plain JS value by the time a row reaches evidenceOf(), so a fixture row simulates
+ * that parsed shape directly rather than a serialized string
+ * (migrations/0013-investigation-evidence-semantics-snapshot.sql).
+ */
 function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     concept: 'a-concept',
@@ -120,6 +126,8 @@ function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, un
     capability_name: 'a-capability',
     capability_version: '1.0.0',
     elapsed_ms: 12,
+    fields: [],
+    concept_description: '',
     ...overrides,
   };
 }
@@ -137,10 +145,12 @@ function citationRow(overrides: Record<string, unknown> = {}): Record<string, un
 /**
  * One Evidence item, matching evidenceRow()'s own defaults, so a test may build one side from the
  * document and the other from the row and compare them directly. fields/concept_description default
- * to the same empty snapshot the read path (evidenceOf()) answers for every row today — no migration
- * yet backs either column (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's
- * own objective), so write()'s own params are unaffected by them and read() always answers this same
- * empty pair, whatever a caller wrote.
+ * to the empty pair domain/investigation/evidence's own honest-degradation reading already sanctions
+ * ("a concept whose capability never resolved snapshots no fields at all", "a concept collected before
+ * it declared a description snapshots an empty one") — an ordinary default for a test fixture, not a
+ * placeholder this store answers regardless of input: write()'s own params now carry whatever fields/
+ * concept_description a given Evidence holds, and read() now answers back exactly the row's own two
+ * columns (migrations/0013-investigation-evidence-semantics-snapshot.sql).
  */
 function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
   return {
@@ -285,7 +295,7 @@ it("carries each evidence item's capability_name and capability_version pin into
   const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
   expect(evidenceInsert?.params).toEqual([
     investigation.id, 'a-concept', 'serialized-inputs', 'an-observation', '2024-01-01T00:00:00.000Z', 60, 'a-connector', 'ok', null,
-    'a-registered-capability', '2.0.0', 12,
+    'a-registered-capability', '2.0.0', 12, '[]', '',
   ]);
 });
 
@@ -620,7 +630,7 @@ it('answers ticket_ref as the empty string when the stored column itself is a SQ
 // though this file sits outside this task's own inventory node area — to elapsed_ms alone, on
 // each side of the round trip.
 
-it("sends the evidence item's own elapsed_ms as the evidence insert's own last param, not silently dropped from the row this store persists", async () => {
+it("sends the evidence item's own elapsed_ms as the evidence insert's own twelfth param, not silently dropped from the row this store persists — ahead of fields and concept_description, which migrations/0013 added after it", async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
@@ -629,7 +639,7 @@ it("sends the evidence item's own elapsed_ms as the evidence insert's own last p
   await store.write(investigation);
 
   const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
-  expect(evidenceInsert?.params?.at(-1)).toBe(4_321);
+  expect(evidenceInsert?.params?.[11]).toBe(4_321);
 });
 
 it("assembles the stored row's own elapsed_ms into the read Evidence's own elapsed_ms, rather than a value carried over from another column", async () => {
@@ -645,41 +655,45 @@ it("assembles the stored row's own elapsed_ms into the read Evidence's own elaps
   expect(answered.evidence[0]?.elapsed_ms).toBe(777);
 });
 
-// ---------------------------------------------------------------- task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics
+// ---------------------------------------------------------------- task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot
 //
-// Neither fields nor concept_description has a migration yet
-// (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's own objective, not
-// this task's), so evidenceOf(row) always answers the same empty snapshot on read regardless of the
-// row, and evidenceStatement() never forwards either value into the insert's own params regardless
-// of what the given Evidence carries — the two tests below isolate exactly that disclosed
-// degradation, distinct from the whole-object equality assertions above (criterion 6's own read
-// assembly, criterion 1's own params assertion), which would fail on a mismatch of any of Evidence's
-// other eleven attributes for an unrelated reason too.
+// migrations/0013-investigation-evidence-semantics-snapshot.sql gives investigation_evidence real
+// fields and concept_description columns, superseding the sibling task's own disclosed,
+// compile-preserving placeholder (fields always [], concept_description always '', neither ever
+// forwarded by write()) that the two tests immediately above this section used to isolate. The two
+// tests below isolate this task's own real round trip instead — that evidenceStatement() forwards
+// whatever fields/concept_description a given Evidence item carries, serializing fields explicitly,
+// and that evidenceOf(row) answers a stored row's own two columns directly — distinct from the
+// whole-object equality assertions elsewhere in this file (criterion 6's own read assembly,
+// criterion 1's own params assertion), which would fail on a mismatch of any of Evidence's other
+// eleven attributes for an unrelated reason too.
 
-it('answers fields as an empty array and concept_description as the empty string for every read evidence item, since no migration yet backs either column', async () => {
+it("sends the evidence item's own fields, JSON-serialized, and its own concept_description as the evidence insert's own thirteenth and fourteenth params, when the given evidence carries non-empty values for both", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const fields = [{ name: 'a-field', type: 'string', description: 'a field description' }];
+  const investigation = anInvestigation({
+    evidence: [anEvidence({ fields, concept_description: 'a real description' })],
+  });
+
+  await store.write(investigation);
+
+  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
+  expect(evidenceInsert?.params?.slice(-2)).toEqual([JSON.stringify(fields), 'a real description']);
+});
+
+it("assembles the read evidence item's own fields and concept_description straight from the stored row's own two columns, carried through unchanged rather than a literal placeholder", async () => {
+  const fields = [{ name: 'a-field', type: 'string', description: 'a field description' }];
   const { handleQuery } = recordingQuery({
     investigation: investigationRow(),
-    evidence: [evidenceRow({ concept: 'concept-a' })],
+    evidence: [evidenceRow({ concept: 'concept-a', fields, concept_description: 'a real description' })],
   });
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
 
   const answered = (await store.read('an-investigation-id'))?.document as Investigation;
 
-  expect(answered.evidence[0]).toMatchObject({ fields: [], concept_description: '' });
-});
-
-it("never forwards fields or concept_description into the evidence insert's own params, even when the given evidence carries non-empty values for both — the insert still carries exactly its own twelve params", async () => {
-  const { handleQuery, recorded } = recordingQuery({});
-  const { connection } = fakeTransactionConnection(handleQuery);
-  const store = new RelationalInvestigationStore(connection);
-  const investigation = anInvestigation({
-    evidence: [anEvidence({ fields: [{ name: 'a-field', type: 'string' }], concept_description: 'a real description' })],
-  });
-
-  await store.write(investigation);
-
-  const evidenceInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evidence'));
-  expect(evidenceInsert?.params).toHaveLength(12);
+  expect(answered.evidence[0]).toMatchObject({ fields, concept_description: 'a real description' });
 });
 

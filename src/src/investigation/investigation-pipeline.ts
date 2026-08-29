@@ -299,7 +299,11 @@ function collectEvidenceOptions(options: InvestigationPipelineOptions, subject: 
  * whole run, its own deadline tightened to no more than
  * JUDGMENT_STAGE_BUDGET_MS beyond now — evidence-collection-stage.ts's own
  * COLLECTION_STAGE_BUDGET_MS intersection, mirrored here since
- * judgment-stage.ts performs no such intersection on its own behalf.
+ * judgment-stage.ts performs no such intersection on its own behalf. Carries
+ * no capabilities: judgment reads only each hypothesis's own already-collected
+ * evidence and its own snapshotted semantics, never the capability registry
+ * (rules/investigation/judgment-reads-the-evidence-snapshot) — this call's
+ * own capabilities is collectEvidenceOptions's alone to thread, above.
  */
 function judgeHypothesesOptions(
   options: InvestigationPipelineOptions,
@@ -309,7 +313,6 @@ function judgeHypothesesOptions(
     case: options.case,
     evidenceByHypothesis,
     evaluator: options.evaluator,
-    capabilities: options.capabilities,
     poolSize: options.poolSize,
     now: options.now,
     deadline: Math.min(options.deadline, options.now + JUDGMENT_STAGE_BUDGET_MS),

@@ -34,8 +34,16 @@ const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
 /** The deterministic zero-valued elapsed_ms every seeded FakeHypothesisEvaluator answer now carries, for the same reason. */
 const ZEROED_ELAPSED_MS = 0;
 
-/** The evidence a call carries — the fake computes nothing from it, so its content is arbitrary. */
-const SOME_EVIDENCE: readonly EvidenceItem[] = [{ concept: 'a-concept', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] }];
+/** The evidence a call carries — the fake computes nothing from it, so its content is arbitrary. It carries a non-empty fields array (one field with its own type and description) and a non-empty concept_description so this fixture itself exercises the widened EvidenceItem shape (fields: readonly FieldSemantics[], concept_description: string) rather than merely satisfying the compiler with empty values. */
+const SOME_EVIDENCE: readonly EvidenceItem[] = [
+  {
+    concept: 'a-concept',
+    result: 'ok',
+    observation: 'an-observed-value',
+    fields: [{ name: 'a-field', type: 'string', description: 'a description of a-field' }],
+    concept_description: 'what a-concept means',
+  },
+];
 
 /** The pinned case's own situational context a call carries — the fake computes nothing from it either, so its content is arbitrary. */
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };

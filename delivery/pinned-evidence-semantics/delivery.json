@@ -50,6 +50,30 @@
       "task": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics"
     },
     {
+      "id": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "implementation",
+      "file": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot.md",
+      "title": "The investigation store persists and reads back an evidence item's snapshotted semantics",
+      "summary": "A new additive migration gives investigation_evidence a fields (JSONB) and a concept_description (TEXT) column, and the relational investigation store's write and read paths carry both for real, replacing the sibling task's disclosed placeholder.",
+      "task": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot"
+    },
+    {
+      "id": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "implementation",
+      "file": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
+      "title": "The evaluator port and its prompt carry the snapshotted semantics",
+      "summary": "EvidenceItem widens to carry each item's own snapshotted field semantics and concept description in place of the bare declared-field list, and the production Anthropic adapter's prompt assembly renders them inside the closed data block, both unchanged in every other respect.",
+      "task": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics"
+    },
+    {
+      "id": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "kind": "implementation",
+      "file": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry.md",
+      "title": "Judgment stops re-reading the capability registry",
+      "summary": "citesADeclaredField now checks a citation's field against its own cited evidence item's snapshotted fields directly, and judgeHypotheses judges a hypothesis from evidence alone, without a capability-registry dependency threaded through judgment-stage.ts, investigation-pipeline.ts or simulate-hypothesis-pipeline.ts.",
+      "task": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry"
+    },
+    {
       "id": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
       "kind": "implementation",
       "file": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying.md",
@@ -104,6 +128,30 @@
       "title": "Proof for evidence collection snapshots concept and field semantics",
       "summary": "Tests proving fields/concept_description snapshotting in collectEvidence and fieldSemanticsOf's own reader, plus the typecheck-fallout repairs the widened Evidence/CollectEvidenceOptions/InvestigationPipelineOptions/SimulateHypothesisPipelineOptions types required across the pre-existing suite.",
       "task": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics"
+    },
+    {
+      "id": "proof/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "proof",
+      "file": "proof/evidence-semantics-snapshot/investigation-store-persists-the-snapshot.md",
+      "title": "Proof that the relational investigation store persists and reads back an evidence item's snapshotted semantics",
+      "summary": "Unit-level write/read tests over the two new columns, a schema-replay pair against a real, disposable database proving the legacy-row degradation and additivity, plus fixes to four pre-existing tests this task's own change to evidenceStatement()'s param shape made stale.",
+      "task": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot"
+    },
+    {
+      "id": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "proof",
+      "file": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
+      "title": "Proof that the evaluator port and its prompt carry the snapshotted per-item semantics",
+      "summary": "Tests proving EvidenceItem's widened per-item field semantics and concept description reach the rendered judgment prompt inside the closed data block, are omitted correctly when a concept description is empty, and leave prompt assembly pure — plus the two pre-existing spec files' own EvidenceItem fixtures repaired so the tree type-checks against the widened port again.",
+      "task": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics"
+    },
+    {
+      "id": "proof/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "kind": "proof",
+      "file": "proof/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry.md",
+      "title": "Proof that judgment stops re-reading the capability registry",
+      "summary": "citation-validation.spec.ts and judgment-stage.spec.ts are fixed to the narrowed shapes and extended to prove a citation's field is checked only against its own cited evidence item's snapshot, judgeHypotheses takes no capability-registry dependency, and a capability re-registered after collection cannot change an already-computed judgment.",
+      "task": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry"
     },
     {
       "id": "proof/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
@@ -206,6 +254,96 @@
       "at": "the path"
     },
     {
+      "from": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "task/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "domain/investigation/hypothesis-evaluator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "constraints/the-judgment-prompt-is-closed",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "rules/investigation/judgment-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
       "to": "constraints/the-schema-replays-from-its-scripts",
       "kind": "encodes",
@@ -250,6 +388,24 @@
     {
       "from": "proof/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
       "to": "implementation/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "to": "implementation/evidence-semantics-snapshot/investigation-store-persists-the-snapshot",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "to": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
+      "to": "implementation/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry",
       "kind": "proves",
       "at": "the path"
     },

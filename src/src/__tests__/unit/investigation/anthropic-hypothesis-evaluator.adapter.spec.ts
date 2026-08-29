@@ -50,8 +50,15 @@ function createEvaluator(options?: { readonly maxTokens?: number; readonly model
 }
 
 const A_CRITERION = 'a-criterion';
+/** A representative ok evidence item, carrying a non-empty fields array (one field with its own type and description) and a non-empty concept_description — used across tests that are not themselves about prompt shape, so its exact content is otherwise arbitrary. */
 const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [
-  { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+  {
+    concept: 'concept-one',
+    result: 'ok',
+    observation: 'an-observed-value',
+    fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
+    concept_description: 'what concept-one means',
+  },
 ];
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
 
@@ -72,9 +79,9 @@ afterEach(() => {
 
 it('answers inconclusive with reason no-data, citing exactly the evidence items whose result is not ok', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
-    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
-    { concept: 'concept-denied', result: 'denied', declaredFields: [] },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
+    { concept: 'concept-denied', result: 'denied', fields: [], concept_description: '' },
   ];
   const evaluator = createEvaluator();
 
@@ -92,8 +99,8 @@ it('answers inconclusive with reason no-data, citing exactly the evidence items 
 
 it('never calls the provider when the evidence carries any non-ok result', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
-    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
   ];
   const evaluator = createEvaluator();
 
@@ -102,14 +109,26 @@ it('never calls the provider when the evidence carries any non-ok result', async
   expect(createMock).not.toHaveBeenCalled();
 });
 
-it('sends byte-identical prompt content across two calls carrying the same criterion, evidence and case context', async () => {
+it('sends byte-identical prompt content across two calls carrying the same criterion, evidence (including its own field semantics and concept description) and case context', async () => {
   createMock.mockResolvedValue(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
   const evidenceForFirstCall: readonly EvidenceItem[] = [
-    { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'an-observed-value',
+      fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
+      concept_description: 'what concept-one means',
+    },
   ];
   const evidenceForSecondCall: readonly EvidenceItem[] = [
-    { concept: 'concept-one', result: 'ok', observation: 'an-observed-value', declaredFields: ['field-one'] },
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'an-observed-value',
+      fields: [{ name: 'field-one', type: 'string', description: 'field-one description' }],
+      concept_description: 'what concept-one means',
+    },
   ];
   const caseContextForFirstCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
   const caseContextForSecondCall: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
@@ -122,11 +141,17 @@ it('sends byte-identical prompt content across two calls carrying the same crite
   expect(firstContent).toBe(secondContent);
 });
 
-it('carries the given criterion, evidence observation, declared fields, case title and case when_to_use inside one delimited block', async () => {
+it('carries the given criterion, evidence observation, its own concept description, its own field semantics, case title and case when_to_use inside one delimited block', async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
   const evidence: readonly EvidenceItem[] = [
-    { concept: 'the-marker-concept', result: 'ok', observation: 'the-marker-observation', declaredFields: ['the-marker-field'] },
+    {
+      concept: 'the-marker-concept',
+      result: 'ok',
+      observation: 'the-marker-observation',
+      fields: [{ name: 'the-marker-field', type: 'the-marker-type', description: 'the-marker-field-description' }],
+      concept_description: 'the-marker-concept-description',
+    },
   ];
   const caseContext: CaseContext = { title: 'the-marker-title', whenToUse: 'the-marker-when-to-use' };
 
@@ -137,25 +162,146 @@ it('carries the given criterion, evidence observation, declared fields, case tit
   expect(content).toContain('the-marker-criterion');
   expect(content).toContain('the-marker-observation');
   expect(content).toContain('the-marker-field');
+  expect(content).toContain('the-marker-type');
+  expect(content).toContain('the-marker-field-description');
+  expect(content).toContain('the-marker-concept-description');
   expect(content).toContain('the-marker-title');
   expect(content).toContain('the-marker-when-to-use');
 });
 
-it("renders each evidence item's own declared fields as its own item's fields attribute, never the schema itself and never another item's fields", async () => {
+/** Extracts one item's own rendered block — from its own opening `<item concept="...">` tag up to the following `</item>` — so a test can assert what is, and is not, inside that one item's own block without a false positive from another item's content elsewhere in the same prompt. */
+function itemBlockOf(content: string, concept: string): string {
+  const openTag = `<item concept="${concept}">`;
+  const start = content.indexOf(openTag);
+  if (start === -1) {
+    throw new Error(`no <item> found for concept "${concept}" in: ${content}`);
+  }
+  const end = content.indexOf('</item>', start);
+  return content.slice(start, end + '</item>'.length);
+}
+
+it("renders each evidence item's own field semantics as its own <field> elements inside its own <fields>, each carrying its own name plus its own type attribute and description text exactly where the snapshot declared them, and never invented where it declared neither", async () => {
   createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
   const evaluator = createEvaluator();
   const evidence: readonly EvidenceItem[] = [
-    { concept: 'concept-one', result: 'ok', observation: 'observation-one', declaredFields: ['field-one', 'field-two'] },
-    { concept: 'concept-two', result: 'ok', observation: 'observation-two', declaredFields: [] },
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'observation-one',
+      fields: [
+        { name: 'field-one', type: 'string', description: 'field-one description' },
+        { name: 'field-two' },
+      ],
+      concept_description: 'what concept-one means',
+    },
+    { concept: 'concept-two', result: 'ok', observation: 'observation-two', fields: [], concept_description: '' },
   ];
 
   await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
 
   const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
-  expect(content).toContain('<item concept="concept-one" fields="field-one field-two">');
-  expect(content).toContain('<item concept="concept-two" fields="">');
+  const itemOne = itemBlockOf(content, 'concept-one');
+  const itemTwo = itemBlockOf(content, 'concept-two');
+  expect(itemOne).toContain('<field name="field-one" type="string">field-one description</field>');
+  expect(itemOne).toContain('<field name="field-two"></field>');
+  expect(itemTwo.includes('field-one')).toBe(false);
+  expect(itemTwo).not.toContain('<field ');
   expect(content).not.toContain('properties');
-  expect(content).not.toContain('type');
+});
+
+it("renders a field's own type attribute independently of its own description text — present for one without the other in either direction, and never coupling the two together", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [
+        { name: 'field-type-only', type: 'string' },
+        { name: 'field-description-only', description: 'a description with no type' },
+      ],
+      concept_description: '',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  expect(content).toContain('<field name="field-type-only" type="string"></field>');
+  expect(content).toContain('<field name="field-description-only">a description with no type</field>');
+});
+
+it("renders each evidence item's own concept description as its own <concept_description>, and the closed <evidence> block carries it alongside the item's own fields and observation", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-with-a-description',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'a-field' }],
+      concept_description: 'what concept-with-a-description means',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const evidenceOpen = content.indexOf('<evidence>');
+  const evidenceClose = content.indexOf('</evidence>');
+  const conceptDescriptionIdx = content.indexOf('<concept_description>what concept-with-a-description means</concept_description>');
+  expect(evidenceOpen).toBeGreaterThan(-1);
+  expect(conceptDescriptionIdx).toBeGreaterThan(evidenceOpen);
+  expect(conceptDescriptionIdx).toBeLessThan(evidenceClose);
+});
+
+it('omits the <concept_description> tag entirely for an item whose concept_description is the empty string, naming that item by its concept alone with no stated meaning, while still carrying its own fields and observation', async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'a-legacy-concept',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'a-field' }],
+      concept_description: '',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  const itemBlock = itemBlockOf(content, 'a-legacy-concept');
+  expect(itemBlock).not.toContain('concept_description');
+  expect(itemBlock).toContain('<field name="a-field"></field>');
+  expect(itemBlock).toContain('<observation>an-observation</observation>');
+});
+
+it("escapes reserved XML characters in an item's own concept_description and field name/type/description, so none of them can break out of the closed data block", async () => {
+  createMock.mockResolvedValueOnce(messageWithText('{"verdict":"inconclusive"}'));
+  const evaluator = createEvaluator();
+  const evidence: readonly EvidenceItem[] = [
+    {
+      concept: 'concept-one',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: [{ name: 'a-<field>-&-name', type: 'a-<type>', description: 'a-<description>-&-text' }],
+      concept_description: 'a-<concept-description>-&-text',
+    },
+  ];
+
+  await evaluator.evaluate(A_CRITERION, evidence, A_CASE_CONTEXT);
+
+  const content = createMock.mock.calls[0]?.[0]?.messages[0]?.content ?? '';
+  expect(content).toContain('a-&lt;concept-description&gt;-&amp;-text');
+  expect(content).toContain('a-&lt;field&gt;-&amp;-name');
+  expect(content).toContain('a-&lt;type&gt;');
+  expect(content).toContain('a-&lt;description&gt;-&amp;-text');
+  expect(content).not.toContain('<concept-description>');
+  expect(content).not.toContain('<field>');
+  expect(content).not.toContain('<type>');
+  expect(content).not.toContain('<description>');
 });
 
 it('escapes reserved XML characters in the criterion so the closed data block cannot be broken out of', async () => {
@@ -413,8 +559,8 @@ it("reports elapsed_ms and the exact prompt sent, but never invents a usage fiel
 
 it('a no-data outcome, answered without ever reaching the provider, still carries none of usage, elapsed_ms or prompt', async () => {
   const mixedEvidence: readonly EvidenceItem[] = [
-    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', declaredFields: ['a-field'] },
-    { concept: 'concept-timeout', result: 'timeout', declaredFields: [] },
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
   ];
   const evaluator = createEvaluator();
 

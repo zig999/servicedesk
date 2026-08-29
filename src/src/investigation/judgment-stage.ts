@@ -46,11 +46,10 @@
 // themselves this stage's own decision, not a value read from the retry's
 // own port response, the same way no-data's are.
 
-import type { ICapabilityQuery } from '../capability-registry/capability-query.port.js';
 import { requiresEvaluationOf } from '../case/case-resolution.js';
 import type { Case, Hypothesis } from '../case/case.js';
 import type { Citation } from './citation.js';
-import { acceptedCitations, capabilityOutputSchemaKey, declaredFieldsOf, type CapabilityOutputSchemas, type HypothesisCitationContext } from './citation-validation.js';
+import { acceptedCitations, type HypothesisCitationContext } from './citation-validation.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
@@ -65,7 +64,6 @@ export type JudgeHypothesesOptions = {
   /** Per required hypothesis name, its own Evidence[] — already matched by concept to that hypothesis's own collects by whoever composes this stage with evidence-collection-stage's own output (this task's own scope reads only required hypotheses and their evidence, never the collection stage itself). */
   readonly evidenceByHypothesis: ReadonlyMap<string, readonly Evidence[]>;
   readonly evaluator: IHypothesisEvaluator;
-  readonly capabilities: ICapabilityQuery;
   /** The configured pool bound: at most this many evaluate() calls in flight at once, across every hypothesis judged in this call (constraints/hypotheses-are-judged-in-isolated-parallel-calls' own "the pool bound is configuration"). */
   readonly poolSize: number;
   /** The instant this stage starts, as epoch milliseconds. */
@@ -83,7 +81,7 @@ export type JudgeHypothesesOptions = {
  * take degrades to one of the three declared reasons, never a gap.
  */
 export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<readonly Evaluation[]> {
-  const { case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize, now, deadline } = options;
+  const { case: theCase, evidenceByHypothesis, evaluator, poolSize, now, deadline } = options;
   const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));
   const pool = new CallPool(poolSize);
   const requiredNames = requiresEvaluationOf(theCase);
@@ -95,7 +93,6 @@ export async function judgeHypotheses(options: JudgeHypothesesOptions): Promise<
         hypothesis: hypothesisNamed(theCase, name),
         evidence: evidenceFor(name, evidenceByHypothesis),
         evaluator,
-        capabilities,
         pool,
         deadlineGuard,
         caseContext,
@@ -109,7 +106,6 @@ type JudgeOneHypothesisOptions = {
   readonly hypothesis: Hypothesis;
   readonly evidence: readonly Evidence[];
   readonly evaluator: IHypothesisEvaluator;
-  readonly capabilities: ICapabilityQuery;
   readonly pool: CallPool;
   readonly deadlineGuard: DeadlineGuard;
   readonly caseContext: CaseContext;
@@ -124,7 +120,7 @@ type JudgeOneHypothesisOptions = {
  * (constraints/hypotheses-are-judged-in-isolated-parallel-calls).
  */
 async function judgeOneHypothesis(options: JudgeOneHypothesisOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidence, evaluator, capabilities, pool, deadlineGuard, caseContext } = options;
+  const { name, hypothesis, evidence, evaluator, pool, deadlineGuard, caseContext } = options;
   const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
   if (nonOkEvidence.length > 0) {
     return noDataEvaluation(name, nonOkEvidence);
@@ -133,7 +129,7 @@ async function judgeOneHypothesis(options: JudgeOneHypothesisOptions): Promise<E
     return deadlineExceededEvaluation(name);
   }
   try {
-    return await runIsolatedCall({ name, hypothesis, evidence, evaluator, capabilities, deadlineGuard, caseContext });
+    return await runIsolatedCall({ name, hypothesis, evidence, evaluator, deadlineGuard, caseContext });
   } finally {
     pool.release();
   }
@@ -144,7 +140,6 @@ type RunIsolatedCallOptions = {
   readonly hypothesis: Hypothesis;
   readonly evidence: readonly Evidence[];
   readonly evaluator: IHypothesisEvaluator;
-  readonly capabilities: ICapabilityQuery;
   readonly deadlineGuard: DeadlineGuard;
   readonly caseContext: CaseContext;
 };
@@ -156,18 +151,20 @@ type RunIsolatedCallOptions = {
  * nothing more for this stage to add to it), and hands a decided answer to
  * citation validation, retrying through retryOrFail on a structurally
  * invalid one. The pinned case version's own caseContext rides along
- * unchanged on this first call, the same one retryOrFail passes to a retry. The output
- * schemas are resolved before this hypothesis's own first call, never after
- * it: constraints/the-judgment-prompt-is-closed's own third permitted entry
- * puts each evidence item's declared field names inside the very prompt this
- * call sends, so the resolution that citation validation already needed for
- * a decided answer now also feeds toEvidenceItems, one resolution serving
- * both.
+ * unchanged on this first call, the same one retryOrFail passes to a retry.
+ * Neither the evidence items sent to evaluate() nor the citation context
+ * checked against the answer ever resolve anything live: both are built
+ * straight from this hypothesis's own (already all-ok) evidence, each item's
+ * own snapshotted fields and concept_description exactly as collection
+ * fixed them (rules/investigation/judgment-reads-the-evidence-snapshot) —
+ * constraints/the-judgment-prompt-is-closed's own third permitted entry puts
+ * those same snapshotted field names inside the very prompt this call
+ * sends, and the identical snapshot is what the citation check below holds
+ * the answer to, one snapshot serving both.
  */
 async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidence, evaluator, capabilities, deadlineGuard, caseContext } = options;
-  const outputSchemas = await outputSchemasFor(evidence, capabilities);
-  const evidenceItems = toEvidenceItems(evidence, outputSchemas);
+  const { name, hypothesis, evidence, evaluator, deadlineGuard, caseContext } = options;
+  const evidenceItems = toEvidenceItems(evidence);
   const first = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
   if (first === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
@@ -175,7 +172,7 @@ async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluat
   if (first.verdict === 'inconclusive') {
     return asEvaluation(name, first);
   }
-  const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence, outputSchemas };
+  const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence };
   if (isStructurallyValid(context, first.citations)) {
     return asEvaluation(name, first);
   }
@@ -335,38 +332,26 @@ function isStructurallyValid(context: HypothesisCitationContext, citations: read
 }
 
 /**
- * Builds the CapabilityOutputSchemas map citation-validation needs for one
- * hypothesis's own evidence: re-resolves each cited concept's capability
- * through the published registry read, keyed by that capability's own
- * current name and version, never by concept — where the registry no longer
- * holds a capability for a concept, that key is simply absent, which
- * citation-validation already treats as "no fields declared".
- */
-async function outputSchemasFor(evidence: readonly Evidence[], capabilities: ICapabilityQuery): Promise<CapabilityOutputSchemas> {
-  const concepts = [...new Set(evidence.map((item) => item.concept))];
-  const resolutions = await Promise.all(concepts.map((concept) => capabilities.readCapability(concept)));
-  const schemas: Record<string, string> = {};
-  for (const resolution of resolutions) {
-    if (resolution.held) {
-      schemas[capabilityOutputSchemaKey(resolution.capability.name, resolution.capability.version)] = resolution.capability.output_schema;
-    }
-  }
-  return schemas;
-}
-
-/**
  * Every item of this hypothesis's own (already all-ok, by this point)
  * evidence, reshaped to the EvidenceItem port signature, never the full
- * Evidence record — each item's own declaredFields read from outputSchemas
- * by the same capability-name/version key citation-validation's own
- * citesADeclaredField uses, so the vocabulary a citation is later checked
- * against is exactly the vocabulary this call showed the model.
+ * Evidence record — each item's own `fields` and `concept_description`
+ * carried through exactly as the evidence itself snapshotted them at
+ * collection (rules/investigation/judgment-reads-the-evidence-snapshot),
+ * never re-read from the capability registry or the glossary here: the
+ * vocabulary a citation is later checked against is exactly the same
+ * snapshot this call showed the model, so a capability re-registered or a
+ * concept re-described after this evidence was collected never changes
+ * either
+ * (scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment).
  */
-function toEvidenceItems(evidence: readonly Evidence[], outputSchemas: CapabilityOutputSchemas): readonly EvidenceItem[] {
-  return evidence.map((item): EvidenceItem => {
-    const key = capabilityOutputSchemaKey(item.capability_name, item.capability_version);
-    return { concept: item.concept, result: 'ok', observation: item.observation, declaredFields: declaredFieldsOf(outputSchemas[key]) };
-  });
+function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[] {
+  return evidence.map((item): EvidenceItem => ({
+    concept: item.concept,
+    result: 'ok',
+    observation: item.observation,
+    fields: item.fields,
+    concept_description: item.concept_description,
+  }));
 }
 
 /** The hypothesis named within the pinned case version — requiresEvaluationOf(theCase) names come from theCase.hypotheses itself, so this always finds one; a miss is a caller-contract fault, not a domain outcome, thrown the same way FakeHypothesisEvaluator throws for a fixture nobody seeded. */

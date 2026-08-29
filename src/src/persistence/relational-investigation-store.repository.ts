@@ -49,6 +49,26 @@
 // both columns through unchanged, alongside the eight fields criterion 6
 // names explicitly (this task's own UNDERDETERMINED note).
 //
+// investigation_evidence also carries fields and concept_description
+// (migrations/0013-investigation-evidence-semantics-snapshot.sql,
+// task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot):
+// domain/investigation/evidence's own snapshotted semantics, assembled by
+// evidence-collection-stage.ts at collection time and never re-read
+// afterward. concept_description is a plain TEXT column, the same shape
+// migrations/0012-glossary-concept-description.sql already gave
+// concepts.description. fields is one JSONB column holding the whole
+// snapshotted array, serialized explicitly (JSON.stringify) on write since
+// it is a real array of objects rather than already-held JSON text, and
+// read back as the driver's own parsed JS value on read — the same JSONB
+// shape migrations/0008-connector-configuration.sql and
+// relational-connector-configuration-store.repository.ts already establish
+// for a structured value this schema does not decompose into named columns
+// (this task's own inference, recorded in the delivery record). Both
+// columns carry a DEFAULT ('[]'::jsonb, '') so a row stored before this
+// migration ran reads back the same honest-empty snapshot
+// domain/investigation/evidence already sanctions for exactly that legacy
+// case, never a read failure.
+//
 // Names no import of 'pg': DatabaseConnection and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
@@ -72,6 +92,7 @@ import { EVALUATION_REASONS, type EvaluationReason } from '../investigation/eval
 import type { Evaluation } from '../investigation/evaluation.js';
 import { EVIDENCE_RESULTS, type EvidenceResult } from '../investigation/evidence-result.js';
 import type { Evidence } from '../investigation/evidence.js';
+import type { FieldSemantics } from '../investigation/field-semantics.js';
 import type { IInvestigationStore, StoredInvestigation } from '../investigation/investigation-store.port.js';
 import type { Investigation } from '../investigation/investigation.js';
 import type { SubjectAttributeValue } from '../investigation/subject-attribute-value.js';
@@ -104,7 +125,17 @@ interface IInvestigationRow {
   readonly written_at: Date;
 }
 
-/** One row of "investigation_evidence", exactly the columns beyond its own key. observed_at is typed Date for the same reason IInvestigationRow's written_at is. */
+/**
+ * One row of "investigation_evidence", exactly the columns beyond its own
+ * key. observed_at is typed Date for the same reason IInvestigationRow's
+ * written_at is. fields is typed readonly FieldSemantics[] directly rather
+ * than unknown, because node-postgres already parses a jsonb column into a
+ * plain JS value on read — the same driver auto-conversion
+ * relational-connector-configuration-store.repository.ts's own
+ * IConnectorConfigurationRow.configuration already documents, for a
+ * different jsonb column
+ * (migrations/0013-investigation-evidence-semantics-snapshot.sql).
+ */
 interface IEvidenceRow {
   readonly concept: string;
   readonly inputs: string;
@@ -117,6 +148,8 @@ interface IEvidenceRow {
   readonly capability_name: string;
   readonly capability_version: string;
   readonly elapsed_ms: number;
+  readonly fields: readonly FieldSemantics[];
+  readonly concept_description: string;
 }
 
 /** One row of "investigation_evaluations", exactly the columns beyond its own key. */
@@ -254,12 +287,29 @@ function subjectAttributeValueStatement(investigationId: string, attribute: Subj
   };
 }
 
-/** Inserts one evidence item's own row, whole (domain/investigation/evidence): every declared attribute plus the capability reference this task's own UNDERDETERMINED note requires a column for, plus elapsed_ms (task/investigation-telemetry/evidence-collection-measures-elapsed-ms, 0011-investigation-evidence-elapsed-ms.sql). */
+/**
+ * Inserts one evidence item's own row, whole (domain/investigation/evidence):
+ * every declared attribute plus the capability reference this task's own
+ * UNDERDETERMINED note requires a column for, plus elapsed_ms
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms,
+ * 0011-investigation-evidence-elapsed-ms.sql), plus fields and
+ * concept_description
+ * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot,
+ * migrations/0013-investigation-evidence-semantics-snapshot.sql). fields is
+ * serialized explicitly (JSON.stringify) before it is sent, since it is a
+ * real array of objects rather than already-held JSON text — the driver
+ * would otherwise serialize a JS array as a Postgres array literal instead
+ * of JSON, the same explicit-serialization step
+ * relational-connector-configuration-store.repository.ts's own
+ * insertStatementFor documents for its own jsonb column, adapted here
+ * because that sibling's own domain value already holds JSON text while
+ * this one holds a real array.
+ */
 function evidenceStatement(investigationId: string, evidence: Evidence): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVIDENCE_TABLE}
-             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+             (investigation_id, concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
     params: [
       investigationId,
       evidence.concept,
@@ -273,6 +323,8 @@ function evidenceStatement(investigationId: string, evidence: Evidence): IStatem
       evidence.capability_name,
       evidence.capability_version,
       evidence.elapsed_ms,
+      JSON.stringify(evidence.fields),
+      evidence.concept_description,
     ],
   };
 }
@@ -362,7 +414,7 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   const rows = await runStatement<IEvidenceRow>(
     tx,
     {
-      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms
+      text: `SELECT concept, inputs, observation, observed_at, ttl, origin, result, result_detail, capability_name, capability_version, elapsed_ms, fields, concept_description
              FROM ${INVESTIGATION_EVIDENCE_TABLE} WHERE investigation_id = $1 ORDER BY concept`,
       params: [id],
     },
@@ -375,17 +427,16 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
  * One evidence row assembled into the shape domain/investigation/evidence
  * declares, including the capability pin this task's own UNDERDETERMINED
  * note requires and elapsed_ms
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- * fields and concept_description are not yet columns of this table — no
- * migration for them exists yet
- * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's
- * own objective, which adds both and this function's own read of them) — so
- * a row read back here always answers the same honest empty snapshot
- * domain/investigation/evidence already allows for an evidence item
- * collected before this attribute existed (this delivery's own inference:
- * the sibling task's own second criterion already commits to exactly this
- * degradation for a row stored before its migration runs, and every row
- * this function reads today lacks both columns).
+ * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms),
+ * plus fields and concept_description, read back exactly as the row's own
+ * two columns hold them
+ * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot,
+ * migrations/0013-investigation-evidence-semantics-snapshot.sql). A row
+ * stored before this migration ran answers row.fields as the empty array
+ * and row.concept_description as the empty string — both columns' own
+ * DEFAULT — the same honest-empty snapshot
+ * domain/investigation/evidence already sanctions for exactly that legacy
+ * case, so this read never has to special-case it here.
  */
 function evidenceOf(row: IEvidenceRow): Evidence {
   return {
@@ -400,8 +451,8 @@ function evidenceOf(row: IEvidenceRow): Evidence {
     capability_name: row.capability_name,
     capability_version: row.capability_version,
     elapsed_ms: row.elapsed_ms,
-    fields: [],
-    concept_description: '',
+    fields: row.fields,
+    concept_description: row.concept_description,
   };
 }
 

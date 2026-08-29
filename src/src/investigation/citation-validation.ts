@@ -2,64 +2,49 @@
 // rather than a promise (domain/investigation/citation): every concept a
 // citation names must belong to the judged hypothesis's own collects
 // (rules/investigation/a-citation-stays-within-the-hypothesis-collects), and
-// every field a citation names must exist in the output schema of the
-// capability that produced the cited evidence
-// (rules/investigation/a-cited-field-exists-in-the-capability-output-schema).
-// Pure and synchronous throughout: it reads a hypothesis's own collects, its
-// evidence, and each cited capability's own output schema, all as
-// already-available plain data, and imports no port, no framework, no
-// driver and no provider client
+// every field a citation names must exist among the field names its own
+// cited evidence item snapshotted at collection
+// (rules/investigation/a-cited-field-exists-in-the-capability-output-schema,
+// rules/investigation/judgment-reads-the-evidence-snapshot). Pure and
+// synchronous throughout: it reads a hypothesis's own collects and its
+// evidence — each item already carrying its own producing capability's
+// output-schema field names, snapshotted at the moment that evidence was
+// collected — all as already-available plain data, and imports no port, no
+// framework, no driver and no provider client
 // (constraints/the-domain-depends-on-no-infrastructure) — a live
-// capability-registry lookup, assembling an Evaluation, deciding a verdict
-// or a reason, and any retry-or-fallback over a foreign citation all belong
-// to task/hypothesis-judgment/judgment-stage, never here.
+// capability-registry lookup is never made here or by any caller of this
+// check; assembling an Evaluation, deciding a verdict or a reason, and any
+// retry-or-fallback over a foreign citation all belong to
+// task/hypothesis-judgment/judgment-stage, never here.
 
 import type { Citation } from './citation.js';
 import type { Evidence } from './evidence.js';
 
 /**
- * The serialized output schema of each capability this check may need,
- * keyed by capabilityOutputSchemaKey(capability_name, capability_version) —
- * never keyed by concept alone, since the field rule binds a citation to the
- * schema of the specific capability that produced the cited evidence, not to
- * whichever capability a live registry read would currently answer for that
- * concept (rules/investigation/a-cited-field-exists-in-the-capability-output-schema).
- * Built by the caller from whatever capability data it already resolved —
- * this check makes no registry call of its own and holds none of its own.
- */
-export type CapabilityOutputSchemas = Readonly<Record<string, string>>;
-
-/**
- * The key one capability's output schema is stored under in
- * CapabilityOutputSchemas: its own name and version joined the same way
- * idempotency-key.ts joins its own multi-field lookup key — this
- * codebase's established convention for a composite lookup key
- * (src/investigation/idempotency-key.ts).
- */
-export function capabilityOutputSchemaKey(capabilityName: string, capabilityVersion: string): string {
-  return [capabilityName, capabilityVersion].join('::');
-}
-
-/**
  * Everything one hypothesis's citations are checked against: its own
  * collects (or just that array, per domain/knowledge/hypothesis-revision —
  * this check takes the plain array, never the Hypothesis or Case type, so it
- * models neither), its own evidence (task/evidence-collection/evidence-collection-stage's
- * Evidence, reused as delivered rather than reduced to a parallel shape),
- * and the output schemas of whichever capabilities produced that evidence.
+ * models neither), and its own evidence (task/evidence-collection/evidence-collection-stage's
+ * Evidence, reused as delivered rather than reduced to a parallel shape) —
+ * each item's own snapshotted `fields` is the whole of the vocabulary a
+ * citation naming that item's concept is checked against
+ * (rules/investigation/judgment-reads-the-evidence-snapshot): no separate
+ * output-schema map is built or held by this check or any caller of it, so
+ * a capability re-registered at the same name and version after this
+ * evidence was collected never changes what a citation against it may name
+ * (scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment).
  */
 export type HypothesisCitationContext = {
   readonly collects: readonly string[];
   readonly evidence: readonly Evidence[];
-  readonly outputSchemas: CapabilityOutputSchemas;
 };
 
 /**
  * Whether one proposed citation is accepted: its concept is in the judged
  * hypothesis's own collects
  * (rules/investigation/a-citation-stays-within-the-hypothesis-collects) and
- * its field exists in the output schema of the capability that produced the
- * cited evidence
+ * its field exists among the field names its own cited evidence item
+ * snapshotted at collection
  * (rules/investigation/a-cited-field-exists-in-the-capability-output-schema).
  * Both rules must hold; either failing refuses the citation.
  */
@@ -94,19 +79,21 @@ function citesACollectedConcept(collects: readonly string[], citation: Citation)
 }
 
 /**
- * Rule 2: the citation's field exists in the output schema of the
- * capability that produced this hypothesis's evidence for that same
- * concept. A concept with no matching evidence at all has no capability to
- * point at, so its citations are refused the same way a malformed or absent
- * schema is: as declaring no fields, never as a thrown fault.
+ * Rule 2: the citation's field exists among the field names its own cited
+ * evidence item snapshotted at the moment it was collected
+ * (rules/investigation/a-cited-field-exists-in-the-capability-output-schema,
+ * rules/investigation/judgment-reads-the-evidence-snapshot) — never
+ * resolved through a live capability-registry read. A concept with no
+ * matching evidence at all has no snapshot to point at, so its citations
+ * are refused the same way an evidence item snapshotting no fields at all
+ * is: as declaring none, never as a thrown fault.
  */
 function citesADeclaredField(context: HypothesisCitationContext, citation: Citation): boolean {
   const citedEvidence = context.evidence.find((item) => item.concept === citation.concept);
   if (citedEvidence === undefined) {
     return false;
   }
-  const key = capabilityOutputSchemaKey(citedEvidence.capability_name, citedEvidence.capability_version);
-  return declaredFieldsOf(context.outputSchemas[key]).includes(citation.field);
+  return citedEvidence.fields.some((field) => field.name === citation.field);
 }
 
 /**

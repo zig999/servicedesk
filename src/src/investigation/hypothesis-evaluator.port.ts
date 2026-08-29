@@ -22,6 +22,7 @@
 import type { ObservationOutcome } from './observation-source.port.js';
 import type { Citation } from './citation.js';
 import type { EvaluationReason } from './evaluation-reason.js';
+import type { FieldSemantics } from './field-semantics.js';
 import type { Usage } from './usage.js';
 import type { Verdict } from './verdict.js';
 
@@ -37,15 +38,29 @@ import type { Verdict } from './verdict.js';
  * that node, and evaluate()
  * takes only what grounds a judgment call, mirroring the concept's own
  * ObservationOutcome rather than inventing a second representation of it.
- * `declaredFields` is the field-name vocabulary
- * constraints/the-judgment-prompt-is-closed's own fifth permitted entry
- * admits: the `properties` keys of this concept's own producing capability's
- * output schema, resolved by the caller before evaluate() is ever invoked, so
- * a citation naming one satisfies
- * rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+ * `fields` and `concept_description` are the snapshotted semantics
+ * constraints/the-judgment-prompt-is-closed's own closed block admits
+ * alongside the concept and the observation
+ * (rules/investigation/judgment-reads-the-evidence-snapshot): each field's
+ * own name, and its own type and description where declared
+ * (domain/investigation/field-semantics), plus the concept's own description,
+ * exactly as the evidence itself snapshotted them at collection — never
+ * re-read from the glossary or the capability registry here or by any
+ * caller of this port. A citation naming one of an item's own field names
+ * satisfies rules/investigation/a-cited-field-exists-in-the-capability-output-schema
  * without the model ever being shown the schema itself.
+ * `concept_description` is the empty string for a concept collected before
+ * it declared one, or one the glossary never held
+ * (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone) —
+ * this port carries that snapshot exactly as given, deciding nothing about
+ * what an empty value means beyond what the adapter's own prompt assembly
+ * renders for it.
  */
-export type EvidenceItem = { readonly concept: string; readonly declaredFields: readonly string[] } & ObservationOutcome;
+export type EvidenceItem = {
+  readonly concept: string;
+  readonly fields: readonly FieldSemantics[];
+  readonly concept_description: string;
+} & ObservationOutcome;
 
 /**
  * What one evaluate() call answers (domain/investigation/evaluation): the

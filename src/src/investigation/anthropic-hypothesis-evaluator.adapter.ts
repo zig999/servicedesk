@@ -1,14 +1,17 @@
 // The production IHypothesisEvaluator adapter
 // (task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator): judges one
-// hypothesis's criterion against its own evidence, the field names each
-// evidence item's own producing capability declares, and the pinned case's
-// own title and when_to_use, by calling the Anthropic API through
-// @anthropic-ai/sdk and no other HTTP client
+// hypothesis's criterion against its own evidence — each item carrying its
+// own snapshotted field semantics (name, and type and description where
+// declared) and its concept's own snapshotted description
+// (rules/investigation/judgment-reads-the-evidence-snapshot) — and the
+// pinned case's own title and when_to_use, by calling the Anthropic API
+// through @anthropic-ai/sdk and no other HTTP client
 // (constraints/judgment-runs-behind-a-port, STK-11). Prompt assembly is a
-// pure function of exactly those five inputs, placed inside one closed,
-// delimited data block, with a fixed system instruction and no tool granted
-// on the request (constraints/the-judgment-prompt-is-closed): the model can
-// never be led to act, only to answer. Evidence whose own result is not ok
+// pure function of exactly the criterion, the evidence's own snapshotted
+// semantics, and the pinned case's title and when_to_use, placed inside one
+// closed, delimited data block, with a fixed system instruction and no tool
+// granted on the request (constraints/the-judgment-prompt-is-closed): the
+// model can never be led to act, only to answer. Evidence whose own result is not ok
 // grounds nothing, so it is answered inconclusive with reason no-data,
 // citing exactly that evidence, without ever reaching the model
 // (rules/investigation/an-inconclusive-evaluation-declares-its-reason's own
@@ -41,6 +44,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import type { Citation } from './citation.js';
+import type { FieldSemantics } from './field-semantics.js';
 import type {
   CaseContext,
   EvaluationOutcome,
@@ -62,15 +66,15 @@ import { VERDICTS, type Verdict } from './verdict.js';
  */
 const SYSTEM_PROMPT = `You judge whether the criterion of one troubleshooting hypothesis is confirmed or refuted, using only the evidence given to you.
 
-Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, lists the field names its own "fields" attribute declares, and carries the observation collected for it.
+Ground every verdict in the <judgment_input> block of the user message. The absence of evidence that would ground a verdict is itself a reason to answer inconclusively — never an invitation to infer, assume, or draw on anything beyond the <criterion>, <evidence>, <case_title> and <case_when_to_use> the block carries. Do not consult outside knowledge, and never let the case's title or when-to-use substitute for evidence. Each <item> inside <evidence> names its own concept, carries a <concept_description> naming what that concept means wherever one is known (absent where none is — the item is then known by its concept alone, with no stated meaning), lists its own <field> elements inside <fields> — each naming itself and, wherever known, its own type and a description of what it means — and carries its own <observation>.
 
 Answer with exactly one JSON object and nothing else — no prose before or after it, no markdown code fence — matching exactly one of these three shapes:
 
-{"verdict":"confirmed","citations":[{"concept":"<a concept named in <evidence>>","field":"<one of that item's own declared fields>"}]}
-{"verdict":"refuted","citations":[{"concept":"<a concept named in <evidence>>","field":"<one of that item's own declared fields>"}]}
+{"verdict":"confirmed","citations":[{"concept":"<a concept named in <evidence>>","field":"<the name of one of that item's own <field> elements>"}]}
+{"verdict":"refuted","citations":[{"concept":"<a concept named in <evidence>>","field":"<the name of one of that item's own <field> elements>"}]}
 {"verdict":"inconclusive"}
 
-A citation's field must be copied exactly from the fields its own item declares — never invented, never the observation's own text. Use "confirmed" or "refuted" only where the evidence's own content grounds that verdict, with at least one citation naming the evidence that grounds it. Use "inconclusive" whenever the evidence does not ground either, or whenever the item that would ground it declares no fields at all.`;
+A citation's field must be copied exactly from the name one of its own item's <field> elements declares — never invented, never the observation's own text, and never a field named on another item. Use "confirmed" or "refuted" only where the evidence's own content grounds that verdict, with at least one citation naming the evidence that grounds it. Use "inconclusive" whenever the evidence does not ground either, or whenever the item that would ground it declares no fields at all.`;
 
 /** The token ceiling this adapter asks the provider for when a caller configures none — an operational bound no specification node names, never a domain fact. */
 const DEFAULT_MAX_TOKENS = 1024;
@@ -251,12 +255,14 @@ function parseJudgment(text: string): ParsedJudgment | undefined {
 
 /**
  * The whole prompt one evaluate() call sends, a pure function of exactly its
- * own five permitted inputs — this hypothesis's own criterion and evidence,
- * each evidence item's own declared field names, and the pinned case's own
- * title and when_to_use — inside one closed, delimited data block
- * (constraints/the-judgment-prompt-is-closed): the same five inputs always
- * render this same text, and nothing else (another hypothesis's own
- * criterion, a subject's own attribute) ever enters it.
+ * own permitted inputs — this hypothesis's own criterion, its evidence's own
+ * snapshotted field semantics and concept descriptions
+ * (rules/investigation/judgment-reads-the-evidence-snapshot), and the pinned
+ * case's own title and when_to_use — inside one closed, delimited data block
+ * (constraints/the-judgment-prompt-is-closed): the same inputs always render
+ * this same text, and nothing else (another hypothesis's own criterion, a
+ * subject's own attribute, a live glossary or capability-registry read) ever
+ * enters it.
  */
 function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], caseContext: CaseContext): string {
   return [
@@ -278,21 +284,47 @@ function buildUserPrompt(criterion: string, evidence: readonly EvidenceItem[], c
 }
 
 /**
- * One <item> per evidence entry, each naming its own concept, listing its
- * own declared fields as a space-separated "fields" attribute
- * (constraints/the-judgment-prompt-is-closed's own fifth permitted entry —
+ * One <item> per evidence entry, each naming its own concept, carrying its
+ * own snapshotted <concept_description> where one is known
+ * (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone's
+ * own "named by its concept alone" for the empty case, honored by
+ * conceptDescriptionLines below omitting the tag entirely rather than
+ * rendering it empty), listing its own <field> elements inside <fields> —
  * the field-name vocabulary a citation over this item may draw from, never
- * the schema itself), and carrying its own observation — every entry is
+ * the schema itself — and carrying its own <observation>. Every entry is
  * 'ok' by the time evaluate() calls this, the non-ok case having already
  * answered no-data without reaching here.
  */
 function evidenceBlock(evidence: readonly EvidenceItem[]): string {
-  return evidence
-    .map(
-      (item) =>
-        `<item concept="${escapeForXmlAttribute(item.concept)}" fields="${escapeForXmlAttribute(item.declaredFields.join(' '))}">${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</item>`,
-    )
-    .join('\n');
+  return evidence.map(itemBlock).join('\n');
+}
+
+/** One evidence item's own closed-block rendering: its concept, its own snapshotted concept description where one is known, its own fields, and its own observation — every piece escaped, so nothing an item carries can be read as markup or as an instruction. */
+function itemBlock(item: EvidenceItem): string {
+  return [
+    `<item concept="${escapeForXmlAttribute(item.concept)}">`,
+    ...conceptDescriptionLines(item.concept_description),
+    fieldsBlock(item.fields),
+    `<observation>${item.result === 'ok' ? escapeForXmlText(item.observation) : ''}</observation>`,
+    '</item>',
+  ].join('\n');
+}
+
+/** The item's own snapshotted concept description as one escaped <concept_description> line, or no line at all where the snapshot is the empty string — an item collected before its concept declared one, or one the glossary never held, is then named by its concept alone, with no stated meaning (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone). */
+function conceptDescriptionLines(conceptDescription: string): readonly string[] {
+  return conceptDescription === '' ? [] : [`<concept_description>${escapeForXmlText(conceptDescription)}</concept_description>`];
+}
+
+/** This item's own snapshotted field semantics, one <field> per entry inside <fields> — empty where the item's own capability never resolved and snapshotted no fields at all (domain/investigation/evidence). */
+function fieldsBlock(fields: readonly FieldSemantics[]): string {
+  return ['<fields>', ...fields.map(fieldElement), '</fields>'].join('\n');
+}
+
+/** One field's own name, plus its own type attribute and description text exactly where the snapshot declared them — never invented where the schema declared neither. */
+function fieldElement(field: FieldSemantics): string {
+  const typeAttribute = field.type !== undefined ? ` type="${escapeForXmlAttribute(field.type)}"` : '';
+  const description = field.description !== undefined ? escapeForXmlText(field.description) : '';
+  return `<field name="${escapeForXmlAttribute(field.name)}"${typeAttribute}>${description}</field>`;
 }
 
 /** Escapes text placed between two tags of the closed data block, keeping evidence content data rather than markup that could otherwise break the block's own closure (constraints/the-judgment-prompt-is-closed). */

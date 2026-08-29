@@ -1,24 +1,31 @@
-// Proof for task/hypothesis-judgment/judgment-stage: judgeHypotheses answers
-// exactly one Evaluation per requiresEvaluationOf(theCase) name, in that
-// order — an immediate no-data for a hypothesis whose evidence is not all
-// ok, otherwise one isolated evaluate() call under a caller-configured
-// in-process pool, racing the one shared deadline signal timed once from
-// now/deadline, retrying exactly once on a structurally invalid citation set
-// where that deadline still admits it, and degrading every other path to
-// deadline-exceeded or judgment-failure. Fake timers stand in for wall-clock
-// time throughout, since the stage races both a pool acquisition and an
-// evaluate() call against a real setTimeout-based deadline internally — the
-// same discipline evidence-collection-stage.spec.ts already establishes for
-// its own race, including its settled-flag-between-advances technique for
-// observing an in-flight state before a later advance resolves it.
+// Proof for task/hypothesis-judgment/judgment-stage, widened by
+// task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry:
+// judgeHypotheses answers exactly one Evaluation per requiresEvaluationOf(theCase)
+// name, in that order — an immediate no-data for a hypothesis whose evidence
+// is not all ok, otherwise one isolated evaluate() call under a
+// caller-configured in-process pool, racing the one shared deadline signal
+// timed once from now/deadline, retrying exactly once on a structurally
+// invalid citation set where that deadline still admits it, and degrading
+// every other path to deadline-exceeded or judgment-failure. Every citation
+// check and every evaluate() call is now built straight from each
+// hypothesis's own (already-collected) Evidence[] — its own already-
+// snapshotted `fields` and `concept_description` — never from a live
+// capability-registry read: this file constructs no capability-registry
+// fake at all, only Evidence values carrying their own fields directly
+// (rules/investigation/judgment-reads-the-evidence-snapshot). Fake timers
+// stand in for wall-clock time throughout, since the stage races both a pool
+// acquisition and an evaluate() call against a real setTimeout-based
+// deadline internally — the same discipline evidence-collection-stage.spec.ts
+// already establishes for its own race, including its
+// settled-flag-between-advances technique for observing an in-flight state
+// before a later advance resolves it.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import type { Capability } from '../../../capability-registry/capability.js';
-import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import type { Case, Hypothesis, ManifestEntry } from '../../../case/case.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
+import type { FieldSemantics } from '../../../investigation/field-semantics.js';
 import type { CaseContext, EvaluationOutcome, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import { judgeHypotheses } from '../../../investigation/judgment-stage.js';
 import type { Usage } from '../../../investigation/usage.js';
@@ -108,7 +115,7 @@ function aCaseWithMismatchedHypotheses(
   };
 }
 
-/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. fields/concept_description default empty: this file's own tests are about judgeHypotheses, never about the snapshot itself (evidence-collection-stage.spec.ts and field-semantics.spec.ts are). */
+/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. fields/concept_description default empty: most of this file's own tests are about judgeHypotheses's own control flow, never about the snapshot's own content (evidence-collection-stage.spec.ts and field-semantics.spec.ts are) — the tests that are about a citation's field checking set fields explicitly. */
 function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
   return {
     inputs: 'an-input',
@@ -126,47 +133,9 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
   };
 }
 
-/** A JSON-Schema-shaped output_schema declaring exactly the given field names as top-level `properties` keys. */
-function schemaDeclaring(...fields: readonly string[]): string {
-  return JSON.stringify({
-    type: 'object',
-    properties: Object.fromEntries(fields.map((field) => [field, { type: 'string' }])),
-  });
-}
-
-/** A capability registered for exactly one concept, every other attribute defaulted so a test states only what it is about. */
-function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability {
-  return {
-    name: `capability-for-${overrides.concept}`,
-    version: '1.0.0',
-    nature: 'read-only',
-    input_schema: 'input-schema',
-    output_schema: schemaDeclaring(),
-    timeout: 60_000,
-    connector: `connector-for-${overrides.concept}`,
-    ...overrides,
-  };
-}
-
-/** Holds whatever capabilities a test registers, resolving every other concept as unheld — outputSchemasFor's own upstream, standing in for the capability registry. */
-class FakeCapabilityQuery implements ICapabilityQuery {
-  private readonly held = new Map<string, Capability>();
-
-  public hold(capability: Capability): void {
-    this.held.set(capability.concept, capability);
-  }
-
-  public async readCapability(concept: string): Promise<CapabilityResolution> {
-    const capability = this.held.get(concept);
-    return capability === undefined ? { held: false, concept } : { held: true, capability };
-  }
-
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
-  // (task/capability-registry-http/list-capabilities-query-extension): this
-  // file's own scenarios never call listCapabilities.
-  public async listCapabilities(): Promise<never> {
-    throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
-  }
+/** The field names given, each as a bare FieldSemantics entry (no type or description) — exactly the shape an evidence item's own `fields` snapshot carries, never a JSON-Schema-shaped output_schema string resolved live from a capability registry. */
+function fieldsDeclaring(...names: readonly string[]): readonly FieldSemantics[] {
+  return names.map((name) => ({ name }));
 }
 
 /** One call ScriptedHypothesisEvaluator answered, recorded exactly as evaluate() received it. */
@@ -224,9 +193,6 @@ function neverSettles(): Promise<EvaluationOutcome> {
 }
 
 it("answers exactly one evaluation per required hypothesis, in the case's declared order, none omitted or duplicated", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('hyp-decided criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }));
   evaluator.script('hyp-inconclusive criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
@@ -237,12 +203,12 @@ it("answers exactly one evaluation per required hypothesis, in the case's declar
   ]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
     ['hyp-no-data', [anEvidence({ concept: 'concept-x', result: 'denied' })]],
-    ['hyp-decided', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['hyp-decided', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
     ['hyp-inconclusive', [anEvidence({ concept: 'concept-c' })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 2, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 10_000,
   });
 
   expect(result.map((evaluation) => evaluation.hypothesis)).toEqual(['hyp-no-data', 'hyp-decided', 'hyp-inconclusive']);
@@ -250,7 +216,6 @@ it("answers exactly one evaluation per required hypothesis, in the case's declar
 });
 
 it("calls evaluate() with only the judged hypothesis's own criterion and its own matched evidence, never another hypothesis's", async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
   evaluator.script('h2 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
@@ -263,35 +228,37 @@ it("calls evaluate() with only the judged hypothesis's own criterion and its own
     ['h2', [anEvidence({ concept: 'concept-b', observation: 'observed-b' })]],
   ]);
 
-  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 2, now: 0, deadline: 10_000 });
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 10_000 });
 
   expect(evaluator.calls).toHaveLength(2);
   const forH1 = evaluator.calls.find((call) => call.criterion === 'h1 criterion');
   const forH2 = evaluator.calls.find((call) => call.criterion === 'h2 criterion');
-  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', declaredFields: [] }]);
-  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', declaredFields: [] }]);
+  expect(forH1?.evidence).toEqual([{ concept: 'concept-a', result: 'ok', observation: 'observed-a', fields: [], concept_description: '' }]);
+  expect(forH2?.evidence).toEqual([{ concept: 'concept-b', result: 'ok', observation: 'observed-b', fields: [], concept_description: '' }]);
 });
 
-it("passes each evidence item's own declared field names, read from its producing capability's own output schema, to evaluate() — before the first call is ever made, never only after a decided answer", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a', 'field-b') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
+it("passes each evidence item's own snapshotted field semantics and concept description to evaluate() — read straight from the evidence it was given, never resolved live — before the first call is ever made, never only after a decided answer", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a', 'field-b'), concept_description: 'a concept description' })]],
   ]);
 
-  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000 });
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 });
 
   expect(evaluator.calls[0]?.evidence).toEqual([
-    { concept: 'concept-a', result: 'ok', observation: 'an-observation', declaredFields: ['field-a', 'field-b'] },
+    {
+      concept: 'concept-a',
+      result: 'ok',
+      observation: 'an-observation',
+      fields: fieldsDeclaring('field-a', 'field-b'),
+      concept_description: 'a concept description',
+    },
   ]);
 });
 
 it("passes the same pinned case's own title and when_to_use, grouped as CaseContext, to every hypothesis judged in one judgeHypotheses() call — never a different context per hypothesis", async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
   evaluator.script('h2 criterion', immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }));
@@ -304,7 +271,7 @@ it("passes the same pinned case's own title and when_to_use, grouped as CaseCont
     ['h2', [anEvidence({ concept: 'concept-b' })]],
   ]);
 
-  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 2, now: 0, deadline: 10_000 });
+  await judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 10_000 });
 
   expect(evaluator.calls).toHaveLength(2);
   const expectedContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
@@ -313,7 +280,6 @@ it("passes the same pinned case's own title and when_to_use, grouped as CaseCont
 });
 
 it('never starts more evaluate() calls at once than the configured pool size, granting a queued hypothesis its call only once an earlier one frees a slot', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const inconclusive: EvaluationOutcome = { verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
   evaluator.script('h1 criterion', resolvesAfter(10, inconclusive));
@@ -331,7 +297,7 @@ it('never starts more evaluate() calls at once than the configured pool size, gr
   ]);
 
   const resultPromise = judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 2, now: 0, deadline: 100_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 2, now: 0, deadline: 100_000,
   });
 
   await vi.advanceTimersByTimeAsync(1);
@@ -346,9 +312,6 @@ it('never starts more evaluate() calls at once than the configured pool size, gr
 });
 
 it("retries once on a decided answer whose citations fail structural validation, and returns the retry's valid decided answer", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
     'h1 criterion',
@@ -357,11 +320,11 @@ it("retries once on a decided answer whose citations fail structural validation,
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }]);
@@ -369,9 +332,6 @@ it("retries once on a decided answer whose citations fail structural validation,
 });
 
 it("passes the pinned case's own title and when_to_use, unchanged, to both the first evaluate() call and the retry it forces", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
     'h1 criterion',
@@ -380,11 +340,11 @@ it("passes the pinned case's own title and when_to_use, unchanged, to both the f
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(evaluator.calls).toHaveLength(2);
@@ -394,9 +354,6 @@ it("passes the pinned case's own title and when_to_use, unchanged, to both the f
 });
 
 it("falls back to inconclusive judgment-failure when the retry's citations are also structurally invalid", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   const invalidCitation: readonly [Citation, ...Citation[]] = [{ concept: 'concept-foreign', field: 'field-a' }];
   evaluator.script(
@@ -406,11 +363,11 @@ it("falls back to inconclusive judgment-failure when the retry's citations are a
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
@@ -418,14 +375,13 @@ it("falls back to inconclusive judgment-failure when the retry's citations are a
 });
 
 it("records deadline-exceeded, never judgment-failure, for a call that has not returned by the stage's deadline", async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', neverSettles);
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const resultPromise = judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 5,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 5,
   });
   await vi.advanceTimersByTimeAsync(5);
   const result = await resultPromise;
@@ -435,7 +391,6 @@ it("records deadline-exceeded, never judgment-failure, for a call that has not r
 });
 
 it('records deadline-exceeded for a hypothesis denied a pool slot before the deadline, and never calls evaluate() for it at all', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', neverSettles);
   const theCase = aCase([
@@ -448,7 +403,7 @@ it('records deadline-exceeded for a hypothesis denied a pool slot before the dea
   ]);
 
   const resultPromise = judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 5,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 5,
   });
   await vi.advanceTimersByTimeAsync(5);
   const result = await resultPromise;
@@ -461,7 +416,6 @@ it('records deadline-exceeded for a hypothesis denied a pool slot before the dea
 });
 
 it('records inconclusive no-data citing every non-ok evidence item, and never enters the pool for that hypothesis', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCase([{ name: 'h1', collects: ['concept-ok', 'concept-denied', 'concept-timeout'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
@@ -476,7 +430,7 @@ it('records inconclusive no-data citing every non-ok evidence item, and never en
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([
@@ -491,25 +445,21 @@ it('records inconclusive no-data citing every non-ok evidence item, and never en
 });
 
 it('passes through a confirmed answer with at least one citation unchanged', async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }));
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }]);
 });
 
 it('never returns confirmed or refuted for a decided answer carrying zero citations, even across a retry that also carries none', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const zeroCitationConfirmed = { verdict: 'confirmed', citations: [] } as unknown as EvaluationOutcome;
   evaluator.script('h1 criterion', immediately(zeroCitationConfirmed), immediately(zeroCitationConfirmed));
@@ -517,7 +467,7 @@ it('never returns confirmed or refuted for a decided answer carrying zero citati
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
@@ -525,21 +475,15 @@ it('never returns confirmed or refuted for a decided answer carrying zero citati
 });
 
 /**
- * The registry, scripted evaluator, case and evidence for the retry-same-slot
- * test below: h1 holds the only pool slot, its first call is a structurally
+ * The scripted evaluator, case and evidence for the retry-same-slot test
+ * below: h1 holds the only pool slot, its first call is a structurally
  * invalid citation forcing a slower retry, and h2 queues behind it.
  */
 function retrySameSlotFixture(): {
-  readonly capabilities: FakeCapabilityQuery;
   readonly evaluator: ScriptedHypothesisEvaluator;
   readonly theCase: Case;
   readonly evidenceByHypothesis: ReadonlyMap<string, readonly Evidence[]>;
 } {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capB = aCapability({ concept: 'concept-b', output_schema: schemaDeclaring('field-b') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
-  capabilities.hold(capB);
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
     'h1 criterion',
@@ -552,17 +496,17 @@ function retrySameSlotFixture(): {
     { name: 'h2', collects: ['concept-b'] },
   ]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
-    ['h2', [anEvidence({ concept: 'concept-b', capability_name: capB.name, capability_version: capB.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
+    ['h2', [anEvidence({ concept: 'concept-b', fields: fieldsDeclaring('field-b') })]],
   ]);
-  return { capabilities, evaluator, theCase, evidenceByHypothesis };
+  return { evaluator, theCase, evidenceByHypothesis };
 }
 
 it("keeps a hypothesis's retry under the same pool slot it already holds, never granting a queued sibling a slot while the retry is in flight", async () => {
-  const { capabilities, evaluator, theCase, evidenceByHypothesis } = retrySameSlotFixture();
+  const { evaluator, theCase, evidenceByHypothesis } = retrySameSlotFixture();
 
   const resultPromise = judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 100_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 100_000,
   });
 
   await vi.advanceTimersByTimeAsync(2); // past h1's first (1ms), which starts the retry immediately
@@ -578,7 +522,6 @@ it("keeps a hypothesis's retry under the same pool slot it already holds, never 
 });
 
 it('passes an inconclusive first answer through unchanged, with no retry attempted', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({
     verdict: 'inconclusive',
@@ -589,7 +532,7 @@ it('passes an inconclusive first answer through unchanged, with no retry attempt
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{
@@ -664,7 +607,6 @@ it("hypothesisNamed()'s doc comment attributes the lookup to the pinned case ver
 });
 
 it('passes an inconclusive retry answer through unchanged', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
     'h1 criterion',
@@ -675,7 +617,7 @@ it('passes an inconclusive retry answer through unchanged', async () => {
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{
@@ -690,9 +632,6 @@ it('passes an inconclusive retry answer through unchanged', async () => {
 // ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criteria 3 and 4, and the inference over which discarded calls carry no call record
 
 it("attaches the usage, elapsed_ms and prompt a first call's own decided, structurally valid answer returned, onto the resulting Evaluation", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   const usage: Usage = { input_tokens: 10, output_tokens: 20 };
   evaluator.script(
@@ -701,11 +640,11 @@ it("attaches the usage, elapsed_ms and prompt a first call's own decided, struct
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([
@@ -714,7 +653,6 @@ it("attaches the usage, elapsed_ms and prompt a first call's own decided, struct
 });
 
 it("attaches the usage, elapsed_ms and prompt a first call's own inconclusive answer returned, passed through unchanged", async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const usage: Usage = { input_tokens: 5, output_tokens: 7 };
   evaluator.script('h1 criterion', immediately({
@@ -729,7 +667,7 @@ it("attaches the usage, elapsed_ms and prompt a first call's own inconclusive an
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([
@@ -738,9 +676,6 @@ it("attaches the usage, elapsed_ms and prompt a first call's own inconclusive an
 });
 
 it("attaches the retry's own usage, elapsed_ms and prompt — never the discarded first call's — onto the decided answer the retry accepted", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   const firstCallUsage: Usage = { input_tokens: 1, output_tokens: 1 };
   const retryUsage: Usage = { input_tokens: 999, output_tokens: 888 };
@@ -749,18 +684,17 @@ it("attaches the retry's own usage, elapsed_ms and prompt — never the discarde
   evaluator.script('h1 criterion', immediately(invalidFirst), immediately(validRetry));
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', ...validRetry }]);
 });
 
 it('a no-data evaluation carries no usage, elapsed_ms or prompt key at all — judgment was never called for it', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCase([{ name: 'h1', collects: ['concept-denied'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
@@ -768,7 +702,7 @@ it('a no-data evaluation carries no usage, elapsed_ms or prompt key at all — j
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result[0]).not.toHaveProperty('usage');
@@ -777,14 +711,13 @@ it('a no-data evaluation carries no usage, elapsed_ms or prompt key at all — j
 });
 
 it('a deadline-exceeded evaluation carries no usage, elapsed_ms or prompt key, for a call that never settled before the deadline', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', neverSettles);
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   const resultPromise = judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 5,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 5,
   });
   await vi.advanceTimersByTimeAsync(5);
   const result = await resultPromise;
@@ -795,9 +728,6 @@ it('a deadline-exceeded evaluation carries no usage, elapsed_ms or prompt key, f
 });
 
 it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even though the discarded retry's own decided answer carried all three — a call that happened but whose citations this stage itself invalidates is not a call this Evaluation records", async () => {
-  const capA = aCapability({ concept: 'concept-a', output_schema: schemaDeclaring('field-a') });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(capA);
   const evaluator = new ScriptedHypothesisEvaluator();
   const invalidCitation: readonly [Citation, ...Citation[]] = [{ concept: 'concept-foreign', field: 'field-a' }];
   const someUsage: Usage = { input_tokens: 3, output_tokens: 4 };
@@ -808,11 +738,11 @@ it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even t
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    ['h1', [anEvidence({ concept: 'concept-a', capability_name: capA.name, capability_version: capA.version })]],
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
@@ -821,30 +751,46 @@ it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even t
   expect(result[0]).not.toHaveProperty('prompt');
 });
 
-it("refuses a citation whose field is declared only under a capability output-schema key that does not match the cited evidence's own capability_name/capability_version", async () => {
-  const currentlyRegistered = aCapability({
-    concept: 'a-concept',
-    name: 'cap-new',
-    version: '2.0.0',
-    output_schema: schemaDeclaring('a-field'),
-  });
-  const capabilities = new FakeCapabilityQuery();
-  capabilities.hold(currentlyRegistered); // the registry's own CURRENT answer for this concept — not what produced the evidence
+// ---------- task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry: criterion 3 —
+// scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+
+it("accepts a citation naming a field the evidence item's own snapshot declared at collection, even though a capability now re-registered at that same name and version would declare a different set of fields entirely", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
-  const mismatchedCitation: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];
-  evaluator.script(
-    'h1 criterion',
-    immediately({ verdict: 'confirmed', citations: mismatchedCitation }),
-    immediately({ verdict: 'confirmed', citations: mismatchedCitation }),
-  );
+  evaluator.script('h1 criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'field-collected' }] }));
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+  // Snapshotted at collection time, against the capability as it stood then: only 'field-collected'.
+  // A capability later re-registered at this same capability_name/capability_version — this stage
+  // never reads any registry at all any more, so there is nothing here even standing in for one —
+  // could now declare an entirely different set (e.g. only 'field-after-reregistration'); this
+  // already-collected evidence item's own fields never change to reflect that.
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
-    // the evidence's own producing capability is cap-old/1.0.0 — never the one the registry now answers
-    ['h1', [anEvidence({ concept: 'a-concept', capability_name: 'cap-old', capability_version: '1.0.0' })]],
+    ['h1', [anEvidence({ concept: 'a-concept', capability_name: 'cap-x', capability_version: '1.0.0', fields: fieldsDeclaring('field-collected') })]],
   ]);
 
   const result = await judgeHypotheses({
-    case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000,
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'field-collected' }] }]);
+});
+
+it("refuses a citation naming a field only a capability re-registered after collection would declare — a field absent from the evidence item's own snapshot taken at collection — never letting a live-resolved schema leak into an already-collected item's judgment", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const wouldOnlyExistAfterReregistration: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'field-after-reregistration' }];
+  evaluator.script(
+    'h1 criterion',
+    immediately({ verdict: 'confirmed', citations: wouldOnlyExistAfterReregistration }),
+    immediately({ verdict: 'confirmed', citations: wouldOnlyExistAfterReregistration }),
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
+  // This evidence item's own snapshot, fixed at collection, declares only 'field-collected' —
+  // never 'field-after-reregistration', the field a later re-registration would add.
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'a-concept', capability_name: 'cap-x', capability_version: '1.0.0', fields: fieldsDeclaring('field-collected') })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
   expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
@@ -852,24 +798,22 @@ it("refuses a citation whose field is declared only under a capability output-sc
 });
 
 it('throws naming the missing hypothesis when evidenceByHypothesis carries no entry for a required hypothesis', async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>(); // no entry for h1 at all
 
   await expect(
-    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000 }),
+    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
   ).rejects.toThrow(/h1/);
 });
 
 it("throws naming the hypothesis when a required name is not found among the case's own hypotheses", async () => {
-  const capabilities = new FakeCapabilityQuery();
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCaseWithMismatchedHypotheses([aHypothesis('h1', ['concept-a'])], []);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
   await expect(
-    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, capabilities, poolSize: 1, now: 0, deadline: 10_000 }),
+    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
   ).rejects.toThrow(/h1/);
 });
 
@@ -886,11 +830,22 @@ it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing conseq
 
 // ---------- task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution: doc-comment ordinal
 
-it("runIsolatedCall()'s doc comment states field names as constraints/the-judgment-prompt-is-closed's own third permitted prompt entry, not its fifth", async () => {
+it("runIsolatedCall()'s doc comment states field names as constraints/the-judgment-prompt-is-closed's own third permitted entry, not its fifth", async () => {
   const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
 
   expect(comment).toContain(
-    "constraints/the-judgment-prompt-is-closed's own third permitted entry puts each evidence item's declared field names inside the very prompt this call sends",
+    "constraints/the-judgment-prompt-is-closed's own third permitted entry puts those same snapshotted field names inside the very prompt this call sends",
   );
   expect(comment).not.toMatch(/the-judgment-prompt-is-closed's own fifth permitted entry/);
+});
+
+// ---------- task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry: criterion 2 —
+// judgeHypotheses judges a hypothesis without taking a capability-registry dependency
+
+it('imports no ICapabilityQuery and reads no capability-registry port at all — judgeHypotheses takes only evidence already collected, never a registry to resolve live', async () => {
+  const source = await moduleSource();
+
+  expect(source).not.toMatch(/ICapabilityQuery/);
+  expect(source).not.toMatch(/capability-query\.port/);
+  expect(source).not.toMatch(/outputSchemasFor/);
 });
