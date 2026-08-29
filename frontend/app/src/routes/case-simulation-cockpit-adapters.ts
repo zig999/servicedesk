@@ -223,6 +223,13 @@ export function toDetailEvaluation(evaluation: CockpitEvaluation): DetailEvaluat
  * carries evidence (use-simulate-hypothesis.ts's own SimulateHypothesisResult
  * carries none at all), so this is only ever called with a full-case run's
  * own `evidence` array.
+ *
+ * Reads `capability_name`/`capability_version` as the two flat fields
+ * use-simulate-case.ts's own SimulateEvidenceItem actually declares them as
+ * (flatten-detail-evidence-capability-reference, a corrective increment):
+ * this function previously dereferenced a nested `item.capability.name`/
+ * `item.capability.version` that no simulate response has ever sent,
+ * throwing at render time on a real response's own evidence item.
  */
 export function toDetailEvidence(
   evidence: readonly SimulateEvidenceItem[],
@@ -233,11 +240,9 @@ export function toDetailEvidence(
     resultDetail: item.result_detail,
     elapsedMs: item.elapsed_ms,
     observation: item.observation,
-    capability: {
-      name: item.capability.name,
-      version: item.capability.version,
-      connector: item.origin,
-    },
+    capabilityName: item.capability_name,
+    capabilityVersion: item.capability_version,
+    connector: item.origin,
   }));
 }
 

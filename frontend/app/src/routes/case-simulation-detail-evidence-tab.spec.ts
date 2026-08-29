@@ -4,7 +4,6 @@ import { render, screen } from "@testing-library/react";
 import { CaseSimulationDetailEvidenceTab } from "./case-simulation-detail-evidence-tab";
 import {
   testCalledJudgment,
-  testCapability,
   testEvidenceItem,
 } from "./case-simulation-detail-panel.test-support";
 import type { SimulationJudgmentCall } from "./case-simulation-detail-types";
@@ -25,11 +24,9 @@ describe("CaseSimulationDetailEvidenceTab -- per collected concept (criterion 3)
             concept: "Balance",
             result: "ok",
             elapsedMs: 120,
-            capability: testCapability({
-              name: "translate-text",
-              version: "1.0.0",
-              connector: "deepl-connector",
-            }),
+            capabilityName: "translate-text",
+            capabilityVersion: "1.0.0",
+            connector: "deepl-connector",
           }),
         ],
         judgmentCall: NOT_CALLED,
@@ -107,7 +104,7 @@ describe("CaseSimulationDetailEvidenceTab -- per collected concept (criterion 3)
           testEvidenceItem({ concept: "Balance" }),
           testEvidenceItem({
             concept: "AccountStatus",
-            capability: testCapability({ connector: "core-banking-connector" }),
+            connector: "core-banking-connector",
           }),
         ],
         judgmentCall: NOT_CALLED,

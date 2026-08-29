@@ -1,6 +1,5 @@
 import type {
   CaseSimulationDetailPanelProps,
-  SimulationCapabilityReference,
   SimulationEvaluation,
   SimulationEvidenceItem,
   SimulationHypothesisRevisionSummary,
@@ -12,18 +11,13 @@ import type {
  * value per type this region reads, overridable per test, mirroring this app's own established
  * test-support convention (e.g. connector-test-panel.test-support.ts's own
  * testCapability/testConnectorResult).
+ *
+ * flatten-detail-evidence-capability-reference (a corrective increment): testEvidenceItem's own
+ * capability/connector default now carries capabilityName, capabilityVersion and connector as
+ * three flat fields, matching SimulationEvidenceItem's own corrected shape -- SimulationCapabilityReference
+ * and the testCapability() helper that built it are both removed; neither has a nested slot left
+ * to build for, since this type nests nothing.
  */
-
-export function testCapability(
-  overrides: Partial<SimulationCapabilityReference> = {},
-): SimulationCapabilityReference {
-  return {
-    name: "translate-text",
-    version: "1.0.0",
-    connector: "deepl-connector",
-    ...overrides,
-  };
-}
 
 export function testEvidenceItem(
   overrides: Partial<SimulationEvidenceItem> = {},
@@ -33,7 +27,9 @@ export function testEvidenceItem(
     result: "ok",
     elapsedMs: 120,
     observation: JSON.stringify({ balance: 42 }),
-    capability: testCapability(),
+    capabilityName: "translate-text",
+    capabilityVersion: "1.0.0",
+    connector: "deepl-connector",
     ...overrides,
   };
 }

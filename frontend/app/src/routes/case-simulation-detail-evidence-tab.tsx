@@ -10,6 +10,15 @@ import type {
  * The Evidence tab's own body (task/simulation-cockpit/detail-panel,
  * criteria 3 and 6, default-shown per this task's own objective).
  *
+ * The capability/connector line below reads `item.capabilityName`,
+ * `item.capabilityVersion` and `item.connector` as flat fields of the
+ * evidence item (case-simulation-detail-types.ts's own SimulationEvidenceItem)
+ * rather than through a nested `item.capability.name`/`item.capability.version`
+ * object -- flatten-detail-evidence-capability-reference, a corrective
+ * increment: this line previously dereferenced that nested shape, which
+ * neither POST /v1/simulate nor POST /v1/simulate/hypothesis has ever sent,
+ * crashing this tab on a real response's own evidence item.
+ *
  * Colors for domain/investigation/evidence-result's own four values --
  * `ok` -> `bg-success` (the one result that carries a usable observation,
  * per that node's own description), `timeout` -> `bg-warning` (a deadline
@@ -91,7 +100,7 @@ export function CaseSimulationDetailEvidenceTab({
                 <span className="font-medium">{item.concept}</span>
                 <CaseSimulationStatusDot {...EVIDENCE_RESULT_CELL[item.result]} />
                 <span className="text-sm text-muted-foreground">
-                  {item.capability.name} {item.capability.version} → {item.capability.connector}
+                  {item.capabilityName} {item.capabilityVersion} → {item.connector}
                 </span>
                 <span className="text-sm text-muted-foreground">{item.elapsedMs} ms</span>
               </div>

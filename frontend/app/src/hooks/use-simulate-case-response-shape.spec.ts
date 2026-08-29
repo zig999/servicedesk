@@ -40,7 +40,8 @@ describe("useSimulateCase -- one evidence item per collected concept (criterion 
       result: "ok",
       result_detail: "cached",
       elapsed_ms: 120,
-      capability: { name: "lookup-account", version: "1.0.0" },
+      capability_name: "lookup-account",
+      capability_version: "1.0.0",
     });
     expect(evidence[1]).not.toHaveProperty("result_detail");
     expect(evidence[1].result).toBe("timeout");

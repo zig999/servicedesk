@@ -1912,6 +1912,10 @@
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:613970a0850aea9d542204f7803057d1c69a47aa5c34b636e7b8ed6e53712cf5"
+        },
+        {
           "path": "frontend/app/src/routes/capabilities-browser-screen.tsx",
           "digest": "sha256:884aa5ceaf0e18b4b9d79a5c590e93d031db9b0e714c488990618c79b24ec791"
         },
@@ -1922,6 +1926,18 @@
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:d59f18479594ecc8733aa97ceed2e5f4a693f933dc75e02d15acdc631845ca35"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:7a76ae8895a9a32823391764795894afea846ee643ab69c11e0a8e686cb90ef7"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:402b54b77587a4bbcbd79375c0a5d30ce3085aced16e5fe3ab3e4e179913c850"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
+          "digest": "sha256:4f0adf22a56c108c77f9bd2e6ad9f8bbb7be84d40da9d9cc39d8fac0b87cd1f2"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -2589,19 +2605,23 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:d6758baedd07e39195ca451937aa981155926eed0be62457b3900e9f81b29c53"
+          "digest": "sha256:613970a0850aea9d542204f7803057d1c69a47aa5c34b636e7b8ed6e53712cf5"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
           "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:7a76ae8895a9a32823391764795894afea846ee643ab69c11e0a8e686cb90ef7"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:06e3a17809d40cdf88ffbe77f2219e622c1c571e99fc8ff51c468c9b99b32db0"
+          "digest": "sha256:402b54b77587a4bbcbd79375c0a5d30ce3085aced16e5fe3ab3e4e179913c850"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:82c305a425497cceef894174e9efd5998f10bd89c640aa3091dfe7fc492e3342"
+          "digest": "sha256:4f0adf22a56c108c77f9bd2e6ad9f8bbb7be84d40da9d9cc39d8fac0b87cd1f2"
         },
         {
           "path": "src/migrations/0005-investigation.sql",

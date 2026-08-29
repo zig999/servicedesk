@@ -251,7 +251,7 @@ describe("toDetailEvaluation -- narrowing a normalized evaluation to what the De
 });
 
 describe("toDetailEvidence -- shaping a full-case run's own evidence for the Detail region's Evidence tab", () => {
-  it("carries every field through, renaming the run's own `origin` to the Detail region's own `capability.connector`", () => {
+  it("carries every field through, renaming the run's own `origin` to the Detail region's own `connector`", () => {
     const evidence: readonly SimulateEvidenceItem[] = [
       {
         concept: "billing-history",
@@ -263,7 +263,8 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         result: "ok",
         result_detail: "cached",
         elapsed_ms: 120,
-        capability: { name: "fetch-billing-account", version: "1" },
+        capability_name: "fetch-billing-account",
+        capability_version: "1",
       },
     ];
 
@@ -274,7 +275,9 @@ describe("toDetailEvidence -- shaping a full-case run's own evidence for the Det
         resultDetail: "cached",
         elapsedMs: 120,
         observation: "the account shows one authorized charge",
-        capability: { name: "fetch-billing-account", version: "1", connector: "billing-connector" },
+        capabilityName: "fetch-billing-account",
+        capabilityVersion: "1",
+        connector: "billing-connector",
       },
     ]);
   });

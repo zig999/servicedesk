@@ -40,22 +40,29 @@ export type SimulationUsage = {
 };
 
 /**
- * domain/integration/capability's own identity (name, version) plus its own
- * `connector` attribute, read through the reference domain/investigation/
- * evidence carries -- this task's own Notes: the connector this evidence
- * item came through is not a second fact modeled on evidence itself, it is
- * read through this same capability reference.
- */
-export type SimulationCapabilityReference = {
-  readonly name: string;
-  readonly version: string;
-  readonly connector: string;
-};
-
-/**
  * domain/investigation/evidence: one collected concept's own result.
  * `observation` is carried exactly as the record holds it (a string); this
  * region formats it for display rather than this type reshaping it.
+ * `capabilityName` and `capabilityVersion` are domain/integration/
+ * capability's own identity (name, version), read through the reference
+ * domain/investigation/evidence carries -- flat fields, camelCase-normalized
+ * the same way this type already normalizes `result_detail`/`elapsed_ms`
+ * into `resultDetail`/`elapsedMs`, since both wire responses
+ * (src/src/http/dto/simulate-case.dto.ts's and simulate-hypothesis.dto.ts's
+ * own evidenceSchema) carry them as two flat fields,
+ * `capability_name`/`capability_version`, never nested under a `capability`
+ * object. `connector` is that same reference's own `connector` attribute,
+ * read through evidence's own `origin` field (this task's own Notes: the
+ * connector this evidence item came through is not a second fact modeled on
+ * evidence itself, it is read through this same capability reference) --
+ * also flattened onto the item directly rather than nested, for the same
+ * reason. Corrected by flatten-detail-evidence-capability-reference, a
+ * corrective increment: this type previously nested all three under a
+ * `capability: { name, version, connector }` object that toDetailEvidence
+ * (case-simulation-cockpit-adapters.ts) built from a wire shape
+ * (use-simulate-case.ts's own SimulateEvidenceItem) that never actually
+ * carried a nested `capability` object either -- crashing this region at
+ * render time on a real response.
  */
 export type SimulationEvidenceItem = {
   readonly concept: string;
@@ -63,7 +70,9 @@ export type SimulationEvidenceItem = {
   readonly resultDetail?: string;
   readonly elapsedMs: number;
   readonly observation: string;
-  readonly capability: SimulationCapabilityReference;
+  readonly capabilityName: string;
+  readonly capabilityVersion: string;
+  readonly connector: string;
 };
 
 /**

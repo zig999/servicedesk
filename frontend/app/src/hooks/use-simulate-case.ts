@@ -154,18 +154,26 @@ export type SimulateDurations = {
 
 /**
  * One collected concept's whole record (domain/investigation/evidence,
- * criterion 2). `capability` is the reference the node's own relationships
+ * criterion 2). The capability reference the node's own relationships
  * section pins (target domain/integration/capability, cardinality exactly
- * one), carried by that aggregate's own two identifying attributes -- name
- * and version (domain/integration/capability's own declared attributes) --
- * rather than the whole registered capability, matching how a reference is
- * carried elsewhere in this app (e.g. diagnose.dto.ts's own caseRefSchema
- * pinning a case by its own two identifying fields rather than embedding
- * it whole). `origin`, already the node's own declared string attribute
- * ("where the observation came from, for audit"), is the connector half of
- * criterion 2's "capability/connector reference" -- kept under its own
- * declared name rather than renamed, since the node states no field named
- * `connector` on evidence itself.
+ * one) travels as two flat fields, `capability_name` and
+ * `capability_version` -- carried by that aggregate's own two identifying
+ * attributes (domain/integration/capability's own declared attributes),
+ * never nested under a `capability` object -- corrected by
+ * flatten-detail-evidence-capability-reference, a corrective increment: this
+ * type previously declared `capability: { name, version }` nested, a shape
+ * neither POST /v1/simulate nor POST /v1/simulate/hypothesis has ever sent.
+ * Confirmed fresh against this operation's own live DTO
+ * (src/src/http/dto/simulate-case.dto.ts's own evidenceSchema) and against a
+ * real response body captured in the browser
+ * ("capability_name":"perfil-mobile-tecnico-reader","capability_version":"1.0.0"),
+ * and matching the sibling use-simulate-hypothesis.ts hook's own Evidence
+ * type, which already declared these two fields flat and correctly. `origin`,
+ * already the node's own declared string attribute ("where the observation
+ * came from, for audit"), is the connector half of criterion 2's
+ * "capability/connector reference" -- kept under its own declared name
+ * rather than renamed, since the node states no field named `connector` on
+ * evidence itself.
  */
 export type SimulateEvidenceItem = {
   readonly concept: string;
@@ -176,11 +184,9 @@ export type SimulateEvidenceItem = {
   readonly origin: string;
   readonly result: SimulateEvidenceResult;
   readonly result_detail?: string;
+  readonly capability_name: string;
+  readonly capability_version: string;
   readonly elapsed_ms: number;
-  readonly capability: {
-    readonly name: string;
-    readonly version: string;
-  };
 };
 
 /**

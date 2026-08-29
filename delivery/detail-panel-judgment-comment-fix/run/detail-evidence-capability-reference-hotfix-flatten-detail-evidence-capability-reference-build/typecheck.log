@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-case-simulation-cockpit.test-support.ts(193,9): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulateEvidenceItem'.
+src/hooks/use-simulate-case.test-support.ts(60,9): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulateEvidenceItem'.
+src/hooks/use-simulate-case.test-support.ts(71,9): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulateEvidenceItem'.
+src/routes/case-simulation-cockpit-adapters.spec.ts(266,9): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulateEvidenceItem'.
+src/routes/case-simulation-detail-evidence-tab.spec.ts(28,13): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'Partial<SimulationEvidenceItem>'.
+src/routes/case-simulation-detail-evidence-tab.spec.ts(110,13): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'Partial<SimulationEvidenceItem>'.
+src/routes/case-simulation-detail-panel.test-support.ts(3,3): error TS2305: Module '"./case-simulation-detail-types"' has no exported member 'SimulationCapabilityReference'.
+src/routes/case-simulation-detail-panel.test-support.ts(36,5): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulationEvidenceItem'.
+src/routes/case-simulation-ready-view.test-support.ts(265,9): error TS2353: Object literal may only specify known properties, and 'capability' does not exist in type 'SimulateEvidenceItem'.

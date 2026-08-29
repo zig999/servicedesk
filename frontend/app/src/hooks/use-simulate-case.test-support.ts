@@ -57,7 +57,8 @@ export function simulateResult(overrides: Partial<SimulateCaseResult> = {}): Sim
         result: "ok",
         result_detail: "cached",
         elapsed_ms: 120,
-        capability: { name: "lookup-account", version: "1.0.0" },
+        capability_name: "lookup-account",
+        capability_version: "1.0.0",
       },
       {
         concept: "payment-history",
@@ -68,7 +69,8 @@ export function simulateResult(overrides: Partial<SimulateCaseResult> = {}): Sim
         origin: "billing-connector",
         result: "timeout",
         elapsed_ms: 5000,
-        capability: { name: "lookup-payments", version: "2.0.0" },
+        capability_name: "lookup-payments",
+        capability_version: "2.0.0",
       },
     ],
     evaluations: [
