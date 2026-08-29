@@ -30,6 +30,13 @@
       "summary": "A hypothesis's judgment, and the citation check over its answer, become a pure function of the evidence's own snapshotted semantics — never a live read of the glossary or the capability registry."
     },
     {
+      "id": "epic/migration-runner-comment-hang-corrective",
+      "kind": "epic",
+      "file": "epic/migration-runner-comment-hang-corrective.md",
+      "title": "migration-runner comment-hang corrective",
+      "summary": "The one corrective task that stops applyMigrationFile from depending on the connection tolerating a query beginning with SQL comments."
+    },
+    {
       "id": "inventory/pinned-evidence-semantics",
       "kind": "inventory",
       "file": "inventory/pinned-evidence-semantics.md",
@@ -114,6 +121,14 @@
       "title": "Judgment stops re-reading the capability registry",
       "summary": "Citation validation checks a field against its own cited evidence item's snapshot, and judgment-stage no longer resolves capabilities to judge a hypothesis.",
       "epic": "judgment-reads-the-snapshot"
+    },
+    {
+      "id": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "task",
+      "file": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying.md",
+      "title": "applyMigrationFile strips leading comments before sending a migration's SQL to the connection",
+      "summary": "A migration file's own -- comment lines and blank lines are removed before its text reaches the connection, so applying it never depends on the endpoint tolerating a comment-prefixed query; the same SQL statement(s) still run, in the same order.",
+      "epic": "migration-runner-comment-hang-corrective"
     }
   ],
   "edges": [
@@ -370,6 +385,12 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/migration-runner-comment-hang-corrective",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
       "from": "task/concept-description/concept-persistence-carries-description",
       "to": "task/concept-description/concept-registration-requires-a-description",
       "kind": "depends_on",
@@ -548,6 +569,12 @@
       "to": "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment",
       "kind": "implements",
       "at": "implements[5]"
+    },
+    {
+      "from": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[0]"
     }
   ]
 }
