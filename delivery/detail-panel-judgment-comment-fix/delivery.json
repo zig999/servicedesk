@@ -32,6 +32,22 @@
       "title": "Proof for reword-criterion-6-comment",
       "summary": "Proves case-simulation-detail-panel.tsx's own Criterion 6 comment now separately attributes usage/elapsed_ms/prompt to domain/investigation/evaluation and model/prompt_version to domain/investigation/investigation, no longer groups the four as one \"judgment\" set, and that this rewording changed no executable code -- following the same source-text-reading convention cases-list-screen-comment-cites-the-current-nodes.spec.ts already established for a comment-prose criterion.",
       "task": "task/detail-panel-judgment-comment-fix/reword-criterion-6-comment"
+    },
+    {
+      "id": "review/detail-panel-judgment-comment-fix",
+      "kind": "review",
+      "file": "review/detail-panel-judgment-comment-fix.md",
+      "title": "Review: detail-panel-judgment-comment-fix",
+      "summary": "What four passes found over the corrective fix flattening the Detail evidence capability reference to the wire's own two flat fields.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Opening the Detail panel for an evaluation produced by POST /v1/simulate/hypothesis does not throw or show \"Something went wrong\" for a well-formed response."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -82,6 +98,12 @@
       "to": "implementation/detail-panel-judgment-comment-fix/reword-criterion-6-comment",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/detail-panel-judgment-comment-fix",
+      "to": "task/detail-evidence-capability-reference-hotfix/flatten-detail-evidence-capability-reference",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
