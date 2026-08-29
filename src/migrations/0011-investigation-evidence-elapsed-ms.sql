@@ -8,11 +8,19 @@
 -- carries cost_calls, durations_collection and their siblings as flattened
 -- per-item numeric columns (0005-investigation.sql).
 --
--- Plain NOT NULL with no DEFAULT: this is a fresh column on a table this
--- delivery finds holding no pre-existing rows in any environment it runs
--- against, so there is nothing to backfill and no legacy-row value to invent
--- as a domain fact. Every row from this migration forward is written only by
--- evidenceStatement() below, which now always supplies it.
+-- DEFAULT 0 backfills every investigation_evidence row this script finds
+-- already stored: this migration's own first attempt assumed no environment
+-- held a pre-existing row, and that assumption was wrong — a real deployment
+-- already held rows collected before this attribute existed. The
+-- specification's own decided reading (domain/investigation/evidence.md,
+-- decision-log.md) is that such a row's elapsed_ms is 0, meaning not
+-- measured, never a read failure and never an invented real duration.
+-- Every row evidenceStatement() writes from here forward always supplies a
+-- real value explicitly, so the default is never read for a new row; it
+-- stays on the column rather than being dropped after the backfill, the same
+-- as every other DEFAULT this project's own migrations add for exactly this
+-- reason (migrations/0009-case-version-lifecycle-schema.sql's own
+-- case_versions.state).
 
 ALTER TABLE investigation_evidence
-  ADD COLUMN elapsed_ms INTEGER NOT NULL;
+  ADD COLUMN elapsed_ms INTEGER NOT NULL DEFAULT 0;
