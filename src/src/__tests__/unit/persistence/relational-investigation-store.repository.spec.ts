@@ -27,7 +27,7 @@ import type { EvaluationReason } from '../../../investigation/evaluation-reason.
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { Investigation } from '../../../investigation/investigation.js';
-import type { DatabaseConnection } from '../../../persistence/database-connection.js';
+import type { IConnectableQueryable } from '../../../persistence/database-access.js';
 import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
 /** The path of the module under test, read as text below for this file's own criterion-10 check. */
@@ -38,13 +38,13 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake DatabaseConnection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape write() and read() both run their one transaction through (database-access.spec.ts's own established convention). */
+/** A fake connect()-capable connection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape write() and read() both run their one transaction through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
-): { connection: DatabaseConnection; client: IFakeClient } {
+): { connection: IConnectableQueryable; client: IFakeClient } {
   const client: IFakeClient = { query: vi.fn(handleQuery), release: vi.fn() };
   const connect = vi.fn().mockResolvedValue(client);
-  return { connection: { connect } as unknown as DatabaseConnection, client };
+  return { connection: { connect } as unknown as IConnectableQueryable, client };
 }
 
 /** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */

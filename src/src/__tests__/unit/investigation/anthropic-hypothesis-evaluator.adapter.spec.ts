@@ -418,6 +418,30 @@ it('answers inconclusive with reason judgment-failure when the model response is
   expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
 });
 
+it('answers inconclusive with reason judgment-failure when the model answers valid JSON that is a top-level array rather than an object', async () => {
+  createMock.mockResolvedValueOnce(messageWithText(JSON.stringify([1, 2, 3])));
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
+});
+
+it('answers inconclusive with reason judgment-failure when a confirmed answer carries a citation entry that is not an object', async () => {
+  createMock.mockResolvedValueOnce(messageWithText(JSON.stringify({ verdict: 'confirmed', citations: ['not-an-object'] })));
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
+  expect(outcome.usage).toBeUndefined();
+  expect(outcome.elapsed_ms).toEqual(expect.any(Number));
+  expect(outcome.prompt).toBe(createMock.mock.calls[0]?.[0]?.messages[0]?.content);
+});
+
 it('answers inconclusive with reason judgment-failure when a confirmed answer carries no citations', async () => {
   createMock.mockResolvedValueOnce(messageWithText(JSON.stringify({ verdict: 'confirmed', citations: [] })));
   const evaluator = createEvaluator();

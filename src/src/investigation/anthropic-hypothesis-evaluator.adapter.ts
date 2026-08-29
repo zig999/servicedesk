@@ -44,6 +44,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import type { Citation } from './citation.js';
+import { isPlainObject } from './citation-validation.js';
 import type { FieldSemantics } from './field-semantics.js';
 import type {
   CaseContext,
@@ -240,7 +241,7 @@ type ParsedJudgment =
 /** Parses one model answer into ParsedJudgment, answering undefined for anything that is not valid JSON or does not match one of the three declared shapes — never throwing. */
 function parseJudgment(text: string): ParsedJudgment | undefined {
   const value = parseJsonOrUndefined(text);
-  if (!isRecord(value) || !isVerdict(value.verdict)) {
+  if (!isPlainObject(value) || !isVerdict(value.verdict)) {
     return undefined;
   }
   if (value.verdict === 'inconclusive') {
@@ -368,11 +369,6 @@ function unwrapCodeFence(text: string): string {
   return match ? match[1] : trimmed;
 }
 
-/** Whether a parsed JSON value is a non-null, non-array object — the only shape this adapter reads a field from. */
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
 /** Whether a parsed value is one of the port's own three verdict names. */
 function isVerdict(value: unknown): value is Verdict {
   return typeof value === 'string' && (VERDICTS as readonly string[]).includes(value);
@@ -380,7 +376,7 @@ function isVerdict(value: unknown): value is Verdict {
 
 /** Whether a parsed value is a well-formed Citation — a concept and a field, both strings. This adapter checks only that shape, never whether the concept or field are actually valid for the judged hypothesis: that check, and any retry or fallback over a citation that fails it, belongs to this port's caller alone. */
 function isCitation(value: unknown): value is Citation {
-  return isRecord(value) && typeof value.concept === 'string' && typeof value.field === 'string';
+  return isPlainObject(value) && typeof value.concept === 'string' && typeof value.field === 'string';
 }
 
 /** Whether a parsed value is an array of well-formed citations. */

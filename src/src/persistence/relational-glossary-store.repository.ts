@@ -55,10 +55,14 @@
 // rather than failing
 // (scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone).
 //
-// Names no import of 'pg': DatabaseConnection, database-connection.ts's own
-// exported type, and the runStatement/runInTransaction helpers
-// database-access.ts already declares, are the only things this file names
-// for the pool it is given (STK-05).
+// Names no import of 'pg', and no longer even names database-connection.ts's
+// own DatabaseConnection: this store's own constructor is typed against
+// IConnectableQueryable instead (task/persistence-store-connection-typing/
+// glossary-store-constructor-typed-to-interface), the connect()-capable
+// interface database-access.ts already declares for runInTransaction's own
+// sake — a shape the concrete DatabaseConnection (pg Pool) still satisfies
+// structurally, with no change to database-connection.ts itself, which
+// remains the only module that imports the driver (STK-05).
 //
 // Every statement below names its table unqualified, the same convention
 // relational-capability-store.repository.ts and
@@ -72,8 +76,7 @@
 import { GlossaryStoreError } from '../errors/glossary-store.error.js';
 import type { IGlossaryStore } from '../glossary/glossary-store.port.js';
 import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../glossary/terms.js';
-import { runInTransaction, runStatement, type IQueryable, type IStatement } from './database-access.js';
-import type { DatabaseConnection } from './database-connection.js';
+import { runInTransaction, runStatement, type IConnectableQueryable, type IQueryable, type IStatement } from './database-access.js';
 
 /**
  * One row of "concepts": migrations/0002-glossary-vocabulary.sql's own name
@@ -124,7 +127,7 @@ const CONCEPT_ACCEPTS_TABLE = 'concept_accepts';
  * (task/concept-authoring/glossary-store-concept-write's own criteria).
  */
 export class RelationalGlossaryStore implements IGlossaryStore {
-  public constructor(private readonly connection: DatabaseConnection) {}
+  public constructor(private readonly connection: IConnectableQueryable) {}
 
   /** Every row the named vocabulary's own table currently holds (criterion 1, criterion 3) — never a value cached from an earlier call, and never a name the table does not hold. */
   public async readTerms(vocabulary: TermVocabulary): Promise<readonly GlossaryTerm[]> {

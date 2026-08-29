@@ -1,4 +1,4 @@
-// Proof for task/relational-stores/glossary-store, over a stand-in for DatabaseConnection — the
+// Proof for task/relational-stores/glossary-store, over a stand-in for IConnectableQueryable — the
 // driver boundary TST-03 permits a stand-in for — so RelationalGlossaryStore's own mechanics are
 // observed independently of any real database: which statement text and params reach the
 // connection for each of the five term vocabularies and for the two concept tables, exactly when
@@ -12,12 +12,12 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import { GlossaryStoreError } from '../../../errors/glossary-store.error.js';
-import type { DatabaseConnection } from '../../../persistence/database-connection.js';
+import type { IConnectableQueryable } from '../../../persistence/database-access.js';
 import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
 
 /** A bare connection whose own query() is backed by the given implementation — the shape readTerms calls directly, with no transaction opened. */
-function fakeBareConnection(query: DatabaseConnection['query']): DatabaseConnection {
-  return { query } as unknown as DatabaseConnection;
+function fakeBareConnection(query: IConnectableQueryable['query']): IConnectableQueryable {
+  return { query } as unknown as IConnectableQueryable;
 }
 
 interface IFakeClient {
@@ -25,13 +25,13 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake DatabaseConnection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape writeTerms' and readConcepts' own transactions run through (database-access.spec.ts's own established convention). */
+/** A fake IConnectableQueryable whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape writeTerms' and readConcepts' own transactions run through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
-): { connection: DatabaseConnection; client: IFakeClient } {
+): { connection: IConnectableQueryable; client: IFakeClient } {
   const client: IFakeClient = { query: vi.fn(handleQuery), release: vi.fn() };
   const connect = vi.fn().mockResolvedValue(client);
-  return { connection: { connect } as unknown as DatabaseConnection, client };
+  return { connection: { connect } as unknown as IConnectableQueryable, client };
 }
 
 /** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */

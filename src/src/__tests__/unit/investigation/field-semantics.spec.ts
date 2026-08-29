@@ -143,8 +143,45 @@ it('answers an empty array for a schema that parses to a bare JSON scalar, such 
   expect(fieldSemanticsOf('42')).toEqual([]);
 });
 
-it("imports neither citation-validation.ts's own declaredFieldsOf nor capability-input-schema-shape.ts's own declaredInputSchemaShape, keeping this a third, independently-implemented structural reader rather than a shared one (this task's own recorded inference)", async () => {
+/** The bare content between the braces of field-semantics.ts's own named import from citation-validation.js, or undefined where it holds no such import at all. */
+async function citationValidationImportBody(): Promise<string | undefined> {
+  const source = await readFile(MODULE_PATH, 'utf8');
+  const match = /import\s*\{([^}]*)\}\s*from\s*['"][^'"]*citation-validation\.js['"]/.exec(source);
+  return match?.[1];
+}
+
+/** The individual binding names field-semantics.ts's own import statement names from citation-validation.js. */
+async function citationValidationImportedNames(): Promise<readonly string[]> {
+  const body = await citationValidationImportBody();
+  return body === undefined ? [] : body.split(',').map((name) => name.trim()).filter((name) => name.length > 0);
+}
+
+it('declares no local parseJsonOrUndefined of its own — as a function or as a const — importing the binding from citation-validation.ts instead', async () => {
+  const source = await readFile(MODULE_PATH, 'utf8');
+
+  expect(source).not.toMatch(/\b(?:function|const|let)\s+parseJsonOrUndefined\b/);
+});
+
+it('declares no local isPlainObject of its own — as a function or as a const — importing the binding from citation-validation.ts instead', async () => {
+  const source = await readFile(MODULE_PATH, 'utf8');
+
+  expect(source).not.toMatch(/\b(?:function|const|let)\s+isPlainObject\b/);
+});
+
+it("imports parseJsonOrUndefined and isPlainObject from citation-validation.ts, per this task's own third criterion", async () => {
+  const importedNames = await citationValidationImportedNames();
+
+  expect(importedNames).toEqual(expect.arrayContaining(['parseJsonOrUndefined', 'isPlainObject']));
+});
+
+it("imports nothing from capability-input-schema-shape.ts, keeping fieldSemanticsOf's own structural reading of a capability's output schema independent of declaredInputSchemaShape", async () => {
   const specifiers = await fieldSemanticsImports();
 
-  expect(specifiers.some((specifier) => specifier.includes('citation-validation') || specifier.includes('capability-input-schema-shape'))).toBe(false);
+  expect(specifiers.some((specifier) => specifier.includes('capability-input-schema-shape'))).toBe(false);
+});
+
+it("does not import declaredFieldsOf from citation-validation.ts, keeping fieldSemanticsOf's and fieldSemanticsFrom's own structural reading of a capability's output schema independent of it even though the file now shares citation-validation.ts's own JSON-guard helpers", async () => {
+  const importedNames = await citationValidationImportedNames();
+
+  expect(importedNames).not.toContain('declaredFieldsOf');
 });

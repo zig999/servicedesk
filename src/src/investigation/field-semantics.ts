@@ -6,19 +6,16 @@
 // an operator's own hint, never enforced (domain/investigation/field-semantics).
 //
 // This is the third structural output_schema reader in this codebase,
-// deliberately independent of investigation/citation-validation.ts's own
-// declaredFieldsOf and capability-registry/capability-input-schema-shape.ts's
-// own declaredInputSchemaShape — both already documented at length as
-// parallel implementations rather than a shared import, each for its own
-// reason (a name-only read against the field rule, and the input schema's
-// shape against the opposite dependency direction) — rather than importing
-// either: this module answers a third, narrower question neither of those
-// two answers (one field's own type and description, not merely a set of
-// field names), so it follows the same documented, deliberate-duplication
-// convention (this task's own inference, recorded in the delivery record)
-// with its own copy of the identical defensive, never-throw parse helpers,
-// rather than trying to collapse three readers of the same shape into one
-// shared function.
+// alongside investigation/citation-validation.ts's own declaredFieldsOf and
+// capability-registry/capability-input-schema-shape.ts's own
+// declaredInputSchemaShape: this module answers a third, narrower question
+// neither of those two answers (one field's own type and description, not
+// merely a set of field names), so it keeps its own fieldSemanticsOf and
+// fieldSemanticsFrom, but imports citation-validation.ts's own
+// parseJsonOrUndefined and isPlainObject rather than restating them, since
+// the defensive, never-throw parsing they do is identical here.
+
+import { isPlainObject, parseJsonOrUndefined } from './citation-validation.js';
 
 /**
  * One field a capability's own output schema declares
@@ -64,18 +61,4 @@ function fieldSemanticsFrom(name: string, value: unknown): FieldSemantics {
     ...(typeof declared.type === 'string' ? { type: declared.type } : {}),
     ...(typeof declared.description === 'string' ? { description: declared.description } : {}),
   };
-}
-
-/** Parses text as JSON, answering undefined rather than throwing where it is not valid JSON at all — the same convention citation-validation.ts's own parseJsonOrUndefined keeps, restated here rather than imported (this module's own deliberate independence, see this file's own header). */
-function parseJsonOrUndefined(text: string): unknown {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return undefined;
-  }
-}
-
-/** Whether a parsed JSON value is a non-null, non-array object — the only shape this reader reads keys from, for a schema's own top level, its `properties` value, or one property's own declared value alike. */
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

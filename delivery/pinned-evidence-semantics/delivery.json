@@ -66,6 +66,25 @@
       "task": "task/investigation-json-guard-consolidation/export-shared-json-guards"
     },
     {
+      "id": "implementation/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "kind": "implementation",
+      "file": "implementation/investigation-json-guard-consolidation/field-semantics-imports-shared-guards.md",
+      "title": "field-semantics.ts imports citation-validation.ts's parseJsonOrUndefined and isPlainObject",
+      "summary": "field-semantics.ts's own byte-identical parseJsonOrUndefined and isPlainObject declarations are removed; its two call sites now import citation-validation.ts's own exported versions instead, and the file's own header comment and its own isPlainObject-adjacent docstring, which had framed the duplication as a deliberate independence decision, are corrected to describe the import instead.",
+      "task": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "unmet": [
+        "fieldSemanticsOf's and fieldSemanticsFrom's own existing behavior is unchanged — the existing suite passes with no assertion or outcome changed."
+      ]
+    },
+    {
+      "id": "implementation/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "kind": "implementation",
+      "file": "implementation/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard.md",
+      "title": "anthropic-hypothesis-evaluator.adapter.ts imports citation-validation.ts's isPlainObject in place of its own isRecord",
+      "summary": "anthropic-hypothesis-evaluator.adapter.ts's own isRecord function is removed and both of its former call sites now use citation-validation.ts's exported isPlainObject instead, with the adapter's own fence-stripping parseJsonOrUndefined left declared locally, unchanged.",
+      "task": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard"
+    },
+    {
       "id": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "implementation",
       "file": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
@@ -88,6 +107,25 @@
       "title": "applyMigrationFile strips comments before sending SQL, and vitest's testTimeout is raised for a full replay",
       "summary": "migration-runner.ts's applyMigrationFile strips every -- comment line and blank line from a migration file's text before sending it to the connection (via stripCommentsAndBlankLines), shrinking a migration query's own wire size — a real, independently worthwhile improvement, though this task's own suite-run history later traced the actual hang this correction was cut to address to a developer host's own Path MTU Discovery black hole (a query large enough to exceed the network path's real MTU was silently dropped, with no ICMP fragmentation-needed reply, so it hung rather than failing) rather than to the connection endpoint itself. vitest.config.ts's testTimeout is raised from 40000ms to 120000ms to tolerate a full sequential replay of every migration script against the real database, and its stale comment naming a database provider ('Neon') this project no longer uses is corrected to a generic, no-vendor description.",
       "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    },
+    {
+      "id": "implementation/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "kind": "implementation",
+      "file": "implementation/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface.md",
+      "title": "relational-glossary-store.repository.ts's constructor retyped to IConnectableQueryable",
+      "summary": "RelationalGlossaryStore's own constructor parameter is retyped from the concrete DatabaseConnection to IConnectableQueryable, the connect()-capable interface database-access.ts already declares, with its own unit spec's two fake-connection helpers retyped alongside it and no other behavior changed.",
+      "task": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface"
+    },
+    {
+      "id": "implementation/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "kind": "implementation",
+      "file": "implementation/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface.md",
+      "title": "RelationalInvestigationStore's own constructor retyped to IConnectableQueryable",
+      "summary": "relational-investigation-store.repository.ts's own constructor parameter is retyped from the concrete DatabaseConnection to the connect()-capable IConnectableQueryable interface database-access.ts already declares, and the now-unused DatabaseConnection import is removed.",
+      "task": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "unmet": [
+        "relational-investigation-store.repository.spec.ts's own fake-connection helpers no longer cast their fake past the compiler with `as unknown as DatabaseConnection`."
+      ]
     },
     {
       "id": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions",
@@ -162,6 +200,22 @@
       "task": "task/investigation-json-guard-consolidation/export-shared-json-guards"
     },
     {
+      "id": "proof/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "kind": "proof",
+      "file": "proof/investigation-json-guard-consolidation/field-semantics-imports-shared-guards.md",
+      "title": "Proof for field-semantics.ts importing citation-validation.ts's shared JSON guards",
+      "summary": "Corrects the one pre-existing test that asserted field-semantics.ts imports nothing from citation-validation.ts — the opposite of this task's own third criterion — splitting it into tests that prove the intentional import and tests that keep proving the design fact it used to protect.",
+      "task": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards"
+    },
+    {
+      "id": "proof/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "kind": "proof",
+      "file": "proof/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard.md",
+      "title": "Adapter's isRecord-to-isPlainObject substitution proven behavior-preserved",
+      "summary": "The pre-existing unit suite is left unmodified, and two new tests confirm parseJudgment's and isCitation's own narrowing still rejects a top-level array and a non-object citation entry the same way after the substitution — a case neither pre-existing test isolated.",
+      "task": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard"
+    },
+    {
       "id": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "proof",
       "file": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics.md",
@@ -184,6 +238,22 @@
       "title": "applyMigrationFile strips comments before applying, and vitest's testTimeout raise — proof",
       "summary": "Six new unit tests over migration-runner.ts prove the comment-stripping behavior across four criteria (plus two pre-existing, unmodified integration tests cited as the replay-fitness proof); two new meta-tests over vitest.config.ts's own source text prove the testTimeout raise and the corrected fileParallelism comment.",
       "task": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying"
+    },
+    {
+      "id": "proof/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "kind": "proof",
+      "file": "proof/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface.md",
+      "title": "Proof that relational-glossary-store.repository.ts's constructor is typed to IConnectableQueryable",
+      "summary": "Confirms RelationalGlossaryStore's constructor and its unit spec's two fake-connection helpers carry only IConnectableQueryable, that DatabaseConnection is gone from both files' imports and type positions, and that the existing suite's own assertions were left untouched by the retyping.",
+      "task": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface"
+    },
+    {
+      "id": "proof/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "kind": "proof",
+      "file": "proof/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface.md",
+      "title": "Proof that RelationalInvestigationStore's own constructor and its unit spec's fake connection are both typed to IConnectableQueryable",
+      "summary": "The unit spec's own fakeTransactionConnection is retyped from a cast to DatabaseConnection to a cast to IConnectableQueryable with no assertion, expected value or test name changed, and the existing 32-test unit suite is cited as what proves the retyped constructor's own behavior is unchanged.",
+      "task": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface"
     },
     {
       "id": "proof/persistence-store-connection-typing/widen-connection-interface-for-transactions",
@@ -339,6 +409,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "to": "task/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "to": "task/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "to": "domain/investigation/hypothesis-evaluator",
       "kind": "encodes",
@@ -423,6 +505,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "to": "task/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "to": "task/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/persistence-store-connection-typing/widen-connection-interface-for-transactions",
       "to": "task/persistence-store-connection-typing/widen-connection-interface-for-transactions",
       "kind": "implements",
@@ -477,6 +571,18 @@
       "at": "the path"
     },
     {
+      "from": "proof/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "to": "implementation/investigation-json-guard-consolidation/field-semantics-imports-shared-guards",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "to": "implementation/investigation-json-guard-consolidation/hypothesis-evaluator-imports-shared-guard",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "to": "implementation/judgment-reads-the-snapshot/evaluator-port-and-prompt-carry-snapshotted-semantics",
       "kind": "proves",
@@ -491,6 +597,18 @@
     {
       "from": "proof/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
       "to": "implementation/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "to": "implementation/persistence-store-connection-typing/glossary-store-constructor-typed-to-interface",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
+      "to": "implementation/persistence-store-connection-typing/investigation-store-constructor-typed-to-interface",
       "kind": "proves",
       "at": "the path"
     },

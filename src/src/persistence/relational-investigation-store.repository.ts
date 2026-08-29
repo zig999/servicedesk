@@ -69,10 +69,13 @@
 // domain/investigation/evidence already sanctions for exactly that legacy
 // case, never a read failure.
 //
-// Names no import of 'pg': DatabaseConnection and the
+// Names no import of 'pg', and no longer even names database-connection.ts's
+// own DatabaseConnection: IConnectableQueryable and the
 // runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
 // already declares are the only things this file names for the pool it is
-// given (STK-05).
+// given (STK-05) — a shape the concrete DatabaseConnection (pg Pool) already
+// satisfies structurally, with no change to database-connection.ts itself,
+// which remains the only module that imports the driver.
 //
 // Every statement below names its table unqualified, the same convention
 // every sibling relational store in this tree already documents at length
@@ -97,8 +100,15 @@ import type { IInvestigationStore, StoredInvestigation } from '../investigation/
 import type { Investigation } from '../investigation/investigation.js';
 import type { SubjectAttributeValue } from '../investigation/subject-attribute-value.js';
 import { VERDICTS, type Verdict } from '../investigation/verdict.js';
-import { queryOneOrAbsent, runInTransaction, runStatement, type IQueryable, type IStatement, type RaiseStoreError } from './database-access.js';
-import type { DatabaseConnection } from './database-connection.js';
+import {
+  queryOneOrAbsent,
+  runInTransaction,
+  runStatement,
+  type IConnectableQueryable,
+  type IQueryable,
+  type IStatement,
+  type RaiseStoreError,
+} from './database-access.js';
 
 /** One row of "investigations", exactly the columns migrations/0005-investigation.sql declares. written_at is typed Date because node-postgres parses a timestamptz column into one by default, the same convention relational-case-store.repository.ts's own authored_at already documents. */
 interface IInvestigationRow {
@@ -203,7 +213,7 @@ const INVESTIGATION_INSERT_TEXT = `INSERT INTO ${INVESTIGATIONS_TABLE}
  * criterion 6, criterion 7, criterion 8).
  */
 export class RelationalInvestigationStore implements IInvestigationStore {
-  public constructor(private readonly connection: DatabaseConnection) {}
+  public constructor(private readonly connection: IConnectableQueryable) {}
 
   public async write(investigation: Investigation): Promise<void> {
     await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));
