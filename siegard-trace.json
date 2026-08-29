@@ -2601,7 +2601,7 @@
     },
     {
       "node": "domain/investigation/evidence",
-      "digest": "sha256:f303758283dd6b27d2b5f02ccaaa1fc66e3d265002f54dd4c119baf3120ef684",
+      "digest": "sha256:40365b21d731290fc1a2d379c26d8ba8304f2cbf96132832764721db332b7d8c",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -2629,7 +2629,7 @@
         },
         {
           "path": "src/migrations/0011-investigation-evidence-elapsed-ms.sql",
-          "digest": "sha256:29683bb8fad29678220be501898cd0155be388e81ede47c8981e9492796bd483"
+          "digest": "sha256:e116a11bb2f7bea89d592d407b814e27fe0d1caa5e999ac92a2e38db8f3774cf"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
