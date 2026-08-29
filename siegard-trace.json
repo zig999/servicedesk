@@ -1563,7 +1563,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-glossary-concepts.ts",
-          "digest": "sha256:39c6763ce61a7cdcda79458f8c9c01b9c37e084a55088ebfdd590e651fe5ffcd"
+          "digest": "sha256:796318c0d0dcc800eb7f202211260cd3118a9dea13df0bb902ae74f06bdc4b79"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
@@ -1576,6 +1576,10 @@
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
+        },
+        {
+          "path": "frontend/app/src/routes/glossary-concepts-panel.tsx",
+          "digest": "sha256:e169fcc60fb9b17ed0e6e8e08e42515ddf9ff6cf3384261ba403862e232e11fb"
         },
         {
           "path": "frontend/app/src/routes/hypothesis-revision-form-fields.tsx",
@@ -4002,6 +4006,16 @@
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
           "digest": "sha256:6fb0735f1e272e76820e541bb0969345bd375de4c45c4b0a7062856307255d56"
+        }
+      ]
+    },
+    {
+      "node": "rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one",
+      "digest": "sha256:d2b32064d294c1f82b3361297595babf29684019c33e859a6d6f27c0de13c038",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/glossary-concepts-panel.tsx",
+          "digest": "sha256:e169fcc60fb9b17ed0e6e8e08e42515ddf9ff6cf3384261ba403862e232e11fb"
         }
       ]
     },

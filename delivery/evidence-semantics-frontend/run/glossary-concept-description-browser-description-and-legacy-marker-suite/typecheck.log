@@ -1,0 +1,5 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-concept-options.spec.ts(26,7): error TS2578: Unused '@ts-expect-error' directive.

@@ -99,6 +99,7 @@ export function glossaryConcept(overrides: Partial<GlossaryConcept> = {}): Gloss
     name: "billing-dispute",
     accepts: ["customer-account"],
     ttl: 3600,
+    description: "Tracks a customer-raised dispute over a billing charge.",
     ...overrides,
   };
 }

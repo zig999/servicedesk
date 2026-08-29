@@ -53,6 +53,30 @@ describe("useGlossaryConcepts", () => {
     expect(result.current.concepts).toEqual(concepts);
   });
 
+  it("reads each concept's own description off the concepts listing verbatim, including an empty string for a legacy concept (criterion 1)", async () => {
+    const concepts = [
+      {
+        name: "billing-dispute",
+        accepts: ["customer-account"],
+        ttl: 3600,
+        description: "Tracks a customer-raised dispute over a billing charge.",
+      },
+      { name: "legacy-concept", accepts: [], ttl: 60, description: "" },
+    ];
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: concepts }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { result } = renderHook(() => useGlossaryConcepts(), {
+      wrapper: createWrapper(newQueryClient()),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    // Proves description is carried through as its own field, verbatim -- including a legacy
+    // concept's own empty string, never dropped, renamed or coerced to null/undefined.
+    expect(result.current.concepts).toEqual(concepts);
+  });
+
   it("returns an empty concepts array, rather than throwing or leaving it undefined, when the concepts page holds none yet", async () => {
     const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ data: [] }));
     vi.stubGlobal("fetch", fetchMock);

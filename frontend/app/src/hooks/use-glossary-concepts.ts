@@ -28,6 +28,17 @@
  * hooks narrow the same endpoint's response to two different TypeScript
  * shapes, and sharing one cache key would let one hook's query populate the
  * cache entry the other reads as if it always carried `ttl`, or never did.
+ *
+ * task/glossary-concept-description/browser-description-and-legacy-marker
+ * additionally narrows in `description` (domain/glossary/concept's fourth
+ * attribute, `required: true` on the wire) -- read here exactly as the wire
+ * sends it, including an empty string, since `required: true` only means the
+ * field is always present, never that it always states something. This
+ * hook's own consumer decides what an empty string renders as
+ * (rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one);
+ * this narrowing itself invents nothing, one way or the other, about what an
+ * empty value means -- it reads the field verbatim, the same as `name`,
+ * `accepts` and `ttl` above it.
  */
 
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
@@ -38,6 +49,7 @@ export type GlossaryConcept = {
   readonly name: string;
   readonly accepts: readonly string[];
   readonly ttl: number;
+  readonly description: string;
 };
 
 /** The shape of one page of GET /v1/glossary/concepts -- only the fields this hook reads. */

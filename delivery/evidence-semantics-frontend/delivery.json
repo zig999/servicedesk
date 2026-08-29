@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
+      "kind": "implementation",
+      "file": "implementation/glossary-concept-description/browser-description-and-legacy-marker.md",
+      "title": "Glossary browser reads and shows a concept's description, marking legacy concepts awaiting one",
+      "summary": "use-glossary-concepts.ts now narrows description off the concepts listing, the Concepts tab renders it per concept with a status-dot marker for an empty (legacy) description, and use-concept-options.ts's deliberate omission of description is disclosed as a departure from its sibling's shape.",
+      "task": "task/glossary-concept-description/browser-description-and-legacy-marker"
+    },
+    {
       "id": "implementation/glossary-concept-description/concept-description-error-kind",
       "kind": "implementation",
       "file": "implementation/glossary-concept-description/concept-description-error-kind.md",
       "title": "Named UiErrorState kind for ConceptDescriptionRequiredError",
       "summary": "The central error-ui-state table gains a distinct concept-description-required kind for the backend's ConceptDescriptionRequiredError, carrying no wording, with every existing mapping left untouched.",
       "task": "task/glossary-concept-description/concept-description-error-kind"
+    },
+    {
+      "id": "proof/glossary-concept-description/browser-description-and-legacy-marker",
+      "kind": "proof",
+      "file": "proof/glossary-concept-description/browser-description-and-legacy-marker.md",
+      "title": "Glossary browser description column and legacy marker — proof",
+      "summary": "Six new tests across three spec files establish that the concept shape carries description, the Concepts tab renders it, an empty description gets a visible non-invented marker, its column placement, and use-concept-options' continued omission of description.",
+      "task": "task/glossary-concept-description/browser-description-and-legacy-marker"
     },
     {
       "id": "proof/glossary-concept-description/concept-description-error-kind",
@@ -19,6 +35,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
+      "to": "rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
+      "to": "task/glossary-concept-description/browser-description-and-legacy-marker",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/glossary-concept-description/concept-description-error-kind",
       "to": "rules/glossary/a-concept-declares-its-description",
@@ -35,6 +69,12 @@
       "from": "implementation/glossary-concept-description/concept-description-error-kind",
       "to": "task/glossary-concept-description/concept-description-error-kind",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-concept-description/browser-description-and-legacy-marker",
+      "to": "implementation/glossary-concept-description/browser-description-and-legacy-marker",
+      "kind": "proves",
       "at": "the path"
     },
     {
