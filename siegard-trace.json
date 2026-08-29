@@ -2621,15 +2621,15 @@
     },
     {
       "node": "domain/investigation/evidence",
-      "digest": "sha256:40365b21d731290fc1a2d379c26d8ba8304f2cbf96132832764721db332b7d8c",
+      "digest": "sha256:327dc347d8982969f9574bdc6234286682942620f57146e088e2e19f0a5b9264",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
-          "digest": "sha256:613970a0850aea9d542204f7803057d1c69a47aa5c34b636e7b8ed6e53712cf5"
+          "digest": "sha256:b7c00ef831f3d3ebd7d46fd868d2bca402d0c25263b63518b783935bea59f8f1"
         },
         {
           "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
-          "digest": "sha256:bc73198664cf02bdf08228fc8efab1a5cc5ab435f9e8cdf89f18889abb0d38a1"
+          "digest": "sha256:d0f61022fd8fc88e9dcf982117847f2cd2839388f94b032a5ae2a69767dd0bcd"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
@@ -2641,7 +2641,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:4f0adf22a56c108c77f9bd2e6ad9f8bbb7be84d40da9d9cc39d8fac0b87cd1f2"
+          "digest": "sha256:75cb8fc35011144950e92e42991e6efa3680af6c80282ce8ce3720db00227f08"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -2764,8 +2764,20 @@
       "digest": "sha256:2c31f8d54409ebf444b7fa9b07a19e420c229b2ae62590903bbab921f39b56da",
       "files": [
         {
+          "path": "frontend/app/src/hooks/use-simulate-case.ts",
+          "digest": "sha256:b7c00ef831f3d3ebd7d46fd868d2bca402d0c25263b63518b783935bea59f8f1"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-simulate-hypothesis.ts",
+          "digest": "sha256:d0f61022fd8fc88e9dcf982117847f2cd2839388f94b032a5ae2a69767dd0bcd"
+        },
+        {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
+          "digest": "sha256:75cb8fc35011144950e92e42991e6efa3680af6c80282ce8ce3720db00227f08"
         },
         {
           "path": "src/migrations/0013-investigation-evidence-semantics-snapshot.sql",

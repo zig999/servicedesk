@@ -153,6 +153,21 @@ export type SimulateDurations = {
 };
 
 /**
+ * One field's own snapshotted semantics (domain/investigation/field-semantics,
+ * task/simulation-evidence-snapshot/evidence-snapshot-wire-types): the
+ * producing capability's own declared field-by-field meaning, exactly as it
+ * stood when this evidence item was collected. Only `name` is required --
+ * `type` and `description` travel only where the capability's own
+ * output_schema declared them, mirroring that node's own "where the schema
+ * states them" qualifier.
+ */
+export type SimulateFieldSemantics = {
+  readonly name: string;
+  readonly type?: string;
+  readonly description?: string;
+};
+
+/**
  * One collected concept's whole record (domain/investigation/evidence,
  * criterion 2). The capability reference the node's own relationships
  * section pins (target domain/integration/capability, cardinality exactly
@@ -187,6 +202,21 @@ export type SimulateEvidenceItem = {
   readonly capability_name: string;
   readonly capability_version: string;
   readonly elapsed_ms: number;
+  /**
+   * domain/investigation/evidence's own snapshotted semantics -- fields and
+   * concept_description below -- task/simulation-evidence-snapshot/
+   * evidence-snapshot-wire-types's own criterion 1. Optional rather than
+   * required, unlike the node's own `required: true`: a record collected
+   * before this snapshot existed as an attribute at all carries neither on
+   * the wire, and the node's own decided reading for that case (an empty
+   * list, an empty string -- the identical honest-empty values it already
+   * sanctions for a legacy concept or an unresolved capability) is exactly
+   * what an absent value here already means once read; nothing here invents
+   * a third value for a fourth reading of the same field.
+   */
+  readonly fields?: readonly SimulateFieldSemantics[];
+  /** See `fields` above -- the concept's own snapshotted meaning, absent under the identical condition. */
+  readonly concept_description?: string;
 };
 
 /**

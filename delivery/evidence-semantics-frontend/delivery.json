@@ -34,6 +34,14 @@
       "task": "task/glossary-concept-description/concept-form-description-field"
     },
     {
+      "id": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "kind": "implementation",
+      "file": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types.md",
+      "title": "Snapshot fields on the simulate wire types and adapter",
+      "summary": "Both simulate hooks' wire evidence types gain optional fields and concept_description, and toDetailEvidence carries both onto the Detail region's own render type, which declares the identical honest-empty reading for a record collected before the snapshot existed.",
+      "task": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types"
+    },
+    {
       "id": "proof/capability-output-schema-guidance/output-schema-field-guidance",
       "kind": "proof",
       "file": "proof/capability-output-schema-guidance/output-schema-field-guidance.md",
@@ -64,6 +72,14 @@
       "title": "Concept form description field — proof",
       "summary": "New tests prove the description field populates on edit, is required, and its own missing-description refusal reaches the operator by name; three sibling spec files from a closed initiative's own delivery are corrected (with the human's explicit authorization) since this task's own required description field legitimately widens the PUT body and the validation surface they exercise.",
       "task": "task/glossary-concept-description/concept-form-description-field"
+    },
+    {
+      "id": "proof/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "kind": "proof",
+      "file": "proof/simulation-evidence-snapshot/evidence-snapshot-wire-types.md",
+      "title": "Snapshot wire types and adapter — proof",
+      "summary": "New tests prove both wire types accept the optional snapshot fields and toDetailEvidence carries them through unchanged in all three states (present-and-populated, present-but-empty, absent).",
+      "task": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types"
     }
   ],
   "edges": [
@@ -152,6 +168,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "to": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-output-schema-guidance/output-schema-field-guidance",
       "to": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
       "kind": "proves",
@@ -172,6 +206,12 @@
     {
       "from": "proof/glossary-concept-description/concept-form-description-field",
       "to": "implementation/glossary-concept-description/concept-form-description-field",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "to": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
       "kind": "proves",
       "at": "the path"
     }

@@ -64,6 +64,13 @@ export type SimulationUsage = {
  * carried a nested `capability` object either -- crashing this region at
  * render time on a real response.
  */
+/** One field's own snapshotted semantics (domain/investigation/field-semantics), camelCased for this region's own render types. */
+export type SimulationFieldSemantics = {
+  readonly name: string;
+  readonly type?: string;
+  readonly description?: string;
+};
+
 export type SimulationEvidenceItem = {
   readonly concept: string;
   readonly result: SimulationEvidenceResult;
@@ -73,6 +80,23 @@ export type SimulationEvidenceItem = {
   readonly capabilityName: string;
   readonly capabilityVersion: string;
   readonly connector: string;
+  /**
+   * domain/investigation/evidence's own snapshotted semantics
+   * (task/simulation-evidence-snapshot/evidence-snapshot-wire-types's own
+   * criterion 4), read at this render type's own read site: optional
+   * because a wire record collected before this snapshot existed carries
+   * neither field at all, and that absence reads the identical honest-empty
+   * way the node's own text already states for a legacy concept or an
+   * unresolved capability -- no fields at all, an empty concept_description
+   * -- never a read failure and never an invented semantics. A present but
+   * empty array/string (a concept snapshotted with no description, or a
+   * capability that never resolved) reads the same honest-empty way too;
+   * nothing here distinguishes "wire omitted the key" from "wire sent an
+   * empty value" because the node itself does not.
+   */
+  readonly fields?: readonly SimulationFieldSemantics[];
+  /** See `fields` above. */
+  readonly conceptDescription?: string;
 };
 
 /**
