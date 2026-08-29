@@ -2637,7 +2637,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
-          "digest": "sha256:402b54b77587a4bbcbd79375c0a5d30ce3085aced16e5fe3ab3e4e179913c850"
+          "digest": "sha256:143b7fbce508ed83546ef950b7ccd96778cbf3174ccb99ea16d32ec87a88d1a7"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
@@ -2774,6 +2774,10 @@
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:143b7fbce508ed83546ef950b7ccd96778cbf3174ccb99ea16d32ec87a88d1a7"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
@@ -4850,6 +4854,16 @@
         {
           "path": "src/src/http/diagnose.controller.ts",
           "digest": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "digest": "sha256:e2eaa24c46433277c456ec8fe42e3f8c29f8132e17b37fadeae61666107344dc",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
+          "digest": "sha256:143b7fbce508ed83546ef950b7ccd96778cbf3174ccb99ea16d32ec87a88d1a7"
         }
       ]
     },

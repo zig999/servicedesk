@@ -42,6 +42,14 @@
       "task": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types"
     },
     {
+      "id": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "kind": "implementation",
+      "file": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering.md",
+      "title": "Evidence tab renders the snapshotted concept_description and field semantics",
+      "summary": "Two new render helpers show each evidence item's snapshotted concept_description and per-field semantics, distinguishing a pre-snapshot record (renders nothing new) from an honestly empty one (renders a stated absence), reading only from the simulation response already in hand.",
+      "task": "task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering"
+    },
+    {
       "id": "proof/capability-output-schema-guidance/output-schema-field-guidance",
       "kind": "proof",
       "file": "proof/capability-output-schema-guidance/output-schema-field-guidance.md",
@@ -80,6 +88,14 @@
       "title": "Snapshot wire types and adapter — proof",
       "summary": "New tests prove both wire types accept the optional snapshot fields and toDetailEvidence carries them through unchanged in all three states (present-and-populated, present-but-empty, absent).",
       "task": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types"
+    },
+    {
+      "id": "proof/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "kind": "proof",
+      "file": "proof/simulation-evidence-snapshot/evidence-tab-snapshot-rendering.md",
+      "title": "Evidence tab snapshot rendering — proof",
+      "summary": "Seven new tests prove concept_description and per-field semantics render when present, degrade to a stated absence when empty, and render nothing new for a legacy record carrying neither.",
+      "task": "task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering"
     }
   ],
   "edges": [
@@ -186,6 +202,30 @@
       "at": "the path"
     },
     {
+      "from": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "to": "domain/investigation/field-semantics",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "to": "rules/investigation/presentation-reads-the-evidence-snapshot",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "to": "task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-output-schema-guidance/output-schema-field-guidance",
       "to": "implementation/capability-output-schema-guidance/output-schema-field-guidance",
       "kind": "proves",
@@ -212,6 +252,12 @@
     {
       "from": "proof/simulation-evidence-snapshot/evidence-snapshot-wire-types",
       "to": "implementation/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "to": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
       "kind": "proves",
       "at": "the path"
     }
