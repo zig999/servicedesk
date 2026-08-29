@@ -1116,4 +1116,31 @@ entries:
       own floor already refuses to hold code to an implementation choice nobody but the code
       picked. The fact worth holding the frontend to is that the disclosure happens at all, on
       every screen, for as long as this constraint's own backend half stands.
+  - location: rules/glossary/a-concept-declares-its-description.md
+    field: statement
+    unstated: >-
+      The material (temp/desenv/greenfield-judgment-semantics-proposal.md) states that a new
+      concept with no description is refused, with an HTTP 422 response and "a typed error", but
+      does not name the error class.
+    decided: ConceptDescriptionRequiredError
+    why: >-
+      Mirrors this specification's own naming convention for a well-formed-input refusal
+      (rules/integration/a-capability-declares-well-formed-schemas' own
+      CapabilitySchemaNotWellFormedError) — the class names the missing fact directly.
+  - location: domain/investigation/evidence.md
+    field: attributes.concept_description
+    unstated: >-
+      The material explains why fields may snapshot empty for an unavailable result (the
+      capability was never resolved) without separately saying whether concept_description
+      follows the same carve-out, since a concept's name — and therefore its glossary
+      description — is known independently of whether its capability resolved.
+    decided: >-
+      concept_description is snapshotted for every evidence item regardless of result, including
+      unavailable; only fields is empty there.
+    why: >-
+      The concept being collected is always known before the capability read is attempted
+      (evidence-collection-stage.ts resolves the concept's evidence by first knowing which
+      concept it is), so the glossary lookup that fills concept_description has nothing blocking
+      it that the capability read blocks; carving it out the same way as fields would degrade a
+      fact nothing prevents recording.
 ---

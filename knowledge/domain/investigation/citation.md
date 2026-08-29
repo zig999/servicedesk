@@ -12,7 +12,7 @@ attributes:
 ## Description
 
 The traceability a decided evaluation must carry: one concept and one field of the observation that grounded the verdict.
-Machine-checkable by construction: the field must exist in the output schema of the capability that produced that evidence.
+Machine-checkable by construction: the field must exist among that evidence item's own snapshotted field names (rules/investigation/a-cited-field-exists-in-the-capability-output-schema).
 
 ## Responsibility
 

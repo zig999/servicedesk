@@ -77,6 +77,8 @@ classDiagram
         +EvidenceResult result
         +string resultDetail
         +integer elapsedMs
+        +FieldSemantics[] fields
+        +string conceptDescription
     }
     class EvidenceResult {
         <<Enumeration>>
@@ -84,6 +86,12 @@ classDiagram
         UNAVAILABLE
         DENIED
         TIMEOUT
+    }
+    class FieldSemantics {
+        <<ValueObject>>
+        +string name
+        +string type
+        +string description
     }
     class HypothesisEvaluator {
         <<Service>>

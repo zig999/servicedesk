@@ -1,0 +1,16 @@
+---
+subject: rules/glossary/a-concept-declares-its-description
+given:
+  - an operator submits a concept registration naming no description
+when:
+  - register-concept processes the submission
+then:
+  - the registration is refused with an HTTP 422 response reporting ConceptDescriptionRequiredError
+  - the glossary's held concepts are unchanged
+involves:
+  - domain/glossary/concept
+---
+
+## Description
+
+A concept with no stated meaning would publish a name nobody downstream — the glossary browser, a hypothesis's citation, a judgment prompt — could read.
