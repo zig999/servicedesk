@@ -9,6 +9,13 @@
       "summary": "The glossary's concept vocabulary gains a required description — refused missing at registration, tolerated absent on a legacy row, and returned wherever a concept is read."
     },
     {
+      "id": "epic/concept-literal-fixture-maintenance",
+      "kind": "epic",
+      "file": "epic/concept-literal-fixture-maintenance.md",
+      "title": "Concept literal fixture maintenance",
+      "summary": "Pre-existing fixture and test-double literals across the backend tree are brought into compliance with the now-required Concept.description field, with no change to any existing assertion or behavior beyond that field."
+    },
+    {
       "id": "epic/evidence-semantics-snapshot",
       "kind": "epic",
       "file": "epic/evidence-semantics-snapshot.md",
@@ -28,6 +35,13 @@
       "file": "inventory/pinned-evidence-semantics.md",
       "title": "Pinned evidence semantics across glossary, capability registry and investigation",
       "summary": "One backend territory spanning glossary concepts, capability output-schema reading and the evidence-collection/judgment pipeline, where semantics must move from live reads to a collection-time snapshot."
+    },
+    {
+      "id": "inventory/pre-existing-concept-literals-scope",
+      "kind": "inventory",
+      "file": "inventory/pre-existing-concept-literals-scope.md",
+      "title": "Pre-existing Concept-shaped literals outside the widening tasks",
+      "summary": "Every Concept-typed object-literal site in the backend tree that TypeScript now refuses because description is required, beyond the three files the scope already named, plus four files whose runtime assertions will now mismatch."
     },
     {
       "id": "task/concept-description/concept-persistence-carries-description",
@@ -52,6 +66,22 @@
       "title": "read-concept returns a concept's description",
       "summary": "GET /v1/glossary/concepts/{name} answers a held concept's description alongside its existing attributes, empty for a legacy concept.",
       "epic": "concept-description"
+    },
+    {
+      "id": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair",
+      "kind": "task",
+      "file": "task/concept-literal-fixture-maintenance/concept-assertion-description-repair.md",
+      "title": "Runtime .toEqual assertions reconciled with the required description",
+      "summary": "Pre-existing .toEqual assertions comparing GlossaryService's read-back Concept objects gain the description key their expected literals were missing, so each keeps passing once GlossaryService answers description: '' for a registration naming none.",
+      "epic": "concept-literal-fixture-maintenance"
+    },
+    {
+      "id": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair",
+      "kind": "task",
+      "file": "task/concept-literal-fixture-maintenance/concept-literal-typecheck-repair.md",
+      "title": "Typecheck-breaking Concept literals gain a description",
+      "summary": "Every pre-existing Concept-shaped object literal that fails npm run typecheck against the widened Concept type receives a placeholder description value, with no other change.",
+      "epic": "concept-literal-fixture-maintenance"
     },
     {
       "id": "task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics",
@@ -158,6 +188,24 @@
       "to": "rules/knowledge/case-terms-exist-in-the-glossary",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "epic/concept-literal-fixture-maintenance",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/concept-literal-fixture-maintenance",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/concept-literal-fixture-maintenance",
+      "to": "scenarios/glossary/a-concept-with-no-description-is-refused",
+      "kind": "covers",
+      "at": "covers[2]"
     },
     {
       "from": "epic/evidence-semantics-snapshot",
