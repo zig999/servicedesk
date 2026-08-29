@@ -127,7 +127,7 @@
       "kind": "task",
       "file": "task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying.md",
       "title": "applyMigrationFile strips leading comments before sending a migration's SQL to the connection",
-      "summary": "A migration file's own -- comment lines and blank lines are removed before its text reaches the connection, so applying it never depends on the endpoint tolerating a comment-prefixed query; the same SQL statement(s) still run, in the same order.",
+      "summary": "A migration file's own -- comment lines and blank lines are removed before its text reaches the connection, so applying it never depends on the endpoint tolerating a comment-prefixed query; the same SQL statement(s) still run, in the same order. vitest's own testTimeout is raised enough to tolerate a full sequential replay of every migration script against the real database, and a stale code comment naming the wrong database provider is corrected.",
       "epic": "migration-runner-comment-hang-corrective"
     }
   ],
