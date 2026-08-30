@@ -30,10 +30,20 @@ import type { ConnectorConfigurationDetailViewState } from "../hooks/use-connect
  * (criterion 4). ConnectorTestPanel (criterion 6) is composed unchanged,
  * scoped to this route's own `connector` identity, the same way
  * connector-configuration-form-dialog.tsx already scopes it in edit mode --
- * now also supplying its own live state.configuration.value as
+ * originally supplying its own live state.configuration.value as
  * `configurationText` (task/connector-test-panel-placeholder-attributes/
- * route-configuration-text-to-test-panel's own criterion 1: this route is
- * the one production call site that already holds that text live).
+ * route-configuration-text-to-test-panel's own criterion 1: this route was
+ * the one production call site that already held that text live), corrected
+ * by task/connector-test-panel-reads-registered-configuration/thread-
+ * registered-configuration-into-test-panel (a corrective increment) to
+ * supply state.registeredConfigurationText instead: the live, unsaved
+ * textarea value let Add attribute reconcile the panel's attribute rows
+ * against a draft rather than against what is actually registered under
+ * this connector's own name
+ * (rules/integration/a-connector-configuration-is-tested-through-a-
+ * registered-capability), and state.registeredConfigurationText
+ * (use-connector-configuration-detail-view.ts's own header comment) is the
+ * most recently loaded-or-saved text instead.
  *
  * The invalid-JSON warning below (criterion 8) sits above the fields,
  * distinct from JsonTextareaField's own inline "Invalid JSON: <message>"
@@ -155,7 +165,10 @@ export function ConnectorConfigurationDetailReadyView({
           </>
         }
       />
-      <ConnectorTestPanel connector={connector} configurationText={state.configuration.value} />
+      <ConnectorTestPanel
+        connector={connector}
+        configurationText={state.registeredConfigurationText}
+      />
     </div>
   );
 }

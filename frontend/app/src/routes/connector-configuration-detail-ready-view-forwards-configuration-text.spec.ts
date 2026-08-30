@@ -1,80 +1,98 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createElement } from "react";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
-
-// Proof for task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel's
-// own criterion 1 ("ConnectorConfigurationDetailReadyView passes its own live
-// state.configuration.value text into ConnectorTestPanel through a new configurationText prop").
-//
-// useTestConnectorPanel holds configurationText in a ref it deliberately never reads
-// (use-test-connector-panel.ts's own header comment: this task's own scope is pure plumbing, and
-// reading it is a distinct, not-yet-cut change), so nothing this task's own change does is visible
-// anywhere in the rendered app today. The only way to observe the value this route actually
-// forwards is to replace ConnectorTestPanel itself with a stand-in that renders its own received
-// props as plain text, and read that text off the DOM -- a rendered value, not a recorded call.
-//
-// This departs from TST-03 ("A stand-in replaces a boundary the component does not own -- the
-// network, storage, the clock -- and never the component's own rendering logic"):
-// ConnectorTestPanel is none of those three boundaries. Disclosed as this file's own divergence:
-// nothing else makes this plumbing observable, since the value is unread by design and this
-// task's own rationale states its outcome is demonstrable only by "the value ... reaching the
-// hook" -- exactly what this stand-in exposes as rendered text instead of a call recorded on a spy.
-//
-// The stub carries a stable data-testid rather than being located by its own rendered text:
-// state.configuration.value is pretty-printed JSON (embedded newlines), and
-// screen.findByText/getByText compares against a whitespace-collapsed reading of the DOM's own
-// text content, so a multi-line expected string can never match -- reading textContent off the
-// testid'd node directly compares the exact string this route forwarded, newlines included.
-vi.mock("./connector-test-panel", () => ({
-  ConnectorTestPanel: (props: { connector: string; configurationText: string }) =>
-    createElement(
-      "p",
-      { "data-testid": "connector-test-panel-stub" },
-      `connector-test-panel-stub-received:${props.connector}:${props.configurationText}`,
-    ),
-}));
-
 import {
-  CONNECTOR,
-  LOADED_CONFIGURATION,
-  UPDATED_CONFIGURATION,
   baseHandlers,
   createFetchStub,
   mountConnectorConfigurationDetailScreen,
-  prettyPrinted,
+  putCallCount,
 } from "./connector-configuration-detail-screen.test-support";
+
+// Proof for task/connector-test-panel-reads-registered-configuration/thread-registered-
+// configuration-into-test-panel's own criteria 2-4.
+//
+// This file used to prove task/connector-test-panel-placeholder-attributes/route-configuration-
+// text-to-test-panel's own criterion 1 -- that ConnectorConfigurationDetailReadyView forwarded its
+// own live, unsaved state.configuration.value into ConnectorTestPanel's configurationText prop --
+// through a stand-in replacing ConnectorTestPanel itself (disclosed there as a TST-03 divergence,
+// since nothing read that value yet and rendering it as text was the only way to observe it). That
+// corrective task found forwarding the live, unsaved edit was itself the wrong behavior
+// (rules/integration/a-connector-configuration-is-tested-through-a-registered-capability: the
+// configuration a test exercises is the one currently registered under the connector's own name,
+// never text an operator holds unsaved in an authoring surface), and this file's own assertions
+// now state the corrected behavior instead.
+//
+// The stand-in is gone: task/connector-test-panel-placeholder-attributes/reconcile-test-panel-
+// attribute-rows (already delivered, unchanged by this task -- criterion 5) made
+// useTestConnectorPanel's own "Add attribute" reconcile its rows against whichever configurationText
+// string it is given, so the real, unmocked ConnectorTestPanel now renders an observable difference
+// for whichever text actually reaches it -- reading that reconciliation off the DOM proves what this
+// route forwards without replacing ConnectorTestPanel's own rendering logic (TST-03's own "never the
+// component's own rendering logic").
+//
+// Configuration text embeds a distinct '${subject:<name>}' placeholder per fixture below
+// (services/simulation-subject-derivation.ts's own placeholder grammar) so a wrongly-sourced
+// reconciliation is visible as a different row appearing, not merely a value staying the same.
+
+const CONFIGURATION_WITH_ACCOUNT_ID_PLACEHOLDER =
+  '{"address":"https://api.example.com/${subject:account-id}"}';
+const CONFIGURATION_WITH_REGION_PLACEHOLDER =
+  '{"address":"https://api.example.com/${subject:region}"}';
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("ConnectorConfigurationDetailReadyView — forwards its own live Configuration text into ConnectorTestPanel (criterion 1)", () => {
-  it("passes the loaded configuration's own current text as configurationText, scoped to this route's own connector", async () => {
-    const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
-    await mountConnectorConfigurationDetailScreen(fetchMock);
+function attributeNames(): readonly string[] {
+  return screen
+    .queryAllByLabelText<HTMLInputElement>("Attribute")
+    .map((input) => input.value);
+}
 
-    await waitFor(() => {
-      expect(screen.getByTestId("connector-test-panel-stub").textContent).toBe(
-        `connector-test-panel-stub-received:${CONNECTOR}:${prettyPrinted(LOADED_CONFIGURATION)}`,
-      );
-    });
-  });
+function clickAddAttribute(): void {
+  fireEvent.click(screen.getByRole("button", { name: "Add attribute" }));
+}
 
-  it("passes the edited text once the operator changes Configuration, rather than only the value loaded at mount (its own live value)", async () => {
-    const fetchMock = createFetchStub(baseHandlers(LOADED_CONFIGURATION));
+describe("ConnectorConfigurationDetailReadyView — Add attribute reconciles against the registered configuration text, not an unsaved edit (criterion 3)", () => {
+  it("keeps reconciling against the last registered text after Configuration is edited but not saved", async () => {
+    const fetchMock = createFetchStub(baseHandlers(CONFIGURATION_WITH_ACCOUNT_ID_PLACEHOLDER));
     await mountConnectorConfigurationDetailScreen(fetchMock);
     const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
 
-    fireEvent.change(configurationField, { target: { value: UPDATED_CONFIGURATION } });
+    clickAddAttribute();
+    expect(attributeNames()).toEqual(["account-id"]);
 
-    // json-textarea-field.tsx's own load-detection effect re-renders this same edit through its
-    // pretty-print path too (empirically confirmed against this suite's own fixture: a syntactically
-    // valid edit ends up pretty-printed exactly like a freshly loaded value), so the live value this
-    // route forwards is the pretty-printed form, not the raw text fireEvent.change assigned.
-    await waitFor(() => {
-      expect(screen.getByTestId("connector-test-panel-stub").textContent).toBe(
-        `connector-test-panel-stub-received:${CONNECTOR}:${prettyPrinted(UPDATED_CONFIGURATION)}`,
-      );
+    fireEvent.change(configurationField, {
+      target: { value: CONFIGURATION_WITH_REGION_PLACEHOLDER },
     });
+
+    clickAddAttribute();
+
+    // If this route forwarded the live, unsaved edit instead of the registered text, the
+    // account-id row would have been dropped and a region row added instead.
+    expect(attributeNames()).toEqual(["account-id"]);
+  });
+});
+
+describe("ConnectorConfigurationDetailReadyView — Add attribute reconciles against the just-saved configuration text once a save lands (criterion 4)", () => {
+  it("reconciles against the newly saved text the next time Add attribute is clicked after a successful save", async () => {
+    const fetchMock = createFetchStub(baseHandlers(CONFIGURATION_WITH_ACCOUNT_ID_PLACEHOLDER));
+    await mountConnectorConfigurationDetailScreen(fetchMock);
+    const configurationField = await screen.findByLabelText<HTMLTextAreaElement>("Configuration");
+
+    clickAddAttribute();
+    expect(attributeNames()).toEqual(["account-id"]);
+
+    fireEvent.change(configurationField, {
+      target: { value: CONFIGURATION_WITH_REGION_PLACEHOLDER },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
+    await screen.findByText("Saved.");
+
+    clickAddAttribute();
+
+    // The account-id row is now dropped and a region row added -- reconciliation now reads the
+    // just-saved (now registered) text, not the value that was registered before this save.
+    expect(attributeNames()).toEqual(["region"]);
   });
 });

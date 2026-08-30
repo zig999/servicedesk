@@ -53,7 +53,7 @@
  *   same fact useConnectorConfigurationDetail.ts's own header comment
  *   states its internal baseline holds, since `isDirty` there is computed
  *   as a comparison against exactly that baseline.
- *   `configurationBaselineRef` below snapshots exactly that value every
+ *   `configurationBaseline` below snapshots exactly that value every
  *   time `isDirty` reads false, and discard plays it back through
  *   `configuration.onChange`. `connector` needs no snapshot of its own:
  *   this route always disables that field (`isEditingIdentity` at the call
@@ -61,6 +61,29 @@
  *   -- never edited, and already the loaded record's own identity
  *   (domain/integration/connector-configuration) -- is exactly the same
  *   reset a snapshot would have produced.
+ *
+ * - `registeredConfigurationText` (task/connector-test-panel-reads-registered-
+ *   configuration/thread-registered-configuration-into-test-panel's own
+ *   criterion 1, a corrective increment) exposes that same snapshot on the
+ *   "ready" phase itself, distinct from `configuration.value`: that
+ *   corrective task found ConnectorConfigurationDetailReadyView had been
+ *   passing ConnectorTestPanel the live, unsaved `configuration.value`
+ *   instead, so Add attribute reconciled its rows against a draft rather
+ *   than against what is actually registered under the connector's own
+ *   name (rules/integration/a-connector-configuration-is-tested-through-a-
+ *   registered-capability). `configurationBaseline` moved from a `useRef`
+ *   to a `useState` for exactly this: onDiscard only ever read it inside an
+ *   event handler, where a ref already holds the latest write, but a value
+ *   returned from this hook's own "ready" phase is read at render time, and
+ *   a ref updated inside an effect does not itself schedule the re-render
+ *   that would carry a fresh value to that render -- the corrective task's
+ *   own delivery record discloses this choice (this hook's own inference;
+ *   STA-03 permits it because this snapshot's own history-dependent value
+ *   cannot be computed inline from this render's props or state the way an
+ *   ordinary derivation could -- the same reasoning already covers
+ *   `justSaved` below, and `configurationBaseline` is the one piece of
+ *   memory both fields now read from, not a second, duplicate mirror of
+ *   it).
  *
  * - The success acknowledgement (criterion 7) needs to tell "a save just
  *   landed" apart from "nothing has happened yet" or "a save is still in
@@ -100,6 +123,15 @@ export type ConnectorConfigurationDetailViewState =
        * failed save.
        */
       readonly justSaved: boolean;
+      /**
+       * The most recently loaded-or-saved configuration text
+       * (task/connector-test-panel-reads-registered-configuration/
+       * thread-registered-configuration-into-test-panel's own criterion 1)
+       * -- the same text `onDiscard` above resets `configuration` back to,
+       * re-seeded only at load and at a successful save. Distinct from
+       * `configuration.value`, which is the live, possibly-unsaved edit.
+       */
+      readonly registeredConfigurationText: string;
     });
 
 /**
@@ -113,7 +145,10 @@ export function useConnectorConfigurationDetailView(
   const detail = useConnectorConfigurationDetail(connector);
   const isReady = detail.phase === "ready";
 
-  const configurationBaselineRef = useRef({ value: "", isValid: true });
+  const [configurationBaseline, setConfigurationBaseline] = useState({
+    value: "",
+    isValid: true,
+  });
   // Tracks the previously observed `isSubmitSuccessful` value so `justSaved`
   // is set on its false-to-true transition, not on its level -- see this
   // file's own header comment.
@@ -125,14 +160,15 @@ export function useConnectorConfigurationDetailView(
   const currentConfigurationValid = isReady ? detail.configuration.isValid : null;
   const currentIsSubmitSuccessful = isReady ? detail.isSubmitSuccessful : null;
 
-  // Snapshots the baseline discard plays back, every time the ready phase
-  // reports no outstanding edit -- see this file's own header comment.
+  // Snapshots the baseline discard plays back (and registeredConfigurationText
+  // below reads), every time the ready phase reports no outstanding edit --
+  // see this file's own header comment.
   useEffect(() => {
     if (isReady && currentIsDirty === false) {
-      configurationBaselineRef.current = {
+      setConfigurationBaseline({
         value: currentConfigurationValue ?? "",
         isValid: currentConfigurationValid ?? true,
-      };
+      });
     }
   }, [isReady, currentIsDirty, currentConfigurationValue, currentConfigurationValid]);
 
@@ -163,10 +199,10 @@ export function useConnectorConfigurationDetailView(
     ...detail,
     onDiscard: () => {
       detail.form.reset({ connector });
-      const baseline = configurationBaselineRef.current;
-      detail.configuration.onChange(baseline.value, baseline.isValid);
+      detail.configuration.onChange(configurationBaseline.value, configurationBaseline.isValid);
       setJustSaved(false);
     },
     justSaved,
+    registeredConfigurationText: configurationBaseline.value,
   };
 }

@@ -19,6 +19,10 @@ export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
 }
 
+export function errorResponse(code: string, status = 500): Response {
+  return new Response(JSON.stringify({ error: { code, message: code } }), { status });
+}
+
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
 /** Each handler is keyed by URL and receives the request's own method, so one entry can answer
