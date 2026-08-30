@@ -36,6 +36,20 @@ import { ConnectorTestPanel } from "./connector-test-panel";
  * Never rendered in create mode: nothing yet names the connector being
  * created as its own, so there is no registered capability to test through
  * yet (rules/integration/a-connector-configuration-is-tested-through-a-registered-capability).
+ *
+ * `configurationText={state.configuration.value}`
+ * (task/connector-test-panel-placeholder-attributes/
+ * route-configuration-text-to-test-panel's own criterion 4) supplies this
+ * form's own currently-typed Configuration text -- the same field this
+ * Dialog already reads at `configuration={state.configuration}` above --
+ * so this file keeps type-checking and compiling against
+ * ConnectorTestPanel's new required prop. This edit-mode branch is
+ * unreachable from current production navigation (this file's own header
+ * comment on the list screen's own create-only entry into this Dialog), so
+ * no observable behavior actually changes; the value chosen is this task's
+ * own inference, parallel to how ConnectorConfigurationDetailReadyView (the
+ * one reachable call site) supplies its own live
+ * state.configuration.value.
  */
 
 export type ConnectorConfigurationFormDialogProps = {
@@ -77,7 +91,10 @@ export function ConnectorConfigurationFormDialog({
           onSubmit={state.onSubmit}
         />
         {target.mode === "edit" && (
-          <ConnectorTestPanel connector={target.connectorConfiguration.connector} />
+          <ConnectorTestPanel
+            connector={target.connectorConfiguration.connector}
+            configurationText={state.configuration.value}
+          />
         )}
       </DialogContent>
     </Dialog>

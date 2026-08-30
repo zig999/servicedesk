@@ -29,7 +29,11 @@ import type { ConnectorConfigurationDetailViewState } from "../hooks/use-connect
  * new optional `isDirty` prop that file's own header comment now documents
  * (criterion 4). ConnectorTestPanel (criterion 6) is composed unchanged,
  * scoped to this route's own `connector` identity, the same way
- * connector-configuration-form-dialog.tsx already scopes it in edit mode.
+ * connector-configuration-form-dialog.tsx already scopes it in edit mode --
+ * now also supplying its own live state.configuration.value as
+ * `configurationText` (task/connector-test-panel-placeholder-attributes/
+ * route-configuration-text-to-test-panel's own criterion 1: this route is
+ * the one production call site that already holds that text live).
  *
  * The invalid-JSON warning below (criterion 8) sits above the fields,
  * distinct from JsonTextareaField's own inline "Invalid JSON: <message>"
@@ -151,7 +155,7 @@ export function ConnectorConfigurationDetailReadyView({
           </>
         }
       />
-      <ConnectorTestPanel connector={connector} />
+      <ConnectorTestPanel connector={connector} configurationText={state.configuration.value} />
     </div>
   );
 }

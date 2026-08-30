@@ -140,8 +140,33 @@ export type TestConnectorPanelState = {
   readonly onTest: () => void;
 };
 
-/** Assembles and dispatches one test-connector call for `connector`, the connector configuration this panel is scoped to (criterion 1). */
-export function useTestConnectorPanel(connector: string): TestConnectorPanelState {
+/**
+ * Assembles and dispatches one test-connector call for `connector`, the connector
+ * configuration this panel is scoped to (criterion 1).
+ *
+ * `configurationText` -- the connector configuration's own current Configuration text,
+ * exactly as ConnectorConfigurationDetailReadyView's own live state.configuration.value
+ * holds it -- is threaded in by
+ * task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel
+ * as pure prop/argument plumbing: that task's own rationale states it "carries an
+ * existing value between components without deciding a new fact," so it is accepted
+ * here and deliberately left unread. Reading it to reconcile `attributes` against
+ * Configuration's own current placeholders is a distinct, not-yet-cut change (this
+ * hook's own onAddAttribute below still only appends one empty row, unchanged).
+ */
+export function useTestConnectorPanel(
+  connector: string,
+  configurationText: string,
+): TestConnectorPanelState {
+  // Held in a ref, never read through `.current` anywhere in this hook today --
+  // this is the accepted-but-unread plumbing this function's own header comment
+  // above describes, and holding it this way (rather than a bare `void
+  // configurationText`) is what satisfies the strict compiler's
+  // noUnusedParameters for an argument nothing yet consumes, mirroring this same
+  // file's own nextRowIdRef/isDispatchingRef ref convention below.
+  const configurationTextRef = useRef(configurationText);
+  configurationTextRef.current = configurationText;
+
   const {
     capabilities,
     isLoading: isLoadingCapabilities,
