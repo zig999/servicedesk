@@ -16,6 +16,19 @@
       "title": "Proof that TestDispatchOutcome makes a stale succeeded result and a fresh failed message structurally uncoexistable",
       "summary": "Two compile-time constructions prove the sole criterion at the type level; two runtime tests witness it and this task's own two disclosed inferences in the composed panel; two pre-existing spec files were mechanically adapted to the new testOutcome shape so the suite still builds.",
       "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    },
+    {
+      "id": "review/discriminate-test-dispatch-outcome",
+      "kind": "review",
+      "file": "review/discriminate-test-dispatch-outcome.md",
+      "title": "Discriminate test dispatch outcome, review",
+      "summary": "What four passes found over the TYP-04 corrective task that replaced isTesting/result/testError with one discriminated testOutcome field.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -30,6 +43,12 @@
       "to": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/discriminate-test-dispatch-outcome",
+      "to": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
