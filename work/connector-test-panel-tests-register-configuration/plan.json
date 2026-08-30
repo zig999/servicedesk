@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-tests-register-configuration",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-tests-register-configuration.md",
+      "title": "Connector test panel tests register configuration before reconciling",
+      "summary": "Seven pre-existing tests across three files are corrected to save an edit to Configuration before clicking \"Add attribute\", matching the now-corrected production behavior of reconciling against the registered configuration rather than an unsaved edit."
+    },
+    {
+      "id": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "kind": "task",
+      "file": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling.md",
+      "title": "Save Configuration edits before reconciling in the affected tests",
+      "summary": "Seven tests across three spec files now save an edit to Configuration before clicking \"Add attribute\", so their setup matches the corrected production behavior of reconciling against the registered configuration.",
+      "epic": "connector-test-panel-tests-register-configuration"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-tests-register-configuration",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-test-panel-tests-register-configuration",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-test-panel-tests-register-configuration",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-test-panel-tests-register-configuration",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-test-panel-tests-register-configuration",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
