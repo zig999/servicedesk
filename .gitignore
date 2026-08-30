@@ -5,3 +5,4 @@ credentials.md
 .env
 .env.test
 .mcp.json
+.claude/worktrees/
