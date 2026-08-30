@@ -4255,11 +4255,19 @@
     },
     {
       "node": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
-      "digest": "sha256:29dcc99c2959d171bb92f245c9e39241df84a99db2a6b7b3cf13a18d657c16fa",
+      "digest": "sha256:07157f154daeddc122145935ebe67027b8af6f3535ef9acb17e7834b4bf24902",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
+          "digest": "sha256:61dcc3a8e021c95e66893349f8b9894ced6943348cd742c5f67bbd68dadc3080"
+        },
         {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
           "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:bf5871a36c002af4207f9032af6ebf498c2c05e9e5e1061ff9a0d86f4a6354b2"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
