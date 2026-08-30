@@ -3,12 +3,19 @@ import { CaseSimulationStatusDot } from "./case-simulation-status-dot";
 import type {
   SimulationEvidenceItem,
   SimulationEvidenceResult,
+  SimulationFieldSemantics,
   SimulationJudgmentCall,
 } from "./case-simulation-detail-types";
 
 /**
  * The Evidence tab's own body (task/simulation-cockpit/detail-panel,
- * criteria 3 and 6, default-shown per this task's own objective).
+ * criteria 3 and 6, default-shown per this task's own objective), widened by
+ * task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering to also
+ * show each item's own snapshotted concept_description and field semantics
+ * (renderConceptDescription/renderFieldSemantics below), with every absence
+ * -- both the pre-snapshot "never carried this at all" and the honest
+ * "carried it, and it was empty" -- rendered as a stated absence rather
+ * than invented or left silently blank.
  *
  * The capability/connector line below reads `item.capabilityName`,
  * `item.capabilityVersion` and `item.connector` as flat fields of the
@@ -62,6 +69,59 @@ function prettyPrintObservation(observation: string): string {
   }
 }
 
+/**
+ * The concept's own snapshotted meaning (task/simulation-evidence-snapshot/
+ * evidence-tab-snapshot-rendering's own criteria 1 and 4,
+ * rules/investigation/presentation-reads-the-evidence-snapshot): `undefined`
+ * (a record collected before this snapshot existed) renders nothing here at
+ * all, matching this tab's own prior rendering exactly (criterion 6); a
+ * present but empty string (a legacy concept snapshotted with no description)
+ * renders a stated absence rather than blank or invented text (criterion 4);
+ * anything else renders as given, read only from `item` -- no glossary
+ * request is issued to enrich it (criterion 7).
+ */
+function renderConceptDescription(conceptDescription: string | undefined): JSX.Element | null {
+  if (conceptDescription === undefined) {
+    return null;
+  }
+  return (
+    <p className="text-sm text-muted-foreground">
+      {conceptDescription === "" ? "No description recorded for this concept." : conceptDescription}
+    </p>
+  );
+}
+
+/**
+ * The observation's own snapshotted field semantics (criteria 2, 3 and 5,
+ * the same absent/empty distinction `renderConceptDescription` above draws):
+ * `undefined` renders nothing, matching this tab's own prior rendering; a
+ * present but empty array renders a stated absence and the item still
+ * renders around it; each present field renders its own name always, and its
+ * `type`/`description` only where the snapshot itself states them --
+ * neither is ever invented for a field that lacks one.
+ */
+function renderFieldSemantics(
+  fields: readonly SimulationFieldSemantics[] | undefined,
+): JSX.Element | null {
+  if (fields === undefined) {
+    return null;
+  }
+  if (fields.length === 0) {
+    return <p className="text-sm text-muted-foreground">No field semantics recorded for this observation.</p>;
+  }
+  return (
+    <ul className="flex flex-col gap-0.5 text-sm text-muted-foreground">
+      {fields.map((field) => (
+        <li key={field.name}>
+          <span className="font-mono">{field.name}</span>
+          {field.type !== undefined && <span> ({field.type})</span>}
+          {field.description !== undefined && <span> — {field.description}</span>}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export type CaseSimulationDetailEvidenceTabProps = {
   readonly collects: readonly string[];
   readonly evidence: readonly SimulationEvidenceItem[];
@@ -107,6 +167,8 @@ export function CaseSimulationDetailEvidenceTab({
               {item.resultDetail !== undefined && (
                 <p className="text-sm text-muted-foreground">{item.resultDetail}</p>
               )}
+              {renderConceptDescription(item.conceptDescription)}
+              {renderFieldSemantics(item.fields)}
               <details>
                 <summary className="cursor-pointer text-sm text-muted-foreground">Observation</summary>
                 <pre className="rounded-md border border-border bg-muted p-3 text-sm font-mono overflow-x-auto">

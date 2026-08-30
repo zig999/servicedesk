@@ -184,6 +184,19 @@ export type Evaluation =
 export type EvidenceResult = "ok" | "unavailable" | "denied" | "timeout";
 
 /**
+ * One field's own snapshotted semantics (domain/investigation/field-semantics,
+ * task/simulation-evidence-snapshot/evidence-snapshot-wire-types) -- declared
+ * locally rather than imported from the sibling use-simulate-case.ts hook's
+ * own SimulateFieldSemantics, the same independent-declaration convention
+ * this file's own header comment already states for this exact wire family.
+ */
+export type FieldSemantics = {
+  readonly name: string;
+  readonly type?: string;
+  readonly description?: string;
+};
+
+/**
  * One collected concept's whole record, mirroring domain/investigation/evidence.md and the
  * route's own evidenceSchema (simulate-hypothesis.dto.ts) exactly: the capability reference
  * travels as two flat fields, `capability_name` and `capability_version`, never nested under a
@@ -203,6 +216,17 @@ export type Evidence = {
   readonly capability_name: string;
   readonly capability_version: string;
   readonly elapsed_ms: number;
+  /**
+   * domain/investigation/evidence's own snapshotted semantics -- optional
+   * for the identical reason the sibling use-simulate-case.ts hook's own
+   * SimulateEvidenceItem states in full: a record collected before this
+   * snapshot existed carries neither on the wire, and the node's own
+   * decided honest-empty reading for that case is exactly what an absent
+   * value already means once read.
+   */
+  readonly fields?: readonly FieldSemantics[];
+  /** See `fields` above. */
+  readonly concept_description?: string;
 };
 
 /**

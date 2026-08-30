@@ -243,6 +243,11 @@ export function toDetailEvidence(
     capabilityName: item.capability_name,
     capabilityVersion: item.capability_version,
     connector: item.origin,
+    // task/simulation-evidence-snapshot/evidence-snapshot-wire-types's own criterion 3: carried
+    // through unchanged, including where the wire omits either (case-simulation-detail-types.ts's
+    // own SimulationEvidenceItem states the identical honest-empty reading for that absence).
+    fields: item.fields,
+    conceptDescription: item.concept_description,
   }));
 }
 

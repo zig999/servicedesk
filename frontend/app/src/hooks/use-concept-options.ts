@@ -28,6 +28,17 @@
  * inside the route's own configured default page size, so no caller needs a
  * second page to see every concept the glossary currently holds. This
  * task's own inference, following that hook's own established convention.
+ *
+ * task/glossary-concept-description/browser-description-and-legacy-marker
+ * additionally narrows use-glossary-concepts.ts's own sibling GlossaryConcept
+ * in `description` (domain/glossary/concept's fourth attribute); this hook's
+ * own ConceptOption deliberately does not follow, a departure from its
+ * sibling's shape disclosed here rather than left to disagree in cache: this
+ * hook's one consumer (use-hypothesis-revision-form.ts) filters the
+ * subject-type multi-select by `accepts` alone and reads nothing of a
+ * concept's description, so widening ConceptOption to carry a field nothing
+ * downstream of it reads would repeat exactly the mistake this file's own
+ * header comment above already refuses for `ttl`.
  */
 
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";

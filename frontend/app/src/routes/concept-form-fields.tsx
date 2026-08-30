@@ -1,6 +1,7 @@
 import type { BaseSyntheticEvent, JSX, ReactNode } from "react";
 import { Controller, type Control, type UseFormReturn } from "react-hook-form";
 import { Input } from "@tui/ui/input";
+import { Textarea } from "@tui/ui/textarea";
 import { Label } from "@tui/ui/label";
 import { Checkbox } from "@tui/ui/checkbox";
 import { Button } from "@tui/ui/button";
@@ -9,8 +10,10 @@ import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary
 
 /**
  * The Concept create/edit form's own field markup
- * (task/concept-authoring/concept-create-edit-form): name, accepts and ttl --
- * kept in its own file, apart from the Dialog composing it, matching this
+ * (task/concept-authoring/concept-create-edit-form, widened by
+ * task/glossary-concept-description/concept-form-description-field): name,
+ * accepts, ttl and description -- kept in its own file, apart from the Dialog
+ * composing it, matching this
  * app's own established convention of splitting a create/edit form's field
  * markup out from the screen/dialog that mounts it
  * (case-version-editor-form-fields.tsx).
@@ -173,6 +176,29 @@ export function ConceptFormFields({
           disabled={isSubmitting}
           aria-invalid={errors.ttl != null}
           aria-describedby={errors.ttl != null ? "ttl-error" : undefined}
+        />
+      </FormField>
+
+      {/*
+        domain/glossary/concept's fourth attribute
+        (rules/glossary/a-concept-declares-its-description): what the named
+        observation means, free text rather than a single-line value -- a
+        Textarea (@tui/ui/textarea) rather than Input, the same control
+        hypothesis-revision-form-fields.tsx's own Criterion field already uses
+        for a comparable free-text, non-JSON attribute (that field's own
+        register/disabled/aria-invalid/aria-describedby wiring, copied here
+        unchanged).
+      */}
+      <FormField
+        label="Description"
+        errorId="description-error"
+        error={errors.description?.message}
+      >
+        <Textarea
+          {...register("description")}
+          disabled={isSubmitting}
+          aria-invalid={errors.description != null}
+          aria-describedby={errors.description != null ? "description-error" : undefined}
         />
       </FormField>
 

@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import type { JSX } from "react";
 import { Button } from "@tui/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@tui/ui/tabs";
 import {
@@ -10,9 +10,7 @@ import {
   useGlossaryVocabularyOptions,
   type GlossaryVocabulary,
 } from "../hooks/use-glossary-vocabulary";
-import { useGlossaryConcepts, type GlossaryConcept } from "../hooks/use-glossary-concepts";
-import type { ConceptFormTarget } from "../hooks/use-concept-form";
-import { ConceptFormDialog } from "./concept-form-dialog";
+import { ConceptsPanel } from "./glossary-concepts-panel";
 
 /**
  * The Glossary Browser screen (task/glossary-and-capabilities-browser/
@@ -27,12 +25,17 @@ import { ConceptFormDialog } from "./concept-form-dialog";
  * task's own criteria; both hooks below already read only a page's `data`,
  * per this app's own inventory).
  *
- * task/concept-authoring/concept-create-edit-form widens the Concepts tab
- * alone from read-only to one that also creates and edits a concept
- * (contracts/glossary/glossary-authoring's own register-concept operation,
- * PUT /v1/glossary/concepts/{name}) -- the five term-vocabulary tabs stay
- * exactly as read-only as this screen's own original delivery left them; no
- * criterion of that task touches any of them.
+ * The Concepts tab's own body -- listing, create/edit
+ * (task/concept-authoring/concept-create-edit-form) and, per concept, its
+ * own description with the empty-description marker
+ * (task/glossary-concept-description/browser-description-and-legacy-marker,
+ * rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one)
+ * -- lives in its own glossary-concepts-panel.tsx rather than inline here:
+ * extracted once the description column and its marker would otherwise have
+ * pushed this file past MNT-01's own three-hundred-line cap, this task's own
+ * inference disclosed in its delivery record. The five term-vocabulary tabs
+ * stay exactly as read-only as this screen's own original delivery left
+ * them, and inline here, since none of those tasks touches any of them.
  *
  * Built with @tui/ui/tabs the same way case-detail-screen.tsx already
  * composes it (this app's one existing precedent): each TabsContent's own
@@ -47,130 +50,7 @@ import { ConceptFormDialog } from "./concept-form-dialog";
  * exact kind of change).
  */
 
-const CONCEPTS_COLUMNS: StatusTableColumn[] = [
-  { key: "name", header: "Name" },
-  { key: "accepts", header: "Accepts" },
-  { key: "ttl", header: "TTL" },
-  { key: "actions", header: "" },
-];
-
 const VOCABULARY_COLUMNS: StatusTableColumn[] = [{ key: "name", header: "Name" }];
-
-/**
- * domain/glossary/concept's own ttl is "the strictest freshness tolerance
- * among the cases that use it, in seconds" -- formatted with its declared
- * unit here since no criterion states a display format and the raw number
- * alone would leave a reader guessing the unit; this screen's own
- * inference, disclosed in its delivery record (the same kind of call
- * capabilities-browser-screen.tsx's own formatTimeout already made for
- * domain/integration/capability's own timeout).
- */
-function formatTtl(ttlSeconds: number): string {
-  return `${ttlSeconds}s`;
-}
-
-/**
- * A concept's own `accepts` (domain/glossary/concept: which subject types
- * it accepts) is a list; rendered as a comma-joined string here since no
- * criterion states a display format for a list-valued cell and StatusTable
- * itself renders a plain value as text -- this screen's own inference,
- * disclosed in its delivery record.
- *
- * `onEdit` renders as this row's own "Edit" action cell (criterion 2, "Each
- * concept in the Concepts tab offers an edit action") -- a plain Button
- * element, which StatusTable's own renderCellContent already renders as
- * given (status-table.tsx's own header comment: "a value that is itself a
- * React element... renders exactly as given"), the one precedent this app
- * already has for a cell holding a caller-composed action rather than plain
- * text.
- */
-function toConceptRow(concept: GlossaryConcept, onEdit: (concept: GlossaryConcept) => void): StatusTableRow {
-  return {
-    id: concept.name,
-    name: concept.name,
-    accepts: concept.accepts.join(", "),
-    ttl: formatTtl(concept.ttl),
-    actions: (
-      <Button type="button" variant="secondary" onClick={() => onEdit(concept)}>
-        Edit
-      </Button>
-    ),
-  };
-}
-
-/**
- * The "Concepts" tab's own body: every concept GET /v1/glossary/concepts
- * currently holds, plus (task/concept-authoring/concept-create-edit-form)
- * the "New concept" action (criterion 1) and, per row, the "Edit" action
- * (criterion 2) -- both open the same ConceptFormDialog, parametrized by
- * `formTarget`'s own nullable-identity shape (ConceptFormTarget: `null`
- * closed, `{ mode: "create" }`, or `{ mode: "edit", concept }`). The Dialog
- * is entirely controlled by this local state rather than a DialogTrigger per
- * action, since two distinct actions (the button below, and every row's own
- * Edit button) open the one shared Dialog rather than each owning its own.
- *
- * "New concept" renders unconditionally, ahead of the loading/error/empty
- * branches below, so criterion 1 holds regardless of whichever of those
- * three states the concept list itself is currently in -- this screen's own
- * inference, disclosed in its delivery record: no criterion of this task
- * states whether the action should be hidden while the list is loading or
- * failed to load, and hiding a create action behind an unrelated read
- * failure would block authoring a concept for a reason that has nothing to
- * do with it.
- */
-function ConceptsPanel(): JSX.Element {
-  const { concepts, isLoading, isError, refetch } = useGlossaryConcepts();
-  const [formTarget, setFormTarget] = useState<ConceptFormTarget | null>(null);
-
-  function renderBody(): JSX.Element {
-    if (isLoading) {
-      return <p>Loading concepts…</p>;
-    }
-    if (isError) {
-      // EDG-02: a load failure degrades to a typed error state with an
-      // explicit retry, rather than an indefinite loading state or a blank
-      // screen. GET /v1/glossary/concepts throws no domain error
-      // error-ui-state.ts names (this app's own inventory), so this generic
-      // fallback is what the failure resolves to.
-      return (
-        <section>
-          <p>Unable to load the glossary&apos;s concepts.</p>
-          <Button type="button" onClick={refetch}>
-            Retry
-          </Button>
-        </section>
-      );
-    }
-    if (concepts.length === 0) {
-      // API-04: an empty response renders its own explicit empty state,
-      // never treated as still loading or as a failure.
-      return <p>The glossary currently holds no concepts.</p>;
-    }
-
-    return (
-      <StatusTable
-        columns={CONCEPTS_COLUMNS}
-        rows={concepts.map((concept) =>
-          toConceptRow(concept, (target) => setFormTarget({ mode: "edit", concept: target })),
-        )}
-      />
-    );
-  }
-
-  return (
-    <section className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <Button type="button" onClick={() => setFormTarget({ mode: "create" })}>
-          New concept
-        </Button>
-      </div>
-      {renderBody()}
-      {formTarget !== null && (
-        <ConceptFormDialog target={formTarget} onClose={() => setFormTarget(null)} />
-      )}
-    </section>
-  );
-}
 
 export type VocabularyPanelProps = {
   readonly vocabulary: GlossaryVocabulary;

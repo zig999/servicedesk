@@ -1163,4 +1163,66 @@ entries:
       one) — 0 is not a claim that the collection took no time, the same way an empty
       concept_description is not a claim the concept has no meaning; both are the specification's
       own marker for "this was never recorded," in the type each attribute already holds.
+  - location: domain/investigation/evidence.md
+    field: attributes.fields
+    unstated: >-
+      What an evidence item collected before the fields attribute existed reads for it when the
+      record is read or returned over the wire.
+    decided: >-
+      An evidence item collected before fields existed as an attribute reads it as no fields at
+      all — the same honest-empty value the element already sanctions for a different condition
+      (a capability that never resolved) — never a read failure and never invented semantics.
+    why: >-
+      Mirrors this specification's own already-decided reading for elapsed_ms on the very same
+      element (a fact collected before its own attribute existed degrades to an honest,
+      meaningless-by-construction value rather than failing the read or inventing one) — a
+      collected-before-the-attribute-existed record is the identical migration-backfill
+      condition elapsed_ms already answered, and the value chosen is the one the element's own
+      text already assigns to its other honest-degradation condition for this same field
+      (capability never resolved), so no second value is introduced for a second reading of it.
+  - location: domain/investigation/evidence.md
+    field: attributes.concept_description
+    unstated: >-
+      What an evidence item collected before the concept_description attribute existed reads
+      for it when the record is read or returned over the wire.
+    decided: >-
+      An evidence item collected before concept_description existed as an attribute reads it as
+      an empty string — the same honest-empty value the element already sanctions for a
+      different condition (a concept that had not yet declared a description) — never a read
+      failure and never invented semantics.
+    why: >-
+      Mirrors this specification's own already-decided reading for elapsed_ms on the very same
+      element (a fact collected before its own attribute existed degrades to an honest,
+      meaningless-by-construction value rather than failing the read or inventing one) — a
+      collected-before-the-attribute-existed record is the identical migration-backfill
+      condition elapsed_ms already answered, and the value chosen is the one the element's own
+      text already assigns to its other honest-degradation condition for this same field (a
+      concept with no declared description), so no second value is introduced for a second
+      reading of it.
+  - location: rules/investigation/presentation-reads-the-evidence-snapshot.md
+    field: statement
+    unstated: >-
+      What an operator-facing surface shows as a collected evidence item's semantics — its
+      concept_description and its field semantics — is the item's own snapshot exactly as the
+      simulation or investigation response carries it; no glossary or capability-registry read
+      is issued at presentation to enrich, refresh or substitute for that snapshot.
+    decided: >-
+      An operator-facing surface presenting a collected evidence item shows its
+      concept_description and its field semantics exactly as that item's own snapshot carries
+      them; it issues no glossary or capability-registry read at presentation to enrich,
+      refresh or substitute for that snapshot.
+    why: >-
+      rules/investigation/judgment-reads-the-evidence-snapshot already states this discipline
+      for one consumer — a hypothesis's judgment — by name, reasoning that a live glossary or
+      capability-registry read can silently disagree with what was actually collected;
+      domain/investigation/evidence.md's own Description states the snapshot itself is fixed at
+      collection and never re-read afterward, but that speaks to the record's own persisted
+      immutability, not to what a second reader is permitted to additionally fetch, so an
+      operator-facing surface was left without its own addressable statement of the identical
+      constraint. The frontend's own intake material designs the panel to display exactly the
+      snapshotted concept_description and fields with honest degradation for a legacy concept or
+      an unresolved capability (never inventing a value), which is this same discipline already
+      assumed by the scope that was cut — stating it here gives it the addressable home the
+      judgment-specific rule already has, rather than leaving a second consumer of the identical
+      record to a silent assumption.
 ---

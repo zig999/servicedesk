@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulation-evidence-snapshot-evidence-tab-snapshot-rendering-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/evidence-semantics-frontend/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-29T23:47:59.272+00:00",
+      "ended_at": "2026-08-29T23:48:12.719+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

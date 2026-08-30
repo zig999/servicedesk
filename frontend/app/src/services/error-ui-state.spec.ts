@@ -167,4 +167,27 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("connector-configuration-not-well-formed");
     expect(state.kind).not.toBe("generic-error");
   });
+
+  // task/glossary-concept-description/concept-description-error-kind's own criterion set -- a
+  // concept registration or update naming no description
+  // (rules/glossary/a-concept-declares-its-description) needs its own distinct state so the
+  // operator console can tell the operator specifically that the description is missing rather
+  // than only a generic failure notice
+  // (scenarios/glossary/a-concept-with-no-description-is-refused); the exact wording stays the
+  // console's own, not this table's.
+
+  it("resolves ConceptDescriptionRequiredError to its own distinct concept-description-required state, not the shared generic-error fallback", () => {
+    const state = uiStateForApiError(
+      new ApiError("ConceptDescriptionRequiredError", "description required"),
+    );
+    expect(state.kind).toBe("concept-description-required");
+    expect(state.kind).not.toBe("generic-error");
+  });
+
+  it("resolves ConceptDescriptionRequiredError to a state carrying only the kind, no wording of its own", () => {
+    const state = uiStateForApiError(
+      new ApiError("ConceptDescriptionRequiredError", "description required"),
+    );
+    expect(Object.keys(state)).toEqual(["kind"]);
+  });
 });
