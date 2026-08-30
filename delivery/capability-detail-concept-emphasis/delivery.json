@@ -16,6 +16,26 @@
       "title": "Concept field visual emphasis -- proof, lint-conformant revision",
       "summary": "Proves the capability form's Concept field carries a visually distinguishing container (border-accent-alt/bg-surface, no raw values), that Timeout and Connector remain undistinguished, that Concept keeps its grid-cols-3 placement and its Select's value/onChange/disabled wiring, and that its notched Panel title sits at heading level 2 without recreating the duplicate-accessible-name collision -- with the file's two lint findings (an unnecessary type assertion and a stale eslint-disable) resolved without weakening any assertion.",
       "task": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis"
+    },
+    {
+      "id": "review/capability-detail-concept-emphasis",
+      "kind": "review",
+      "file": "review/capability-detail-concept-emphasis.md",
+      "title": "Capability detail concept emphasis, first review",
+      "summary": "What four passes found over the concept-field visual-emphasis change to the capability create/edit form's shared field markup.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every value used to build that visual distinction resolves to a semantic token already declared in frontend/tui/frontend/src/theme.css or frontend/app/src/design-system/tokens.css; no literal px, hex, or other raw value is introduced.",
+        "Neither capability-form-dialog.tsx nor capability-detail-ready-view.tsx requires a prop or call-site change for the new layout to render, since both compose CapabilityFormFields unmodified today.",
+        "None of the form's other seven fields (name, version, nature, input_schema, output_schema, timeout, connector) changes position, meaning, or validation behavior as a result of this change.",
+        "The concept Select's own identity is unchanged: it still resolves its options from conceptOptions, stays driven by the same Controller field.value/field.onChange wiring, keeps its aria-invalid/aria-describedby wiring, and stays disabled exactly while isSubmitting is true.",
+        "The emphasis is built only from components already exported under frontend/tui/frontend/src/shared/components/ui plus this app's own typography utilities; no new component library is added and no existing TUI component's own source is copied or forked."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -30,6 +50,12 @@
       "to": "implementation/capability-detail-concept-emphasis/concept-field-visual-emphasis",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/capability-detail-concept-emphasis",
+      "to": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
