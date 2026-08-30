@@ -1,0 +1,76 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulation-detail-hypothesis-hotfix",
+      "kind": "epic",
+      "file": "epic/simulation-detail-hypothesis-hotfix.md",
+      "title": "Simulation Detail panel hypothesis hotfix",
+      "summary": "Corrects the case-simulation cockpit's Detail panel so a single-hypothesis simulation's own Evidence and Prompt tabs show data the dispatch response already carries, instead of always-empty placeholders."
+    },
+    {
+      "id": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "kind": "task",
+      "file": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt.md",
+      "title": "Wire hypothesis-simulation evidence and judgment-call data through to the Detail panel",
+      "summary": "A single-hypothesis simulation's own evidence and prompt/usage/elapsed_ms, already present in the dispatch response, currently never reach the Detail panel's Evidence and Prompt tabs.",
+      "epic": "simulation-detail-hypothesis-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulation-detail-hypothesis-hotfix",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulation-detail-hypothesis-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/simulation-detail-hypothesis-hotfix",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/simulation-detail-hypothesis-hotfix",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/simulation-detail-hypothesis-hotfix",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "domain/investigation/evaluation-reason",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
