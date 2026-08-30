@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-attribute-readonly",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-attribute-readonly.md",
+      "title": "Connector test panel attribute name read-only",
+      "summary": "The Test Panel's Add attribute rows stop letting the operator type an arbitrary attribute name, since that name is already derived by reconciliation against Configuration's own placeholders."
+    },
+    {
+      "id": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "kind": "task",
+      "file": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly.md",
+      "title": "Make the Test Panel's Attribute field read-only",
+      "summary": "Each Add attribute row's Attribute field renders read-only (no longer an editable Input) while Value stays editable, matching the name the reconciliation logic already derives from Configuration's placeholders.",
+      "epic": "connector-test-panel-attribute-readonly"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-attribute-readonly",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-test-panel-attribute-readonly",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-test-panel-attribute-readonly",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-test-panel-attribute-readonly",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-test-panel-attribute-readonly",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}
