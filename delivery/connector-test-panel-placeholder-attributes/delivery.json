@@ -32,6 +32,24 @@
       "title": "Proof for routing Configuration text into the test panel's hook",
       "summary": "Three new spec files prove configurationText reaches useTestConnectorPanel through both production call sites, by reading what each seam actually received back off the DOM rather than recording a call.",
       "task": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel"
+    },
+    {
+      "id": "review/connector-test-panel-placeholder-attributes",
+      "kind": "review",
+      "file": "review/connector-test-panel-placeholder-attributes.md",
+      "title": "Connector test panel placeholder attributes, first review",
+      "summary": "What four passes found over the parallel-delivered extraction of placeholder-parsing primitives and the configurationText prop route.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Configuration text that is not valid JSON, or not a plain object, still resolves to no placeholders through the extracted primitives, exactly as before the extraction.",
+        "connector-configuration-form-dialog.tsx's own ConnectorTestPanel call site supplies a configurationText value so the file continues to type-check and compile.",
+        "simulation-subject-derivation.ts imports these primitives from that new module rather than declaring them itself."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -64,6 +82,18 @@
       "to": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-test-panel-placeholder-attributes",
+      "to": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/connector-test-panel-placeholder-attributes",
+      "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }
