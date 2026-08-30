@@ -135,12 +135,31 @@ function Topbar(): JSX.Element {
 }
 
 /**
- * The persistent shell every routed screen renders inside: the sidebar, the
- * topbar, and the Outlet where the router skeleton's currently matched
- * route renders its own content. Wired in as the root route's own
- * `component` (route-tree.tsx), so RouterProvider renders this shell for
- * every one of the ten routes without exception -- none of them defines its
- * own layout.
+ * The footer strip: full width, no content of its own yet -- a structural
+ * placeholder only (surface change, no fact to state).
+ */
+function Footer(): JSX.Element {
+  return <footer className="shrink-0 border-t border-border bg-surface" />;
+}
+
+/**
+ * The persistent shell every routed screen renders inside: the header on
+ * top spanning the full width, a Sidebar/Content row beneath it, and the
+ * footer spanning the full width at the bottom. Wired in as the root
+ * route's own `component` (route-tree.tsx), so RouterProvider renders this
+ * shell for every one of the ten routes without exception -- none of them
+ * defines its own layout.
+ *
+ * Content (`<main>`) is the only element that scrolls vertically
+ * (`overflow-y-auto`): the outer wrapper is pinned to the viewport height
+ * (`h-screen`) and the middle row carries `min-h-0` so its `flex-1` height
+ * is actually constrained rather than growing with `main`'s content --
+ * without it a flex child's default `min-height: auto` would let `main`
+ * push the row (and the viewport) taller instead of scrolling internally.
+ * Sidebar sits in that same row with no `overflow` of its own, so it never
+ * gains a scrollbar and, stretched to the row's fixed height by the row's
+ * default `align-items: stretch`, never moves while Content scrolls past
+ * it.
  *
  * The one sonner Toaster this app mounts (task/frontend-console-foundation/
  * query-client-and-toaster) renders as a sibling of the shell's own layout
@@ -151,14 +170,15 @@ function Topbar(): JSX.Element {
 export function AppShell(): JSX.Element {
   return (
     <>
-      <div className="flex min-h-screen">
-        <Sidebar />
-        <div className="flex flex-1 flex-col">
-          <Topbar />
-          <main className="flex-1 p-4">
+      <div className="flex h-screen flex-col">
+        <Topbar />
+        <div className="flex min-h-0 flex-1">
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto p-4">
             <Outlet />
           </main>
         </div>
+        <Footer />
       </div>
       <Toaster />
     </>
