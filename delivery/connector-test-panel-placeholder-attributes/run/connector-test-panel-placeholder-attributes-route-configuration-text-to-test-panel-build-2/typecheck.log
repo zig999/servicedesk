@@ -1,0 +1,74 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/capability-form-dialog.tsx(38,22): error TS7006: Parameter 'open' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(129,24): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(172,32): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(203,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-version-editor-ready-view.tsx(250,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/concept-form-dialog.tsx(35,22): error TS7006: Parameter 'open' implicitly has an 'any' type.
+src/routes/concept-form-fields.tsx(122,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/connector-configuration-form-dialog.tsx(72,22): error TS7006: Parameter 'open' implicitly has an 'any' type.
+src/routes/connector-test-panel-fields.tsx(56,24): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/connector-test-panel-fields.tsx(81,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/connector-test-panel-fields.tsx(91,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/hypothesis-revision-form-fields.tsx(155,32): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/shared/components/status-table.tsx(137,38): error TS7006: Parameter 'event' implicitly has an 'any' type.
+../tui/frontend/src/shared/components/ui/banner/banner.tsx(29,10): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/banner/banner.types.ts(1,48): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/breadcrumb/breadcrumb.tsx(7,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/breadcrumb/breadcrumb.tsx(21,18): error TS2322: Type '{ children: string; href: string; className: string; }' is not assignable to type 'IntrinsicAttributes & LinkProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & LinkProps'.
+../tui/frontend/src/shared/components/ui/button/button.tsx(1,22): error TS2307: Cannot find module '@radix-ui/react-slot' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/button/button.tsx(2,21): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/button/button.tsx(3,25): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/button/button.tsx(54,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/button/button.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/button/button.types.ts(2,35): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/checkbox/checkbox.tsx(1,29): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/checkbox/checkbox.tsx(2,30): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/checkbox/checkbox.tsx(35,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/checkbox/checkbox.types.ts(1,48): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/dialog/dialog.tsx(1,34): error TS2307: Cannot find module '@radix-ui/react-dialog' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/dialog/dialog.tsx(2,19): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/dialog/dialog.tsx(21,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/dialog/dialog.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/dialog/dialog.types.ts(2,39): error TS2307: Cannot find module '@radix-ui/react-dialog' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/divider/divider.tsx(7,7): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/input/input.tsx(12,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/input/input.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/label/label.tsx(1,33): error TS2307: Cannot find module '@radix-ui/react-label' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/label/label.tsx(8,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/label/label.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/label/label.types.ts(2,38): error TS2307: Cannot find module '@radix-ui/react-label' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/link/link.tsx(6,3): error TS2339: Property 'children' does not exist on type 'LinkProps'.
+../tui/frontend/src/shared/components/ui/link/link.tsx(8,3): error TS2339: Property 'className' does not exist on type 'LinkProps'.
+../tui/frontend/src/shared/components/ui/link/link.tsx(16,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/link/link.types.ts(1,43): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/panel/panel.tsx(1,23): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/panel/panel.tsx(2,21): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/panel/panel.tsx(57,22): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ readonly 2: "h2"; readonly 3: "h3"; readonly 4: "h4"; }'.
+../tui/frontend/src/shared/components/ui/panel/panel.tsx(60,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/panel/panel.types.ts(1,48): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/panel/panel.types.ts(2,35): error TS2307: Cannot find module 'class-variance-authority' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/select/select.tsx(1,45): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/select/select.tsx(2,41): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/select/select.tsx(3,36): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/select/select.tsx(108,16): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+../tui/frontend/src/shared/components/ui/select/select.tsx(120,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/select/select.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/status-bar/status-bar.tsx(30,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/status-bar/status-bar.types.ts(1,48): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/table/table.tsx(22,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/table/table.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/tabs/tabs.tsx(1,53): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/tabs/tabs.tsx(45,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/tabs/tabs.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/textarea/textarea.tsx(11,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/textarea/textarea.types.ts(1,37): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/tooltip/tooltip.tsx(1,35): error TS2307: Cannot find module '@radix-ui/react-tooltip' or its corresponding type declarations.
+../tui/frontend/src/shared/components/ui/tooltip/tooltip.tsx(7,5): error TS2875: This JSX tag requires the module path 'react/jsx-runtime' to exist, but none could be found. Make sure you have types for the appropriate package installed.
+../tui/frontend/src/shared/components/ui/tooltip/tooltip.types.ts(1,32): error TS2307: Cannot find module 'react' or its corresponding type declarations.
+../tui/frontend/src/shared/lib/cn.ts(1,39): error TS2307: Cannot find module 'clsx' or its corresponding type declarations.
+../tui/frontend/src/shared/lib/cn.ts(2,37): error TS2307: Cannot find module 'tailwind-merge' or its corresponding type declarations.

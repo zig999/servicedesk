@@ -20,14 +20,24 @@ import { ConnectorTestPanelResult } from "./connector-test-panel-result";
  * assembly, dispatch) lives in useTestConnectorPanel; this component and
  * its two siblings (connector-test-panel-fields.tsx,
  * connector-test-panel-result.tsx) only read what that hook returns.
+ *
+ * `configurationText` (task/connector-test-panel-placeholder-attributes/
+ * route-configuration-text-to-test-panel) is forwarded straight into
+ * useTestConnectorPanel unread by this component itself -- exactly the plumbing that
+ * task's own criteria state, carrying the connector configuration's own current
+ * Configuration text one level further down from whichever caller already holds it live.
  */
 
 export type ConnectorTestPanelProps = {
   readonly connector: string;
+  readonly configurationText: string;
 };
 
-export function ConnectorTestPanel({ connector }: ConnectorTestPanelProps): JSX.Element {
-  const state = useTestConnectorPanel(connector);
+export function ConnectorTestPanel({
+  connector,
+  configurationText,
+}: ConnectorTestPanelProps): JSX.Element {
+  const state = useTestConnectorPanel(connector, configurationText);
 
   return (
     <section className="flex flex-col gap-4 pt-4 border-t border-border">
