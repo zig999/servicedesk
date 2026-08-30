@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "implementation",
+      "file": "implementation/capability-detail-concept-emphasis/concept-field-visual-emphasis.md",
+      "title": "Concept field's visual emphasis in the capability form's shared field markup",
+      "summary": "Wraps the concept Select's existing FormField in TUI's Panel primitive (accent=\"alt\", role=\"group\"), titled \"Emphasized field\" rather than \"Concept\", so its container carries a border/background/notched-title weight none of the form's other seven fields carry, without giving the DOM a second accessible-name source that collides with FormField's own \"Concept\" label and without exposing an implicit landmark \"region\" role that capability-form-dialog.tsx's own create-mode composition never had before.",
+      "task": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis"
+    },
+    {
+      "id": "proof/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "proof",
+      "file": "proof/capability-detail-concept-emphasis/concept-field-visual-emphasis.md",
+      "title": "Concept field visual emphasis -- proof, lint-conformant revision",
+      "summary": "Proves the capability form's Concept field carries a visually distinguishing container (border-accent-alt/bg-surface, no raw values), that Timeout and Connector remain undistinguished, that Concept keeps its grid-cols-3 placement and its Select's value/onChange/disabled wiring, and that its notched Panel title sits at heading level 2 without recreating the duplicate-accessible-name collision -- with the file's two lint findings (an unnecessary type assertion and a stale eslint-disable) resolved without weakening any assertion.",
+      "task": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "to": "task/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "to": "implementation/capability-detail-concept-emphasis/concept-field-visual-emphasis",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

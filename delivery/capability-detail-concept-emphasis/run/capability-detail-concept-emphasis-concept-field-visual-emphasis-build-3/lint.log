@@ -1,0 +1,12 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/capability-detail-screen-concept-emphasis.spec.ts
+   62:3   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  164:28  error    Do not use any type assertions                                                                     @typescript-eslint/consistent-type-assertions
+
+✖ 2 problems (1 error, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

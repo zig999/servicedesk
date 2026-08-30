@@ -4,6 +4,7 @@ import { Input } from "@tui/ui/input";
 import { Label } from "@tui/ui/label";
 import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
+import { Panel } from "@tui/ui/panel";
 import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import { CAPABILITY_NATURES, type CapabilityFormValues } from "../services/capability-form-schema";
 import type { ConceptOption } from "../hooks/use-concept-options";
@@ -42,6 +43,56 @@ import type { JsonSchemaFieldState } from "../hooks/use-capability-form";
  * a Checkbox group (that composition belongs to concept-form-fields.tsx's
  * own multi-select `accepts` field, a different field on a different
  * form), so the form offers no way to pick more than one concept at once.
+ *
+ * concept's own FormField is additionally wrapped in TUI's `Panel`
+ * (task/capability-detail-concept-emphasis/concept-field-visual-emphasis),
+ * accent="alt", so its container carries a border/background/notched-title
+ * weight none of the other seven fields' containers carry -- built only
+ * from that existing TUI primitive and the semantic tokens it already
+ * resolves to (border-accent-alt, bg-surface), with no change to the
+ * Select's own identity, wiring or disabled/aria behavior underneath.
+ * titleLevel={2} (Panel's own default is 3) because this component is
+ * composed at two different heading depths -- capability-detail-ready-view.tsx's
+ * own caller sits directly under that route's single <h1>, where a default
+ * <h3> would skip a level, while capability-form-dialog.tsx's own
+ * DialogTitle already renders an <h2>; an explicit <h2> here is a same-level
+ * sibling there (no skip) and closes the gap on the routed screen, so one
+ * level serves both callers without either seeing a skipped heading.
+ *
+ * Panel's own `title` prop is "Emphasized field", not "Concept" -- fixing a
+ * regression this file's own prior delivery introduced. Panel unconditionally
+ * sets `aria-labelledby` on its wrapping `<section>` pointing at its notched
+ * heading (panel.tsx), so a title of "Concept" gave the DOM two independent
+ * accessible-name sources reading exactly "Concept" for one control: the
+ * FormField `<Label>` wrap below (the one every other field already uses,
+ * and the one that must keep resolving `getByLabelText("Concept")` to the
+ * Select) and Panel's own section-level aria-labelledby. `@testing-library/dom`'s
+ * queryAllByLabelText treats *any* element carrying `aria-labelledby` whose
+ * referenced text matches as a candidate -- not only form controls -- so the
+ * duplicate turned every `getByLabelText("Concept")` across this suite (this
+ * screen's own proof, plus four pre-existing spec files composing this same
+ * shared component) into a "Found multiple elements" throw. Renaming Panel's
+ * title removes the second candidate without touching the Select's own
+ * FormField/Label wiring, which is what actually resolves the control's own
+ * label; the accent-alt border/background this task's criteria require come
+ * from Panel's `accent` variant, not from its title text, so the visual
+ * distinction is unaffected by the rename.
+ *
+ * Panel's own call below also carries an explicit `role="group"` -- a second,
+ * independent regression fix. Wrapping concept in Panel gave that `<section>`
+ * an accessible name (aria-labelledby), which the HTML-AAM/ARIA mapping
+ * (confirmed against panel.component.spec.md) maps to the implicit landmark
+ * role "region" -- so `capabilities-browser-screen-detail.spec.ts`'s
+ * pre-existing `queryByRole("region")` assertion (no region in the create-mode
+ * Dialog, which composes this same markup) started finding one. An explicit
+ * `role` always wins over an implicit one, and Panel's own prop type
+ * (`Omit<ComponentProps<"section">, "title">`) passes `role` through
+ * unfiltered, so `role="group"` suppresses the landmark with no change to
+ * Panel's own source. `group`, not `none`: this wraps one field, not a
+ * page-level landmark, but the "Emphasized field" accessible name is still a
+ * meaningful grouping to announce. Only the exposed role changes -- the
+ * accent-alt border/background (criteria 1-3) and the Select's own
+ * Controller/aria wiring (criterion 5) are untouched.
  *
  * `isDirty` (task/connector-capability-detail-editing/
  * capability-detail-route, criterion 4) is optional and, left unset, never
@@ -212,24 +263,26 @@ export function CapabilityFormFields({
           />
         </FormField>
 
-        <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
-          <Controller
-            control={control}
-            name="concept"
-            render={({ field }) => (
-              <Select
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                options={conceptSelectOptions}
-                disabled={isSubmitting}
-                placeholder="Select a concept"
-                aria-invalid={errors.concept != null}
-                aria-describedby={errors.concept != null ? "concept-error" : undefined}
-              />
-            )}
-          />
-        </FormField>
+        <Panel title="Emphasized field" accent="alt" titleLevel={2} role="group">
+          <FormField label="Concept" errorId="concept-error" error={errors.concept?.message}>
+            <Controller
+              control={control}
+              name="concept"
+              render={({ field }) => (
+                <Select
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  options={conceptSelectOptions}
+                  disabled={isSubmitting}
+                  placeholder="Select a concept"
+                  aria-invalid={errors.concept != null}
+                  aria-describedby={errors.concept != null ? "concept-error" : undefined}
+                />
+              )}
+            />
+          </FormField>
+        </Panel>
 
       </div>
 
