@@ -20,6 +20,17 @@ import type { TestConnectorPanelState } from "../hooks/use-test-connector-panel"
  * caller props onto its outer wrapper and not its inner interactive element
  * (case-version-editor-form-fields.tsx). Every other field here (a plain
  * Input) keeps the ordinary htmlFor/id linkage.
+ *
+ * Each attribute row's own Attribute field is `disabled readOnly` (task/
+ * connector-test-panel-attribute-readonly/make-attribute-field-readonly),
+ * carrying no onChange at all -- the same fixed-value convention this app
+ * already established for a derived field on hypothesis-revision-form-
+ * fields.tsx (its own Subject type field). The name it displays is exactly
+ * the one useTestConnectorPanel's own onAddAttribute reconciliation already
+ * derived from Configuration's `${subject:<attribute-name>}` placeholders
+ * (rules/integration/an-http-connector-configuration-declares-its-call's
+ * own placeholder clause); the operator can no longer type over it, only
+ * remove the row (onRemoveAttribute) or edit its Value.
  */
 
 export type ConnectorTestPanelFieldsProps = {
@@ -75,13 +86,7 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
           <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-end gap-4">
             <div className="flex flex-col gap-1">
               <Label htmlFor={`${row.id}-attribute`}>Attribute</Label>
-              <Input
-                id={`${row.id}-attribute`}
-                value={row.attribute}
-                onChange={(event) =>
-                  state.onAttributeChange(row.id, "attribute", event.target.value)
-                }
-              />
+              <Input id={`${row.id}-attribute`} value={row.attribute} disabled readOnly />
             </div>
             <div className="flex flex-col gap-1">
               <Label htmlFor={`${row.id}-value`}>Value</Label>
