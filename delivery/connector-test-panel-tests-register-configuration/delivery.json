@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling.md",
+      "title": "Save Configuration edits before reconciling in the affected tests",
+      "summary": "The seven tests across three spec files that edit Configuration and then rely on \"Add attribute\" reconciling against that edit now save the edit through the real Save action and await it settling first, matching the production route the sibling corrective delivery already changed \"Add attribute\" to read from.",
+      "task": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling"
+    },
+    {
+      "id": "proof/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling.md",
+      "title": "Proof for saving Configuration edits before reconciling",
+      "summary": "The seven affected tests save Configuration through the real \"Save\" button and wait for its own disabled attribute to reflect the settled save (state.isDirty turning false), bypassing a pre-existing, unrelated defect in the \"Saved.\" acknowledgement path; the full suite passes.",
+      "task": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "to": "implementation/connector-test-panel-tests-register-configuration/save-configuration-edits-before-reconciling",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
