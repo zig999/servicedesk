@@ -87,9 +87,23 @@ describe("useCaseSimulationCockpit -- the Detail region reflects whichever run l
 
     expect(result.current.detail?.evaluation.hypothesis).toBe("hypothesis-a");
     expect(result.current.detail?.evaluation.verdict).toBe("inconclusive");
-    // A single-hypothesis run's own response carries no evidence field at all
-    // (use-simulate-hypothesis.ts), so this composition supplies none for it.
-    expect(result.current.detail?.evidence).toEqual([]);
+    // A single-hypothesis run's own response carries its own evidence array
+    // (use-simulate-hypothesis.ts's own SimulateHypothesisResult.evidence), which this
+    // composition now reads for a hypothesis-sourced selection instead of discarding.
+    expect(result.current.detail?.evidence).toEqual([
+      {
+        concept: "billing-history",
+        result: "ok",
+        resultDetail: undefined,
+        elapsedMs: 120,
+        observation: "the account shows one authorized charge",
+        capabilityName: "fetch-billing-account",
+        capabilityVersion: "1",
+        connector: "billing-connector",
+        fields: undefined,
+        conceptDescription: undefined,
+      },
+    ]);
   });
 
   it("shows a hypothesis's most recent evaluation whichever kind of run produced it last, leaving every other hypothesis's own evaluation untouched", async () => {

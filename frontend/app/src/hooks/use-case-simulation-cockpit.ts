@@ -203,13 +203,21 @@ export function useCaseSimulationCockpit(
 
   // A completed single-hypothesis run overwrites only the one hypothesis it
   // named (criterion 4) and never records a Case result run (criterion 5).
+  // wire-hypothesis-evidence-and-prompt (a corrective increment): this
+  // run's own `evidence` array is passed through to
+  // fromHypothesisEvaluation alongside its evaluation -- previously
+  // dropped entirely, leaving the Detail panel's Evidence tab with nothing
+  // to show for a hypothesis-sourced selection.
   useEffect(() => {
     const result = hypSim.result;
     if (result && result !== previousHypothesisResultRef.current) {
       previousHypothesisResultRef.current = result;
       setEvaluations((current) => ({
         ...current,
-        [result.evaluation.hypothesis]: fromHypothesisEvaluation(result.evaluation),
+        [result.evaluation.hypothesis]: fromHypothesisEvaluation(
+          result.evaluation,
+          result.evidence,
+        ),
       }));
     }
   }, [hypSim.result]);
@@ -285,6 +293,14 @@ export function useCaseSimulationCockpit(
     ? toHypothesisRevisionSummary(record.manifest, selectedHypothesisName)
     : undefined;
 
+  // wire-hypothesis-evidence-and-prompt (a corrective increment): a
+  // case-sourced evaluation still reads the last completed full-case run's
+  // own evidence (unchanged -- that run's evidence may span several
+  // hypotheses' own collected concepts, so it is kept once on the run
+  // rather than duplicated per hypothesis); a hypothesis-sourced evaluation
+  // now reads its own already-normalized `evidence`
+  // (case-simulation-cockpit-adapters.ts's own fromHypothesisEvaluation)
+  // instead of always answering an empty array.
   const detail: CaseSimulationDetailPanelProps | undefined =
     selectedEvaluation && hypothesisRevision
       ? {
@@ -293,7 +309,7 @@ export function useCaseSimulationCockpit(
           evidence:
             selectedEvaluation.source === "case" && lastCaseResult
               ? toDetailEvidence(lastCaseResult.evidence)
-              : [],
+              : (selectedEvaluation.evidence ?? []),
           rawResponse: selectedEvaluation.raw,
         }
       : undefined;

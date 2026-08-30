@@ -80,6 +80,14 @@ describe("case-simulation-detail-panel.tsx's own Criterion 6 comment", () => {
 // comment.
 describe("that separation stays consistent with toDetailJudgmentCall's own already-disclosed inference (case-simulation-cockpit-adapters.ts)", () => {
   it("still answers { called: false }, never fabricating a model or prompt_version value for either investigation-wide field", () => {
-    expect(toDetailJudgmentCall()).toEqual({ called: false });
+    expect(
+      toDetailJudgmentCall({
+        hypothesis: "hypothesis-a",
+        verdict: "confirmed",
+        citations: [],
+        source: "case",
+        raw: {},
+      }),
+    ).toEqual({ called: false });
   });
 });

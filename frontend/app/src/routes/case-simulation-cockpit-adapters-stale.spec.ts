@@ -48,7 +48,7 @@ describe("fromHypothesisEvaluation -- always `stale: false` on a freshly-normali
       citations: [],
     };
 
-    expect(fromHypothesisEvaluation(evaluation).stale).toBe(false);
+    expect(fromHypothesisEvaluation(evaluation, []).stale).toBe(false);
   });
 
   it("always sets `stale: false` on a freshly-normalized inconclusive evaluation", () => {
@@ -59,7 +59,7 @@ describe("fromHypothesisEvaluation -- always `stale: false` on a freshly-normali
       citations: [],
     };
 
-    expect(fromHypothesisEvaluation(evaluation).stale).toBe(false);
+    expect(fromHypothesisEvaluation(evaluation, []).stale).toBe(false);
   });
 });
 

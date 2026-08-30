@@ -106,7 +106,7 @@ describe("fromHypothesisEvaluation -- normalizing a single-hypothesis run's own 
       citations: [{ concept: "billing-history", field: "observation" }],
     };
 
-    const normalized = fromHypothesisEvaluation(evaluation);
+    const normalized = fromHypothesisEvaluation(evaluation, []);
 
     expect(normalized.source).toBe("hypothesis");
     expect(normalized.citations).toEqual([{ concept: "billing-history", field: "observation" }]);
@@ -120,7 +120,7 @@ describe("fromHypothesisEvaluation -- normalizing a single-hypothesis run's own 
       citations: [{ concept: "billing-history", field: "observation" }],
     };
 
-    const normalized = fromHypothesisEvaluation(evaluation);
+    const normalized = fromHypothesisEvaluation(evaluation, []);
 
     expect(normalized.citations).toEqual([]);
     expect(normalized.reason).toBe("no-data");
@@ -224,7 +224,15 @@ describe("toNewCaseResultRun -- shaping a completed full-case run into the Case 
 
 describe("toDetailJudgmentCall -- always { called: false } (this task's own recorded inference)", () => {
   it("answers { called: false } regardless of anything about the evaluation, since neither dispatch hook ever returns a model or a prompt version", () => {
-    expect(toDetailJudgmentCall()).toEqual({ called: false });
+    expect(
+      toDetailJudgmentCall({
+        hypothesis: "hypothesis-a",
+        verdict: "confirmed",
+        citations: [],
+        source: "case",
+        raw: {},
+      }),
+    ).toEqual({ called: false });
   });
 });
 
@@ -245,7 +253,12 @@ describe("toDetailEvaluation -- narrowing a normalized evaluation to what the De
       hypothesis: "hypothesis-a",
       verdict: "confirmed",
       citations: [{ concept: "billing-history", field: "observation" }],
-      judgmentCall: { called: false },
+      judgmentCall: {
+        called: true,
+        usage: { inputTokens: 100, outputTokens: 40 },
+        elapsedMs: 800,
+        prompt: "judge hypothesis-a",
+      },
     });
   });
 });

@@ -20,11 +20,23 @@
  * normalize both into one shape before this cockpit ever stores one in its
  * own per-hypothesis map, so every downstream adapter below reads one shape,
  * not two.
+ *
+ * task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt
+ * (a corrective increment) wires two facts a single-hypothesis run's own
+ * response already carried but this module never routed to the Detail
+ * region: `fromHypothesisEvaluation` now also normalizes that run's own
+ * `evidence` array onto its `CockpitEvaluation` (see `evidence` below), and
+ * `toDetailJudgmentCall` now reads a normalized evaluation's own
+ * `usage`/`elapsed_ms`/`prompt` instead of unconditionally answering
+ * `{ called: false }`, for an evaluation from either source.
  */
 
 import type { CaseVersionManifestEntry } from "../services/case-version-record";
 import type { SimulateCaseResult, SimulateEvaluation, SimulateEvidenceItem } from "../hooks/use-simulate-case";
-import type { Evaluation as HypothesisEvaluation } from "../hooks/use-simulate-hypothesis";
+import type {
+  Evaluation as HypothesisEvaluation,
+  Evidence as HypothesisEvidenceItem,
+} from "../hooks/use-simulate-hypothesis";
 import type { NewCaseResultRun } from "../hooks/use-case-simulation-history";
 import type {
   SimulationHypothesisEvaluation,
@@ -50,10 +62,24 @@ export type CockpitEvaluation = {
   readonly usage?: { readonly input_tokens: number; readonly output_tokens: number };
   readonly elapsed_ms?: number;
   readonly prompt?: string;
-  /** Which kind of dispatch produced this evaluation -- selects whether the Detail region can show evidence for it (only a full-case run's own response carries any). */
+  /** Which kind of dispatch produced this evaluation. */
   readonly source: CockpitEvaluationSource;
   /** The exact wire object this evaluation was read from, unmodified -- the Detail region's own JSON tab renders this verbatim for the selected hypothesis. */
   readonly raw: unknown;
+  /**
+   * The run's own evidence, already narrowed to the Detail region's own
+   * shape -- present exactly for a hypothesis-sourced evaluation
+   * (`source: "hypothesis"`), whose own SimulateHypothesisResult.evidence
+   * belongs entirely to this one evaluation (there is exactly one per run),
+   * unlike a full-case run's evidence, which may span several hypotheses'
+   * own collected concepts and is read instead from the run itself
+   * (use-case-simulation-cockpit.ts's own lastCaseResult.evidence) rather
+   * than duplicated onto every one of that run's own per-hypothesis entries.
+   * Wired by task/simulation-detail-hypothesis-hotfix/
+   * wire-hypothesis-evidence-and-prompt -- a hypothesis-sourced evaluation's
+   * own evidence was previously discarded entirely.
+   */
+  readonly evidence?: readonly DetailEvidenceItem[];
   /**
    * rules/investigation/a-simulation-result-is-stale-once-its-source-changes,
    * symmetric to the Case Result region's own `CaseResultRun.stale`
@@ -90,8 +116,22 @@ export function fromCaseEvaluation(evaluation: SimulateEvaluation): CockpitEvalu
   };
 }
 
-/** Normalizes the one evaluation out of a completed single-hypothesis run (use-simulate-hypothesis.ts's own Evaluation). */
-export function fromHypothesisEvaluation(evaluation: HypothesisEvaluation): CockpitEvaluation {
+/**
+ * Normalizes the one evaluation out of a completed single-hypothesis run
+ * (use-simulate-hypothesis.ts's own Evaluation), together with that same
+ * run's own evidence array (SimulateHypothesisResult.evidence) -- both are
+ * read off the one result this hook ever returns, and this evaluation is
+ * the only one that result names, so the whole array belongs to it.
+ * Narrowed through toDetailEvidence below, whose parameter type
+ * (SimulateEvidenceItem) is structurally identical to
+ * use-simulate-hypothesis.ts's own Evidence (task/simulation-detail-
+ * hypothesis-hotfix/wire-hypothesis-evidence-and-prompt: confirmed field by
+ * field against that hook's own type before reuse).
+ */
+export function fromHypothesisEvaluation(
+  evaluation: HypothesisEvaluation,
+  evidence: readonly HypothesisEvidenceItem[],
+): CockpitEvaluation {
   return {
     hypothesis: evaluation.hypothesis,
     verdict: evaluation.verdict,
@@ -102,6 +142,7 @@ export function fromHypothesisEvaluation(evaluation: HypothesisEvaluation): Cock
     prompt: evaluation.prompt,
     source: "hypothesis",
     raw: evaluation,
+    evidence: toDetailEvidence(evidence),
     stale: false,
   };
 }
@@ -188,22 +229,56 @@ export function toNewCaseResultRun(result: SimulateCaseResult): NewCaseResultRun
 
 /**
  * The Detail region's own SimulationJudgmentCall (case-simulation-detail-
- * types.ts) ties `model`/`promptVersion` to the same atomic "called" fact as
- * `usage`/`elapsedMs`/`prompt` -- domain/investigation/investigation's own two
- * required attributes, carried once per simulation run. Neither
- * use-simulate-case.ts nor use-simulate-hypothesis.ts (this epic's own
- * already-delivered dispatch hooks, neither of which implements that node)
- * ever returns a model or a prompt_version anywhere in its typed response, so
- * this composition has no honest value to supply for either field --
- * fabricating one would state a domain fact (which model answered, which
- * prompt version ran) nothing this delivery's data holds. This adapter
- * therefore always answers `{ called: false }`, even where usage/elapsed_ms/
- * prompt exist on the evaluation and the verdict itself implies a call
- * happened (any reason other than no-data). Disclosed as a deferred
- * limitation in this task's own delivery record, not fabricated here.
+ * types.ts): `usage`/`elapsedMs`/`prompt` are domain/investigation/
+ * evaluation's own call-level record, "present exactly when a call
+ * happened, absent when reason no-data means judgment was never called at
+ * all" -- so this reads a normalized CockpitEvaluation's own three fields of
+ * the same names (already carried through unchanged by both
+ * fromCaseEvaluation and fromHypothesisEvaluation above, straight off
+ * either dispatch hook's own typed response) and answers `called: true`
+ * with them exactly when all three are present, `called: false` otherwise
+ * (the genuine no-data case, domain/investigation/evaluation-reason).
+ * Checking all three rather than one is this same co-occurrence rule read
+ * literally, not a distinct guard per field.
+ *
+ * `model`/`promptVersion` are left unset on the `called: true` branch:
+ * neither use-simulate-case.ts nor use-simulate-hypothesis.ts (this epic's
+ * own already-delivered dispatch hooks) ever returns a model or a
+ * prompt_version anywhere in its typed response, and
+ * contracts/investigation/case-simulation states plainly that neither
+ * simulate-case nor simulate-hypothesis writes an investigation -- the
+ * aggregate those two fields belong to -- so this composition has no
+ * honest value to supply for either, permanently. Fabricating one would
+ * state a domain fact (which model answered, which prompt version ran)
+ * nothing this delivery's data holds. SimulationJudgmentCall's own `called:
+ * true` branch was loosened to make both fields optional
+ * (case-simulation-detail-types.ts, this same corrective task:
+ * wire-hypothesis-evidence-and-prompt) precisely so this honest, partial
+ * construction compiles.
+ *
+ * Serves both a case-sourced and a hypothesis-sourced evaluation alike --
+ * `toDetailEvaluation` below is this adapter's only caller, and it is
+ * called for either `source`, which is exactly what makes this fix apply to
+ * the case-level Prompt tab too (this task's own criterion 5) without a
+ * second, source-specific code path.
  */
-export function toDetailJudgmentCall(): DetailJudgmentCall {
-  return { called: false };
+export function toDetailJudgmentCall(evaluation: CockpitEvaluation): DetailJudgmentCall {
+  if (
+    evaluation.usage === undefined ||
+    evaluation.elapsed_ms === undefined ||
+    evaluation.prompt === undefined
+  ) {
+    return { called: false };
+  }
+  return {
+    called: true,
+    usage: {
+      inputTokens: evaluation.usage.input_tokens,
+      outputTokens: evaluation.usage.output_tokens,
+    },
+    elapsedMs: evaluation.elapsed_ms,
+    prompt: evaluation.prompt,
+  };
 }
 
 /** Narrows a CockpitEvaluation to what the Detail region reads (case-simulation-detail-types.ts's own SimulationEvaluation). */
@@ -212,17 +287,23 @@ export function toDetailEvaluation(evaluation: CockpitEvaluation): DetailEvaluat
     hypothesis: evaluation.hypothesis,
     verdict: evaluation.verdict,
     citations: evaluation.citations,
-    judgmentCall: toDetailJudgmentCall(),
+    judgmentCall: toDetailJudgmentCall(evaluation),
     stale: evaluation.stale,
   };
 }
 
 /**
  * The Detail region's own evidence shape (case-simulation-detail-types.ts's
- * own SimulationEvidenceItem) -- only a full-case run's own response ever
- * carries evidence (use-simulate-hypothesis.ts's own SimulateHypothesisResult
- * carries none at all), so this is only ever called with a full-case run's
- * own `evidence` array.
+ * own SimulationEvidenceItem). Called from two sites: use-case-simulation-
+ * cockpit.ts's own detail construction, over a completed full-case run's
+ * own `evidence` array; and fromHypothesisEvaluation above, over a
+ * completed single-hypothesis run's own `evidence` array
+ * (SimulateHypothesisResult.evidence, use-simulate-hypothesis.ts --
+ * corrected by task/simulation-detail-hypothesis-hotfix/
+ * wire-hypothesis-evidence-and-prompt: that run's own response was
+ * mistakenly believed to carry no evidence at all, contrary to
+ * use-simulate-hypothesis.ts's own already-declared SimulateHypothesisResult
+ * shape).
  *
  * Reads `capability_name`/`capability_version` as the two flat fields
  * use-simulate-case.ts's own SimulateEvidenceItem actually declares them as

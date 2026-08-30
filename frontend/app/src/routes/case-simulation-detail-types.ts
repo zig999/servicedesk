@@ -107,16 +107,34 @@ export type SimulationEvidenceItem = {
  * independent optional fields, since the domain text itself states they
  * co-occur or are co-absent together -- no combination where only one or
  * two of them are present is a shape this region has to guard against
- * separately. `model` and `promptVersion` (domain/investigation/
- * investigation's own fields, carried once per simulation run rather than
- * per evaluation) join the same branch for the same reason: they too are
- * part of "the call's own record" and are never available without it.
+ * separately. `usage`, `elapsedMs` and `prompt` are therefore required on
+ * the `called: true` branch and are exactly what
+ * case-simulation-cockpit-adapters.ts's own toDetailJudgmentCall reads off a
+ * normalized evaluation to decide which branch to build
+ * (task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt).
+ *
+ * `model` and `promptVersion` (domain/investigation/investigation's own
+ * fields, carried once per simulation run rather than per evaluation) were
+ * originally declared required alongside them on the same reasoning --
+ * "the call's own record" -- but contracts/investigation/case-simulation
+ * states plainly that neither simulate-case nor simulate-hypothesis, the
+ * two operations this whole region is ever built from, writes an
+ * investigation: model/promptVersion can therefore never be a real, honest
+ * value read off either one's response, permanently, not only for this
+ * task's own two dispatch hooks today. Requiring them made `called: true`
+ * unconstructible from a simulate response without fabricating a value
+ * neither hook's typed result ever carries -- exactly the domain fact this
+ * project's own rules forbid inventing in source. Loosened to optional
+ * (wire-hypothesis-evidence-and-prompt) rather than removed, so a caller
+ * that does one day have them (a future response shaped by an actual
+ * investigation) can still supply them; neither of this region's two
+ * present-day producers ever will.
  */
 export type SimulationJudgmentCall =
   | {
       readonly called: true;
-      readonly model: string;
-      readonly promptVersion: string;
+      readonly model?: string;
+      readonly promptVersion?: string;
       readonly usage: SimulationUsage;
       readonly elapsedMs: number;
       readonly prompt: string;

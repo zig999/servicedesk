@@ -1,0 +1,10 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/case-simulation-cockpit-adapters-stale.spec.ts(51,12): error TS2554: Expected 2 arguments, but got 1.
+src/routes/case-simulation-cockpit-adapters-stale.spec.ts(62,12): error TS2554: Expected 2 arguments, but got 1.
+src/routes/case-simulation-cockpit-adapters.spec.ts(109,24): error TS2554: Expected 2 arguments, but got 1.
+src/routes/case-simulation-cockpit-adapters.spec.ts(123,24): error TS2554: Expected 2 arguments, but got 1.
+src/routes/case-simulation-cockpit-adapters.spec.ts(227,12): error TS2554: Expected 1 arguments, but got 0.
+src/routes/case-simulation-detail-panel-comment-cites-the-current-nodes.spec.ts(83,12): error TS2554: Expected 1 arguments, but got 0.
