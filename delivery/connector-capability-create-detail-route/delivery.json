@@ -1,0 +1,105 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/capability-create-route/capability-create-screen",
+      "kind": "implementation",
+      "file": "implementation/capability-create-route/capability-create-screen.md",
+      "title": "Routed capability create screen",
+      "summary": "Adds a full-page capability create screen at \"/capabilities/new\", composing the existing capability form-fields and the shared create/edit hook's create mode, wired as a static sibling of the dynamic capability detail route.",
+      "task": "task/capability-create-route/capability-create-screen"
+    },
+    {
+      "id": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-create-route/connector-configuration-create-screen.md",
+      "title": "Routed connector configuration create screen",
+      "summary": "A new \"/connectors/new\" route and screen let an operator register a connector configuration on a full page, reusing the existing create/edit form hook and field markup, and land on the created record's own detail route on success.",
+      "task": "task/connector-configuration-create-route/connector-configuration-create-screen"
+    },
+    {
+      "id": "proof/capability-create-route/capability-create-screen",
+      "kind": "proof",
+      "file": "proof/capability-create-route/capability-create-screen.md",
+      "title": "Proof for the routed capability create screen",
+      "summary": "Vitest coverage for capability-create-screen.tsx's own thirteen criteria, its create-mode reuse of useCapabilityForm/CapabilityFormFields, and the task's own UNDERDETERMINED note over the dispatched registration's completeness, through a self-contained test router and a stubbed fetch/sonner boundary.",
+      "task": "task/capability-create-route/capability-create-screen"
+    },
+    {
+      "id": "proof/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "proof",
+      "file": "proof/connector-configuration-create-route/connector-configuration-create-screen.md",
+      "title": "Proof for the routed connector configuration create screen",
+      "summary": "Tests over ConnectorConfigurationCreateScreen prove its routing, its reuse of the shared form-fields component and create/edit hook, its dispatch/refusal guards, its post-save navigation, and its Back link and absent test panel -- including the well-formed-object guard, corrected after this proof's own tests first caught the gap.",
+      "task": "task/connector-configuration-create-route/connector-configuration-create-screen"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/capability-create-route/capability-create-screen",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/capability-create-route/capability-create-screen",
+      "to": "domain/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/capability-create-route/capability-create-screen",
+      "to": "contracts/integration/capability-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/capability-create-route/capability-create-screen",
+      "to": "task/capability-create-route/capability-create-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-create-route/capability-create-screen",
+      "to": "implementation/capability-create-route/capability-create-screen",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

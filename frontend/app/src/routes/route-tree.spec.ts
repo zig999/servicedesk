@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
+import { CapabilityCreateScreen } from "./capability-create-screen";
 import { CaseSimulationScreen } from "./case-simulation-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
+import { ConnectorConfigurationCreateScreen } from "./connector-configuration-create-screen";
 import { GlossaryBrowserScreen } from "./glossary-browser-screen";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
 import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
@@ -75,6 +77,28 @@ import {
  * either draft or released state. Excluded from EXPECTED_COMPONENT_BY_PATH
  * for the same reason as the others above -- it renders a real screen -- and
  * checked by its own dedicated test beneath them instead.
+ *
+ * "/connectors/new" is the seventeenth route, added by
+ * task/connector-capability-create-detail-route/connector-configuration-
+ * create-route's own criterion 1: the routed connector-configuration create
+ * screen, in place of the popup Dialog's create mode. A static "new" segment
+ * ranks over the "$connector" param segment above regardless of declaration
+ * order (TanStack Router sorts a route tree by specificity, not by
+ * registration order), the same convention newCaseVersionRoute and
+ * newManifestHypothesisRoute already establish -- criterion 2's own claim.
+ * Excluded from EXPECTED_COMPONENT_BY_PATH for the same reason as the others
+ * above -- it renders a real screen -- and checked by its own dedicated test
+ * beneath them instead.
+ *
+ * "/capabilities/new" is the eighteenth route, added by
+ * task/connector-capability-create-detail-route/capability-create-route's own
+ * criterion 1: the routed capability create screen, in place of the popup
+ * Dialog's create mode -- delivered as a sibling task of the same epic as
+ * "/connectors/new" above, the same static-segment-ranks-over-dynamic-segment
+ * convention applying against "/capabilities/$name/$version". Excluded from
+ * EXPECTED_COMPONENT_BY_PATH for the same reason as the others above -- it
+ * renders a real screen -- and checked by its own dedicated test beneath them
+ * instead.
  */
 
 const EXPECTED_PATHS = [
@@ -91,8 +115,10 @@ const EXPECTED_PATHS = [
   "/glossary",
   "/capabilities",
   "/capabilities/$name/$version",
+  "/capabilities/new",
   "/connectors",
   "/connectors/$connector",
+  "/connectors/new",
   "/cases/$slug/versions/$version/simulate",
 ];
 
@@ -117,13 +143,13 @@ function leafRoutes() {
 }
 
 describe("route-tree", () => {
-  it("registers a route at each of the sixteen proposal-plus-origination screens' paths, and no other", () => {
+  it("registers a route at each of the eighteen proposal-plus-origination screens' paths, and no other", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect([...actualPaths].sort()).toEqual([...EXPECTED_PATHS].sort());
   });
 
-  it("assigns no two of the sixteen routes the same path", () => {
+  it("assigns no two of the eighteen routes the same path", () => {
     const actualPaths = leafRoutes().map((route) => route.fullPath);
 
     expect(new Set(actualPaths).size).toBe(actualPaths.length);
@@ -155,6 +181,24 @@ describe("route-tree", () => {
     const connectorsRoute = leafRoutes().find((route) => route.fullPath === "/connectors");
 
     expect(connectorsRoute?.options.component).toBe(ConnectorConfigurationsScreen);
+  });
+
+  it("renders the /connectors/new route through ConnectorConfigurationCreateScreen (task/connector-capability-create-detail-route/connector-configuration-create-route, criterion 1), distinct from the /connectors/$connector route's own component", () => {
+    const routes = leafRoutes();
+    const createRoute = routes.find((route) => route.fullPath === "/connectors/new");
+    const detailRoute = routes.find((route) => route.fullPath === "/connectors/$connector");
+
+    expect(createRoute?.options.component).toBe(ConnectorConfigurationCreateScreen);
+    expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
+  });
+
+  it("renders the /capabilities/new route through CapabilityCreateScreen (task/connector-capability-create-detail-route/capability-create-route, criterion 1), distinct from the /capabilities/$name/$version route's own component", () => {
+    const routes = leafRoutes();
+    const createRoute = routes.find((route) => route.fullPath === "/capabilities/new");
+    const detailRoute = routes.find((route) => route.fullPath === "/capabilities/$name/$version");
+
+    expect(createRoute?.options.component).toBe(CapabilityCreateScreen);
+    expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
   });
 
   it("renders the /cases/$slug/versions/$version/simulate route through CaseSimulationScreen (task/simulation-cockpit/case-simulation-route, criterion 1)", () => {
