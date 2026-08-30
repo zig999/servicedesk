@@ -10,10 +10,21 @@ import type { ConnectorConfiguration } from "../hooks/use-connector-configuratio
 // mirroring capabilities-browser-screen.test-support.ts's own established convention exactly:
 // a handlers-map-keyed fetch stub (an unhandled path fails the test loudly rather than hanging
 // it), a full-fidelity fixture builder, and a mounting helper that stubs global fetch and wraps
-// the screen in a bare QueryClientProvider. ConnectorConfigurationsScreen calls no router hook
-// at all (confirmed by reading connector-configurations-screen.tsx, connector-configuration-
-// form-dialog.tsx and use-connector-configuration-form.ts in full: no useParams, no Link, no
-// useNavigate), so this needs no createMemoryHistory/RouterProvider scaffolding either.
+// the screen in a bare QueryClientProvider.
+//
+// This header used to say ConnectorConfigurationsScreen calls no router hook at all -- stale
+// even before task/connector-capability-create-detail-route/
+// connector-configurations-list-create-action (row-click navigation already called useNavigate()
+// by then), and now doubly so: that task repointed the "New connector configuration" button's own
+// onClick at the same useNavigate() instance. What stays true is narrower than the old claim:
+// calling useNavigate() itself needs no RouterProvider context, only actually invoking the
+// function it returns does -- so this bare-QueryClientProvider mount still suffices for every
+// spec file here that never clicks a row or "New connector configuration" (the loading/error/
+// empty/listing suite in connector-configurations-screen.spec.ts). A spec file that does click
+// one of those two controls builds its own small, router-scaffolded mount instead
+// (connector-configurations-screen-navigation.spec.ts, connector-configurations-screen-form.spec.ts
+// and connector-configurations-screen-form-save.spec.ts each do, locally, rather than through a
+// mounting helper here).
 
 export const CONNECTORS_PATH = "/v1/connectors";
 

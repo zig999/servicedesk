@@ -1,0 +1,83 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/capability-create-route-capabilities-browser-create-action-suite",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/layout-connector-capability-panels/frontend/app",
+  "timeout_seconds": 900,
+  "outcome": "failed",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-08-30T22:48:19.746+00:00",
+      "ended_at": "2026-08-30T22:48:35.573+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-08-30T22:48:35.573+00:00",
+      "ended_at": "2026-08-30T22:48:50.518+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-08-30T22:48:50.518+00:00",
+      "ended_at": "2026-08-30T22:48:59.083+00:00"
+    },
+    {
+      "name": "style",
+      "command": "npm run lint:css",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "style.log",
+      "started_at": "2026-08-30T22:48:59.083+00:00",
+      "ended_at": "2026-08-30T22:48:59.828+00:00"
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "build.log",
+      "started_at": "2026-08-30T22:48:59.828+00:00",
+      "ended_at": "2026-08-30T22:49:05.054+00:00"
+    },
+    {
+      "name": "a11y",
+      "command": "npm run test:a11y",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "a11y.log",
+      "started_at": "2026-08-30T22:49:05.054+00:00",
+      "ended_at": "2026-08-30T22:49:12.251+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-08-30T22:49:12.252+00:00",
+      "ended_at": "2026-08-30T22:49:13.006+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "test.log",
+      "started_at": "2026-08-30T22:49:13.006+00:00",
+      "ended_at": "2026-08-30T22:50:39.065+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

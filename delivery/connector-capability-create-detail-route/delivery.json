@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/capability-create-route/capabilities-browser-create-action",
+      "kind": "implementation",
+      "file": "implementation/capability-create-route/capabilities-browser-create-action.md",
+      "title": "Capabilities browser create action navigates to the routed create screen",
+      "summary": "CapabilitiesBrowserScreen's \"New capability\" button now navigates to route-tree.tsx's \"/capabilities/new\" instead of opening the popup CapabilityFormDialog in create mode, and the screen's own formTarget state that hosted that dialog's create path is removed.",
+      "task": "task/capability-create-route/capabilities-browser-create-action"
+    },
+    {
       "id": "implementation/capability-create-route/capability-create-screen",
       "kind": "implementation",
       "file": "implementation/capability-create-route/capability-create-screen.md",
@@ -18,6 +26,22 @@
       "task": "task/connector-configuration-create-route/connector-configuration-create-screen"
     },
     {
+      "id": "implementation/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-create-route/connector-configurations-list-create-action.md",
+      "title": "Connector configurations list opens the routed create screen",
+      "summary": "The connector configurations list's \"New connector configuration\" button navigates to \"/connectors/new\" instead of opening the popup create/edit Dialog, and the list screen no longer holds its own create/edit form-target state.",
+      "task": "task/connector-configuration-create-route/connector-configurations-list-create-action"
+    },
+    {
+      "id": "proof/capability-create-route/capabilities-browser-create-action",
+      "kind": "proof",
+      "file": "proof/capability-create-route/capabilities-browser-create-action.md",
+      "title": "Proof for the capabilities browser's create action",
+      "summary": "Vitest coverage for CapabilitiesBrowserScreen's \"New capability\" navigation to /capabilities/new, its dialog-free interaction, the removed form-target state's behavioral fingerprint, the action's persistence across loading, failed and empty list states, and the row-click navigation to a capability's own detail route.",
+      "task": "task/capability-create-route/capabilities-browser-create-action"
+    },
+    {
       "id": "proof/capability-create-route/capability-create-screen",
       "kind": "proof",
       "file": "proof/capability-create-route/capability-create-screen.md",
@@ -32,9 +56,23 @@
       "title": "Proof for the routed connector configuration create screen",
       "summary": "Tests over ConnectorConfigurationCreateScreen prove its routing, its reuse of the shared form-fields component and create/edit hook, its dispatch/refusal guards, its post-save navigation, and its Back link and absent test panel -- including the well-formed-object guard, corrected after this proof's own tests first caught the gap.",
       "task": "task/connector-configuration-create-route/connector-configuration-create-screen"
+    },
+    {
+      "id": "proof/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "proof",
+      "file": "proof/connector-configuration-create-route/connector-configurations-list-create-action.md",
+      "title": "Proof for the connector configurations list's create-action navigation",
+      "summary": "Vitest coverage for connector-configurations-screen.tsx's own five criteria: the \"New connector\nconfiguration\" action now navigates to /connectors/new rather than opening the popup dialog, holds\nno leftover form-target state to reopen one, still renders across the list's loading/failed/empty\nstates, and leaves row-click navigation to a connector's own detail route unchanged -- through\nsmall, self-contained test routers mirroring this project's own established \"row click navigates\"\nconvention.",
+      "task": "task/connector-configuration-create-route/connector-configurations-list-create-action"
     }
   ],
   "edges": [
+    {
+      "from": "implementation/capability-create-route/capabilities-browser-create-action",
+      "to": "task/capability-create-route/capabilities-browser-create-action",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/capability-create-route/capability-create-screen",
       "to": "domain/integration/capability",
@@ -90,6 +128,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-create-route/connector-configurations-list-create-action",
+      "to": "task/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/capability-create-route/capabilities-browser-create-action",
+      "to": "implementation/capability-create-route/capabilities-browser-create-action",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-create-route/capability-create-screen",
       "to": "implementation/capability-create-route/capability-create-screen",
       "kind": "proves",
@@ -98,6 +148,12 @@
     {
       "from": "proof/connector-configuration-create-route/connector-configuration-create-screen",
       "to": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-create-route/connector-configurations-list-create-action",
+      "to": "implementation/connector-configuration-create-route/connector-configurations-list-create-action",
       "kind": "proves",
       "at": "the path"
     }

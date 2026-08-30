@@ -1,135 +1,120 @@
+import { createElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Outlet,
+  RouterProvider,
+} from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import {
   CAPABILITIES_PATH,
-  CONCEPT_OPTIONS_PATH,
   capabilitiesPage,
-  conceptOptionsPage,
   createCapabilitiesFetchStub,
   jsonResponse,
-  mountCapabilitiesScreen,
 } from "./capabilities-browser-screen.test-support";
 
-// Proof for task/capability-authoring/capability-create-edit-form's own criterion 1 -- the
-// "New capability" action opening a blank form -- replacing this screen's prior read-only
-// row-selection detail panel (CapabilityDetailPanel, the `selectedKey` state, this file's own
-// prior delivery: task/glossary-and-capabilities-browser/capabilities-browser-screen's own
-// criteria 2-5) entirely, plus the delivery record's own disclosed inferences that nature
-// defaults to "read-only" in create mode, and the dialog's own loading/load-error phases over
-// the concept single-select's own vocabulary (EDG-01/EDG-02, "a dependency that fails or
-// answers slowly"). This file replaces its own prior delivery's coverage of the now-removed
-// detail panel rather than sitting beside a still-relevant version of it, since that panel's
-// own describe blocks (region role, aria-live mount point, composite-key disambiguation) have
-// nothing left to assert once CapabilityDetailPanel and selectedKey are gone.
+// Proof for task/connector-capability-create-detail-route/capabilities-browser-create-action's
+// own criteria 1, 2 and 3: "New capability" now navigates to the routed create screen
+// (route-tree.tsx's own "/capabilities/new", CapabilityCreateScreen) instead of opening the
+// popup Dialog's create mode, and the screen holds no create/edit form-target state of its own
+// to host that Dialog (capabilities-browser-screen.tsx's own header comment).
 //
-// Criterion 2 (each row's own Edit action opening the same form, pre-filled), the disclosed
-// inferences that name/version are disabled while editing and that a row itself was inert
-// (only its own Edit action opened anything), and the json-textarea-pretty-print-on-load
-// coverage reached through that same Edit dialog are all retired below --
-// task/connector-capability-detail-editing/capability-detail-route (criteria 2 and 9) removed
-// this screen's own per-row "Edit" button and its in-page edit dialog entirely, replacing them
-// with a row click that navigates to the routed detail screen instead
-// (capabilities-browser-screen.tsx's own header comment), mirroring
-// connector-configurations-screen.tsx's own identical convention. That routed screen's own
-// proof -- capability-detail-screen.spec.ts -- already covers the equivalent pre-filled,
-// disabled-identity and pretty-printed-on-load behavior this screen no longer has any UI left
-// to reach; the "a row itself is inert" assertion is not merely unreachable but now false (a
-// row click navigates instead of doing nothing), so it is retired rather than rewritten.
+// Every describe block this file's own prior delivery held here -- task/capability-authoring/
+// capability-create-edit-form's own criterion 1 ("New capability" opens a blank Dialog, its own
+// nature-defaults-to-read-only inference) and the concept-vocabulary loading/load-error phases
+// inside that same Dialog -- is retired outright rather than rewritten: this task's own change
+// removes the only path this screen ever had to open that Dialog (the "New capability" button's
+// onClick), so no interaction reaches a Dialog from here any more. That Dialog's own create-mode
+// behavior -- the shared useCapabilityForm hook's loading/load-error phases, its concept
+// vocabulary, its form fields -- is proven instead through the routed create screen's own proof
+// (capability-create-screen.spec.ts's own criteria 6 and 7,
+// task/connector-capability-create-detail-route/capability-create-route), which composes that
+// same hook in create mode.
 //
-// Criteria 3, 4 live in the sibling capabilities-browser-screen-capability-form-schema.spec.ts,
-// and criteria 5, 6 live in capabilities-browser-screen-capability-form-save.spec.ts -- split
-// this way to stay under this project's own max-lines rule (MNT-01). All three share
-// capabilities-browser-screen.test-support.ts's own fixtures, mounting helper and
-// selectOption() helper.
+// CapabilitiesBrowserScreen calls useNavigate() (capabilities-browser-screen-navigation.spec.ts's
+// own header comment explains why a bare QueryClientProvider mount is not enough once a click is
+// meant to navigate), so this file keeps that same router-based mounting convention: a small,
+// self-contained test router with a dummy "/capabilities/new" leaf (what renders there is
+// capability-create-screen.tsx's own concern, not this proof's).
+
+function buildTestRouter() {
+  const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
+  const capabilitiesRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/capabilities",
+    component: CapabilitiesBrowserScreen,
+  });
+  const capabilityCreateRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/capabilities/new",
+    component: () => createElement("div", null, "Capability Create Placeholder"),
+  });
+  const routeTree = rootRoute.addChildren([capabilitiesRoute, capabilityCreateRoute]);
+  return createRouter({
+    routeTree,
+    history: createMemoryHistory({ initialEntries: ["/capabilities"] }),
+  });
+}
+
+async function mountWithRouter(
+  fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
+): Promise<ReturnType<typeof buildTestRouter>> {
+  vi.stubGlobal("fetch", fetchMock);
+  const router = buildTestRouter();
+  await router.load();
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(
+    createElement(
+      QueryClientProvider,
+      { client: queryClient },
+      createElement(RouterProvider, { router }),
+    ),
+  );
+  return router;
+}
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('CapabilitiesBrowserScreen — "New capability" opens a blank form (criterion 1)', () => {
-  it("opens a Dialog with every named field empty except nature's own read-only default, and no detail panel renders alongside it", async () => {
+describe('CapabilitiesBrowserScreen — "New capability" navigates to the create route (criterion 1)', () => {
+  it("navigates to /capabilities/new when New capability is clicked", async () => {
     const fetchMock = createCapabilitiesFetchStub({
       [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
-      [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
     });
-    await mountCapabilitiesScreen(fetchMock);
+    const router = await mountWithRouter(fetchMock);
     await screen.findByText("No capabilities are currently registered.");
+    const newCapabilityButton = screen.getByRole("button", { name: "New capability" });
 
-    fireEvent.click(screen.getByRole("button", { name: "New capability" }));
+    fireEvent.click(newCapabilityButton);
 
-    const dialog = await screen.findByRole("dialog");
-    const nameInput = await within(dialog).findByLabelText<HTMLInputElement>("Name");
-    expect(nameInput.value).toBe("");
-    expect(nameInput.hasAttribute("disabled")).toBe(false);
-
-    const versionInput = within(dialog).getByLabelText<HTMLInputElement>("Version");
-    expect(versionInput.value).toBe("");
-    expect(versionInput.hasAttribute("disabled")).toBe(false);
-
-    expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Input schema").value).toBe("");
-    expect(within(dialog).getByLabelText<HTMLTextAreaElement>("Output schema").value).toBe("");
-    expect(within(dialog).getByLabelText<HTMLInputElement>("Timeout (ms)").value).toBe("");
-    expect(within(dialog).getByLabelText<HTMLInputElement>("Connector").value).toBe("");
-    expect(within(dialog).getByLabelText("Concept")).toBeTruthy();
-
-    // criterion 2's own "replacing the existing read-only detail panel": no such panel
-    // renders alongside the new form.
-    expect(screen.queryByRole("region")).toBeNull();
-  });
-
-  it('pre-selects Nature to "read-only" rather than leaving it unselected (disclosed inference)', async () => {
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
-      [CONCEPT_OPTIONS_PATH]: () => jsonResponse(conceptOptionsPage(["translation"])),
-    });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("No capabilities are currently registered.");
-
-    fireEvent.click(screen.getByRole("button", { name: "New capability" }));
-
-    const dialog = await screen.findByRole("dialog");
-    const natureTrigger = await within(dialog).findByLabelText("Nature");
-    expect(natureTrigger.textContent).toBe("read-only");
+    await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities/new"));
+    expect(await screen.findByText("Capability Create Placeholder")).toBeTruthy();
   });
 });
 
-describe("CapabilitiesBrowserScreen — the form's own concept vocabulary, loading and load-error (edge case: a dependency that answers slowly or fails)", () => {
-  it("shows a loading placeholder inside the Dialog before the concept vocabulary arrives", async () => {
+describe('CapabilitiesBrowserScreen — "New capability" opens no dialog (criteria 2 and 3)', () => {
+  it("opens no dialog when New capability is clicked, either immediately or once the navigation it triggers has resolved", async () => {
     const fetchMock = createCapabilitiesFetchStub({
       [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
-      [CONCEPT_OPTIONS_PATH]: () => new Promise<Response>(() => {}),
     });
-    await mountCapabilitiesScreen(fetchMock);
+    const router = await mountWithRouter(fetchMock);
     await screen.findByText("No capabilities are currently registered.");
+    const newCapabilityButton = screen.getByRole("button", { name: "New capability" });
+    expect(screen.queryByRole("dialog")).toBeNull();
 
-    fireEvent.click(screen.getByRole("button", { name: "New capability" }));
+    fireEvent.click(newCapabilityButton);
 
-    const dialog = await screen.findByRole("dialog");
-    expect(within(dialog).getByText("Loading…")).toBeTruthy();
-    expect(within(dialog).queryByLabelText("Name")).toBeNull();
-  });
-
-  it("shows a load-failure message with a Retry action inside the Dialog when the concept vocabulary fails to load, and Retry re-issues that same request", async () => {
-    let attempts = 0;
-    const fetchMock = createCapabilitiesFetchStub({
-      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([])),
-      [CONCEPT_OPTIONS_PATH]: () => {
-        attempts += 1;
-        throw new Error("network down");
-      },
-    });
-    await mountCapabilitiesScreen(fetchMock);
-    await screen.findByText("No capabilities are currently registered.");
-
-    fireEvent.click(screen.getByRole("button", { name: "New capability" }));
-
-    const dialog = await screen.findByRole("dialog");
-    expect(await within(dialog).findByText("Unable to load concepts.")).toBeTruthy();
-    const attemptsBeforeRetry = attempts;
-
-    fireEvent.click(within(dialog).getByRole("button", { name: "Retry" }));
-
-    await within(dialog).findByText("Unable to load concepts.");
-    expect(attempts).toBeGreaterThan(attemptsBeforeRetry);
+    // The screen holds no formTarget state of its own to open one (criterion 3), so no dialog
+    // ever appears at any point in this interaction -- checked both immediately after the click
+    // and once the navigation this same click triggers has actually resolved.
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities/new"));
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

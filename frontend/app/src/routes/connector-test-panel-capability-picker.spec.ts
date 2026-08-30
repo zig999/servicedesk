@@ -12,11 +12,9 @@ import {
   testCapability,
 } from "./connector-test-panel.test-support";
 import {
-  CONNECTORS_PATH,
-  connectorConfigurationsPage,
-  createConnectorConfigurationsFetchStub,
-  mountConnectorConfigurationsScreen,
-} from "./connector-configurations-screen.test-support";
+  createFetchStub as createConnectorConfigurationCreateScreenFetchStub,
+  mountConnectorConfigurationCreateScreen,
+} from "./connector-configuration-create-screen.test-support";
 
 // Proof for task/connector-configuration-authoring/test-connector-debug-panel's own criterion 1
 // ("The Test section's capability picker offers only capabilities currently registered with this
@@ -188,19 +186,23 @@ describe("ConnectorTestPanel — Add attribute reconciles to a row already named
   });
 });
 
-describe("ConnectorConfigurationFormDialog — the Test section renders only in edit mode", () => {
-  it("renders no Test section, and issues no read for it, while creating a new connector configuration", async () => {
-    const fetchMock = createConnectorConfigurationsFetchStub({
-      [CONNECTORS_PATH]: () => jsonResponse(connectorConfigurationsPage([])),
-    });
-    await mountConnectorConfigurationsScreen(fetchMock);
-    await screen.findByText("No connector configurations are currently registered.");
+// task/connector-capability-create-detail-route/connector-configurations-list-create-action
+// repointed the list screen's own "New connector configuration" button at a navigate({ to:
+// "/connectors/new" }) call instead of opening ConnectorConfigurationFormDialog in create mode --
+// that popup dialog is no longer reachable in create mode at all, so the "renders no Test section"
+// proof below now mounts the routed create screen itself
+// (ConnectorConfigurationCreateScreen, ./connector-configuration-create-screen.tsx) directly, the
+// same way connector-configuration-create-screen.spec.ts's own "renders no connector test panel"
+// test (criterion 13 of that task) already does, rather than driving it through a click on the
+// list screen's button (that click now only navigates in production, and this file's own mounting
+// harness carries no router context for it to navigate through).
+describe("ConnectorConfigurationCreateScreen — the Test section renders only in edit mode", () => {
+  it("renders no Test section, and issues no read for it, on the routed create screen", async () => {
+    const fetchMock = createConnectorConfigurationCreateScreenFetchStub();
+    await mountConnectorConfigurationCreateScreen(fetchMock);
+    await screen.findByLabelText("Configuration");
 
-    fireEvent.click(screen.getByRole("button", { name: "New connector configuration" }));
-    const dialog = await screen.findByRole("dialog");
-    await within(dialog).findByLabelText("Connector");
-
-    expect(within(dialog).queryByRole("heading", { name: "Test" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Test" })).toBeNull();
     const requestedPaths = fetchMock.mock.calls.map(([input]) =>
       typeof input === "string" ? input : input.toString(),
     );
