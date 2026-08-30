@@ -1248,4 +1248,39 @@ entries:
       registered pairing to check when one side was never written. Nothing is lost to an operator:
       register-connector is create-or-replace, so testing edited text costs one registration, which
       is also what makes the tested configuration the same one an investigation would actually run.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: >-
+      Which Subject attributes a connector test collects values for, and who names them, is not
+      stated. The rule fixes the capability and the configuration a test exercises, and
+      contracts/integration/connector-diagnostics says the call runs "against a subject assembled
+      the same way any other observation assembles one" — but an ordinary observation's set is
+      assembled by the entry point from what the pinned case version requires
+      (domain/investigation/subject, a-diagnosed-subject-covers-its-cases-required-attributes),
+      and a test names no case version, so no node says where the test's set comes from or
+      whether an operator may name an attribute of their own alongside its value.
+    decided: >-
+      The subject a test assembles carries exactly the Subject attributes named by the
+      ${subject:<attribute-name>} placeholders embedded in the registered configuration under
+      test, one attribute-value per distinct attribute those placeholders name; the operator
+      supplies each value, the attribute names are read from those placeholders rather than
+      stated by the operator, and an attribute those placeholders do not name is no part of that
+      subject.
+    why: >-
+      The placeholders are the only statement anywhere of which Subject attributes this
+      configuration's call actually reads (an-http-connector-configuration-declares-its-call), and
+      with no case version in play nothing else could derive the set — the alternative sources
+      each fail on their own terms: a case's requirements presuppose a case the test does not
+      name, and the capability's whole input schema properties would collect values for
+      attributes this configuration never reads, since a-connector-placeholder-is-declared-by-its-capability
+      holds the placeholders inside those properties without requiring the two to coincide. An
+      operator-named attribute is refused by the same reasoning: the name is a governed value
+      (a-subject-attribute-is-drawn-from-the-glossary, domain/glossary/subject-attribute) and a
+      name the operator authored would either duplicate a placeholder's own or name an attribute
+      the call never resolves, in both cases producing a subject that diagnoses a seam
+      (a-connector-placeholder-is-declared-by-its-capability's own check "for the pairing under
+      test") the registered pairing does not actually have. Stated on this rule rather than a new
+      node because this rule is already where every fact about what a test exercises lives, and
+      the log's own precedent extended this same field for the sibling question of which
+      configuration answers to the test.
 ---
