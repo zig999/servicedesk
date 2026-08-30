@@ -42,7 +42,7 @@
  */
 
 import { useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import type { SelectOption } from "@tui/ui/select";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
@@ -130,6 +130,14 @@ function testDispatchFailureMessage(error: unknown): string {
  * dispatched: no criterion of the corrective task names a label for it, but returning three
  * independent booleans/nullables was exactly the shape being replaced, so the union needs a
  * variant for "no call yet" the same way the fields it replaces needed `null` for it.
+ *
+ * A second corrective task (task/connector-test-panel-dispatch-state/derive-outcome-from-
+ * mutation) changed how a value of this type is produced -- computed from useMutation's own
+ * status/data/error at render/return time (testOutcomeFromMutation below) instead of a
+ * second, independently-set useState assigned inside onSuccess/onError -- without touching
+ * this type or the invariant above: a stale result beside a fresh error stays unrepresentable
+ * either way, and onTest below now calls `mutation.reset()` before every dispatch so the
+ * mutation object itself never carries a previous call's own data/error into the next one.
  */
 export type TestDispatchOutcome =
   | { readonly kind: "idle" }
@@ -234,6 +242,34 @@ function reconcileAttributeRows(
 }
 
 /**
+ * Computes this hook's own `testOutcome` from `mutation` -- useMutation's own status/data/error
+ * -- instead of a second, independently-set useState kept in sync inside onSuccess/onError
+ * (STA-01: server-fetched data is read directly from its own cache, never copied into a
+ * separate UI store; STA-03: a value derived from other state is computed at render/return
+ * time, never mirrored into its own state variable). react-query does not clear a mutation's
+ * own `data`/`error` when `mutate()` is called again -- onTest below calls `mutation.reset()`
+ * immediately before every dispatch, so `mutation` here always reflects only the most recent
+ * call. That is what keeps this task's own criterion 2 true: a second dispatch's own failure
+ * is never read alongside the first dispatch's own stale successful result, the same TYP-04
+ * invariant TestDispatchOutcome's own comment above states, now maintained this way instead of
+ * by a separately-set useState.
+ */
+function testOutcomeFromMutation(
+  mutation: UseMutationResult<TestConnectorResult, Error, TestConnectorRequestBody>,
+): TestDispatchOutcome {
+  switch (mutation.status) {
+    case "idle":
+      return { kind: "idle" };
+    case "pending":
+      return { kind: "pending" };
+    case "success":
+      return { kind: "succeeded", result: mutation.data };
+    case "error":
+      return { kind: "failed", message: testDispatchFailureMessage(mutation.error) };
+  }
+}
+
+/**
  * Assembles and dispatches one test-connector call for `connector`, the connector
  * configuration this panel is scoped to (criterion 1).
  *
@@ -274,12 +310,6 @@ export function useTestConnectorPanel(
   const [subjectType, setSubjectType] = useState("");
   const [attributes, setAttributes] = useState<SubjectAttributeRow[]>([]);
   const [requester, setRequester] = useState("");
-  // Tracked as this hook's own state rather than read off useMutation's own isPending/data/error
-  // (react-query keeps `data` from the last successful call around while a later call is
-  // isPending or has errored -- exactly the stale-result-beside-a-fresh-error combination this
-  // task's own criterion makes unrepresentable): every dispatch below sets exactly one variant,
-  // so no earlier call's own result or error ever survives into a later call's own state.
-  const [testOutcome, setTestOutcome] = useState<TestDispatchOutcome>({ kind: "idle" });
 
   const nextRowIdRef = useRef(0);
   const isDispatchingRef = useRef(false);
@@ -321,7 +351,11 @@ export function useTestConnectorPanel(
       return;
     }
     isDispatchingRef.current = true;
-    setTestOutcome({ kind: "pending" });
+    // Clears whatever the previous dispatch left in mutation.data/mutation.error before this
+    // one starts -- react-query does not clear either on its own when mutate() is called
+    // again -- so testOutcomeFromMutation below (called at return time) always reads this
+    // call's own status/data/error, never one a prior call left behind.
+    mutation.reset();
 
     const body: TestConnectorRequestBody = {
       capability: { name: selectedCapability.name, version: selectedCapability.version },
@@ -334,17 +368,13 @@ export function useTestConnectorPanel(
     };
 
     mutation.mutate(body, {
-      onSuccess: (result) => {
-        setTestOutcome({ kind: "succeeded", result });
-      },
-      onError: (error) => {
-        setTestOutcome({ kind: "failed", message: testDispatchFailureMessage(error) });
-      },
       onSettled: () => {
         isDispatchingRef.current = false;
       },
     });
   };
+
+  const testOutcome = testOutcomeFromMutation(mutation);
 
   return {
     capabilityOptions,

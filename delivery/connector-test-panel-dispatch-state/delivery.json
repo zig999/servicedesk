@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-dispatch-state/derive-outcome-from-mutation.md",
+      "title": "Derive the test dispatch outcome from the mutation instead of duplicating it",
+      "summary": "use-test-connector-panel.ts computes testOutcome from useMutation's own status/data/error at render/return time, calling mutation.reset() before every dispatch so a second call's outcome never carries the first call's stale result.",
+      "task": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation"
+    },
+    {
       "id": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "kind": "implementation",
       "file": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
       "title": "Model the test dispatch outcome as a discriminated union",
       "summary": "useTestConnectorPanel's TestConnectorPanelState now returns one discriminated testOutcome field (idle/pending/succeeded/failed) in place of the independent isTesting/result/testError fields, and every production consumer reads it.",
       "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    },
+    {
+      "id": "proof/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-dispatch-state/derive-outcome-from-mutation.md",
+      "title": "Runtime proof that testOutcome is derived from the mutation, and TYP-04 still holds across sequential dispatches",
+      "summary": "Four renderHook-level tests over useTestConnectorPanel prove testOutcome tracks mutation.status/data/error on every render with no separate settable copy (criterion 1), and that a second dispatch's outcome never carries the first dispatch's leftover result or message in either succeed-then-fail or fail-then-succeed order (criterion 2).",
+      "task": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation"
     },
     {
       "id": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
@@ -33,9 +49,21 @@
   ],
   "edges": [
     {
+      "from": "implementation/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "to": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "to": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "to": "implementation/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "proves",
       "at": "the path"
     },
     {
