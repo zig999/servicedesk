@@ -10,6 +10,17 @@
       "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
     },
     {
+      "id": "implementation/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows.md",
+      "title": "Reconcile the test panel's attribute rows against Configuration's subject-attribute placeholders",
+      "summary": "useTestConnectorPanel's onAddAttribute now reads Configuration's current text at click time and reconciles the attribute/value rows against every currently-present ${subject:<attribute>} placeholder, in place of appending one empty row.",
+      "task": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "unmet": [
+        "connector-test-panel-subject-and-attributes.spec.ts, connector-test-panel-capability-picker.spec.ts, connector-test-panel-dispatch-safety.spec.ts, connector-test-panel-request-response.spec.ts and connector-test-panel.test-support.ts's fillTestPanelBasics helper pass against this reconciliation behavior in place of the old append-one-empty-row behavior."
+      ]
+    },
+    {
       "id": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "implementation",
       "file": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel.md",
@@ -24,6 +35,14 @@
       "title": "Placeholder-token grammar primitives proven at their new module",
       "summary": "Proves the three grammar primitives extracted into shared/services/connector-placeholder-token.ts (the regex, the kind/argument split at the first ':', and the subject-kind filter) directly against their own exports, covering the token-grammar edge cases the extraction's own criterion raises, while leaving simulation-subject-derivation.ts's two pre-existing spec files untouched as the proof that its own observable behavior did not change.",
       "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
+    },
+    {
+      "id": "proof/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows.md",
+      "title": "Reconciliation of the test panel's attribute rows against Configuration's placeholders",
+      "summary": "Proves useTestConnectorPanel's reconciled onAddAttribute (add/preserve/remove/exclude/dedupe/invalid-JSON, and its three disclosed row-identity/tie-break/order inferences) and brings the five named spec/fixture files back to green against that behavior, by seeding one shared subject-attribute placeholder into the mount fixture's own configuration text and, for the reconciliation-specific cases, editing the same \"Configuration\" textarea the production route itself feeds into ConnectorTestPanel.",
+      "task": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows"
     },
     {
       "id": "proof/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
@@ -66,6 +85,18 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "implements",
@@ -74,6 +105,12 @@
     {
       "from": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "to": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "implementation/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
       "kind": "proves",
       "at": "the path"
     },

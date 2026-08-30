@@ -23,6 +23,26 @@ import {
   jsonResponse,
 } from "./connector-configurations-screen.test-support";
 
+// task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows changed
+// useTestConnectorPanel's onAddAttribute from appending one empty row on every click to
+// reconciling the panel's own attribute/value rows against every ${subject:<attribute>}
+// placeholder Configuration's own current text embeds (use-test-connector-panel.ts's own header
+// comment). connector-configurations-screen.test-support.ts's own connectorConfiguration()
+// fixture default `configuration` text -- '{"apiKey":"secret"}' -- embeds no placeholder at all,
+// so a caller here that mounted against it unmodified would see "Add attribute" reconcile to
+// zero rows, leaving nothing to type an attribute name or value into. DEFAULT_TEST_PANEL_CONFIGURATION_TEXT
+// below overrides that same fixture's own `configuration` field instead -- the exact field the GET
+// this route's own useConnectorConfigurationDetail.ts issues resolves into state.configuration.value,
+// and so into ConnectorTestPanel's own `configurationText` prop
+// (connector-configuration-detail-ready-view.tsx's own header comment) -- mirroring the real
+// production route this file's own mountTestPanelInEditMode already stands up, rather than
+// inventing a shortcut around it (this file's own disclosed inference; see this task's proof
+// record). "account-id" is the one name every existing caller of fillTestPanelBasics below already
+// passes as its own `attribute` option, so this default keeps every one of those callers working
+// unchanged.
+const DEFAULT_TEST_PANEL_CONFIGURATION_TEXT =
+  '{"address":"https://api.example.com/${subject:account-id}"}';
+
 // Shared fixtures and mounting helper for
 // task/connector-configuration-authoring/test-connector-debug-panel's own proof.
 //
@@ -188,7 +208,10 @@ function buildTestRouter() {
 export async function mountTestPanelInEditMode(
   handlers: Partial<Record<string, () => Response | Promise<Response>>>,
 ): Promise<{ dialog: HTMLElement; fetchMock: Mock<FetchFn> }> {
-  const target = connectorConfiguration({ connector: "deepl-connector" });
+  const target = connectorConfiguration({
+    connector: "deepl-connector",
+    configuration: DEFAULT_TEST_PANEL_CONFIGURATION_TEXT,
+  });
   const fetchMock = createConnectorConfigurationsFetchStub({
     [CONNECTORS_PATH]: () => jsonResponse(connectorConfigurationsPage([target])),
     [connectorPutPath(target.connector)]: () => jsonResponse(target),
@@ -241,7 +264,17 @@ export async function selectOptionAsync(labelText: string, optionName: string): 
   fireEvent.mouseDown(option);
 }
 
-/** Fills every field the Test button's own `canTest` gate requires, awaiting both dependent reads through selectOptionAsync above. Adds exactly one attribute row. */
+/**
+ * Fills every field the Test button's own `canTest` gate requires, awaiting both dependent reads
+ * through selectOptionAsync above. Clicking "Add attribute" here reconciles to exactly one row
+ * already named `options.attribute` -- this file's own DEFAULT_TEST_PANEL_CONFIGURATION_TEXT
+ * embeds exactly one ${subject:<name>} placeholder, "account-id", the same name every caller of
+ * this helper passes as `options.attribute` today (task/connector-test-panel-placeholder-attributes/
+ * reconcile-test-panel-attribute-rows's own criterion 7) -- never a freshly appended blank row.
+ * The Attribute-field edit below is therefore a no-op rewrite of that same name rather than the
+ * naming of a fresh row; only the Value-field edit is a meaningfully new value this helper's own
+ * callers still assert through it.
+ */
 export async function fillTestPanelBasics(
   dialog: HTMLElement,
   options: {

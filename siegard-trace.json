@@ -2127,7 +2127,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
-          "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+          "digest": "sha256:bd014117eb3181ff770a7f76caded86f71f8b2600b7a2d1a72825da167bb4d5e"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",

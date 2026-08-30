@@ -46,13 +46,22 @@ describe("ConnectorTestPanel — the subject type is drawn from the subject-type
 });
 
 describe("ConnectorTestPanel — attribute-values are typed by hand, never selected from an existing subject (criterion 2)", () => {
-  it("lets the operator add an attribute row and type its own attribute name and value", async () => {
+  // task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows changed
+  // "Add attribute" from appending one blank row to reconciling the panel's rows against every
+  // ${subject:<attribute>} placeholder Configuration's own current text embeds. Every test below
+  // was rewritten against that reconciliation behavior (this task's own criterion 7):
+  // mountTestPanelInEditMode's own DEFAULT_TEST_PANEL_CONFIGURATION_TEXT embeds exactly one
+  // placeholder, "account-id", so "Add attribute" here reconciles to exactly one row already
+  // named "account-id" rather than a row with a free-typed name -- what remains genuinely typed
+  // by hand, and still not selected from any existing subject, is each row's own Value.
+  it("adds a row already named for Configuration's own placeholder, and lets the operator type its value (reconciliation)", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
 
     fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
     const attributeInput = within(dialog).getByLabelText<HTMLInputElement>("Attribute");
     const valueInput = within(dialog).getByLabelText<HTMLInputElement>("Value");
-    fireEvent.change(attributeInput, { target: { value: "account-id" } });
+    expect(attributeInput.value).toBe("account-id");
+
     fireEvent.change(valueInput, { target: { value: "12345" } });
 
     expect(attributeInput.value).toBe("account-id");
@@ -61,18 +70,28 @@ describe("ConnectorTestPanel — attribute-values are typed by hand, never selec
 
   it("removes exactly the row whose own Remove action was clicked, leaving the other rows' own values intact (stable-row-identity inference)", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
-    const addButton = within(dialog).getByRole("button", { name: "Add attribute" });
-    fireEvent.click(addButton);
-    fireEvent.click(addButton);
-    fireEvent.click(addButton);
+
+    // Configuration's own text is edited first -- the real production route, since
+    // ConnectorTestPanel's own configurationText prop is this route's live
+    // state.configuration.value -- to embed three distinct subject-attribute placeholders at
+    // once, so one "Add attribute" click reconciles to three rows in a single call.
+    fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+      target: {
+        value:
+          '{"address":"https://api.example.com/${subject:first-attribute}","query":{"a":"${subject:second-attribute}"},"headers":{"h":"${subject:third-attribute}"}}',
+      },
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
 
     const attributeInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Attribute");
     const valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
-    fireEvent.change(attributeInputs[0], { target: { value: "first-attribute" } });
+    expect(attributeInputs.map((input) => input.value)).toEqual([
+      "first-attribute",
+      "second-attribute",
+      "third-attribute",
+    ]);
     fireEvent.change(valueInputs[0], { target: { value: "first-value" } });
-    fireEvent.change(attributeInputs[1], { target: { value: "second-attribute" } });
     fireEvent.change(valueInputs[1], { target: { value: "second-value" } });
-    fireEvent.change(attributeInputs[2], { target: { value: "third-attribute" } });
     fireEvent.change(valueInputs[2], { target: { value: "third-value" } });
 
     const removeButtons = within(dialog).getAllByRole("button", { name: "Remove attribute" });
@@ -93,9 +112,6 @@ describe("ConnectorTestPanel — attribute-values are typed by hand, never selec
     const callsBeforeTyping = fetchMock.mock.calls.length;
 
     fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
-    fireEvent.change(within(dialog).getByLabelText("Attribute"), {
-      target: { value: "account-id" },
-    });
     fireEvent.change(within(dialog).getByLabelText("Value"), { target: { value: "12345" } });
 
     expect(fetchMock.mock.calls.length).toBe(callsBeforeTyping);

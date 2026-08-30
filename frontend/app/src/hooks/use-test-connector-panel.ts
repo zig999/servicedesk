@@ -46,6 +46,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { SelectOption } from "@tui/ui/select";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
+import { subjectPlaceholderNamesInConfiguration } from "../services/simulation-subject-derivation";
 import { useCapabilities, type Capability } from "./use-capabilities";
 import { useGlossaryVocabularyOptions } from "./use-glossary-vocabulary";
 
@@ -141,6 +142,77 @@ export type TestConnectorPanelState = {
 };
 
 /**
+ * Whether `configurationText` parses as a well-formed JSON object -- the same shape
+ * domain/integration/connector-configuration requires of a registered configuration's own
+ * text. Checked independently of subjectPlaceholderNamesInConfiguration's own defensive
+ * read below: that function already returns an empty array both for text that fails this
+ * check and for text that parses fine but simply embeds no placeholder, and the two are
+ * not the same fact -- this task's own sixth criterion asks for the rows to be left
+ * exactly as they were only in the first case, so onAddAttribute below gates on this
+ * check first rather than inferring "no placeholders" from subjectPlaceholderNamesInConfiguration's own return
+ * value (this hook's own inference, mirroring that function's own JSON.parse-then-
+ * plain-object gate rather than importing it, since it declares no export of its own
+ * isPlainRecord to reuse; see this task's delivery record).
+ */
+function parsesAsConfigurationObject(configurationText: string): boolean {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(configurationText);
+  } catch {
+    return false;
+  }
+  return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+}
+
+/**
+ * Reconciles `currentRows` against `placeholderNames` -- every distinct subject-attribute
+ * placeholder name Configuration's own current text embeds, in the order
+ * subjectPlaceholderNamesInConfiguration below returns them (address, then query, then
+ * headers, then body, each in its own declared key order): a row whose attribute name
+ * still names a currently-present placeholder keeps its own id and value unchanged
+ * (criterion 2); a placeholder name with no existing row gets exactly one new, empty-
+ * valued row (criterion 1); a row whose attribute name matches no currently-present
+ * placeholder is dropped (criterion 3); and a name occurring more than once -- whether
+ * repeated in `placeholderNames` itself (criterion 5) or carried by two existing rows --
+ * collapses to one row, keeping the first occurrence in `placeholderNames`'s own order.
+ * Neither criterion states a tie-break for two existing rows sharing one attribute name;
+ * keeping the first is this hook's own inference, drawn from the same first-wins
+ * determinism deriveRequiredFields already applies to its own attribute-name dedup
+ * (services/simulation-subject-derivation.ts) rather than an invented ranking of its own
+ * (see this task's delivery record). `createId` mints a fresh, locally-generated id
+ * (MNT-04's stable-key convention, never sent over the wire) only for a row this call
+ * adds -- a row whose name survives keeps its existing id rather than a freshly minted
+ * one, since nothing in this task's criteria calls for churning an unrelated row's own
+ * React key on a click that did not touch it (this hook's own inference).
+ */
+function reconcileAttributeRows(
+  currentRows: readonly SubjectAttributeRow[],
+  placeholderNames: readonly string[],
+  createId: () => string,
+): SubjectAttributeRow[] {
+  const dedupedNames: string[] = [];
+  const seenNames = new Set<string>();
+  for (const name of placeholderNames) {
+    if (!seenNames.has(name)) {
+      seenNames.add(name);
+      dedupedNames.push(name);
+    }
+  }
+
+  const firstRowByAttribute = new Map<string, SubjectAttributeRow>();
+  for (const row of currentRows) {
+    if (!firstRowByAttribute.has(row.attribute)) {
+      firstRowByAttribute.set(row.attribute, row);
+    }
+  }
+
+  return dedupedNames.map((name) => {
+    const existingRow = firstRowByAttribute.get(name);
+    return existingRow ?? { id: createId(), attribute: name, value: "" };
+  });
+}
+
+/**
  * Assembles and dispatches one test-connector call for `connector`, the connector
  * configuration this panel is scoped to (criterion 1).
  *
@@ -148,22 +220,25 @@ export type TestConnectorPanelState = {
  * exactly as ConnectorConfigurationDetailReadyView's own live state.configuration.value
  * holds it -- is threaded in by
  * task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel
- * as pure prop/argument plumbing: that task's own rationale states it "carries an
- * existing value between components without deciding a new fact," so it is accepted
- * here and deliberately left unread. Reading it to reconcile `attributes` against
- * Configuration's own current placeholders is a distinct, not-yet-cut change (this
- * hook's own onAddAttribute below still only appends one empty row, unchanged).
+ * as prop/argument plumbing, and is now read by onAddAttribute below
+ * (task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows):
+ * clicking "Add attribute" reconciles `attributes` against every distinct
+ * '${subject:<attribute>}' placeholder Configuration's own current text embeds
+ * (subjectPlaceholderNamesInConfiguration, services/simulation-subject-derivation.ts --
+ * the exact walk this app's own must_not_duplicate convention already names as proven and
+ * reused here rather than re-derived), in place of appending one empty row (criteria
+ * 1-5, reconcileAttributeRows above). Configuration text that does not parse as a
+ * well-formed JSON object at click time leaves `attributes` exactly as it was
+ * (criterion 6, parsesAsConfigurationObject above).
  */
 export function useTestConnectorPanel(
   connector: string,
   configurationText: string,
 ): TestConnectorPanelState {
-  // Held in a ref, never read through `.current` anywhere in this hook today --
-  // this is the accepted-but-unread plumbing this function's own header comment
-  // above describes, and holding it this way (rather than a bare `void
-  // configurationText`) is what satisfies the strict compiler's
-  // noUnusedParameters for an argument nothing yet consumes, mirroring this same
-  // file's own nextRowIdRef/isDispatchingRef ref convention below.
+  // Read at click time through .current inside onAddAttribute below, refreshed on
+  // every render the same way this file's own nextRowIdRef/isDispatchingRef are held
+  // as refs rather than state -- so a click always reconciles against the latest
+  // Configuration text this hook was called with, not a stale render's closure.
   const configurationTextRef = useRef(configurationText);
   configurationTextRef.current = configurationText;
 
@@ -254,9 +329,26 @@ export function useTestConnectorPanel(
     onSubjectTypeChange: setSubjectType,
     attributes,
     onAddAttribute: () => {
-      nextRowIdRef.current += 1;
-      const id = `test-connector-attribute-row-${nextRowIdRef.current}`;
-      setAttributes((current) => [...current, { id, attribute: "", value: "" }]);
+      // Criterion 6: text that does not parse as a well-formed JSON object at
+      // click time leaves `attributes` exactly as it was -- no read, no
+      // reconciliation, no state update at all.
+      if (!parsesAsConfigurationObject(configurationTextRef.current)) {
+        return;
+      }
+      const placeholderNames = subjectPlaceholderNamesInConfiguration(
+        configurationTextRef.current,
+      );
+      // Read `attributes` directly from this render's own state (the same
+      // snapshot hasCompleteAttribute/canTest above already read), rather than
+      // through setAttributes's updater form: the number of ids this click
+      // mints depends on the diff against that snapshot, and minting them
+      // inside an updater would risk nextRowIdRef incrementing more than once
+      // for one click under a double-invoking renderer.
+      const reconciled = reconcileAttributeRows(attributes, placeholderNames, () => {
+        nextRowIdRef.current += 1;
+        return `test-connector-attribute-row-${nextRowIdRef.current}`;
+      });
+      setAttributes(reconciled);
     },
     onRemoveAttribute: (id) => {
       setAttributes((current) => current.filter((row) => row.id !== id));
