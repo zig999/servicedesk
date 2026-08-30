@@ -3,6 +3,7 @@ import { rootRouteId } from "@tanstack/react-router";
 import { router } from "./route-tree";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { CapabilityCreateScreen } from "./capability-create-screen";
+import { CapabilityDetailScreen } from "./capability-detail-screen";
 import { CaseSimulationScreen } from "./case-simulation-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { ConnectorConfigurationCreateScreen } from "./connector-configuration-create-screen";
@@ -199,6 +200,23 @@ describe("route-tree", () => {
 
     expect(createRoute?.options.component).toBe(CapabilityCreateScreen);
     expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
+  });
+
+  // Proof for task/capability-create-route/retire-capability-form-dialog's own Notes: the
+  // binder's UNDERDETERMINED entry names an implementation satisfying every one of that task's
+  // own criteria while leaving the frontend app with no screen addressed by a capability's own
+  // (name, version) identity -- so an already-registered capability could no longer be opened
+  // for editing anywhere in the app. Nothing above pins what "/capabilities/$name/$version"
+  // actually renders: the "/capabilities/new" test two above only asserts that route's own
+  // component differs from this one's, never that this one is a real screen rather than, say, a
+  // placeholder or nothing at all. This test is that pin, and it fails under exactly the
+  // implementation the binder's entry names.
+  it("renders the /capabilities/$name/$version route through CapabilityDetailScreen -- the capability detail/edit screen a capability's own (name, version) identity is addressed by", () => {
+    const detailRoute = leafRoutes().find(
+      (route) => route.fullPath === "/capabilities/$name/$version",
+    );
+
+    expect(detailRoute?.options.component).toBe(CapabilityDetailScreen);
   });
 
   it("renders the /cases/$slug/versions/$version/simulate route through CaseSimulationScreen (task/simulation-cockpit/case-simulation-route, criterion 1)", () => {

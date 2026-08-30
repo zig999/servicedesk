@@ -99,11 +99,6 @@ function isValidConfigurationObject(text: string): boolean {
   return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
 }
 
-/** Which of the two modes a caller opened the form in, and (edit mode only) which connector configuration it edits. */
-export type ConnectorConfigurationFormTarget =
-  | { readonly mode: "create" }
-  | { readonly mode: "edit"; readonly connectorConfiguration: ConnectorConfiguration };
-
 /** The `configuration` field's own controlled text plus the validity JsonTextareaField's own onChange last reported for it (json-textarea-field.tsx's own JsonTextareaFieldProps shape, re-exposed here since `configuration` lives outside react-hook-form -- the same convention use-capability-form.ts's own JsonSchemaFieldState already establishes for input_schema/output_schema). */
 export type ConfigurationFieldState = {
   readonly value: string;

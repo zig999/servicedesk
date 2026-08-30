@@ -1,0 +1,5 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/connector-configuration-form-dialog-forwards-configuration-text.spec.ts(63,50): error TS2307: Cannot find module './connector-configuration-form-dialog' or its corresponding type declarations.

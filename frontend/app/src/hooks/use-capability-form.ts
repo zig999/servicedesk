@@ -72,11 +72,6 @@ import { capabilityFormSchema, type CapabilityFormValues } from "../services/cap
 import { useConceptOptions, type ConceptOption } from "./use-concept-options";
 import type { Capability } from "./use-capabilities";
 
-/** Which of the two modes a caller opened the form in, and (edit mode only) which capability it edits. */
-export type CapabilityFormTarget =
-  | { readonly mode: "create" }
-  | { readonly mode: "edit"; readonly capability: Capability };
-
 /** One JSON-schema field's own controlled text plus the validity JsonTextareaField's own onChange last reported for it (json-textarea-field.tsx's own JsonTextareaFieldProps shape, re-exposed here since input_schema/output_schema live outside react-hook-form). */
 export type JsonSchemaFieldState = {
   readonly value: string;

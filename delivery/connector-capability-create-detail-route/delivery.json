@@ -18,6 +18,14 @@
       "task": "task/capability-create-route/capability-create-screen"
     },
     {
+      "id": "implementation/capability-create-route/retire-capability-form-dialog",
+      "kind": "implementation",
+      "file": "implementation/capability-create-route/retire-capability-form-dialog.md",
+      "title": "Retire the capability popup form dialog",
+      "summary": "The capability form dialog component and its nullable-identity form-target type are emptied out of the tree and no longer declared, leaving the routed create screen's form hook and form-fields component untouched.",
+      "task": "task/capability-create-route/retire-capability-form-dialog"
+    },
+    {
       "id": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
       "kind": "implementation",
       "file": "implementation/connector-configuration-create-route/connector-configuration-create-screen.md",
@@ -32,6 +40,14 @@
       "title": "Connector configurations list opens the routed create screen",
       "summary": "The connector configurations list's \"New connector configuration\" button navigates to \"/connectors/new\" instead of opening the popup create/edit Dialog, and the list screen no longer holds its own create/edit form-target state.",
       "task": "task/connector-configuration-create-route/connector-configurations-list-create-action"
+    },
+    {
+      "id": "implementation/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-create-route/retire-connector-configuration-form-dialog.md",
+      "title": "Retire the connector configuration popup form dialog",
+      "summary": "The connector configuration form dialog component and its nullable-identity form-target type are emptied out of the tree and no longer declared, leaving the routed create screen's form hook and form-fields untouched.",
+      "task": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog"
     },
     {
       "id": "proof/capability-create-route/capabilities-browser-create-action",
@@ -50,6 +66,14 @@
       "task": "task/capability-create-route/capability-create-screen"
     },
     {
+      "id": "proof/capability-create-route/retire-capability-form-dialog",
+      "kind": "proof",
+      "file": "proof/capability-create-route/retire-capability-form-dialog.md",
+      "title": "Retiring the capability popup form dialog",
+      "summary": "Structural absence tests for the deleted dialog module and its retired form-target type, plus the one route-wiring fact the task's own UNDERDETERMINED note left unpinned.",
+      "task": "task/capability-create-route/retire-capability-form-dialog"
+    },
+    {
       "id": "proof/connector-configuration-create-route/connector-configuration-create-screen",
       "kind": "proof",
       "file": "proof/connector-configuration-create-route/connector-configuration-create-screen.md",
@@ -64,6 +88,14 @@
       "title": "Proof for the connector configurations list's create-action navigation",
       "summary": "Vitest coverage for connector-configurations-screen.tsx's own five criteria: the \"New connector\nconfiguration\" action now navigates to /connectors/new rather than opening the popup dialog, holds\nno leftover form-target state to reopen one, still renders across the list's loading/failed/empty\nstates, and leaves row-click navigation to a connector's own detail route unchanged -- through\nsmall, self-contained test routers mirroring this project's own established \"row click navigates\"\nconvention.",
       "task": "task/connector-configuration-create-route/connector-configurations-list-create-action"
+    },
+    {
+      "id": "proof/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "kind": "proof",
+      "file": "proof/connector-configuration-create-route/retire-connector-configuration-form-dialog.md",
+      "title": "Proof that the connector configuration popup form dialog is retired",
+      "summary": "One new filesystem test closes the one criterion a running test can state directly; the remaining structural criteria stand on the cited run's passing typecheck/build steps and two existing, untouched specs, cited rather than duplicated.",
+      "task": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog"
     }
   ],
   "edges": [
@@ -94,6 +126,12 @@
     {
       "from": "implementation/capability-create-route/capability-create-screen",
       "to": "task/capability-create-route/capability-create-screen",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/capability-create-route/retire-capability-form-dialog",
+      "to": "task/capability-create-route/retire-capability-form-dialog",
       "kind": "implements",
       "at": "the path"
     },
@@ -134,6 +172,12 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/capability-create-route/capabilities-browser-create-action",
       "to": "implementation/capability-create-route/capabilities-browser-create-action",
       "kind": "proves",
@@ -146,6 +190,12 @@
       "at": "the path"
     },
     {
+      "from": "proof/capability-create-route/retire-capability-form-dialog",
+      "to": "implementation/capability-create-route/retire-capability-form-dialog",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-configuration-create-route/connector-configuration-create-screen",
       "to": "implementation/connector-configuration-create-route/connector-configuration-create-screen",
       "kind": "proves",
@@ -154,6 +204,12 @@
     {
       "from": "proof/connector-configuration-create-route/connector-configurations-list-create-action",
       "to": "implementation/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "implementation/connector-configuration-create-route/retire-connector-configuration-form-dialog",
       "kind": "proves",
       "at": "the path"
     }
