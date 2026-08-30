@@ -4353,11 +4353,15 @@
     },
     {
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
-      "digest": "sha256:406c7941370665e5df7c6bd612b3ac7f037322281d6e3ac2200974d54fbabf1c",
+      "digest": "sha256:e2c781f4671798c37f7ffc0f01bb0441211ebadee6edfc56c5de1c9511a4b7c8",
       "files": [
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
-          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
+          "digest": "sha256:ba81338a4464b3b31e5a3542376cc0ba7984c4f5d99a2262a4909766620eaf46"
+        },
+        {
+          "path": "frontend/app/src/shared/services/connector-placeholder-token.ts",
+          "digest": "sha256:d25abe5a5e616045856a76ff4a43f10f81f1152eb0c9069f4230b3f7df4695b3"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",

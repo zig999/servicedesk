@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
+      "title": "Extract the subject-placeholder token grammar into a shared, feature-neutral module",
+      "summary": "The placeholder regex, the kind/argument split at the first ':', and the subject-kind filter move out of simulation-subject-derivation.ts into a new shared/services/ module that file now composes, with its own exported behavior unchanged.",
+      "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
+    },
+    {
+      "id": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
+      "title": "Placeholder-token grammar primitives proven at their new module",
+      "summary": "Proves the three grammar primitives extracted into shared/services/connector-placeholder-token.ts (the regex, the kind/argument split at the first ':', and the subject-kind filter) directly against their own exports, covering the token-grammar edge cases the extraction's own criterion raises, while leaving simulation-subject-derivation.ts's two pre-existing spec files untouched as the proof that its own observable behavior did not change.",
+      "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "to": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "to": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

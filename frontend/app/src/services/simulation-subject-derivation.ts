@@ -37,27 +37,30 @@
  * address, query, headers or body may embed one or more
  * '${kind[:argument]}' tokens; only a "subject" kind names a required field
  * here (a "requester" or "credential" token is recognized and skipped, never
- * mistaken for a subject attribute -- criterion 2). The token grammar mirrors
- * this project's own backend implementation of the same rule,
- * src/http-connector/connector-request-resolver.ts (PLACEHOLDER_PATTERN
- * `/\$\{([^}]+)\}/g`, kind split at the first ':'), confirmed identical by
- * reading that file -- this hook is the first frontend consumer to parse a
- * connector configuration's own text this way (this task's own header
- * comment).
+ * mistaken for a subject attribute -- criterion 2). The token grammar itself
+ * (the PLACEHOLDER_PATTERN regex, the kind/argument split at the first ':',
+ * and the filter keeping only kind === "subject") is no longer declared in
+ * this file: it moved to shared/services/connector-placeholder-token.ts, a
+ * new, feature-neutral module this file now imports it from
+ * (task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing),
+ * because the connector-authoring test panel is a second, not-yet-written
+ * consumer of the exact same grammar. That module's own header comment
+ * carries the mirrored-from-the-backend confirmation this file's header used
+ * to state directly (src/http-connector/connector-request-resolver.ts,
+ * PLACEHOLDER_PATTERN `/\$\{([^}]+)\}/g`, kind split at the first ':',
+ * confirmed identical by reading that file) -- this hook stays the first
+ * frontend consumer to parse a connector configuration's own text this way
+ * (this task's own header comment).
  */
 
 import type { Capability } from "../hooks/use-capabilities";
 import type { ConnectorConfiguration } from "../hooks/use-connector-configurations";
 import type { CaseVersionManifestEntry } from "./case-version-record";
-
-/** The kind name preceding an optional ':<argument>' inside one '${kind[:argument]}' placeholder token -- named once rather than spelled out at each comparison (TYP-04 in spirit: one governed constant rather than a literal repeated at each callsite). */
-const SUBJECT_PLACEHOLDER_KIND = "subject";
-
-/** Separates a placeholder's own kind from its argument inside one token, e.g. "subject:user-id". */
-const PLACEHOLDER_ARGUMENT_SEPARATOR = ":";
-
-/** Matches every '${...}' placeholder occurring anywhere inside a string value -- never a whole-string requirement, mirroring connector-request-resolver.ts's own PLACEHOLDER_PATTERN. */
-const PLACEHOLDER_PATTERN = /\$\{([^}]+)\}/g;
+import {
+  PLACEHOLDER_PATTERN,
+  isSubjectPlaceholderToken,
+  splitPlaceholderToken,
+} from "../shared/services/connector-placeholder-token";
 
 /**
  * One subject field this simulation requires before it can run, derived
@@ -115,18 +118,18 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** One '${kind[:argument]}' token's own subject-attribute name, or undefined for a requester/credential placeholder or a malformed token (rules/integration/an-http-connector-configuration-declares-its-call) -- this module only ever needs the "subject" kind (criterion 2). */
+/**
+ * One '${kind[:argument]}' token's own subject-attribute name, or undefined for a
+ * requester/credential placeholder or a malformed token
+ * (rules/integration/an-http-connector-configuration-declares-its-call) -- this module
+ * only ever needs the "subject" kind (criterion 2). Composes the shared
+ * splitPlaceholderToken and isSubjectPlaceholderToken primitives
+ * (shared/services/connector-placeholder-token.ts) rather than re-declaring the split
+ * and the kind filter here (task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing).
+ */
 function subjectAttributeNameOf(token: string): string | undefined {
-  const separatorIndex = token.indexOf(PLACEHOLDER_ARGUMENT_SEPARATOR);
-  if (separatorIndex === -1) {
-    return undefined;
-  }
-  const kind = token.slice(0, separatorIndex);
-  const argument = token.slice(separatorIndex + 1);
-  if (kind !== SUBJECT_PLACEHOLDER_KIND || argument === "") {
-    return undefined;
-  }
-  return argument;
+  const parts = splitPlaceholderToken(token);
+  return isSubjectPlaceholderToken(parts) ? parts[1] : undefined;
 }
 
 /** Every distinct subject-attribute placeholder name found anywhere inside one string value, in the order they occur (criterion 2). */
