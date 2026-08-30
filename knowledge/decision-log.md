@@ -1225,4 +1225,27 @@ entries:
       assumed by the scope that was cut — stating it here gives it the addressable home the
       judgment-specific rule already has, rather than leaving a second consumer of the identical
       record to a silent assumption.
+  - location: rules/integration/a-connector-configuration-is-tested-through-a-registered-capability.md
+    field: statement
+    unstated: >-
+      Which configuration a connector test run exercises — the configuration text an operator
+      currently has entered in an authoring surface, or the configuration currently registered
+      under that connector name — is not stated. The rule scoped the test to an already-registered
+      capability and the connector-diagnostics contract says the call exercised is "a connector
+      configuration's own", but no node says which configuration answers to that phrase when an
+      operator is holding edited, unsaved text in front of the same connector name.
+    decided: >-
+      The configuration currently registered under the named connector, read at the moment of the
+      test — never configuration text held unsaved in an authoring surface or supplied alongside
+      the test request.
+    why: >-
+      Every check this specification holds a connector configuration to is a registration-time gate
+      (a-connector-configuration-holds-a-well-formed-object,
+      a-connector-placeholder-is-declared-by-its-capability), so exercising unregistered text would
+      issue a real outbound call from a configuration nothing had ever refused — the same exposure
+      this rule already closes on the capability side by admitting only an already-registered,
+      read-only capability, and the placeholder check it reports "for the pairing under test" has no
+      registered pairing to check when one side was never written. Nothing is lost to an operator:
+      register-connector is create-or-replace, so testing edited text costs one registration, which
+      is also what makes the tested configuration the same one an investigation would actually run.
 ---
