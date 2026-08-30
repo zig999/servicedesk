@@ -47,6 +47,7 @@ import type { SelectOption } from "@tui/ui/select";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
 import { subjectPlaceholderNamesInConfiguration } from "../services/simulation-subject-derivation";
+import { isPlainRecord } from "../shared/services/plain-record";
 import { useCapabilities, type Capability } from "./use-capabilities";
 import { useGlossaryVocabularyOptions } from "./use-glossary-vocabulary";
 
@@ -144,15 +145,19 @@ export type TestConnectorPanelState = {
 /**
  * Whether `configurationText` parses as a well-formed JSON object -- the same shape
  * domain/integration/connector-configuration requires of a registered configuration's own
- * text. Checked independently of subjectPlaceholderNamesInConfiguration's own defensive
- * read below: that function already returns an empty array both for text that fails this
- * check and for text that parses fine but simply embeds no placeholder, and the two are
- * not the same fact -- this task's own sixth criterion asks for the rows to be left
- * exactly as they were only in the first case, so onAddAttribute below gates on this
- * check first rather than inferring "no placeholders" from subjectPlaceholderNamesInConfiguration's own return
- * value (this hook's own inference, mirroring that function's own JSON.parse-then-
- * plain-object gate rather than importing it, since it declares no export of its own
- * isPlainRecord to reuse; see this task's delivery record).
+ * text, checked here through shared/services/plain-record.ts's own isPlainRecord rather
+ * than a private typeof/null/Array.isArray expression of this file's own
+ * (task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check
+ * -- this file used to mirror simulation-subject-derivation.ts's own JSON.parse-then-
+ * plain-object gate by hand because neither file exported a shared primitive to call;
+ * both now call this one). Checked independently of
+ * subjectPlaceholderNamesInConfiguration's own defensive read below: that function
+ * already returns an empty array both for text that fails this check and for text that
+ * parses fine but simply embeds no placeholder, and the two are not the same fact --
+ * this task's own sixth criterion asks for the rows to be left exactly as they were only
+ * in the first case, so onAddAttribute below gates on this check first rather than
+ * inferring "no placeholders" from subjectPlaceholderNamesInConfiguration's own return
+ * value (this hook's own inference).
  */
 function parsesAsConfigurationObject(configurationText: string): boolean {
   let parsed: unknown;
@@ -161,7 +166,7 @@ function parsesAsConfigurationObject(configurationText: string): boolean {
   } catch {
     return false;
   }
-  return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+  return isPlainRecord(parsed);
 }
 
 /**

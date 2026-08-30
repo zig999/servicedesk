@@ -2158,6 +2158,10 @@
           "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
         },
         {
+          "path": "frontend/app/src/shared/services/plain-record.ts",
+          "digest": "sha256:f9b8e9d26dd9b33aded00073f3dccd88d53d50682020017b2d0dfbc92baf8edd"
+        },
+        {
           "path": "src/src/capability-registry/connector-configurations-reader.port.ts",
           "digest": "sha256:3699ef22e9994ca1232bf63fcd2388cbfa6d826a5e65ec986d6983d87715a598"
         },
@@ -4222,6 +4226,10 @@
         {
           "path": "frontend/app/src/services/error-ui-state.ts",
           "digest": "sha256:9d81995c552ff5a64509a063a7769c20e1616b30d05821ab9041a893c0110b38"
+        },
+        {
+          "path": "frontend/app/src/shared/services/plain-record.ts",
+          "digest": "sha256:f9b8e9d26dd9b33aded00073f3dccd88d53d50682020017b2d0dfbc92baf8edd"
         },
         {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",

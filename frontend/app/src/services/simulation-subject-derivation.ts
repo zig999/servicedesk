@@ -51,6 +51,15 @@
  * confirmed identical by reading that file) -- this hook stays the first
  * frontend consumer to parse a connector configuration's own text this way
  * (this task's own header comment).
+ *
+ * The well-formed-configuration-object check (isPlainRecord below) is, for the
+ * same reason, no longer declared privately in this file either: it moved to
+ * shared/services/plain-record.ts, because hooks/use-test-connector-panel.ts
+ * declared an identical private copy of its own
+ * (task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check).
+ * That module's own header comment carries the mirrored-from-the-backend
+ * confirmation (isPlainObject, src/http-connector/connector-request-resolver.ts)
+ * this file's own isPlainRecord used to state directly.
  */
 
 import type { Capability } from "../hooks/use-capabilities";
@@ -61,6 +70,7 @@ import {
   isSubjectPlaceholderToken,
   splitPlaceholderToken,
 } from "../shared/services/connector-placeholder-token";
+import { isPlainRecord } from "../shared/services/plain-record";
 
 /**
  * One subject field this simulation requires before it can run, derived
@@ -111,11 +121,6 @@ function configurationForConnector(
   connector: string,
 ): ConnectorConfiguration | undefined {
   return connectorConfigurations.find((entry) => entry.connector === connector);
-}
-
-/** Whether a parsed JSON value is a non-null, non-array object -- the only shape a connector configuration's own descriptor, or its declared query/headers/body, is ever read as (mirrors connector-request-resolver.ts's own isPlainObject). */
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /**

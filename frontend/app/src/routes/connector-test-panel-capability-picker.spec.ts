@@ -31,6 +31,17 @@ import {
 // sample-input field) is covered here too: the composite-key test above already proves it renders
 // the selected capability's own schema, and the fallback test below proves it degrades for an
 // input_schema that does not itself parse as JSON.
+//
+// task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check's own
+// criterion 2 closes a coverage gap left by reconcile-test-panel-attribute-rows: this file never
+// exercised "Add attribute" at all before the describe block near the bottom below, so
+// reconcile-test-panel-attribute-rows's own criterion 7 ("every existing consumer of
+// onAddAttribute keeps observing correct behavior") was vacuous specifically for this file. The
+// reconciliation behavior itself (a click reconciles rows against every ${subject:<attribute>}
+// placeholder Configuration's own text currently embeds) is proved in full, including the
+// stable-row-identity and no-extra-network-request cases, by the sibling
+// connector-test-panel-subject-and-attributes.spec.ts; the test below establishes only that this
+// file's own context reaches the same behavior, not a second full account of it.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -130,6 +141,32 @@ describe("ConnectorTestPanel — the input schema reference falls back to raw te
     await selectOptionAsync("Capability", "translate-text (1.0.0)");
 
     expect(await within(dialog).findByText("not valid json {")).toBeTruthy();
+  });
+});
+
+describe("ConnectorTestPanel — Add attribute reconciles to a row already named for Configuration's own placeholder (task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check, criterion 2)", () => {
+  // Configuration's text is edited to a placeholder distinct from
+  // mountTestPanelInEditMode's own default ("account-id", already asserted by the sibling
+  // connector-test-panel-subject-and-attributes.spec.ts's own reconciliation test) so this
+  // test's own assertion stands on its own rather than coupled to that default. If "Add
+  // attribute" regressed to the old append-one-empty-row behavior, the row this test finds
+  // would carry an empty Attribute value instead of "picker-panel-subject-id", and the
+  // assertion below would fail.
+  it("adds a row already named for Configuration's own placeholder, not an empty row", async () => {
+    const { dialog } = await mountTestPanelInEditMode({
+      [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])),
+      [SUBJECT_TYPE_PATH]: () => jsonResponse(subjectTypeTermsPage(["billing-dispute"])),
+    });
+
+    fireEvent.change(within(dialog).getByLabelText("Configuration"), {
+      target: {
+        value: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}',
+      },
+    });
+    fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
+
+    const attributeInput = within(dialog).getByLabelText<HTMLInputElement>("Attribute");
+    expect(attributeInput.value).toBe("picker-panel-subject-id");
   });
 });
 

@@ -2,6 +2,17 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check.md",
+      "title": "Deduplicate the well-formed-configuration-object check into one shared primitive",
+      "summary": "A new shared, exported isPlainRecord primitive under frontend/app/src/shared/services/ replaces the two private, identical typeof/null/Array.isArray checks use-test-connector-panel.ts and simulation-subject-derivation.ts each declared, with both files' own stale header/JSDoc comments updated to match.",
+      "task": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "unmet": [
+        "connector-test-panel-capability-picker.spec.ts contains at least one test that clicks \"Add attribute\" against a Configuration text embedding a subject-attribute placeholder and asserts the resulting row reflects that placeholder, so the file would fail if the reconciliation behavior regressed to the old append-one-empty-row behavior."
+      ]
+    },
+    {
       "id": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "kind": "implementation",
       "file": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
@@ -27,6 +38,14 @@
       "title": "Route Configuration's text to the test panel's hook",
       "summary": "ConnectorTestPanel gains a required configurationText prop that ConnectorConfigurationDetailReadyView fills with its own live state.configuration.value and forwards into useTestConnectorPanel(connector, configurationText).",
       "task": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel"
+    },
+    {
+      "id": "proof/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check.md",
+      "title": "Add-attribute reconciliation coverage in the capability-picker spec",
+      "summary": "Adds one test to connector-test-panel-capability-picker.spec.ts proving Add attribute reconciles a row already named for a Configuration placeholder in this file's own context, closing this task's criterion 2; criterion 1 is a pure internal deduplication needing no new test.",
+      "task": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check"
     },
     {
       "id": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
@@ -90,6 +109,24 @@
   ],
   "edges": [
     {
+      "from": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "to": "rules/integration/an-http-connector-configuration-declares-its-call",
       "kind": "encodes",
@@ -117,6 +154,12 @@
       "from": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "implementation/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "proves",
       "at": "the path"
     },
     {
