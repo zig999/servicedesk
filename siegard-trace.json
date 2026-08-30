@@ -1800,6 +1800,10 @@
           "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
         },
         {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
+        },
+        {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
         },
@@ -2950,6 +2954,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
           "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -4363,6 +4371,10 @@
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
       "digest": "sha256:e2c781f4671798c37f7ffc0f01bb0441211ebadee6edfc56c5de1c9511a4b7c8",
       "files": [
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
+        },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
           "digest": "sha256:ba81338a4464b3b31e5a3542376cc0ba7984c4f5d99a2262a4909766620eaf46"
