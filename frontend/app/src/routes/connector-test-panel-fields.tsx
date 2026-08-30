@@ -104,7 +104,11 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
       </div>
 
       <div className="flex justify-end">
-        <Button type="button" onClick={state.onTest} disabled={!state.canTest || state.isTesting}>
+        <Button
+          type="button"
+          onClick={state.onTest}
+          disabled={!state.canTest || state.testOutcome.kind === "pending"}
+        >
           Test
         </Button>
       </div>

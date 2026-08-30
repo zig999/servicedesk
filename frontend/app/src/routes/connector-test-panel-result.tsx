@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { TestConnectorResult } from "../hooks/use-test-connector-panel";
+import type { TestDispatchOutcome } from "../hooks/use-test-connector-panel";
 
 /**
  * The raw request sent and raw outcome received by the one test-connector
@@ -11,32 +11,36 @@ import type { TestConnectorResult } from "../hooks/use-test-connector-panel";
  * (criterion 6, testConnectorOutcomeSchema's own discriminated union).
  *
  * Nothing here is written to any cache, store or persisted resource
- * (criterion 7): `result` is read straight from useTestConnectorPanel's own
- * in-memory mutation state and rendered, nothing more.
+ * (criterion 7): `testOutcome` is read straight from useTestConnectorPanel's own
+ * in-memory dispatch state and rendered, nothing more.
+ *
+ * `testOutcome` (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome)
+ * replaces the former isTesting/testError/result trio with one discriminated union: which
+ * branch to render is now a single switch over `testOutcome.kind` rather than three
+ * independently-checked fields that could, before this task, disagree with each other (a
+ * stale `result` alongside a fresh `testError`).
  */
 
 export type ConnectorTestPanelResultProps = {
-  readonly isTesting: boolean;
-  readonly testError: string | null;
-  readonly result: TestConnectorResult | null;
+  readonly testOutcome: TestDispatchOutcome;
 };
 
 export function ConnectorTestPanelResult({
-  isTesting,
-  testError,
-  result,
+  testOutcome,
 }: ConnectorTestPanelResultProps): JSX.Element | null {
-  if (isTesting) {
+  if (testOutcome.kind === "idle") {
+    return null;
+  }
+
+  if (testOutcome.kind === "pending") {
     return <p>Sending test call…</p>;
   }
 
-  if (testError !== null) {
-    return <p role="alert" className="text-sm text-destructive">{testError}</p>;
+  if (testOutcome.kind === "failed") {
+    return <p role="alert" className="text-sm text-destructive">{testOutcome.message}</p>;
   }
 
-  if (result === null) {
-    return null;
-  }
+  const { result } = testOutcome;
 
   return (
     <div className="grid grid-cols-2 gap-4">

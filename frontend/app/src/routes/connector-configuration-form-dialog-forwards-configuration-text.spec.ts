@@ -53,9 +53,7 @@ vi.mock("../hooks/use-test-connector-panel", () => ({
     requester: "",
     onRequesterChange: () => {},
     canTest: false,
-    isTesting: false,
-    result: null,
-    testError: null,
+    testOutcome: { kind: "idle" as const },
     onTest: () => {},
   }),
 }));

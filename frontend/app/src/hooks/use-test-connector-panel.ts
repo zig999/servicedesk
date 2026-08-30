@@ -119,6 +119,24 @@ function testDispatchFailureMessage(error: unknown): string {
   return GENERIC_TEST_DISPATCH_FAILURE_MESSAGE;
 }
 
+/**
+ * The test dispatch's own outcome, as one discriminated union rather than three independent
+ * fields (isTesting/result/testError) a caller used to read separately
+ * (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome, a TYP-04
+ * corrective fix): by construction, only one branch of this union ever holds at once, so a
+ * stale successful result alongside a fresh error -- previously representable, since nothing
+ * cleared `result` when a subsequent call's own `testError` was set -- has no shape left to
+ * occupy. "idle" is this hook's own inference for the state before any call has ever been
+ * dispatched: no criterion of the corrective task names a label for it, but returning three
+ * independent booleans/nullables was exactly the shape being replaced, so the union needs a
+ * variant for "no call yet" the same way the fields it replaces needed `null` for it.
+ */
+export type TestDispatchOutcome =
+  | { readonly kind: "idle" }
+  | { readonly kind: "pending" }
+  | { readonly kind: "succeeded"; readonly result: TestConnectorResult }
+  | { readonly kind: "failed"; readonly message: string };
+
 export type TestConnectorPanelState = {
   readonly capabilityOptions: SelectOption[];
   readonly isLoadingCapabilities: boolean;
@@ -136,9 +154,7 @@ export type TestConnectorPanelState = {
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
   readonly canTest: boolean;
-  readonly isTesting: boolean;
-  readonly result: TestConnectorResult | null;
-  readonly testError: string | null;
+  readonly testOutcome: TestDispatchOutcome;
   readonly onTest: () => void;
 };
 
@@ -258,7 +274,12 @@ export function useTestConnectorPanel(
   const [subjectType, setSubjectType] = useState("");
   const [attributes, setAttributes] = useState<SubjectAttributeRow[]>([]);
   const [requester, setRequester] = useState("");
-  const [testError, setTestError] = useState<string | null>(null);
+  // Tracked as this hook's own state rather than read off useMutation's own isPending/data/error
+  // (react-query keeps `data` from the last successful call around while a later call is
+  // isPending or has errored -- exactly the stale-result-beside-a-fresh-error combination this
+  // task's own criterion makes unrepresentable): every dispatch below sets exactly one variant,
+  // so no earlier call's own result or error ever survives into a later call's own state.
+  const [testOutcome, setTestOutcome] = useState<TestDispatchOutcome>({ kind: "idle" });
 
   const nextRowIdRef = useRef(0);
   const isDispatchingRef = useRef(false);
@@ -300,7 +321,7 @@ export function useTestConnectorPanel(
       return;
     }
     isDispatchingRef.current = true;
-    setTestError(null);
+    setTestOutcome({ kind: "pending" });
 
     const body: TestConnectorRequestBody = {
       capability: { name: selectedCapability.name, version: selectedCapability.version },
@@ -313,8 +334,11 @@ export function useTestConnectorPanel(
     };
 
     mutation.mutate(body, {
+      onSuccess: (result) => {
+        setTestOutcome({ kind: "succeeded", result });
+      },
       onError: (error) => {
-        setTestError(testDispatchFailureMessage(error));
+        setTestOutcome({ kind: "failed", message: testDispatchFailureMessage(error) });
       },
       onSettled: () => {
         isDispatchingRef.current = false;
@@ -366,9 +390,7 @@ export function useTestConnectorPanel(
     requester,
     onRequesterChange: setRequester,
     canTest,
-    isTesting: mutation.isPending,
-    result: mutation.data ?? null,
-    testError,
+    testOutcome,
     onTest,
   };
 }

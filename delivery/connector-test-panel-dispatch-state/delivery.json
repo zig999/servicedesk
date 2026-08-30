@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
+      "title": "Model the test dispatch outcome as a discriminated union",
+      "summary": "useTestConnectorPanel's TestConnectorPanelState now returns one discriminated testOutcome field (idle/pending/succeeded/failed) in place of the independent isTesting/result/testError fields, and every production consumer reads it.",
+      "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    },
+    {
+      "id": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
+      "title": "Proof that TestDispatchOutcome makes a stale succeeded result and a fresh failed message structurally uncoexistable",
+      "summary": "Two compile-time constructions prove the sole criterion at the type level; two runtime tests witness it and this task's own two disclosed inferences in the composed panel; two pre-existing spec files were mechanically adapted to the new testOutcome shape so the suite still builds.",
+      "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "to": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "to": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
