@@ -10,12 +10,28 @@
       "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
     },
     {
+      "id": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel.md",
+      "title": "Route Configuration's text to the test panel's hook",
+      "summary": "ConnectorTestPanel gains a required configurationText prop that ConnectorConfigurationDetailReadyView fills with its own live state.configuration.value and forwards into useTestConnectorPanel(connector, configurationText).",
+      "task": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel"
+    },
+    {
       "id": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "kind": "proof",
       "file": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
       "title": "Placeholder-token grammar primitives proven at their new module",
       "summary": "Proves the three grammar primitives extracted into shared/services/connector-placeholder-token.ts (the regex, the kind/argument split at the first ':', and the subject-kind filter) directly against their own exports, covering the token-grammar edge cases the extraction's own criterion raises, while leaving simulation-subject-derivation.ts's two pre-existing spec files untouched as the proof that its own observable behavior did not change.",
       "task": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing"
+    },
+    {
+      "id": "proof/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel.md",
+      "title": "Proof for routing Configuration text into the test panel's hook",
+      "summary": "Three new spec files prove configurationText reaches useTestConnectorPanel through both production call sites, by reading what each seam actually received back off the DOM rather than recording a call.",
+      "task": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel"
     }
   ],
   "edges": [
@@ -32,8 +48,20 @@
       "at": "the path"
     },
     {
+      "from": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "to": "implementation/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "to": "implementation/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "proves",
       "at": "the path"
     }
