@@ -3,7 +3,6 @@ import { Label } from "@tui/ui/label";
 import { Input } from "@tui/ui/input";
 import { Select } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
-import { JsonTextareaField } from "../shared/components/json-textarea-field";
 import type { TestConnectorPanelState } from "../hooks/use-test-connector-panel";
 
 /**
@@ -11,11 +10,10 @@ import type { TestConnectorPanelState } from "../hooks/use-test-connector-panel"
  * (task/connector-configuration-authoring/test-connector-debug-panel): the
  * capability picker scoped to this connector configuration (criterion 1),
  * the subject assembled by hand -- a type plus typed attribute-value pairs,
- * no list of existing subjects offered (criterion 2) -- and the sample
- * input edited through the shared JSON beautify/minify textarea, captioned
- * with the chosen capability's own input_schema shown read-only alongside
- * it (criterion 3). Presentation only: every value and handler comes from
- * useTestConnectorPanel (ARC-02/ARC-03).
+ * no list of existing subjects offered (criterion 2) -- and the chosen
+ * capability's own input_schema shown read-only alongside it. Presentation
+ * only: every value and handler comes from useTestConnectorPanel
+ * (ARC-02/ARC-03).
  *
  * The Select fields wrap their own Label rather than using htmlFor/id --
  * this app's own established convention, since TUI's Select only spreads
@@ -72,47 +70,36 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-3 min-w-0">
-          {state.attributes.map((row) => (
-            <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-end gap-4">
-              <div className="flex flex-col gap-1">
-                <Label htmlFor={`${row.id}-attribute`}>Attribute</Label>
-                <Input
-                  id={`${row.id}-attribute`}
-                  value={row.attribute}
-                  onChange={(event) =>
-                    state.onAttributeChange(row.id, "attribute", event.target.value)
-                  }
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <Label htmlFor={`${row.id}-value`}>Value</Label>
-                <Input
-                  id={`${row.id}-value`}
-                  value={row.value}
-                  onChange={(event) => state.onAttributeChange(row.id, "value", event.target.value)}
-                />
-              </div>
-              <Button type="button" variant="secondary" onClick={() => state.onRemoveAttribute(row.id)}>
-                Remove attribute
-              </Button>
+      <div className="flex flex-col gap-3 min-w-0">
+        {state.attributes.map((row) => (
+          <div key={row.id} className="grid grid-cols-[1fr_1fr_auto] items-end gap-4">
+            <div className="flex flex-col gap-1">
+              <Label htmlFor={`${row.id}-attribute`}>Attribute</Label>
+              <Input
+                id={`${row.id}-attribute`}
+                value={row.attribute}
+                onChange={(event) =>
+                  state.onAttributeChange(row.id, "attribute", event.target.value)
+                }
+              />
             </div>
-          ))}
-          <div>
-            <Button type="button" variant="secondary" onClick={state.onAddAttribute}>
-              Add attribute
+            <div className="flex flex-col gap-1">
+              <Label htmlFor={`${row.id}-value`}>Value</Label>
+              <Input
+                id={`${row.id}-value`}
+                value={row.value}
+                onChange={(event) => state.onAttributeChange(row.id, "value", event.target.value)}
+              />
+            </div>
+            <Button type="button" variant="secondary" onClick={() => state.onRemoveAttribute(row.id)}>
+              Remove attribute
             </Button>
           </div>
-        </div>
-
-        <div className="min-w-0">
-          <JsonTextareaField
-            id="test-connector-sample-input"
-            label="Sample input"
-            value={state.sampleInput}
-            onChange={state.onSampleInputChange}
-          />
+        ))}
+        <div>
+          <Button type="button" variant="secondary" onClick={state.onAddAttribute}>
+            Add attribute
+          </Button>
         </div>
       </div>
 

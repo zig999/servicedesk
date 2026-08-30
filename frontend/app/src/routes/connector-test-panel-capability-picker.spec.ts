@@ -24,9 +24,13 @@ import {
 // (name@version) inference, the empty-match and dependency-failure edge cases that criterion's
 // own dependency (useCapabilities) raises, and the explicit "only in edit mode" fact this task's
 // own dialog wiring states. Criterion 2 and the requester field live in the sibling
-// connector-test-panel-subject-and-attributes.spec.ts; criterion 3 in
-// connector-test-panel-sample-input.spec.ts; criteria 4-7 in
+// connector-test-panel-subject-and-attributes.spec.ts; criteria 4-7 in
 // connector-test-panel-request-response.spec.ts and connector-test-panel-dispatch-safety.spec.ts.
+//
+// The chosen capability's own input_schema read-only reference display (unrelated to the removed
+// sample-input field) is covered here too: the composite-key test above already proves it renders
+// the selected capability's own schema, and the fallback test below proves it degrades for an
+// input_schema that does not itself parse as JSON.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -112,6 +116,20 @@ describe("ConnectorTestPanel — the capability picker offers only capabilities 
         "Could not load the capabilities registered with this connector.",
       ),
     ).toBeTruthy();
+  });
+});
+
+describe("ConnectorTestPanel — the input schema reference falls back to raw text for invalid JSON", () => {
+  it("falls back to the raw stored text for an input_schema that is not itself valid JSON (disclosed inference)", async () => {
+    const { dialog } = await mountTestPanelInEditMode({
+      [CAPABILITIES_PATH]: () =>
+        jsonResponse(capabilitiesPage([testCapability({ input_schema: "not valid json {" })])),
+      [SUBJECT_TYPE_PATH]: () => jsonResponse(subjectTypeTermsPage(["billing-dispute"])),
+    });
+
+    await selectOptionAsync("Capability", "translate-text (1.0.0)");
+
+    expect(await within(dialog).findByText("not valid json {")).toBeTruthy();
   });
 });
 

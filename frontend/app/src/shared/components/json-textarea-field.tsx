@@ -8,10 +8,9 @@ import { cn } from "@tui/lib/cn";
  * Shared JSON beautify/minify/inline-error textarea control
  * (task/capability-authoring/json-textarea-editor): one control every field
  * needing JSON text embeds, so the parsing, the "Beautify" reformatting and
- * the invalid-JSON error message are written once rather than by each of the
- * three consumers named in this task's own rationale (a capability's two
- * schemas, a connector configuration field, and the test-connector panel's
- * sample input) individually.
+ * the invalid-JSON error message are written once rather than by each
+ * consumer named in this task's own rationale (a capability's two schemas
+ * and a connector configuration field among them) individually.
  *
  * A discriminated `JsonParseResult` (TYP-04) rather than a `value: unknown |
  * undefined` bag: `undefined`/`null` are themselves valid parsed JSON values
@@ -60,14 +59,14 @@ export function getJsonTextareaMinifiedValue(value: string): string | null {
  * opt-in: left unset, the Textarea keeps this control's own default 10rem/
  * 160px minimum height (`min-h-40`), exactly as every consumer today
  * renders it -- connector-configuration-form-fields.tsx's `configuration`
- * field and connector-test-panel-fields.tsx's sample-input field among them.
- * Set true, the minimum height becomes 12.5rem/200px instead. The increase
- * is scoped this way, as an explicit choice each call site makes, rather
- * than by raising the shared default, because raising the default would
- * have raised every other consumer's rendered height along with it -- this
- * component carries one Textarea height class, shared verbatim by every
- * caller, and only a caller-level switch keeps that sharing from also
- * sharing a change one screen asked for and the others did not.
+ * field among them. Set true, the minimum height becomes 12.5rem/200px
+ * instead. The increase is scoped this way, as an explicit choice each call
+ * site makes, rather than by raising the shared default, because raising
+ * the default would have raised every other consumer's rendered height
+ * along with it -- this component carries one Textarea height class,
+ * shared verbatim by every caller, and only a caller-level switch keeps
+ * that sharing from also sharing a change one screen asked for and the
+ * others did not.
  */
 export type JsonTextareaFieldProps = {
   readonly id: string;

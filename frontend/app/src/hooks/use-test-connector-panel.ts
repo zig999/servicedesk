@@ -31,13 +31,6 @@
  * whatever string resolveConnectorRequest needs to resolve a `${requester}`
  * placeholder, exactly the way a real observation would supply one.
  *
- * The sample input field's own validity gates the Test button the same way
- * useConnectorConfigurationForm gates Save on its own JsonTextareaField
- * validity; unlike that field, this one starts at "{}" (a deliberately
- * valid default) rather than blank, since test-connector.dto.ts's own
- * `input` is optional and this panel should not force an operator to type
- * anything before a first attempt.
- *
  * A dispatch failure (the POST to /v1/test-connector itself failing --
  * distinct from criterion 6, which is the *downstream* connector call
  * failing or timing out, carried inside a successful response's own
@@ -53,7 +46,6 @@ import { useMutation } from "@tanstack/react-query";
 import type { SelectOption } from "@tui/ui/select";
 import { apiFetch, ApiError } from "../services/api-client";
 import { uiStateForApiError, type UiErrorStateKind } from "../services/error-ui-state";
-import { getJsonTextareaMinifiedValue } from "../shared/components/json-textarea-field";
 import { useCapabilities, type Capability } from "./use-capabilities";
 import { useGlossaryVocabularyOptions } from "./use-glossary-vocabulary";
 
@@ -77,7 +69,6 @@ export type TestConnectorRequestBody = {
     readonly attributes: readonly SubjectAttributeValue[];
   };
   readonly requester: string;
-  readonly input?: unknown;
 };
 
 /** The raw outbound request actually assembled, mirrored from testConnectorRequestEchoSchema. */
@@ -110,15 +101,6 @@ function capabilityKey(capability: Pick<Capability, "name" | "version">): string
   return `${capability.name}@${capability.version}`;
 }
 
-/** Parses the sample input textarea's own minified text into the value POST /v1/test-connector's optional `input` field carries, or undefined while there is none valid to send. */
-function resolveSampleInputPayload(sampleInput: string): unknown {
-  const minified = getJsonTextareaMinifiedValue(sampleInput);
-  if (minified === null) {
-    return undefined;
-  }
-  return JSON.parse(minified);
-}
-
 const GENERIC_TEST_DISPATCH_FAILURE_MESSAGE =
   "The test call could not be sent. Check the selected capability, subject and requester, then try again.";
 
@@ -134,8 +116,6 @@ function testDispatchFailureMessage(error: unknown): string {
   }
   return GENERIC_TEST_DISPATCH_FAILURE_MESSAGE;
 }
-
-const DEFAULT_SAMPLE_INPUT = "{}";
 
 export type TestConnectorPanelState = {
   readonly capabilityOptions: SelectOption[];
@@ -153,9 +133,6 @@ export type TestConnectorPanelState = {
   readonly onAttributeChange: (id: string, field: "attribute" | "value", value: string) => void;
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
-  readonly sampleInput: string;
-  readonly sampleInputValid: boolean;
-  readonly onSampleInputChange: (value: string, isValid: boolean) => void;
   readonly canTest: boolean;
   readonly isTesting: boolean;
   readonly result: TestConnectorResult | null;
@@ -176,8 +153,6 @@ export function useTestConnectorPanel(connector: string): TestConnectorPanelStat
   const [subjectType, setSubjectType] = useState("");
   const [attributes, setAttributes] = useState<SubjectAttributeRow[]>([]);
   const [requester, setRequester] = useState("");
-  const [sampleInput, setSampleInput] = useState(DEFAULT_SAMPLE_INPUT);
-  const [sampleInputValid, setSampleInputValid] = useState(true);
   const [testError, setTestError] = useState<string | null>(null);
 
   const nextRowIdRef = useRef(0);
@@ -213,8 +188,7 @@ export function useTestConnectorPanel(connector: string): TestConnectorPanelStat
     selectedCapability !== undefined &&
     subjectType !== "" &&
     hasCompleteAttribute &&
-    requester.trim() !== "" &&
-    sampleInputValid;
+    requester.trim() !== "";
 
   const onTest = (): void => {
     if (!canTest || selectedCapability === undefined || isDispatchingRef.current) {
@@ -231,7 +205,6 @@ export function useTestConnectorPanel(connector: string): TestConnectorPanelStat
         attributes: attributes.map(({ attribute, value }) => ({ attribute, value })),
       },
       requester,
-      input: resolveSampleInputPayload(sampleInput),
     };
 
     mutation.mutate(body, {
@@ -270,12 +243,6 @@ export function useTestConnectorPanel(connector: string): TestConnectorPanelStat
     },
     requester,
     onRequesterChange: setRequester,
-    sampleInput,
-    sampleInputValid,
-    onSampleInputChange: (value, isValid) => {
-      setSampleInput(value);
-      setSampleInputValid(isValid);
-    },
     canTest,
     isTesting: mutation.isPending,
     result: mutation.data ?? null,
