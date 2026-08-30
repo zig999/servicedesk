@@ -253,11 +253,12 @@ export function CapabilityFormFields({
             schema whose fields declare no description still saves.
           */}
           <p className="text-sm text-muted-foreground">
-            For each field under <code>properties</code>, the platform reads its own{" "}
-            <code>type</code> and <code>description</code> as that field&apos;s declared
-            meaning — no other content of this schema is read or validated. A description
-            states what a value means (&quot;2 = suspended for delinquency&quot;), never a
-            decision (&quot;when 2, confirm the hypothesis&quot;).
+            Para cada campo em <code>properties</code>, a plataforma lê seu próprio{" "}
+            <code>type</code> e <code>description</code> como o significado declarado
+            desse campo — nenhum outro conteúdo deste schema é lido ou validado. Uma
+            description declara o que um valor significa (&quot;2 = suspenso por
+            inadimplência&quot;), nunca uma decisão (&quot;quando 2, confirme a
+            hipótese&quot;).
           </p>
         </div>
       </div>

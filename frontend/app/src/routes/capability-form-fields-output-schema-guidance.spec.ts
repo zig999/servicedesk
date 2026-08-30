@@ -42,7 +42,7 @@ describe("CapabilityFormFields — the dialog shows the output_schema field-sema
 
     const guidance = findGuidanceParagraph(dialog);
     expect(guidance).toBeTruthy();
-    expect(guidance?.textContent).toMatch(/no other content of this schema is read or validated/i);
+    expect(guidance?.textContent).toMatch(/nenhum outro conteúdo deste schema é lido ou validado/i);
   });
 });
 
@@ -59,8 +59,8 @@ describe("CapabilityFormFields — the guidance states a description says meanin
     await within(dialog).findByLabelText("Name");
 
     const guidance = findGuidanceParagraph(dialog);
-    expect(guidance?.textContent).toContain("2 = suspended for delinquency");
-    expect(guidance?.textContent).toContain("when 2, confirm the hypothesis");
+    expect(guidance?.textContent).toContain("2 = suspenso por inadimplência");
+    expect(guidance?.textContent).toContain("quando 2, confirme a hipótese");
   });
 });
 
@@ -72,7 +72,7 @@ describe("CapabilityFormFields — the routed detail screen shows the same guida
 
     const guidance = findGuidanceParagraph(document.body);
     expect(guidance).toBeTruthy();
-    expect(guidance?.textContent).toMatch(/no other content of this schema is read or validated/i);
+    expect(guidance?.textContent).toMatch(/nenhum outro conteúdo deste schema é lido ou validado/i);
   });
 });
 
@@ -83,7 +83,7 @@ describe("CapabilityFormFields — the routed detail screen shows the same guida
 function findGuidanceParagraph(container: HTMLElement): HTMLElement | null {
   return (
     Array.from(container.querySelectorAll("p")).find((p) =>
-      /the platform reads its own/i.test(p.textContent ?? ""),
+      /a plataforma lê seu próprio/i.test(p.textContent ?? ""),
     ) ?? null
   );
 }
