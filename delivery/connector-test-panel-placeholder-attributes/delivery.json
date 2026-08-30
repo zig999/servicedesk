@@ -90,6 +90,22 @@
       "findings": 3
     },
     {
+      "id": "review/deduplicate-configuration-object-check",
+      "kind": "review",
+      "file": "review/deduplicate-configuration-object-check.md",
+      "title": "Deduplicate configuration object check, review",
+      "summary": "What four passes found over the corrective task fixing two prior review findings: the duplicated well-formed-JSON-object check and the vacuous criterion-7 coverage in the capability picker.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A single, exported well-formed-JSON-object-check primitive exists under frontend/app/src/shared/services/, and both use-test-connector-panel.ts's parsesAsConfigurationObject and simulation-subject-derivation.ts's own equivalent private check are replaced by calls to it, rather than each declaring its own private typeof/null/Array.isArray expression."
+      ],
+      "findings": 1
+    },
+    {
       "id": "review/reconcile-test-panel-attribute-rows",
       "kind": "review",
       "file": "review/reconcile-test-panel-attribute-rows.md",
@@ -191,6 +207,12 @@
       "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "reviews",
       "at": "tasks[1]"
+    },
+    {
+      "from": "review/deduplicate-configuration-object-check",
+      "to": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "reviews",
+      "at": "tasks[0]"
     },
     {
       "from": "review/reconcile-test-panel-attribute-rows",
