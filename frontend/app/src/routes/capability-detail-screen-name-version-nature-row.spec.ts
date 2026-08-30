@@ -6,22 +6,13 @@ import {
   mountCapabilityDetailScreen,
 } from "./capability-detail-screen.test-support";
 
-// Proof for task/capability-detail-layout/name-version-nature-row's own criterion 1 --
-// "CapabilityFormFields wraps the Name, Version and Nature FormField elements in one shared row
-// container instead of Nature's current standalone FormField block rendered below the
-// Name/Version row." capability-detail-screen.spec.ts's own existing assertions (criterion 6,
-// left unmodified by this task per its own criterion 4) locate every field by
-// screen.getByLabelText and never inspect DOM structure, so a build with Nature still rendered
-// in its own separate row beneath Name/Version -- the very structure this task removes -- would
-// satisfy every one of that file's assertions unchanged. This file adds the one structural check
-// criterion 1 needs and the label-text suite cannot express: that Name, Version and Nature share
-// one common ancestor a field from the next row down (Timeout) sits outside of.
-//
-// Criteria 2 and 3 (Nature's own selectable values and current selection, Name/Version's own
-// values, unchanged by the regrouping) and criterion 4 (the existing suite passes unmodified)
-// assert nothing this delivery changed and are already proven by capability-detail-screen.spec.ts
-// and capability-detail-screen-save.spec.ts's own existing, untouched assertions, so no new test
-// is written for them here.
+// CapabilityFormFields wraps Name, Version, Nature and Timeout in one shared four-column row
+// (a direct layout edit under `edits_freely`, moving Timeout into this row from its own former
+// grouping with Connector). capability-detail-screen.spec.ts's own existing assertions locate
+// every field by screen.getByLabelText and never inspect DOM structure, so this file adds the
+// one structural check that grouping needs and the label-text suite cannot express: that Name,
+// Version, Nature and Timeout share one common ancestor a later field (Connector, now its own
+// standalone row) sits outside of.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -52,8 +43,8 @@ function closestCommonAncestor(start: Element, target: Element): Element {
   );
 }
 
-describe("CapabilityDetailScreen -- Name, Version and Nature share one row container (criterion 1)", () => {
-  it("wraps Name, Version and Nature in one shared container that a later-row field (Timeout) sits outside of", async () => {
+describe("CapabilityDetailScreen -- Name, Version, Nature and Timeout share one row container", () => {
+  it("wraps Name, Version, Nature and Timeout in one shared container that a later field (Connector) sits outside of", async () => {
     const fetchMock = createFetchStub(baseHandlers());
     await mountCapabilityDetailScreen(fetchMock);
     await screen.findByLabelText("Connector");
@@ -62,14 +53,14 @@ describe("CapabilityDetailScreen -- Name, Version and Nature share one row conta
     const versionField = screen.getByLabelText("Version");
     const natureField = screen.getByLabelText("Nature");
     const timeoutField = screen.getByLabelText("Timeout (ms)");
+    const connectorField = screen.getByLabelText("Connector");
 
-    // The smallest element that wraps both Name and Nature together -- on the structure this
-    // task removes (Nature in its own standalone block below a separate Name/Version row), the
-    // smallest such element is the whole <form>, which also wraps Timeout; on the structure this
-    // task establishes, it is the row itself, which does not.
+    // The smallest element that wraps both Name and Nature together -- the shared four-column
+    // row, which also wraps Timeout and does not wrap Connector, now its own standalone field.
     const row = closestCommonAncestor(nameField, natureField);
 
     expect(row.contains(versionField)).toBe(true);
-    expect(row.contains(timeoutField)).toBe(false);
+    expect(row.contains(timeoutField)).toBe(true);
+    expect(row.contains(connectorField)).toBe(false);
   });
 });
