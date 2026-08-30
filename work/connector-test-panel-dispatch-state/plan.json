@@ -9,6 +9,14 @@
       "summary": "The test dispatch outcome in useTestConnectorPanel modeled as a discriminated union instead of three independent fields, fixing a TYP-04 finding."
     },
     {
+      "id": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "task",
+      "file": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation.md",
+      "title": "Derive the test dispatch outcome from the mutation instead of duplicating it",
+      "summary": "testOutcome is computed from useMutation's own status/data/error at render/return time instead of a separately-set useState assigned in onSuccess/onError, without reintroducing the impossible-state bug the sibling task fixed.",
+      "epic": "connector-test-panel-dispatch-state"
+    },
+    {
       "id": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "kind": "task",
       "file": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
@@ -23,6 +31,12 @@
       "to": "contracts/integration/connector-diagnostics",
       "kind": "covers",
       "at": "covers[0]"
+    },
+    {
+      "from": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "to": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
     }
   ]
 }
