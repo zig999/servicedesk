@@ -211,18 +211,28 @@ describe("ConnectorTestPanel — the first row keeps a name two rows come to sha
     clickAddAttribute(dialog);
 
     expect(attributeValues(dialog)).toEqual(["account-id", "region"]);
-    let valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
+    const valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
     fireEvent.change(valueInputs[0], { target: { value: "111" } });
     fireEvent.change(valueInputs[1], { target: { value: "222" } });
-    // The operator renames the second row's own attribute to collide with the first's.
-    const attributeInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Attribute");
-    fireEvent.change(attributeInputs[1], { target: { value: "account-id" } });
+
+    // The Attribute field no longer takes an onChange (now read-only,
+    // task/connector-test-panel-attribute-readonly), so the two rows are made to
+    // share one attribute name by editing Configuration's own text instead: the
+    // placeholder that used to name "region" now names "account-id" too, the very
+    // name the earlier row already carries.
+    setConfigurationText(
+      dialog,
+      '{"address":"https://api.example.com/${subject:account-id}","body":{"r":"${subject:account-id}"}}',
+    );
 
     clickAddAttribute(dialog);
 
-    expect(attributeValues(dialog)).toEqual(["account-id", "region"]);
-    valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
-    expect(valueInputs.map((input) => input.value)).toEqual(["111", ""]);
+    expect(attributeValues(dialog)).toEqual(["account-id"]);
+    expect(
+      within(dialog)
+        .getAllByLabelText<HTMLInputElement>("Value")
+        .map((input) => input.value),
+    ).toEqual(["111"]);
   });
 });
 

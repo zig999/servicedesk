@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup.md",
+      "title": "Rewrite the reconciliation tie-break test's collision setup",
+      "summary": "The tie-break test in connector-test-panel-attribute-reconciliation.spec.ts now induces its scenario by editing Configuration's own text rather than by firing a change event on the now-read-only Attribute field.",
+      "task": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup"
+    },
+    {
+      "id": "proof/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup.md",
+      "title": "Proof for rewriting the reconciliation tie-break test's collision setup",
+      "summary": "Confirms the rewritten tie-break test proves criteria 1-3 through Configuration-text edits rather than an Attribute-field rename, and that every other test in the file is unchanged; the full suite passes.",
+      "task": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "implementation/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
