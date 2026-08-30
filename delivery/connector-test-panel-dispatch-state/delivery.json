@@ -34,6 +34,21 @@
       "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
     },
     {
+      "id": "review/derive-outcome-from-mutation",
+      "kind": "review",
+      "file": "review/derive-outcome-from-mutation.md",
+      "title": "Derive outcome from mutation, review",
+      "summary": "What four passes found over the STA-01 corrective task that replaced testOutcome's own useState with a value derived from the mutation object.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "useTestConnectorPanel no longer declares testOutcome as an independently-set useState assigned inside onSuccess/onError -- it is computed from the mutation object's own state at render/return time, so there is no second, separately-settable copy of what the mutation already holds."
+      ]
+    },
+    {
       "id": "review/discriminate-test-dispatch-outcome",
       "kind": "review",
       "file": "review/discriminate-test-dispatch-outcome.md",
@@ -71,6 +86,12 @@
       "to": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/derive-outcome-from-mutation",
+      "to": "task/connector-test-panel-dispatch-state/derive-outcome-from-mutation",
+      "kind": "reviews",
+      "at": "tasks[0]"
     },
     {
       "from": "review/discriminate-test-dispatch-outcome",
