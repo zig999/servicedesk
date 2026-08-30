@@ -16,6 +16,14 @@
       "summary": "The connector test panel's \"Add attribute\" button, its hook, the Configuration text it must read, and the subject-placeholder parsing logic already proven correct elsewhere in the simulation feature."
     },
     {
+      "id": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "kind": "task",
+      "file": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check.md",
+      "title": "Deduplicate the well-formed-configuration-object check and close the reconciliation coverage gap in the capability picker",
+      "summary": "A new shared, exported well-formed-JSON-object-check primitive replaces the private, duplicated copies in use-test-connector-panel.ts and simulation-subject-derivation.ts, and connector-test-panel-capability-picker.spec.ts gains a test that actually exercises Add attribute reconciliation.",
+      "epic": "connector-test-panel-placeholder-attributes"
+    },
+    {
       "id": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
       "kind": "task",
       "file": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
@@ -49,9 +57,15 @@
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
-      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
       "kind": "covers",
       "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[11]"
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
@@ -85,27 +99,39 @@
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
-      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
       "kind": "covers",
       "at": "covers[6]"
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
-      "to": "domain/integration/capability",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
       "kind": "covers",
       "at": "covers[7]"
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
-      "to": "domain/integration/connector-configuration-registry",
+      "to": "domain/integration/capability",
       "kind": "covers",
       "at": "covers[8]"
     },
     {
       "from": "epic/connector-test-panel-placeholder-attributes",
-      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "to": "domain/integration/connector-configuration-registry",
       "kind": "covers",
       "at": "covers[9]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[1]"
     },
     {
       "from": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",

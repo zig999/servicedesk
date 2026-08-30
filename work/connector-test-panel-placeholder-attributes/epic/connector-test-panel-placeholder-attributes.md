@@ -12,6 +12,7 @@ covers:
 - domain/glossary/subject-attribute
 - domain/investigation/subject-attribute-value
 - domain/integration/connector-configuration
+- rules/integration/a-connector-configuration-holds-a-well-formed-object
 - rules/integration/an-http-connector-configuration-declares-its-call
 - domain/integration/capability
 - domain/integration/connector-configuration-registry
