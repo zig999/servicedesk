@@ -1,0 +1,28 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-dispatch-state",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-dispatch-state.md",
+      "title": "Connector test panel dispatch state",
+      "summary": "The test dispatch outcome in useTestConnectorPanel modeled as a discriminated union instead of three independent fields, fixing a TYP-04 finding."
+    },
+    {
+      "id": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "task",
+      "file": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
+      "title": "Model the test dispatch outcome as a discriminated union",
+      "summary": "TestConnectorPanelState's isTesting/result/testError fields are replaced by one discriminated testOutcome field, so a stale result and a live error can never coexist in the type a caller reads.",
+      "epic": "connector-test-panel-dispatch-state"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-dispatch-state",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[0]"
+    }
+  ]
+}
