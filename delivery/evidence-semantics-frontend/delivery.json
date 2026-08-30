@@ -96,6 +96,25 @@
       "title": "Evidence tab snapshot rendering — proof",
       "summary": "Seven new tests prove concept_description and per-field semantics render when present, degrade to a stated absence when empty, and render nothing new for a legacy record carrying neither.",
       "task": "task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering"
+    },
+    {
+      "id": "review/evidence-semantics-frontend",
+      "kind": "review",
+      "file": "review/evidence-semantics-frontend.md",
+      "title": "evidence-semantics-frontend, full review",
+      "summary": "What the coverage, specification-conformance and standard-conformance passes found over all six delivered tasks of the evidence-semantics-frontend initiative; the failures pass did not run because the captured whole-change run passed clean.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "JsonTextareaField's props and rendering are unchanged for its other consumers.",
+        "The render type declares the snapshot optional, with the absent reading for records collected before the snapshot existed stated at the read site.",
+        "The semantics rendered are read only from the simulation response, with no glossary or capability-registry request issued to enrich them.",
+        "The sibling narrowing in use-concept-options continues to omit description, with the omission disclosed in its header comment as a deliberate departure from the sibling shape.",
+        "conceptFormSchema requires a non-empty description, with the mirroring of the backend DTO disclosed in the module's header comment."
+      ]
     }
   ],
   "edges": [
@@ -260,6 +279,42 @@
       "to": "implementation/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/glossary-concept-description/concept-description-error-kind",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/glossary-concept-description/browser-description-and-legacy-marker",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/glossary-concept-description/concept-form-description-field",
+      "kind": "reviews",
+      "at": "tasks[2]"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/capability-output-schema-guidance/output-schema-field-guidance",
+      "kind": "reviews",
+      "at": "tasks[3]"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/simulation-evidence-snapshot/evidence-snapshot-wire-types",
+      "kind": "reviews",
+      "at": "tasks[4]"
+    },
+    {
+      "from": "review/evidence-semantics-frontend",
+      "to": "task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering",
+      "kind": "reviews",
+      "at": "tasks[5]"
     }
   ]
 }
