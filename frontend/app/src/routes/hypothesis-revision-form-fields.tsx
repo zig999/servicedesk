@@ -87,7 +87,7 @@ export function HypothesisRevisionFormFields({
   } = form;
 
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       <div className="flex gap-4">
         <FormField
           label="Hypothesis name"

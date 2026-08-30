@@ -63,7 +63,7 @@ export function HypothesisRevisionScreen({
   }
 
   return (
-    <section>
+    <section className="flex flex-col gap-4">
       <h1>{hypothesisName === null ? "New hypothesis" : `Revise hypothesis — ${hypothesisName}`}</h1>
       <HypothesisRevisionFormFields
         form={state.form}
