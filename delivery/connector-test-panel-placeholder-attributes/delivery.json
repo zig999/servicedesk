@@ -69,6 +69,23 @@
         "simulation-subject-derivation.ts imports these primitives from that new module rather than declaring them itself."
       ],
       "findings": 3
+    },
+    {
+      "id": "review/reconcile-test-panel-attribute-rows",
+      "kind": "review",
+      "file": "review/reconcile-test-panel-attribute-rows.md",
+      "title": "Reconcile test panel attribute rows, review",
+      "summary": "What four passes found over the third task's reconciliation of Add attribute against Configuration's placeholders.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "connector-test-panel-subject-and-attributes.spec.ts, connector-test-panel-capability-picker.spec.ts, connector-test-panel-dispatch-safety.spec.ts, connector-test-panel-request-response.spec.ts and connector-test-panel.test-support.ts's fillTestPanelBasics helper pass against this reconciliation behavior in place of the old append-one-empty-row behavior."
+      ],
+      "findings": 2
     }
   ],
   "edges": [
@@ -131,6 +148,12 @@
       "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
       "kind": "reviews",
       "at": "tasks[1]"
+    },
+    {
+      "from": "review/reconcile-test-panel-attribute-rows",
+      "to": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
