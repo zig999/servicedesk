@@ -1,0 +1,159 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-placeholder-attributes",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-placeholder-attributes.md",
+      "title": "Connector test panel placeholder attributes",
+      "summary": "The connector test panel's Add attribute button reconciling its rows against the subject-attribute placeholders Configuration's own text currently holds, plus the shared parsing module and the prop route that behavior depends on."
+    },
+    {
+      "id": "inventory/connector-test-panel-placeholder-attributes-area",
+      "kind": "inventory",
+      "file": "inventory/connector-test-panel-placeholder-attributes-area.md",
+      "title": "Connector test panel and subject-placeholder parsing",
+      "summary": "The connector test panel's \"Add attribute\" button, its hook, the Configuration text it must read, and the subject-placeholder parsing logic already proven correct elsewhere in the simulation feature."
+    },
+    {
+      "id": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "task",
+      "file": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing.md",
+      "title": "Extract the subject-placeholder parsing primitives into a shared module",
+      "summary": "The placeholder regex, kind/argument split and subject-kind filter move out of simulation-subject-derivation.ts into a feature-neutral module that file itself then imports.",
+      "epic": "connector-test-panel-placeholder-attributes"
+    },
+    {
+      "id": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "kind": "task",
+      "file": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows.md",
+      "title": "Reconcile the test panel's attribute rows with Configuration's placeholders",
+      "summary": "Clicking Add attribute reconciles the panel's attribute/value rows against every subject-attribute placeholder Configuration's own text currently holds, in place of appending one empty row.",
+      "epic": "connector-test-panel-placeholder-attributes"
+    },
+    {
+      "id": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "task",
+      "file": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel.md",
+      "title": "Route Configuration's text to the test panel's hook",
+      "summary": "ConnectorConfigurationDetailReadyView's own live Configuration text reaches useTestConnectorPanel through a new configurationText prop on ConnectorTestPanel.",
+      "epic": "connector-test-panel-placeholder-attributes"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/connector-test-panel-placeholder-attributes",
+      "to": "rules/integration/a-diagnostic-response-masks-a-resolved-credential",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "task/connector-test-panel-placeholder-attributes/extract-connector-placeholder-parsing",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel",
+      "kind": "depends_on",
+      "at": "depends_on[1]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
