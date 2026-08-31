@@ -1,0 +1,75 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
+      "title": "writeConnectorConfigurations upserts by identity instead of deleting the whole table",
+      "summary": "RelationalConnectorConfigurationStore.writeConnectorConfigurations now upserts each given configuration by its own connector identity through INSERT ... ON CONFLICT (connector) DO UPDATE, issuing no DELETE at all, so registering or rewriting a connector configuration never removes any row belonging to a different connector.",
+      "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
+    },
+    {
+      "id": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "proof",
+      "file": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
+      "title": "writeConnectorConfigurations upserts by identity — full proof",
+      "summary": "Tests proving the corrected connector-configuration store upserts by connector identity, deletes nothing, and satisfies the corrective task's three criteria, rewritten whole to close the coverage gap on criterion 2 and to relabel the schema-fitness test the review found mislabeled as an inference.",
+      "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
+    },
+    {
+      "id": "review/connector-configuration-write-upsert-hotfix",
+      "kind": "review",
+      "file": "review/connector-configuration-write-upsert-hotfix.md",
+      "title": "Connector configuration write upsert hotfix, first review",
+      "summary": "What four passes found over writeConnectorConfigurations' switch from a whole-table DELETE-then-reinsert to a per-connector upsert, and over the two specs reconciled to prove it.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Reescrever a configuração de um connector já registrado substitui exatamente esse connector; nenhuma linha de connector_configurations pertencente a um connector diferente é apagada como efeito colateral dessa escrita."
+      ],
+      "findings": 3
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-write-upsert-hotfix",
+      "to": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    }
+  ]
+}

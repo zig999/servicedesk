@@ -13,6 +13,12 @@ export interface IConnectorConfigurationStore {
   /** Answers every connector configuration the registry holds, exactly as persisted. */
   readConnectorConfigurations(): Promise<readonly ConnectorConfiguration[]>;
 
-  /** Replaces the registry's persisted connector configurations, whole. */
+  /**
+   * Upserts each given configuration into the registry's persisted store,
+   * by its own connector identity: creates a connector fresh or replaces
+   * whatever configuration already answered to it in place, never by
+   * deleting a row (task/connector-configuration-write-upsert-hotfix) — a
+   * connector this call does not name is left exactly as it stood.
+   */
   writeConnectorConfigurations(configurations: readonly ConnectorConfiguration[]): Promise<void>;
 }
