@@ -136,10 +136,12 @@ function Topbar(): JSX.Element {
 
 /**
  * The footer strip: full width, no content of its own yet -- a structural
- * placeholder only (surface change, no fact to state).
+ * placeholder only (surface change, no fact to state). `min-h-10` gives it
+ * a visible presence despite carrying no content; without it the element
+ * collapses to the border's own 1px.
  */
 function Footer(): JSX.Element {
-  return <footer className="shrink-0 border-t border-border bg-surface" />;
+  return <footer className="min-h-10 shrink-0 border-t border-border bg-surface" />;
 }
 
 /**
