@@ -4729,7 +4729,7 @@
       "files": [
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:fcdb9bd90183575d2eca54dd2cacb63d0699897ab5b530140beb7df8828c6050"
         },
         {
           "path": "src/src/errors/subject-attribute-not-in-glossary.error.ts",
@@ -4792,6 +4792,16 @@
         {
           "path": "src/src/investigation/subject.ts",
           "digest": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "digest": "sha256:75c4b26a02a1691e4ba59a744aef56e6565f085ea5290cf47af8c76fb891a8b5",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:fcdb9bd90183575d2eca54dd2cacb63d0699897ab5b530140beb7df8828c6050"
         }
       ]
     },

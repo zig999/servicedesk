@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { Label } from "@tui/ui/label";
 import { Input } from "@tui/ui/input";
-import { Select } from "@tui/ui/select";
+import { Select, type SelectOption } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
 import { useGlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
 import type { SimulationSubjectState } from "../hooks/use-simulation-subject";
@@ -87,6 +87,25 @@ import type { SimulationSubjectState } from "../hooks/use-simulation-subject";
  * (test-connector.dto.ts's own subject, which this task's own criteria do
  * not constrain the same way).
  *
+ * task/subject-input-requirements/exclude-already-required-attributes-from-
+ * the-add-control: that same Select's own option list excludes every
+ * attribute name state.requiredFields already names (rules/investigation/a-
+ * composed-subject-presents-every-case-input-requirement,
+ * rules/investigation/a-subject-holds-one-value-per-attribute) -- filtered
+ * by availableAttributeOptions below, in this component, where the
+ * requirement set is known, never inside useGlossaryVocabularyOptions
+ * itself, which glossary-browser-screen.tsx still reads unfiltered
+ * (criterion 4). Every option that survives the filter is still
+ * glossary-drawn (rules/investigation/a-subject-attribute-is-drawn-from-the-
+ * glossary), since the filter only ever removes entries from the same list
+ * useGlossaryVocabularyOptions("subject-attribute") returns -- it never adds
+ * one, so criterion 2 keeps holding once the list is filtered. Checked only
+ * against state.requiredFields, deliberately never against
+ * state.addedAttributes: this task's own UNDERDETERMINED note scopes the
+ * filter to the requirement set alone, so a non-requirement attribute the
+ * curator already added through this same control in an earlier row can
+ * still be offered again in a later row.
+ *
  * "View subject JSON" reuses this epic's own already-established
  * <details>/<summary> convention for a collapsible raw block
  * (case-simulation-detail-evidence-tab.tsx, task/simulation-cockpit/
@@ -110,6 +129,32 @@ function doNotChangeSubjectType(): void {
   // useSimulationSubject's returned state.
 }
 
+/**
+ * task/subject-input-requirements/exclude-already-required-attributes-from-
+ * the-add-control: the curator's own "+ attribute" Select's option list,
+ * with every attribute name `requiredFields` already names removed --
+ * offering one again would let the same attribute be added a second time
+ * through this control, which rules/investigation/a-subject-holds-one-value-
+ * per-attribute would only silently resolve by dropping whichever value was
+ * assembled second. Filtered here, in this component, where the requirement
+ * set is known -- never inside useGlossaryVocabularyOptions itself, whose
+ * `allOptions` argument here is exactly the unfiltered list that hook still
+ * returns for glossary-browser-screen.tsx and any other caller. Every
+ * surviving option is still one `allOptions` already held, so it stays
+ * glossary-drawn; where `requiredFields` names every attribute the
+ * vocabulary holds, this returns an empty array rather than falling back to
+ * `allOptions`. Deliberately filtered only against `requiredFields`, never
+ * against the curator's own already-added rows (`addedAttributes`) --
+ * this task's own UNDERDETERMINED note.
+ */
+function availableAttributeOptions(
+  allOptions: readonly SelectOption[],
+  requiredFields: SimulationSubjectState["requiredFields"],
+): SelectOption[] {
+  const requiredAttributeNames = new Set(requiredFields.map((field) => field.attribute));
+  return allOptions.filter((option) => !requiredAttributeNames.has(option.value));
+}
+
 export function CaseSimulationSubjectPanel({
   state,
 }: CaseSimulationSubjectPanelProps): JSX.Element {
@@ -125,6 +170,10 @@ export function CaseSimulationSubjectPanel({
     isError: isSubjectAttributeOptionsError,
     refetch: refetchSubjectAttributeOptions,
   } = useGlossaryVocabularyOptions("subject-attribute");
+  const availableSubjectAttributeOptions = availableAttributeOptions(
+    subjectAttributeOptions,
+    state.requiredFields,
+  );
 
   return (
     <section className="flex flex-col gap-4">
@@ -282,7 +331,7 @@ export function CaseSimulationSubjectPanel({
             <Label className="flex flex-col gap-1">
               Attribute
               <Select
-                options={subjectAttributeOptions}
+                options={availableSubjectAttributeOptions}
                 value={row.attribute}
                 onChange={(value) => state.onAttributeChange(row.id, "attribute", value)}
               />

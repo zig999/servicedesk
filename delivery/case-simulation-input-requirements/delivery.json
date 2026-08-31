@@ -18,6 +18,14 @@
       "task": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator"
     },
     {
+      "id": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control.md",
+      "title": "Filter the \"+ attribute\" control's Select against the requirement set",
+      "summary": "The curator's \"+ attribute\" glossary Select in case-simulation-subject-panel.tsx now excludes every attribute name state.requiredFields already names, leaving the shared useGlossaryVocabularyOptions hook untouched for its other consumers.",
+      "task": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control"
+    },
+    {
       "id": "implementation/subject-input-requirements/expose-malformed-capability-identities",
       "kind": "implementation",
       "file": "implementation/subject-input-requirements/expose-malformed-capability-identities.md",
@@ -64,6 +72,14 @@
       "title": "Disclosure of a malformed capability's identity in the Subject panel",
       "summary": "New spec file proving the four criteria of disclose-malformed-capabilities-to-the-curator over CaseSimulationSubjectPanel's new state.capabilitiesWithMalformedInputSchema section.",
       "task": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator"
+    },
+    {
+      "id": "proof/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/exclude-already-required-attributes-from-the-add-control.md",
+      "title": "Proof for excluding already-required attributes from the \"+ attribute\" control",
+      "summary": "New and one corrected spec in case-simulation-subject-panel-attributes.spec.ts proving the five criteria of exclude-already-required-attributes-from-the-add-control and its own UNDERDETERMINED note over state.addedAttributes.",
+      "task": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control"
     },
     {
       "id": "proof/subject-input-requirements/expose-malformed-capability-identities",
@@ -166,6 +182,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-input-requirements/expose-malformed-capability-identities",
       "to": "contracts/knowledge/case-input-requirements",
       "kind": "encodes",
@@ -264,6 +298,12 @@
     {
       "from": "proof/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
       "to": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "implementation/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
       "kind": "proves",
       "at": "the path"
     },
