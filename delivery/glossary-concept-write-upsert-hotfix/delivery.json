@@ -16,6 +16,25 @@
       "title": "Proof for write-concepts-upserts-by-identity",
       "summary": "Tests proving RelationalGlossaryStore.writeConcepts now upserts by identity instead of deleting concepts/concept_accepts whole, at both the statement-mechanics level (stand-in connection) and the real-foreign-key level (real database), plus the wire-level no-description refusal on both the create and replace paths.",
       "task": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity"
+    },
+    {
+      "id": "review/glossary-concept-write-upsert-hotfix",
+      "kind": "review",
+      "file": "review/glossary-concept-write-upsert-hotfix.md",
+      "title": "Review of glossary-concept-write-upsert-hotfix",
+      "summary": "What four passes found over the writeConcepts upsert-by-identity fix, its port docstring, and the tests proving it.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Atualizar o ttl, a description ou o accepts de um concept cuja própria linha já é referenciada por capabilities, investigation_evidence ou investigation_evaluation_citations sucede sem apagar nem violar essas linhas referenciadas, e o glossário passa a manter, sob esse nome, exatamente os valores enviados.",
+        "Nenhuma escrita em concepts ou concept_accepts emite mais um DELETE sem filtro de WHERE contra a tabela inteira.",
+        "O glossário nunca passa a manter um mesmo nome de concept em duas linhas simultaneamente, em nenhum dos cenários acima.",
+        "PUT /v1/glossary/concepts/cpt-ifs-sync criando um concept novo (nome que o glossário ainda não detém), contra um banco onde outro concept já existente tem ao menos uma linha em capabilities, investigation_evidence ou investigation_evaluation_citations citando-o, não retorna 500, e o glossário passa a manter, sob esse nome, exatamente o accepts, o ttl e a description enviados."
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -48,6 +67,12 @@
       "to": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/glossary-concept-write-upsert-hotfix",
+      "to": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
