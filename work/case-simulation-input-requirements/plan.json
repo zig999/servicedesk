@@ -1,0 +1,413 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/subject-input-requirements",
+      "kind": "epic",
+      "file": "epic/subject-input-requirements.md",
+      "title": "Subject composition from the case's own input requirements",
+      "summary": "The simulate cockpit's Subject region, read and derived and presented from the authoritative case-input-requirements read instead of from connector-configuration placeholder text."
+    },
+    {
+      "id": "inventory/case-simulation-subject-derivation-and-composition",
+      "kind": "inventory",
+      "file": "inventory/case-simulation-subject-derivation-and-composition.md",
+      "title": "Case simulation subject derivation and composition",
+      "summary": "The cluster of frontend modules that derive, hold, and render the simulation cockpit's Subject region -- the exact area the scope moves from connector-placeholder scanning to the authoritative input-requirements read."
+    },
+    {
+      "id": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "task",
+      "file": "task/subject-input-requirements/derive-subject-fields-from-input-requirements.md",
+      "title": "Derive the subject's fields from the input-requirements read",
+      "summary": "One editable subject field per case-input-requirement, each carrying that requirement's own required flag, and the connector and input-schema hint of a capability that asks for it wherever that capability is among the ones already composed.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "kind": "task",
+      "file": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator.md",
+      "title": "Disclose a malformed capability to the composing curator",
+      "summary": "The Subject region's disclosure of every capability whose stored input schema holds no well-formed shape.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "kind": "task",
+      "file": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control.md",
+      "title": "Offer only attributes the requirement set does not already name",
+      "summary": "The \"+ attribute\" control's glossary Select, filtered against the attributes the pinned version's read already names.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "task",
+      "file": "task/subject-input-requirements/expose-malformed-capability-identities.md",
+      "title": "Carry the malformed-input-schema capabilities on the subject state",
+      "summary": "The capability identities the read names apart from its requirements, carried through the state the Subject region is passed.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "kind": "task",
+      "file": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement.md",
+      "title": "Hold the simulate dispatch open where a requirement's own input is empty",
+      "summary": "The cockpit's simulate-case and simulate-hypothesis gate, stripped of every reason to refuse that a requirement's own empty input used to give it.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "kind": "task",
+      "file": "task/subject-input-requirements/present-each-requirement-with-its-required-standing.md",
+      "title": "Present every requirement's input with its required standing",
+      "summary": "The Subject panel's one input per requirement, required and optional alike, each showing what the pinned version asks of it.",
+      "epic": "subject-input-requirements"
+    },
+    {
+      "id": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "task",
+      "file": "task/subject-input-requirements/read-case-input-requirements-hook.md",
+      "title": "Read a case version's input requirements",
+      "summary": "A hook over GET /v1/cases/{slug}/versions/{version}/input-requirements returning both halves of what that read answers.",
+      "epic": "subject-input-requirements"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "domain/investigation/subject",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/integration/an-unresolvable-observation-ends-unavailable",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/knowledge/a-case-versions-input-requirements-are-derived",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "scenarios/investigation/a-simulated-subject-omitting-a-required-attribute-degrades",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "scenarios/integration/a-legacy-capability-declares-no-input-attributes",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-simulation-carries-its-requester",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/subject-input-requirements",
+      "to": "rules/investigation/a-pending-simulation-call-is-not-dispatched-again",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "domain/investigation/subject",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-simulation-carries-its-requester",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-pending-simulation-call-is-not-dispatched-again",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

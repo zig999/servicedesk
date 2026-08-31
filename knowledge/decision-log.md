@@ -1337,4 +1337,110 @@ entries:
       stated reason); withholding that same fact from the person actually looking at the subject
       being composed would waste the one read that already computed it, and the curator composing a
       subject for simulate is ordinarily the same person who could act on it.
+  - location: rules/investigation/a-composed-subject-presents-every-case-input-requirement.md
+    field: statement
+    unstated: >-
+      Whether the interface presenting one attribute input per a pinned case version's own
+      case-input-requirements discloses, alongside each input, the capability asking for that
+      attribute and that capability's connector -- and, where more than one currently-registered
+      capability asks for the same attribute, whether every asking capability is named or only one.
+    decided: >-
+      The interface names, alongside each attribute input, every capability that requirement holds --
+      each by its own name and version together with that capability's own connector -- never only one
+      of them where more than one currently-registered capability asks for the same attribute.
+    why: >-
+      This is what the composer can learn, not how a panel is arranged: which capability asks for an
+      attribute, and through which connector it will be used, tells them which observations a value
+      they leave empty will degrade (a-simulated-subject-missing-a-requirement-degrades-not-refuses,
+      an-unresolvable-observation-ends-unavailable) -- the only way a simulate whose gaps degrade
+      rather than refuse is legible before the call. Naming every asker rather than one follows the
+      authoritative set itself: domain/knowledge/case-input-requirement holds every currently-registered
+      capability asking for the attribute at cardinality 1..*, and a-case-versions-input-requirements-are-derived
+      derives that plurality deliberately, so picking one among several would be a silent,
+      sometimes-wrong reduction of a set the derivation keeps whole. Stated on this rule rather than a
+      new node because this rule is already where every fact about what the composing interface
+      presents per requirement lives, and the sibling a-composed-subjects-interface-discloses-a-malformed-capability
+      shows the same interface disclosing a capability's identity to the same person for the same
+      reason. No field is added to domain/knowledge/case-input-requirement: the standing decision at
+      that location's attributes keeps name, version, connector and concept as the referenced
+      capability's own facts, and this statement reaches them by that reference, restating none --
+      unlike the input schema's free-text hint, which that same entry placed outside the specification
+      as presentation guidance and which this decision does not bring back in.
+  - location: rules/investigation/a-pending-simulation-call-is-not-dispatched-again.md
+    field: statement
+    unstated: >-
+      No node states whether the interface assembling a subject may have more than one simulate-case
+      (or more than one simulate-hypothesis) call outstanding for the same subject at once, nor what a
+      second dispatch does while the first has not yet ended.
+    decided: >-
+      A new policy: while a simulate-case or simulate-hypothesis call the interface dispatched for a
+      subject has not yet ended, a further dispatch of that same operation for that subject issues no
+      request at all and leaves the pending run untouched; the guard is keyed by the operation and the
+      subject together, and the operation is dispatchable again the moment the pending call ends, in a
+      returned result or in a refusal alike.
+    why: >-
+      Blocking rather than allowing follows from what a simulation deliberately does not produce:
+      a-simulation-writes-no-investigation keeps every run out of the record, so two concurrent runs of
+      one operation over one subject are indistinguishable afterwards and whichever returns last
+      silently replaces what the curator was reading. The block is affordable because the run is a
+      bounded on-screen wait, not an open-ended job, and the operation frees the instant the pending
+      call ends -- including on a refusal, since a refusal is an ending too. It is keyed per operation
+      and per subject, rather than one lock over the whole screen, because the two operations answer
+      different questions and a pending one says nothing about a dispatch of the other, while a second
+      subject composed elsewhere is a different subject and blocks nothing.
+  - location: rules/investigation/a-simulation-carries-its-requester.md
+    field: statement
+    unstated: >-
+      Whether a simulate-case or simulate-hypothesis call carries a requester at all, where its value
+      comes from, and what happens to a call that carries none.
+    decided: >-
+      Both operations carry the requester in the call's own payload, required on each, and that is the
+      requester whose authorization scope the call's collection runs in; a call whose payload carries
+      no requester, or an empty one, is refused before any collection, taking the refusal every route
+      already gives a body failing its declared shape rather than a refusal of its own.
+    why: >-
+      Decided the same way this specification already decided the identical question for diagnose --
+      the caller supplies the requester directly in the call's own payload with no further resolution
+      inside the domain. Required rather than optional because a simulation runs the very same
+      collection a diagnosis runs, and collection-runs-in-the-requester-scope forbids the only fallback
+      an absent requester leaves, the service's own scope. The payload is the only available home: the
+      simulation writes no investigation, so no record can hold it and no read can recover it. No new
+      status or error name is stated, because a missing required body field is a shape failure the
+      standing validation constraint already answers for every route.
+  - location: rules/investigation/a-composed-subject-presents-every-case-input-requirement.md
+    field: statement
+    unstated: >-
+      What the interface assembling a subject before a diagnose, simulate-case, or
+      simulate-hypothesis call presents where the pinned case version's own case-input-requirements
+      read names no requirement at all -- whether that emptiness is stated to the person composing
+      the subject explicitly, or left as an unexplained absence of inputs. The rule's own statement
+      is quantified per requirement and so says nothing when there is none, and the sibling
+      disclosure a-composed-subjects-interface-discloses-a-malformed-capability reaches only the
+      subset of empty sets caused by a malformed input schema.
+    decided: >-
+      Where the read names no requirement at all, the interface states that emptiness explicitly to
+      the person composing the subject -- that the pinned case version's own case-input-requirements
+      name no attribute -- rather than leaving them an unexplained absence of inputs. Nothing else
+      changes: no call is blocked or refused for it, and no field is added to any element.
+    why: >-
+      An empty set is reachable while every capability involved is well-formed and every concept
+      singly answered -- a-capability-input-schema-holds-a-well-formed-object calls an empty
+      properties object a valid declaration for a capability whose connector reads nothing from the
+      subject, and a-case-versions-input-requirements-are-derived contributes nothing for an
+      unanswered or multiply-answered concept -- so the malformed-capability disclosure covers only
+      part of it and the remainder would reach the composer as silence. A bare absence of inputs is
+      indistinguishable from a failed read, a mispinned version or an unfinished load, and the
+      composer must still assemble a subject carrying at least one attribute-value
+      (a-subject-carries-at-least-one-attribute), so the emptiness is exactly the fact they need in
+      order to know that reaching for a glossary attribute themselves is the whole of what is left
+      to do. This follows the specification's own precedent in the same direction twice:
+      scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly decides the structurally
+      identical question -- a real, reachable zero over a derived or stored set is stated rather
+      than answered as an unexplained empty listing -- and differs only in governing a read's own
+      answer where this governs what the composing interface presents;
+      rules/knowledge/a-release-refusal-with-no-named-violation-says-so is on point for its
+      principle rather than its shape, since it concerns a refusal and nothing here refuses, but its
+      reasoning that what someone is told at an outcome is the business's own decision, and that an
+      unexplained emptiness leaves the reader unable to tell absence from breakage, transfers
+      unchanged.
 ---
