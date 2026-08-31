@@ -1,0 +1,58 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-configuration-write-upsert-hotfix",
+      "kind": "epic",
+      "file": "epic/connector-configuration-write-upsert-hotfix.md",
+      "title": "Connector configuration write upsert hotfix",
+      "summary": "A tarefa corretiva única que corrige o writeConnectorConfigurations do registry de connector configurations para não derrubar a tabela inteira ao salvar."
+    },
+    {
+      "id": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "task",
+      "file": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
+      "title": "writeConnectorConfigurations upserta por identidade, sem apagar a tabela inteira",
+      "summary": "Corrige RelationalConnectorConfigurationStore.writeConnectorConfigurations para não fazer DELETE sem filtro na tabela connector_configurations, permitindo salvar qualquer connector configuration sem que uma escrita concorrente ou futura apague uma identidade diferente.",
+      "epic": "connector-configuration-write-upsert-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-configuration-write-upsert-hotfix",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-write-upsert-hotfix",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-write-upsert-hotfix",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}
