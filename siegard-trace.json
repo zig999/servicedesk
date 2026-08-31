@@ -1099,8 +1099,12 @@
     },
     {
       "node": "contracts/knowledge/case-input-requirements",
-      "digest": "sha256:8a0c1ffc9f06cbe9dc73c6657f21226dcdec5e2a7906630845d81e8a66b9eb31",
+      "digest": "sha256:315baffe2bdf9a854136901495c2491200eae686fed0b973d2e025e5df904c0c",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-input-requirements.ts",
+          "digest": "sha256:b61918c6113e2e9a5bfbaf955d5b0b310a0860bdd7e797255621e476952d9ddd"
+        },
         {
           "path": "src/src/case/case-input-requirements.port.ts",
           "digest": "sha256:148eb1f8059b90e6faba471ee2da2c4c0b8e8abf7874f3a6e49aabd7374afb45"
@@ -3269,8 +3273,12 @@
     },
     {
       "node": "domain/knowledge/case-input-requirement",
-      "digest": "sha256:eb26a59c9f66f7c4982919e2d042a1049c7e46096bf71830abd77f22bf9f3989",
+      "digest": "sha256:e9c7db28cb1575c1318d9e5f0a27f3415cf034f5805305f0657d597baea11ff4",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-case-input-requirements.ts",
+          "digest": "sha256:b61918c6113e2e9a5bfbaf955d5b0b310a0860bdd7e797255621e476952d9ddd"
+        },
         {
           "path": "src/src/case/case-input-requirements.ts",
           "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"

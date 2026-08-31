@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/read-case-input-requirements-hook.md",
+      "title": "Read a case version's input requirements",
+      "summary": "A new hook, useCaseInputRequirements(slug, version), reads GET /v1/cases/{slug}/versions/{version}/input-requirements through apiFetch and returns the requirements list and the malformed-input-schema capabilities list as two separate fields, in the loading/error/refetch shape use-capabilities.ts already keeps.",
+      "task": "task/subject-input-requirements/read-case-input-requirements-hook"
+    },
+    {
+      "id": "proof/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/read-case-input-requirements-hook.md",
+      "title": "Read a case version's input requirements -- hook proof",
+      "summary": "Ten renderHook-driven tests proving all six of this task's criteria for useCaseInputRequirements(slug, version) -- the URL it reads, the requirement and bare-capability shapes it returns, the malformed-input-schema list's separation, the empty-vs-error distinction, and the loading/error/refetch shape -- plus the query-key inference the implementation recorded.",
+      "task": "task/subject-input-requirements/read-case-input-requirements-hook"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "task/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/read-case-input-requirements-hook",
+      "to": "implementation/subject-input-requirements/read-case-input-requirements-hook",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
