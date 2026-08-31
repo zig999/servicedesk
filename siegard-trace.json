@@ -1813,7 +1813,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
         },
         {
           "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
@@ -1879,7 +1879,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
         },
         {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
@@ -2187,7 +2187,7 @@
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
-          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
         },
         {
           "path": "frontend/app/src/shared/services/plain-record.ts",
@@ -2907,7 +2907,7 @@
     },
     {
       "node": "domain/investigation/subject",
-      "digest": "sha256:227b64423f511acc785d02a9f046616eeb0e996cc23ebddd255a0b4e6316be21",
+      "digest": "sha256:22c34e3f3e252b3c9d266dc680eb010353e9f56bab2053b04e1243f5d18dc3e1",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-simulation-cockpit.ts",
@@ -2919,11 +2919,11 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -2981,11 +2981,11 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
         },
         {
           "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
@@ -4433,7 +4433,7 @@
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
-          "digest": "sha256:ba81338a4464b3b31e5a3542376cc0ba7984c4f5d99a2262a4909766620eaf46"
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
         },
         {
           "path": "frontend/app/src/shared/services/connector-placeholder-token.ts",
@@ -4729,7 +4729,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
         },
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
