@@ -549,7 +549,7 @@
         },
         {
           "path": "src/src/glossary/glossary-store.port.ts",
-          "digest": "sha256:fb1e7b8d83489e95cd5d2206a6b4a0c008af5719c79b7b81941e7c294aaec9d2"
+          "digest": "sha256:df43d80ec7a892e29724540c34867787f0bee2ad5aa56a8289024c8a2f0b6939"
         },
         {
           "path": "src/src/glossary/glossary.service.ts",
@@ -573,7 +573,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:716753c25344bed090963fce4567e474312486c3788a4a88410dc0ceb32dd60c"
+          "digest": "sha256:137052a00c2df1407562f1863a85861082600ddcbebed15f6e1562f1a0a1324b"
         }
       ]
     },
@@ -1671,7 +1671,7 @@
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
-          "digest": "sha256:e9e21545d0633f59aaf015847cccafc6cf268db6778bbed7fdc7f8ac9603e5b8"
+          "digest": "sha256:137052a00c2df1407562f1863a85861082600ddcbebed15f6e1562f1a0a1324b"
         }
       ]
     },
@@ -4118,6 +4118,16 @@
         {
           "path": "frontend/app/src/routes/capability-form-fields.tsx",
           "digest": "sha256:70b8d447770f21fcf2ac3e94fde13961494c0221826e1397a064af7a8f023837"
+        }
+      ]
+    },
+    {
+      "node": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "digest": "sha256:1dbb26c9d6fd23878f2216bd94b4f8d6b224ecea04cf8fe40b7672f94993b974",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-glossary-store.repository.ts",
+          "digest": "sha256:137052a00c2df1407562f1863a85861082600ddcbebed15f6e1562f1a0a1324b"
         }
       ]
     },

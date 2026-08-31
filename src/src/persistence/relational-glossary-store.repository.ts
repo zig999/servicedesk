@@ -39,15 +39,27 @@
 // against this exact table, which this task's own investigation found to be
 // this codebase's established way to add what is missing without touching
 // what already exists. writeConcepts (task/concept-authoring/glossary-store-
-// concept-write) replaces "concepts" and "concept_accepts" whole, the same
-// delete-then-insert-all shape writeTerms already runs for a term
-// vocabulary's own single table, extended here across the two tables one
-// concept spans: concept_accepts rows are deleted first and inserted last,
-// since every concept_accepts row's own foreign key
-// (migrations/0002-glossary-vocabulary.sql) requires the concepts row it
-// names to already exist.
+// concept-write, corrected by task/glossary-concept-write-upsert-hotfix/
+// write-concepts-upserts-by-identity) no longer deletes either table whole:
+// a delete-then-insert-all "concepts" replace failed the moment any row of
+// it — not only the one row a given call meant to replace — was
+// permanently referenced by capabilities.concept,
+// investigation_evidence.concept or investigation_evaluation_citations.concept
+// (migrations/0007-capability-concept.sql, migrations/0005-investigation.sql),
+// because the delete cleared every row before any of them was reinserted.
+// writeConcepts now upserts each given concept into "concepts" by its own
+// name (the table's own primary key) instead: an ordinary insert where that
+// name is new, an in-place update of ttl and description where it already
+// exists — so a row this call's given set does not name is never a
+// DELETE's target, and a row it does name that is itself referenced that
+// way is never dropped even for the instant between a delete and its own
+// reinsert. concept_accepts is then reconciled per given concept, scoped by
+// that concept's own name (concept_name = the given name): its own rows are
+// deleted and its own accepted subject types reinserted, one given concept
+// at a time, never touching a different concept's own rows and never the
+// whole table.
 //
-// readWholeConcepts and insertConceptStatement (task/concept-description/
+// readWholeConcepts and upsertConceptStatement (task/concept-description/
 // concept-persistence-carries-description) also carry "concepts".description
 // (migrations/0012-glossary-concept-description.sql), read and written
 // exactly as the column holds it: NOT NULL DEFAULT '', so a concept row
@@ -122,9 +134,12 @@ const CONCEPT_ACCEPTS_TABLE = 'concept_accepts';
  * (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case);
  * every concept lives in one row of "concepts" plus one row of
  * "concept_accepts" per subject type it accepts, read fresh the same way
- * (criterion 2); writeConcepts replaces every concept the two tables
- * together hold with exactly the given set, inside one transaction
- * (task/concept-authoring/glossary-store-concept-write's own criteria).
+ * (criterion 2); writeConcepts upserts each given concept into "concepts"
+ * by its own name and reconciles its own concept_accepts rows scoped to
+ * that same name, inside one transaction, never deleting a row this call's
+ * given set does not name
+ * (task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity's
+ * own criteria).
  */
 export class RelationalGlossaryStore implements IGlossaryStore {
   public constructor(private readonly connection: IConnectableQueryable) {}
@@ -173,24 +188,35 @@ export class RelationalGlossaryStore implements IGlossaryStore {
   }
 
   /**
-   * Replaces every concept "concepts" and "concept_accepts" together hold
-   * with exactly the given set, as one unit of work: the existing rows are
-   * gone and the new ones are all present, or neither happened (EDG-05, the
-   * same all-or-nothing unit writeTerms already runs for a single table).
-   * concept_accepts is cleared before concepts, and concepts is repopulated
-   * before concept_accepts, since a concept_accepts row's own foreign key
-   * requires the concepts row it names to already exist
-   * (migrations/0002-glossary-vocabulary.sql). A given concept's name that
-   * the prior holding also carried is not a second entry afterward: the
-   * whole prior content of both tables is gone before any of the given set
-   * is inserted (criterion 1, criterion 2, criterion 3).
+   * Upserts each given concept into "concepts" by its own name — the
+   * table's own primary key: a name none of the given concepts holds
+   * becomes a new row, and a name one already carries is replaced in
+   * place, its ttl and description overwritten with the given values,
+   * never dropped and recreated (criterion 1, criterion 2, criterion 3).
+   * "concepts" is never the target of a DELETE here (criterion 7), so a row
+   * this call's given set does not name — including one permanently
+   * referenced by capabilities.concept, investigation_evidence.concept or
+   * investigation_evaluation_citations.concept
+   * (migrations/0007-capability-concept.sql,
+   * migrations/0005-investigation.sql) — is never at risk of that foreign
+   * key breaking merely because a different concept was written in the
+   * same call (criterion 4), and a concept whose own row is referenced that
+   * way keeps answering every one of those references throughout, since it
+   * is updated in place rather than deleted at all. Each given concept's
+   * own concept_accepts rows are then reconciled scoped to that concept's
+   * own name — its rows deleted and its given accepts reinserted — never
+   * touching a different concept's own rows (criterion 5), inside the same
+   * transaction as every concept's own upsert, so a failure partway through
+   * never leaves "concepts" and "concept_accepts" answering for two
+   * different sets of names (EDG-05). "concepts".name stays the table's
+   * primary key throughout, so no name is ever held in two rows at once
+   * (criterion 8).
    */
   public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
     await runInTransaction(this.connection, raiseWriteFailure, async (tx) => {
-      await runStatement(tx, { text: `DELETE FROM ${CONCEPT_ACCEPTS_TABLE}` }, raiseWriteFailure);
-      await runStatement(tx, { text: `DELETE FROM ${CONCEPTS_TABLE}` }, raiseWriteFailure);
       for (const concept of concepts) {
-        await runStatement(tx, insertConceptStatement(concept), raiseWriteFailure);
+        await runStatement(tx, upsertConceptStatement(concept), raiseWriteFailure);
+        await runStatement(tx, deleteConceptAcceptsStatement(concept.name), raiseWriteFailure);
         for (const subjectType of concept.accepts) {
           await runStatement(tx, insertConceptAcceptStatement(concept.name, subjectType), raiseWriteFailure);
         }
@@ -209,15 +235,39 @@ function insertMissingTermStatement(table: string, term: GlossaryTerm): IStateme
   return { text: `INSERT INTO ${table} (name) VALUES ($1) ON CONFLICT DO NOTHING`, params: [term.name] };
 }
 
-/** The one INSERT each given concept runs through writeConcepts' own whole replace, carrying every field the port method declares (criterion 3): its name, its ttl and its description. */
-function insertConceptStatement(concept: Concept): IStatement {
+/**
+ * The one upsert-by-identity statement writeConcepts runs per given
+ * concept, carrying every field the port method declares (criterion 1,
+ * criterion 2, criterion 3): an ordinary insert of name, ttl and
+ * description where "concepts" does not yet hold that name, an in-place
+ * UPDATE of ttl and description where it already does — never a DELETE, so
+ * a row this call's given set does not name is never touched (criterion 4,
+ * criterion 7) and a row it does name that some other table permanently
+ * references keeps answering that reference throughout (criterion 3).
+ * "concepts".name is that table's own primary key, so ON CONFLICT with no
+ * target list resolves against it unambiguously, the same convention
+ * insertMissingTermStatement already relies on for a term vocabulary's own
+ * primary key.
+ */
+function upsertConceptStatement(concept: Concept): IStatement {
   return {
-    text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3)`,
+    text: `INSERT INTO ${CONCEPTS_TABLE} (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description`,
     params: [concept.name, concept.ttl, concept.description],
   };
 }
 
-/** The one INSERT each subject type a given concept accepts runs through writeConcepts' own whole replace, carrying the "accepts" field the port method declares (criterion 3). */
+/**
+ * The one DELETE writeConcepts runs per given concept, scoped to that
+ * concept's own name (concept_name = $1): clears exactly its own
+ * concept_accepts rows before insertConceptAcceptStatement reinserts its
+ * given accepts, and never a different concept's own rows (criterion 5)
+ * nor the whole table (criterion 7).
+ */
+function deleteConceptAcceptsStatement(conceptName: string): IStatement {
+  return { text: `DELETE FROM ${CONCEPT_ACCEPTS_TABLE} WHERE concept_name = $1`, params: [conceptName] };
+}
+
+/** The one INSERT each subject type a given concept accepts runs through writeConcepts' own per-concept reconciliation, carrying the "accepts" field the port method declares (criterion 3). */
 function insertConceptAcceptStatement(conceptName: string, subjectTypeName: string): IStatement {
   return {
     text: `INSERT INTO ${CONCEPT_ACCEPTS_TABLE} (concept_name, subject_type_name) VALUES ($1, $2)`,

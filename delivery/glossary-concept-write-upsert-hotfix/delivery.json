@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "implementation",
+      "file": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity.md",
+      "title": "writeConcepts upserts concepts by identity instead of deleting the whole table",
+      "summary": "RelationalGlossaryStore.writeConcepts now upserts each given concept into \"concepts\" by its own name and reconciles \"concept_accepts\" scoped per concept, instead of deleting both tables whole, so PUT /v1/glossary/concepts/:name no longer 500s when some other concept row is permanently referenced by capabilities, investigation_evidence or investigation_evaluation_citations.",
+      "task": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity"
+    },
+    {
+      "id": "proof/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "proof",
+      "file": "proof/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity.md",
+      "title": "Proof for write-concepts-upserts-by-identity",
+      "summary": "Tests proving RelationalGlossaryStore.writeConcepts now upserts by identity instead of deleting concepts/concept_accepts whole, at both the statement-mechanics level (stand-in connection) and the real-foreign-key level (real database), plus the wire-level no-description refusal on both the create and replace paths.",
+      "task": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "domain/glossary/concept",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "implementation/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

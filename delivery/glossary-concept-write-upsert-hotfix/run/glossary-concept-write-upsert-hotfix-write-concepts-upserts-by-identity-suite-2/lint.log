@@ -1,0 +1,17 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/glossary-concept-write-upsert-hotfix/src/src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+  112:5  error  'subjectTypesWrittenByThisTest' is never reassigned. Use 'const' instead       prefer-const
+  113:5  error  'subjectAttributesWrittenByThisTest' is never reassigned. Use 'const' instead  prefer-const
+  114:5  error  'outcomesWrittenByThisTest' is never reassigned. Use 'const' instead           prefer-const
+  115:5  error  'actionsWrittenByThisTest' is never reassigned. Use 'const' instead            prefer-const
+  116:5  error  'recipientsWrittenByThisTest' is never reassigned. Use 'const' instead         prefer-const
+  117:5  error  'conceptsWrittenByThisTest' is never reassigned. Use 'const' instead           prefer-const
+  118:5  error  'capabilitiesWrittenByThisTest' is never reassigned. Use 'const' instead       prefer-const
+
+✖ 7 problems (7 errors, 0 warnings)
+  7 errors and 0 warnings potentially fixable with the `--fix` option.
+

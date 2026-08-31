@@ -1,0 +1,11 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/.claude/worktrees/glossary-concept-write-upsert-hotfix/src/src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts
+  129:1  error  Async function 'cleanupWrittenRows' has too many lines (33). Maximum allowed is 30  max-lines-per-function
+  453:3  error  Async arrow function has too many lines (39). Maximum allowed is 30                 max-lines-per-function
+
+✖ 2 problems (2 errors, 0 warnings)
+
