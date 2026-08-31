@@ -523,7 +523,7 @@
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
-          "digest": "sha256:95e94695c135f381c55192f058535747b2a06902bc6c9e30924d5a5879a094ce"
+          "digest": "sha256:89ebe71c8978658142cd95fb35c92eb5eec04b2511c60660de5292811293bbb8"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -561,7 +561,7 @@
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
-          "digest": "sha256:2f4c4a06c9b9963aa38235bf6e6953a6b5cafcd7f26e640c79c2cd8d52ea50c2"
+          "digest": "sha256:6fb0735f1e272e76820e541bb0969345bd375de4c45c4b0a7062856307255d56"
         },
         {
           "path": "src/src/http/register-concept.controller.ts",
