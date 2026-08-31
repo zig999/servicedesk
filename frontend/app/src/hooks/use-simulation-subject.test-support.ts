@@ -3,7 +3,10 @@ import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { SimulationSubjectSource } from "./use-simulation-subject";
 
-// Shared fixtures and helpers for use-simulation-subject.spec.ts, mirroring
+// Shared fixtures and helpers for use-simulation-subject.spec.ts and its sibling
+// use-simulation-subject-malformed-capabilities.spec.ts (split out of the former to stay under
+// this project's own max-lines rule -- that file's own header comment carries the full rationale
+// and TST-04 divergence), mirroring
 // use-capability-detail-view.test-support.ts's own established pattern: a URL-keyed fetch stub
 // over real Response objects (TST-03 -- only the network boundary this hook composes through,
 // via useCaseInputRequirements/useCapabilities, is a stand-in) and a QueryClient built once per

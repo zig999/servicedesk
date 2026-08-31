@@ -10,6 +10,14 @@
       "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
     },
     {
+      "id": "implementation/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/expose-malformed-capability-identities.md",
+      "title": "Carry malformed-input-schema capability identities onto the simulation subject state",
+      "summary": "useSimulationSubject's returned SimulationSubjectState now exposes capabilitiesWithMalformedInputSchema, passed through unchanged from useCaseInputRequirements alongside requiredFields.",
+      "task": "task/subject-input-requirements/expose-malformed-capability-identities"
+    },
+    {
       "id": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
       "kind": "implementation",
       "file": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing.md",
@@ -32,6 +40,14 @@
       "title": "Proof for deriving the Subject region's fields from case-input-requirements",
       "summary": "deriveSubjectFields and useSimulationSubject are proved directly against the pure derivation, the pinned slug/version threading, and the two composed registry reads, with subjectPlaceholderNamesInConfiguration's own pre-existing tests confirmed unchanged.",
       "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
+    },
+    {
+      "id": "proof/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/expose-malformed-capability-identities.md",
+      "title": "Proof for exposing malformed-capability-identities on the simulation subject state",
+      "summary": "Renders useSimulationSubject directly through renderHook against a stubbed global fetch, proving all three criteria and the UNDERDETERMINED note over deriving the list from the read alone, split into a sibling .spec.ts file to stay under this project's own max-lines rule.",
+      "task": "task/subject-input-requirements/expose-malformed-capability-identities"
     },
     {
       "id": "proof/subject-input-requirements/present-each-requirement-with-its-required-standing",
@@ -88,6 +104,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "task/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
       "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
       "kind": "encodes",
@@ -132,6 +166,12 @@
     {
       "from": "proof/subject-input-requirements/derive-subject-fields-from-input-requirements",
       "to": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/expose-malformed-capability-identities",
+      "to": "implementation/subject-input-requirements/expose-malformed-capability-identities",
       "kind": "proves",
       "at": "the path"
     },

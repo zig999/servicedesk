@@ -1,0 +1,8 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/routes/case-simulation-subject-panel.test-support.ts(123,3): error TS2322: Type '{ requiredFields: readonly SimulationRequiredField[]; capabilitiesWithMalformedInputSchema?: readonly CapabilityReference[] | undefined; requester: string; onRequesterChange: ((value: string) => void) | Mock<...>; ... 7 more ...; isRegistriesError: boolean; }' is not assignable to type 'SimulationSubjectState'.
+  Types of property 'capabilitiesWithMalformedInputSchema' are incompatible.
+    Type 'readonly CapabilityReference[] | undefined' is not assignable to type 'readonly CapabilityReference[]'.
+      Type 'undefined' is not assignable to type 'readonly CapabilityReference[]'.

@@ -1,0 +1,10 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/hooks/use-simulation-subject.spec.ts
+  377:1  error  File has too many lines (365). Maximum allowed is 300  max-lines
+
+✖ 1 problem (1 error, 0 warnings)
+

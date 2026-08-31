@@ -26,6 +26,13 @@ import {
 // use-capability-detail-view.spec.ts's own established convention -- renderHook, real Response
 // objects through a stubbed global fetch, assertions on nothing but what this hook itself
 // returns (TST-01).
+//
+// task/subject-input-requirements/expose-malformed-capability-identities's own three criteria and
+// its UNDERDETERMINED note are proved in the sibling file
+// use-simulation-subject-malformed-capabilities.spec.ts, split out of this file to stay under
+// this project's own max-lines rule -- mirrors use-capability-detail.spec.ts's own established
+// multi-file split for the same reason (its own header comment cites the same rule); TST-04's
+// divergence is disclosed in this proof's own record.
 
 afterEach(() => {
   vi.unstubAllGlobals();

@@ -1107,7 +1107,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:107acd0a0d92921f8bba8abee8b0dde05127c5cc40f7af37973caeb4da7ae2e2"
         },
         {
           "path": "src/src/case/case-input-requirements.port.ts",
@@ -3285,7 +3285,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:107acd0a0d92921f8bba8abee8b0dde05127c5cc40f7af37973caeb4da7ae2e2"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",

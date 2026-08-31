@@ -1,0 +1,6 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-simulation-subject.spec.ts(6,3): error TS6133: 'CAPABILITY' is declared but its value is never read.
+src/hooks/use-simulation-subject.spec.ts(7,3): error TS6133: 'REQUIRED_FIELD_RESPONSE' is declared but its value is never read.

@@ -122,6 +122,11 @@ export function buildRequiredField(overrides: Partial<SimulationRequiredField> =
 export function baseState(overrides: Partial<SimulationSubjectState> = {}): SimulationSubjectState {
   return {
     requiredFields: [buildRequiredField()],
+    // task/subject-input-requirements/expose-malformed-capability-identities: disclosed,
+    // out-of-scope fallout fix -- SimulationSubjectState gained this required field and this
+    // shared fixture builder needed a default so the whole project's typecheck passes again;
+    // not new test-writing judgment, no test in this suite asserts on this value.
+    capabilitiesWithMalformedInputSchema: [],
     requester: "",
     onRequesterChange: vi.fn(),
     addedAttributes: [],

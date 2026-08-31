@@ -60,11 +60,28 @@
  * REMAINDER); it belongs to the sibling task that gates the simulate-case and
  * simulate-hypothesis dispatch on the composed fields, which this hook's own `required` flag
  * on each field (carried through unchanged, criterion 2) is what that task reads.
+ *
+ * task/subject-input-requirements/expose-malformed-capability-identities: apart from
+ * `requiredFields`, this hook's own returned state also carries
+ * `capabilitiesWithMalformedInputSchema` -- useCaseInputRequirements(slug, version)'s own
+ * field of that same name, passed straight through unchanged (criterion 1; this task's own
+ * UNDERDETERMINED note against re-deriving it from each resolved capability's own stored
+ * input_schema client-side). Sits beside `requiredFields` on the same state, never folded into
+ * it, since deriveSubjectFields only ever resolves a requirement's own asking-capability
+ * references and a malformed capability is referenced by none (criterion 2; domain/knowledge/
+ * case-input-requirement, rules/knowledge/a-case-versions-input-requirements-are-derived) --
+ * so no filtering of `requiredFields` or of any field's own `capabilities` is needed here, only
+ * a straight pass-through. This task carries the list on state only, showing it to nobody (this
+ * task's own REMAINDER note); the sibling task disclose-malformed-capabilities-to-the-curator
+ * renders it.
  */
 
 import { useMemo, useRef, useState } from "react";
 import { useCapabilities } from "./use-capabilities";
-import { useCaseInputRequirements } from "./use-case-input-requirements";
+import {
+  useCaseInputRequirements,
+  type CapabilityReference,
+} from "./use-case-input-requirements";
 import type { SubjectAttributeRow, SubjectAttributeValue } from "./use-test-connector-panel";
 import {
   deriveSubjectFields,
@@ -100,6 +117,24 @@ export type SimulationSubject = {
 
 export type SimulationSubjectState = {
   readonly requiredFields: readonly SimulationRequiredField[];
+  /**
+   * task/subject-input-requirements/expose-malformed-capability-identities: apart from
+   * `requiredFields`, every capability the case-input-requirements read itself names as
+   * currently holding no well-formed input schema (contracts/knowledge/case-input-requirements,
+   * domain/knowledge/case-input-requirement) -- carried straight through from
+   * useCaseInputRequirements(slug, version)'s own `capabilitiesWithMalformedInputSchema`,
+   * unchanged and by bare identity alone, never re-derived here by inspecting each resolved
+   * capability's own stored input_schema client-side (this task's own UNDERDETERMINED note).
+   * Such a capability is referenced by no requirement (rules/knowledge/a-case-versions-input-
+   * requirements-are-derived), so it can never appear inside `requiredFields` or any one
+   * field's own `capabilities` -- deriveSubjectFields only ever resolves a requirement's own
+   * asking-capability references, which never include one of these. A read naming none here
+   * leaves this array empty, never undefined -- useCaseInputRequirements's own `?? []` already
+   * guarantees that upstream, and this field passes that same array through as-is.
+   * This task carries the list on state only; a sibling task
+   * (disclose-malformed-capabilities-to-the-curator) renders it.
+   */
+  readonly capabilitiesWithMalformedInputSchema: readonly CapabilityReference[];
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
   readonly addedAttributes: readonly SubjectAttributeRow[];
@@ -142,6 +177,7 @@ export function useSimulationSubject(
 ): SimulationSubjectState {
   const {
     requirements,
+    capabilitiesWithMalformedInputSchema,
     isLoading: isLoadingCaseInputRequirements,
     isError: isCaseInputRequirementsError,
   } = useCaseInputRequirements(slug, version);
@@ -188,6 +224,7 @@ export function useSimulationSubject(
 
   return {
     requiredFields,
+    capabilitiesWithMalformedInputSchema,
     requester,
     onRequesterChange: setRequester,
     addedAttributes,
