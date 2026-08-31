@@ -161,11 +161,16 @@ export function useCaseSimulationCockpit(
 ): CaseSimulationCockpitState {
   const queryClient = useQueryClient();
 
+  // task/subject-input-requirements/derive-subject-fields-from-input-requirements:
+  // useSimulationSubject now derives its field set from the pinned case version's own
+  // case-input-requirements read rather than from `record.manifest`, so `slug`/`version` --
+  // this function's own parameters, already threaded the same way into
+  // useSimulateHypothesis(slug, version) below -- are threaded into it too, and
+  // SimulationSubjectSource no longer carries a `manifest` field for it to read.
   const subjectSource: SimulationSubjectSource = {
     subject: record.subject,
-    manifest: record.manifest,
   };
-  const subjectState = useSimulationSubject(subjectSource);
+  const subjectState = useSimulationSubject(subjectSource, slug, version);
   const caseSim = useSimulateCase();
   const hypSim = useSimulateHypothesis(slug, version);
   const history = useCaseSimulationHistory();

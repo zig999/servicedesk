@@ -9,13 +9,18 @@ import {
 } from "./case-simulation-subject-panel.test-support";
 
 // Proof for task/subject-derivation/subject-panel's own criterion 6 (the "view subject JSON"
-// control) and the disclosed inferences over an empty required-fields list (API-04) and the
-// loading/error states for the two direct glossary reads and for the composed hook's own
-// passed-through isLoadingRegistries/isRegistriesError (EDG-01/EDG-02), mounted directly against
-// CaseSimulationSubjectPanel. Criteria 1-4 are proven in case-simulation-subject-panel.spec.ts
-// and criterion 5 in case-simulation-subject-panel-attributes.spec.ts. Shared fixtures and the
-// render helper live in case-simulation-subject-panel.test-support.ts, whose own header comment
-// carries this proof's fixture and network-stubbing conventions.
+// control) and the disclosed inferences over the loading/error states for the two direct
+// glossary reads and for the composed hook's own passed-through
+// isLoadingRegistries/isRegistriesError (EDG-01/EDG-02), plus
+// task/subject-input-requirements/present-each-requirement-with-its-required-standing's own
+// criterion 5 (a pinned version whose read names no requirement at all renders an explicit empty
+// state) and its own UNDERDETERMINED note over that empty state's own wording, mounted directly
+// against CaseSimulationSubjectPanel. The requirement-rendering block itself (required standing,
+// every asking capability, its own input-schema hint) is proven in
+// case-simulation-subject-panel.spec.ts, and the add-attribute control in
+// case-simulation-subject-panel-attributes.spec.ts. Shared fixtures and the render helper live in
+// case-simulation-subject-panel.test-support.ts, whose own header comment carries this proof's
+// fixture and network-stubbing conventions.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -43,11 +48,13 @@ describe("CaseSimulationSubjectPanel -- the view subject JSON control (criterion
   });
 });
 
-describe("CaseSimulationSubjectPanel -- an empty required-fields list renders its own explicit message (disclosed inference, API-04)", () => {
-  it("shows 'No connector requires a subject field for this version.' rather than an empty list", async () => {
+describe("CaseSimulationSubjectPanel -- a pinned version whose read names no requirement at all renders an explicit empty state rather than a bare empty list (criterion 5, UNDERDETERMINED, from the specification -- the disclosure must state that the pinned case version's own case-input-requirements name no attribute, never a generic contentless placeholder)", () => {
+  it("states, in the rule's own terms, that the pinned case version's own case-input-requirements name no attribute", async () => {
     await renderPanel(baseState({ requiredFields: [] }));
 
-    expect(screen.getByText("No connector requires a subject field for this version.")).toBeTruthy();
+    expect(
+      screen.getByText("The pinned case version's own case-input-requirements name no attribute."),
+    ).toBeTruthy();
     expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 });
@@ -133,6 +140,8 @@ describe("CaseSimulationSubjectPanel -- loading and error states passed through 
     );
 
     expect(screen.queryByText("account-id")).toBeNull();
-    expect(screen.queryByText("No connector requires a subject field for this version.")).toBeNull();
+    expect(
+      screen.queryByText("The pinned case version's own case-input-requirements name no attribute."),
+    ).toBeNull();
   });
 });

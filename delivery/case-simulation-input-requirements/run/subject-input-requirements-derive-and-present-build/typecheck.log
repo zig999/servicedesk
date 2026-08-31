@@ -1,0 +1,28 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/hooks/use-simulation-subject.spec.ts(32,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(62,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(88,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(109,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(123,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(137,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(154,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(173,54): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(176,55): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(212,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(233,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.spec.ts(244,41): error TS2554: Expected 3 arguments, but got 1.
+src/hooks/use-simulation-subject.test-support.ts(48,3): error TS2353: Object literal may only specify known properties, and 'manifest' does not exist in type 'SimulationSubjectSource'.
+src/hooks/use-simulation-subject.test-support.ts(54,3): error TS2353: Object literal may only specify known properties, and 'manifest' does not exist in type 'SimulationSubjectSource'.
+src/routes/case-simulation-subject-panel.spec.ts(92,13): error TS2353: Object literal may only specify known properties, and 'connector' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(108,13): error TS2353: Object literal may only specify known properties, and 'connector' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(113,13): error TS2353: Object literal may only specify known properties, and 'connector' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(133,13): error TS2353: Object literal may only specify known properties, and 'inputSchemaHint' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(146,62): error TS2353: Object literal may only specify known properties, and 'inputSchemaHint' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(147,65): error TS2353: Object literal may only specify known properties, and 'inputSchemaHint' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.spec.ts(166,83): error TS2353: Object literal may only specify known properties, and 'inputSchemaHint' does not exist in type 'Partial<SimulationRequiredField>'.
+src/routes/case-simulation-subject-panel.test-support.ts(91,5): error TS2353: Object literal may only specify known properties, and 'connector' does not exist in type 'SimulationRequiredField'.
+src/services/simulation-subject-derivation.spec.ts(3,3): error TS2305: Module '"./simulation-subject-derivation"' has no exported member 'collectionPlanFromManifest'.
+src/services/simulation-subject-derivation.spec.ts(4,3): error TS2305: Module '"./simulation-subject-derivation"' has no exported member 'deriveRequiredFields'.

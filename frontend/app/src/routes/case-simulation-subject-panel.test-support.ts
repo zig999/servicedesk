@@ -4,20 +4,30 @@ import { render, screen, waitForElementToBeRemoved } from "@testing-library/reac
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CaseSimulationSubjectPanel } from "./case-simulation-subject-panel";
 import type { SimulationRequiredField, SimulationSubjectState } from "../hooks/use-simulation-subject";
+import type { SimulationSubjectFieldCapability } from "../services/simulation-subject-derivation";
 
-// Shared fixtures and render helper for task/subject-derivation/subject-panel's own proof,
-// split across case-simulation-subject-panel.spec.ts (criteria 1-4: subject type, requester,
-// required fields and their input_schema hint), case-simulation-subject-panel-attributes.spec.ts
-// (criterion 5, the add-attribute control) and case-simulation-subject-panel-json-view.spec.ts
-// (criterion 6 and the loading/error/empty-list inferences) -- mirroring
+// Shared fixtures and render helper for the Subject panel's proof, split across
+// case-simulation-subject-panel.spec.ts (the subject type, the requester, and the
+// requirement-rendering block: required standing and every asking capability's own
+// name/version/connector plus its own input-schema hint --
+// task/subject-input-requirements/present-each-requirement-with-its-required-standing),
+// case-simulation-subject-panel-attributes.spec.ts (the add-attribute control) and
+// case-simulation-subject-panel-json-view.spec.ts (the view-subject-JSON control, the
+// explicit empty-requirements state, and the loading/error states) -- mirroring
 // use-simulate-case.test-support.ts's own established one-support-file-per-unit pattern.
 //
-// Every fixture subject built below carries at least one attribute-value: this task's own
-// Notes carry an UNDERDETERMINED entry over rules/investigation/a-subject-carries-at-least-one-
-// attribute, which forbids an empty subject even though nothing in these six criteria enforces
-// it here -- so no test built on these fixtures renders or asserts a zero-attribute subject as
-// an accepted state, that rule being enforced elsewhere (use-simulation-subject-hook's own
-// readiness gate).
+// buildRequiredField/buildCapability build the current SimulationRequiredField shape (an
+// attribute, its required flag, and an array of every currently-resolved asking
+// capability -- each its own name/version/connector plus a free-text input-schema hint),
+// which superseded the retired singular connector/capability/inputSchemaHint shape
+// (task/subject-input-requirements/derive-subject-fields-from-input-requirements).
+//
+// Every fixture subject built below carries at least one attribute-value: a prior task's
+// own Notes carry an UNDERDETERMINED entry over rules/investigation/a-subject-carries-at-
+// least-one-attribute, which forbids an empty subject even though nothing in this task's
+// own criteria enforces it here -- so no test built on these fixtures renders or asserts a
+// zero-attribute subject as an accepted state, that rule being enforced elsewhere
+// (use-simulation-subject-hook's own readiness gate).
 //
 // Two live network reads (useGlossaryVocabularyOptions for "subject-type" and
 // "subject-attribute") back the Type field and the add-attribute row's own Attribute field, so
@@ -85,12 +95,24 @@ export async function renderPanel(
   return { fetchMock };
 }
 
+/** One asking capability, as the current DerivedSubjectField/SimulationSubjectFieldCapability shape carries it: its own name, version and connector, plus its own free-text input-schema hint (empty where none). */
+export function buildCapability(
+  overrides: Partial<SimulationSubjectFieldCapability> = {},
+): SimulationSubjectFieldCapability {
+  return {
+    name: "check-balance",
+    version: "1.0.0",
+    connector: "core-banking-connector",
+    inputSchemaHint: "",
+    ...overrides,
+  };
+}
+
 export function buildRequiredField(overrides: Partial<SimulationRequiredField> = {}): SimulationRequiredField {
   return {
     attribute: "account-id",
-    connector: "core-banking-connector",
-    capability: { name: "check-balance", version: "1.0.0" },
-    inputSchemaHint: "",
+    required: true,
+    capabilities: [buildCapability()],
     value: "12345",
     onChange: vi.fn(),
     ...overrides,

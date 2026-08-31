@@ -1106,6 +1106,10 @@
           "digest": "sha256:b61918c6113e2e9a5bfbaf955d5b0b310a0860bdd7e797255621e476952d9ddd"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+        },
+        {
           "path": "src/src/case/case-input-requirements.port.ts",
           "digest": "sha256:148eb1f8059b90e6faba471ee2da2c4c0b8e8abf7874f3a6e49aabd7374afb45"
         },
@@ -1977,7 +1981,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -1989,7 +1993,7 @@
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
-          "digest": "sha256:15ace4d15f200d2ddbae39ee097880702f8de744f4aef66cc340b11c43d47b09"
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
         },
         {
           "path": "src/migrations/0003-capability-registry.sql",
@@ -3280,6 +3284,18 @@
           "digest": "sha256:b61918c6113e2e9a5bfbaf955d5b0b310a0860bdd7e797255621e476952d9ddd"
         },
         {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+        },
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
+        },
+        {
           "path": "src/src/case/case-input-requirements.ts",
           "digest": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c"
         },
@@ -4530,6 +4546,24 @@
         {
           "path": "src/src/investigation/judgment-stage.ts",
           "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "digest": "sha256:cd83cb8a284ebd597485b0c3450a6d877a2b50c9ec78770ec3179a138e6b2b1f",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+        },
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+        },
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
         }
       ]
     },
@@ -6006,6 +6040,20 @@
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table.tsx",
           "digest": "sha256:b0dbbf336f3ffdd73e8e76ade4c75cc0de8307825aa584a9a6062a63bb221f18"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute",
+      "digest": "sha256:b09c602eefa0d1907eb828fb1c5721142088e8a118ff4e997a798f6df5db400c",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+        },
+        {
+          "path": "frontend/app/src/services/simulation-subject-derivation.ts",
+          "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
         }
       ]
     },

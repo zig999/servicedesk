@@ -29,6 +29,27 @@ export const CAPABILITIES_PATH = "/v1/capabilities";
 export const CONNECTORS_PATH = "/v1/connectors";
 export const SIMULATE_CASE_PATH = "/v1/simulate";
 
+/** derive-subject-fields-from-input-requirements-hotfix: useSimulationSubject (composed by the
+ * real useCaseSimulationCockpit this file's own stubFetch mounts) now reads
+ * useCaseInputRequirements(slug, version) instead of useConnectorConfigurations() for its own
+ * field set, so this shared stubFetch needs a default handler for that read too, or every
+ * dependent spec's subject stays permanently un-ready. Pinned to "acme-widgets"/7 -- the exact
+ * slug/version every one of this file's own dependent spec files already declares as its own
+ * local SLUG/VERSION constants. */
+export const SLUG = "acme-widgets";
+export const VERSION = 7;
+
+export function inputRequirementsPath(slug: string, version: number): string {
+  return `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/input-requirements`;
+}
+
+/** Matches any pinned slug/version's own input-requirements URL, not only SLUG/VERSION above --
+ * use-case-simulation-cockpit-staleness.spec.ts's own tests each mount this cockpit under a slug
+ * unique to that test (never "acme-widgets"/7, so its own "already visited" marker cannot leak
+ * between tests), so the exact-match default below cannot cover them; this pattern is this
+ * stubFetch's own fallback for exactly that case. */
+const INPUT_REQUIREMENTS_URL_PATTERN = /^\/v1\/cases\/[^/]+\/versions\/\d+\/input-requirements$/;
+
 /** fix-use-simulate-hypothesis-dispatch (a corrective increment): the hook now dispatches to one
  * fixed route regardless of slug/version -- the case identity travels in the body instead
  * (this task's own header comment). Keeps its own two parameters so every existing call site in
@@ -55,6 +76,21 @@ export const CAPABILITY = {
 export const CONNECTOR_CONFIGURATION = {
   connector: "billing-connector",
   configuration: JSON.stringify({ address: "https://billing/${subject:account-id}" }),
+};
+
+/** Mirrors use-simulation-subject.test-support.ts's own REQUIRED_FIELD_RESPONSE exactly: one
+ * required requirement, "account-id", resolved to CAPABILITY above by exact name/version
+ * identity -- so makeSubjectReady()'s own "exactly one derived required field" wait below
+ * still finds one, the same as before this hook's own field-set source changed. */
+export const REQUIRED_FIELD_RESPONSE = {
+  requirements: [
+    {
+      attribute: "account-id",
+      required: true,
+      capabilities: [{ name: CAPABILITY.name, version: CAPABILITY.version }],
+    },
+  ],
+  capabilities_with_malformed_input_schema: [],
 };
 
 export const MANIFEST: readonly CaseVersionManifestEntry[] = [
@@ -130,16 +166,20 @@ export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn
   const handlers: Record<string, Handler> = {
     [CAPABILITIES_PATH]: () => jsonResponse({ data: [CAPABILITY] }),
     [CONNECTORS_PATH]: () => jsonResponse({ data: [CONNECTOR_CONFIGURATION] }),
+    [inputRequirementsPath(SLUG, VERSION)]: () => jsonResponse(REQUIRED_FIELD_RESPONSE),
     ...overrides,
   };
   const fetchMock = vi.fn(
     async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
       const url = typeof input === "string" ? input : input.toString();
       const handler = handlers[url];
-      if (!handler) {
-        throw new Error(`use-case-simulation-cockpit proof: no mocked response for ${url}`);
+      if (handler) {
+        return handler(init?.method ?? "GET", parsedBody(init));
       }
-      return handler(init?.method ?? "GET", parsedBody(init));
+      if (INPUT_REQUIREMENTS_URL_PATTERN.test(url)) {
+        return jsonResponse(REQUIRED_FIELD_RESPONSE);
+      }
+      throw new Error(`use-case-simulation-cockpit proof: no mocked response for ${url}`);
     },
   );
   vi.stubGlobal("fetch", fetchMock);

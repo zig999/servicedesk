@@ -52,6 +52,15 @@ export function simulateHypothesisPath(_slug: string, _version: number): string 
 export const SLUG = "acme-widgets";
 export const VERSION = 7;
 
+/** derive-subject-fields-from-input-requirements-hotfix: useSimulationSubject (composed by the
+ * real useCaseSimulationCockpit this file's own mountReadyView renders through) now reads
+ * useCaseInputRequirements(slug, version) instead of useConnectorConfigurations() for its own
+ * field set, so this shared stubFetch needs a default handler for that read too, or
+ * fillSubjectReadyInView's own findByLabelText("account-id") below never finds a field to fill. */
+export function inputRequirementsPath(slug: string, version: number): string {
+  return `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/input-requirements`;
+}
+
 /** Mirrors use-simulation-subject.test-support.ts's own identical fixture pair -- that file's
  * own suite already proves this exact combination derives exactly one required field,
  * "account-id". */
@@ -69,6 +78,22 @@ export const CAPABILITY = {
 export const CONNECTOR_CONFIGURATION = {
   connector: "billing-connector",
   configuration: JSON.stringify({ address: "https://billing/${subject:account-id}" }),
+};
+
+/** Mirrors use-simulation-subject.test-support.ts's own REQUIRED_FIELD_RESPONSE exactly: one
+ * required requirement, "account-id", resolved to CAPABILITY above by exact name/version
+ * identity -- exactly the one field fillSubjectReadyInView below fills, and the one attribute
+ * name case-simulation-ready-view-dispatch.spec.ts's own dispatched-body assertion already
+ * names. */
+export const REQUIRED_FIELD_RESPONSE = {
+  requirements: [
+    {
+      attribute: "account-id",
+      required: true,
+      capabilities: [{ name: CAPABILITY.name, version: CAPABILITY.version }],
+    },
+  ],
+  capabilities_with_malformed_input_schema: [],
 };
 
 export const MANIFEST: readonly CaseVersionManifestEntry[] = [
@@ -156,6 +181,7 @@ export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn
     [CONNECTORS_PATH]: () => jsonResponse({ data: [CONNECTOR_CONFIGURATION] }),
     [GLOSSARY_SUBJECT_TYPE_PATH]: () => jsonResponse({ data: [{ name: "billing-dispute" }] }),
     [GLOSSARY_SUBJECT_ATTRIBUTE_PATH]: () => jsonResponse({ data: [{ name: "case-priority" }] }),
+    [inputRequirementsPath(SLUG, VERSION)]: () => jsonResponse(REQUIRED_FIELD_RESPONSE),
     ...overrides,
   };
   const fetchMock = vi.fn(

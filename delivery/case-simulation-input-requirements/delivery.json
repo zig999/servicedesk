@@ -2,12 +2,44 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements.md",
+      "title": "Derive the Subject region's fields from the case-input-requirements read",
+      "summary": "useSimulationSubject and simulation-subject-derivation.ts now derive one editable field per case-input-requirement (attribute, required flag, and every currently-registered asking capability's own connector/input_schema) instead of scanning connector configuration text for ${subject:<name>} placeholders.",
+      "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
+    },
+    {
+      "id": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing.md",
+      "title": "Requirement inputs carry their own required standing and every asking capability",
+      "summary": "Rewrites the Subject panel's requirement-rendering block to read the array-of-capabilities shape derive-subject-fields-from-input-requirements now exposes, marking required inputs, listing every asking capability per field, and stating an empty read explicitly.",
+      "task": "task/subject-input-requirements/present-each-requirement-with-its-required-standing"
+    },
+    {
       "id": "implementation/subject-input-requirements/read-case-input-requirements-hook",
       "kind": "implementation",
       "file": "implementation/subject-input-requirements/read-case-input-requirements-hook.md",
       "title": "Read a case version's input requirements",
       "summary": "A new hook, useCaseInputRequirements(slug, version), reads GET /v1/cases/{slug}/versions/{version}/input-requirements through apiFetch and returns the requirements list and the malformed-input-schema capabilities list as two separate fields, in the loading/error/refetch shape use-capabilities.ts already keeps.",
       "task": "task/subject-input-requirements/read-case-input-requirements-hook"
+    },
+    {
+      "id": "proof/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/derive-subject-fields-from-input-requirements.md",
+      "title": "Proof for deriving the Subject region's fields from case-input-requirements",
+      "summary": "deriveSubjectFields and useSimulationSubject are proved directly against the pure derivation, the pinned slug/version threading, and the two composed registry reads, with subjectPlaceholderNamesInConfiguration's own pre-existing tests confirmed unchanged.",
+      "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
+    },
+    {
+      "id": "proof/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/present-each-requirement-with-its-required-standing.md",
+      "title": "Proof that every requirement's input carries its own required standing and every asking capability",
+      "summary": "CaseSimulationSubjectPanel's requirement-rendering block is proved against required/optional marking, every asking capability's own identity and input-schema hint, the explicit empty state, and that the panel recomputes nothing of its own.",
+      "task": "task/subject-input-requirements/present-each-requirement-with-its-required-standing"
     },
     {
       "id": "proof/subject-input-requirements/read-case-input-requirements-hook",
@@ -19,6 +51,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "contracts/knowledge/case-input-requirements",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "task/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/subject-input-requirements/read-case-input-requirements-hook",
       "to": "contracts/knowledge/case-input-requirements",
@@ -35,6 +127,18 @@
       "from": "implementation/subject-input-requirements/read-case-input-requirements-hook",
       "to": "task/subject-input-requirements/read-case-input-requirements-hook",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "to": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "to": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
+      "kind": "proves",
       "at": "the path"
     },
     {

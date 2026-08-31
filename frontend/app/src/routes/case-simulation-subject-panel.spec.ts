@@ -1,20 +1,39 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
-import { baseState, buildRequiredField, renderPanel } from "./case-simulation-subject-panel.test-support";
+import {
+  baseState,
+  buildCapability,
+  buildRequiredField,
+  renderPanel,
+} from "./case-simulation-subject-panel.test-support";
 
-// Proof for task/subject-derivation/subject-panel's own criteria 1-4 (the subject-type field,
-// the requester field, each derived required field's own label/connector/capability annotation,
-// and a capability's own input_schema hint), mounted directly against CaseSimulationSubjectPanel
-// with a built SimulationSubjectState -- this component is props-driven, wired to nothing yet
-// (its own header comment). Criterion 5 (the add-attribute control) is proven in
-// case-simulation-subject-panel-attributes.spec.ts, and criterion 6 plus the loading/error/
-// empty-list inferences in case-simulation-subject-panel-json-view.spec.ts. Shared fixtures and
-// the render helper live in case-simulation-subject-panel.test-support.ts, whose own header
-// comment carries this proof's fixture and network-stubbing conventions.
+// Proof for task/subject-input-requirements/present-each-requirement-with-its-required-standing's
+// own criteria over the requirement-rendering block: an input for every requirement, required and
+// optional alike (criterion 1); a required requirement's input shown as required (criterion 2) and
+// an optional one shown without that marking (criterion 3); every one of a requirement's own asking
+// capabilities shown by its own name, version and connector, plus its own input-schema hint where
+// the state carries one (criterion 4); and that the panel reads every one of these straight off the
+// state it is passed rather than deriving any of it (criterion 6). Criterion 5 (the explicit empty
+// state, and the UNDERDETERMINED note over its own wording) is proven in
+// case-simulation-subject-panel-json-view.spec.ts. The subject-type and requester sections below
+// predate this task (task/subject-derivation/subject-panel) and are unaffected by it; the
+// add-attribute control is proven in case-simulation-subject-panel-attributes.spec.ts. Shared
+// fixtures and the render helper live in case-simulation-subject-panel.test-support.ts.
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
+
+/**
+ * The requirement rows only -- a <li> carrying the requirement's own labeled Input -- as
+ * opposed to a nested capability <li> underneath it, which carries no control of its own.
+ * screen.getAllByRole("listitem") alone returns both levels once a requirement's own
+ * capabilities render as a nested <ul>, so every test below that counts or indexes rows uses
+ * this filter rather than the raw query.
+ */
+function requirementRows(): HTMLElement[] {
+  return screen.getAllByRole("listitem").filter((item) => within(item).queryByRole("textbox") !== null);
+}
 
 describe("CaseSimulationSubjectPanel -- the subject type is drawn from the glossary vocabulary, never typed (criterion 1)", () => {
   it("renders the Type field as a combobox, never a free-text input", async () => {
@@ -69,105 +88,205 @@ describe("CaseSimulationSubjectPanel -- the requester field is part of the regio
   });
 });
 
-describe("CaseSimulationSubjectPanel -- each derived required field is labeled and annotated (criterion 3)", () => {
-  it("labels a required field with its own attribute name, shows its own value, and calls its own onChange when edited", async () => {
-    const onChange = vi.fn();
-    await renderPanel(
-      baseState({ requiredFields: [buildRequiredField({ attribute: "account-id", value: "12345", onChange })] }),
-    );
-
-    expect(screen.getByLabelText<HTMLInputElement>("account-id").value).toBe("12345");
-
-    fireEvent.change(screen.getByLabelText("account-id"), { target: { value: "98765" } });
-
-    expect(onChange).toHaveBeenCalledWith("98765");
-  });
-
-  it("shows the connector and the capability that asked for a required field, alongside it", async () => {
+describe("CaseSimulationSubjectPanel -- an input is rendered for every requirement the state exposes, required and optional alike (criterion 1)", () => {
+  it("renders a labeled input for a required requirement and for an optional one, neither filtered out", async () => {
     await renderPanel(
       baseState({
         requiredFields: [
-          buildRequiredField({
-            attribute: "account-id",
-            connector: "core-banking-connector",
-            capability: { name: "check-balance", version: "1.0.0" },
-          }),
+          buildRequiredField({ attribute: "account-id", required: true }),
+          buildRequiredField({ attribute: "notes", required: false }),
         ],
       }),
     );
 
-    expect(screen.getByText("← core-banking-connector (check-balance 1.0.0)")).toBeTruthy();
-  });
-
-  it("renders one row per required field, each carrying its own attribute/connector/capability annotation", async () => {
-    await renderPanel(
-      baseState({
-        requiredFields: [
-          buildRequiredField({
-            attribute: "account-id",
-            connector: "core-banking-connector",
-            capability: { name: "check-balance", version: "1.0.0" },
-          }),
-          buildRequiredField({
-            attribute: "recipient-email",
-            connector: "notification-connector",
-            capability: { name: "send-email", version: "2.0.0" },
-          }),
-        ],
-      }),
-    );
-
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
-    expect(screen.getByText("← core-banking-connector (check-balance 1.0.0)")).toBeTruthy();
-    expect(screen.getByText("← notification-connector (send-email 2.0.0)")).toBeTruthy();
+    expect(screen.getByLabelText<HTMLInputElement>("account-id")).toBeTruthy();
+    expect(screen.getByLabelText<HTMLInputElement>("notes")).toBeTruthy();
+    expect(requirementRows()).toHaveLength(2);
   });
 });
 
-describe("CaseSimulationSubjectPanel -- a capability's input_schema hint, where present, is shown as plain text (criterion 4)", () => {
-  it("shows the hint text verbatim next to its own required field, prose included, never parsed or reformatted", async () => {
+describe("CaseSimulationSubjectPanel -- a required requirement's own input is shown as required (criterion 2)", () => {
+  it("carries the native required attribute, and a visible asterisk on its own label", async () => {
+    await renderPanel(
+      baseState({ requiredFields: [buildRequiredField({ attribute: "account-id", required: true })] }),
+    );
+
+    expect(screen.getByLabelText<HTMLInputElement>("account-id").required).toBe(true);
+    const [row] = requirementRows();
+    expect(within(row).getByText("*")).toBeTruthy();
+  });
+});
+
+describe("CaseSimulationSubjectPanel -- an optional requirement's own input is rendered without that marking (criterion 3)", () => {
+  it("carries no required attribute and no asterisk", async () => {
+    await renderPanel(
+      baseState({ requiredFields: [buildRequiredField({ attribute: "notes", required: false })] }),
+    );
+
+    expect(screen.getByLabelText<HTMLInputElement>("notes").required).toBe(false);
+    const [row] = requirementRows();
+    expect(within(row).queryByText("*")).toBeNull();
+  });
+});
+
+describe("CaseSimulationSubjectPanel -- a required marking never becomes a client-side dispatch-blocking gate (UNDERDETERMINED, from the specification -- rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses: the composed subject's own required marking must not disable or block either dispatch while a required input is empty)", () => {
+  it("renders no disabled control anywhere in the panel while a required requirement is left empty", async () => {
+    await renderPanel(
+      baseState({
+        requiredFields: [buildRequiredField({ attribute: "account-id", required: true, value: "" })],
+      }),
+    );
+
+    expect(screen.getByLabelText<HTMLInputElement>("account-id").disabled).toBe(false);
+    for (const button of screen.getAllByRole("button")) {
+      expect(button.hasAttribute("disabled")).toBe(false);
+    }
+  });
+});
+
+describe("CaseSimulationSubjectPanel -- every asking capability for a requirement is shown by its own name, version and connector, never only one (criterion 4)", () => {
+  it("shows a single asking capability's own connector, name and version", async () => {
     await renderPanel(
       baseState({
         requiredFields: [
           buildRequiredField({
             attribute: "account-id",
-            inputSchemaHint: "A one-line prose note, not a JSON schema.",
+            capabilities: [
+              buildCapability({ name: "check-balance", version: "1.0.0", connector: "core-banking-connector" }),
+            ],
           }),
         ],
       }),
     );
 
-    expect(screen.getByText("A one-line prose note, not a JSON schema.")).toBeTruthy();
+    expect(screen.getByText("← core-banking-connector (check-balance 1.0.0)")).toBeTruthy();
   });
 
-  it("shows no hint paragraph for a required field whose own inputSchemaHint is empty", async () => {
+  it("shows every one of two or more asking capabilities, each with its own name, version and connector -- never only the first (multi-capability rendering)", async () => {
     await renderPanel(
       baseState({
         requiredFields: [
-          buildRequiredField({ attribute: "field-with-hint", inputSchemaHint: "Has a hint." }),
-          buildRequiredField({ attribute: "field-without-hint", inputSchemaHint: "" }),
+          buildRequiredField({
+            attribute: "account-id",
+            capabilities: [
+              buildCapability({ name: "check-balance", version: "1.0.0", connector: "core-banking-connector" }),
+              buildCapability({ name: "check-balance", version: "2.0.0", connector: "core-banking-connector-v2" }),
+              buildCapability({ name: "verify-identity", version: "3.1.0", connector: "identity-connector" }),
+            ],
+          }),
         ],
       }),
     );
 
-    const rows = screen.getAllByRole("listitem");
-    const withoutHintRow = rows.find((row) => within(row).queryByText("field-without-hint") !== null);
-    if (withoutHintRow === undefined) {
-      throw new Error("expected a row for field-without-hint");
-    }
-    // Counting the row's own <p> elements (via Testing Library's own `selector` matcher option,
-    // never raw DOM traversal) is the only way to confirm the hint paragraph is absent, since
-    // there is no text left to query for its absence.
-    expect(within(withoutHintRow).getAllByText(/./, { selector: "p" })).toHaveLength(1);
+    expect(screen.getByText("← core-banking-connector (check-balance 1.0.0)")).toBeTruthy();
+    expect(screen.getByText("← core-banking-connector-v2 (check-balance 2.0.0)")).toBeTruthy();
+    expect(screen.getByText("← identity-connector (verify-identity 3.1.0)")).toBeTruthy();
+  });
+
+  it("renders no capability list under a requirement whose own capabilities array is empty (edge case: no currently-registered capability resolves)", async () => {
+    await renderPanel(
+      baseState({ requiredFields: [buildRequiredField({ attribute: "account-id", capabilities: [] })] }),
+    );
+
+    const [row] = requirementRows();
+    expect(within(row).queryByRole("list")).toBeNull();
+  });
+});
+
+describe("CaseSimulationSubjectPanel -- a capability's own input-schema hint, where present, is shown verbatim next to it (criterion 4)", () => {
+  it("shows the hint text verbatim next to its own capability, prose included, never parsed or reformatted", async () => {
+    await renderPanel(
+      baseState({
+        requiredFields: [
+          buildRequiredField({
+            attribute: "account-id",
+            capabilities: [buildCapability({ inputSchemaHint: "A one-line prose note, not a JSON schema." })],
+          }),
+        ],
+      }),
+    );
+
+    expect(screen.getByText(/A one-line prose note, not a JSON schema\./)).toBeTruthy();
+  });
+
+  it("shows no hint text for a capability whose own inputSchemaHint is empty", async () => {
+    await renderPanel(
+      baseState({
+        requiredFields: [
+          buildRequiredField({ attribute: "account-id", capabilities: [buildCapability({ inputSchemaHint: "" })] }),
+        ],
+      }),
+    );
+
+    const [row] = requirementRows();
+    expect(within(row).queryByText(/—/)).toBeNull();
   });
 
   it("treats a whitespace-only inputSchemaHint the same as an empty one", async () => {
     await renderPanel(
       baseState({
-        requiredFields: [buildRequiredField({ attribute: "whitespace-hint-field", inputSchemaHint: "   " })],
+        requiredFields: [
+          buildRequiredField({
+            attribute: "account-id",
+            capabilities: [buildCapability({ inputSchemaHint: "   " })],
+          }),
+        ],
       }),
     );
 
-    const row = screen.getByRole("listitem");
-    expect(within(row).getAllByText(/./, { selector: "p" })).toHaveLength(1);
+    const [row] = requirementRows();
+    expect(within(row).queryByText(/—/)).toBeNull();
+  });
+
+  it("shows each capability's own hint only, never mixed with another capability's, when two capabilities are present", async () => {
+    await renderPanel(
+      baseState({
+        requiredFields: [
+          buildRequiredField({
+            attribute: "account-id",
+            capabilities: [
+              buildCapability({ name: "check-balance", version: "1.0.0", inputSchemaHint: "First hint." }),
+              buildCapability({ name: "send-email", version: "2.0.0", inputSchemaHint: "Second hint." }),
+            ],
+          }),
+        ],
+      }),
+    );
+
+    const firstEntryText = screen.getByText("← core-banking-connector (check-balance 1.0.0)");
+    const secondEntryText = screen.getByText("← core-banking-connector (send-email 2.0.0)");
+    // Confirming each capability's own hint sits beside its own entry, and no other, is only
+    // checkable by reading the enclosing <li>'s own text, mirroring
+    // case-simulation-subject-panel-json-view.spec.ts's own established convention for reading a
+    // raw DOM ancestor.
+    // eslint-disable-next-line testing-library/no-node-access
+    const firstItem = firstEntryText.closest("li");
+    // eslint-disable-next-line testing-library/no-node-access
+    const secondItem = secondEntryText.closest("li");
+
+    expect(firstItem?.textContent).toContain("First hint.");
+    expect(firstItem?.textContent).not.toContain("Second hint.");
+    expect(secondItem?.textContent).toContain("Second hint.");
+    expect(secondItem?.textContent).not.toContain("First hint.");
+  });
+});
+
+describe("CaseSimulationSubjectPanel -- the panel recomputes no requirement, no required flag and no annotation, reading each from the state it is passed (criterion 6)", () => {
+  it("renders requirements in the order the state gives them, each with its own required marking held independently of the others", async () => {
+    await renderPanel(
+      baseState({
+        requiredFields: [
+          buildRequiredField({ attribute: "notes", required: false }),
+          buildRequiredField({ attribute: "account-id", required: true }),
+        ],
+      }),
+    );
+
+    const rows = requirementRows();
+    expect(rows).toHaveLength(2);
+    expect(within(rows[0]).getByLabelText("notes")).toBeTruthy();
+    expect(within(rows[0]).queryByText("*")).toBeNull();
+    expect(within(rows[1]).getByLabelText("account-id")).toBeTruthy();
+    expect(within(rows[1]).getByText("*")).toBeTruthy();
   });
 });

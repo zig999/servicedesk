@@ -10,10 +10,16 @@ import type { SimulationSubjectState } from "../hooks/use-simulation-subject";
  * The Subject region of the simulation cockpit's layout
  * (task/subject-derivation/subject-panel, layout/simulation-screen.md's own
  * "Subject (D7)" section): the subject type, the requester, one input per
- * derived required field annotated with the connector/capability that asked
- * for it and that capability's own input_schema as a free-text hint, a
- * curator "add attribute" control drawn from the subject-attribute glossary,
- * and a link to view the assembled subject as raw JSON.
+ * case-input-requirement the composed state exposes -- required and optional
+ * alike, the required ones marked as such -- each annotated with every
+ * currently-registered capability that asks for it (its own name, version
+ * and connector, never only one where more than one asks) and that
+ * capability's own input_schema as a free-text hint where the state carries
+ * one (task/subject-input-requirements/present-each-requirement-with-its-
+ * required-standing, rules/investigation/a-composed-subject-presents-every-
+ * case-input-requirement), a curator "add attribute" control drawn from the
+ * subject-attribute glossary, and a link to view the assembled subject as
+ * raw JSON.
  *
  * Presentational and props-driven (ARC-02/ARC-03), mirroring
  * connector-test-panel-fields.tsx's own established shape for a hook's whole
@@ -154,28 +160,62 @@ export function CaseSimulationSubjectPanel({
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">Required by the connectors:</p>
           {state.requiredFields.length === 0 ? (
-            // API-04: an empty derivation renders its own explicit empty
-            // state, never an empty list with nothing said about why.
+            // task/subject-input-requirements/present-each-requirement-with-its-required-
+            // standing, criterion 5 (rules/investigation/a-composed-subject-presents-every-
+            // case-input-requirement's own closing clause, and API-04): an empty read states
+            // that emptiness explicitly, in the rule's own terms, rather than a bare empty
+            // list or a generic "nothing to show" placeholder.
             <p className="text-sm text-muted-foreground">
-              No connector requires a subject field for this version.
+              The pinned case version&apos;s own case-input-requirements name no attribute.
             </p>
           ) : (
             <ul className="flex flex-col gap-3">
               {state.requiredFields.map((field) => (
                 <li key={field.attribute} className="flex flex-col gap-1">
-                  <Label htmlFor={`case-simulation-subject-field-${field.attribute}`}>
-                    {field.attribute}
-                  </Label>
+                  {/* Criteria 2-3: a required requirement's own input is marked, an optional
+                      one is not -- no existing convention for this in the codebase (this
+                      task's own disclosed inference), so a plain text asterisk is used
+                      alongside the input's own `required` attribute below. It is rendered as a
+                      sibling of the Label, never inside it: the Label's own text is what
+                      testing-library's getByLabelText matches against exactly, and an
+                      aria-hidden span nested inside the Label still contributes to that
+                      computed text (aria-hidden only removes a node from the accessible-name
+                      algorithm assistive tech reads, not from this string), so an asterisk
+                      inside the Label silently changed "account-id" into "account-id *" for
+                      every required field's own label match. */}
+                  <span className="flex items-center gap-1">
+                    <Label htmlFor={`case-simulation-subject-field-${field.attribute}`}>
+                      {field.attribute}
+                    </Label>
+                    {field.required && (
+                      <span aria-hidden="true" className="text-destructive">
+                        *
+                      </span>
+                    )}
+                  </span>
                   <Input
                     id={`case-simulation-subject-field-${field.attribute}`}
                     value={field.value}
                     onChange={(event) => field.onChange(event.target.value)}
+                    required={field.required}
                   />
-                  <p className="text-sm text-muted-foreground">
-                    ← {field.connector} ({field.capability.name} {field.capability.version})
-                  </p>
-                  {field.inputSchemaHint.trim() !== "" && (
-                    <p className="text-sm text-muted-foreground">{field.inputSchemaHint}</p>
+                  {field.capabilities.length > 0 && (
+                    // Criterion 4: every asking capability this field's own requirement
+                    // currently resolves, never only one -- each by its own name, version and
+                    // connector, plus its own input-schema hint where the state carries one.
+                    <ul className="flex flex-col gap-1">
+                      {field.capabilities.map((capability) => (
+                        <li
+                          key={`${capability.name}-${capability.version}`}
+                          className="text-sm text-muted-foreground"
+                        >
+                          ← {capability.connector} ({capability.name} {capability.version})
+                          {capability.inputSchemaHint.trim() !== "" && (
+                            <span> — {capability.inputSchemaHint}</span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </li>
               ))}

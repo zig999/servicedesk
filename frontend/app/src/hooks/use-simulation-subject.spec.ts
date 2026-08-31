@@ -3,21 +3,26 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { useSimulationSubject } from "./use-simulation-subject";
 import {
   CAPABILITIES_PATH,
-  CONNECTOR_CONFIGURATION,
-  CONNECTORS_PATH,
-  VERSION_WITH_NO_REQUIRED_FIELDS,
-  VERSION_WITH_REQUIRED_FIELD,
+  SLUG,
+  SOURCE,
+  VERSION_WITHOUT_FIELD,
+  VERSION_WITH_FIELD,
   createWrapper,
+  inputRequirementsPath,
   jsonResponse,
   stubFetch,
 } from "./use-simulation-subject.test-support";
 
-// task/subject-derivation/use-simulation-subject-hook's own hook-level proof: the derivation
-// itself (criteria 1-3) is proved directly, without React, in
-// services/simulation-subject-derivation.spec.ts -- this file proves what this hook adds over
-// that pure walk: curator-added attributes (criterion 4), readiness (criteria 5-6), the one
-// shared subject/readiness pair D7 requires (criterion 7), and the registry-loading pass-through
-// this hook's own delivery record discloses as an inference. Mirrors
+// task/subject-input-requirements/derive-subject-fields-from-input-requirements's own hook-level
+// proof: the derivation itself (criteria 1-6 and the two UNDERDETERMINED notes) is proved
+// directly, without React, in services/simulation-subject-derivation.spec.ts -- this file proves
+// what this hook adds over that pure walk: the pinned slug/version threading (criterion 9), the
+// registries this hook now composes and their loading/error pass-through (criterion 10), that a
+// required attribute never embedded as a connector placeholder is still exposed (criterion 7,
+// the same scenario services/simulation-subject-derivation.spec.ts cannot reach because that
+// module never receives connector-configuration text at all -- criterion 8), plus the
+// pre-existing curator-added-attribute, readiness, MNT-04 and D7 shared-instance behavior this
+// task's own delivery record states is preserved unchanged. Mirrors
 // use-capability-detail-view.spec.ts's own established convention -- renderHook, real Response
 // objects through a stubbed global fetch, assertions on nothing but what this hook itself
 // returns (TST-01).
@@ -29,7 +34,7 @@ afterEach(() => {
 describe("useSimulationSubject -- criterion 4: curator-added attributes alongside derived ones", () => {
   it("includes a curator-added attribute in the assembled subject, as one {attribute, value} pair beside the filled derived required field", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
@@ -59,7 +64,7 @@ describe("useSimulationSubject -- criterion 4: curator-added attributes alongsid
 
   it("lets a curator-added row sharing a derived field's own attribute name override that field's typed value, rather than the two coexisting as separate entries (this hook's own inference over an untied criterion)", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
@@ -85,7 +90,7 @@ describe("useSimulationSubject -- criterion 4: curator-added attributes alongsid
 
   it("does not add an entry to the assembled subject for a curator-added row still holding an empty attribute name or an empty value", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_NO_REQUIRED_FIELDS), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITHOUT_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.isLoadingRegistries).toBe(false));
@@ -106,7 +111,7 @@ describe("useSimulationSubject -- criterion 4: curator-added attributes alongsid
 describe("useSimulationSubject -- criteria 5-6: readiness", () => {
   it("stays not-ready while the requester is empty, even once every derived required field holds a value", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
@@ -120,7 +125,7 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
 
   it("stays not-ready while a derived required field is empty, even once the requester holds a value", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
@@ -134,7 +139,7 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
 
   it("turns ready once every derived required field and the requester hold a non-empty value", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
@@ -149,9 +154,9 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
     expect(result.current.isReady).toBe(true);
   });
 
-  it("never turns ready for a subject holding zero attribute-values, even once the requester is filled, for a version whose collection plan derives no required field and to which the curator has added none (rules/investigation/a-subject-carries-at-least-one-attribute)", async () => {
+  it("never turns ready for a subject holding zero attribute-values, even once the requester is filled, for a version whose case-input-requirements read names no field and to which the curator has added none (rules/investigation/a-subject-carries-at-least-one-attribute)", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_NO_REQUIRED_FIELDS), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITHOUT_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.isLoadingRegistries).toBe(false));
@@ -167,15 +172,17 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
 });
 
 describe("useSimulationSubject -- criterion 7: one subject and readiness, shared identically between a full-case and a single-hypothesis run (D7)", () => {
-  it("computes the same subject and the same readiness from two independently mounted instances given the same version, registries and typed values -- the single instance a screen shares between both dispatches has nothing of its own that could make the two diverge", async () => {
+  it("computes the same subject and the same readiness from two independently mounted instances given the same pinned case version, registries and typed values -- the single instance a screen shares between both dispatches has nothing of its own that could make the two diverge", async () => {
     stubFetch();
     const wrapper = createWrapper().Wrapper;
-    const { result: firstResult } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
-      wrapper,
-    });
-    const { result: secondResult } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
-      wrapper,
-    });
+    const { result: firstResult } = renderHook(
+      () => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD),
+      { wrapper },
+    );
+    const { result: secondResult } = renderHook(
+      () => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD),
+      { wrapper },
+    );
 
     await waitFor(() => expect(firstResult.current.requiredFields).toHaveLength(1));
     await waitFor(() => expect(secondResult.current.requiredFields).toHaveLength(1));
@@ -199,38 +206,101 @@ describe("useSimulationSubject -- criterion 7: one subject and readiness, shared
   });
 });
 
-describe("useSimulationSubject -- isLoadingRegistries/isRegistriesError pass-through (this hook's own inference, EDG-01/EDG-02)", () => {
-  it("stays true while either composed registry read is still loading, even once the other one has already resolved", async () => {
-    let connectorsResolved = false;
+describe("useSimulationSubject -- criterion 9: the field set is derived for the pinned case slug and version", () => {
+  it("derives a different field set once the pinned version changes, with the same source and the same registries", async () => {
+    stubFetch();
+    const wrapper = createWrapper().Wrapper;
+    const { result, rerender } = renderHook(
+      ({ version }: { version: number }) => useSimulationSubject(SOURCE, SLUG, version),
+      { wrapper, initialProps: { version: VERSION_WITH_FIELD } },
+    );
+    await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
+
+    rerender({ version: VERSION_WITHOUT_FIELD });
+
+    await waitFor(() => expect(result.current.requiredFields).toHaveLength(0));
+  });
+});
+
+describe("useSimulationSubject -- criterion 7: an attribute the read names required is exposed even though no currently-registered capability's connector could ever have embedded it as a placeholder (scenario: an undetected required attribute)", () => {
+  it("exposes a required field for an attribute the read names, with no capability resolving for it at all", async () => {
     stubFetch({
-      [CAPABILITIES_PATH]: () => new Promise<Response>(() => {}),
-      [CONNECTORS_PATH]: () => {
-        connectorsResolved = true;
-        return jsonResponse({ data: [CONNECTOR_CONFIGURATION] });
+      [inputRequirementsPath(SLUG, VERSION_WITH_FIELD)]: () =>
+        jsonResponse({
+          requirements: [{ attribute: "user_id", required: true, capabilities: [] }],
+          capabilities_with_malformed_input_schema: [],
+        }),
+    });
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.requiredFields).toHaveLength(1));
+    expect(result.current.requiredFields[0]).toMatchObject({ attribute: "user_id", required: true });
+  });
+});
+
+describe("useSimulationSubject -- criteria 8 and 10: the composed reads are exactly case-input-requirements and capabilities, never a connector-configuration read", () => {
+  it("resolves cleanly, with its derived field intact, even though the stubbed backend answers nothing at all for a connector-configuration endpoint", async () => {
+    // stubFetch's own default handlers (this file's own test-support) answer only the
+    // case-input-requirements and capabilities paths -- no /v1/connectors entry exists at all.
+    // If this hook still composed useConnectorConfigurations under the hood, that request would
+    // hit no handler, the stub would throw, and isRegistriesError would read true (or the hook
+    // would never settle) instead of the assertions below holding.
+    stubFetch();
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isLoadingRegistries).toBe(false));
+    expect(result.current.isRegistriesError).toBe(false);
+    expect(result.current.requiredFields).toHaveLength(1);
+  });
+
+  it("stays true while the case-input-requirements read is still pending, even once the capabilities read has already resolved", async () => {
+    let capabilitiesResolved = false;
+    stubFetch({
+      [inputRequirementsPath(SLUG, VERSION_WITH_FIELD)]: () => new Promise<Response>(() => {}),
+      [CAPABILITIES_PATH]: () => {
+        capabilitiesResolved = true;
+        return jsonResponse({ data: [] });
       },
     });
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
 
     // Both conditions are asserted inside the same poll: an implementation that used `&&`
-    // instead of `||` would show isLoadingRegistries flip to false the moment connectors
-    // resolves while capabilities is still pending, so the two would never hold together and
-    // this would time out instead of passing.
+    // instead of `||` would show isLoadingRegistries flip to false the moment capabilities
+    // resolves while case-input-requirements is still pending, so the two would never hold
+    // together and this would time out instead of passing.
     await waitFor(() => {
-      expect(connectorsResolved).toBe(true);
+      expect(capabilitiesResolved).toBe(true);
       expect(result.current.isLoadingRegistries).toBe(true);
     });
     expect(result.current.requiredFields).toEqual([]);
   });
 
-  it("turns true when either composed registry read fails, without throwing out of the hook itself", async () => {
+  it("turns true when the case-input-requirements read fails, without throwing out of the hook itself", async () => {
     stubFetch({
-      [CONNECTORS_PATH]: () => {
+      [inputRequirementsPath(SLUG, VERSION_WITH_FIELD)]: () => {
         throw new Error("network down");
       },
     });
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_REQUIRED_FIELD), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
+      wrapper: createWrapper().Wrapper,
+    });
+
+    await waitFor(() => expect(result.current.isRegistriesError).toBe(true));
+  });
+
+  it("turns true when the capabilities read fails, without throwing out of the hook itself", async () => {
+    stubFetch({
+      [CAPABILITIES_PATH]: () => {
+        throw new Error("network down");
+      },
+    });
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
 
@@ -241,7 +311,7 @@ describe("useSimulationSubject -- isLoadingRegistries/isRegistriesError pass-thr
 describe("useSimulationSubject -- MNT-04: a curator-added row is keyed by a stable id, not by its position", () => {
   it("keeps a remaining row's own id and typed values unchanged after an earlier row is removed", async () => {
     stubFetch();
-    const { result } = renderHook(() => useSimulationSubject(VERSION_WITH_NO_REQUIRED_FIELDS), {
+    const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITHOUT_FIELD), {
       wrapper: createWrapper().Wrapper,
     });
     await waitFor(() => expect(result.current.isLoadingRegistries).toBe(false));

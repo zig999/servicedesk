@@ -1,18 +1,23 @@
 import { describe, expect, it } from "vitest";
 import {
-  collectionPlanFromManifest,
-  deriveRequiredFields,
+  deriveSubjectFields,
   subjectPlaceholderNamesInConfiguration,
 } from "./simulation-subject-derivation";
 import type { Capability } from "../hooks/use-capabilities";
-import type { ConnectorConfiguration } from "../hooks/use-connector-configurations";
-import type { CaseVersionManifestEntry } from "./case-version-record";
+import type { CaseInputRequirement } from "../hooks/use-case-input-requirements";
 
-// task/subject-derivation/use-simulation-subject-hook: this file proves the pure derivation
-// module directly -- no React, no network -- the same way it is written to be read separately
-// from the hook's own render lifecycle (this module's own header comment). The composing hook's
-// own state (curator-added attributes, readiness) is proved separately in
+// task/subject-input-requirements/derive-subject-fields-from-input-requirements: this file
+// proves the pure derivation module directly -- no React, no network -- the same way it is
+// written to be read separately from the composing hook's own render lifecycle (this module's
+// own header comment). The composing hook's own state (curator-added attributes, readiness, the
+// pinned slug/version threading, and the loading/error pass-through) is proved separately in
 // use-simulation-subject.spec.ts.
+//
+// subjectPlaceholderNamesInConfiguration's own tests below are the pre-existing ones for that
+// function, unmodified: this task's own delivery record states the function is kept
+// byte-for-byte in behavior, unchanged, for its one remaining caller
+// (hooks/use-test-connector-panel.ts) -- these tests prove it still exports and behaves exactly
+// as before, and that this file's own rewrite left it untouched.
 
 function capability(
   overrides: Pick<Capability, "name" | "version" | "connector" | "concept"> &
@@ -27,31 +32,68 @@ function capability(
   };
 }
 
-function connectorConfig(connector: string, configuration: unknown): ConnectorConfiguration {
+function requirement(
+  overrides: Pick<CaseInputRequirement, "attribute" | "required"> &
+    Partial<CaseInputRequirement>,
+): CaseInputRequirement {
   return {
-    connector,
-    configuration: typeof configuration === "string" ? configuration : JSON.stringify(configuration),
+    capabilities: [],
+    ...overrides,
   };
 }
 
-function manifestEntry(
-  position: number,
-  collects: readonly string[],
-): CaseVersionManifestEntry {
-  return {
-    position,
-    hypothesis_revision: {
-      hypothesis: { name: `hypothesis-at-${position}` },
-      revision: 1,
-      criterion: "some criterion",
-      collects,
-    },
-  };
-}
+describe("simulation-subject-derivation.ts -- criterion 11: deriveRequiredFields and collectionPlanFromManifest are gone from the tree", () => {
+  it("no longer exports deriveRequiredFields or collectionPlanFromManifest", async () => {
+    const moduleExports = await import("./simulation-subject-derivation");
 
-describe("deriveRequiredFields -- criteria 1-2: resolving each concept to its capability, connector and connector's own placeholders", () => {
-  it("resolves a concept the collection plan names to the capability currently registered for it and that capability's own connector, annotating the derived field with both", () => {
-    const manifest = [manifestEntry(1, ["billing-history"])];
+    expect(Object.keys(moduleExports)).not.toContain("deriveRequiredFields");
+    expect(Object.keys(moduleExports)).not.toContain("collectionPlanFromManifest");
+  });
+});
+
+describe("deriveSubjectFields -- criterion 1: one field per requirement, required and optional alike", () => {
+  it("returns exactly one field per requirement, in the read's own order, for a required requirement and an optional one alike", () => {
+    const requirements = [
+      requirement({ attribute: "account-id", required: true }),
+      requirement({ attribute: "case-priority", required: false }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities: [] });
+
+    expect(fields).toHaveLength(2);
+    expect(fields.map((field) => field.attribute)).toEqual(["account-id", "case-priority"]);
+  });
+
+  it("returns an empty field list for an empty requirements read", () => {
+    const fields = deriveSubjectFields({ requirements: [], capabilities: [] });
+
+    expect(fields).toEqual([]);
+  });
+});
+
+describe("deriveSubjectFields -- criterion 2: each field's required flag carried through unchanged", () => {
+  it("sets a field's own required flag to exactly its source requirement's required value, for both a required and an optional requirement", () => {
+    const requirements = [
+      requirement({ attribute: "account-id", required: true }),
+      requirement({ attribute: "case-priority", required: false }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities: [] });
+
+    expect(fields[0]?.required).toBe(true);
+    expect(fields[1]?.required).toBe(false);
+  });
+});
+
+describe("deriveSubjectFields -- criterion 3: naming a resolved capability's connector, matched by its own name-and-version identity", () => {
+  it("names the connector of the currently-registered capability sharing the reference's exact name and version", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [{ name: "fetch-billing-account", version: "1" }],
+      }),
+    ];
     const capabilities = [
       capability({
         name: "fetch-billing-account",
@@ -60,82 +102,127 @@ describe("deriveRequiredFields -- criteria 1-2: resolving each concept to its ca
         concept: "billing-history",
       }),
     ];
-    const connectorConfigurations = [
-      connectorConfig("billing-connector", { address: "https://billing/${subject:account-id}" }),
-    ];
 
-    const fields = deriveRequiredFields({ manifest, capabilities, connectorConfigurations });
+    const fields = deriveSubjectFields({ requirements, capabilities });
 
-    expect(fields).toEqual([
-      {
-        attribute: "account-id",
-        connector: "billing-connector",
-        capability: { name: "fetch-billing-account", version: "1" },
-        inputSchemaHint: "{}",
-      },
+    expect(fields[0]?.capabilities).toEqual([
+      { name: "fetch-billing-account", version: "1", connector: "billing-connector", inputSchemaHint: "{}" },
     ]);
   });
 
-  it("returns one required field per distinct attribute name even where the same placeholder is repeated across the address and the body of one connector's own configuration", () => {
-    const manifest = [manifestEntry(1, ["billing-history"])];
-    const capabilities = [
-      capability({ name: "cap", version: "1", connector: "conn", concept: "billing-history" }),
+  it("does not resolve a capability sharing the reference's own name but not its version", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [{ name: "fetch-billing-account", version: "1" }],
+      }),
     ];
-    const connectorConfigurations = [
-      connectorConfig("conn", {
-        address: "https://api/${subject:account-id}",
-        body: { again: "${subject:account-id}" },
+    const capabilities = [
+      capability({
+        name: "fetch-billing-account",
+        version: "2",
+        connector: "billing-connector",
+        concept: "billing-history",
       }),
     ];
 
-    const fields = deriveRequiredFields({ manifest, capabilities, connectorConfigurations });
+    const fields = deriveSubjectFields({ requirements, capabilities });
 
-    expect(fields).toHaveLength(1);
-    expect(fields[0]?.attribute).toBe("account-id");
-  });
-
-  it("keeps the first connector/capability's own annotation for a placeholder two different connectors both name, in the collection plan's own declared precedence order, rather than the second, later-resolved one (this module's own inference over an untied criterion)", () => {
-    const manifest = [manifestEntry(2, ["concept-b"]), manifestEntry(1, ["concept-a"])];
-    const capabilities = [
-      capability({ name: "cap-a", version: "1", connector: "conn-a", concept: "concept-a" }),
-      capability({ name: "cap-b", version: "1", connector: "conn-b", concept: "concept-b" }),
-    ];
-    const connectorConfigurations = [
-      connectorConfig("conn-a", { address: "${subject:shared}" }),
-      connectorConfig("conn-b", { address: "${subject:shared}" }),
-    ];
-
-    const fields = deriveRequiredFields({ manifest, capabilities, connectorConfigurations });
-
-    expect(fields).toHaveLength(1);
-    expect(fields[0]).toMatchObject({
-      attribute: "shared",
-      connector: "conn-a",
-      capability: { name: "cap-a", version: "1" },
-    });
-  });
-
-  it("contributes zero required fields for a concept with no capability currently registered to answer it (this module's own inference)", () => {
-    const manifest = [manifestEntry(1, ["unregistered-concept"])];
-
-    const fields = deriveRequiredFields({ manifest, capabilities: [], connectorConfigurations: [] });
-
-    expect(fields).toEqual([]);
-  });
-
-  it("contributes zero required fields for a capability whose own connector names no configuration currently registered (this module's own inference)", () => {
-    const manifest = [manifestEntry(1, ["some-concept"])];
-    const capabilities = [
-      capability({ name: "cap", version: "1", connector: "missing-connector", concept: "some-concept" }),
-    ];
-
-    const fields = deriveRequiredFields({ manifest, capabilities, connectorConfigurations: [] });
-
-    expect(fields).toEqual([]);
+    expect(fields[0]?.capabilities).toEqual([]);
   });
 });
 
-describe("subjectPlaceholderNamesInConfiguration -- criterion 2: every '${subject:<attribute>}' placeholder, wherever it sits", () => {
+describe("deriveSubjectFields -- criterion 4: input_schema carried through as a free-text hint", () => {
+  it("passes the resolved capability's own input_schema through untouched, even where it is not itself valid JSON, rather than parsing or validating it", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [{ name: "cap", version: "2" }],
+      }),
+    ];
+    const capabilities = [
+      capability({
+        name: "cap",
+        version: "2",
+        connector: "conn",
+        concept: "some-concept",
+        input_schema: "{ this is not valid json",
+      }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities });
+
+    expect(fields[0]?.capabilities[0]?.inputSchemaHint).toBe("{ this is not valid json");
+  });
+});
+
+describe("deriveSubjectFields -- criteria 5-6: a requirement naming a capability not currently held", () => {
+  it("still exposes the field, with an empty capabilities list rather than an invented entry, for a reference resolving to no currently-registered capability", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [{ name: "missing-cap", version: "9" }],
+      }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities: [] });
+
+    expect(fields).toEqual([{ attribute: "account-id", required: true, capabilities: [] }]);
+  });
+
+  it("resolves only the reference that currently matches and invents no entry for the sibling reference that does not, when a requirement names one resolvable and one unresolvable capability", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [
+          { name: "cap-a", version: "1" },
+          { name: "missing-cap", version: "9" },
+        ],
+      }),
+    ];
+    const capabilities = [
+      capability({ name: "cap-a", version: "1", connector: "conn-a", concept: "some-concept" }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities });
+
+    expect(fields[0]?.capabilities).toEqual([
+      { name: "cap-a", version: "1", connector: "conn-a", inputSchemaHint: "{}" },
+    ]);
+  });
+});
+
+describe("deriveSubjectFields -- UNDERDETERMINED notes: every currently-registered asking capability is named, each paired with its own identity, never only the first match and never a bare connector", () => {
+  it("names both currently-registered capabilities asking for the same attribute, each carrying its own name, version and connector together, rather than only the first match or a bare connector with no identity", () => {
+    const requirements = [
+      requirement({
+        attribute: "account-id",
+        required: true,
+        capabilities: [
+          { name: "cap-a", version: "1" },
+          { name: "cap-b", version: "1" },
+        ],
+      }),
+    ];
+    const capabilities = [
+      capability({ name: "cap-a", version: "1", connector: "conn-a", concept: "some-concept" }),
+      capability({ name: "cap-b", version: "1", connector: "conn-b", concept: "some-concept" }),
+    ];
+
+    const fields = deriveSubjectFields({ requirements, capabilities });
+
+    expect(fields[0]?.capabilities).toEqual([
+      { name: "cap-a", version: "1", connector: "conn-a", inputSchemaHint: "{}" },
+      { name: "cap-b", version: "1", connector: "conn-b", inputSchemaHint: "{}" },
+    ]);
+  });
+});
+
+describe("subjectPlaceholderNamesInConfiguration -- criterion 12: every '${subject:<attribute>}' placeholder, wherever it sits", () => {
   it("reads a placeholder embedded in the connector's own declared address", () => {
     const names = subjectPlaceholderNamesInConfiguration(
       JSON.stringify({ address: "https://api/${subject:account-id}/detail" }),
@@ -190,40 +277,5 @@ describe("subjectPlaceholderNamesInConfiguration -- criterion 2: every '${subjec
 
   it("contributes zero placeholder names for a connector configuration whose own registered text does not parse as a well-formed JSON object (this module's own inference)", () => {
     expect(subjectPlaceholderNamesInConfiguration("not json at all")).toEqual([]);
-  });
-});
-
-describe("deriveRequiredFields -- criterion 3: input_schema carried through as a free-text hint", () => {
-  it("passes the resolved capability's own input_schema through untouched, even where it is not itself valid JSON, rather than parsing or validating it", () => {
-    const manifest = [manifestEntry(1, ["some-concept"])];
-    const capabilities = [
-      capability({
-        name: "cap",
-        version: "2",
-        connector: "conn",
-        concept: "some-concept",
-        input_schema: "{ this is not valid json",
-      }),
-    ];
-    const connectorConfigurations = [connectorConfig("conn", { address: "${subject:x}" })];
-
-    const fields = deriveRequiredFields({ manifest, capabilities, connectorConfigurations });
-
-    expect(fields[0]?.inputSchemaHint).toBe("{ this is not valid json");
-  });
-});
-
-describe("collectionPlanFromManifest -- domain/knowledge/case-version's own collection-plan operation (this module's own inference)", () => {
-  it("returns the deduplicated union of every manifested entry's own collects, ordered by each entry's declared position rather than the array's own order", () => {
-    const manifest = [
-      manifestEntry(2, ["concept-b", "concept-c"]),
-      manifestEntry(1, ["concept-a", "concept-b"]),
-    ];
-
-    expect(collectionPlanFromManifest(manifest)).toEqual(["concept-a", "concept-b", "concept-c"]);
-  });
-
-  it("derives an empty plan, rather than throwing, for a version whose manifest has not been read back yet", () => {
-    expect(collectionPlanFromManifest(undefined)).toEqual([]);
   });
 });

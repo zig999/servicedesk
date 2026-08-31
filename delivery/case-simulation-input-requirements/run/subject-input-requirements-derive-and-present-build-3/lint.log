@@ -1,0 +1,13 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/servicedeskn1/frontend/app/src/routes/case-simulation-subject-panel.spec.ts
+  258:5   warning  Unused eslint-disable directive (no problems were reported from 'testing-library/no-node-access')
+  262:38  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+  262:38  error    Avoid direct Node access. Prefer using the methods from Testing Library                            testing-library/no-node-access
+
+✖ 3 problems (2 errors, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+
