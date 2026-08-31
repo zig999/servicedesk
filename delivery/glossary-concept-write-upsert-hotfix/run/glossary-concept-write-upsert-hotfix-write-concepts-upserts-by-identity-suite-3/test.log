@@ -1,0 +1,5 @@
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+node: .env.test: not found

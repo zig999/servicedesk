@@ -330,3 +330,112 @@ it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task pat
   const citationCount = source.split('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case').length - 1;
   expect(citationCount).toBeGreaterThanOrEqual(3);
 });
+
+// ------------------------------------------------------------------ task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity
+//
+// The mechanics half of this task's own fix, independent of any real database (this file's own
+// header explains the split): which statements writeConcepts now sends, and which it never sends
+// again. The real effect — that a referenced "concepts" row survives, that a referenced row's own
+// update succeeds, that a foreign key never breaks — is proven against a real database in this
+// file's own integration-level sibling.
+
+// ------------------------------------------------------------------ criterion 7, inference (no reimplementation of removal-by-absence as a scoped DELETE)
+
+it(
+  'never issues a DELETE against concepts — not an unfiltered one, and not one scoped to the given names either — no matter how many concepts are given',
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const { connection } = fakeTransactionConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.writeConcepts([
+      { name: 'a-concept', accepts: [], ttl: 60, description: 'a fixture concept' },
+      { name: 'another-concept', accepts: [], ttl: 90, description: 'another fixture concept' },
+    ]);
+
+    const deletesAgainstConcepts = recorded.filter((entry) => entry.text.includes('DELETE') && entry.text.includes('FROM concepts'));
+    expect(deletesAgainstConcepts).toEqual([]);
+  },
+);
+
+// ------------------------------------------------------------------ criterion 4, inference (INSERT ... ON CONFLICT DO UPDATE, never a SELECT-then-branch)
+
+it(
+  'runs exactly one statement against concepts per given concept, always the same upsert-by-identity INSERT ... ON CONFLICT (name) DO UPDATE, never a SELECT or any other form',
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const { connection } = fakeTransactionConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.writeConcepts([{ name: 'a-concept', accepts: [], ttl: 60, description: 'a fixture concept' }]);
+
+    const conceptsStatements = recorded.filter((entry) => entry.text.includes('concepts') && !entry.text.includes('concept_accepts'));
+    expect(conceptsStatements).toHaveLength(1);
+    expect(collapsedTexts(conceptsStatements)[0]).toBe(
+      'INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET ttl = EXCLUDED.ttl, description = EXCLUDED.description',
+    );
+  },
+);
+
+// ------------------------------------------------------------------ criterion 5, inference (every given concept's own accepts reconciled, not only one)
+
+it(
+  "reconciles concept_accepts once per given concept, each one's own DELETE and INSERTs carrying only that concept's own name — for every concept in the given array, not only the first",
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const { connection } = fakeTransactionConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.writeConcepts([
+      { name: 'concept-one', accepts: ['subject-one'], ttl: 60, description: 'concept one' },
+      { name: 'concept-two', accepts: ['subject-two'], ttl: 90, description: 'concept two' },
+    ]);
+
+    const acceptDeletes = recorded.filter((entry) => entry.text.includes('DELETE FROM concept_accepts'));
+    expect(collapsedTexts(acceptDeletes)).toEqual([
+      'DELETE FROM concept_accepts WHERE concept_name = $1',
+      'DELETE FROM concept_accepts WHERE concept_name = $1',
+    ]);
+    expect(acceptDeletes.map((entry) => entry.params)).toEqual([['concept-one'], ['concept-two']]);
+    const acceptInserts = recorded.filter((entry) => entry.text.includes('INSERT INTO concept_accepts'));
+    expect(acceptInserts.map((entry) => entry.params)).toEqual([
+      ['concept-one', 'subject-one'],
+      ['concept-two', 'subject-two'],
+    ]);
+  },
+);
+
+// ------------------------------------------------------------------ UNDERDETERMINED, from the task's own Notes: domain/investigation/evidence's
+// concept_description snapshot immutability. No criterion of this task pins it, so this proves the
+// actual fix directly — writeConcepts never touches investigation_evidence at all — by asserting no
+// statement it runs, for any given concept, ever names that table. An implementation that also
+// rewrote investigation_evidence.concept_description when a cited concept's own description changed
+// would still satisfy every criterion this task states, and would fail this test.
+
+it(
+  "issues no statement referencing investigation_evidence, even when a given concept's description differs from whatever was stored before — writeConcepts never touches that table, so an evidence item's own snapshotted concept_description is never at risk of being rewritten by this call",
+  async () => {
+    const recorded: { text: string; params?: readonly unknown[] }[] = [];
+    const { connection } = fakeTransactionConnection(async (text, params) => {
+      recorded.push({ text, params });
+      return { rows: [] };
+    });
+    const store = new RelationalGlossaryStore(connection);
+
+    await store.writeConcepts([
+      { name: 'a-concept', accepts: [], ttl: 60, description: 'a new description, different from whatever an evidence item snapshotted earlier' },
+    ]);
+
+    const referencingEvidence = recorded.filter((entry) => entry.text.includes('investigation_evidence'));
+    expect(referencingEvidence).toEqual([]);
+  },
+);

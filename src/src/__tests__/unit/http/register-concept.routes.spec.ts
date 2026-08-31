@@ -17,7 +17,10 @@
 // malformed request before registerConcept is ever reached.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
-import type { Concept, ConceptRegistration } from '../../../glossary/terms.js';
+import { GlossaryService } from '../../../glossary/glossary.service.js';
+import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
+import type { Concept, ConceptRegistration, GlossaryTerm } from '../../../glossary/terms.js';
+import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { RegisterConceptControllerDependencies } from '../../../http/register-concept.controller.js';
 import { createRegisterConceptRoutesPlugin } from '../../../http/register-concept.routes.js';
 
@@ -193,3 +196,67 @@ it(
     expect(built.registerConcept).not.toHaveBeenCalled();
   },
 );
+
+// ------------------------------------------------------------------ task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity
+//
+// rules/glossary/a-concept-declares-its-description's own stated outcome — "refused ... with an
+// HTTP 422 response reporting a ConceptDescriptionRequiredError" — proven here as the wire itself
+// answers it, on both paths this task's own Notes name: creating at a brand-new name, and replacing
+// at a name the glossary already holds. registerConcept is a stand-in everywhere else in this file
+// (TST-03); here the real GlossaryService runs behind the route instead, backed by a minimal
+// in-memory stand-in for the store boundary alone, and the app also wires the same error handler
+// buildApp.ts wires (setErrorHandler(handleUnexpectedError)) — the one place a domain error becomes a
+// transport status (COR-04) — so what these two tests observe is the actual wire outcome, never only
+// the service's own thrown class.
+
+/** A minimal store stand-in carrying only what GlossaryService.registerConcept itself reads and writes — the store boundary alone (TST-03); every other IGlossaryStore method is unreached by these two tests and answers trivially. */
+class MinimalGlossaryStore implements IGlossaryStore {
+  private concepts: readonly ConceptRegistration[];
+
+  public constructor(concepts: readonly ConceptRegistration[] = []) {
+    this.concepts = concepts;
+  }
+
+  public async readTerms(): Promise<readonly GlossaryTerm[]> {
+    return [];
+  }
+
+  public async writeTerms(): Promise<void> {}
+
+  public async insertMissingTerms(): Promise<void> {}
+
+  public async readConcepts(): Promise<readonly ConceptRegistration[]> {
+    return this.concepts;
+  }
+
+  public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
+    this.concepts = concepts;
+  }
+}
+
+/** One Fastify instance registering the real register-concept route behind a real GlossaryService, plus the same error handler buildApp.ts wires — so a thrown domain error reaches the wire exactly as production answers it, unlike buildTestApp()'s bare Fastify() with no error handler of its own. */
+function buildRealServiceApp(seed: readonly ConceptRegistration[] = []): FastifyInstance {
+  const glossary = new GlossaryService(new MinimalGlossaryStore(seed));
+  const app = Fastify();
+  app.setErrorHandler(handleUnexpectedError);
+  app.register(createRegisterConceptRoutesPlugin({ registerConcept: (registration) => glossary.registerConcept(registration) }));
+  return app;
+}
+
+it('answers 422 reporting a ConceptDescriptionRequiredError when a request creates a concept at a brand-new name with no description', async () => {
+  app = buildRealServiceApp();
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/glossary/concepts/a-new-name', payload: validBody() });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toMatchObject({ error: { code: 'ConceptDescriptionRequiredError' } });
+});
+
+it('answers 422 reporting a ConceptDescriptionRequiredError when a request replaces an already-held concept at its own name with no description', async () => {
+  app = buildRealServiceApp([{ name: 'a-held-name', accepts: ['a-subject-type'], ttl: 60, description: 'the concept as it was already held' }]);
+
+  const response = await app.inject({ method: 'PUT', url: '/v1/glossary/concepts/a-held-name', payload: validBody() });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toMatchObject({ error: { code: 'ConceptDescriptionRequiredError' } });
+});

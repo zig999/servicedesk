@@ -293,6 +293,25 @@ it('leaves the glossary\'s held concepts unchanged when a registration naming no
   ]);
 });
 
+it(
+  "leaves the already-held concept exactly as it was when a registration naming no description targets that very same, already-held name (criterion 2, the replace-at-an-existing-name path task/glossary-concept-write-upsert-hotfix's own Notes name)",
+  async () => {
+    const store = new InMemoryGlossaryStore([
+      { name: 'a-held-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An existing, already-described concept.' },
+    ]);
+    const glossary = new GlossaryService(store);
+
+    const refusal = await rejectionOf(
+      glossary.registerConcept({ name: 'a-held-concept', accepts: ['a-different-subject-type'] }),
+    );
+
+    expect(refusal).toBeInstanceOf(ConceptDescriptionRequiredError);
+    expect(await store.readConcepts()).toEqual([
+      { name: 'a-held-concept', accepts: ['a-subject-type'], ttl: 60, description: 'An existing, already-described concept.' },
+    ]);
+  },
+);
+
 it('succeeds for a concept registration naming a description, and the glossary\'s held concept for that name carries exactly that description (criterion 3)', async () => {
   const store = new InMemoryGlossaryStore();
   const glossary = new GlossaryService(store);

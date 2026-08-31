@@ -109,12 +109,13 @@ async function deleteTolerantly(text: string, params: readonly unknown[]): Promi
   }
 }
 
-let subjectTypesWrittenByThisTest: string[] = [];
-let subjectAttributesWrittenByThisTest: string[] = [];
-let outcomesWrittenByThisTest: string[] = [];
-let actionsWrittenByThisTest: string[] = [];
-let recipientsWrittenByThisTest: string[] = [];
-let conceptsWrittenByThisTest: string[] = [];
+const subjectTypesWrittenByThisTest: string[] = [];
+const subjectAttributesWrittenByThisTest: string[] = [];
+const outcomesWrittenByThisTest: string[] = [];
+const actionsWrittenByThisTest: string[] = [];
+const recipientsWrittenByThisTest: string[] = [];
+const conceptsWrittenByThisTest: string[] = [];
+const capabilitiesWrittenByThisTest: { name: string; version: string }[] = [];
 
 beforeAll(() => {
   pool = createDatabaseConnection(requireDatabaseUrl());
@@ -124,33 +125,35 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every row this file's own tests wrote, in an order that always satisfies concept_accepts' own foreign key, attempted individually and tolerantly (this file's header comment explains why). */
-async function cleanupWrittenRows(): Promise<void> {
+/** Deletes every row this file's own tests tracked as written to one table, by name, tolerating a foreign-key violation (this file's header comment explains why), then empties that tracking array. Pulled out of cleanupWrittenRows below only so that function's own body stays inside the standard's max-lines-per-function rule; the sequence and behavior are exactly what cleanupWrittenRows' own five near-identical per-vocabulary blocks ran before this split (this delivery's own inference — the extraction changes nothing but where the lines are counted). */
+async function deleteTrackedRows(table: string, column: string, trackedNames: string[]): Promise<void> {
+  if (trackedNames.length > 0) {
+    await deleteTolerantly(`DELETE FROM ${table} WHERE ${column} = ANY($1)`, [trackedNames]);
+  }
+  trackedNames.length = 0;
+}
+
+/** Deletes every capability, then every concept (and its own concept_accepts rows), this file's own tests wrote, in that order — capabilities.concept REFERENCES concepts(name) (migrations/0007-capability-concept.sql), so a capability referencing a concept must be gone before that concept's own row is deleted, or the concepts delete would itself hit the very foreign-key violation this task's own fix exists to keep out of writeConcepts. Pulled out of cleanupWrittenRows below only so that function's own body stays inside the standard's max-lines-per-function rule; the sequence and behavior are exactly what cleanupWrittenRows' own first two blocks ran before this split (this delivery's own inference — the extraction changes nothing but where the lines are counted). */
+async function cleanupCapabilitiesAndConcepts(): Promise<void> {
+  for (const capability of capabilitiesWrittenByThisTest) {
+    await deleteTolerantly('DELETE FROM capabilities WHERE name = $1 AND version = $2', [capability.name, capability.version]);
+  }
+  capabilitiesWrittenByThisTest.length = 0;
   if (conceptsWrittenByThisTest.length > 0) {
     await deleteTolerantly('DELETE FROM concept_accepts WHERE concept_name = ANY($1)', [conceptsWrittenByThisTest]);
     await deleteTolerantly('DELETE FROM concepts WHERE name = ANY($1)', [conceptsWrittenByThisTest]);
   }
-  if (subjectTypesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
-  }
-  if (subjectAttributesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM subject_attributes WHERE name = ANY($1)', [subjectAttributesWrittenByThisTest]);
-  }
-  if (outcomesWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM outcomes WHERE name = ANY($1)', [outcomesWrittenByThisTest]);
-  }
-  if (actionsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM actions WHERE name = ANY($1)', [actionsWrittenByThisTest]);
-  }
-  if (recipientsWrittenByThisTest.length > 0) {
-    await deleteTolerantly('DELETE FROM recipients WHERE name = ANY($1)', [recipientsWrittenByThisTest]);
-  }
-  subjectTypesWrittenByThisTest = [];
-  subjectAttributesWrittenByThisTest = [];
-  outcomesWrittenByThisTest = [];
-  actionsWrittenByThisTest = [];
-  recipientsWrittenByThisTest = [];
-  conceptsWrittenByThisTest = [];
+  conceptsWrittenByThisTest.length = 0;
+}
+
+/** Every row this file's own tests wrote, in an order that always satisfies concept_accepts' own foreign key, attempted individually and tolerantly (this file's header comment explains why). */
+async function cleanupWrittenRows(): Promise<void> {
+  await cleanupCapabilitiesAndConcepts();
+  await deleteTrackedRows('subject_types', 'name', subjectTypesWrittenByThisTest);
+  await deleteTrackedRows('subject_attributes', 'name', subjectAttributesWrittenByThisTest);
+  await deleteTrackedRows('outcomes', 'name', outcomesWrittenByThisTest);
+  await deleteTrackedRows('actions', 'name', actionsWrittenByThisTest);
+  await deleteTrackedRows('recipients', 'name', recipientsWrittenByThisTest);
 }
 
 afterEach(async () => {
@@ -162,6 +165,36 @@ function freshTerm(prefix: string, trackedIn: string[]): { name: string } {
   const name = `${prefix}-${randomUUID()}`;
   trackedIn.push(name);
   return { name };
+}
+
+/** One fresh, uniquely named capability (name, version), tracked in capabilitiesWrittenByThisTest for this file's own afterEach cleanup — every column capabilities requires beyond its own concept reference is a fixed, throwaway fixture value, since no test below reads any of them back. */
+function freshCapability(prefix: string): { name: string; version: string } {
+  const capability = { name: `${prefix}-${randomUUID()}`, version: '1.0.0' };
+  capabilitiesWrittenByThisTest.push(capability);
+  return capability;
+}
+
+/** Inserts one capability row referencing the given concept by name — capabilities.concept REFERENCES concepts(name) (migrations/0007-capability-concept.sql) — so that concept's own row becomes permanently referenced exactly the way this task's own bug report describes. */
+async function insertCapabilityReferencingConcept(capability: { name: string; version: string }, conceptName: string): Promise<void> {
+  await pool.query(
+    'INSERT INTO capabilities (name, version, nature, input_schema, output_schema, timeout, connector, concept) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+    [capability.name, capability.version, 'read-only', 'an-input-schema', 'an-output-schema', 5000, 'a-connector', conceptName],
+  );
+}
+
+/** Inserts one concept row (name, ttl, description), plus its own concept_accepts row when fields.acceptedSubjectType is given, then a fresh capability permanently referencing it via insertCapabilityReferencingConcept above — the referenced-concept shape this task's own bug report is about. Pulled out of the criterion-2/criterion-3 test below only so that test's own body stays inside the standard's max-lines-per-function rule; the sequence and behavior are exactly what that test's own setup ran before this split (this delivery's own inference — the extraction changes nothing but where the lines are counted). */
+async function seedConceptReferencedByCapability(
+  concept: { name: string },
+  fields: { ttl: number; description: string; acceptedSubjectType?: { name: string } },
+  capabilityPrefix: string,
+): Promise<{ name: string; version: string }> {
+  await pool.query('INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)', [concept.name, fields.ttl, fields.description]);
+  if (fields.acceptedSubjectType) {
+    await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [concept.name, fields.acceptedSubjectType.name]);
+  }
+  const capability = freshCapability(capabilityPrefix);
+  await insertCapabilityReferencingConcept(capability, concept.name);
+  return capability;
 }
 
 // ---------------------------------------------------------------- criterion 1
@@ -380,3 +413,120 @@ it('adds only the terms the outcomes table does not already hold, and leaves an 
   expect(held).toContain(alreadyHeld.name);
   expect(held).toContain(missing.name);
 });
+
+// ---------------------------------------------------------------- task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity
+//
+// The bug this task fixes, reproduced against this real database rather than only inferred from
+// the schema: writeConcepts used to run an unfiltered `DELETE FROM concepts` (and
+// `DELETE FROM concept_accepts`) before reinserting everything, which raises Postgres' own
+// foreign-key-violation the instant any row of "concepts" is permanently referenced by
+// capabilities.concept, investigation_evidence.concept or investigation_evaluation_citations.concept
+// (migrations/0007-capability-concept.sql, migrations/0005-investigation.sql) — exactly the
+// referencing capabilities builds below. Each test writes its own capability row so the concept it
+// names becomes permanently referenced the same way a real PUT /v1/glossary/concepts/:name request
+// would fail against today, before this fix.
+
+// ---------------------------------------------------------------- criterion 1, criterion 4
+
+it(
+  "creates a concept at a brand-new name without failing, and leaves a different, already-held concept — permanently referenced by a capability — exactly as it was, even though that referenced concept is not named anywhere in this call",
+  async () => {
+    const referencedConcept = freshTerm('glossary-write-concepts-referenced', conceptsWrittenByThisTest);
+    await pool.query('INSERT INTO concepts (name, ttl, description) VALUES ($1, $2, $3)', [
+      referencedConcept.name,
+      45,
+      'a permanently referenced concept',
+    ]);
+    const referencingCapability = freshCapability('glossary-write-concepts-referencing');
+    await insertCapabilityReferencingConcept(referencingCapability, referencedConcept.name);
+    const subjectType = freshTerm('glossary-write-concepts-subject-type', subjectTypesWrittenByThisTest);
+    await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [subjectType.name]);
+    const newConcept = freshTerm('glossary-write-concepts-new', conceptsWrittenByThisTest);
+    const store = new RelationalGlossaryStore(pool);
+
+    await store.writeConcepts([{ name: newConcept.name, accepts: [subjectType.name], ttl: 90, description: 'a brand new concept' }]);
+
+    const held = await store.readConcepts();
+    expect(held).toContainEqual({ name: newConcept.name, accepts: [subjectType.name], ttl: 90, description: 'a brand new concept' });
+    expect(held).toContainEqual({ name: referencedConcept.name, accepts: [], ttl: 45, description: 'a permanently referenced concept' });
+  },
+  15000,
+);
+
+// ---------------------------------------------------------------- criterion 2, criterion 3
+
+it(
+  "updates two already-held concepts in one call — each one's own row permanently referenced by its own capability — replacing each one's ttl, description and accepts exactly with the given values, without failing and without breaking either capability's own foreign key",
+  async () => {
+    const subjectTypeBefore = freshTerm('glossary-write-concepts-subject-before', subjectTypesWrittenByThisTest);
+    const subjectTypeAfter = freshTerm('glossary-write-concepts-subject-after', subjectTypesWrittenByThisTest);
+    await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [subjectTypeBefore.name, subjectTypeAfter.name]);
+    const conceptA = freshTerm('glossary-write-concepts-a', conceptsWrittenByThisTest);
+    const conceptB = freshTerm('glossary-write-concepts-b', conceptsWrittenByThisTest);
+    const capabilityA = await seedConceptReferencedByCapability(conceptA, { ttl: 30, description: 'concept a, before its update', acceptedSubjectType: subjectTypeBefore }, 'glossary-write-concepts-cap-a');
+    const capabilityB = await seedConceptReferencedByCapability(conceptB, { ttl: 40, description: 'concept b, before its update' }, 'glossary-write-concepts-cap-b');
+    const store = new RelationalGlossaryStore(pool);
+
+    await store.writeConcepts([
+      { name: conceptA.name, accepts: [subjectTypeAfter.name], ttl: 300, description: 'concept a, after its update' },
+      { name: conceptB.name, accepts: [], ttl: 400, description: 'concept b, after its update' },
+    ]);
+
+    const held = await store.readConcepts();
+    expect(held).toContainEqual({ name: conceptA.name, accepts: [subjectTypeAfter.name], ttl: 300, description: 'concept a, after its update' });
+    expect(held).toContainEqual({ name: conceptB.name, accepts: [], ttl: 400, description: 'concept b, after its update' });
+    const { rows: capabilityRows } = await pool.query<{ name: string; concept: string }>('SELECT name, concept FROM capabilities WHERE name = ANY($1)', [[capabilityA.name, capabilityB.name]]);
+    expect(capabilityRows).toEqual(expect.arrayContaining([
+      { name: capabilityA.name, concept: conceptA.name },
+      { name: capabilityB.name, concept: conceptB.name },
+    ]));
+    expect(capabilityRows).toHaveLength(2);
+  },
+  15000,
+);
+
+// ---------------------------------------------------------------- criterion 5
+
+it(
+  "reconciles one concept's own concept_accepts rows through writeConcepts without ever touching a different concept's own rows, even though that other concept is not named anywhere in this call and shares the very same subject type",
+  async () => {
+    const sharedSubjectType = freshTerm('glossary-write-concepts-subject-shared', subjectTypesWrittenByThisTest);
+    const replacementSubjectType = freshTerm('glossary-write-concepts-subject-replacement', subjectTypesWrittenByThisTest);
+    await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [sharedSubjectType.name, replacementSubjectType.name]);
+    const changedConcept = freshTerm('glossary-write-concepts-changed', conceptsWrittenByThisTest);
+    const untouchedConcept = freshTerm('glossary-write-concepts-untouched', conceptsWrittenByThisTest);
+    await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60), ($2, 60)', [changedConcept.name, untouchedConcept.name]);
+    await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $3), ($2, $3)', [
+      changedConcept.name,
+      untouchedConcept.name,
+      sharedSubjectType.name,
+    ]);
+    const store = new RelationalGlossaryStore(pool);
+
+    await store.writeConcepts([{ name: changedConcept.name, accepts: [replacementSubjectType.name], ttl: 60, description: '' }]);
+
+    const held = await store.readConcepts();
+    expect(held).toContainEqual({ name: changedConcept.name, accepts: [replacementSubjectType.name], ttl: 60, description: '' });
+    expect(held).toContainEqual({ name: untouchedConcept.name, accepts: [sharedSubjectType.name], ttl: 60, description: '' });
+  },
+  15000,
+);
+
+// ---------------------------------------------------------------- criterion 8
+
+it(
+  "never ends up holding one concept name in two rows, even when the given array names it twice in one call — concepts.name's own primary key resolves it to exactly one row, carrying the second entry's own values",
+  async () => {
+    const concept = freshTerm('glossary-write-concepts-duplicate-name', conceptsWrittenByThisTest);
+    const store = new RelationalGlossaryStore(pool);
+
+    await store.writeConcepts([
+      { name: concept.name, accepts: [], ttl: 10, description: 'first entry, in the same call' },
+      { name: concept.name, accepts: [], ttl: 20, description: 'second entry, in the same call' },
+    ]);
+
+    const { rows } = await pool.query<{ ttl: number; description: string }>('SELECT ttl, description FROM concepts WHERE name = $1', [concept.name]);
+    expect(rows).toEqual([{ ttl: 20, description: 'second entry, in the same call' }]);
+  },
+  15000,
+);
