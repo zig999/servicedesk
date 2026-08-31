@@ -26,6 +26,14 @@
       "task": "task/subject-input-requirements/expose-malformed-capability-identities"
     },
     {
+      "id": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement.md",
+      "title": "Hold the simulate dispatch open where a requirement's own input is empty",
+      "summary": "Removes isReady's requiredFields.every(...) conjunct in use-simulation-subject.ts so a required requirement's own empty input no longer refuses either dispatch, while the requester and at-least-one-attribute conjuncts stay untouched.",
+      "task": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement"
+    },
+    {
       "id": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
       "kind": "implementation",
       "file": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing.md",
@@ -64,6 +72,14 @@
       "title": "Proof for exposing malformed-capability-identities on the simulation subject state",
       "summary": "Renders useSimulationSubject directly through renderHook against a stubbed global fetch, proving all three criteria and the UNDERDETERMINED note over deriving the list from the read alone, split into a sibling .spec.ts file to stay under this project's own max-lines rule.",
       "task": "task/subject-input-requirements/expose-malformed-capability-identities"
+    },
+    {
+      "id": "proof/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement.md",
+      "title": "Hold the simulate dispatch open for a missing requirement -- test proof",
+      "summary": "Corrects the one pre-existing hook-level test whose assertion this task's own isReady change makes wrong, and adds hook-level and cockpit-level tests proving that a required case-input-requirement's own empty input no longer refuses the simulate-case or simulate-hypothesis dispatch, that a requirement's mere presence never gates either dispatch, and that the requirement's own required flag still survives the read even though the gate stopped consulting it -- while confirming criteria 4-6 are already covered and adding nothing redundant for them.",
+      "task": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement"
     },
     {
       "id": "proof/subject-input-requirements/present-each-requirement-with-its-required-standing",
@@ -168,6 +184,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-simulation-carries-its-requester",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "rules/investigation/a-subject-carries-at-least-one-attribute",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/subject-input-requirements/present-each-requirement-with-its-required-standing",
       "to": "rules/investigation/a-composed-subject-presents-every-case-input-requirement",
       "kind": "encodes",
@@ -224,6 +270,12 @@
     {
       "from": "proof/subject-input-requirements/expose-malformed-capability-identities",
       "to": "implementation/subject-input-requirements/expose-malformed-capability-identities",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
+      "to": "implementation/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement",
       "kind": "proves",
       "at": "the path"
     },

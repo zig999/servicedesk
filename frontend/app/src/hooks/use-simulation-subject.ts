@@ -51,15 +51,15 @@
  * per-hypothesis dispatch against the one instance this hook returns is what keeps the
  * derived subject and its readiness identical between them.
  *
- * `isReady`'s own gating still reads every entry in `requiredFields` (unchanged, this task's
- * own "do not touch the dispatch gating" boundary) even though that array now also carries a
- * requirement this read names optional (criterion 1: "required and optional alike") --
- * rules/investigation/a-composed-subject-presents-every-case-input-requirement's own clause
- * that "only a required flag, never an attribute's mere presence in this set, gates whether
- * its own input blocks the call" reaches no criterion of this task (this task's own Notes,
- * REMAINDER); it belongs to the sibling task that gates the simulate-case and
- * simulate-hypothesis dispatch on the composed fields, which this hook's own `required` flag
- * on each field (carried through unchanged, criterion 2) is what that task reads.
+ * `isReady`'s own gating no longer reads `requiredFields` at all --
+ * task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement,
+ * the sibling task this paragraph used to name forward to, removed that read (that task's own
+ * criteria 1-3): rules/investigation/a-composed-subject-presents-every-case-input-requirement's
+ * own clause that "only a required flag, never an attribute's mere presence in this set, gates
+ * whether its own input blocks the call" is what that removal answers to. Each field's own
+ * `required` flag (carried through unchanged, criterion 2 of the task that derived
+ * `requiredFields` in the first place) is still presented on every field this hook returns --
+ * only the gate stopped reading it, and stopped reading each field's own typed value too.
  *
  * task/subject-input-requirements/expose-malformed-capability-identities: apart from
  * `requiredFields`, this hook's own returned state also carries
@@ -212,15 +212,23 @@ export function useSimulationSubject(
     attributes: mergedAttributes(requiredFields, addedAttributes),
   };
 
-  // Criteria 5-6: readiness is false while the requester or any derived required field is
-  // empty, and never true for a subject holding zero attribute-values -- even where the
-  // derivation names no field at all
-  // (rules/investigation/a-subject-carries-at-least-one-attribute). Unchanged by this task
-  // (this file's own header comment on the dispatch-gating boundary).
-  const isReady =
-    requester.trim() !== "" &&
-    requiredFields.every((field) => field.value.trim() !== "") &&
-    subject.attributes.length > 0;
+  // task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement:
+  // readiness no longer counts a single derived required field's own emptiness -- the
+  // `requiredFields.every(...)` conjunct this hook's own earlier revision held here is removed
+  // (rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses: a
+  // simulate-case or simulate-hypothesis call is never refused for a subject omitting an
+  // attribute-value a requirement names required, the concept that requirement answers
+  // degrading to unavailable instead). A requirement's own required flag keeps gating nothing
+  // about dispatch either way -- criterion 3, and this hook never read the flag itself even
+  // before this change, only each field's own typed value -- so removing the conjunct also
+  // satisfies "a requirement's mere presence in the derived set is never a reason either
+  // dispatch is refused" without any further change here.
+  // What stays, unchanged (criteria 4-5): the requester's own emptiness still refuses
+  // (`requester.trim() !== ""`), and a subject holding no attribute-value at all still never
+  // dispatches (`subject.attributes.length > 0`,
+  // rules/investigation/a-subject-carries-at-least-one-attribute) -- neither conjunct is
+  // touched, only the one naming `requiredFields` is dropped.
+  const isReady = requester.trim() !== "" && subject.attributes.length > 0;
 
   return {
     requiredFields,

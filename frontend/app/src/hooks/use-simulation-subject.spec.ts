@@ -130,7 +130,7 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
     expect(result.current.isReady).toBe(false);
   });
 
-  it("stays not-ready while a derived required field is empty, even once the requester holds a value", async () => {
+  it("turns ready once the requester and a curator-added attribute-value are both present, even though the one derived required field's own input stays empty (task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement, criteria 1-2: readiness no longer refuses for a required requirement's own empty input -- this test replaces a pre-existing assertion of the opposite, which this task's own change makes wrong)", async () => {
     stubFetch();
     const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
@@ -139,9 +139,18 @@ describe("useSimulationSubject -- criteria 5-6: readiness", () => {
 
     act(() => {
       result.current.onRequesterChange("someone");
+      result.current.onAddAttribute();
+    });
+    const rowId = result.current.addedAttributes[0]?.id;
+    act(() => {
+      if (rowId !== undefined) result.current.onAttributeChange(rowId, "attribute", "case-priority");
+    });
+    act(() => {
+      if (rowId !== undefined) result.current.onAttributeChange(rowId, "value", "high");
     });
 
-    expect(result.current.isReady).toBe(false);
+    expect(result.current.requiredFields[0]?.value).toBe("");
+    expect(result.current.isReady).toBe(true);
   });
 
   it("turns ready once every derived required field and the requester hold a non-empty value", async () => {

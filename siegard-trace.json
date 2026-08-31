@@ -4555,7 +4555,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:dd2b331fae104ffc87d7aa112065e960e56000451fcb26dbfced89ac974a1833"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
@@ -4636,6 +4636,26 @@
         {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses",
+      "digest": "sha256:0f0f7633e31f7511412b8f090fe2ddae458fed3cac778eacb2079ef30686fdc2",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:dd2b331fae104ffc87d7aa112065e960e56000451fcb26dbfced89ac974a1833"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-simulation-carries-its-requester",
+      "digest": "sha256:179059455c894c577a036c1a92a541f71bd6e238d9b26b1f14385983c8ddea83",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-simulation-subject.ts",
+          "digest": "sha256:dd2b331fae104ffc87d7aa112065e960e56000451fcb26dbfced89ac974a1833"
         }
       ]
     },
@@ -4739,7 +4759,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
-          "digest": "sha256:aa0dff38028391381ac674c3f9bb13d24a38089a5a053cb61f63d3f624c87c39"
+          "digest": "sha256:dd2b331fae104ffc87d7aa112065e960e56000451fcb26dbfced89ac974a1833"
         },
         {
           "path": "src/src/errors/subject-carries-no-attribute.error.ts",
