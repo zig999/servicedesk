@@ -3,10 +3,18 @@
 // RelationalConnectorConfigurationStore's own mechanics are observed independently of any real
 // database: which statement text and params reach the connection, how a read row maps onto a
 // ConnectorConfiguration, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK happen relative to
-// writeConnectorConfigurations' own whole replace, and how a driver failure reaches the caller as
-// this store's own typed error. The real-effect half — that a write actually persists and that a
-// whole replace really rolls back together against a real constraint — is proven separately,
+// writeConnectorConfigurations' own per-identity upsert, and how a driver failure reaches the
+// caller as this store's own typed error. The real-effect half — that a write actually persists
+// and that a batch really rolls back together against a real constraint — is proven separately,
 // against a real database, in this file's own integration-level sibling.
+//
+// The two write-mechanics tests below were rewritten for
+// task/connector-configuration-write-upsert-hotfix: writeConnectorConfigurations no longer issues
+// a table-wide DELETE followed by one INSERT per kept-and-incoming configuration; it now issues
+// one INSERT ... ON CONFLICT (connector) DO UPDATE per given configuration, and no DELETE
+// statement at all, ever — the same reconciliation
+// relational-capability-store.repository.spec.ts's own unit sibling already carries for
+// task/capability-registry-write-upsert-hotfix's identical shape.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
@@ -96,9 +104,9 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect((caught as Error).cause).toBe(driverFailure);
 });
 
-// ---------------------------------------------------------------- write mechanics: whole replace inside one transaction
+// ---------------------------------------------------------------- write mechanics: per-identity upsert inside one transaction, task/connector-configuration-write-upsert-hotfix criteria 1-3
 
-it('deletes every existing row and inserts exactly the given configurations, in that order, inside one transaction', async () => {
+it('upserts each given configuration by its own connector identity, inside one transaction, and never sends a DELETE', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection, client } = fakeTransactionConnection(async (text, params) => {
     recorded.push({ text, params });
@@ -114,16 +122,18 @@ it('deletes every existing row and inserts exactly the given configurations, in 
 
   const texts = collapsedTexts(recorded);
   expect(texts[0]).toBe('BEGIN');
-  expect(texts[1]).toContain('DELETE FROM connector_configurations');
+  expect(texts[1]).toContain('INSERT INTO connector_configurations');
+  expect(texts[1]).toContain('ON CONFLICT (connector) DO UPDATE');
   expect(texts[2]).toContain('INSERT INTO connector_configurations');
-  expect(texts[3]).toContain('INSERT INTO connector_configurations');
-  expect(texts[4]).toBe('COMMIT');
-  expect(recorded[2]?.params).toEqual(['a-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
-  expect(recorded[3]?.params).toEqual(['another-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
+  expect(texts[2]).toContain('ON CONFLICT (connector) DO UPDATE');
+  expect(texts[3]).toBe('COMMIT');
+  expect(texts.some((text) => text.includes('DELETE'))).toBe(false);
+  expect(recorded[1]?.params).toEqual(['a-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
+  expect(recorded[2]?.params).toEqual(['another-connector', JSON.stringify({ method: 'GET', address: 'https://example.test' })]);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
-it('issues only the DELETE and still commits, when replacing the whole table with an empty set', async () => {
+it('sends no statement but BEGIN and COMMIT, and in particular no DELETE, when writing an empty set', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection, client } = fakeTransactionConnection(async (text, params) => {
     recorded.push({ text, params });
@@ -133,7 +143,7 @@ it('issues only the DELETE and still commits, when replacing the whole table wit
 
   await store.writeConnectorConfigurations([]);
 
-  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'DELETE FROM connector_configurations', 'COMMIT']);
+  expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 

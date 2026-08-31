@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "implementation",
+      "file": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
+      "title": "writeConnectorConfigurations upserts by identity instead of deleting the whole table",
+      "summary": "RelationalConnectorConfigurationStore.writeConnectorConfigurations now upserts each given configuration by its own connector identity through INSERT ... ON CONFLICT (connector) DO UPDATE, issuing no DELETE at all, so registering or rewriting a connector configuration never removes any row belonging to a different connector.",
+      "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
+    },
+    {
+      "id": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "proof",
+      "file": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
+      "title": "writeConnectorConfigurations upserts by connector identity, without a whole-table DELETE",
+      "summary": "Proves that writeConnectorConfigurations never issues an unfiltered DELETE, never touches a row belonging to a different connector, upserts a rewritten identity in place, and — against the UNDERDETERMINED append-only candidate the task's Notes name — leaves exactly one row per connector after two writes to the same identity; reconciles both pre-existing specs off the removed delete-and-reinsert mechanics.",
+      "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "to": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

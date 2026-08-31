@@ -816,6 +816,10 @@
           "digest": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff"
         },
         {
+          "path": "src/src/connector-registry/connector-configuration-store.port.ts",
+          "digest": "sha256:68c02f5c32bf1d37f90c22542796a94940fd8c4a9d1e4de4f15e61a1c272b858"
+        },
+        {
           "path": "src/src/errors/status-map.ts",
           "digest": "sha256:226a593524117f1fc3b9af85ae602988092f7f2159641c12aa4ba21cb2478474"
         },
@@ -854,6 +858,10 @@
         {
           "path": "src/src/http/register-connector.routes.ts",
           "digest": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:89ebe71c8978658142cd95fb35c92eb5eec04b2511c60660de5292811293bbb8"
         }
       ]
     },
@@ -2243,7 +2251,7 @@
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
-          "digest": "sha256:95e94695c135f381c55192f058535747b2a06902bc6c9e30924d5a5879a094ce"
+          "digest": "sha256:89ebe71c8978658142cd95fb35c92eb5eec04b2511c60660de5292811293bbb8"
         }
       ]
     },
@@ -2278,6 +2286,10 @@
         {
           "path": "src/src/http/build-app.ts",
           "digest": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb"
+        },
+        {
+          "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
+          "digest": "sha256:89ebe71c8978658142cd95fb35c92eb5eec04b2511c60660de5292811293bbb8"
         }
       ]
     },
