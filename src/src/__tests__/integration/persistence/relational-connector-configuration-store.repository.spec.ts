@@ -120,6 +120,35 @@ it('answers a rewritten connector with its new value at the very next read, neve
   expect(answered).toEqual([rewritten]);
 });
 
+// The two tests above each observe one half of criterion 2 alone: the first only ever holds the
+// rewritten identity in the table (afterEach wipes it between tests), and the two-identity test
+// above it writes a brand-new second identity, never rewrites an already-registered one. Neither
+// observes, against the real database, a different connector's row surviving the rewrite of
+// another already-registered connector. The test below does, proving both halves of criterion 2
+// together: the rewritten identity reads back its new value, and the untouched one reads back
+// exactly what it already held.
+
+it('rewrites connector-a in place and leaves connector-b, a different, already-registered connector, exactly as it was', async () => {
+  const store = new RelationalConnectorConfigurationStore(pool);
+  const connectorA = connectorConfigurationRecord({ connector: 'connector-a' });
+  const connectorB = connectorConfigurationRecord({
+    connector: 'connector-b',
+    configuration: JSON.stringify({ method: 'POST', address: 'https://example.test/b' }),
+  });
+  await store.writeConnectorConfigurations([connectorA]);
+  await store.writeConnectorConfigurations([connectorB]);
+
+  const rewrittenA = {
+    ...connectorA,
+    configuration: JSON.stringify({ method: 'PUT', address: 'https://example.test/a-rewritten' }),
+  };
+  await store.writeConnectorConfigurations([rewrittenA]);
+  const answered = await store.readConnectorConfigurations();
+
+  expect(answered.find((configuration) => configuration.connector === connectorB.connector)).toEqual(connectorB);
+  expect(answered.find((configuration) => configuration.connector === connectorA.connector)).toEqual(rewrittenA);
+});
+
 // ---------------------------------------------------------------- UNDERDETERMINED, from the specification —
 // an append-only writer that never updates or deletes a row is excluded: after two writes to the
 // same connector identity, the table holds exactly one row for that name (not two), which is the
@@ -194,7 +223,15 @@ it('excludes a write with no configuration payload: the write is refused by the 
   await expect(store.readConnectorConfigurations()).resolves.toEqual([]);
 });
 
-// ---------------------------------------------------------------- inference: no transport-specific column
+// ---------------------------------------------------------------- constraints/the-stored-schema-mirrors-the-declared-model
+//
+// domain/integration/connector-configuration declares exactly two attributes — connector and
+// configuration — and constrains configuration's own shape no further than "a well-formed JSON
+// object"; a transport-specific column such as a method or an address is excluded by the node
+// itself, not inferred by this test. The test below pairs connector_configurations' own columns
+// against those two declared attributes, the fitness constraints/the-stored-schema-mirrors-the-declared-model
+// states: a column pairing with no declared attribute, and a declared attribute no column holds,
+// are both departures.
 
 it('holds only the connector and configuration columns — no transport-specific column such as a method or an address', async () => {
   const { rows } = await pool.query<{ column_name: string }>(

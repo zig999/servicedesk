@@ -13,8 +13,8 @@
       "id": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
       "kind": "proof",
       "file": "proof/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity.md",
-      "title": "writeConnectorConfigurations upserts by connector identity, without a whole-table DELETE",
-      "summary": "Proves that writeConnectorConfigurations never issues an unfiltered DELETE, never touches a row belonging to a different connector, upserts a rewritten identity in place, and — against the UNDERDETERMINED append-only candidate the task's Notes name — leaves exactly one row per connector after two writes to the same identity; reconciles both pre-existing specs off the removed delete-and-reinsert mechanics.",
+      "title": "writeConnectorConfigurations upserts by identity — full proof",
+      "summary": "Tests proving the corrected connector-configuration store upserts by connector identity, deletes nothing, and satisfies the corrective task's three criteria, rewritten whole to close the coverage gap on criterion 2 and to relabel the schema-fitness test the review found mislabeled as an inference.",
       "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
     },
     {
