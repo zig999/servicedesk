@@ -21,6 +21,18 @@ import type { SimulationSubjectState } from "../hooks/use-simulation-subject";
  * subject-attribute glossary, and a link to view the assembled subject as
  * raw JSON.
  *
+ * Also discloses, in its own section right below the requirement list, every
+ * capability state.capabilitiesWithMalformedInputSchema names -- by its own
+ * name and version alone, never its connector or answered concept
+ * (domain/knowledge/case-input-requirement, rules/investigation/a-composed-
+ * subjects-interface-discloses-a-malformed-capability, task/subject-input-
+ * requirements/disclose-malformed-capabilities-to-the-curator) -- so a
+ * curator can see why a concept in this version's plan is asking them for
+ * nothing at all. This disclosure gates and removes nothing from the
+ * requirement list above or from either dispatch, and a read naming no such
+ * capability renders nothing here at all, not even an empty-state message
+ * the way the requirement list states its own emptiness explicitly.
+ *
  * Presentational and props-driven (ARC-02/ARC-03), mirroring
  * connector-test-panel-fields.tsx's own established shape for a hook's whole
  * returned state consumed by a fields component: every field, handler and
@@ -223,6 +235,46 @@ export function CaseSimulationSubjectPanel({
           )}
         </div>
       )}
+
+      {!state.isLoadingRegistries &&
+        !state.isRegistriesError &&
+        state.capabilitiesWithMalformedInputSchema.length > 0 && (
+          // Criterion 1 (rules/investigation/a-composed-subjects-interface-
+          // discloses-a-malformed-capability, task/subject-input-requirements/
+          // disclose-malformed-capabilities-to-the-curator): every capability
+          // the case-input-requirements read names apart from the requirement
+          // set because its own stored input schema does not currently hold a
+          // well-formed shape, disclosed by identity alone -- name and
+          // version, never its connector or answered concept (this task's own
+          // UNDERDETERMINED note against domain/knowledge/case-input-
+          // requirement's "that is the whole of what reaches the person
+          // composing a subject about it"). Gated on the same registry-
+          // loading/error flags the requirement list above reads, since
+          // useCaseInputRequirements resolves this same array to `[]` while
+          // either read is unsettled (use-case-input-requirements.ts); an
+          // empty array already renders nothing below regardless (criterion
+          // 4), so this gate only keeps the section from flashing empty
+          // during a load. Renders no heading at all when the array is
+          // empty -- never an empty-state message the way the requirement
+          // list above states its own emptiness explicitly -- and touches
+          // neither the requirement list, the dispatch buttons nor their
+          // enabled/disabled state (criteria 2-3).
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">
+              Asking for nothing at all — their own stored input schema holds no well-formed shape:
+            </p>
+            <ul className="flex flex-col gap-1">
+              {state.capabilitiesWithMalformedInputSchema.map((capability) => (
+                <li
+                  key={`${capability.name}-${capability.version}`}
+                  className="text-sm text-muted-foreground"
+                >
+                  {capability.name} {capability.version}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
       <div className="flex flex-col gap-3">
         {state.addedAttributes.map((row) => (

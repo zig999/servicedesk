@@ -1981,7 +1981,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
         },
         {
           "path": "frontend/app/src/routes/route-tree.tsx",
@@ -3289,7 +3289,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
-          "digest": "sha256:6a1e1dfed3f8aaf05ac4510c3e08450bd0214703a70afa2953879949337bc59b"
+          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
         },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
@@ -4564,6 +4564,16 @@
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
           "digest": "sha256:33bda2d673f69faf007cb1b7ca5d99cf4d1cb5ecd5b6341f538e071bd2e5ce16"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "digest": "sha256:46199eed86323d3dc1e1df8d6596bcfdbc1db720cd145314eb54f9002c76e9ee",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
         }
       ]
     },
@@ -5994,6 +6004,16 @@
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
           "digest": "sha256:e9e21545d0633f59aaf015847cccafc6cf268db6778bbed7fdc7f8ac9603e5b8"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator",
+      "digest": "sha256:0745d8785ac1b9940400b21627aa3e4bb4049dee789b6a53250c2f1aad0cbb2f",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
+          "digest": "sha256:e3fd33ed80ac5a8c2a881bd4456faf8a5057a381a285882c2aa6d7455092a441"
         }
       ]
     },

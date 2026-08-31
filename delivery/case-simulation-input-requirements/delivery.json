@@ -10,6 +10,14 @@
       "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
     },
     {
+      "id": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "kind": "implementation",
+      "file": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator.md",
+      "title": "Disclose a malformed capability to the composing curator",
+      "summary": "The Subject region now renders a section listing every capability state.capabilitiesWithMalformedInputSchema names, by name and version alone, and renders nothing when that array is empty.",
+      "task": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator"
+    },
+    {
       "id": "implementation/subject-input-requirements/expose-malformed-capability-identities",
       "kind": "implementation",
       "file": "implementation/subject-input-requirements/expose-malformed-capability-identities.md",
@@ -40,6 +48,14 @@
       "title": "Proof for deriving the Subject region's fields from case-input-requirements",
       "summary": "deriveSubjectFields and useSimulationSubject are proved directly against the pure derivation, the pinned slug/version threading, and the two composed registry reads, with subjectPlaceholderNamesInConfiguration's own pre-existing tests confirmed unchanged.",
       "task": "task/subject-input-requirements/derive-subject-fields-from-input-requirements"
+    },
+    {
+      "id": "proof/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "kind": "proof",
+      "file": "proof/subject-input-requirements/disclose-malformed-capabilities-to-the-curator.md",
+      "title": "Disclosure of a malformed capability's identity in the Subject panel",
+      "summary": "New spec file proving the four criteria of disclose-malformed-capabilities-to-the-curator over CaseSimulationSubjectPanel's new state.capabilitiesWithMalformedInputSchema section.",
+      "task": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator"
     },
     {
       "id": "proof/subject-input-requirements/expose-malformed-capability-identities",
@@ -100,6 +116,36 @@
     {
       "from": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
       "to": "task/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "domain/integration/capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "domain/knowledge/case-input-requirement",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "scenarios/investigation/a-malformed-capability-is-disclosed-to-the-composing-curator",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
       "kind": "implements",
       "at": "the path"
     },
@@ -166,6 +212,12 @@
     {
       "from": "proof/subject-input-requirements/derive-subject-fields-from-input-requirements",
       "to": "implementation/subject-input-requirements/derive-subject-fields-from-input-requirements",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
+      "to": "implementation/subject-input-requirements/disclose-malformed-capabilities-to-the-curator",
       "kind": "proves",
       "at": "the path"
     },
