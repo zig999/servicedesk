@@ -1,0 +1,106 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/glossary-concept-write-upsert-hotfix",
+      "kind": "epic",
+      "file": "epic/glossary-concept-write-upsert-hotfix.md",
+      "title": "Glossary concept write upsert hotfix",
+      "summary": "A tarefa corretiva única que corrige o writeConcepts do glossário de concepts para não derrubar a tabela inteira ao salvar."
+    },
+    {
+      "id": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "kind": "task",
+      "file": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity.md",
+      "title": "writeConcepts upserta por identidade, sem apagar a tabela inteira",
+      "summary": "Corrige RelationalGlossaryStore.writeConcepts para não fazer DELETE sem filtro nas tabelas concepts e concept_accepts, permitindo salvar qualquer concept mesmo quando outro já tem evidência associada.",
+      "epic": "glossary-concept-write-upsert-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/glossary-concept-write-upsert-hotfix",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "contracts/glossary/glossary-authoring",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "rules/glossary/a-vocabulary-holds-each-name-once",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity",
+      "to": "rules/glossary/a-concept-declares-its-description",
+      "kind": "implements",
+      "at": "implements[6]"
+    }
+  ]
+}
