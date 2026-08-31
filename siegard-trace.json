@@ -938,12 +938,16 @@
           "digest": "sha256:f05920fe27254704c074fbffc7f1446b5a566194e04f43c63255dc431c935735"
         },
         {
+          "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
+          "digest": "sha256:05a849d1e3b4fa992e1d9c0af44ead8d0f7d52b4c7cec01b7a0bf467bf5fca9d"
+        },
+        {
           "path": "frontend/app/src/routes/case-simulation-detail-panel.tsx",
           "digest": "sha256:3e0c4a1fa8108e54682fb22a4d40ec839d01c98b0b6cf2fab605b194dd27a190"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:82c305a425497cceef894174e9efd5998f10bd89c640aa3091dfe7fc492e3342"
+          "digest": "sha256:b5b391d51850aab765aa71aefad602b4f87e4d8c9e5c94321f4bb66095afee87"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -2537,7 +2541,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:bf75d1a3012534efe676c76785e02ddeaf05f3ea92eafe7c986a7829857405b7"
+          "digest": "sha256:05a849d1e3b4fa992e1d9c0af44ead8d0f7d52b4c7cec01b7a0bf467bf5fca9d"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",
@@ -2553,7 +2557,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-types.ts",
-          "digest": "sha256:82c305a425497cceef894174e9efd5998f10bd89c640aa3091dfe7fc492e3342"
+          "digest": "sha256:b5b391d51850aab765aa71aefad602b4f87e4d8c9e5c94321f4bb66095afee87"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -2673,7 +2677,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-simulation-cockpit-adapters.ts",
-          "digest": "sha256:7a76ae8895a9a32823391764795894afea846ee643ab69c11e0a8e686cb90ef7"
+          "digest": "sha256:05a849d1e3b4fa992e1d9c0af44ead8d0f7d52b4c7cec01b7a0bf467bf5fca9d"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-detail-evidence-tab.tsx",

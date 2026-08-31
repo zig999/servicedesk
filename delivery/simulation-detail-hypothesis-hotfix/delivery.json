@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "kind": "implementation",
+      "file": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt.md",
+      "title": "Wire hypothesis-simulation evidence and judgment-call data through to the Detail panel",
+      "summary": "A single-hypothesis simulation's own evidence array now reaches the Detail panel's Evidence tab and a normalized evaluation's own usage/elapsed_ms/prompt now reach its Prompt tab for both a hypothesis-sourced and a case-sourced selection, with three pre-existing spec files whose call sites predated these two functions' new required parameters updated to pass them explicitly.",
+      "task": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt"
+    },
+    {
+      "id": "proof/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "kind": "proof",
+      "file": "proof/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt.md",
+      "title": "Proof that a single-hypothesis simulation's evidence and prompt reach the Detail panel",
+      "summary": "Three spec files prove the fix at three levels -- the composed hook, the adapters, and the rendered Detail panel -- covering all seven criteria of wire-hypothesis-evidence-and-prompt, including the case-sourced non-regression criteria.",
+      "task": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "contracts/investigation/case-simulation",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "to": "implementation/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
