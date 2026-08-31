@@ -1443,4 +1443,39 @@ entries:
       reasoning that what someone is told at an outcome is the business's own decision, and that an
       unexplained emptiness leaves the reader unable to tell absence from breakage, transfers
       unchanged.
+  - location: rules/glossary/a-registered-concept-is-never-removed.md
+    field: statement
+    unstated: >-
+      Whether registering concepts may remove a concept already held, and whether a concept a
+      registered capability answers, a collected evidence item or its citation names, or a case
+      version's manifested hypothesis-revision collects may ever be removed from the glossary --
+      contracts/glossary/glossary-authoring states only that register-concept creates or replaces
+      the named concept, and is silent on every concept the call does not name.
+    decided: >-
+      Registering concepts adds a concept at a new name or replaces the concept already held at
+      that name, and removes no concept already held; a concept a registered capability answers,
+      a collected evidence item or its citation names, or a case version's manifested
+      hypothesis-revision collects is never removed from the glossary.
+    why: >-
+      Decided the same way this specification already decided the identical question for the
+      sibling vocabulary outcome (rules/glossary/the-non-conclusion-outcomes-precede-the-first-case,
+      itself decided from a reconciliation finding recorded at this log's own earlier entry for
+      that rule): a prior reconciliation
+      (siegard-reconcile/reconcile-glossary-files.md) found the delivered backend's
+      writeConcepts stating this exact permanence while no node held it, citing a plan task
+      (task/glossary-concept-write-upsert-hotfix) that does not outlive its own closed plan. The
+      fact is not an arbitrary code choice: every foreign key this schema declares against
+      concepts(name) -- capabilities.concept, investigation_evidence.concept,
+      investigation_evaluation_citations.concept, concept_accepts.concept_name,
+      hypothesis_collects.concept_name, and the case-version lifecycle schema's own
+      collected-concept rows -- carries no ON DELETE CASCADE, so deleting a referenced concept
+      row is a constraint violation the database itself refuses. Domain-level, the same
+      conclusion already follows from rules/knowledge/case-terms-exist-in-the-glossary (a
+      hypothesis-revision naming a concept the glossary does not hold is refused) joined with a
+      released hypothesis-revision's own immutability: removing a concept a released
+      hypothesis-revision collects would strand a reference that rule already requires to keep
+      resolving. constrains lists domain/integration/capability, domain/investigation/evidence
+      and domain/investigation/citation for the same reason case-terms-exist-in-the-glossary
+      lists domain/knowledge/case-version and domain/knowledge/hypothesis-revision: each holds an
+      attribute typed domain/glossary/concept whose continued resolution this policy protects.
 ---
