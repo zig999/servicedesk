@@ -8,6 +8,7 @@ import {
   LOADED_CONFIGURATION,
   UPDATED_CONFIGURATION,
   createWrapper,
+  errorResponse,
   jsonResponse,
   readyState,
   stubFetch,
@@ -206,5 +207,93 @@ describe("useConnectorConfigurationDetailView -- justSaved (criterion 7)", () =>
       resolvePut(jsonResponse({ connector: CONNECTOR, configuration: UPDATED_CONFIGURATION }));
     });
     await waitFor(() => expect(readyState(result.current).justSaved).toBe(true));
+  });
+});
+
+// task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel's
+// own criterion 1: the "ready" phase exposes registeredConfigurationText, the most recently
+// loaded-or-saved configuration text -- the same snapshot onDiscard already reads above -- as a
+// field distinct from configuration.value (the live, possibly-unsaved edit).
+describe("useConnectorConfigurationDetailView -- registeredConfigurationText is the most recently loaded-or-saved configuration text, distinct from configuration.value (criterion 1)", () => {
+  it("equals the just-loaded configuration text immediately after this connector's own record loads", async () => {
+    stubFetch({
+      [CONFIGURATION_PATH]: () =>
+        jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+    });
+    const { result } = renderHook(() => useConnectorConfigurationDetailView(CONNECTOR), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);
+  });
+
+  it("stays at the last loaded-or-saved text after an edit that has not been saved, diverging from configuration.value's own edited value", async () => {
+    stubFetch({
+      [CONFIGURATION_PATH]: () =>
+        jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+    });
+    const { result } = renderHook(() => useConnectorConfigurationDetailView(CONNECTOR), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).configuration.onChange(UPDATED_CONFIGURATION, true);
+    });
+
+    // If registeredConfigurationText mirrored the live edit instead of the last registered
+    // snapshot, this would read UPDATED_CONFIGURATION instead -- the same value
+    // configuration.value now carries.
+    expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);
+    expect(readyState(result.current).configuration.value).toBe(UPDATED_CONFIGURATION);
+  });
+
+  it("updates to the just-saved text once a save succeeds", async () => {
+    stubFetch({
+      [CONFIGURATION_PATH]: (method) =>
+        method === "PUT"
+          ? jsonResponse({ connector: CONNECTOR, configuration: UPDATED_CONFIGURATION })
+          : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+    });
+    const { result } = renderHook(() => useConnectorConfigurationDetailView(CONNECTOR), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).configuration.onChange(UPDATED_CONFIGURATION, true);
+    });
+    act(() => {
+      readyState(result.current).onSubmit();
+    });
+
+    await waitFor(() =>
+      expect(readyState(result.current).registeredConfigurationText).toBe(UPDATED_CONFIGURATION),
+    );
+  });
+
+  it("stays at the last loaded-or-saved text when a save fails, rather than the edit that failed to save (edge case: a dependency that fails)", async () => {
+    stubFetch({
+      [CONFIGURATION_PATH]: (method) =>
+        method === "PUT"
+          ? errorResponse("SomeUpstreamError", 500)
+          : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
+    });
+    const { result } = renderHook(() => useConnectorConfigurationDetailView(CONNECTOR), {
+      wrapper: createWrapper().Wrapper,
+    });
+    await waitFor(() => expect(result.current.phase).toBe("ready"));
+
+    act(() => {
+      readyState(result.current).configuration.onChange(UPDATED_CONFIGURATION, true);
+    });
+    act(() => {
+      readyState(result.current).onSubmit();
+    });
+
+    await waitFor(() => expect(readyState(result.current).isSubmitting).toBe(false));
+    expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);
+    expect(readyState(result.current).isDirty).toBe(true);
   });
 });

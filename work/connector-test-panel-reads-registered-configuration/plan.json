@@ -1,0 +1,58 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-reads-registered-configuration",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-reads-registered-configuration.md",
+      "title": "Connector test panel reads the registered configuration",
+      "summary": "The connector Test Panel's Add attribute reconciliation is threaded the connector's registered configuration text instead of the edit form's live, unsaved textarea state."
+    },
+    {
+      "id": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "kind": "task",
+      "file": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel.md",
+      "title": "Thread the registered configuration into the connector Test Panel",
+      "summary": "ConnectorConfigurationDetailReadyView passes the connector's registered configuration text to ConnectorTestPanel, instead of the edit form's live, unsaved textarea state.",
+      "epic": "connector-test-panel-reads-registered-configuration"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-reads-registered-configuration",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-test-panel-reads-registered-configuration",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-test-panel-reads-registered-configuration",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-test-panel-reads-registered-configuration",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

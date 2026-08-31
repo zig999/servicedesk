@@ -132,3 +132,58 @@ describe("ConnectorTestPanel — a failed call displays the raw error, never a p
     expect(dialog.textContent).not.toContain("Status:");
   });
 });
+
+// Proof for task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome's own
+// criterion -- TestConnectorPanelState's testOutcome union can no longer represent, simultaneously,
+// a result from a previous successful call and an error from a more recent failed call. This is the
+// concrete, observable consequence of that type-level guarantee: dispatch a call that succeeds
+// (asserting the panel shows that success's own result), then dispatch a second call that fails
+// (asserting the panel now shows ONLY the failure message, with no trace of the stale success --
+// its own status, headers or body -- anywhere in the rendered output). The three-independent-fields
+// shape this task replaced could fail exactly this way: TanStack Query does not clear
+// mutation.data when a later mutate() call fails, so a `result` field fed from mutation.data and a
+// `testError` field fed from the failure could both be non-null at once and both render.
+describe("ConnectorTestPanel — a later failed call discards a stale successful result entirely, leaving no trace of it in the rendered output (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome)", () => {
+  it("renders only the failure message once a second dispatch fails, with nothing of the first call's own successful result still visible", async () => {
+    let dispatchCount = 0;
+    const { dialog } = await mountTestPanelInEditMode({
+      ...baseHandlers(),
+      [TEST_CONNECTOR_PATH]: () => {
+        dispatchCount += 1;
+        if (dispatchCount === 1) {
+          return jsonResponse(
+            testConnectorResult({
+              response: {
+                kind: "response",
+                status: 200,
+                headers: { "x-request-id": "first-call" },
+                body: { translation: "hola" },
+                elapsedMs: 42,
+              },
+            }),
+          );
+        }
+        return jsonResponse(
+          { error: { code: "InternalError", message: "raw backend message nobody sees" } },
+          500,
+        );
+      },
+    });
+
+    await fillAndDispatch(dialog);
+    await within(dialog).findByText("Request sent");
+    expect(dialog.textContent).toContain("Status: 200");
+    expect(dialog.textContent).toContain('"translation": "hola"');
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Test" }));
+    await within(dialog).findByText(
+      "The test call could not be sent. Check the selected capability, subject and requester, then try again.",
+    );
+
+    expect(dialog.textContent).not.toContain("Request sent");
+    expect(dialog.textContent).not.toContain("Response received");
+    expect(dialog.textContent).not.toContain("Status: 200");
+    expect(dialog.textContent).not.toContain("hola");
+    expect(dialog.textContent).not.toContain("raw backend message nobody sees");
+  });
+});

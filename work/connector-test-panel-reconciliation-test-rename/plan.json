@@ -1,0 +1,76 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/connector-test-panel-reconciliation-test-rename",
+      "kind": "epic",
+      "file": "epic/connector-test-panel-reconciliation-test-rename.md",
+      "title": "Reconcile the attribute tie-break test with the now-read-only Attribute field",
+      "summary": "The reconciliation tie-break test that renamed a row's Attribute field through the UI is rewritten to induce the same collision through Configuration's own text instead."
+    },
+    {
+      "id": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "kind": "task",
+      "file": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup.md",
+      "title": "Rewrite the reconciliation tie-break test's collision setup",
+      "summary": "The test that proves two attribute rows sharing one name reduce to a single kept row now induces that collision by editing Configuration's text, rather than by firing a change event on the Attribute field.",
+      "epic": "connector-test-panel-reconciliation-test-rename"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/connector-test-panel-reconciliation-test-rename",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-test-panel-reconciliation-test-rename",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-test-panel-reconciliation-test-rename",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-test-panel-reconciliation-test-rename",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-test-panel-reconciliation-test-rename",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-test-panel-reconciliation-test-rename/rewrite-tie-break-test-collision-setup",
+      "to": "rules/investigation/a-subject-holds-one-value-per-attribute",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}

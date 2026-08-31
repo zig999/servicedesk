@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel.md",
+      "title": "Thread the registered configuration into the connector Test Panel",
+      "summary": "useConnectorConfigurationDetailView's \"ready\" phase now exposes registeredConfigurationText (the most recently loaded-or-saved configuration text), and ConnectorConfigurationDetailReadyView passes it, not the live unsaved textarea value, as ConnectorTestPanel's configurationText prop.",
+      "task": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel"
+    },
+    {
+      "id": "proof/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel.md",
+      "title": "Registered configuration threaded into the Test Panel proof",
+      "summary": "Proves that useConnectorConfigurationDetailView's \"ready\" phase exposes registeredConfigurationText (distinct from configuration.value, re-seeded only at load and at a successful save) and that ConnectorConfigurationDetailReadyView forwards it to ConnectorTestPanel, so \"Add attribute\" reconciliation reads the connector's currently registered configuration rather than an unsaved edit.",
+      "task": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "to": "task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "to": "implementation/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

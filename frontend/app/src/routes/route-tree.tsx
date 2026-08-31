@@ -4,7 +4,9 @@ import { AppShell } from "../shared/components/app-shell";
 import { CapabilitiesBrowserScreen } from "./capabilities-browser-screen";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
+import { ConnectorConfigurationCreateScreen } from "./connector-configuration-create-screen";
 import { CapabilityDetailScreen } from "./capability-detail-screen";
+import { CapabilityCreateScreen } from "./capability-create-screen";
 import { CaseDetailScreen } from "./case-detail-screen";
 import { CasesListScreen } from "./cases-list-screen";
 import { CaseSimulationScreen } from "./case-simulation-screen";
@@ -156,6 +158,23 @@ const capabilityDetailRoute = createRoute({
   component: CapabilityDetailScreen,
 });
 
+// task/connector-capability-create-detail-route/capability-create-route's
+// own screen: registers a new capability from a full-page routed screen, in
+// place of the popup Dialog's create mode (capabilities-browser-screen.tsx's
+// own "New capability" button still opens that Dialog today; a later task
+// in this same epic is what points that button here instead). A static
+// "new" segment ranks over the "$name" param segment above regardless of
+// declaration order (TanStack Router sorts a route tree by specificity, not
+// by registration order), the same convention newCaseVersionRoute,
+// newManifestHypothesisRoute and connectorConfigurationCreateRoute already
+// establish -- and one path segment where capabilityDetailRoute above is
+// two, so the two never resolve to the same URL (this task's own Notes).
+const capabilityCreateRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/capabilities/new",
+  component: CapabilityCreateScreen,
+});
+
 // task/connector-configuration-authoring/connector-configuration-create-edit-form's
 // own screen: lists every registered connector configuration and hosts its
 // create/edit form dialog.
@@ -174,6 +193,22 @@ const connectorConfigurationDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/connectors/$connector",
   component: ConnectorConfigurationDetailScreen,
+});
+
+// task/connector-capability-create-detail-route/connector-configuration-
+// create-route's own screen: registers a new connector configuration from
+// a full-page routed screen, in place of the popup Dialog's create mode
+// (connector-configurations-screen.tsx's own "New connector configuration"
+// button still opens that Dialog today; a later task in this same epic is
+// what points that button here instead). A static "new" segment ranks over
+// the "$connector" param segment above regardless of declaration order
+// (TanStack Router sorts a route tree by specificity, not by registration
+// order), the same convention newCaseVersionRoute and
+// newManifestHypothesisRoute already establish.
+const connectorConfigurationCreateRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/connectors/new",
+  component: ConnectorConfigurationCreateScreen,
 });
 
 const caseHypothesesRoute = createRoute({
@@ -196,8 +231,10 @@ const routeTree = rootRoute.addChildren([
   glossaryRoute,
   capabilitiesRoute,
   capabilityDetailRoute,
+  capabilityCreateRoute,
   connectorConfigurationsRoute,
   connectorConfigurationDetailRoute,
+  connectorConfigurationCreateRoute,
   caseHypothesesRoute,
 ]);
 

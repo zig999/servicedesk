@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, within } from "@testing-library/react";
+import { fireEvent, waitFor, within } from "@testing-library/react";
 import {
   CAPABILITIES_PATH,
   SUBJECT_TYPE_PATH,
@@ -60,6 +60,33 @@ function clickAddAttribute(dialog: HTMLElement): void {
   fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
 }
 
+// task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-
+// reconciling: "Add attribute" now reconciles against the connector's own registered
+// configuration text (registeredConfigurationText), not an unsaved edit still sitting in the
+// textarea -- so a test that edits Configuration and then relies on that edit having taken
+// effect must save it first. Clicks the same "Save" button ConnectorConfigurationFormFields
+// renders and waitFor-polls that same button's own `disabled` attribute (gated on
+// state.isDirty, connector-configuration-form-fields.tsx's own isSaveDisabled expression)
+// turning true, rather than findBy-awaiting the "Saved." acknowledgement
+// (connector-configuration-detail-ready-view.tsx's own state.justSaved text): a
+// failure-diagnostician found use-connector-configuration-detail-view.ts's own
+// wasSubmitSuccessfulRef never resets once justSaved clears, so a *second* save within one
+// test (this file's own tie test and placeholder-order test each save twice) never re-shows
+// "Saved." even though the save itself genuinely succeeds again -- a real, pre-existing
+// production defect this task does not fix (out of its own scope; disclosed in this task's own
+// returned proof record). Save's own `disabled` attribute never routes through that ref: it
+// reflects state.isDirty directly, which useConnectorConfigurationDetail's own mutation
+// onSuccess clears in the very same commit that re-baselines configurationBaseline -- the same
+// commit registeredConfigurationText (read by ConnectorTestPanel) is derived from one render
+// later, so by the time this wait resolves that later render has already settled too.
+async function saveConfiguration(dialog: HTMLElement): Promise<void> {
+  const saveButton = within(dialog).getByRole("button", { name: "Save" });
+  fireEvent.click(saveButton);
+  await waitFor(() => {
+    expect(saveButton.hasAttribute("disabled")).toBe(true);
+  });
+}
+
 describe('ConnectorTestPanel — "Add attribute" adds one row per placeholder with no existing row (criterion 1)', () => {
   it("adds exactly one empty-valued row for each subject-attribute placeholder Configuration's current text names, when no row exists yet", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
@@ -67,6 +94,7 @@ describe('ConnectorTestPanel — "Add attribute" adds one row per placeholder wi
       dialog,
       '{"address":"https://api.example.com/${subject:account-id}","body":{"region":"${subject:region}"}}',
     );
+    await saveConfiguration(dialog);
 
     clickAddAttribute(dialog);
 
@@ -96,6 +124,7 @@ describe('ConnectorTestPanel — "Add attribute" removes a row whose placeholder
     fireEvent.change(within(dialog).getByLabelText("Value"), { target: { value: "12345" } });
 
     setConfigurationText(dialog, '{"address":"https://api.example.com/${subject:region}"}');
+    await saveConfiguration(dialog);
     clickAddAttribute(dialog);
 
     expect(attributeValues(dialog)).toEqual(["region"]);
@@ -108,6 +137,7 @@ describe('ConnectorTestPanel — "Add attribute" removes a row whose placeholder
     fireEvent.change(within(dialog).getByLabelText("Value"), { target: { value: "12345" } });
 
     setConfigurationText(dialog, '{"apiKey":"secret"}');
+    await saveConfiguration(dialog);
     clickAddAttribute(dialog);
 
     expect(within(dialog).queryAllByLabelText("Attribute")).toHaveLength(0);
@@ -208,21 +238,33 @@ describe("ConnectorTestPanel — the first row keeps a name two rows come to sha
       dialog,
       '{"address":"https://api.example.com/${subject:account-id}","body":{"r":"${subject:region}"}}',
     );
+    await saveConfiguration(dialog);
     clickAddAttribute(dialog);
 
     expect(attributeValues(dialog)).toEqual(["account-id", "region"]);
-    let valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
+    const valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
     fireEvent.change(valueInputs[0], { target: { value: "111" } });
     fireEvent.change(valueInputs[1], { target: { value: "222" } });
-    // The operator renames the second row's own attribute to collide with the first's.
-    const attributeInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Attribute");
-    fireEvent.change(attributeInputs[1], { target: { value: "account-id" } });
+
+    // The Attribute field no longer takes an onChange (now read-only,
+    // task/connector-test-panel-attribute-readonly), so the two rows are made to
+    // share one attribute name by editing Configuration's own text instead: the
+    // placeholder that used to name "region" now names "account-id" too, the very
+    // name the earlier row already carries.
+    setConfigurationText(
+      dialog,
+      '{"address":"https://api.example.com/${subject:account-id}","body":{"r":"${subject:account-id}"}}',
+    );
+    await saveConfiguration(dialog);
 
     clickAddAttribute(dialog);
 
-    expect(attributeValues(dialog)).toEqual(["account-id", "region"]);
-    valueInputs = within(dialog).getAllByLabelText<HTMLInputElement>("Value");
-    expect(valueInputs.map((input) => input.value)).toEqual(["111", ""]);
+    expect(attributeValues(dialog)).toEqual(["account-id"]);
+    expect(
+      within(dialog)
+        .getAllByLabelText<HTMLInputElement>("Value")
+        .map((input) => input.value),
+    ).toEqual(["111"]);
   });
 });
 
@@ -233,6 +275,7 @@ describe("ConnectorTestPanel — reconciled rows follow Configuration's own curr
       dialog,
       '{"address":"https://api.example.com/${subject:alpha}","body":{"b":"${subject:beta}"}}',
     );
+    await saveConfiguration(dialog);
     clickAddAttribute(dialog);
 
     expect(attributeValues(dialog)).toEqual(["alpha", "beta"]);
@@ -247,6 +290,7 @@ describe("ConnectorTestPanel — reconciled rows follow Configuration's own curr
       dialog,
       '{"address":"https://api.example.com/${subject:beta}","body":{"a":"${subject:alpha}"}}',
     );
+    await saveConfiguration(dialog);
     clickAddAttribute(dialog);
 
     expect(attributeValues(dialog)).toEqual(["beta", "alpha"]);

@@ -680,6 +680,10 @@
           "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
         },
         {
+          "path": "frontend/app/src/routes/capability-create-screen.tsx",
+          "digest": "sha256:f4651f671b4f2348184267f97f008c9b1f21a7225b0e274736a2da2ff52bfc47"
+        },
+        {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
         },
@@ -798,6 +802,10 @@
         {
           "path": "frontend/app/src/hooks/use-simulation-subject.ts",
           "digest": "sha256:9eb642bf64b7191fcc0dfe1133c7ac446d7e0a5eb9e7ff5f70bcbf0745c99f7f"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:9233694e75e1c5dbdd2b6b33ff6ff1280c144e7bb8e5450e2608ebf8ed681d13"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -1800,6 +1808,10 @@
           "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
         },
         {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
+        },
+        {
           "path": "frontend/app/src/routes/glossary-browser-screen.tsx",
           "digest": "sha256:d9e1ba039fb748ae978862b8abb5f9d791343e90247e9b00d79740b1aab5eefb"
         },
@@ -1934,6 +1946,10 @@
         {
           "path": "frontend/app/src/routes/capabilities-browser-screen.tsx",
           "digest": "sha256:884aa5ceaf0e18b4b9d79a5c590e93d031db9b0e714c488990618c79b24ec791"
+        },
+        {
+          "path": "frontend/app/src/routes/capability-create-screen.tsx",
+          "digest": "sha256:f4651f671b4f2348184267f97f008c9b1f21a7225b0e274736a2da2ff52bfc47"
         },
         {
           "path": "frontend/app/src/routes/capability-detail-screen.tsx",
@@ -2072,6 +2088,10 @@
           "digest": "sha256:a61624ae286220ef5ddab968ff909b150512c92ba14da8918f20667d4fb50c5c"
         },
         {
+          "path": "frontend/app/src/routes/capability-create-screen.tsx",
+          "digest": "sha256:f4651f671b4f2348184267f97f008c9b1f21a7225b0e274736a2da2ff52bfc47"
+        },
+        {
           "path": "src/src/capability-registry/capability-query.port.ts",
           "digest": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86"
         },
@@ -2128,6 +2148,10 @@
         {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
           "digest": "sha256:bd014117eb3181ff770a7f76caded86f71f8b2600b7a2d1a72825da167bb4d5e"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:9233694e75e1c5dbdd2b6b33ff6ff1280c144e7bb8e5450e2608ebf8ed681d13"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -2218,6 +2242,10 @@
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
           "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-create-screen.tsx",
+          "digest": "sha256:9233694e75e1c5dbdd2b6b33ff6ff1280c144e7bb8e5450e2608ebf8ed681d13"
         },
         {
           "path": "src/src/connector-registry/capabilities-reader.port.ts",
@@ -2950,6 +2978,10 @@
         {
           "path": "frontend/app/src/routes/case-simulation-subject-panel.tsx",
           "digest": "sha256:951e5fbeb7a7a6c3d831fe70e179dabae21ec6e9219b3b21d2f3a966c24bb020"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
         },
         {
           "path": "src/migrations/0005-investigation.sql",
@@ -4213,7 +4245,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-connector-configuration-form.ts",
-          "digest": "sha256:0cd47ff1782365cc365e869621eeb1e8155394a62ee0623e93157cc33d574517"
+          "digest": "sha256:1b401ad5e5d8ff293b6d75d2decff40711a9304aef6eb00d24e9be52b9fc299e"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
@@ -4247,11 +4279,19 @@
     },
     {
       "node": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
-      "digest": "sha256:29dcc99c2959d171bb92f245c9e39241df84a99db2a6b7b3cf13a18d657c16fa",
+      "digest": "sha256:07157f154daeddc122145935ebe67027b8af6f3535ef9acb17e7834b4bf24902",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-connector-configuration-detail-view.ts",
+          "digest": "sha256:61dcc3a8e021c95e66893349f8b9894ced6943348cd742c5f67bbd68dadc3080"
+        },
         {
           "path": "frontend/app/src/hooks/use-test-connector-panel.ts",
           "digest": "sha256:6d238599d8d8b528ac2093a049f594555a7f28ffe19fd69bd6b49a74dba753fb"
+        },
+        {
+          "path": "frontend/app/src/routes/connector-configuration-detail-ready-view.tsx",
+          "digest": "sha256:bf5871a36c002af4207f9032af6ebf498c2c05e9e5e1061ff9a0d86f4a6354b2"
         },
         {
           "path": "frontend/app/src/routes/connector-configuration-form-dialog.tsx",
@@ -4363,6 +4403,10 @@
       "node": "rules/integration/an-http-connector-configuration-declares-its-call",
       "digest": "sha256:e2c781f4671798c37f7ffc0f01bb0441211ebadee6edfc56c5de1c9511a4b7c8",
       "files": [
+        {
+          "path": "frontend/app/src/routes/connector-test-panel-fields.tsx",
+          "digest": "sha256:69f265a1ec8ecfe72448fa2f609f2aaa954ec6e2b7d2868ffc827b2a28ba150f"
+        },
         {
           "path": "frontend/app/src/services/simulation-subject-derivation.ts",
           "digest": "sha256:ba81338a4464b3b31e5a3542376cc0ba7984c4f5d99a2262a4909766620eaf46"

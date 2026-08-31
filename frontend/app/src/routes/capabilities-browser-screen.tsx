@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import type { JSX } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import {
@@ -7,8 +7,6 @@ import {
   type StatusTableRow,
 } from "../shared/components/status-table";
 import { useCapabilities, type Capability } from "../hooks/use-capabilities";
-import type { CapabilityFormTarget } from "../hooks/use-capability-form";
-import { CapabilityFormDialog } from "./capability-form-dialog";
 
 /**
  * The Capabilities Browser screen (task/glossary-and-capabilities-browser/
@@ -16,33 +14,40 @@ import { CapabilityFormDialog } from "./capability-form-dialog";
  * GET /v1/capabilities returns, one row each.
  *
  * task/capability-authoring/capability-create-edit-form widened this screen
- * from read-only to one that also creates and edits a capability
+ * from read-only to one that also created and edited a capability
  * (contracts/integration/capability-registry's own register-capability
  * operation, PUT /v1/capabilities/{name}/{version}) -- replacing this
  * screen's own original row-selection detail panel (CapabilityDetailPanel)
  * with the shared create/edit form, opened either by the "New capability"
  * action or (at that task's own delivery) each row's own "Edit" action,
- * both parametrized by `formTarget`'s own nullable-identity shape
+ * both parametrized by a `formTarget` state of a nullable-identity shape
  * (CapabilityFormTarget: `null` closed, `{ mode: "create" }`, or `{ mode:
- * "edit", capability }`) rather than each action owning its own
- * trigger-adjacent Dialog.
+ * "edit", capability }`).
  *
  * task/connector-capability-detail-editing/capability-detail-route
- * (criteria 2 and 9) replaces this screen's own former per-row "Edit"
+ * (criteria 2 and 9) replaced this screen's own former per-row "Edit"
  * action -- which opened that same Dialog in edit mode -- with a row click
- * that navigates to the new routed detail/edit screen instead
+ * that navigates to the routed detail/edit screen instead
  * (route-tree.tsx's own "/capabilities/$name/$version"), mirroring
  * connector-configurations-screen.tsx's own identical row-click convention
  * (StatusTable's own `onRowClick`, a plain function reading the clicked
  * row's own identity fields and calling `navigate`) rather than a second,
- * hand-rolled row-link pattern. The popup Dialog's own "New capability"
- * creation path is untouched: that action still opens the Dialog in create
- * mode exactly as before, and `CapabilityFormTarget`'s own `{ mode: "edit",
- * ... }` variant stays part of that shared type for capability-form-dialog.tsx's
- * own sake (this screen never constructs one anymore), the same convention
- * connector-configuration-form-dialog.tsx and
- * use-connector-configuration-form.ts were themselves left holding
- * unreachable once their own sibling screen stopped constructing one.
+ * hand-rolled row-link pattern.
+ *
+ * task/connector-capability-create-detail-route/
+ * capabilities-browser-create-action's own criteria: "New capability" now
+ * navigates to the routed create screen (route-tree.tsx's own
+ * "/capabilities/new", CapabilityCreateScreen) instead of opening the popup
+ * Dialog's create mode -- this screen no longer holds a `formTarget` state
+ * of its own to host that Dialog, and no longer imports either
+ * CapabilityFormDialog or CapabilityFormTarget. The Dialog component and its
+ * type are untouched: CapabilityFormTarget's `{ mode: "edit", ... }` variant,
+ * and the Dialog itself, stay reachable for whatever still constructs them
+ * (this task's own Notes: the Dialog's edit-mode branch is a separate
+ * task's concern, not this one's), the same convention
+ * connector-configurations-screen.tsx's own sibling task already
+ * established for ConnectorConfigurationFormDialog /
+ * ConnectorConfigurationFormTarget.
  *
  * Wired in as route-tree.tsx's "/capabilities" route's own `component`,
  * unchanged from this screen's own prior delivery -- only this file's own
@@ -105,7 +110,6 @@ function toRow(capability: Capability): StatusTableRow {
 export function CapabilitiesBrowserScreen(): JSX.Element {
   const navigate = useNavigate();
   const { capabilities, isLoading, isError, refetch } = useCapabilities();
-  const [formTarget, setFormTarget] = useState<CapabilityFormTarget | null>(null);
 
   /**
    * Clicking a row navigates to that capability's own detail/edit route
@@ -171,22 +175,26 @@ export function CapabilitiesBrowserScreen(): JSX.Element {
         <h1 className="text-lg font-semibold text-foreground">Capabilities</h1>
         {/*
           "New capability" renders unconditionally, ahead of the
-          loading/error/empty branches above, so criterion 1 holds
-          regardless of whichever of those three states the capability list
-          itself is currently in -- this screen's own inference, disclosed
-          in its delivery record, mirroring glossary-browser-screen.tsx's
-          own "New concept" action for the same reason: hiding a create
-          action behind an unrelated read failure would block authoring a
-          capability for a reason that has nothing to do with it.
+          loading/error/empty branches above, so criterion 4 (this task's
+          own -- "renders while the list is loading, while it has failed to
+          load, and while it is empty, as it does today") holds regardless
+          of whichever of those three states the capability list itself is
+          currently in -- unchanged from before this task, which only
+          repoints where activating it leads
+          (task/connector-capability-create-detail-route/
+          capabilities-browser-create-action's own criteria 1-2: navigates
+          to route-tree.tsx's own "/capabilities/new" instead of opening the
+          popup Dialog), mirroring connector-configurations-screen.tsx's own
+          "New connector configuration" action for the same reason: hiding a
+          create action behind an unrelated read failure would block
+          authoring a capability for a reason that has nothing to do with
+          it.
         */}
-        <Button type="button" onClick={() => setFormTarget({ mode: "create" })}>
+        <Button type="button" onClick={() => void navigate({ to: "/capabilities/new" })}>
           New capability
         </Button>
       </div>
       {renderBody()}
-      {formTarget !== null && (
-        <CapabilityFormDialog target={formTarget} onClose={() => setFormTarget(null)} />
-      )}
     </div>
   );
 }

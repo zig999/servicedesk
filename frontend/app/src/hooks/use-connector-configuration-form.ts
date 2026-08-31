@@ -55,10 +55,49 @@ import {
 } from "../services/connector-configuration-form-schema";
 import type { ConnectorConfiguration } from "./use-connector-configurations";
 
-/** Which of the two modes a caller opened the form in, and (edit mode only) which connector configuration it edits. */
-export type ConnectorConfigurationFormTarget =
-  | { readonly mode: "create" }
-  | { readonly mode: "edit"; readonly connectorConfiguration: ConnectorConfiguration };
+/**
+ * Whether `text` satisfies rules/integration/
+ * a-connector-configuration-holds-a-well-formed-object: syntactically valid
+ * JSON *and* shaped as an object, not merely parseable. Corrects this hook's
+ * own `configurationValid` guard (the `configuration.onChange` handler
+ * below), which previously trusted the `isValid` flag JsonTextareaField's
+ * own onChange reports directly -- that flag (json-textarea-field.tsx's own
+ * parseJsonText) only proves `JSON.parse` did not throw, so a syntactically
+ * valid JSON array or `null` read as valid even though neither is the object
+ * shape the registry requires, letting this screen's create mode dispatch a
+ * register-connector request the registry always refuses with HTTP 422
+ * ConnectorConfigurationNotWellFormedError
+ * (task/connector-capability-create-detail-route/
+ * connector-configuration-create-route's own corrective delivery, following
+ * a failure-diagnostician finding against the running suite).
+ *
+ * Mirrors use-connector-configuration-detail.ts's own
+ * isValidConfigurationObject exactly, added there by a prior corrective
+ * delivery for the same rule over the sibling routed edit screen -- read
+ * that file's own header comment for the full reasoning, repeated here
+ * rather than imported because it is this hook's own module-private guard,
+ * not a shape either file exposes to the other.
+ *
+ * Deliberately scoped to this one hook rather than a change to
+ * getJsonTextareaMinifiedValue/parseJsonText themselves
+ * (json-textarea-field.tsx): that function also drives this hook's own
+ * save-payload minification and is read unchanged by use-capability-form.ts's
+ * own inputSchemaValid/outputSchemaValid -- tightening it there would change
+ * all of those at once, none of which this correction's own scope reaches.
+ * Reads the already-parsed value off the minified string
+ * getJsonTextareaMinifiedValue already computed rather than a second,
+ * independent `JSON.parse` call -- that string is only produced once
+ * `parseJsonText` succeeded, so parsing it back here is guaranteed to
+ * succeed too.
+ */
+function isValidConfigurationObject(text: string): boolean {
+  const minified = getJsonTextareaMinifiedValue(text);
+  if (minified === null) {
+    return false;
+  }
+  const parsed: unknown = JSON.parse(minified);
+  return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+}
 
 /** The `configuration` field's own controlled text plus the validity JsonTextareaField's own onChange last reported for it (json-textarea-field.tsx's own JsonTextareaFieldProps shape, re-exposed here since `configuration` lives outside react-hook-form -- the same convention use-capability-form.ts's own JsonSchemaFieldState already establishes for input_schema/output_schema). */
 export type ConfigurationFieldState = {
@@ -185,9 +224,18 @@ export function useConnectorConfigurationForm(
     configuration: {
       value: configurationValue,
       isValid: configurationValid,
-      onChange: (value, isValid) => {
+      // `isValid` as reported by JsonTextareaField's own onChange is a
+      // parse-only check (json-textarea-field.tsx's own parseJsonText); this
+      // hook derives its own configurationValid from
+      // isValidConfigurationObject above instead of trusting that flag
+      // directly, so an edit to a syntactically valid but non-object value
+      // (an array, a bare string, a number, `true`, or `null`) reads as
+      // invalid the same as use-connector-configuration-detail.ts's own
+      // handleConfigurationChange already does for the sibling routed edit
+      // screen.
+      onChange: (value) => {
         setConfigurationValue(value);
-        setConfigurationValid(isValid);
+        setConfigurationValid(isValidConfigurationObject(value));
       },
     },
     isEditingIdentity: existing !== null,

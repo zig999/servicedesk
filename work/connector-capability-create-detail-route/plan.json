@@ -1,0 +1,286 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/capability-create-route",
+      "kind": "epic",
+      "file": "epic/capability-create-route.md",
+      "title": "Capability creation as a routed screen",
+      "summary": "The capability create path moved out of the popup dialog and onto its own full-page route beside the existing detail/edit route."
+    },
+    {
+      "id": "epic/connector-configuration-create-route",
+      "kind": "epic",
+      "file": "epic/connector-configuration-create-route.md",
+      "title": "Connector configuration creation as a routed screen",
+      "summary": "The connector configuration create path moved out of the popup dialog and onto its own full-page route beside the existing detail/edit route."
+    },
+    {
+      "id": "inventory/connector-capability-create-detail-route",
+      "kind": "inventory",
+      "file": "inventory/connector-capability-create-detail-route.md",
+      "title": "Routed detail/edit screens and popup create dialogs for connector configurations and capabilities",
+      "summary": "The area the create-as-detail-route scope lands in -- the two routed edit screens, the two popup create/edit Dialogs they must replace, the list screens that open them, and the shared form-state hooks and field components both paths already reuse."
+    },
+    {
+      "id": "task/capability-create-route/capabilities-browser-create-action",
+      "kind": "task",
+      "file": "task/capability-create-route/capabilities-browser-create-action.md",
+      "title": "Capabilities browser opens the create route",
+      "summary": "The capabilities browser's \"New capability\" action navigates to the create route instead of opening the popup dialog.",
+      "epic": "capability-create-route"
+    },
+    {
+      "id": "task/capability-create-route/capability-create-screen",
+      "kind": "task",
+      "file": "task/capability-create-route/capability-create-screen.md",
+      "title": "Routed capability create screen",
+      "summary": "A full-page screen at its own route where an operator authors and registers a new capability.",
+      "epic": "capability-create-route"
+    },
+    {
+      "id": "task/capability-create-route/retire-capability-form-dialog",
+      "kind": "task",
+      "file": "task/capability-create-route/retire-capability-form-dialog.md",
+      "title": "Retire the capability popup form dialog",
+      "summary": "The capability create/edit dialog and its now-unreferenced form-target type are removed from the tree.",
+      "epic": "capability-create-route"
+    },
+    {
+      "id": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "task",
+      "file": "task/connector-configuration-create-route/connector-configuration-create-screen.md",
+      "title": "Routed connector configuration create screen",
+      "summary": "A full-page screen at its own route where an operator authors and registers a new connector configuration.",
+      "epic": "connector-configuration-create-route"
+    },
+    {
+      "id": "task/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "task",
+      "file": "task/connector-configuration-create-route/connector-configurations-list-create-action.md",
+      "title": "Connector configurations list opens the create route",
+      "summary": "The list screen's \"New connector configuration\" action navigates to the create route instead of opening the popup dialog.",
+      "epic": "connector-configuration-create-route"
+    },
+    {
+      "id": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "kind": "task",
+      "file": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog.md",
+      "title": "Retire the connector configuration popup form dialog",
+      "summary": "The connector configuration create/edit dialog and its now-unreferenced form-target type are removed from the tree.",
+      "epic": "connector-configuration-create-route"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/capability-create-route",
+      "to": "domain/integration/capability",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/capability-create-route",
+      "to": "domain/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/capability-create-route",
+      "to": "contracts/integration/capability-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/capability-create-route",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/capability-create-route",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/capability-create-route",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "domain/integration/connector-configuration",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "rules/integration/a-connector-configuration-names-its-connector",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/connector-configuration-create-route",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "task/capability-create-route/capabilities-browser-create-action",
+      "to": "task/capability-create-route/capability-create-screen",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-create-route/capabilities-browser-create-action",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "domain/integration/capability",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "domain/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "rules/integration/one-capability-answers-one-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "contracts/glossary/glossary-query",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/capability-create-route/capability-create-screen",
+      "to": "rules/integration/a-capability-declares-well-formed-schemas",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/capability-create-route/retire-capability-form-dialog",
+      "to": "task/capability-create-route/capabilities-browser-create-action",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/capability-create-route/retire-capability-form-dialog",
+      "to": "contracts/integration/capability-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "domain/integration/connector-configuration",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "domain/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "rules/integration/a-connector-configuration-names-its-connector",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configurations-list-create-action",
+      "to": "task/connector-configuration-create-route/connector-configuration-create-screen",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/connector-configurations-list-create-action",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "task/connector-configuration-create-route/connector-configurations-list-create-action",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "contracts/integration/connector-diagnostics",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "contracts/integration/connector-configuration-registry",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/connector-configuration-create-route/retire-connector-configuration-form-dialog",
+      "to": "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+      "kind": "implements",
+      "at": "implements[2]"
+    }
+  ]
+}

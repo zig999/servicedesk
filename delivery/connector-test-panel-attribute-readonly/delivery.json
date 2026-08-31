@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly.md",
+      "title": "Make the connector Test Panel's Attribute field read-only",
+      "summary": "ConnectorTestPanelFields now renders each Add attribute row's Attribute field as a disabled, read-only Input carrying no onChange, while the Value field stays exactly as editable as before.",
+      "task": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly"
+    },
+    {
+      "id": "proof/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-attribute-readonly/make-attribute-field-readonly.md",
+      "title": "Proof for making the connector Test Panel's Attribute field read-only",
+      "summary": "Proves the Attribute field renders disabled/read-only carrying no onChange while the Value field stays editable, that it still displays the reconciled name, and that a dispatched change event on it has no effect.",
+      "task": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "rules/integration/an-http-connector-configuration-declares-its-call",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "domain/investigation/subject-attribute-value",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "domain/glossary/subject-attribute",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "task/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "to": "implementation/connector-test-panel-attribute-readonly/make-attribute-field-readonly",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
