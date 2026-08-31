@@ -16,6 +16,22 @@
       "title": "writeConnectorConfigurations upserts by connector identity, without a whole-table DELETE",
       "summary": "Proves that writeConnectorConfigurations never issues an unfiltered DELETE, never touches a row belonging to a different connector, upserts a rewritten identity in place, and — against the UNDERDETERMINED append-only candidate the task's Notes name — leaves exactly one row per connector after two writes to the same identity; reconciles both pre-existing specs off the removed delete-and-reinsert mechanics.",
       "task": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity"
+    },
+    {
+      "id": "review/connector-configuration-write-upsert-hotfix",
+      "kind": "review",
+      "file": "review/connector-configuration-write-upsert-hotfix.md",
+      "title": "Connector configuration write upsert hotfix, first review",
+      "summary": "What four passes found over writeConnectorConfigurations' switch from a whole-table DELETE-then-reinsert to a per-connector upsert, and over the two specs reconciled to prove it.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Reescrever a configuração de um connector já registrado substitui exatamente esse connector; nenhuma linha de connector_configurations pertencente a um connector diferente é apagada como efeito colateral dessa escrita."
+      ],
+      "findings": 3
     }
   ],
   "edges": [
@@ -48,6 +64,12 @@
       "to": "implementation/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/connector-configuration-write-upsert-hotfix",
+      "to": "task/connector-configuration-write-upsert-hotfix/write-connector-configurations-upserts-by-identity",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
