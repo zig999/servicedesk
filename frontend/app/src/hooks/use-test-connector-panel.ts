@@ -119,6 +119,35 @@ function testDispatchFailureMessage(error: unknown): string {
   return GENERIC_TEST_DISPATCH_FAILURE_MESSAGE;
 }
 
+/**
+ * useTestConnectorPanel's own local dispatch-outcome state
+ * (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome):
+ * one discriminated union in place of three independent isTesting/result/testError
+ * fields, so a stale successful result from a previous call and a fresh error from
+ * a more recent one can never both be read at once -- the type's own structure makes
+ * that combination unrepresentable rather than merely avoided by careful sequencing
+ * (setTestOutcome below is the only writer, and every write replaces the whole
+ * union rather than one of three independently-settable fields). Distinct from
+ * TestConnectorOutcome above (testConnectorOutcomeSchema's own wire shape,
+ * mirroring what the one dispatched HTTP call itself returned): this union
+ * describes the panel's own local state across one or more dispatches, not any one
+ * call's own raw outcome -- "succeeded" carries the whole TestConnectorResult
+ * (request echo and response together, criterion 7's own in-memory-only render),
+ * and "failed" carries this hook's own user-facing message
+ * (testDispatchFailureMessage above), never a raw error. Tagged `kind` rather than
+ * `phase` (this app's own convention for a route's one-shot load lifecycle, e.g.
+ * use-connector-configuration-detail.ts's ConnectorConfigurationDetailState) since
+ * this describes a repeatable dispatch outcome, not a screen's own load phase --
+ * `kind` instead mirrors TestConnectorOutcome's own tag immediately above, the
+ * closer precedent for an outcome of one dispatched call (this hook's own
+ * inference; see this task's delivery record).
+ */
+export type TestDispatchOutcome =
+  | { readonly kind: "idle" }
+  | { readonly kind: "pending" }
+  | { readonly kind: "succeeded"; readonly result: TestConnectorResult }
+  | { readonly kind: "failed"; readonly error: string };
+
 export type TestConnectorPanelState = {
   readonly capabilityOptions: SelectOption[];
   readonly isLoadingCapabilities: boolean;
@@ -136,9 +165,7 @@ export type TestConnectorPanelState = {
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
   readonly canTest: boolean;
-  readonly isTesting: boolean;
-  readonly result: TestConnectorResult | null;
-  readonly testError: string | null;
+  readonly testOutcome: TestDispatchOutcome;
   readonly onTest: () => void;
 };
 
@@ -258,7 +285,7 @@ export function useTestConnectorPanel(
   const [subjectType, setSubjectType] = useState("");
   const [attributes, setAttributes] = useState<SubjectAttributeRow[]>([]);
   const [requester, setRequester] = useState("");
-  const [testError, setTestError] = useState<string | null>(null);
+  const [testOutcome, setTestOutcome] = useState<TestDispatchOutcome>({ kind: "idle" });
 
   const nextRowIdRef = useRef(0);
   const isDispatchingRef = useRef(false);
@@ -300,7 +327,7 @@ export function useTestConnectorPanel(
       return;
     }
     isDispatchingRef.current = true;
-    setTestError(null);
+    setTestOutcome({ kind: "pending" });
 
     const body: TestConnectorRequestBody = {
       capability: { name: selectedCapability.name, version: selectedCapability.version },
@@ -313,8 +340,11 @@ export function useTestConnectorPanel(
     };
 
     mutation.mutate(body, {
+      onSuccess: (data) => {
+        setTestOutcome({ kind: "succeeded", result: data });
+      },
       onError: (error) => {
-        setTestError(testDispatchFailureMessage(error));
+        setTestOutcome({ kind: "failed", error: testDispatchFailureMessage(error) });
       },
       onSettled: () => {
         isDispatchingRef.current = false;
@@ -366,9 +396,7 @@ export function useTestConnectorPanel(
     requester,
     onRequesterChange: setRequester,
     canTest,
-    isTesting: mutation.isPending,
-    result: mutation.data ?? null,
-    testError,
+    testOutcome,
     onTest,
   };
 }

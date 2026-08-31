@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import type { TestConnectorResult } from "../hooks/use-test-connector-panel";
+import type { TestDispatchOutcome } from "../hooks/use-test-connector-panel";
 
 /**
  * The raw request sent and raw outcome received by the one test-connector
@@ -11,32 +11,34 @@ import type { TestConnectorResult } from "../hooks/use-test-connector-panel";
  * (criterion 6, testConnectorOutcomeSchema's own discriminated union).
  *
  * Nothing here is written to any cache, store or persisted resource
- * (criterion 7): `result` is read straight from useTestConnectorPanel's own
- * in-memory mutation state and rendered, nothing more.
+ * (criterion 7): `testOutcome` is read straight from useTestConnectorPanel's
+ * own local dispatch-outcome state (task/connector-test-panel-dispatch-state/
+ * discriminate-test-dispatch-outcome) and rendered, nothing more -- one
+ * discriminated field in place of the isTesting/result/testError props this
+ * component used to take, so a stale "succeeded" result and a fresh "failed"
+ * error can never both be true of the one value read here.
  */
 
 export type ConnectorTestPanelResultProps = {
-  readonly isTesting: boolean;
-  readonly testError: string | null;
-  readonly result: TestConnectorResult | null;
+  readonly testOutcome: TestDispatchOutcome;
 };
 
 export function ConnectorTestPanelResult({
-  isTesting,
-  testError,
-  result,
+  testOutcome,
 }: ConnectorTestPanelResultProps): JSX.Element | null {
-  if (isTesting) {
+  if (testOutcome.kind === "pending") {
     return <p>Sending test call…</p>;
   }
 
-  if (testError !== null) {
-    return <p role="alert" className="text-sm text-destructive">{testError}</p>;
+  if (testOutcome.kind === "failed") {
+    return <p role="alert" className="text-sm text-destructive">{testOutcome.error}</p>;
   }
 
-  if (result === null) {
+  if (testOutcome.kind === "idle") {
     return null;
   }
+
+  const { result } = testOutcome;
 
   return (
     <div className="grid grid-cols-2 gap-4">

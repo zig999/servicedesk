@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "implementation",
+      "file": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
+      "title": "Model useTestConnectorPanel's dispatch outcome as one discriminated union",
+      "summary": "TestConnectorPanelState's isTesting/result/testError fields are replaced by one discriminated testOutcome field (idle/pending/succeeded/failed), and ConnectorTestPanel, ConnectorTestPanelFields and ConnectorTestPanelResult are updated to read it, so a stale successful result and a fresh error can no longer coexist in the type a caller reads.",
+      "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    },
+    {
+      "id": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "proof",
+      "file": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome.md",
+      "title": "Discriminated test-dispatch outcome makes a stale success and a fresh failure unrepresentable together",
+      "summary": "A behavioral test exercises a success dispatch followed by a failing dispatch and asserts the panel shows only the fresh failure message with no trace of the prior success anywhere in the rendered output, proving TestDispatchOutcome's shape (not merely runtime discipline) rules out the stale-result-plus-fresh-error combination; a stub mock left over from the old three-field state shape is corrected to compile against the new testOutcome field.",
+      "task": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "to": "task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "to": "implementation/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

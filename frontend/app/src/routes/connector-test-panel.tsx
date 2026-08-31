@@ -43,11 +43,7 @@ export function ConnectorTestPanel({
     <section className="flex flex-col gap-4 pt-4 border-t border-border">
       <h3 className="text-lg font-semibold text-foreground">Test</h3>
       <ConnectorTestPanelFields state={state} />
-      <ConnectorTestPanelResult
-        isTesting={state.isTesting}
-        testError={state.testError}
-        result={state.result}
-      />
+      <ConnectorTestPanelResult testOutcome={state.testOutcome} />
     </section>
   );
 }
