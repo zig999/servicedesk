@@ -1283,4 +1283,58 @@ entries:
       node because this rule is already where every fact about what a test exercises lives, and
       the log's own precedent extended this same field for the sibling question of which
       configuration answers to the test.
+  - location: rules/investigation/a-composed-subject-presents-every-case-input-requirement.md
+    field: statement
+    unstated: >-
+      Whether the subject-attribute inputs an operator is asked to supply before a diagnose or
+      simulate call must be drawn from the case version's own authoritative case-input-requirements,
+      or may instead be inferred some other way (e.g. scanning a connector's own call-assembly
+      detail for a literal placeholder) -- and whether an attribute a case-input-requirement leaves
+      optional is presented as an input at all, or only reachable by a manual addition.
+    decided: >-
+      The interface presents one input per case-input-requirement, required and optional alike,
+      drawn only from that authoritative set, with only the required flag gating submission.
+    why: >-
+      A connector's own call-assembly detail is a weaker, sometimes-incomplete signal of what a
+      capability's input schema actually requires -- a capability may name an attribute required
+      without ever embedding it as a literal placeholder in its connector's own call -- and the
+      authoritative read (case-input-requirements) already exists and is already trusted for
+      exactly this purpose by a diagnose's own door refusal; a second, weaker derivation for the
+      same fact is a silent, sometimes-wrong specification of its own. Presenting optional
+      attributes too, rather than hiding them behind a manual control, lets the composer discover
+      every attribute a currently-registered capability could use without already knowing its name
+      from the glossary.
+  - location: rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses.md
+    field: statement
+    unstated: >-
+      Whether a simulate-case or simulate-hypothesis call is refused, the same way a diagnose is,
+      for a subject missing an attribute a case-input-requirement of the pinned case version names
+      required, or whether it is treated more permissively, letting the affected concept degrade to
+      unavailable instead.
+    decided: >-
+      Simulate is never refused for this reason; the affected concept's own observation degrades to
+      unavailable exactly as an optional attribute's own absence already does, and the call itself
+      proceeds.
+    why: >-
+      Simulate is open to a draft case version specifically because a curator composing or testing
+      one wants to see how it behaves before every input is wired up -- an-unresolvable-observation-
+      ends-unavailable already exists to make exactly this kind of gap visible rather than blocking
+      work on it, and a hard refusal here would take away the curator's own way of discovering the
+      gap through the same run that would otherwise show it to them.
+  - location: rules/investigation/a-composed-subjects-interface-discloses-a-malformed-capability.md
+    field: statement
+    unstated: >-
+      Whether the interface assembling a subject discloses, to the person composing it, a
+      capability the case-input-requirements read already names apart from its requirements for
+      holding no well-formed input schema, or whether that fact stays a concern only for whoever
+      separately curates the case version.
+    decided: >-
+      The interface discloses that capability's identity to the person composing the subject, the
+      same read that already surfaces it.
+    why: >-
+      The read that names these capabilities apart from the requirements already exists exactly so
+      "an operator can find and re-register it" (contracts/knowledge/case-input-requirements' own
+      stated reason); withholding that same fact from the person actually looking at the subject
+      being composed would waste the one read that already computed it, and the curator composing a
+      subject for simulate is ordinarily the same person who could act on it.
 ---
