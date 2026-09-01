@@ -207,7 +207,7 @@ it(
 );
 
 it(
-  "writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column",
+  'writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back with no ticket_ref at all, never the empty string',
   async () => {
     const fixtures = await freshFixtures();
     const id = `investigation-store-no-ticket-ref-${randomUUID()}`;
@@ -218,7 +218,25 @@ it(
     await store.write(investigation);
     const answered = await store.read(id);
 
-    expect(answered?.document).toEqual({ ...investigation, ticket_ref: '' });
+    expect(answered?.document).toEqual(investigation);
+    expect(answered?.document).not.toHaveProperty('ticket_ref');
+  },
+  15000,
+);
+
+it(
+  'writes and reads back an investigation whose ticket_ref is the empty string, storing it as a real SQL NULL and reading it back with no ticket_ref at all, matching an-empty-ticket-reference-is-no-ticket-reference',
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-empty-ticket-ref-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const investigation: Investigation = { ...anIntegrationInvestigation({ id, fixtures }), ticket_ref: '' };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(investigation);
+    const answered = await store.read(id);
+
+    expect(answered?.document).not.toHaveProperty('ticket_ref');
   },
   15000,
 );

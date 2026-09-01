@@ -2925,7 +2925,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:4c41d74c94cebc18dbd328acbce5f18785171a50cf86bdcbfc490de6c633a2c0"
+          "digest": "sha256:76413fc4e9debf9dde5c2af2cce6af764f0bf5fb58a46d350d16b601853fc3c8"
         }
       ]
     },
@@ -4892,6 +4892,16 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:a33385901a779312330ffae2a4ee59a737ef3185d422865ef0896a66f5d6e96d"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/an-empty-ticket-reference-is-no-ticket-reference",
+      "digest": "sha256:726c165a48e98e0bb502743c6d69803ddcb1be2d9f6a61908bfd9a1f565e92ed",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:76413fc4e9debf9dde5c2af2cce6af764f0bf5fb58a46d350d16b601853fc3c8"
         }
       ]
     },

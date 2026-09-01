@@ -151,7 +151,7 @@ function identityParams(investigation: Investigation): readonly unknown[] {
   return [
     investigation.id,
     investigation.requester,
-    investigation.ticket_ref,
+    ticketRefForWrite(investigation.ticket_ref),
     investigation.narrative,
     investigation.subject.type,
     investigation.prompt_version,
@@ -159,6 +159,14 @@ function identityParams(investigation: Investigation): readonly unknown[] {
     investigation.pinned_case.slug,
     investigation.pinned_case.version,
   ];
+}
+
+function ticketRefForWrite(ticketRef: string | undefined): string | undefined {
+  return holdsNoTicketReference(ticketRef) ? undefined : ticketRef;
+}
+
+function holdsNoTicketReference(value: string | undefined): boolean {
+  return value === undefined || value === '';
 }
 
 function assessmentParams(assessment: Assessment): readonly unknown[] {
@@ -421,7 +429,7 @@ function investigationOf(parts: IAssembledInvestigation): Investigation {
   return {
     id,
     requester: row.requester,
-    ticket_ref: row.ticket_ref ?? '',
+    ...(row.ticket_ref !== null ? { ticket_ref: row.ticket_ref } : {}),
     narrative: row.narrative,
     subject: { type: row.subject_type, attributes },
     pinned_case: { slug: row.pinned_case_slug, version: row.pinned_case_version },

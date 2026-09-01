@@ -514,7 +514,7 @@ it("computes StoredInvestigation's own hash as sha256 of the assembled document'
   expect(answered?.hash).toBe(expectedHash);
 });
 
-it('sends ticket_ref exactly as the given investigation holds it, including the empty string used where no ticket was given', async () => {
+it("sends ticket_ref as undefined in the root insert's own params, never the empty string, when the given investigation carries ticket_ref as the empty string", async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
@@ -522,7 +522,18 @@ it('sends ticket_ref exactly as the given investigation holds it, including the 
   await store.write(anInvestigation({ ticket_ref: '' }));
 
   const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
-  expect(rootInsert?.params?.[2]).toBe('');
+  expect(rootInsert?.params?.[2]).toBeUndefined();
+});
+
+it('sends a ticket_ref holding only whitespace through unchanged, rather than treating it the same as the empty string', async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  await store.write(anInvestigation({ ticket_ref: ' ' }));
+
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
+  expect(rootInsert?.params?.[2]).toBe(' ');
 });
 
 it('sends ticket_ref as undefined in the root insert\'s own params when the given investigation carries no ticket_ref at all', async () => {
@@ -536,14 +547,45 @@ it('sends ticket_ref as undefined in the root insert\'s own params when the give
   expect(rootInsert?.params?.[2]).toBeUndefined();
 });
 
-it('answers ticket_ref as the empty string when the stored column itself is a SQL NULL', async () => {
+it('leaves ticket_ref out of the assembled investigation, rather than answering it as the empty string, when the stored column itself is a SQL NULL', async () => {
   const { handleQuery } = recordingQuery({ investigation: investigationRow({ ticket_ref: null }) });
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
 
   const answered = (await store.read('an-investigation-id'))?.document as Investigation;
 
-  expect(answered.ticket_ref).toBe('');
+  expect(answered).not.toHaveProperty('ticket_ref');
+});
+
+it('reads back the exact ticket_ref value the stored column holds, unchanged, when one was given at write', async () => {
+  const { handleQuery } = recordingQuery({ investigation: investigationRow({ ticket_ref: 'INC-4821' }) });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.ticket_ref).toBe('INC-4821');
+});
+
+it('records a diagnose call giving ticket_ref as the empty string and reads it back with no ticket_ref at all, never the empty string, matching an-empty-ticket-reference-is-no-ticket-reference', async () => {
+  let insertedTicketRef: unknown;
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: unknown[] }> => {
+    if (text.includes('INSERT INTO investigations')) {
+      insertedTicketRef = params?.[2];
+      return { rows: [] };
+    }
+    if (text.includes('FROM investigations')) {
+      return { rows: [investigationRow({ ticket_ref: insertedTicketRef ?? null })] };
+    }
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  await store.write(anInvestigation({ ticket_ref: '' }));
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered).not.toHaveProperty('ticket_ref');
 });
 
 it("sends the evidence item's own elapsed_ms as the evidence insert's own twelfth param, not silently dropped from the row this store persists — ahead of fields and concept_description, which migrations/0013 added after it", async () => {
