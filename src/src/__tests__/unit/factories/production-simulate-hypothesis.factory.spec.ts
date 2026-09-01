@@ -33,8 +33,6 @@ import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-h
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 
-const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
-
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -61,13 +59,16 @@ function baseDependencies(overrides: Partial<ProductionHypothesisSimulationDepen
   };
 }
 
-function baseCall(): ProductionHypothesisSimulationCall {
+function baseCall(overrides: Partial<ProductionHypothesisSimulationCall> = {}): ProductionHypothesisSimulationCall {
   return {
     subjectType: 'a-subject-type',
     subjectAttributes: [{ attribute: 'an-attribute', value: 'a-value' } satisfies SubjectAttributeValue],
     case: aCase(),
     requester: 'a-requester',
     hypothesis: 'h1',
+    now: 1_000,
+    deadline: 21_000,
+    ...overrides,
   };
 }
 
@@ -107,33 +108,27 @@ it('always wires a real AnthropicHypothesisEvaluator, never a caller-substituted
   expect(wired.evaluator).toBeInstanceOf(AnthropicHypothesisEvaluator);
 });
 
-it('computes the deadline as its own start instant plus the specification-declared twenty-second budget, and propagates that exact pair to the wired call', async () => {
+it('passes the caller-given now and deadline through to runSimulateHypothesisPipeline unchanged, never computing either itself', async () => {
   const runner = createProductionHypothesisSimulationRunner(baseDependencies());
-  const before = Date.now();
 
-  await runner(baseCall());
-  const after = Date.now();
+  await runner(baseCall({ now: 5_000, deadline: 45_000 }));
 
   expect(capturedPipelineCalls).toHaveLength(1);
-  const { now, deadline } = capturedPipelineCalls[0] as { now: number; deadline: number };
-  expect(now).toBeGreaterThanOrEqual(before);
-  expect(now).toBeLessThanOrEqual(after);
-  expect(deadline).toBe(now + EXPECTED_DEADLINE_BUDGET_MS);
+  const wired = capturedPipelineCalls[0] as { now: number; deadline: number };
+  expect(wired.now).toBe(5_000);
+  expect(wired.deadline).toBe(45_000);
 });
 
-it("stamps a fresh (now, deadline) pair on a second call, never the first call's own pair", async () => {
+it("propagates whatever (now, deadline) pair each call supplies, never reusing the first call's own pair for a second call carrying different values", async () => {
   const runner = createProductionHypothesisSimulationRunner(baseDependencies());
 
-  await runner(baseCall());
-  const before = Date.now();
-  await runner(baseCall());
-  const after = Date.now();
+  await runner(baseCall({ now: 1_000, deadline: 21_000 }));
+  await runner(baseCall({ now: 9_000, deadline: 12_000 }));
 
   expect(capturedPipelineCalls).toHaveLength(2);
-  const { now: secondNow, deadline: secondDeadline } = capturedPipelineCalls[1] as { now: number; deadline: number };
-  expect(secondNow).toBeGreaterThanOrEqual(before);
-  expect(secondNow).toBeLessThanOrEqual(after);
-  expect(secondDeadline).toBe(secondNow + EXPECTED_DEADLINE_BUDGET_MS);
+  const [first, second] = capturedPipelineCalls as [{ now: number; deadline: number }, { now: number; deadline: number }];
+  expect(first).toMatchObject({ now: 1_000, deadline: 21_000 });
+  expect(second).toMatchObject({ now: 9_000, deadline: 12_000 });
 });
 
 it('constructs the Anthropic client once when the runner is created, never again on either of two later calls', async () => {
@@ -186,6 +181,12 @@ it('imports no module resembling a cache or a caching observation-source decorat
   expect(forbidden).toEqual([]);
 });
 
+it('declares no TOTAL_DEADLINE_BUDGET_MS constant of its own, unlike production-simulate.factory.ts and production-diagnose.factory.ts', async () => {
+  const source = await readFile(MODULE_PATH, 'utf8');
+
+  expect(source).not.toMatch(/TOTAL_DEADLINE_BUDGET_MS/);
+});
+
 it('ProductionHypothesisSimulationDependencies carries exactly connection, poolSize, evaluatorModel and evaluatorMaxTokens — no observationSource, consolidator or store field of its own', () => {
   expectTypeOf<ProductionHypothesisSimulationDependencies>().toEqualTypeOf<{
     readonly connection: DatabaseConnection;
@@ -195,13 +196,15 @@ it('ProductionHypothesisSimulationDependencies carries exactly connection, poolS
   }>();
 });
 
-it('ProductionHypothesisSimulationCall carries exactly subjectType, subjectAttributes, case, requester and hypothesis — no now, deadline, capabilities, observationSource, evaluator or poolSize field', () => {
+it('ProductionHypothesisSimulationCall carries exactly subjectType, subjectAttributes, case, requester, hypothesis, now and deadline — no capabilities, glossary, observationSource, evaluator or poolSize field', () => {
   expectTypeOf<ProductionHypothesisSimulationCall>().toEqualTypeOf<{
     readonly subjectType: string;
     readonly subjectAttributes: readonly SubjectAttributeValue[];
     readonly case: Case;
     readonly requester: string;
     readonly hypothesis: string;
+    readonly now: number;
+    readonly deadline: number;
   }>();
 });
 

@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "implementation",
+      "file": "implementation/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated.md",
+      "title": "production-simulate-hypothesis.factory.ts's runner takes now/deadline from its caller",
+      "summary": "production-simulate-hypothesis.factory.ts's returned runner now accepts now and deadline from its caller instead of computing them from a removed TOTAL_DEADLINE_BUDGET_MS constant, and the sole caller (simulate-hypothesis.controller.ts) now supplies the same twenty-second budget it used to invent inside the factory, so the pipeline's own stage bounding is unchanged.",
+      "task": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated"
+    },
+    {
+      "id": "proof/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "proof",
+      "file": "proof/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated.md",
+      "title": "Proof for production-simulate-hypothesis.factory.ts's runner taking now/deadline from its caller",
+      "summary": "Corrects the pre-existing production-simulate-hypothesis.factory.ts spec to the new caller-supplied-deadline behavior (unblocking typecheck) and adds tests proving the four criteria and the two recorded inferences, including the controller's own now/deadline computation.",
+      "task": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "to": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "to": "implementation/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
