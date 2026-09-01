@@ -215,11 +215,11 @@ interface ICitationOptions {
   investigationId: string;
   hypothesis: string;
   concept: string;
-  field?: string;
+  field?: string | null;
 }
 
 async function insertCitation(client: Client, options: ICitationOptions): Promise<void> {
-  const field = options.field ?? 'a-field';
+  const field = options.field === undefined ? 'a-field' : options.field;
   await client.query(
     'INSERT INTO investigation_evaluation_citations (investigation_id, hypothesis, concept, field) VALUES ($1,$2,$3,$4)',
     [options.investigationId, options.hypothesis, options.concept, field],
@@ -379,7 +379,7 @@ it('persists and reads back concept, subject-type, subject-attribute, action, ou
   expect(capabilityRows).toEqual([{ nature: 'read-only', timeout: 1000, connector: 'a-connector' }]);
 });
 
-it('holds every domain column NOT NULL except exactly the seven columns the model declares optional', async () => {
+it('holds every domain column NOT NULL except exactly the eight columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
      WHERE table_schema = $1 AND table_name <> 'schema_migrations' AND is_nullable = 'YES'
@@ -390,6 +390,7 @@ it('holds every domain column NOT NULL except exactly the seven columns the mode
   expect(rows).toEqual([
     { table_name: 'case_versions', column_name: 'consolidation_register' },
     { table_name: 'case_versions', column_name: 'released_at' },
+    { table_name: 'investigation_evaluation_citations', column_name: 'field' },
     { table_name: 'investigation_evaluations', column_name: 'reason' },
     { table_name: 'investigation_evidence', column_name: 'result_detail' },
     { table_name: 'investigations', column_name: 'assessment_determining_hypothesis' },
@@ -546,6 +547,40 @@ it('refuses a second evaluation row for one investigation under a hypothesis alr
   await expect(
     insertEvaluation(client, { investigationId, hypothesis: 'a-hypothesis' }),
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
+});
+
+it('refuses a second citation row sharing one investigation, hypothesis, concept and field already stored, through the unique index investigation_evaluation_citations_natural_key that stands in for the composite primary key the surrogate identity column replaced', async () => {
+  const investigationId = await aStoredInvestigation(client, glossary);
+  await insertEvaluation(client, { investigationId, hypothesis: 'a-hypothesis' });
+  await insertCitation(client, { investigationId, hypothesis: 'a-hypothesis', concept: glossary.concept, field: 'a-field' });
+
+  await expect(
+    insertCitation(client, { investigationId, hypothesis: 'a-hypothesis', concept: glossary.concept, field: 'a-field' }),
+  ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
+});
+
+it('accepts two citation rows sharing one investigation, hypothesis and concept when both carry no field, since the unique index treats each stored NULL as distinct from every other NULL', async () => {
+  const investigationId = await aStoredInvestigation(client, glossary);
+  await insertEvaluation(client, { investigationId, hypothesis: 'a-hypothesis' });
+  await insertCitation(client, { investigationId, hypothesis: 'a-hypothesis', concept: glossary.concept, field: null });
+  await insertCitation(client, { investigationId, hypothesis: 'a-hypothesis', concept: glossary.concept, field: null });
+
+  const { rows } = await client.query<{ field: string | null }>(
+    'SELECT field FROM investigation_evaluation_citations WHERE investigation_id = $1 AND hypothesis = $2 AND concept = $3',
+    [investigationId, 'a-hypothesis', glossary.concept],
+  );
+
+  expect(rows).toEqual([{ field: null }, { field: null }]);
+});
+
+it("declares investigation_evaluation_citations' own primary key column, id, as a GENERATED ALWAYS AS IDENTITY surrogate rather than the natural key the migration retired", async () => {
+  const { rows } = await client.query<{ is_identity: string; identity_generation: string | null }>(
+    `SELECT is_identity, identity_generation FROM information_schema.columns
+     WHERE table_schema = $1 AND table_name = 'investigation_evaluation_citations' AND column_name = 'id'`,
+    [schemaName],
+  );
+
+  expect(rows).toEqual([{ is_identity: 'YES', identity_generation: 'ALWAYS' }]);
 });
 
 it('refuses a second case stored under a slug already in use', async () => {

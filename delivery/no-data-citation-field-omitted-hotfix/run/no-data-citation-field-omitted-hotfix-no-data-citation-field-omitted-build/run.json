@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/no-data-citation-field-omitted-hotfix-no-data-citation-field-omitted-build",
+  "cwd": "/home/siegfriedneto/projects/wt-no-data-citation-field-omitted-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T17:01:30.650+00:00",
+      "ended_at": "2026-09-01T17:01:34.539+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T17:01:34.539+00:00",
+      "ended_at": "2026-09-01T17:01:39.086+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T17:01:39.086+00:00",
+      "ended_at": "2026-09-01T17:01:43.220+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T17:01:43.220+00:00",
+      "ended_at": "2026-09-01T17:01:43.762+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -2411,7 +2411,7 @@
     },
     {
       "node": "domain/investigation/citation",
-      "digest": "sha256:51a9bf52dd98e2a3bd8d1d027c144b6b256ba9b8cf3fba3157066d61f060d301",
+      "digest": "sha256:b3c824a274c6bb2e1d946a3a1bfc64b7f1c8b5bcc319bc1685d676fecc9a2345",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -2434,6 +2434,10 @@
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
         {
+          "path": "src/migrations/0016-citation-field-optional.sql",
+          "digest": "sha256:2db248c543e459d0acb66cb54745a3eeaeadaa230d04247e9f1798225b6f42ab"
+        },
+        {
           "path": "src/src/http/dto/simulate-case.dto.ts",
           "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
         },
@@ -2442,8 +2446,20 @@
           "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
         },
         {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
+        },
+        {
           "path": "src/src/investigation/citation-validation.ts",
           "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
+        },
+        {
+          "path": "src/src/investigation/citation.ts",
+          "digest": "sha256:5d286309f4dc1e921af45f70c29a90b87616b957a2d717a2415cdc82a7633a24"
+        },
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -2451,7 +2467,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -4617,15 +4633,19 @@
     },
     {
       "node": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
-      "digest": "sha256:83eeac92f748e84b8e9483adb7827a388745a561c32efc3bc28b10a7e8a21c0c",
+      "digest": "sha256:652d89182c2bf28209907890a42494acaa3dad23e514e947ededee42da0ab77c",
       "files": [
+        {
+          "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
+        },
         {
           "path": "src/src/investigation/citation-validation.ts",
           "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },

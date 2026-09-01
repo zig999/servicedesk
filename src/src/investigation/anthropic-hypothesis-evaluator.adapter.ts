@@ -85,7 +85,7 @@ function noDataOutcome(nonOkEvidence: readonly EvidenceItem[]): EvaluationOutcom
   return {
     verdict: 'inconclusive',
     reason: 'no-data',
-    citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept, field: '' })),
+    citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
   };
 }
 

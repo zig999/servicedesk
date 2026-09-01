@@ -444,6 +444,30 @@ it(
 );
 
 it(
+  "writes a no-data evaluation's citation with no field at all — the exact shape judgment-stage.ts's noDataEvaluation and the adapter's noDataOutcome now construct — now that investigation_evaluation_citations' field column is nullable and no longer part of its primary key, and reads it back with concept present and no field key at all",
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-no-data-citation-no-field-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const investigation = anIntegrationInvestigation({ id, fixtures });
+    const withNoDataCitationMissingField: Investigation = {
+      ...investigation,
+      evaluations: [
+        { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: fixtures.concept }] },
+      ],
+    };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(withNoDataCitationMissingField);
+    const answered = (await store.read(id))?.document as Investigation;
+
+    expect(answered).toEqual(withNoDataCitationMissingField);
+    expect(answered.evaluations[0]?.citations[0]).not.toHaveProperty('field');
+  },
+  15000,
+);
+
+it(
   "refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored",
   async () => {
     const fixtures = await freshFixtures();

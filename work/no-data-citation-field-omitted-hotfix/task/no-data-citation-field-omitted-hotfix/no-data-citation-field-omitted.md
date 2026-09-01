@@ -13,6 +13,7 @@ criteria:
   way: concept present, field absent.'
 - A confirmed or refuted evaluation's citations are unaffected by this fix and continue to carry
   both concept and field exactly as before.
+- A no-data citation with no field persists successfully, and reads back with no field.
 implements:
 - domain/investigation/citation
 - rules/investigation/a-cited-field-exists-in-the-capability-output-schema
@@ -50,3 +51,11 @@ clause itself: a non-ok evidence item whose capability did resolve (a timeout, a
 snapshotted field names, yet its citation still carries no field under the rule's own unconditional
 wording. The objective and criteria stand as written; this is a seam in the specification's own
 rationale, not in this task.
+Scope widened by explicit human authorization during delivery: the first implementation pass
+disclosed, under `deferred`, that investigation_evaluation_citations.field is NOT NULL and part of
+that table's composite primary key, so a citation with no field crashes
+RelationalInvestigationStore.write with a real not-null/primary-key violation — reachable through
+the ordinary diagnose flow whenever collection degrades to no-data, not a rare corner case. The
+fourth criterion above, and the persistence migration and repository fix that answer it, were added
+to this same task rather than deferred to a separate corrective task, per the human's own choice
+among the options presented.

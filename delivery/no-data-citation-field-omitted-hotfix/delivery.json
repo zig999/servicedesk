@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "implementation",
+      "file": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted.md",
+      "title": "A no-data citation omits field entirely, and now persists and reads back without one",
+      "summary": "judgment-stage.ts's noDataEvaluation and anthropic-hypothesis-evaluator.adapter.ts's noDataOutcome construct each no-data citation with concept alone and no field key, the two response DTOs that shared Citation's type were adjusted to keep the strict compiler satisfied, and investigation_evaluation_citations was restructured with a surrogate primary key so that a citation with no field is a legal row instead of a not-null/primary-key violation RelationalInvestigationStore.write would otherwise raise the moment a no-data evaluation was persisted.",
+      "task": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted"
+    },
+    {
+      "id": "proof/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "proof",
+      "file": "proof/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted.md",
+      "title": "A no-data citation omits field, and now persists and reads back without one",
+      "summary": "Proves all four criteria of no-data-citation-field-omitted -- the two construction sites omit field entirely for a no-data citation, a confirmed/refuted citation keeps carrying both concept and field unaffected, and a no-data citation now writes and reads back through the real store and the restructured investigation_evaluation_citations schema without the not-null/primary-key crash that used to be the terminal behavior -- correcting the test that had pinned that crash to the fix that replaced it.",
+      "task": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "domain/investigation/citation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

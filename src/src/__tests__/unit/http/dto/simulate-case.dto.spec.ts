@@ -19,3 +19,29 @@ it('validates a response whose durations carries no writing field at all, matchi
 
   expect(result.success).toBe(true);
 });
+
+it("validates a confirmed evaluation's citation that carries no field key at all, since the shared citation schema now leaves field optional for every verdict branch, not narrowed to the inconclusive branch alone", () => {
+  const response = {
+    ...aValidResponse(),
+    evaluations: [
+      { hypothesis: 'a-hypothesis', verdict: 'confirmed', citations: [{ concept: 'a-concept' }] },
+    ],
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(true);
+});
+
+it('refuses a citation whose field is the empty string, on every verdict branch, even though field is now optional', () => {
+  const response = {
+    ...aValidResponse(),
+    evaluations: [
+      { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'a-concept', field: '' }] },
+    ],
+  };
+
+  const result = simulateCaseResponseSchema.safeParse(response);
+
+  expect(result.success).toBe(false);
+});
