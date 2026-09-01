@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/run-diagnosis-persistence-deadline-hotfix",
+      "kind": "epic",
+      "file": "epic/run-diagnosis-persistence-deadline-hotfix.md",
+      "title": "Run-diagnosis persistence deadline hotfix",
+      "summary": "The single corrective task that fixes run-diagnosis.ts persistence stage to bound its write against the time actually remaining and to retry once within it."
+    },
+    {
+      "id": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "task",
+      "file": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries.md",
+      "title": "Persistence deadline uses remaining time and retries",
+      "summary": "Fixes run-diagnosis.ts's writeWithinDeadline to compute its stage bound against the time actually remaining before the propagated deadline when persistence begins (not the request's stale entry instant), and to retry once within whatever of that same capped bound the first attempt left unspent, keyed by the investigation's own id so any attempt finding the record already there settles rather than duplicating it, before raising InvestigationWriteDeadlineExceededError.",
+      "epic": "run-diagnosis-persistence-deadline-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/run-diagnosis-persistence-deadline-hotfix",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/run-diagnosis-persistence-deadline-hotfix",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/run-diagnosis-persistence-deadline-hotfix",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/run-diagnosis-persistence-deadline-hotfix",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}

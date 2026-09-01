@@ -1478,4 +1478,122 @@ entries:
       and domain/investigation/citation for the same reason case-terms-exist-in-the-glossary
       lists domain/knowledge/case-version and domain/knowledge/hypothesis-revision: each holds an
       attribute typed domain/glossary/concept whose continued resolution this policy protects.
+  - location: rules/investigation/no-stage-aborts-on-its-deadline.md
+    field: statement
+    unstated: >-
+      The rule already declares persistence the single stage that does not degrade and states that
+      its failure "is an error to the requester", and scenarios/investigation/no-response-without-a-record
+      states that the requester receives an error rather than the assessment -- but no node anywhere
+      in the specification names which error that is or what the diagnose route answers with, so the
+      error's name and its HTTP status existed only in code.
+    decided: >-
+      A diagnose whose persistence stage does not settle its write within that stage's own bound is
+      answered with an HTTP 500 response reporting an InvestigationWriteDeadlineExceededError.
+    why: >-
+      Home: the same context's a-diagnosed-subject-covers-its-cases-required-attributes already
+      states the diagnose route's own refusal -- status and error name together -- on a Rule, and this
+      rule is the one node that already carries the domain half of this exact fact ("whose failure is
+      an error to the requester"); stating the identity anywhere else would put one refusal in two
+      houses. Name: InvestigationWriteDeadlineExceededError is the condition already named for
+      exactly this failure in the material this fact arose from, so pairing it with a status fixes
+      the missing half rather than minting a second name for a condition already named -- the same
+      move the log's own CapabilityIdentityNotFoundError entry made. Status: 500 is this
+      specification's established answer for a server-side condition the requester neither caused nor
+      can correct by changing the request -- its only two other such refusals, DuplicateConceptAnswerError
+      and DuplicateGlossaryNameError, both answer 500 -- whereas 503 or 504 would additionally assert
+      that the condition is transient and worth retrying, a fact no node holds; the one place this
+      specification tells a caller when to come back is the rate limit's own Retry-After, and nothing
+      here can name such an instant.
+  - location: rules/investigation/no-stage-aborts-on-its-deadline.md
+    field: statement
+    unstated: >-
+      The rule states that persistence makes at most two write attempts and that both spend from
+      the one stage bound -- the minimum of persistence's nominal two seconds and the time
+      remaining before the propagated deadline when persistence begins -- but no node states how
+      that one bound is divided between them, i.e. what bound the first attempt is itself held to,
+      which is what decides whether any of the stage bound can ever be left for the retry.
+    decided: >-
+      The first attempt is held to the whole of persistence's stage bound -- it runs until it
+      settles or until that bound elapses, whichever comes first, and no part of the bound is
+      reserved; the retry therefore runs only where the first attempt failed before the bound
+      elapsed, within whatever of the bound then remains.
+    why: >-
+      Reserving a slice for the retry would abandon a first write that was still going to land
+      inside the bound, in the one stage the specification refuses to let degrade (no response
+      exists without a record), and would put a retry in flight behind an abandoned but possibly
+      still-committing write, which an-investigation-is-written-once admits no room for. The
+      specification never subdivides a stage bound anywhere else -- a-slow-capability-yields-to-the-collection-budget
+      has one call run to the stage's whole seven seconds with nothing held back, and the judgment
+      sibling's retry (a-foreign-citation-is-refused) likewise follows a response that settled in
+      failure and runs only "if the remaining deadline admits it," never a call cut short to make
+      room. This reading keeps the retry meaningful -- a write that errors early retries with
+      nearly the whole bound left -- while leaving the already-stated case ("a first attempt that
+      consumes all of it leaves no retry to run") as exactly what an overrunning write yields.
+  - location: rules/investigation/no-stage-aborts-on-its-deadline.md
+    field: statement
+    unstated: >-
+      The rule already states that persistence's stage bound is the minimum of its nominal budget and
+      the time remaining before the propagated deadline when persistence begins, and its own first
+      clause makes an already-reached deadline reachable at persistence (collection and judgment
+      record and continue rather than abort, so time may be past the deadline by the time control
+      arrives). No node states what that stage does when the bound is zero or less -- whether a write
+      is still issued into an effectively-zero window and left to time out into the already-stated
+      retry-then-error path, or whether the store is never called at all.
+    decided: >-
+      Where persistence's stage bound is zero or less at the moment persistence begins, no write
+      attempt is made at all and the store is never called; the HTTP 500 response reporting an
+      InvestigationWriteDeadlineExceededError, already stated for a persistence that settles no
+      write, is raised at once.
+    why: >-
+      The requester's answer is identical either way, so the only thing an issued write buys is a
+      call that cannot settle inside a window of zero and is therefore abandoned the instant it is
+      made -- leaving a write running past the response that told the requester no record exists,
+      which is the same in-flight-behind-an-abandoned-write harm this rule's own rationale already
+      refuses when it forbids truncating the first attempt, and which an-investigation-is-written-once
+      leaves no room for. Whether such a race resolves as a write or as a timeout is decided by
+      scheduling rather than by anything the business chose, and a specification that admits it would
+      be stating a behavior nobody can hold the system to. The specification already reads a
+      non-positive bound this way elsewhere in its own words -- a-capability-declares-its-contract's
+      rationale that "a timeout of zero or less bounds nothing -- there would be no time left for a
+      call to answer in" -- so refusing without calling extends a reading this specification holds
+      rather than minting a second one. "At most two write attempts" already admits none, so this
+      fixes which of the readings it admits holds, and constraints/the-deadline-is-an-absolute-propagated-instant's
+      own fitness (no stage granted more than the remaining time) is the one a stage granted zero
+      time would otherwise defeat by running on regardless.
+  - location: rules/investigation/an-investigation-is-written-once.md
+    field: statement
+    unstated: >-
+      The rule states that an investigation is written once and never mutated, and
+      no-stage-aborts-on-its-deadline's own rationale leans on it ("would put a second attempt in
+      flight behind an abandoned one that an-investigation-is-written-once leaves no room for"),
+      but no node states what actually keeps a second record for one investigation out of the
+      store, nor what a further write attempt means when it finds a record for that investigation
+      already there -- whether that attempt is a write that settled or one that did not, which is
+      what decides between answering the requester from the record and answering the
+      InvestigationWriteDeadlineExceededError the rule reserves for a persistence that settles no
+      write.
+    decided: >-
+      The investigation's own id identifies at most one record, so a write of an investigation the
+      store already holds a record for persists no second record and counts as a write that
+      settled.
+    why: >-
+      Home: this is the one node that states the write-onceness, and the one the persistence
+      rule's own rationale names as leaving no room for a second attempt behind an abandoned one;
+      stating the mechanism in the persistence rule or in a new rule of its own would put one fact
+      in two houses, and unlike a-slug-identifies-one-case (which had no existing rule to extend
+      once the file medium went away) the invariant this belongs to is already written. Mechanism:
+      id is the investigation's own required attribute and the only property of the record that is
+      fixed before any attempt is made and identical across both of the attempts
+      no-stage-aborts-on-its-deadline admits, so it is the one thing an attempt can be refused on;
+      an ordering or in-flight check cannot serve, because the premise of the fact is precisely
+      that the first attempt's outcome is unknown to the caller while it may still be committing.
+      Settled: a record for that investigation exists and is the very record this request built,
+      so the-response-follows-the-record's condition ("only after the investigation is written")
+      is met in full; reading it as unsettled would answer an HTTP 500
+      InvestigationWriteDeadlineExceededError to a requester whose investigation is durably
+      written -- telling them nothing was recorded when something was, and discarding the referral
+      that the record exists to have acted upon -- and would make the requester's answer depend on
+      whether an abandoned write happened to land before or after the retry looked, which is
+      decided by scheduling rather than by anything the business chose, the same reasoning this
+      log already used in refusing to issue a write into a non-positive bound.
 ---
