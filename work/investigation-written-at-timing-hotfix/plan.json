@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/investigation-written-at-timing-hotfix",
+      "kind": "epic",
+      "file": "epic/investigation-written-at-timing-hotfix.md",
+      "title": "Investigation written_at timing hotfix",
+      "summary": "The single corrective task that stamps written_at from the instant the write settles, instead of the instant the request entered."
+    },
+    {
+      "id": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "task",
+      "file": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant.md",
+      "title": "written_at records the instant the write settles, not the request's entry instant",
+      "summary": "Fixes run-diagnosis.ts to stamp written_at from the clock at the moment the investigation's write settles, instead of from the request's original entry instant.",
+      "epic": "investigation-written-at-timing-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/investigation-written-at-timing-hotfix",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-written-at-timing-hotfix",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/investigation-written-at-timing-hotfix",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/investigation-written-at-timing-hotfix",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
