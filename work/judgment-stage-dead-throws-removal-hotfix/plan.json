@@ -1,0 +1,70 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/judgment-stage-dead-throws-removal-hotfix",
+      "kind": "epic",
+      "file": "epic/judgment-stage-dead-throws-removal-hotfix.md",
+      "title": "Judgment-stage dead throws removal hotfix",
+      "summary": "The single corrective task that removes two throws in judgment-stage.ts for conditions the specification already makes unreachable — a required hypothesis name absent from the case, and a required hypothesis with no evidence entry."
+    },
+    {
+      "id": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "task",
+      "file": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws.md",
+      "title": "Remove judgment-stage.ts's two throws for conditions the specification already makes unreachable",
+      "summary": "Removes hypothesisNamed's and evidenceFor's throws in judgment-stage.ts for a hypothesis name or evidence entry that the case's own manifest and collection plan already guarantee will resolve, as dead defensive code — never replacing them with a new behavior or a silent default.",
+      "epic": "judgment-stage-dead-throws-removal-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/judgment-stage-dead-throws-removal-hotfix",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/judgment-stage-dead-throws-removal-hotfix",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/judgment-stage-dead-throws-removal-hotfix",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/judgment-stage-dead-throws-removal-hotfix",
+      "to": "rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "rules/investigation/one-evaluation-per-required-hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "rules/investigation/one-evidence-per-collected-concept",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses",
+      "kind": "implements",
+      "at": "implements[3]"
+    }
+  ]
+}
