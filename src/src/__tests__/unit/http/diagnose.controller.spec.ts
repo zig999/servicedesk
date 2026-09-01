@@ -9,7 +9,7 @@ import { CaseVersionNotReleasedError } from '../../../errors/case-version-not-re
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
 import type { ProductionDiagnoseCall } from '../../../factories/production-diagnose.factory.js';
 import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from '../../../http/diagnose.controller.js';
-import type { DiagnoseRequestDto } from '../../../http/dto/diagnose.dto.js';
+import type { DiagnoseRequestDto, DiagnoseResponseDto } from '../../../http/dto/diagnose.dto.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 
 function heldResolution(outcome = 'an-outcome'): Resolution {
@@ -150,14 +150,15 @@ type AssembledCallExpectation = {
   releasedCase: Case;
   body: DiagnoseRequestDto;
   expectedAssessment: Assessment;
+  expectedResponse: DiagnoseResponseDto;
 };
 
 function expectRunDiagnoseCalledOnceAndAssembled(
   runDiagnose: RunDiagnoseMock,
   expectation: AssembledCallExpectation,
-  result: Assessment,
+  result: DiagnoseResponseDto,
 ): void {
-  const { releasedCase, body, expectedAssessment } = expectation;
+  const { releasedCase, body, expectedResponse } = expectation;
   expect(runDiagnose).toHaveBeenCalledTimes(1);
   const call = runDiagnose.mock.calls[0]?.[0];
   expect(call).toMatchObject({
@@ -174,19 +175,32 @@ function expectRunDiagnoseCalledOnceAndAssembled(
   expect(call).not.toHaveProperty('durations');
   expect(typeof call?.id).toBe('string');
   expect((call?.id ?? '').length).toBeGreaterThan(0);
-  expect(result).toEqual(expectedAssessment);
+  expect(result).toEqual(expectedResponse);
 }
 
-it('proceeds exactly as before for a released-state pinned version: calls runDiagnose once with every field assembled unchanged, and answers with its resolved Assessment', async () => {
+it('proceeds exactly as before for a released-state pinned version: calls runDiagnose once with every field assembled unchanged, and answers with the resolved Assessment narrowed to the response DTO\'s four fields', async () => {
   const releasedCase = heldCase({ slug: 'a-released-slug', version: 2, state: 'released' });
   const { dependencies, runDiagnose } = buildDependencies({ case: releasedCase });
-  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a drafted text' };
+  const expectedAssessment: Assessment = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a drafted text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a drafted prompt',
+  };
   runDiagnose.mockResolvedValueOnce(expectedAssessment);
   const body = releasedDiagnoseRequestBody();
+  const expectedResponse: DiagnoseResponseDto = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a drafted text',
+  };
 
   const result = await handleDiagnoseRequest(dependencies, body);
 
-  expectRunDiagnoseCalledOnceAndAssembled(runDiagnose, { releasedCase, body, expectedAssessment }, result);
+  expectRunDiagnoseCalledOnceAndAssembled(runDiagnose, { releasedCase, body, expectedAssessment, expectedResponse }, result);
 });
 
 const CONTROLLER_MODULE_PATH = fileURLToPath(new URL('../../../http/diagnose.controller.ts', import.meta.url));
@@ -228,7 +242,16 @@ it('never calls runDiagnose when the subject fails to cover a required case inpu
 
 it("reads the case-input-requirements by the pinned case's own slug and version, not a fixed or unrelated value", async () => {
   const releasedCase = heldCase({ slug: 'a-different-slug', version: 9, state: 'released' });
-  const { dependencies, readCaseInputRequirements } = buildDependencies({ case: releasedCase });
+  const { dependencies, runDiagnose, readCaseInputRequirements } = buildDependencies({ case: releasedCase });
+  runDiagnose.mockResolvedValueOnce({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  });
 
   await handleDiagnoseRequest(dependencies, { ...REQUEST_BODY, case: { slug: 'a-different-slug', version: 9 } });
 
@@ -257,25 +280,49 @@ it('names every missing required attribute together with the capabilities that r
   ]);
 });
 
-it('does not refuse a subject missing only an attribute the derived requirements leave optional', async () => {
+it('does not refuse a subject missing only an attribute the derived requirements leave optional, and answers with the resolved Assessment narrowed to the response DTO\'s four fields', async () => {
   const requirements = requirementsWith({ attribute: 'a-nice-to-have-attribute', required: false, capabilities: [A_REQUIRED_CAPABILITY] });
   const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
-  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
-  runDiagnose.mockResolvedValueOnce(expectedAssessment);
+  const resolvedAssessment: Assessment = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  };
+  runDiagnose.mockResolvedValueOnce(resolvedAssessment);
 
   const result = await handleDiagnoseRequest(dependencies, bodyWithUnrelatedSubjectAttribute());
 
-  expect(result).toEqual(expectedAssessment);
+  expect(result).toEqual({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+  });
 });
 
-it('reaches runDiagnose when the subject covers every required attribute the derived requirements name', async () => {
+it('reaches runDiagnose when the subject covers every required attribute the derived requirements name, and answers with the resolved Assessment narrowed to the response DTO\'s four fields', async () => {
   const requirements = requirementsWith({ attribute: 'an-attribute', required: true, capabilities: [A_REQUIRED_CAPABILITY] });
   const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
-  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
-  runDiagnose.mockResolvedValueOnce(expectedAssessment);
+  const resolvedAssessment: Assessment = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  };
+  runDiagnose.mockResolvedValueOnce(resolvedAssessment);
 
   const result = await handleDiagnoseRequest(dependencies, REQUEST_BODY);
 
   expect(runDiagnose).toHaveBeenCalledTimes(1);
-  expect(result).toEqual(expectedAssessment);
+  expect(result).toEqual({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+  });
 });

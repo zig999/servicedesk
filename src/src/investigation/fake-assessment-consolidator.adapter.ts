@@ -33,7 +33,7 @@ export class FakeAssessmentConsolidator implements IAssessmentConsolidator {
     if (text === undefined) {
       throw new Error(`FakeAssessmentConsolidator has no fixture seeded for this evaluations/evidence/register call: ${key}`);
     }
-    return { text, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };
+    return { text, register: consolidationRegister, usage: ZEROED_USAGE, elapsed_ms: ZEROED_ELAPSED_MS, prompt: PLACEHOLDER_PROMPT };
   }
 }
 

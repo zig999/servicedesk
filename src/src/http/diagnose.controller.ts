@@ -28,7 +28,7 @@ export async function handleDiagnoseRequest(
     pinnedCase.version,
   );
   refuseSubjectMissingRequiredCaseInputs(body.subject.attributes, requirements);
-  return dependencies.runDiagnose({
+  const assessment = await dependencies.runDiagnose({
     id: randomUUID(),
     requester: body.requester,
     ticket_ref: body.ticket_ref,
@@ -39,4 +39,14 @@ export async function handleDiagnoseRequest(
     prompt_version: dependencies.promptVersion,
     model: dependencies.model,
   });
+  return toDiagnoseResponse(assessment);
+}
+
+export function toDiagnoseResponse(assessment: Assessment): DiagnoseResponseDto {
+  return {
+    outcome: assessment.outcome,
+    referral: assessment.referral,
+    ...(assessment.determining_hypothesis !== undefined ? { determining_hypothesis: assessment.determining_hypothesis } : {}),
+    text: assessment.text,
+  };
 }

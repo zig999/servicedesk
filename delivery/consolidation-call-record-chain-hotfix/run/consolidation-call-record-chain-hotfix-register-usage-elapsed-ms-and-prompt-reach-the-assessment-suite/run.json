@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/consolidation-call-record-chain-hotfix-register-usage-elapsed-ms-and-prompt-reach-the-assessment-suite",
+  "cwd": "/home/siegfriedneto/projects/wt-consolidation-call-record-chain-hotfix/src",
+  "timeout_seconds": 2400,
+  "outcome": "failed",
+  "failed_step": "test",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T13:30:22.053+00:00",
+      "ended_at": "2026-09-01T13:30:33.516+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T13:30:33.516+00:00",
+      "ended_at": "2026-09-01T13:30:43.152+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T13:30:43.152+00:00",
+      "ended_at": "2026-09-01T13:30:52.300+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T13:30:52.300+00:00",
+      "ended_at": "2026-09-01T13:30:53.448+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "failed",
+      "exit_code": 1,
+      "output": "test.log",
+      "started_at": "2026-09-01T13:30:53.448+00:00",
+      "ended_at": "2026-09-01T13:33:57.083+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

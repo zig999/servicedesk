@@ -125,6 +125,10 @@ function anAssessment(overrides: Partial<Assessment> = {}): Assessment {
     referral: { action: 'refer', recipient: 'a-queue' },
     determining_hypothesis: 'h1',
     text: 'the drafted assessment text',
+    register: 'plain',
+    usage: { input_tokens: 1, output_tokens: 1 },
+    elapsed_ms: 1,
+    prompt: 'a consolidation prompt',
     ...overrides,
   };
 }

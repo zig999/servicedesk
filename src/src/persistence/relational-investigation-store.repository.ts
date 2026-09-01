@@ -3,6 +3,7 @@ import { InvestigationAlreadyStoredError } from '../errors/investigation-already
 import { InvestigationStoreError } from '../errors/investigation-store.error.js';
 import type { Assessment } from '../investigation/assessment.js';
 import type { Citation } from '../investigation/citation.js';
+import { CONSOLIDATION_REGISTERS, type ConsolidationRegister } from '../investigation/consolidation-register.js';
 import type { Cost } from '../investigation/cost.js';
 import type { Durations } from '../investigation/durations.js';
 import { EVALUATION_REASONS, type EvaluationReason } from '../investigation/evaluation-reason.js';
@@ -38,6 +39,11 @@ interface IInvestigationRow {
   readonly assessment_recipient: string;
   readonly assessment_determining_hypothesis: string | null;
   readonly assessment_text: string;
+  readonly assessment_register: string;
+  readonly assessment_usage_input_tokens: number;
+  readonly assessment_usage_output_tokens: number;
+  readonly assessment_elapsed_ms: number;
+  readonly assessment_prompt: string;
   readonly cost_calls: number;
   readonly cost_input_tokens: number;
   readonly cost_output_tokens: number;
@@ -82,6 +88,8 @@ const VERDICT_VALUES: ReadonlySet<string> = new Set<string>(VERDICTS);
 
 const EVALUATION_REASON_VALUES: ReadonlySet<string> = new Set<string>(EVALUATION_REASONS);
 
+const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
+
 const INVESTIGATIONS_TABLE = 'investigations';
 const INVESTIGATION_EVIDENCE_TABLE = 'investigation_evidence';
 const INVESTIGATION_EVALUATIONS_TABLE = 'investigation_evaluations';
@@ -93,9 +101,10 @@ const UNIQUE_VIOLATION_CODE = '23505';
 const INVESTIGATION_INSERT_TEXT = `INSERT INTO ${INVESTIGATIONS_TABLE}
     (id, requester, ticket_ref, narrative, subject_type, prompt_version, model,
      pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
-     assessment_determining_hypothesis, assessment_text, cost_calls, cost_input_tokens, cost_output_tokens,
-     durations_collection, durations_judgment, durations_writing, durations_total, written_at)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`;
+     assessment_determining_hypothesis, assessment_text, assessment_register, assessment_usage_input_tokens,
+     assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens,
+     cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total, written_at)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`;
 
 export class RelationalInvestigationStore implements IInvestigationStore {
   public constructor(private readonly connection: IConnectableQueryable) {}
@@ -153,7 +162,18 @@ function identityParams(investigation: Investigation): readonly unknown[] {
 }
 
 function assessmentParams(assessment: Assessment): readonly unknown[] {
-  return [assessment.outcome, assessment.referral.action, assessment.referral.recipient, assessment.determining_hypothesis ?? null, assessment.text];
+  return [
+    assessment.outcome,
+    assessment.referral.action,
+    assessment.referral.recipient,
+    assessment.determining_hypothesis ?? null,
+    assessment.text,
+    assessment.register,
+    assessment.usage.input_tokens,
+    assessment.usage.output_tokens,
+    assessment.elapsed_ms,
+    assessment.prompt,
+  ];
 }
 
 function costParams(cost: Cost): readonly unknown[] {
@@ -245,8 +265,9 @@ function investigationSelect(id: string): IStatement {
   return {
     text: `SELECT requester, ticket_ref, narrative, subject_type, prompt_version, model,
                   pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
-                  assessment_determining_hypothesis, assessment_text, cost_calls, cost_input_tokens, cost_output_tokens,
-                  durations_collection, durations_judgment, durations_writing, durations_total, written_at
+                  assessment_determining_hypothesis, assessment_text, assessment_register, assessment_usage_input_tokens,
+                  assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens,
+                  cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total, written_at
            FROM ${INVESTIGATIONS_TABLE}
            WHERE id = $1`,
     params: [id],
@@ -426,7 +447,22 @@ function assessmentOf(row: IInvestigationRow): Assessment {
     referral: { action: row.assessment_action, recipient: row.assessment_recipient },
     ...(row.assessment_determining_hypothesis !== null ? { determining_hypothesis: row.assessment_determining_hypothesis } : {}),
     text: row.assessment_text,
+    register: registerOf(row.assessment_register),
+    usage: { input_tokens: row.assessment_usage_input_tokens, output_tokens: row.assessment_usage_output_tokens },
+    elapsed_ms: row.assessment_elapsed_ms,
+    prompt: row.assessment_prompt,
   };
+}
+
+function registerOf(value: string): ConsolidationRegister {
+  if (!isConsolidationRegister(value)) {
+    throw raiseReadFailure(new Error(`investigations holds an unrecognized assessment_register "${value}"`));
+  }
+  return value;
+}
+
+function isConsolidationRegister(value: string): value is ConsolidationRegister {
+  return CONSOLIDATION_REGISTER_VALUES.has(value);
 }
 
 function contentHash(document: Investigation): string {

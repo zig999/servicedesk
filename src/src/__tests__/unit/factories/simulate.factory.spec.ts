@@ -63,7 +63,7 @@ class FakeHypothesisEvaluator implements IHypothesisEvaluator {
 
 class FakeAssessmentConsolidator implements IAssessmentConsolidator {
   public async consolidate(): Promise<ConsolidationOutcome> {
-    return { text: 'unused-text', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'unused-prompt' };
+    return { text: 'unused-text', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'unused-prompt' };
   }
 }
 

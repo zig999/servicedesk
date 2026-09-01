@@ -58,26 +58,14 @@ function recordingQuery(rows: IRoutedRows): {
 
 function investigationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
-    requester: 'a-requester',
-    ticket_ref: 'a-ticket-ref',
-    narrative: 'a narrative',
-    subject_type: 'a-subject-type',
-    prompt_version: 'a-prompt-version',
-    model: 'a-model',
-    pinned_case_slug: 'a-case-slug',
-    pinned_case_version: 1,
-    assessment_outcome: 'an-outcome',
-    assessment_action: 'an-action',
-    assessment_recipient: 'a-recipient',
-    assessment_determining_hypothesis: 'a-hypothesis',
-    assessment_text: 'assessment text',
-    cost_calls: 3,
-    cost_input_tokens: 100,
-    cost_output_tokens: 50,
-    durations_collection: 10,
-    durations_judgment: 20,
-    durations_writing: 5,
-    durations_total: 35,
+    requester: 'a-requester', ticket_ref: 'a-ticket-ref', narrative: 'a narrative', subject_type: 'a-subject-type',
+    prompt_version: 'a-prompt-version', model: 'a-model', pinned_case_slug: 'a-case-slug', pinned_case_version: 1,
+    assessment_outcome: 'an-outcome', assessment_action: 'an-action', assessment_recipient: 'a-recipient',
+    assessment_determining_hypothesis: 'a-hypothesis', assessment_text: 'assessment text', assessment_register: 'formal',
+    assessment_usage_input_tokens: 8, assessment_usage_output_tokens: 4, assessment_elapsed_ms: 99,
+    assessment_prompt: 'assessment prompt',
+    cost_calls: 3, cost_input_tokens: 100, cost_output_tokens: 50,
+    durations_collection: 10, durations_judgment: 20, durations_writing: 5, durations_total: 35,
     written_at: new Date('2024-01-01T00:00:00.000Z'),
     ...overrides,
   };
@@ -167,7 +155,16 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
     model: 'a-model',
     evidence: [anEvidence()],
     evaluations: [aDecidedEvaluation()],
-    assessment: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, determining_hypothesis: 'a-hypothesis', text: 'assessment text' },
+    assessment: {
+      outcome: 'an-outcome',
+      referral: { action: 'an-action', recipient: 'a-recipient' },
+      determining_hypothesis: 'a-hypothesis',
+      text: 'assessment text',
+      register: 'formal',
+      usage: { input_tokens: 8, output_tokens: 4 },
+      elapsed_ms: 99,
+      prompt: 'assessment prompt',
+    },
     cost: { calls: 3, input_tokens: 100, output_tokens: 50 },
     durations: { collection: 10, judgment: 20, writing: 5, total: 35 },
     written_at: '2024-01-01T00:00:00.000Z',
@@ -187,6 +184,7 @@ it("sends every declared attribute of the root row — identity, subject type, p
     'an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative', 'a-subject-type', 'a-prompt-version', 'a-model',
     'a-case-slug', 1,
     'an-outcome', 'an-action', 'a-recipient', 'a-hypothesis', 'assessment text',
+    'formal', 8, 4, 99, 'assessment prompt',
     3, 100, 50,
     10, 20, 5, 35,
     '2024-01-01T00:00:00.000Z',
@@ -438,7 +436,7 @@ it("raises this store's own typed error rather than answering an inconclusive ev
   await expect(store.read('an-investigation-id')).rejects.toBeInstanceOf(InvestigationStoreError);
 });
 
-it('assembles the assessment with its outcome, referral, determining_hypothesis and text, when a hypothesis was named', async () => {
+it('assembles the assessment with its outcome, referral, determining_hypothesis, text, register, usage, elapsed_ms and prompt, when a hypothesis was named', async () => {
   const { handleQuery } = recordingQuery({ investigation: investigationRow({ assessment_determining_hypothesis: 'a-hypothesis' }) });
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
@@ -450,6 +448,10 @@ it('assembles the assessment with its outcome, referral, determining_hypothesis 
     referral: { action: 'an-action', recipient: 'a-recipient' },
     determining_hypothesis: 'a-hypothesis',
     text: 'assessment text',
+    register: 'formal',
+    usage: { input_tokens: 8, output_tokens: 4 },
+    elapsed_ms: 99,
+    prompt: 'assessment prompt',
   });
 });
 

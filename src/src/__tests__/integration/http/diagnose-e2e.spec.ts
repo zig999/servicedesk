@@ -62,6 +62,16 @@ const EXPECTED_ASSESSMENT: Assessment = {
   outcome: 'inconclusive-hypotheses-exhausted',
   referral: { action: 'escalate-to-specialist', recipient: 'tier-two-support-queue' },
   text: CONSOLIDATED_TEXT,
+  register: 'formal',
+  usage: { input_tokens: 0, output_tokens: 0 },
+  elapsed_ms: 0,
+  prompt: '',
+};
+
+const EXPECTED_DIAGNOSE_RESPONSE = {
+  outcome: 'inconclusive-hypotheses-exhausted',
+  referral: { action: 'escalate-to-specialist', recipient: 'tier-two-support-queue' },
+  text: CONSOLIDATED_TEXT,
 };
 
 const COMPOSITION_FILES_UNDER_TEST = [
@@ -380,7 +390,7 @@ afterEach(async () => {
 });
 
 it(
-  "writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment",
+  "writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment narrowed to the response DTO's four fields",
   async () => {
     const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
 
@@ -393,7 +403,7 @@ it(
     expect(document.assessment).toEqual(EXPECTED_ASSESSMENT);
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual(EXPECTED_ASSESSMENT);
+    expect(response.json()).toEqual(EXPECTED_DIAGNOSE_RESPONSE);
   },
 );
 

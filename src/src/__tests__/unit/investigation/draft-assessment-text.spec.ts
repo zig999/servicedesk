@@ -1,12 +1,22 @@
-import { expect, it } from 'vitest';
+import { expect, expectTypeOf, it } from 'vitest';
+import type { Referral } from '../../../case/case.js';
 import type { ResolvedOutcome } from '../../../case/case-resolution.js';
+import type { Assessment } from '../../../investigation/assessment.js';
 import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
 import { draftAssessment, type DraftAssessmentOptions } from '../../../investigation/draft-assessment-text.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
-import type { IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
+import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
 import type { NarrowedInput } from '../../../investigation/resolve-and-narrow-input.js';
+import type { Usage } from '../../../investigation/usage.js';
+
+class ScriptedConsolidator implements IAssessmentConsolidator {
+  public constructor(private readonly outcome: ConsolidationOutcome) {}
+  public async consolidate(): Promise<ConsolidationOutcome> {
+    return this.outcome;
+  }
+}
 
 function aConfirmedResolvedOutcome(overrides: Partial<ResolvedOutcome> = {}): ResolvedOutcome {
   return {
@@ -118,38 +128,64 @@ it('carries no determining_hypothesis field at all — not even present with an 
   expect(result).not.toHaveProperty('determining_hypothesis');
 });
 
-it('exposes only outcome, referral, determining_hypothesis and text — never a verdict or evidence field — on a confirmed-path answer', async () => {
+it('exposes exactly outcome, referral, determining_hypothesis, text, register, usage, elapsed_ms and prompt — never a verdict or evidence field — on a confirmed-path answer', async () => {
   const resolved = aConfirmedResolvedOutcome();
   const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [anEvidence({ concept: 'a-concept' })] });
   const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'the consolidated write-up');
 
   const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
-  expect(Object.keys(result).sort()).toEqual(['determining_hypothesis', 'outcome', 'referral', 'text']);
+  expect(Object.keys(result).sort()).toEqual([
+    'determining_hypothesis', 'elapsed_ms', 'outcome', 'prompt', 'referral', 'register', 'text', 'usage',
+  ]);
   expect(result).not.toHaveProperty('verdict');
   expect(result).not.toHaveProperty('evidence');
 });
 
-it('exposes only outcome, referral and text — no determining_hypothesis, verdict or evidence field — on a fallback-path answer', async () => {
+it('exposes exactly outcome, referral, text, register, usage, elapsed_ms and prompt — no determining_hypothesis, verdict or evidence field — on a fallback-path answer', async () => {
   const resolved = aFallbackResolvedOutcome();
   const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')] });
   const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'a fallback write-up');
 
   const result = await draftAssessment(draftOptions({ resolved, narrowedInput, consolidationRegister: 'formal', consolidator }));
 
-  expect(Object.keys(result).sort()).toEqual(['outcome', 'referral', 'text']);
+  expect(Object.keys(result).sort()).toEqual(['elapsed_ms', 'outcome', 'prompt', 'referral', 'register', 'text', 'usage']);
 });
 
-it("unwraps the consolidator's own ConsolidationOutcome to its text field, exposing no usage, elapsed_ms or prompt property on the answered Assessment", async () => {
+it("copies register, usage, elapsed_ms and prompt from the consolidator's own ConsolidationOutcome onto the returned Assessment unchanged — register exactly as the call answered with, never the register the caller requested", async () => {
   const narrowedInput = aNarrowedInput({ evaluations: [anEvaluation('h1')], evidence: [anEvidence({ concept: 'a-concept' })] });
-  const consolidator = consolidatorSeededWith(narrowedInput, 'formal', 'the consolidated write-up');
+  const consolidator: IAssessmentConsolidator = new ScriptedConsolidator({
+    text: 'the consolidated write-up',
+    register: 'formal',
+    usage: { input_tokens: 12, output_tokens: 34 },
+    elapsed_ms: 567,
+    prompt: 'the exact consolidation prompt',
+  });
 
-  const result = await draftAssessment(draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'formal', consolidator }));
+  const result = await draftAssessment(
+    draftOptions({ resolved: aConfirmedResolvedOutcome(), narrowedInput, consolidationRegister: 'plain', consolidator }),
+  );
 
-  expect(result.text).toBe('the consolidated write-up');
-  expect(result).not.toHaveProperty('usage');
-  expect(result).not.toHaveProperty('elapsed_ms');
-  expect(result).not.toHaveProperty('prompt');
+  expect({ text: result.text, register: result.register, usage: result.usage, elapsed_ms: result.elapsed_ms, prompt: result.prompt }).toEqual({
+    text: 'the consolidated write-up',
+    register: 'formal',
+    usage: { input_tokens: 12, output_tokens: 34 },
+    elapsed_ms: 567,
+    prompt: 'the exact consolidation prompt',
+  });
+});
+
+it('Assessment declares register typed exactly domain/knowledge/consolidation-register and usage typed exactly domain/investigation/usage — never a wider string or a looser numeric shape standing in for either', () => {
+  expectTypeOf<Assessment>().toEqualTypeOf<{
+    readonly outcome: string;
+    readonly referral: Referral;
+    readonly determining_hypothesis?: string;
+    readonly text: string;
+    readonly register: ConsolidationRegister;
+    readonly usage: Usage;
+    readonly elapsed_ms: number;
+    readonly prompt: string;
+  }>();
 });
 
 it('forwards empty evaluations and empty evidence to the consolidator rather than special-casing either one', async () => {

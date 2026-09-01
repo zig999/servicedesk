@@ -1,0 +1,16 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/wt-consolidation-call-record-chain-hotfix/src/src/__tests__/unit/http/simulate-case.controller.spec.ts
+  53:1  error  Function 'completeRecord' has too many lines (37). Maximum allowed is 30  max-lines-per-function
+
+/home/siegfriedneto/projects/wt-consolidation-call-record-chain-hotfix/src/src/__tests__/unit/investigation/run-diagnosis.spec.ts
+  962:1  error  Async function 'durationsForOneRun' has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+/home/siegfriedneto/projects/wt-consolidation-call-record-chain-hotfix/src/src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts
+  59:1  error  Function 'investigationRow' has too many lines (31). Maximum allowed is 30  max-lines-per-function
+
+✖ 3 problems (3 errors, 0 warnings)
+

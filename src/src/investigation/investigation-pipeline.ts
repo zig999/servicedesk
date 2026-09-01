@@ -3,7 +3,7 @@ import type { ResolvedOutcome } from '../case/case-resolution.js';
 import type { Case } from '../case/case.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
-import type { ConsolidationOutcome, IAssessmentConsolidator } from './assessment-consolidator.port.js';
+import type { IAssessmentConsolidator } from './assessment-consolidator.port.js';
 import type { ConsolidationRegister } from './consolidation-register.js';
 import type { Cost } from './cost.js';
 import { draftAssessment } from './draft-assessment-text.js';
@@ -66,36 +66,15 @@ export async function runInvestigationPipeline(options: InvestigationPipelineOpt
   const evidenceByHypothesis = evidenceByHypothesisOf(options.case, evidence);
   const evaluations = await judgeHypotheses(judgeHypothesesOptions(options, evidenceByHypothesis));
   const { resolved, narrowedInput } = resolveAndNarrow({ case: options.case, evaluations, evidenceByHypothesis });
-  const consolidationCapture: ConsolidationCapture = {};
   const assessment = await draftAssessment({
     resolved,
     narrowedInput,
     consolidationRegister: options.case.consolidation_register ?? options.defaultConsolidationRegister,
-    consolidator: capturingConsolidator(options.consolidator, consolidationCapture),
+    consolidator: options.consolidator,
   });
-  const consolidation = consolidatedOutcomeOf(consolidationCapture);
-  const cost = costOf(evaluations, consolidation.usage);
-  const durations = durationsOf(evidence, evaluations, consolidation.elapsed_ms);
-  return { evidence, evaluations, resolved, assessment, cost, durations, prompts: { writing: consolidation.prompt } };
-}
-
-type ConsolidationCapture = { outcome?: ConsolidationOutcome };
-
-function capturingConsolidator(consolidator: IAssessmentConsolidator, capture: ConsolidationCapture): IAssessmentConsolidator {
-  return {
-    consolidate: async (evaluations, evidence, consolidationRegister) => {
-      const outcome = await consolidator.consolidate(evaluations, evidence, consolidationRegister);
-      capture.outcome = outcome;
-      return outcome;
-    },
-  };
-}
-
-function consolidatedOutcomeOf(capture: ConsolidationCapture): ConsolidationOutcome {
-  if (capture.outcome === undefined) {
-    throw new Error('draftAssessment resolved without ever calling consolidate()');
-  }
-  return capture.outcome;
+  const cost = costOf(evaluations, assessment.usage);
+  const durations = durationsOf(evidence, evaluations, assessment.elapsed_ms);
+  return { evidence, evaluations, resolved, assessment, cost, durations, prompts: { writing: assessment.prompt } };
 }
 
 function costOf(evaluations: readonly Evaluation[], consolidationUsage: Usage): Cost {

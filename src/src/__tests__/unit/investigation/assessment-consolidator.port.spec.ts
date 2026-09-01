@@ -1,9 +1,10 @@
-import { expect, it } from 'vitest';
+import { expect, expectTypeOf, it } from 'vitest';
 import { FakeAssessmentConsolidator } from '../../../investigation/fake-assessment-consolidator.adapter.js';
 import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
-import type { IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
+import type { ConsolidationOutcome, IAssessmentConsolidator } from '../../../investigation/assessment-consolidator.port.js';
+import type { Usage } from '../../../investigation/usage.js';
 
 function consolidatorOver(fake: FakeAssessmentConsolidator): IAssessmentConsolidator {
   return fake;
@@ -59,16 +60,30 @@ it('answers the text seeded for the evaluations, evidence and consolidation regi
   expect(outcome.text).toBe('the consolidated write-up');
 });
 
-it('answers a defined usage, elapsed_ms and prompt on every call, never leaving any of the three undefined', async () => {
+it('answers a defined register, usage, elapsed_ms and prompt on every call, never leaving any of the four undefined', async () => {
   const fake = new FakeAssessmentConsolidator();
   fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: A_REGISTER }, 'the consolidated write-up');
   const consolidator = consolidatorOver(fake);
 
   const outcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, A_REGISTER);
 
+  expect(outcome.register).toBeDefined();
   expect(outcome.usage).toBeDefined();
   expect(outcome.elapsed_ms).toBeDefined();
   expect(outcome.prompt).toBeDefined();
+});
+
+it("answers register as exactly the consolidationRegister the call itself carried — 'formal' for a formal call and 'plain' for a plain one — never a fixed placeholder the way usage, elapsed_ms and prompt are", async () => {
+  const fake = new FakeAssessmentConsolidator();
+  fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: 'formal' }, 'formal write-up');
+  fake.seed({ evaluations: SOME_EVALUATIONS, evidence: SOME_EVIDENCE, consolidationRegister: 'plain' }, 'plain write-up');
+  const consolidator = consolidatorOver(fake);
+
+  const formalOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'formal');
+  const plainOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'plain');
+
+  expect(formalOutcome.register).toBe('formal');
+  expect(plainOutcome.register).toBe('plain');
 });
 
 it('answers a placeholder zero-valued usage, an elapsed_ms of 0 and an empty-string prompt, regardless of what text was seeded', async () => {
@@ -139,6 +154,16 @@ it('distinguishes a call by its evidence, throwing for an evidence set nothing w
   const differentEvidence: readonly Evidence[] = [{ ...SOME_EVIDENCE[0], concept: 'a-different-concept' }];
 
   await expect(consolidator.consolidate(SOME_EVALUATIONS, differentEvidence, A_REGISTER)).rejects.toThrow(/no fixture seeded/);
+});
+
+it('ConsolidationOutcome declares register typed exactly domain/knowledge/consolidation-register and usage typed exactly domain/investigation/usage — never a wider string or a looser numeric shape standing in for either', () => {
+  expectTypeOf<ConsolidationOutcome>().toEqualTypeOf<{
+    readonly text: string;
+    readonly register: ConsolidationRegister;
+    readonly usage: Usage;
+    readonly elapsed_ms: number;
+    readonly prompt: string;
+  }>();
 });
 
 it('a later seed for the same call replaces the earlier one', async () => {

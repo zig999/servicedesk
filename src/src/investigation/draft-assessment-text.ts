@@ -18,7 +18,15 @@ export type DraftAssessmentOptions = {
 export async function draftAssessment(options: DraftAssessmentOptions): Promise<Assessment> {
   const { resolved, narrowedInput, consolidationRegister, consolidator } = options;
 
-  const { text } = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
-  const base = { outcome: resolved.outcome, referral: resolved.referral, text };
+  const outcome = await consolidator.consolidate(narrowedInput.evaluations, narrowedInput.evidence, consolidationRegister);
+  const base = {
+    outcome: resolved.outcome,
+    referral: resolved.referral,
+    text: outcome.text,
+    register: outcome.register,
+    usage: outcome.usage,
+    elapsed_ms: outcome.elapsed_ms,
+    prompt: outcome.prompt,
+  };
   return resolved.determining === undefined ? base : { ...base, determining_hypothesis: resolved.determining };
 }
