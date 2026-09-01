@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/inconclusive-citation-check-hotfix",
+      "kind": "epic",
+      "file": "epic/inconclusive-citation-check-hotfix.md",
+      "title": "Inconclusive citation check hotfix",
+      "summary": "The single corrective task that holds an inconclusive evaluation's citations to the same hypothesis-collects containment check a confirmed or refuted evaluation's citations already receive, instead of skipping it whenever the verdict is inconclusive."
+    },
+    {
+      "id": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "task",
+      "file": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked.md",
+      "title": "Inconclusive evaluations' citations are held to the same collects containment check",
+      "summary": "Fixes judgment-stage.ts to run the hypothesis-collects containment check over an inconclusive evaluation's own citations too, instead of returning it unchecked whenever the verdict is not confirmed or refuted.",
+      "epic": "inconclusive-citation-check-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/inconclusive-citation-check-hotfix",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/inconclusive-citation-check-hotfix",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
