@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/investigation-ticket-ref-absence-hotfix",
+      "kind": "epic",
+      "file": "epic/investigation-ticket-ref-absence-hotfix.md",
+      "title": "Investigation ticket_ref absence hotfix",
+      "summary": "The single corrective task that preserves an absent ticket_ref as absent on read, instead of coercing it to an empty string."
+    },
+    {
+      "id": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "task",
+      "file": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence.md",
+      "title": "ticket_ref round-trips absence as absence, never as an empty string",
+      "summary": "Fixes relational-investigation-store.repository.ts's read to preserve an absent ticket_ref as absent, instead of coalescing it to an empty string, and never writes or reads back an empty string as a ticket reference at all.",
+      "epic": "investigation-ticket-ref-absence-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/investigation-ticket-ref-absence-hotfix",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/investigation-ticket-ref-absence-hotfix",
+      "to": "rules/investigation/an-empty-ticket-reference-is-no-ticket-reference",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "domain/investigation/investigation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "rules/investigation/an-empty-ticket-reference-is-no-ticket-reference",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
