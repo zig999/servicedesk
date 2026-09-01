@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "implementation",
+      "file": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly.md",
+      "title": "durations.total measured to record assembly; durations.writing round-trips absence",
+      "summary": "Fixes investigation-pipeline.ts and simulate-hypothesis-pipeline.ts to compute durations.total as the real wall-clock elapsed time from pipeline entry to result assembly instead of summing stage figures, makes relational-investigation-store.repository.ts's durations_writing column nullable so an absent durations.writing round-trips as absent while a present one round-trips unchanged, and widens simulate-case.dto.ts's own durations schema so its response type still matches Durations's now-optional writing.",
+      "task": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly"
+    },
+    {
+      "id": "proof/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "proof",
+      "file": "proof/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly.md",
+      "title": "durations.total measured to record assembly; durations.writing round-trips absence — proof",
+      "summary": "Tests proving investigation-pipeline.ts and simulate-hypothesis-pipeline.ts now compute durations.total as real wall-clock elapsed time (never a stage-figure sum), that the persisted total round-trips unchanged, and that the store's durations_writing column round-trips both absence and presence exactly -- plus corrections to five pre-existing tests across the wider suite that baked in the old sum-based total and would otherwise fail (or silently under-prove) against the delivered fix.",
+      "task": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

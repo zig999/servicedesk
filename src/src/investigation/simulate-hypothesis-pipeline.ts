@@ -68,7 +68,8 @@ export async function runSimulateHypothesisPipeline(
     deadline: Math.min(options.deadline, judgmentBeginsAtMs + JUDGMENT_STAGE_BUDGET_MS),
   });
   const evaluation = onlyEvaluationOf(evaluations);
-  return { evidence, evaluation, durations: durationsOf(evidence, evaluation) };
+  const totalElapsedMs = readClockMs() - pipelineStartedAtMs;
+  return { evidence, evaluation, durations: durationsOf(evidence, evaluation, totalElapsedMs) };
 }
 
 function onlyEvaluationOf(evaluations: readonly Evaluation[]): Evaluation {
@@ -79,8 +80,8 @@ function onlyEvaluationOf(evaluations: readonly Evaluation[]): Evaluation {
   return evaluation;
 }
 
-function durationsOf(evidence: readonly Evidence[], evaluation: Evaluation): SimulateHypothesisDurations {
+function durationsOf(evidence: readonly Evidence[], evaluation: Evaluation, totalElapsedMs: number): SimulateHypothesisDurations {
   const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
   const judgment = maxElapsedMs(evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms]);
-  return { collection, judgment, total: collection + judgment };
+  return { collection, judgment, total: totalElapsedMs };
 }

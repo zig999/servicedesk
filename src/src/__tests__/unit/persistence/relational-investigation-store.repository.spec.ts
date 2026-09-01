@@ -1,10 +1,11 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { expect, it, vi } from 'vitest';
+import { expect, expectTypeOf, it, vi } from 'vitest';
 import { InvestigationAlreadyStoredError } from '../../../errors/investigation-already-stored.error.js';
 import { InvestigationStoreError } from '../../../errors/investigation-store.error.js';
 import type { Citation } from '../../../investigation/citation.js';
+import type { Durations } from '../../../investigation/durations.js';
 import type { EvaluationReason } from '../../../investigation/evaluation-reason.js';
 import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
@@ -640,5 +641,76 @@ it("assembles the read evidence item's own fields and concept_description straig
   const answered = (await store.read('an-investigation-id'))?.document as Investigation;
 
   expect(answered.evidence[0]).toMatchObject({ fields, concept_description: 'a real description' });
+});
+
+it('declares Durations.writing as optional, so an investigation may carry no durations.writing at all', () => {
+  expectTypeOf<Durations>().toEqualTypeOf<{
+    readonly collection: number;
+    readonly judgment: number;
+    readonly writing?: number;
+    readonly total: number;
+  }>();
+});
+
+it("sends durations.writing as undefined in the root insert's own params, never an invented duration, when the given investigation carries no durations.writing at all", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const durationsWithoutWriting = { collection: 10, judgment: 20, total: 35 };
+
+  await store.write(anInvestigation({ durations: durationsWithoutWriting }));
+
+  const rootInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigations'));
+  expect(rootInsert?.params).toEqual([
+    'an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative', 'a-subject-type', 'a-prompt-version', 'a-model',
+    'a-case-slug', 1,
+    'an-outcome', 'an-action', 'a-recipient', 'a-hypothesis', 'assessment text',
+    'formal', 8, 4, 99, 'assessment prompt',
+    3, 100, 50,
+    10, 20, undefined, 35,
+    '2024-01-01T00:00:00.000Z',
+  ]);
+});
+
+it('reads back durations.writing absent, never an invented duration, when the stored durations_writing column is a SQL NULL', async () => {
+  const { handleQuery } = recordingQuery({ investigation: investigationRow({ durations_writing: null }) });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.durations).toEqual({ collection: 10, judgment: 20, total: 35 });
+  expect(answered.durations).not.toHaveProperty('writing');
+});
+
+it('reads back the exact durations.writing value the stored column holds, unchanged, when one was present at write', async () => {
+  const { handleQuery } = recordingQuery({ investigation: investigationRow({ durations_writing: 4321 }) });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.durations.writing).toBe(4321);
+});
+
+it('writes a diagnosis and reads back durations.total exactly as the write recorded it, unchanged by the round trip', async () => {
+  let insertedTotal: unknown;
+  const handleQuery = async (text: string, params?: readonly unknown[]): Promise<{ rows: unknown[] }> => {
+    if (text.includes('INSERT INTO investigations')) {
+      insertedTotal = params?.[25];
+      return { rows: [] };
+    }
+    if (text.includes('FROM investigations')) {
+      return { rows: [investigationRow({ durations_total: insertedTotal })] };
+    }
+    return { rows: [] };
+  };
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  await store.write(anInvestigation({ durations: { collection: 10, judgment: 20, writing: 5, total: 6_172 } }));
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.durations.total).toBe(6_172);
 });
 

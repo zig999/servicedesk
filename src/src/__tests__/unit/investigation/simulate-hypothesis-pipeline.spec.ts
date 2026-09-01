@@ -237,7 +237,7 @@ it("refuses with HypothesisNotInManifestError a hypothesis name absent from the 
   expect(evaluator.judgedCriteria).toEqual([]);
 });
 
-it('carries durations with collection and judgment only, real non-zero measured values, and no writing field at all — neither in the type nor on the answer', async () => {
+it('carries durations with collection and judgment only, real measured values, and no writing field at all — neither in the type nor on the answer', async () => {
   expectTypeOf<SimulateHypothesisDurations>().toEqualTypeOf<{
     readonly collection: number;
     readonly judgment: number;
@@ -245,8 +245,22 @@ it('carries durations with collection and judgment only, real non-zero measured 
   }>();
   const result = await runSimulateHypothesisPipeline(baseOptions());
 
-  expect(result.durations).toEqual({ collection: 0, judgment: 5, total: 5 });
+  expect(result.durations).toEqual({ collection: 0, judgment: 5, total: 0 });
   expect(result.durations).not.toHaveProperty('writing');
+});
+
+it('computes durations.total as the real wall-clock elapsed time from pipelineStartedAtMs to the moment its result is assembled, never as collection + judgment', async () => {
+  const delayMs = 3_000;
+  const observationSource = new DelayedObservationSource(delayMs, { result: 'ok', observation: 'observed-concept-a' });
+  const evaluator = new RecordingHypothesisEvaluator();
+  const options = baseOptions({ hypothesis: 'h1', observationSource, evaluator });
+
+  const resultPromise = runSimulateHypothesisPipeline(options);
+  await vi.advanceTimersByTimeAsync(delayMs);
+  const result = await resultPromise;
+
+  expect(result.durations.total).toBe(delayMs);
+  expect(result.durations.total).not.toBe(result.durations.collection + result.durations.judgment);
 });
 
 it('answers a judgment duration of zero when no-data means the evaluator was never called at all', async () => {

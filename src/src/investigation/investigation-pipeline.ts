@@ -61,6 +61,7 @@ export type InvestigationPipelineResult = {
 };
 
 export async function runInvestigationPipeline(options: InvestigationPipelineOptions): Promise<InvestigationPipelineResult> {
+  const enteredAtMs = readClockMs();
   const subject = buildSubject(options.subjectType, options.subjectAttributes);
   const evidence = await collectEvidence(collectEvidenceOptions(options, subject));
   const evidenceByHypothesis = evidenceByHypothesisOf(options.case, evidence);
@@ -73,7 +74,12 @@ export async function runInvestigationPipeline(options: InvestigationPipelineOpt
     consolidator: options.consolidator,
   });
   const cost = costOf(evaluations, assessment.usage);
-  const durations = durationsOf(evidence, evaluations, assessment.elapsed_ms);
+  const durations = durationsOf({
+    evidence,
+    evaluations,
+    writingElapsedMs: assessment.elapsed_ms,
+    totalElapsedMs: readClockMs() - enteredAtMs,
+  });
   return { evidence, evaluations, resolved, assessment, cost, durations, prompts: { writing: assessment.prompt } };
 }
 
@@ -87,10 +93,18 @@ function costOf(evaluations: readonly Evaluation[], consolidationUsage: Usage): 
   };
 }
 
-function durationsOf(evidence: readonly Evidence[], evaluations: readonly Evaluation[], writingElapsedMs: number): Durations {
+type DurationsOfOptions = {
+  readonly evidence: readonly Evidence[];
+  readonly evaluations: readonly Evaluation[];
+  readonly writingElapsedMs: number;
+  readonly totalElapsedMs: number;
+};
+
+function durationsOf(options: DurationsOfOptions): Durations {
+  const { evidence, evaluations, writingElapsedMs, totalElapsedMs } = options;
   const collection = maxElapsedMs(evidence.map((item) => item.elapsed_ms));
   const judgment = maxElapsedMs(evaluations.flatMap((evaluation) => (evaluation.elapsed_ms === undefined ? [] : [evaluation.elapsed_ms])));
-  return { collection, judgment, writing: writingElapsedMs, total: collection + judgment + writingElapsedMs };
+  return { collection, judgment, writing: writingElapsedMs, total: totalElapsedMs };
 }
 
 export function maxElapsedMs(values: readonly number[]): number {

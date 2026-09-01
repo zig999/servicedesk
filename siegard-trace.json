@@ -464,8 +464,12 @@
           "digest": "sha256:2518d97115e7ffa8cc8856c52abb8ee5741532c8c6f556b0759e2d43e31b3a96"
         },
         {
+          "path": "src/migrations/0015-durations-writing-nullable.sql",
+          "digest": "sha256:83e6d95c695bae983f6f83abdfcd6c504f3e4290080c2f429e91e525d47a920e"
+        },
+        {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:f46887cc00cc56c5e0d18516756270baba9def87961018434e3e2c7ce166e8fc"
         }
       ]
     },
@@ -2487,7 +2491,7 @@
     },
     {
       "node": "domain/investigation/durations",
-      "digest": "sha256:b808f8d873866e399daf116fcf533c6a04f4bdef3fb2af35b10f7b34b5a1296e",
+      "digest": "sha256:5d961f789b53c21ca0ca223d31e948865921fc3b8b281d7198cffdba74fe4238",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-simulate-case.ts",
@@ -2511,7 +2515,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:6e59f4edbc00f40d272f1472c7a9d46b0c27f0b6fe7c5993efe332bdfa5ff54f"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
@@ -2519,11 +2523,11 @@
         },
         {
           "path": "src/src/investigation/durations.ts",
-          "digest": "sha256:d3fa7017ff9041175a8cb8eb79a8c16d3502d22b6c875938a7d78de4a891424b"
+          "digest": "sha256:63efa5dae0adaf40f8de652236c3846862b45d1b24dde8fe7d3f4354c969d10a"
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:6f0855d7dd185a78370e27e364808dfcd2434cf50088c0d146cba2a492c69147"
+          "digest": "sha256:f17b158e4b788ec81e756f1b9f1cc0800cd2e38e09e93d609b92dca7d4941cb0"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
@@ -2531,11 +2535,11 @@
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:7234c1c150bbadfffb69467ab7e5ce85c59ae67a88d77dfa074fae41b7da09cd"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:4c41d74c94cebc18dbd328acbce5f18785171a50cf86bdcbfc490de6c633a2c0"
+          "digest": "sha256:f46887cc00cc56c5e0d18516756270baba9def87961018434e3e2c7ce166e8fc"
         }
       ]
     },
