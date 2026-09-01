@@ -16,6 +16,24 @@
       "title": "Comment-assertion tests removed, prior behavioral coverage undisturbed",
       "summary": "Cites two pre-existing, unmodified behavioral tests as evidence that deleting the two whole files asserting a removed comment's literal prose left the domain facts those comments used to describe still proven; this removal-only task authorizes no new test.",
       "task": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests"
+    },
+    {
+      "id": "review/frontend-comment-assertion-test-sweep",
+      "kind": "review",
+      "file": "review/frontend-comment-assertion-test-sweep.md",
+      "title": "Frontend comment-assertion test sweep, first review",
+      "summary": "Coverage, specification conformance, standard conformance and the whole-change captured run over the two frontend test files deleted for asserting a removed production comment's prose.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "No production source file changes, and no other test file changes.",
+        "Running the full frontend suite (`npm test`) after the removals passes, with no remaining test weakened, skipped, or rewritten to tolerate comment content the removed tests used to check.",
+        "frontend/app/src/routes/case-simulation-detail-panel-comment-cites-the-current-nodes.spec.ts is deleted entirely (all of its tests reading the prose between the literal markers \"Criterion 6\" and \"Criterion 7\" that used to sit inside a comment in case-simulation-detail-panel.tsx and cited domain/investigation/evaluation and domain/investigation/investigation -- that comment block no longer exists in the source).",
+        "frontend/app/src/routes/cases-list-screen-comment-cites-the-current-nodes.spec.ts is deleted entirely (all 5 of its tests, which assert the prose of a JSDoc comment that used to precede `type CaseSummary = ` in cases-list-screen.tsx and cited domain/knowledge/case-summary and rules/knowledge/a-case-summary-is-derived-from-its-existing-versions -- that JSDoc no longer exists in the source)."
+      ]
     }
   ],
   "edges": [
@@ -30,6 +48,12 @@
       "to": "implementation/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/frontend-comment-assertion-test-sweep",
+      "to": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
