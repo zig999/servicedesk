@@ -2921,7 +2921,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -5180,6 +5180,16 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e377ea330c5373f159d0337746dbc1502bbfcf3062bdff616d7ec7a89968d4fa"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/written-at-records-when-the-write-settled",
+      "digest": "sha256:6d2e7677e33b1c16cb94d4c8b2f1245b05126d68789a17910dfab7455174e2c3",
+      "files": [
+        {
+          "path": "src/src/investigation/run-diagnosis.ts",
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
