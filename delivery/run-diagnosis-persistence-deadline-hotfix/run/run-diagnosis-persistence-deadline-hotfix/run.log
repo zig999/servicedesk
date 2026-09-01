@@ -1,0 +1,291 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 12s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: passed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+
+===== lint :: npm run lint :: passed =====
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+===== secret-scan :: npm run secret-scan :: passed =====
+
+> servicedeskn1@0.1.0 secret-scan
+> secretlint "**/*"
+
+
+===== test :: npm test :: passed =====
+
+> servicedeskn1@0.1.0 test
+> node --env-file=.env.test node_modules/.bin/vitest run --passWithNoTests
+
+
+ RUN  v3.2.7 /home/siegfriedneto/projects/servicedeskn1/src
+
+ ✓ src/__tests__/unit/investigation/run-diagnosis.spec.ts (37 tests) 70ms
+ ✓ src/__tests__/integration/persistence/relational-case-store.repository.spec.ts (43 tests) 13403ms
+   ✓ assembles one version whole — its own attributes together with its manifest, ordered by position regardless of the order entries were placed in, each entry joined to its own adopted hypothesis-revision and its collects  518ms
+   ✓ returns every case currently held, with no filter narrowing it, so all three freshly created cases show up on one wide-enough page  462ms
+   ✓ returns every version the named case currently holds, by its own number and lifecycle state, ordered by version regardless of how many of them have since been released  359ms
+   ✓ answers the PaginatedResponse envelope src/types/pagination.ts declares, scoped to the named case's own versions — the given limit and offset echoed back, the page itself held to that limit even though the case holds more versions, and pageCount computed from total and limit  733ms
+   ✓ returns every hypothesis the named case has ever originated, by its own bare name, regardless of how many revisions each one holds  300ms
+   ✓ returns every revision the named hypothesis currently holds, by its own full content, each revision's own collects grouped to it alone and never conflated with another revision of the same hypothesis  402ms
+   ✓ excludes another hypothesis's own revisions from the page, within the same case, naming only the hypothesis name it was asked for  324ms
+   ✓ excludes a different case's own revisions of a hypothesis sharing the same name, naming only the slug it was asked for  308ms
+   ✓ assigns the next version off the durable counter, never reusing a version number even after the draft that held it is discarded  437ms
+   ✓ copies a named source version's manifest into the new draft's own manifest, entry for entry  664ms
+   ✓ copies the case's own latest released version's manifest when naming no source version at all  659ms
+   ✓ numbers a hypothesis-revision one past that hypothesis's own highest existing revision, or 1 where none exists yet, independently per hypothesis  429ms
+   ✓ records the instant of release, and a second call to release leaves that instant unchanged  491ms
+   ✓ leaves a released version's own manifest entry in place — the schema's own release-conditioned rule no-ops the DELETE — once removeManifestEntry is called against it  604ms
+   ✓ removes a draft version and its own manifest entries, without deleting any hypothesis-revision  351ms
+   ✓ leaves a released version untouched when discard is called against it — the flagged, state-blind implementation this note excludes would have deleted it the same way it deletes a draft's  589ms
+   ✓ persists the corrected title, when_to_use, subject, fallback and consolidation_register attributes against a version in draft state  354ms
+   ✓ leaves everything beyond its own five declared attributes untouched — the manifest, the version number and the draft state itself  381ms
+   ✓ refuses a version already released, through CaseVersionNotDraftError, and leaves its five attributes exactly as they were — the guard runs before any write is attempted  533ms
+ ✓ src/__tests__/unit/investigation/evidence-collection-stage.spec.ts (39 tests) 81ms
+ ✓ src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts (56 tests) 53ms
+ ✓ src/__tests__/unit/capability-registry/capability-registry.service.spec.ts (63 tests) 56ms
+ ✓ src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts (41 tests) 240ms
+ ✓ src/__tests__/unit/investigation/judgment-stage.spec.ts (32 tests) 95ms
+ ✓ src/__tests__/unit/http/build-app.spec.ts (37 tests) 678ms
+ ✓ src/__tests__/unit/case/case-query.service.spec.ts (25 tests) 41ms
+ ✓ src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts (32 tests) 66ms
+ ✓ src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts (14 tests) 2280ms
+   ✓ answers each of the five vocabularies with the rows written for it, and no other vocabulary's rows  985ms
+ ✓ src/__tests__/integration/factories/diagnose-server.factory.spec.ts (6 tests) 8047ms
+   ✓ answers 200 with exactly the fixture case's own declared fallback outcome, referral and drafted text — no verdict, citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject  1603ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env  1071ms
+   ✓ persists real, non-zero cost and durations for the judgment and consolidation calls, now that the Anthropic adapters themselves report real usage and elapsed_ms  1097ms
+   ✓ reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture  1086ms
+   ✓ calls each collected concept's own registered connector address, proving the pipeline's IObservationSource resolves through the HTTP declarative adapter's own registry-driven resolution rather than a hardcoded or fixture-derived one  1104ms
+   ✓ answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it  1255ms
+ ✓ src/__tests__/integration/persistence/schema-migrations.spec.ts (23 tests) 2538ms
+   ✓ applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not  570ms
+ ✓ src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts (1 test) 11929ms
+   ✓ answers a named 500 reporting InvestigationWriteDeadlineExceededError, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline  10773ms
+ ✓ src/__tests__/integration/http/diagnose-e2e.spec.ts (2 tests) 2198ms
+   ✓ writes an investigation to the real, relational store for the request, readable back through RelationalInvestigationStore, before asserting anything about the HTTP response — and the response then carries the fixture case's own resolved fallback assessment  1553ms
+ ✓ src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts (31 tests) 2944ms
+   ✓ backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column  698ms
+ ✓ src/__tests__/unit/investigation/investigation-factory.spec.ts (26 tests) 25ms
+ ✓ src/__tests__/integration/seed.spec.ts (12 tests) 4659ms
+   ✓ reads the seeded version back whole, matching every field the fixture document itself declares — not only the case's root and its hypotheses' names  793ms
+   ✓ resolves without rejecting when seed.ts is run a second time against a database it has already seeded  1140ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts (32 tests) 59ms
+ ✓ src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts (11 tests) 5032ms
+   ✓ reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction  501ms
+   ✓ writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column  433ms
+   ✓ refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged  495ms
+   ✓ lets only one of two concurrent writes to the same id succeed, the other refused through InvestigationAlreadyStoredError  649ms
+   ✓ does not refuse a write for an id not already stored  432ms
+   ✓ reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with  513ms
+   ✓ reads back an evidence item exactly as written when its result is not ok and it carries a result detail  480ms
+   ✓ reads back an assessment with no determining_hypothesis when the fallback answered and none was named  587ms
+   ✓ leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one's own hypothesis  491ms
+   ✓ refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored  399ms
+ ✓ src/__tests__/integration/case/revise-hypothesis.operation.spec.ts (11 tests) 3247ms
+   ✓ originates a never-named hypothesis's own identity and its first revision, numbered 1  353ms
+   ✓ numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered  371ms
+   ✓ refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only version is already released rather than in draft state, writing no hypothesis or revision row  331ms
+   ✓ refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case whose only draft version has already been discarded, writing no hypothesis or revision row  399ms
+   ✓ succeeds for a case that holds both an already-released earlier version and a currently open draft version — the draft gate finds the draft rather than being confused by the case's own release history  490ms
+ ✓ src/__tests__/unit/persistence/relational-case-store.repository.spec.ts (25 tests) 57ms
+ ✓ src/__tests__/unit/case/parse-case-document.spec.ts (63 tests) 29ms
+ ✓ src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts (12 tests) 1534ms
+   ✓ updates a capability already referenced by investigation_evidence without failing, and the reference still resolves to the updated identity afterward  391ms
+   ✓ registers a brand-new identity while a different capability remains referenced by investigation_evidence, leaving the referenced row exactly as it was  407ms
+ ✓ src/__tests__/unit/glossary/glossary.service.spec.ts (33 tests) 35ms
+ ✓ src/__tests__/unit/http/register-capability.routes.spec.ts (26 tests) 278ms
+ ✓ src/__tests__/integration/factories/simulate-case-server.factory.spec.ts (3 tests) 4400ms
+   ✓ reaches simulate-case's own controller through createDiagnoseHttpServer's real composition and answers 200 with the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a released-state pinned case version  1283ms
+   ✓ answers 200 with the complete record likewise for a draft-state pinned case version, never released  794ms
+   ✓ writes no investigation row for the requester a real simulate-case call ran under, even though the call itself succeeds  1105ms
+ ✓ src/__tests__/unit/case/validate-case-coherence.spec.ts (20 tests) 20ms
+ ✓ src/__tests__/unit/errors/status-map.spec.ts (30 tests) 29ms
+ ✓ src/__tests__/unit/http/test-connector.routes.spec.ts (16 tests) 250ms
+ ✓ src/__tests__/integration/case/release.operation.spec.ts (5 tests) 5781ms
+   ✓ refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, naming both structural violations together, leaving the version in draft state with no release recorded  473ms
+   ✓ refuses releasing a draft whose collected concept both rejects the declared subject type and answers no capability, naming both coherence violations together, leaving the version in draft state with no release recorded  745ms
+   ✓ marks a draft that holds against every rule released, recording the instant of release  1082ms
+   ✓ refuses releasing a version that is not in draft state, through this operation's own CaseVersionNotDraftAtReleaseError, leaving the already-recorded release instant unchanged  1147ms
+   ✓ releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted revision reading exactly as they read before version 2 ever existed  2331ms
+ ✓ src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts (24 tests) 27ms
+ ✓ src/__tests__/integration/case/manifest-composition.operations.spec.ts (12 tests) 6789ms
+   ✓ places a hypothesis-revision at a position not yet occupied in a draft manifest  938ms
+   ✓ refuses placing a hypothesis-revision at a position already occupied by a different hypothesis  845ms
+   ✓ does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead  883ms
+   ✓ refuses placing a hypothesis-revision against a version that is not in draft state  964ms
+   ✓ refuses removing a manifest entry against a version that is not in draft state  584ms
+   ✓ refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis  411ms
+   ✓ never deletes the hypothesis-revision a removed manifest entry referenced  504ms
+   ✓ swaps two placed hypotheses onto each other's position, through this module's own place and remove calls, creating no new hypothesis-revision for either  540ms
+   ✓ refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them  447ms
+   ✓ does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry  327ms
+   ✓ lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError  319ms
+ ✓ src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts (20 tests) 35ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts (10 tests) 235ms
+ ✓ src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts (5 tests) 5058ms
+   ✓ reaches simulate-hypothesis's own controller through createDiagnoseHttpServer's real composition and answers 200 with exactly evidence, one evaluation and durations — collecting only the named hypothesis's own revision's concept, never the case's other hypothesis's own concept  1260ms
+   ✓ collects the other hypothesis's own concept instead when that one is named, proving the real composition's narrowing follows the given hypothesis rather than a fixed one  1132ms
+   ✓ refuses with 404 reporting HypothesisNotInManifestError, for a hypothesis name absent from the pinned case version manifest  850ms
+   ✓ writes no investigation row for the requester a real simulate-hypothesis call ran under, even though the call itself succeeds  1041ms
+ ✓ src/__tests__/integration/factories/production-diagnose.factory.spec.ts (5 tests) 3421ms
+   ✓ writes two independent investigation records for two calls sharing the same case, subject, narrative and requester  817ms
+   ✓ collects evidence again for the second of two calls with identical inputs, rather than reusing the first call's own result  693ms
+   ✓ passes the given requester straight through to the observation source, substituting none of its own  713ms
+   ✓ reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake  646ms
+   ✓ sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source  549ms
+ ✓ src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts (18 tests) 230ms
+ ✓ src/__tests__/integration/factories/case-query.factory.spec.ts (6 tests) 5966ms
+   ✓ answers a case written directly to the real store, matching what is currently stored, with no publish step in between  1376ms
+   ✓ refuses through the real wiring a case document declaring no hypothesis, naming the structural violation  406ms
+   ✓ refuses at a later read, through the real wiring, a case that validated earlier once the glossary no longer accepts the subject type it depends on for a collected concept, edited directly against the table  1719ms
+   ✓ replays the pinned version through the real store, answering it unchanged even after the real capability registration the case depends on is deleted directly against the table  2109ms
+ ✓ src/__tests__/unit/factories/simulate.factory.spec.ts (14 tests) 25ms
+ ✓ src/__tests__/unit/case/case-resolution.spec.ts (13 tests) 8ms
+ ✓ src/__tests__/unit/http/diagnose.controller.spec.ts (13 tests) 29ms
+ ✓ src/__tests__/integration/case/create-draft.operation.spec.ts (6 tests) 2753ms
+   ✓ assigns a new draft a version number greater than every version the case has ever held, including one later discarded  770ms
+   ✓ copies the case's own latest released version's manifest when a draft is created naming no source version  497ms
+   ✓ copies the named historical version's own manifest instead of the case's latest released version, when a draft is created naming a source version  799ms
+ ✓ src/__tests__/integration/case/manifest-collects-survive-release.spec.ts (2 tests) 3323ms
+   ✓ reads back each of two released hypothesis-revisions' own collects exactly as given, never empty, even after an ordinary DELETE against those exact rows is attempted  1845ms
+   ✓ releases a new draft that inherits an earlier released version's own manifest without refusing through the structural "collects no concept" problem, even though an ordinary DELETE against the inherited revision's own collects row was already attempted  1475ms
+ ✓ src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts (1 test) 1615ms
+   ✓ reads the fixture case whole, with no coherence violation, through the real case-query wiring over the fixture's own glossary and capability data  834ms
+ ✓ src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts (9 tests) 37ms
+ ✓ src/__tests__/integration/persistence/isolated-connection.spec.ts (11 tests) 547ms
+ ✓ src/__tests__/unit/http/register-connector.routes.spec.ts (11 tests) 222ms
+ ✓ src/__tests__/unit/http/simulate-case.controller.spec.ts (11 tests) 22ms
+ ✓ src/__tests__/unit/investigation/investigation-pipeline.spec.ts (4 tests) 22ms
+ ✓ src/__tests__/unit/factories/production-simulate.factory.spec.ts (12 tests) 14ms
+(node:190836) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/investigation-evidence-semantics-snapshot-schema.spec.ts (3 tests) 2680ms
+   ✓ reads an investigation_evidence row stored before this migration back with its own honest-empty snapshot — fields as an empty array, concept_description as the empty string, never a read failure — while every column it already carried (concept, capability pin, elapsed_ms) survives unchanged  777ms
+   ✓ adds fields as a jsonb column and concept_description as a text column to investigation_evidence, both NOT NULL  750ms
+   ✓ leaves every pre-existing row of four other tables exactly as it was, altering and removing nothing outside the two new columns this migration adds to investigation_evidence  1150ms
+ ✓ src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts (16 tests) 41ms
+ ✓ src/__tests__/unit/http/revise-hypothesis.routes.spec.ts (13 tests) 227ms
+ ✓ src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts (9 tests) 507ms
+ ✓ src/__tests__/unit/http-connector/connector-request-resolver.spec.ts (29 tests) 14ms
+ ✓ src/__tests__/unit/case/case-input-requirements.spec.ts (14 tests) 12ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text.spec.ts (10 tests) 13ms
+ ✓ src/__tests__/integration/factories/store-wiring.spec.ts (2 tests) 1628ms
+   ✓ answers, through createCaseQuery built from one connection, a case written directly through createCaseStore built from that same connection — never a second store the write never reached  1103ms
+   ✓ answers, through a second createInvestigationStore built from one connection, an investigation written through a first createInvestigationStore built from that same connection  523ms
+ ✓ src/__tests__/integration/case/discard.operation.spec.ts (6 tests) 1977ms
+   ✓ removes the discarded draft version itself, so no later read answers it at all  329ms
+   ✓ refuses to discard a version that is not in draft state, naming the state it actually holds  458ms
+   ✓ leaves a released version and its manifest entry in place after refusing to discard it  610ms
+ ✓ src/__tests__/unit/http/list-case-versions.routes.spec.ts (16 tests) 281ms
+ ✓ src/__tests__/unit/http/list-hypotheses.routes.spec.ts (16 tests) 219ms
+ ✓ src/__tests__/unit/investigation/observation-source.port.spec.ts (15 tests) 10ms
+ ✓ src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts (11 tests) 13ms
+ ✓ src/__tests__/unit/persistence/database-access.spec.ts (14 tests) 16ms
+ ✓ src/__tests__/unit/http/register-concept.routes.spec.ts (10 tests) 191ms
+ ✓ src/__tests__/unit/factories/production-diagnose.factory.spec.ts (8 tests) 15ms
+ ✓ src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts (21 tests) 261ms
+ ✓ src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts (3 tests) 1420ms
+ ✓ src/__tests__/unit/http/update-draft.routes.spec.ts (9 tests) 215ms
+ ✓ src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts (8 tests) 13ms
+ ✓ src/__tests__/unit/http/list-connector-configurations.routes.spec.ts (13 tests) 189ms
+ ✓ src/__tests__/unit/http/create-draft.routes.spec.ts (9 tests) 190ms
+ ✓ src/__tests__/unit/http/release.routes.spec.ts (9 tests) 175ms
+ ✓ src/__tests__/unit/factories/store-wiring.spec.ts (11 tests) 259ms
+ ✓ src/__tests__/unit/http/test-connector.controller.spec.ts (5 tests) 21ms
+ ✓ src/__tests__/unit/http/read-case.routes.spec.ts (10 tests) 220ms
+ ✓ src/__tests__/unit/http/list-capabilities.routes.spec.ts (14 tests) 223ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts (10 tests) 9ms
+ ✓ src/__tests__/unit/http/place-hypothesis.routes.spec.ts (12 tests) 268ms
+ ✓ src/__tests__/unit/http/list-concepts.routes.spec.ts (13 tests) 205ms
+ ✓ src/__tests__/unit/investigation/citation-validation.spec.ts (14 tests) 19ms
+ ✓ src/__tests__/unit/http/diagnose.routes.spec.ts (6 tests) 192ms
+ ✓ src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts (7 tests) 19ms
+ ✓ src/__tests__/unit/http/list-cases.routes.spec.ts (13 tests) 259ms
+ ✓ src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts (7 tests) 22ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts (10 tests) 213ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts (10 tests) 11ms
+ ✓ src/__tests__/unit/investigation/field-semantics.spec.ts (22 tests) 18ms
+ ✓ src/__tests__/unit/persistence/migration-runner.spec.ts (7 tests) 11ms
+ ✓ src/__tests__/integration/persistence/migration-runner.spec.ts (3 tests) 1693ms
+   ✓ creates its own bookkeeping and its own domain tables in the schema an explicit call names, independent of whatever this project's real "test" schema already has recorded  775ms
+   ✓ applies no script twice and fails nothing when run again against a database that already holds the schema  783ms
+ ✓ src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts (12 tests) 250ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.routes.spec.ts (9 tests) 173ms
+(node:191900) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+ ✓ src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts (2 tests) 1663ms
+   ✓ reads a concepts row stored before this migration back with an honest empty description, never a read failure — the row's own name, ttl and concept_accepts entries all survive the same way  808ms
+   ✓ leaves every pre-existing row of six other tables exactly as it was, altering and removing nothing outside the new column this migration adds to concepts  853ms
+ ✓ src/__tests__/integration/vitest-global-setup.spec.ts (4 tests) 244ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts (7 tests) 250ms
+ ✓ src/__tests__/unit/http/read-concept.routes.spec.ts (7 tests) 189ms
+ ✓ src/__tests__/unit/investigation/observation-source-modules.spec.ts (3 tests) 71ms
+ ✓ src/__tests__/unit/http/remove-hypothesis.routes.spec.ts (9 tests) 211ms
+ ✓ src/__tests__/unit/http/discard.routes.spec.ts (8 tests) 190ms
+ ✓ src/__tests__/unit/http/read-capability.routes.spec.ts (6 tests) 159ms
+ ✓ src/__tests__/integration/persistence/database-access.spec.ts (5 tests) 328ms
+ ✓ src/__tests__/unit/capability-registry/capability-query.port.spec.ts (7 tests) 8ms
+ ✓ src/__tests__/unit/domain-depends-on-no-infrastructure-bypass-mention-scan.spec.ts (6 tests) 76ms
+ ✓ src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts (4 tests) 51ms
+ ✓ src/__tests__/unit/config/env.spec.ts (8 tests) 17ms
+ ✓ src/__tests__/unit/http/case-input-requirements.routes.spec.ts (6 tests) 177ms
+ ✓ src/__tests__/integration/glossary/glossary-query.port.spec.ts (3 tests) 628ms
+ ✓ src/__tests__/integration/factories/capability-registry.factory.spec.ts (3 tests) 286ms
+ ✓ src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts (7 tests) 6ms
+ ✓ src/__tests__/unit/http/error-handler.middleware.spec.ts (7 tests) 169ms
+ ✓ src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts (3 tests) 46ms
+ ✓ src/__tests__/unit/glossary/glossary-query.port.spec.ts (6 tests) 19ms
+ ✓ src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts (5 tests) 10ms
+ ✓ src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts (3 tests) 261ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts (6 tests) 35ms
+ ✓ src/__tests__/unit/investigation/investigation-factory-modules.spec.ts (2 tests) 12ms
+ ✓ src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts (11 tests) 7ms
+ ✓ src/__tests__/integration/capability-registry/capability-query.port.spec.ts (3 tests) 286ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-shape.spec.ts (7 tests) 19ms
+ ✓ src/__tests__/unit/http/read-connector-configuration.controller.spec.ts (4 tests) 7ms
+ ✓ src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts (3 tests) 9ms
+ ✓ src/__tests__/unit/seed.spec.ts (1 test) 8ms
+ ✓ src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts (6 tests) 6ms
+ ✓ src/__tests__/unit/http-connector/response-path-extractor.spec.ts (12 tests) 8ms
+ ✓ src/__tests__/unit/case/case-document-modules.spec.ts (3 tests) 34ms
+ ✓ src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts (13 tests) 6ms
+ ✓ src/__tests__/unit/types/pagination.spec.ts (7 tests) 5ms
+ ✓ src/__tests__/unit/fixtures/case-fixture-observations.spec.ts (2 tests) 19ms
+ ✓ src/__tests__/integration/factories/glossary.factory.spec.ts (2 tests) 403ms
+ ✓ src/__tests__/unit/glossary/vocabulary-modules.spec.ts (2 tests) 11ms
+ ✓ src/__tests__/unit/persistence/database-connection.spec.ts (6 tests) 10ms
+ ✓ src/__tests__/unit/investigation/subject.spec.ts (6 tests) 6ms
+ ✓ src/__tests__/unit/dependency-manifest.spec.ts (4 tests) 24ms
+ ✓ src/__tests__/unit/capability-registry/no-network-persistence.spec.ts (1 test) 25ms
+ ✓ src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts (1 test) 97ms
+ ✓ src/__tests__/unit/migrate.spec.ts (1 test) 10ms
+ ✓ src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts (1 test) 8ms
+ ✓ src/__tests__/unit/vitest-config-migration-replay-headroom.spec.ts (2 tests) 11ms
+ ✓ src/__tests__/unit/deployment-provisions-no-database-service.spec.ts (1 test) 25ms
+ ✓ src/__tests__/unit/investigation/fake-observation-source.adapter.spec.ts (1 test) 5ms
+ ✓ src/__tests__/unit/glossary/glossary-store.port.spec.ts (2 tests) 6ms
+ ✓ src/__tests__/unit/capability-registry/capability.spec.ts (1 test) 5ms
+ ✓ src/__tests__/unit/investigation/consolidation-register.spec.ts (1 test) 3ms
+
+ Test Files  144 passed (144)
+      Tests  1704 passed (1704)
+   Start at  22:05:36
+   Duration  184.45s (transform 4.42s, setup 0ms, collect 19.19s, tests 121.09s, environment 49ms, prepare 13.87s)
+
+

@@ -16,6 +16,25 @@
       "title": "Persistence deadline uses remaining time and retries — proof",
       "summary": "Tests for run-diagnosis.ts's fixed persistence bound/retry/id-keyed-settlement behavior and status-map.ts's new InvestigationWriteDeadlineExceededError mapping, reconciling pre-existing tests that asserted the exact old behavior this task deliberately replaced.",
       "task": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries"
+    },
+    {
+      "id": "review/run-diagnosis-persistence-deadline-hotfix",
+      "kind": "review",
+      "file": "review/run-diagnosis-persistence-deadline-hotfix.md",
+      "title": "Run-diagnosis persistence deadline hotfix, first review",
+      "summary": "What four passes found over the persistence-deadline-uses-remaining-time-and-retries delivery — run-diagnosis.ts's stage-bound/retry/id-settlement fix, status-map.ts's new HTTP 500 mapping, and the four test files proving them.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A write whose first attempt fails with zero or fewer milliseconds of the stage bound left unspent, or whose first attempt runs until the stage bound itself elapses without settling, is not retried, and InvestigationWriteDeadlineExceededError is raised immediately.",
+        "A write whose first attempt is issued after collection, judgment and writing have together consumed enough of the declared total that less than the full persistence nominal budget remains before the deadline is bounded by that smaller remaining figure — never by the persistence nominal budget computed against the request's original entry instant.",
+        "A write whose first attempt settles successfully before its own bound elapses answers normally, with no retry attempted and no change to the written investigation.",
+        "InvestigationWriteDeadlineExceededError is raised whenever neither the first attempt nor the retry (where one is issued) settles successfully — whether because the persistence stage's own bound elapsed first, an attempt failed outright, or no time remained for a retry — and is never raised once a write has settled successfully, including an attempt that found the record already there."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -48,6 +67,12 @@
       "to": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/run-diagnosis-persistence-deadline-hotfix",
+      "to": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
