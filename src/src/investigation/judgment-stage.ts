@@ -222,7 +222,7 @@ function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Eva
     hypothesis: name,
     verdict: 'inconclusive',
     reason: 'no-data',
-    citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept, field: '' })),
+    citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
   };
 }
 

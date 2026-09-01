@@ -28,7 +28,7 @@ export type SimulateHypothesisRequestDto = z.infer<typeof simulateHypothesisRequ
 
 const citationSchema = z.object({
   concept: z.string().min(1),
-  field: z.string().min(1),
+  field: z.string().min(1).optional(),
 });
 
 const usageSchema = z.object({

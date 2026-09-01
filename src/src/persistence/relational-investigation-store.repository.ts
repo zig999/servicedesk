@@ -79,7 +79,7 @@ interface IEvaluationRow {
 interface ICitationRow {
   readonly hypothesis: string;
   readonly concept: string;
-  readonly field: string;
+  readonly field: string | null;
 }
 
 const EVIDENCE_RESULT_VALUES: ReadonlySet<string> = new Set<string>(EVIDENCE_RESULTS);
@@ -241,7 +241,7 @@ function evaluationStatement(investigationId: string, evaluation: Evaluation): I
 function citationStatement(investigationId: string, hypothesis: string, citation: Citation): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVALUATION_CITATIONS_TABLE} (investigation_id, hypothesis, concept, field) VALUES ($1, $2, $3, $4)`,
-    params: [investigationId, hypothesis, citation.concept, citation.field],
+    params: [investigationId, hypothesis, citation.concept, citation.field ?? null],
   };
 }
 
@@ -363,10 +363,14 @@ async function citationsByHypothesis(tx: IQueryable, id: string): Promise<Readon
   const grouped = new Map<string, Citation[]>();
   for (const row of rows) {
     const citations = grouped.get(row.hypothesis) ?? [];
-    citations.push({ concept: row.concept, field: row.field });
+    citations.push(citationOf(row));
     grouped.set(row.hypothesis, citations);
   }
   return grouped;
+}
+
+function citationOf(row: ICitationRow): Citation {
+  return { concept: row.concept, ...(row.field !== null ? { field: row.field } : {}) };
 }
 
 function evaluationOf(row: IEvaluationRow, citations: readonly Citation[]): Evaluation {

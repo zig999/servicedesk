@@ -1,4 +1,4 @@
 export type Citation = {
   readonly concept: string;
-  readonly field: string;
+  readonly field?: string;
 };

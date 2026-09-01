@@ -379,10 +379,69 @@ it('records inconclusive no-data citing every non-ok evidence item, and never en
       hypothesis: 'h1',
       verdict: 'inconclusive',
       reason: 'no-data',
-      citations: [{ concept: 'concept-denied', field: '' }, { concept: 'concept-timeout', field: '' }],
+      citations: [{ concept: 'concept-denied' }, { concept: 'concept-timeout' }],
     },
   ]);
   expect(evaluator.calls).toHaveLength(0);
+});
+
+it("omits the field key entirely from each citation a no-data evaluation constructs for its non-ok evidence — never field: '' — so 'field' in citation is false for every one of them", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const theCase = aCase([{ name: 'h1', collects: ['concept-denied', 'concept-timeout'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    [
+      'h1',
+      [
+        anEvidence({ concept: 'concept-denied', result: 'denied' }),
+        anEvidence({ concept: 'concept-timeout', result: 'timeout' }),
+      ],
+    ],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  const citations = result[0]!.citations;
+  expect(citations).toHaveLength(2);
+  for (const citation of citations) {
+    expect('field' in citation).toBe(false);
+  }
+  expect(citations).toEqual([{ concept: 'concept-denied' }, { concept: 'concept-timeout' }]);
+});
+
+it("leaves a confirmed evaluation's citation carrying both concept and field exactly as the evaluator answered it — 'field' in citation stays true, unaffected by the no-data citation shape now omitting it", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }] }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  const citation = result[0]!.citations[0]!;
+  expect('field' in citation).toBe(true);
+  expect(citation).toEqual({ concept: 'concept-a', field: 'field-a' });
+});
+
+it("leaves a refuted evaluation's citation carrying both concept and field exactly as the evaluator answered it — 'field' in citation stays true, unaffected by the no-data citation shape now omitting it", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script('h1 criterion', immediately({ verdict: 'refuted', citations: [{ concept: 'concept-a', field: 'field-a' }] }));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  const citation = result[0]!.citations[0]!;
+  expect('field' in citation).toBe(true);
+  expect(citation).toEqual({ concept: 'concept-a', field: 'field-a' });
 });
 
 it('passes through a confirmed answer with at least one citation unchanged', async () => {

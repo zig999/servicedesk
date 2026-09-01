@@ -73,10 +73,51 @@ it('answers inconclusive with reason no-data, citing exactly the evidence items 
     verdict: 'inconclusive',
     reason: 'no-data',
     citations: [
-      { concept: 'concept-timeout', field: '' },
-      { concept: 'concept-denied', field: '' },
+      { concept: 'concept-timeout' },
+      { concept: 'concept-denied' },
     ],
   });
+});
+
+it("omits the field key entirely from each citation a no-data outcome constructs for its non-ok evidence — never field: '' — so 'field' in citation is false for every one of them", async () => {
+  const mixedEvidence: readonly EvidenceItem[] = [
+    { concept: 'concept-ok', result: 'ok', observation: 'an-observed-value', fields: [{ name: 'a-field' }], concept_description: '' },
+    { concept: 'concept-timeout', result: 'timeout', fields: [], concept_description: '' },
+  ];
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, mixedEvidence, A_CASE_CONTEXT);
+
+  expect(outcome.citations).toHaveLength(1);
+  const [citation] = outcome.citations;
+  expect('field' in citation!).toBe(false);
+  expect(citation).toEqual({ concept: 'concept-timeout' });
+});
+
+it("leaves a confirmed answer's citation carrying both concept and field exactly as the model answered it — 'field' in citation stays true, unaffected by the no-data outcome shape now omitting it", async () => {
+  const citation = { concept: 'concept-one', field: 'field-one' };
+  createMock.mockResolvedValueOnce(messageWithText(JSON.stringify({ verdict: 'confirmed', citations: [citation] })));
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome.verdict).toBe('confirmed');
+  const [firstCitation] = outcome.citations;
+  expect('field' in firstCitation!).toBe(true);
+  expect(firstCitation).toEqual(citation);
+});
+
+it("leaves a refuted answer's citation carrying both concept and field exactly as the model answered it — 'field' in citation stays true, unaffected by the no-data outcome shape now omitting it", async () => {
+  const citation = { concept: 'concept-two', field: 'field-two' };
+  createMock.mockResolvedValueOnce(messageWithText(JSON.stringify({ verdict: 'refuted', citations: [citation] })));
+  const evaluator = createEvaluator();
+
+  const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
+
+  expect(outcome.verdict).toBe('refuted');
+  const [firstCitation] = outcome.citations;
+  expect('field' in firstCitation!).toBe(true);
+  expect(firstCitation).toEqual(citation);
 });
 
 it('never calls the provider when the evidence carries any non-ok result', async () => {

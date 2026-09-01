@@ -27,7 +27,7 @@ export type SimulateCaseRequestDto = z.infer<typeof simulateCaseRequestSchema>;
 
 const citationSchema = z.object({
   concept: z.string().min(1),
-  field: z.string().min(1),
+  field: z.string().min(1).optional(),
 });
 
 const usageSchema = z.object({
