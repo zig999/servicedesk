@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/inconclusive-citation-check-hotfix-inconclusive-evaluations-citations-are-checked-setup",
+  "cwd": "/home/siegfriedneto/projects/wt-inconclusive-citation-check-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T14:40:49.370+00:00",
+      "ended_at": "2026-09-01T14:40:55.667+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

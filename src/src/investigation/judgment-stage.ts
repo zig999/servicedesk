@@ -86,11 +86,8 @@ async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluat
   if (first === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
   }
-  if (first.verdict === 'inconclusive') {
-    return asEvaluation(name, first);
-  }
   const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence };
-  if (isStructurallyValid(context, first.citations)) {
+  if (citationsAreAcceptable(context, first)) {
     return asEvaluation(name, first);
   }
   return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext });
@@ -115,10 +112,7 @@ async function retryOrFail(options: RetryOrFailOptions): Promise<Evaluation> {
   if (retry === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
   }
-  if (retry.verdict === 'inconclusive') {
-    return asEvaluation(name, retry);
-  }
-  return isStructurallyValid(context, retry.citations) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name);
+  return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name);
 }
 
 async function acquireSlotOrDeadline(pool: CallPool, deadlineGuard: DeadlineGuard): Promise<boolean> {
@@ -188,6 +182,13 @@ function raceEvaluateAgainstDeadline(
   deadlineGuard: DeadlineGuard,
 ): Promise<EvaluationOutcome | DeadlineMarker> {
   return Promise.race([call, deadlineGuard.signal]);
+}
+
+function citationsAreAcceptable(context: HypothesisCitationContext, outcome: EvaluationOutcome): boolean {
+  if (outcome.verdict === 'inconclusive' && outcome.citations.length === 0) {
+    return true;
+  }
+  return isStructurallyValid(context, outcome.citations);
 }
 
 function isStructurallyValid(context: HypothesisCitationContext, citations: readonly Citation[]): boolean {

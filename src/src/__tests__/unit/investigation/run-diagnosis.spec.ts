@@ -648,6 +648,7 @@ it('computes persistence\'s own bound from the actual wall-clock time elapsed be
   const store = new InMemoryInvestigationStore();
   const consolidator = new ScriptedAssessmentConsolidator({
     text: HAPPY_PATH_TEXT,
+    register: 'plain',
     usage: { input_tokens: 0, output_tokens: 0 },
     elapsed_ms: 1_000,
     prompt: 'a-prompt',
