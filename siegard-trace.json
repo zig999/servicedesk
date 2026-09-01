@@ -4599,7 +4599,7 @@
     },
     {
       "node": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
-      "digest": "sha256:45a9f209d94bd5088ea798b6de27f3dabf538fbe0413f7bd2d85f4335df5d766",
+      "digest": "sha256:ca4b60f1d2048384a627f2bdbaf038eea60f679519b2e1d0644d54b887cf2e83",
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
@@ -4607,7 +4607,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:988c12102360022831f1043c100017a9bce8db56ddc6fae4385c77609ae43ca4"
         }
       ]
     },
@@ -6109,7 +6109,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:988c12102360022831f1043c100017a9bce8db56ddc6fae4385c77609ae43ca4"
         }
       ]
     },

@@ -457,13 +457,14 @@ it("keeps a hypothesis's retry under the same pool slot it already holds, never 
   expect(result[1]).toEqual({ hypothesis: 'h2', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] });
 });
 
-it('passes an inconclusive first answer through unchanged, with no retry attempted', async () => {
+it('retries an inconclusive first answer whose citation fails the collects-containment check, and falls back to judgment-failure when the retry citation fails it too', async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
-  evaluator.script('h1 criterion', immediately({
-    verdict: 'inconclusive',
-    reason: 'judgment-failure',
+  const citationToAnUndeclaredField = {
+    verdict: 'inconclusive' as const,
+    reason: 'judgment-failure' as const,
     citations: [{ concept: 'concept-a', field: 'a-field' }],
-  }));
+  };
+  evaluator.script('h1 criterion', immediately(citationToAnUndeclaredField), immediately(citationToAnUndeclaredField));
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
@@ -471,25 +472,20 @@ it('passes an inconclusive first answer through unchanged, with no retry attempt
     case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
-  expect(result).toEqual([{
-    hypothesis: 'h1',
-    verdict: 'inconclusive',
-    reason: 'judgment-failure',
-    citations: [{ concept: 'concept-a', field: 'a-field' }],
-  }]);
-  expect(evaluator.calls).toHaveLength(1);
+  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
+  expect(evaluator.calls).toHaveLength(2);
 });
 
 async function moduleSource(): Promise<string> {
   return readFile(fileURLToPath(new URL('../../../investigation/judgment-stage.ts', import.meta.url)), 'utf8');
 }
 
-it('passes an inconclusive retry answer through unchanged', async () => {
+it("falls back to inconclusive judgment-failure when the retry's own inconclusive answer carries a citation that fails the collects-containment check too", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
     'h1 criterion',
     immediately({ verdict: 'confirmed', citations: [{ concept: 'concept-foreign', field: 'a-field' }] }), // invalid: foreign concept
-    immediately({ verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-a', field: 'a-field' }] }),
+    immediately({ verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-a', field: 'a-field' }] }), // invalid: field never declared
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
@@ -498,12 +494,53 @@ it('passes an inconclusive retry answer through unchanged', async () => {
     case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
+  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
+  expect(evaluator.calls).toHaveLength(2);
+});
+
+it("checks an inconclusive first answer's own citation against the hypothesis-revision's own collects, retrying when the cited concept falls outside them — the check is never skipped merely because the verdict is not confirmed or refuted", async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  evaluator.script(
+    'h1 criterion',
+    immediately({ verdict: 'inconclusive', reason: 'judgment-failure', citations: [{ concept: 'concept-foreign', field: 'a-field' }] }), // out of collects
+    immediately({ verdict: 'inconclusive', reason: 'no-data', citations: [{ concept: 'concept-a', field: 'field-a' }] }), // within collects, field declared
+  );
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('field-a') })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(evaluator.calls).toHaveLength(2);
   expect(result).toEqual([{
     hypothesis: 'h1',
     verdict: 'inconclusive',
     reason: 'no-data',
-    citations: [{ concept: 'concept-a', field: 'a-field' }],
+    citations: [{ concept: 'concept-a', field: 'field-a' }],
   }]);
+});
+
+it('never records an inconclusive outcome carrying an out-of-collects citation as if it had passed — a first answer and its retry both citing a concept outside the collects fall back to judgment-failure', async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const foreignCitation = {
+    verdict: 'inconclusive' as const,
+    reason: 'judgment-failure' as const,
+    citations: [{ concept: 'concept-foreign', field: 'a-field' }],
+  };
+  evaluator.script('h1 criterion', immediately(foreignCitation), immediately(foreignCitation));
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
+    ['h1', [anEvidence({ concept: 'concept-a', fields: fieldsDeclaring('a-field') })]],
+  ]);
+
+  const result = await judgeHypotheses({
+    case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
+  });
+
+  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
   expect(evaluator.calls).toHaveLength(2);
 });
 

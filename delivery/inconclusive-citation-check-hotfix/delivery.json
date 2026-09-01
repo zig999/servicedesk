@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "implementation",
+      "file": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked.md",
+      "title": "Inconclusive evaluations' citations checked against hypothesis collects",
+      "summary": "judgment-stage.ts now runs the same collects-containment check over an evaluator's own inconclusive outcome that a confirmed or refuted outcome already receives, retrying and falling back to judgment-failure on the same terms.",
+      "task": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked"
+    },
+    {
+      "id": "proof/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "proof",
+      "file": "proof/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked.md",
+      "title": "Inconclusive citation check hotfix — proof",
+      "summary": "Corrects two judgment-stage.spec.ts tests whose assertions asserted the pre-fix behavior, adds five tests proving the task's three criteria, and adds the missing register field to a run-diagnosis.spec.ts fixture that was the sole blocker of npm run typecheck.",
+      "task": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "scenarios/investigation/a-foreign-citation-is-refused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "to": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

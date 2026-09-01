@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/inconclusive-citation-check-hotfix-inconclusive-evaluations-citations-are-checked-build",
+  "cwd": "/home/siegfriedneto/projects/wt-inconclusive-citation-check-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "failed",
+  "failed_step": "typecheck",
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T14:47:53.854+00:00",
+      "ended_at": "2026-09-01T14:48:03.943+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "failed",
+      "exit_code": 2,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T14:48:03.943+00:00",
+      "ended_at": "2026-09-01T14:48:13.509+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "not_run",
+      "exit_code": null,
+      "output": null,
+      "started_at": null,
+      "ended_at": null
+    }
+  ],
+  "combined_output": "run.log"
+}

@@ -1,0 +1,23 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 10s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(649,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+
