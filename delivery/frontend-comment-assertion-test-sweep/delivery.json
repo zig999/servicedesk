@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "implementation",
+      "file": "implementation/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests.md",
+      "title": "Empty and remove the two frontend tests asserting a source comment's literal prose",
+      "summary": "Deletes cases-list-screen-comment-cites-the-current-nodes.spec.ts and case-simulation-detail-panel-comment-cites-the-current-nodes.spec.ts in full, written for task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests.",
+      "task": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests"
+    },
+    {
+      "id": "proof/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "proof",
+      "file": "proof/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests.md",
+      "title": "Comment-assertion tests removed, prior behavioral coverage undisturbed",
+      "summary": "Cites two pre-existing, unmodified behavioral tests as evidence that deleting the two whole files asserting a removed comment's literal prose left the domain facts those comments used to describe still proven; this removal-only task authorizes no new test.",
+      "task": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "to": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "to": "implementation/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
