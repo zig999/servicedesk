@@ -1,0 +1,34 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulate-hypothesis-deadline-input-hotfix",
+      "kind": "epic",
+      "file": "epic/simulate-hypothesis-deadline-input-hotfix.md",
+      "title": "Simulate-hypothesis deadline input hotfix",
+      "summary": "The single corrective task that makes production-simulate-hypothesis.factory.ts accept now and deadline as caller-supplied inputs, the same way its sibling simulate.factory.ts already does, instead of computing its own deadline from an internal, undecided constant."
+    },
+    {
+      "id": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "task",
+      "file": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated.md",
+      "title": "Simulate-hypothesis's factory takes now/deadline from its caller, like simulate-case's already does, and the pipeline still bounds each stage by it",
+      "summary": "Fixes production-simulate-hypothesis.factory.ts to accept now and deadline as caller-supplied inputs, removing its own internal TOTAL_DEADLINE_BUDGET_MS constant, so simulate-hypothesis stops inventing an undecided total and instead follows the same pattern its sibling simulate.factory.ts already uses for simulate-case — with the accepted deadline still reaching and bounding the pipeline's own stages, never merely accepted and discarded.",
+      "epic": "simulate-hypothesis-deadline-input-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulate-hypothesis-deadline-input-hotfix",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}
