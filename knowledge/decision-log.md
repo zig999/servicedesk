@@ -1596,4 +1596,80 @@ entries:
       whether an abandoned write happened to land before or after the retry looked, which is
       decided by scheduling rather than by anything the business chose, the same reasoning this
       log already used in refusing to issue a write into a non-positive bound.
+  - location: domain/investigation/citation.md
+    field: attributes.field
+    unstated: >-
+      The material behind rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+      states that a citation's field must exist among its own cited evidence item's snapshotted
+      field names, and scenarios/investigation/a-collection-timeout-degrades-to-no-data already
+      requires a no-data evaluation to cite the evidence responsible for it. No node states what
+      such a citation's field holds when the item it names snapshotted no fields at all -- the
+      honest-empty reading domain/investigation/evidence already gives an unresolved capability.
+      The material is siegard-reconcile/backend-investigation-glossary-connector-cluster-code-drift.md,
+      whose judges over judgment-stage.ts and anthropic-hypothesis-evaluator.adapter.ts both
+      reported an empty-string field on a no-data citation as a value the invariant does not admit.
+    decided: >-
+      field is required only where a citation grounds a confirmed or refuted verdict; a citation
+      naming which evidence a no-data verdict cites carries no field at all.
+      rules/investigation/a-cited-field-exists-in-the-capability-output-schema's own condition now
+      reads over a citation that carries one, and states the no-data case explicitly.
+    why: >-
+      A citation's whole purpose, per the element's own Responsibility, is to "point at exactly
+      one place in the evidence that grounds a verdict" -- a no-data citation grounds no verdict at
+      all, it names which absence caused the inconclusive one, so demanding a field of it asks for
+      a fact the evidence it cites never had. domain/investigation/evidence already answers the
+      identical absence honestly rather than inventing a value ("a concept whose capability never
+      resolved snapshots no fields at all"), and domain/investigation/evaluation and
+      domain/investigation/durations already use conditional presence for a per-call fact that
+      exists only when its triggering event happened; making field optional on the same condition
+      extends a reading this specification already holds three times over, rather than a fourth,
+      inconsistent one (an invented sentinel the invariant would then have to carve an exception
+      for).
+  - location: domain/investigation/durations.md
+    field: attributes.total
+    unstated: >-
+      rules/investigation/an-answer-arrives-within-the-declared-deadline states a twenty-second
+      declared total, and constraints/the-deadline-is-an-absolute-propagated-instant's own fitness
+      is measured against it ("no response later than the declared total"), but no node states
+      what the stored total attribute itself counts: the whole call's real elapsed time, or the sum
+      of the per-stage figures the same element already declares. The material is
+      siegard-reconcile/backend-investigation-glossary-connector-cluster-code-drift.md, whose
+      judges over investigation-pipeline.ts, simulate-hypothesis-pipeline.ts and
+      relational-investigation-store.repository.ts all read total as computed by summing
+      collection, judgment and (where present) writing.
+    decided: >-
+      total is the whole call's own real elapsed time, from the same entry instant the deadline
+      was propagated from to the moment the response is ready -- never the sum of the per-stage
+      figures.
+    why: >-
+      constraints/the-deadline-is-an-absolute-propagated-instant's own Description already states
+      the reason a sum cannot serve: "Summing stage budgets and calling the sum a deadline leaves
+      nothing for the overhead between stages." A total defined as a stage-figure sum inherits
+      that same gap in the other direction -- it excludes the overhead and margin, the persistence
+      stage, and any time between stages, so a run that genuinely overran the declared total could
+      report one that reads under budget, defeating the one fact this attribute exists to answer
+      ("who is exceeding the declared total budget"). Measuring from the same entry instant the
+      deadline itself is measured from is the reading that keeps the two comparable.
+  - location: rules/knowledge/a-collected-concept-declares-a-ttl.md
+    field: statement
+    unstated: >-
+      The rule already states the default ttl a registration stating none takes, but nothing
+      states what a stated ttl of zero or a negative number answers -- domain/glossary/concept
+      declares ttl only `type: integer`, `required: true`, with no floor. The material is
+      siegard-reconcile/backend-investigation-glossary-connector-cluster-code-drift.md, whose judge
+      over register-concept.dto.ts reported the DTO's own `.positive()` bound as a fact no node
+      states.
+    decided: >-
+      A stated ttl is a positive integer; zero or less is refused the same way a non-integer one
+      already is, distinct from the absent-ttl default.
+    why: >-
+      This specification already reads an identical attribute this exact way:
+      rules/integration/a-capability-declares-its-contract states of a capability's timeout that
+      "a timeout of zero or less bounds nothing -- there would be no time left for a call to answer
+      in", decided into that rule for the identical reason (decision-log, timeout.type entry) after
+      an earlier reconciliation reported the same `.positive()` pattern on
+      register-capability.dto.ts as unstated. A ttl of zero or less bounds no freshness tolerance
+      at all, the same way a timeout of zero or less bounds no call -- the reasoning transfers
+      without alteration, and reading it the other way here would leave two structurally identical
+      attributes governed by two different rules for the same kind of value.
 ---

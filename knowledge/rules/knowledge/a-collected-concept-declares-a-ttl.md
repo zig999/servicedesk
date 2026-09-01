@@ -1,6 +1,6 @@
 ---
 type: policy
-statement: Every concept a hypothesis-revision collects has a ttl defined in the glossary; a registration that states none takes the default of sixty seconds.
+statement: Every concept a hypothesis-revision collects has a ttl defined in the glossary; a registration that states none takes the default of sixty seconds; a stated ttl is a positive integer, and zero or less is refused the same way a non-integer one already is, distinct from the absent-ttl default.
 constrains:
   - domain/knowledge/hypothesis-revision
   - domain/glossary/concept

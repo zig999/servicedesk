@@ -1,6 +1,6 @@
 ---
 type: invariant
-statement: Every field a citation names exists among the field names its own cited evidence item snapshotted, read from that item's own producing capability's output schema at the moment it was collected.
+statement: Every field a citation names, where the citation carries one, exists among the field names its own cited evidence item snapshotted, read from that item's own producing capability's output schema at the moment it was collected; a citation grounding a no-data verdict carries no field, since the evidence it cites snapshotted none.
 constrains:
   - domain/investigation/citation
   - domain/investigation/evidence
