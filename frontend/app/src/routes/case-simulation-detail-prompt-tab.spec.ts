@@ -5,9 +5,6 @@ import { CaseSimulationDetailPromptTab } from "./case-simulation-detail-prompt-t
 import { testCalledJudgment } from "./case-simulation-detail-panel.test-support";
 import type { SimulationJudgmentCall } from "./case-simulation-detail-types";
 
-// task/simulation-cockpit/detail-panel's own criterion 4, proven directly against
-// CaseSimulationDetailPromptTab.
-
 describe("CaseSimulationDetailPromptTab -- the evaluation's own prompt (criterion 4)", () => {
   it("renders the evaluation's own prompt exactly as materialized, inside a monospace <pre>, when a judgment call happened", () => {
     const prompt =

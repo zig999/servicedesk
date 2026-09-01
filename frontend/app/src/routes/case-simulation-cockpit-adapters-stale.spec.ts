@@ -8,15 +8,6 @@ import {
 } from "./case-simulation-cockpit-adapters";
 import type { Evaluation as HypothesisEvaluation } from "../hooks/use-simulate-hypothesis";
 
-// task/simulation-staleness-binding/mark-hypothesis-evaluations-stale-on-return, the `stale`
-// field's default and carry-through (this task's own criterion naming
-// case-simulation-cockpit-adapters.spec.ts, extended, as the proof site) -- split out of that
-// file into this sibling file to stay under this project's own max-lines rule (MNT-01), mirroring
-// use-capability-detail.spec.ts's own established multi-file split for the same reason (that
-// file's own header comment cites the same rule). Holds only what was moved: no test here
-// asserts anything new, and case-simulation-cockpit-adapters.spec.ts's own header comment names
-// this file as where these moved.
-
 describe("fromCaseEvaluation -- always `stale: false` on a freshly-normalized evaluation", () => {
   it("always sets `stale: false` on a freshly-normalized decided evaluation", () => {
     const normalized = fromCaseEvaluation({

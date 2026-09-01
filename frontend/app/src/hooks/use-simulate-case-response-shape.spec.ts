@@ -14,11 +14,6 @@ import {
   stubFetch,
 } from "./use-simulate-case.test-support";
 
-// Proof for task/simulation-cockpit/use-simulate-case's own criteria 2, 3 and 4 -- the typed
-// success response's own evidence, evaluation, assessment, cost and durations shape -- split
-// out of use-simulate-case.spec.ts, mirroring use-capability-detail-save.spec.ts's own
-// established one-topic-per-file split.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

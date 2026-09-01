@@ -19,19 +19,6 @@ import {
   jsonResponse,
 } from "./capabilities-browser-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/capability-detail-route's own criteria 2
-// ("clicking a row ... navigates to that capability's /capabilities/<name>/<version> route")
-// and 9 ("editing an existing capability from the list screen opens the new route instead of
-// the popup dialog"). CapabilitiesBrowserScreen now calls useNavigate() (this task's own new
-// row-click wiring), so -- unlike capabilities-browser-screen.test-support.ts's own
-// mountCapabilitiesScreen, which predates that and renders with a bare QueryClientProvider --
-// this file needs a real router context, mirroring
-// connector-configurations-screen-navigation.spec.ts's own established "row click navigates"
-// test convention exactly: a small, self-contained test router (this screen at its own route,
-// plus a dummy "/capabilities/$name/$version" leaf so navigate() has a real destination to
-// resolve to, since what renders there is capability-detail-screen.tsx's own concern, not this
-// proof's).
-
 function buildTestRouter() {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const capabilitiesRoute = createRoute({

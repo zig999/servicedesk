@@ -12,18 +12,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement's own
-// criteria 1 and 2, proven against the fully composed cockpit rather than the hook alone: a
-// required case-input-requirement's own input staying empty must not, by itself, keep either
-// dispatch from actually being issued once a requester and at least one attribute-value (here, a
-// curator-added row rather than the derived field itself) are present. Every other gating test in
-// this hooks directory (-gating.spec.ts, -evaluations.spec.ts) fills the one derived required
-// field before dispatching, through their own shared makeSubjectReady helper -- this file is the
-// one place that deliberately leaves it empty, so the exact scenario this task changed is
-// exercised at the dispatch boundary itself (a real request landing at the endpoint), complementing
-// use-simulation-subject-hold-dispatch-open-for-missing-requirement.spec.ts's own isReady-level
-// proof of the same fact.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 
@@ -31,9 +19,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-/** Fills the requester and adds one curator-added attribute-value, deliberately leaving the one
- * derived required field ("account-id") empty -- the opposite of this file's own sibling
- * test-support's makeSubjectReady, which fills that field. */
 async function readySubjectWithoutFillingRequiredField(
   result: { readonly current: CaseSimulationCockpitState },
 ): Promise<void> {

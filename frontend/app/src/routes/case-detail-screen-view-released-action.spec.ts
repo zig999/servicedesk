@@ -8,18 +8,6 @@ import {
   VERSIONS_PATH,
 } from "./case-hypotheses-tab.test-support";
 
-// task/version-editor/view-released-version-read-only, criteria 1-3: the
-// Versions tab's own actions cell (case-detail-screen.tsx's actionsForRow())
-// now renders "View" for a released row -- previously empty -- and a draft
-// row keeps rendering only "Continue editing". Split into its own sibling
-// file rather than added to case-detail-screen.spec.ts, mirroring this same
-// screen's own established convention for splitting its proof by concern
-// (case-detail-screen-versions-retry.spec.ts, case-detail-screen-hypotheses-
-// tab.spec.ts, case-detail-screen-attributes-tab.spec.ts). Reuses
-// case-hypotheses-tab.test-support.ts's own mountCaseDetailScreen and
-// createFetchStub, the same fixtures those sibling files already mount this
-// exact screen with.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -52,11 +40,7 @@ describe("CaseDetailScreen's Versions tab actions cell — a draft row's own act
     const draftRow = rows[1];
     expect(within(draftRow).getByRole("link", { name: "Continue editing" })).toBeTruthy();
     expect(within(draftRow).queryByRole("link", { name: "View" })).toBeNull();
-    // task/simulation-cockpit/simulate-entry-links's own criterion 2 adds a
-    // second, unconditional Simulate action beside this row's own
-    // Continue-editing/View branch -- so a draft row now carries exactly
-    // two action links (Continue editing, Simulate), never a third and
-    // never the released row's own View instead of Continue editing.
+
     expect(within(draftRow).getByRole("link", { name: "Simulate" })).toBeTruthy();
     expect(within(draftRow).getAllByRole("link")).toHaveLength(2);
   });
@@ -77,14 +61,8 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking View (criter
 
     fireEvent.click(link);
 
-    // The destination route in this test tree is a dummy leaf (() => null),
-    // so navigating away from CaseDetailScreen unmounts its own version
-    // table entirely -- the one observable sign the click actually
-    // navigated, given that dummy leaf renders nothing of its own.
     await waitFor(() => expect(screen.queryByRole("table")).toBeNull());
-    // No request was issued beyond the one GET that already loaded this
-    // row: a plain client-side Link performs no fetch of its own, and the
-    // dummy destination route triggers none either.
+
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

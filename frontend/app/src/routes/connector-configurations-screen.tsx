@@ -11,49 +11,8 @@ import {
   type ConnectorConfiguration,
 } from "../hooks/use-connector-configurations";
 
-/**
- * The Connector Configurations screen
- * (task/connector-configuration-authoring/connector-configuration-create-edit-form):
- * every connector configuration GET /v1/connectors returns, one row each
- * (criterion 1).
- *
- * task/connector-capability-detail-editing/connector-configuration-detail-route
- * (criteria 2 and 9) replaces this screen's own former per-row "Edit" action
- * -- which opened the popup create/edit Dialog in edit mode -- with a row
- * click that navigates to the routed detail/edit screen instead
- * (route-tree.tsx's own "/connectors/$connector"), mirroring
- * cases-list-screen.tsx's own established "clicking a row navigates"
- * convention (StatusTable's own `onRowClick`, a plain function reading the
- * clicked row's own identity field and calling `navigate`) rather than a
- * second, hand-rolled row-link pattern.
- *
- * task/connector-capability-create-detail-route/
- * connector-configurations-list-create-action's own criteria: "New connector
- * configuration" now navigates to the routed create screen
- * (route-tree.tsx's own "/connectors/new",
- * ConnectorConfigurationCreateScreen) instead of opening the popup Dialog's
- * create mode -- this screen no longer holds a formTarget state of its own
- * to host that Dialog, and no longer imports either
- * ConnectorConfigurationFormDialog or ConnectorConfigurationFormTarget. The
- * Dialog component and its type are untouched: ConnectorConfigurationFormTarget's
- * `{ mode: "edit", ... }` variant, and the Dialog itself, stay reachable for
- * whatever still constructs them (this task's own Notes: the Dialog's
- * edit-mode branch is a separate task's concern, not this one's).
- *
- * Wired in as route-tree.tsx's "/connectors" route's own `component`
- * (this task's own inference on the route's path and this screen's own name,
- * disclosed in its delivery record: no criterion or reference states either).
- */
-
 const COLUMNS: StatusTableColumn[] = [{ key: "connector", header: "Connector" }];
 
-/**
- * `connector` is domain/integration/connector-configuration's own one
- * identifying attribute, used directly as the row's own `id` (StatusTable's
- * own row-key convention, MNT-04) -- unlike capabilities-browser-screen.tsx's
- * own composite key, a connector configuration's identity is this one field
- * alone.
- */
 function toRow(connectorConfiguration: ConnectorConfiguration): StatusTableRow {
   return {
     id: connectorConfiguration.connector,
@@ -65,13 +24,6 @@ export function ConnectorConfigurationsScreen(): JSX.Element {
   const navigate = useNavigate();
   const { connectorConfigurations, isLoading, isError, refetch } = useConnectorConfigurations();
 
-  /**
-   * Clicking a row navigates to that connector's own detail/edit route
-   * (criterion 2) rather than opening the popup Dialog's edit mode
-   * (criterion 9) -- the same `typeof ... !== "string"` guard
-   * cases-list-screen.tsx's own handleRowClick already keeps before
-   * trusting a StatusTableRow's untyped `Record<string, unknown>` value.
-   */
   function handleRowClick(row: StatusTableRow): void {
     const connector = row.connector;
     if (typeof connector !== "string") {
@@ -86,12 +38,7 @@ export function ConnectorConfigurationsScreen(): JSX.Element {
     }
 
     if (isError) {
-      // GET /v1/connectors throws no domain error error-ui-state.ts names,
-      // so a load failure falls through to this screen's own generic
-      // fallback -- the same convention capabilities-browser-screen.tsx
-      // already keeps for its own listing read. EDG-02 still asks for an
-      // explicit retry action rather than only useConnectorConfigurations'
-      // own toast-triggering error state.
+
       return (
         <section>
           <p>Connector configurations could not be loaded.</p>
@@ -103,8 +50,7 @@ export function ConnectorConfigurationsScreen(): JSX.Element {
     }
 
     if (connectorConfigurations.length === 0) {
-      // API-04: an empty response renders its own explicit empty state,
-      // never treated as still loading or as a failure.
+
       return <p>No connector configurations are currently registered.</p>;
     }
 

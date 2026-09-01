@@ -1,81 +1,3 @@
-/**
- * task/subject-input-requirements/derive-subject-fields-from-input-requirements: for the
- * pinned case version (`slug`, `version`), the full set of editable subject fields a
- * simulation presents -- one per case-input-requirement useCaseInputRequirements(slug,
- * version) names, required and optional alike (contracts/knowledge/case-input-requirements,
- * rules/investigation/a-composed-subject-presents-every-case-input-requirement) -- plus the
- * operator-facing state that fills them in and the curator-added attributes on top, and
- * reports whether the assembled subject is complete enough to simulate.
- *
- * Supersedes this hook's own earlier derivation, which scanned every resolved connector's
- * own configuration text for '${subject:<attribute>}' placeholders
- * (services/simulation-subject-derivation.ts's own former deriveRequiredFields and
- * collectionPlanFromManifest, both gone from the tree now, criteria 11 and 13): the
- * case-input-requirements read is the authoritative set (domain/knowledge/case-input-
- * requirement), and it names an attribute the case cannot be diagnosed without even where no
- * connector configuration's own call ever embeds it as a placeholder literally
- * (scenarios/investigation/a-simulate-screen-presents-an-undetected-required-attribute,
- * criterion 7) -- something the placeholder scan could never have surfaced by construction.
- *
- * Composes useCaseInputRequirements(slug, version) and useCapabilities() rather than
- * re-deriving either registry read -- this app's own established must_not_duplicate
- * convention (work/case-simulation-frontend/inventory/case-simulation-frontend-area.md) --
- * and no longer composes useConnectorConfigurations at all, since nothing this hook derives
- * from here on reads a connector configuration's own text (criterion 10): this hook's own
- * isLoadingRegistries/isRegistriesError now report exactly those two composed reads instead.
- * `slug`/`version` are received as this hook's own arguments and threaded straight into
- * useCaseInputRequirements the same way use-case-simulation-cockpit.ts already threads them
- * into useSimulateHypothesis(slug, version) -- plain positional arguments naming the pinned
- * case version's own identity, never wrapped inside SimulationSubjectSource, whose own
- * `manifest` field this task's own removal of collectionPlanFromManifest leaves nothing here
- * to read either (this hook's own inference; its one call site, use-case-simulation-
- * cockpit.ts, is updated alongside so `useSimulationSubject` is never called with a stale
- * three-argument-missing signature -- a mechanical, same-line follow-on this task's own
- * inference judges necessary for the tree to build, not a rewrite of that file's own cross-
- * region logic).
- *
- * A one-shot dispatch (use-test-connector-panel.ts's own established convention) holds its
- * subject as plain component state, not react-hook-form; this hook holds the same shape of
- * state for the same reason -- the assembled subject is never a stored, validated resource of
- * its own, and each derived field's own value is a single controlled input, not a form with
- * its own submission lifecycle. Every curator-added row reuses use-test-connector-panel.ts's
- * own SubjectAttributeRow/SubjectAttributeValue shape (attribute, value, and a locally
- * generated `id` only so the row list can be keyed stably rather than by array index,
- * MNT-04) rather than redeclaring an identical pair type.
- *
- * Called once by the screen this epic's own sibling tasks build
- * (case-simulation-screen.tsx, outside this task's own candidate set) and its returned
- * `subject`/`isReady` shared between a full-case run and a single-hypothesis run -- one
- * subject, shared, per D7 (contracts/investigation/case-simulation): this hook never
- * distinguishes the two itself, and a caller composing both a full-case dispatch and a
- * per-hypothesis dispatch against the one instance this hook returns is what keeps the
- * derived subject and its readiness identical between them.
- *
- * `isReady`'s own gating no longer reads `requiredFields` at all --
- * task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement,
- * the sibling task this paragraph used to name forward to, removed that read (that task's own
- * criteria 1-3): rules/investigation/a-composed-subject-presents-every-case-input-requirement's
- * own clause that "only a required flag, never an attribute's mere presence in this set, gates
- * whether its own input blocks the call" is what that removal answers to. Each field's own
- * `required` flag (carried through unchanged, criterion 2 of the task that derived
- * `requiredFields` in the first place) is still presented on every field this hook returns --
- * only the gate stopped reading it, and stopped reading each field's own typed value too.
- *
- * task/subject-input-requirements/expose-malformed-capability-identities: apart from
- * `requiredFields`, this hook's own returned state also carries
- * `capabilitiesWithMalformedInputSchema` -- useCaseInputRequirements(slug, version)'s own
- * field of that same name, passed straight through unchanged (criterion 1; this task's own
- * UNDERDETERMINED note against re-deriving it from each resolved capability's own stored
- * input_schema client-side). Sits beside `requiredFields` on the same state, never folded into
- * it, since deriveSubjectFields only ever resolves a requirement's own asking-capability
- * references and a malformed capability is referenced by none (criterion 2; domain/knowledge/
- * case-input-requirement, rules/knowledge/a-case-versions-input-requirements-are-derived) --
- * so no filtering of `requiredFields` or of any field's own `capabilities` is needed here, only
- * a straight pass-through. This task carries the list on state only, showing it to nobody (this
- * task's own REMAINDER note); the sibling task disclose-malformed-capabilities-to-the-curator
- * renders it.
- */
-
 import { useMemo, useRef, useState } from "react";
 import { useCapabilities } from "./use-capabilities";
 import {
@@ -88,28 +10,15 @@ import {
   type DerivedSubjectField,
 } from "../services/simulation-subject-derivation";
 
-/**
- * The slice of a case version's own read this hook needs beyond its pinned identity
- * (domain/knowledge/case-version): its own declared subject type
- * (domain/investigation/subject's own `type`, read here directly from the version rather than
- * derived -- the version's `subject` attribute is already that value). CaseVersionRecord's
- * wider shape (title, when_to_use, manifest, fallback...) is deliberately left unread here,
- * the same narrowing convention use-capabilities.ts's own header comment names for
- * ConceptOption -- the manifest is no longer read by this hook at all now that
- * collectionPlanFromManifest is gone (this task's own criterion 11); the case-input-
- * requirements read replaces it as the authoritative source of what this hook derives.
- */
 export type SimulationSubjectSource = {
   readonly subject: string;
 };
 
-/** One derived field as this hook exposes it for editing: simulation-subject-derivation.ts's own static DerivedSubjectField (attribute, required, capabilities) paired with the value currently typed into it and the setter that changes it. */
 export type SimulationRequiredField = DerivedSubjectField & {
   readonly value: string;
   readonly onChange: (value: string) => void;
 };
 
-/** domain/investigation/subject, assembled from this version's derived fields plus whatever the curator has added on top (domain/investigation/subject-attribute-value): one attribute name paired with one value, never duplicated, and never carrying an entry whose value is still empty. */
 export type SimulationSubject = {
   readonly type: string;
   readonly attributes: readonly SubjectAttributeValue[];
@@ -117,23 +26,7 @@ export type SimulationSubject = {
 
 export type SimulationSubjectState = {
   readonly requiredFields: readonly SimulationRequiredField[];
-  /**
-   * task/subject-input-requirements/expose-malformed-capability-identities: apart from
-   * `requiredFields`, every capability the case-input-requirements read itself names as
-   * currently holding no well-formed input schema (contracts/knowledge/case-input-requirements,
-   * domain/knowledge/case-input-requirement) -- carried straight through from
-   * useCaseInputRequirements(slug, version)'s own `capabilitiesWithMalformedInputSchema`,
-   * unchanged and by bare identity alone, never re-derived here by inspecting each resolved
-   * capability's own stored input_schema client-side (this task's own UNDERDETERMINED note).
-   * Such a capability is referenced by no requirement (rules/knowledge/a-case-versions-input-
-   * requirements-are-derived), so it can never appear inside `requiredFields` or any one
-   * field's own `capabilities` -- deriveSubjectFields only ever resolves a requirement's own
-   * asking-capability references, which never include one of these. A read naming none here
-   * leaves this array empty, never undefined -- useCaseInputRequirements's own `?? []` already
-   * guarantees that upstream, and this field passes that same array through as-is.
-   * This task carries the list on state only; a sibling task
-   * (disclose-malformed-capabilities-to-the-curator) renders it.
-   */
+
   readonly capabilitiesWithMalformedInputSchema: readonly CapabilityReference[];
   readonly requester: string;
   readonly onRequesterChange: (value: string) => void;
@@ -143,13 +36,12 @@ export type SimulationSubjectState = {
   readonly onAttributeChange: (id: string, field: "attribute" | "value", value: string) => void;
   readonly subject: SimulationSubject;
   readonly isReady: boolean;
-  /** Whether the case-input-requirements and/or capability registries this derivation reads are still loading -- a caller degrading to a loading state (EDG-01) reads this rather than treating an incomplete `requiredFields` as final. */
+
   readonly isLoadingRegistries: boolean;
-  /** Whether either read this derivation reads failed to load -- a caller degrading to a load-error state (EDG-02) reads this. */
+
   readonly isRegistriesError: boolean;
 };
 
-/** Builds the merged attribute map criterion 4 requires -- one attribute name paired with one value, drawn from every derived field that currently holds a non-empty value, then from every curator-added row that names a non-empty attribute and holds a non-empty value. A curator-added row sharing a derived field's own attribute name overrides that field's own typed value rather than adding a second entry for the same name (this hook's own inference, uncovered by any criterion naming a tie-break; see this task's delivery record). */
 function mergedAttributes(
   requiredFields: readonly SimulationRequiredField[],
   addedAttributes: readonly SubjectAttributeRow[],
@@ -169,7 +61,6 @@ function mergedAttributes(
   return [...attributeMap.entries()].map(([attribute, value]) => ({ attribute, value }));
 }
 
-/** Derives, for the pinned case version (`slug`, `version`) and `source`, the full set of editable subject fields (this file's own header comment), and holds the state that fills them in. */
 export function useSimulationSubject(
   source: SimulationSubjectSource,
   slug: string,
@@ -187,8 +78,6 @@ export function useSimulationSubject(
     isError: isCapabilitiesError,
   } = useCapabilities();
 
-  // PRF-02: memoized so this map/enrich walk runs once per actual registry/manifest change
-  // rather than on every keystroke a required field's own onChange below triggers.
   const definitions = useMemo(
     () => deriveSubjectFields({ requirements, capabilities }),
     [requirements, capabilities],
@@ -212,22 +101,6 @@ export function useSimulationSubject(
     attributes: mergedAttributes(requiredFields, addedAttributes),
   };
 
-  // task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement:
-  // readiness no longer counts a single derived required field's own emptiness -- the
-  // `requiredFields.every(...)` conjunct this hook's own earlier revision held here is removed
-  // (rules/investigation/a-simulated-subject-missing-a-requirement-degrades-not-refuses: a
-  // simulate-case or simulate-hypothesis call is never refused for a subject omitting an
-  // attribute-value a requirement names required, the concept that requirement answers
-  // degrading to unavailable instead). A requirement's own required flag keeps gating nothing
-  // about dispatch either way -- criterion 3, and this hook never read the flag itself even
-  // before this change, only each field's own typed value -- so removing the conjunct also
-  // satisfies "a requirement's mere presence in the derived set is never a reason either
-  // dispatch is refused" without any further change here.
-  // What stays, unchanged (criteria 4-5): the requester's own emptiness still refuses
-  // (`requester.trim() !== ""`), and a subject holding no attribute-value at all still never
-  // dispatches (`subject.attributes.length > 0`,
-  // rules/investigation/a-subject-carries-at-least-one-attribute) -- neither conjunct is
-  // touched, only the one naming `requiredFields` is dropped.
   const isReady = requester.trim() !== "" && subject.attributes.length > 0;
 
   return {

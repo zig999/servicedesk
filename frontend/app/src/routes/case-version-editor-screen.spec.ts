@@ -9,11 +9,6 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-screen.test-support";
 
-// Population and glossary-dropdown coverage for task/version-editor/edit-draft-version.
-// Save/state-machine/error coverage lives in case-version-editor-screen-save.spec.ts,
-// split out to stay under this project's own max-lines rule; both files share the
-// fixtures and mounting helpers in case-version-editor-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -26,10 +21,6 @@ describe("CaseVersionEditorScreen", () => {
     expect(await screen.findByDisplayValue("Original title")).toBeTruthy();
     expect(screen.getByDisplayValue("Use when the case needs manual review")).toBeTruthy();
 
-    // task/subject-field-fixed-bug/subject-follows-isblocked, criterion 1:
-    // subject is a declared attribute like every other, so a draft version
-    // whose form is not blocked (this load: no save in flight, no conflict,
-    // not released) renders its input enabled rather than fixed.
     const subjectInput = screen.getByDisplayValue("billing-dispute");
     expect(subjectInput.hasAttribute("disabled")).toBe(false);
 

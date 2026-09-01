@@ -9,27 +9,10 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-screen.test-support";
 
-// task/version-editor/view-released-version-read-only, criteria 4-6: once
-// GET /v1/cases/{slug}/versions/{version} reports a version whose own state
-// is "released", the Version Editor renders that version's entire stored
-// content -- fields and manifest -- disabled, with no Save, "Release…" or
-// "Discard draft" control. Split into its own sibling file rather than added
-// to case-version-editor-screen.spec.ts or case-version-editor-screen-save.spec.ts,
-// mirroring this same screen's own established convention for splitting its
-// proof by concern (case-version-editor-screen-release-outcomes.spec.ts,
-// case-version-editor-screen-release-checklist.spec.ts,
-// case-version-editor-screen-discard.spec.ts). Reuses
-// case-version-editor-screen.test-support.ts's own fixtures and mounting
-// helper -- this task extends the very same hook and screen, never a second
-// surface.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-// Deliberately out-of-order positions (3 before 1): proves the manifest
-// listing preserves the response's own order rather than sorting by
-// declared position.
 const RELEASED_MANIFEST = [
   {
     position: 3,
@@ -103,11 +86,7 @@ describe("CaseVersionEditorScreen — a released version's own read-only render 
     await mountCaseVersionEditor(fetchMock);
 
     await screen.findByDisplayValue(LOADED_RECORD.title);
-    // Distinct from a mid-session Release (case-version-editor-screen-
-    // release-outcomes.spec.ts's own already-passing "moves the loaded
-    // version to released" test, which keeps Save present but disabled):
-    // here the record already read back as released, so Save is omitted
-    // outright, never merely disabled.
+
     expect(screen.queryByRole("button", { name: "Save changes" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Release…" })).toBeNull();
     expect(screen.queryByRole("button", { name: "Discard draft" })).toBeNull();
@@ -125,7 +104,7 @@ describe("CaseVersionEditorScreen — a released version's own manifest listing 
 
     const table = await screen.findByRole("table");
     const rows = within(table).getAllByRole("row");
-    // header + two manifest entries, nothing collapsed and nothing extra.
+
     expect(rows).toHaveLength(3);
 
     const firstRow = rows[1];

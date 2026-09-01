@@ -18,26 +18,8 @@ import {
   putCallCount,
 } from "./connector-configuration-detail-screen.test-support";
 
-// Proof for task/connector-configuration-warning-text/warning-states-the-object-requirement, a
-// corrective increment over INVALID_CONFIGURATION_WARNING (connector-configuration-detail-ready-
-// view.tsx): the warning must state the registry's actual requirement (a JSON object) rather than
-// a JSON-syntax claim that reads false for two of the three isValid=false shapes -- a
-// syntactically valid array and a syntactically valid null, alongside the pre-existing unparsable-
-// text case. INVALID_CONFIGURATION_WARNING below mirrors that constant's own corrected text
-// exactly, so a future edit to the wording is caught here rather than by a stale duplicate
-// literal.
 const INVALID_CONFIGURATION_WARNING =
   "This connector configuration's stored value must be a JSON object. Correct it before Save can succeed.";
-
-// Proof for task/connector-capability-detail-editing/connector-configuration-detail-route's own
-// criteria 1 ("shows that connector configuration's full record, loaded through the new hook"),
-// 3 ("a control that returns the operator to the connector-configurations list"), 6 ("the
-// existing connector-configuration-form-fields.tsx markup and the existing ConnectorTestPanel are
-// reused unchanged") and 8 (the invalid-JSON warning). Criterion 4/7's save/discard behavior lives
-// in the sibling connector-configuration-detail-screen-save.spec.ts and
-// connector-configuration-detail-screen-discard.spec.ts -- split this way to stay under this
-// project's own max-lines rule (MNT-01). All three share
-// connector-configuration-detail-screen.test-support.ts's own fixtures and mounting helper.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -56,8 +38,6 @@ describe("ConnectorConfigurationDetailScreen -- shows the loaded record (criteri
       expect(configurationField.value).toBe(prettyPrinted(LOADED_CONFIGURATION)),
     );
 
-    // Proves this reached the screen through the network read this route's own hook issues,
-    // rather than a value this screen invented or copied from somewhere else.
     expect(
       fetchMock.mock.calls.some(([input]) => input === CONFIGURATION_PATH),
     ).toBe(true);
@@ -132,9 +112,7 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
     fireEvent.change(configurationField, { target: { value: INVALID_CONFIGURATION } });
 
     expect(screen.getByText(INVALID_CONFIGURATION_WARNING)).toBeTruthy();
-    // This route's own plain-wording banner and JsonTextareaField's own parser-message inline
-    // error (json-textarea-field.tsx's own "Invalid JSON: <message>") both render, additive to
-    // one another rather than one replacing the other (this task's own disclosed inference).
+
     const alerts = screen.getAllByRole("alert");
     expect(alerts.some((alert) => alert.textContent?.startsWith("Invalid JSON:"))).toBe(true);
     expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);
@@ -156,16 +134,6 @@ describe("ConnectorConfigurationDetailScreen -- an invalid loaded configuration 
   });
 });
 
-// Proof for task/connector-configuration-warning-text/warning-states-the-object-requirement's own
-// criteria 1-4: a syntactically valid array and a syntactically valid null are both
-// isValid=false (use-connector-configuration-detail.ts's own isValidConfigurationObject, read
-// unmodified) but neither one fails JSON syntax -- the warning must not claim otherwise, and must
-// instead state the actual requirement. Each case edits a validly loaded configuration into the
-// non-object shape (rather than loading it directly) so the Save-blocked assertion is not merely
-// the trivial "Save starts disabled before any edit" fact every load exhibits regardless of
-// validity -- once edited, the field differs from its baseline (isDirty is true), so Save staying
-// disabled here is evidence the invalidity itself is what blocks it, the same thing the
-// pre-existing unparsable-text edit case above already establishes.
 describe.each([
   { label: "a syntactically valid JSON array", text: ARRAY_CONFIGURATION },
   { label: "syntactically valid JSON null", text: NULL_CONFIGURATION },

@@ -15,17 +15,6 @@ import type {
 } from "../hooks/use-simulate-hypothesis";
 import type { SimulateEvaluation } from "../hooks/use-simulate-case";
 
-// task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt (a corrective
-// increment): proves the fix at the rendered tab, composing CaseSimulationDetailPanelProps
-// through the real, modified adapters (fromHypothesisEvaluation, fromCaseEvaluation,
-// toDetailEvaluation) rather than through case-simulation-detail-panel.test-support.ts's own
-// hand-built literals -- a purely fixture-driven render proves only that the panel renders
-// whatever it is given, never that the adapters now hand it a single-hypothesis run's own
-// evidence and prompt instead of nothing (this task's own reproduction: both tabs previously
-// rendered empty/placeholder for a response that actually carried real evidence and a real
-// prompt). The adapter-level data-transformation proof for the same two functions lives in
-// case-simulation-cockpit-adapters-hypothesis-evidence-and-prompt.spec.ts.
-
 describe("CaseSimulationDetailPanel -- a single-hypothesis run's own evidence reaches the Evidence tab (criterion 1)", () => {
   it("renders the collected evidence item a single-hypothesis simulation's response actually carried, the same way a full-case simulation's evidence already renders", () => {
     const evaluation: HypothesisEvaluation = {

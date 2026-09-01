@@ -14,14 +14,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/simulation-cockpit/screen-assembly's own criteria 1-3: the header's own "Simulate case"
-// gate and every row's own Simulate gate are driven by one shared value (subject readiness and
-// dispatch-in-flight folded together), and both dispatches read the one shared subject this
-// cockpit derives exactly once. Proven at the hook level -- CaseSimulationReadyView's own
-// end-to-end wiring of the same gate across the rendered header and table is proven separately
-// in case-simulation-ready-view.spec.ts, per this task's own instruction that criterion 1 spans
-// both the header and the hypotheses table.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 

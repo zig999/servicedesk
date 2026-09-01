@@ -13,14 +13,6 @@ import {
   page,
 } from "./glossary-browser-screen.test-support";
 
-// Six-tab listing (criterion 1), the Concepts tab's own listing, formatting and
-// loading/error/empty coverage (criterion 2 plus the ttl-suffix and accepts-join inferences its
-// own delivery record discloses), and the two no-control criteria (8 and 9), checked across all
-// six tabs. The five term-vocabulary tabs' own listing/empty/error coverage and tab-switching
-// live in the sibling glossary-browser-screen-vocabulary-tabs.spec.ts, to stay under this
-// project's own max-lines rule (MNT-01); both share glossary-browser-screen.test-support.ts's
-// own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -57,7 +49,7 @@ describe("GlossaryBrowserScreen — Concepts tab listing (criterion 2)", () => {
     await mountGlossaryBrowserScreen(fetchMock);
 
     const rows = await screen.findAllByRole("row");
-    // header + one row per concept.
+
     expect(rows).toHaveLength(3);
     expect(within(rows[1]).getByText("billing-dispute")).toBeTruthy();
     expect(within(rows[1]).getByText("customer-account")).toBeTruthy();

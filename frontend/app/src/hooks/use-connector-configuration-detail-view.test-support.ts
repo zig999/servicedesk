@@ -3,12 +3,6 @@ import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ConnectorConfigurationDetailViewState } from "./use-connector-configuration-detail-view";
 
-// Shared fixtures and helpers for use-connector-configuration-detail-view.spec.ts, mirroring
-// use-connector-configuration-detail.test-support.ts's own established pattern exactly (a
-// METHOD-aware fetch stub over real Response objects -- TST-03's own "only the network boundary
-// is a stand-in") -- this hook composes over that already-delivered one at the very same
-// CONFIGURATION_PATH, so its own proof needs the same kind of stub for the same GET/PUT pair.
-
 export const CONNECTOR = "some-connector";
 export const CONFIGURATION_PATH = `/v1/connectors/${CONNECTOR}`;
 export const LOADED_CONFIGURATION = '{"key":"value"}';
@@ -25,8 +19,6 @@ export function errorResponse(code: string, status = 500): Response {
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
-/** Each handler is keyed by URL and receives the request's own method, so one entry can answer
- * both this hook's GET and its PUT to the very same path differently. */
 export function stubFetch(
   handlers: Record<string, (method: string) => Response | Promise<Response>>,
 ): Mock<FetchFn> {

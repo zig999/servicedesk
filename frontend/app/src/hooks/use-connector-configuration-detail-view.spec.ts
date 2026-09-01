@@ -14,16 +14,6 @@ import {
   stubFetch,
 } from "./use-connector-configuration-detail-view.test-support";
 
-// task/connector-capability-detail-editing/connector-configuration-detail-route's own hook-level
-// proof for the two behaviors this composition hook adds over the already-delivered
-// useConnectorConfigurationDetail: onDiscard (criterion 5) and justSaved (criterion 7). Mirrors
-// use-connector-configuration-detail.spec.ts's own established convention -- renderHook, real
-// Response objects through a stubbed global fetch, assertions on nothing but what this hook
-// itself returns (TST-01). The screen-level wiring of these two fields into markup (the Discard
-// button, the "Saved." acknowledgement) is proved separately in
-// connector-configuration-detail-screen-discard.spec.ts and
-// connector-configuration-detail-screen-save.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -108,8 +98,6 @@ describe("useConnectorConfigurationDetailView -- onDiscard resets to what was ju
       readyState(result.current).onDiscard();
     });
 
-    // If discard fell back to the value originally loaded rather than the value just saved,
-    // this would read LOADED_CONFIGURATION instead.
     expect(readyState(result.current).configuration.value).toBe(UPDATED_CONFIGURATION);
   });
 });
@@ -210,10 +198,6 @@ describe("useConnectorConfigurationDetailView -- justSaved (criterion 7)", () =>
   });
 });
 
-// task/connector-test-panel-reads-registered-configuration/thread-registered-configuration-into-test-panel's
-// own criterion 1: the "ready" phase exposes registeredConfigurationText, the most recently
-// loaded-or-saved configuration text -- the same snapshot onDiscard already reads above -- as a
-// field distinct from configuration.value (the live, possibly-unsaved edit).
 describe("useConnectorConfigurationDetailView -- registeredConfigurationText is the most recently loaded-or-saved configuration text, distinct from configuration.value (criterion 1)", () => {
   it("equals the just-loaded configuration text immediately after this connector's own record loads", async () => {
     stubFetch({
@@ -242,9 +226,6 @@ describe("useConnectorConfigurationDetailView -- registeredConfigurationText is 
       readyState(result.current).configuration.onChange(UPDATED_CONFIGURATION, true);
     });
 
-    // If registeredConfigurationText mirrored the live edit instead of the last registered
-    // snapshot, this would read UPDATED_CONFIGURATION instead -- the same value
-    // configuration.value now carries.
     expect(readyState(result.current).registeredConfigurationText).toBe(LOADED_CONFIGURATION);
     expect(readyState(result.current).configuration.value).toBe(UPDATED_CONFIGURATION);
   });

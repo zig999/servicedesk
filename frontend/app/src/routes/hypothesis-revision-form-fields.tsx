@@ -10,26 +10,6 @@ import type { HypothesisRevisionFormValues } from "../services/hypothesis-revisi
 import type { ConceptOption } from "../hooks/use-concept-options";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
 
-/**
- * The shared Revise/New-hypothesis form's own field markup
- * (task/manifest-hypothesis-authoring/revise-hypothesis-form): hypothesis
- * name (editable only on the New-hypothesis route, criteria 2 and 3),
- * subject type (always fixed, never editable, either route), criterion,
- * Collects (checkboxes over only the concepts the draft's subject type
- * accepts, criterion 4), resolution outcome and referral action/recipient
- * (each a glossary-backed dropdown, criterion 5). Kept in its own file, apart
- * from the screen's own loading/error composition, the same MNT-01-driven
- * split case-version-editor-form-fields.tsx already established.
- *
- * The label-wraps-control pattern (FormField below) and its own reasoning
- * are copied from case-version-editor-form-fields.tsx's own header comment
- * (TUI's Select never forwards an id to its inner combobox button) rather
- * than imported: that module declares its own FormField unexported, the
- * same MNT-03-kept-in-spirit convention this app's own DTO-mirroring
- * schema modules already follow for a small, repeated shape no shared
- * catalog names.
- */
-
 export type HypothesisRevisionFormFieldsProps = {
   readonly form: UseFormReturn<HypothesisRevisionFormValues>;
   readonly hypothesisNameEditable: boolean;
@@ -42,7 +22,6 @@ export type HypothesisRevisionFormFieldsProps = {
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
 };
 
-/** One labeled field: the label wraps its own control, and an invalid control's error text sits beside it, linked back through aria-describedby (EDG-03, ACC-04). See case-version-editor-form-fields.tsx's own FormField for the full reasoning behind wrapping rather than a matching htmlFor/id pair. */
 function FormField({
   label,
   errorId,
@@ -184,15 +163,7 @@ export function HypothesisRevisionFormFields({
             control={control}
             name="resolution.outcome"
             render={({ field }) => (
-              // `|| null` rather than case-version-editor-form-fields.tsx's
-              // own `?? null`: that file's consolidation_register is
-              // `string | undefined` (an optional field, so `??` alone
-              // already converts its one empty case), but this schema's
-              // resolution fields are required non-empty strings defaulting
-              // to "" (never undefined) -- `??` would pass that "" straight
-              // to Select's own `value`, showing no placeholder for an
-              // unselected field. `||` treats the empty-string default the
-              // same way `?? null` treats `undefined` there.
+
               <Select
                 value={field.value || null}
                 onChange={field.onChange}

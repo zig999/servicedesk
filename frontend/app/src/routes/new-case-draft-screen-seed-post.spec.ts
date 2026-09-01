@@ -18,11 +18,6 @@ import {
   VERSIONS_PATH,
 } from "./new-case-draft-screen.test-support";
 
-// POST-body coverage for task/version-editor/seed-new-draft-from-latest-released
-// (criteria 3 and 4). Rendering/seeding coverage for that same task lives in
-// new-case-draft-screen-seed.spec.ts, split out to stay under this project's
-// own max-lines rule; both share new-case-draft-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

@@ -18,25 +18,6 @@ import {
   jsonResponse,
 } from "./connector-configurations-screen.test-support";
 
-// Proof for task/connector-capability-create-detail-route/
-// connector-configurations-list-create-action's own criteria 1-3: "New connector configuration"
-// now navigates to the routed create screen (route-tree.tsx's own "/connectors/new") instead of
-// opening the popup create/edit Dialog this screen used to host, and this screen holds no
-// create/edit form-target state of its own left to surface one.
-//
-// This file used to hold this screen's own proof of the popup Dialog's create-mode behavior
-// (field wiring, the Beautify control, the required-connector guard). None of that is reachable
-// from this screen any more -- the button that used to open it now navigates away instead
-// (connector-configurations-screen.tsx's own header comment) -- and the equivalent behavior for
-// the routed create screen this button now leads to is already proved by
-// connector-configuration-create-screen.spec.ts's own suite, so it is not re-proved here.
-//
-// Mirrors connector-configurations-screen-navigation.spec.ts's own established "row click
-// navigates" convention exactly: a small, self-contained test router (this screen at its own
-// route, plus a dummy "/connectors/new" leaf so navigate() has a real destination to resolve to,
-// since what renders there is connector-configuration-create-screen.tsx's own concern, not this
-// proof's).
-
 function buildTestRouter() {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const connectorsRoute = createRoute({
@@ -120,10 +101,7 @@ describe(
     "(criterion 3, two activations at once)",
   () => {
     it("still shows no dialog when the action is activated twice in quick succession", async () => {
-      // A form-target state left over from the retired popup Dialog would be the one thing that
-      // could make a second activation, before the first navigation settles, behave differently
-      // from the first -- e.g. toggling a dialog open. Nothing here does: both clicks are plain
-      // navigate() calls with nothing local to accumulate or toggle.
+
       const router = await mountWithRouter(emptyListFetchStub());
       await screen.findByText("No connector configurations are currently registered.");
       const newConnectorButton = screen.getByRole("button", { name: "New connector configuration" });

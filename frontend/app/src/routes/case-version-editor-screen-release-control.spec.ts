@@ -17,14 +17,6 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-release.test-support";
 
-// Release-control coverage for task/version-editor/release-draft-version: when the
-// control itself renders (criterion 1), that opening it is an in-place Dialog listing
-// exactly the checklist criterion 2 and 3 together describe, and the Dialog's own Cancel
-// control (criterion 8) and confirm-in-flight behavior. POST outcomes (200/409/422) live
-// in case-version-editor-screen-release-outcomes.spec.ts, and checklist edge cases live in
-// case-version-editor-screen-release-checklist.spec.ts -- split to stay under this
-// project's own max-lines rule; all three share this test-support module's own fixtures.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -48,9 +40,7 @@ describe("CaseVersionEditorScreen — the Release… control's own visibility (c
   });
 
   it("renders no Release control when the loaded version carries no state field at all", async () => {
-    // LOADED_RECORD (edit-draft-version's own fixture, reused verbatim by baseHandlers())
-    // carries neither `state` nor `manifest` -- exactly the shape a version this hook has
-    // never read back through the real GET would carry (this task's own inference).
+
     const fetchMock = createFetchStub(releaseHandlers({ [`GET ${VERSION_PATH}`]: () => jsonResponse(LOADED_RECORD) }));
     await mountCaseVersionEditor(fetchMock);
 
@@ -91,12 +81,11 @@ describe("CaseVersionEditorScreen — opening the Release Dialog (criteria 2 and
 
     await openReleaseDialog();
 
-    // "In-place": the route never changed underneath the Dialog.
     expect(router.state.location.pathname).toBe(`/cases/${SLUG}/versions/3`);
 
     const dialog = screen.getByRole("dialog");
     const items = within(dialog).getAllByRole("listitem");
-    // Criterion 3: never a fourth, capability-readiness item -- exactly these three.
+
     expect(items).toHaveLength(3);
     expect(within(dialog).getByText(/✓\s*Manifest holds at least one hypothesis \(1\)/)).toBeTruthy();
     expect(within(dialog).getByText(/✓\s*Fallback resolution is set/)).toBeTruthy();

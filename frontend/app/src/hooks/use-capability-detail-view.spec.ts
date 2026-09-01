@@ -18,16 +18,6 @@ import {
   stubFetch,
 } from "./use-capability-detail-view.test-support";
 
-// task/connector-capability-detail-editing/capability-detail-route's own hook-level proof for
-// the two behaviors this composition hook adds over the already-delivered useCapabilityDetail:
-// onDiscard (criterion 5) and justSaved (criterion 7). Mirrors
-// use-connector-configuration-detail-view.spec.ts's own established convention -- renderHook,
-// real Response objects through a stubbed global fetch, assertions on nothing but what this
-// hook itself returns (TST-01) -- adapted for two JSON schema fields (input_schema,
-// output_schema) instead of that sibling's one. The screen-level wiring of these two fields into
-// markup (the Discard button, the "Saved." acknowledgement) is proved separately in
-// capability-detail-screen-discard.spec.ts and capability-detail-screen-save.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -113,8 +103,6 @@ describe("useCapabilityDetailView -- onDiscard resets to what was just saved rat
       readyState(result.current).onDiscard();
     });
 
-    // If discard fell back to the values originally loaded rather than the values just saved,
-    // these would read LOADED_INPUT_SCHEMA/LOADED_OUTPUT_SCHEMA instead.
     expect(readyState(result.current).inputSchema.value).toBe(UPDATED_INPUT_SCHEMA);
     expect(readyState(result.current).outputSchema.value).toBe(UPDATED_OUTPUT_SCHEMA);
   });

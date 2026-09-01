@@ -19,13 +19,6 @@ import {
   wasCalledWith,
 } from "./new-case-draft-screen.test-support";
 
-// POST-body, switch-to-edit-mode and save-concurrency coverage for
-// task/version-editor/new-draft-creation. Blank-form coverage lives in
-// new-case-draft-screen.spec.ts and 409-conflict coverage lives in
-// new-case-draft-screen-conflict.spec.ts, split out to stay under this
-// project's own max-lines rule; all three share the fixtures and mounting
-// helpers in new-case-draft-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -107,9 +100,6 @@ describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
     });
     expect(saveButton.hasAttribute("disabled")).toBe(false);
 
-    // Clicking Save again still issues a second POST rather than a PATCH --
-    // proof that `created` was never set on a non-201 response, so the hook
-    // never switched into edit mode behind the still-blank-looking form.
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(postCallCount(fetchMock)).toBe(2);
@@ -127,14 +117,9 @@ describe("NewCaseDraftScreen — Save issues POST /v1/cases", () => {
     await fillValidForm();
 
     const titleInput = screen.getByLabelText<HTMLInputElement>("Title");
-    // React implements onBlur through the native, bubbling "focusout" event
-    // (see case-version-editor-screen-save.spec.ts's own comment on the same
-    // point) -- fireEvent.blur alone would never reach the form's own onBlur
-    // handler in this React 19 setup.
+
     fireEvent.focusOut(titleInput);
 
-    // No waitFor here on purpose: there is no async transition to await for
-    // a no-op, so this asserts the immediate, synchronous state instead.
     expect(postCallCount(fetchMock)).toBe(0);
   });
 });
@@ -169,11 +154,6 @@ describe("NewCaseDraftScreen — switching into edit mode after a 201", () => {
     await fillValidForm();
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-    // Pins the implementation's own disclosed inference: a refresh at
-    // "/cases/$slug/versions/9" would re-mount CaseVersionEditorScreen, which
-    // always issues the version GET this whole flow exists to avoid (this
-    // task's own Notes on the manifest.min(1) read-back gap), so the browser
-    // deliberately never lands there even once a draft exists.
     await screen.findByDisplayValue(VALID_FORM_INPUT.title);
     expect(router.state.location.pathname).toBe(`/cases/${SLUG}/versions/new`);
   });

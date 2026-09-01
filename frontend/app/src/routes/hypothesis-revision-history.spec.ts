@@ -9,11 +9,6 @@ import {
   VERSIONS_PATH,
 } from "./case-hypotheses-tab.test-support";
 
-// task/manifest-hypothesis-authoring/hypotheses-tab's own criteria 5, 6 and 7, proven
-// directly against HypothesisRevisionHistory -- CaseHypothesesTab's own use of this
-// component (mounting it on selection, unmounting it on "Back to hypotheses") is proven
-// separately in case-hypotheses-tab.spec.ts's own criterion-4 tests.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -70,7 +65,7 @@ describe("HypothesisRevisionHistory (criterion 5)", () => {
     await mount();
 
     const rows = await screen.findAllByRole("row");
-    // header + one row per of the three revisions.
+
     expect(rows).toHaveLength(4);
 
     const row1 = findRowByRevisionNumber(rows, 1);
@@ -81,7 +76,6 @@ describe("HypothesisRevisionHistory (criterion 5)", () => {
     expect(within(row5).getByText("New criterion")).toBeTruthy();
     expect(within(row5).getByText("ConceptD")).toBeTruthy();
 
-    // Closed and non-editable: nothing here is a form field.
     expect(screen.queryAllByRole("textbox")).toHaveLength(0);
   });
 });

@@ -8,23 +8,6 @@ import {
   VERSIONS_PATH,
 } from "./case-hypotheses-tab.test-support";
 
-// task/simulation-cockpit/simulate-entry-links, criterion 2: the Versions
-// tab's own actions cell (case-detail-screen.tsx's actionsForRow()) now
-// carries a second, unconditional "Simulate" Link beside its existing
-// state-branched Continue-editing/View action, for every listed version
-// whichever of draft or released its own state is. Split into its own
-// sibling file rather than added to case-detail-screen.spec.ts or
-// case-detail-screen-view-released-action.spec.ts, mirroring this same
-// screen's own established convention for splitting its proof by concern
-// (case-detail-screen-versions-retry.spec.ts, case-detail-screen-hypotheses-
-// tab.spec.ts, case-detail-screen-attributes-tab.spec.ts,
-// case-detail-screen-view-released-action.spec.ts). Reuses
-// case-hypotheses-tab.test-support.ts's own mountCaseDetailScreen and
-// createFetchStub, the same fixtures those sibling files already mount this
-// exact screen with -- extended by this task to also register the
-// "/cases/$slug/versions/$version/simulate" leaf route this new Link
-// targets.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -89,9 +72,7 @@ describe("CaseDetailScreen's Versions tab actions cell — Simulate is a plain L
     await mountCaseDetailScreen(fetchMock);
 
     expect(await screen.findByRole("link", { name: "Simulate" })).toBeTruthy();
-    // Same reasoning as case-version-editor-screen-simulate-entry.spec.ts's
-    // own sibling test: a Button around this same label would surface a
-    // second, "button"-roled node, which a plain Link never does.
+
     expect(screen.queryByRole("button", { name: "Simulate" })).toBeNull();
   });
 });
@@ -113,9 +94,7 @@ describe("CaseDetailScreen's Versions tab actions cell — clicking Simulate (cr
     expect(
       await screen.findByText("Simulation Cockpit Placeholder"),
     ).toBeTruthy();
-    // No request was issued beyond the one GET that already loaded this row:
-    // a plain client-side Link performs no fetch of its own, and the dummy
-    // destination route triggers none either.
+
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });

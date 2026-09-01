@@ -9,16 +9,6 @@ import type {
   Evidence as HypothesisEvidenceItem,
 } from "../hooks/use-simulate-hypothesis";
 
-// task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt (a corrective
-// increment): proves the two data-transformation halves of this fix directly against the
-// adapters -- fromHypothesisEvaluation now routing a single-hypothesis run's own evidence onto
-// its normalized evaluation, and toDetailJudgmentCall now reading a normalized evaluation's own
-// usage/elapsed_ms/prompt instead of unconditionally answering { called: false }. The rendered
-// half of each criterion (what the Evidence/Prompt tab actually shows) is proven separately in
-// case-simulation-detail-panel-hypothesis-evidence-and-prompt.spec.ts and
-// use-case-simulation-cockpit-hypothesis-evidence-and-prompt.spec.ts, per this task's own reference
-// to how this codebase already splits adapter-level proof from rendered-tab proof.
-
 describe("fromHypothesisEvaluation -- carries the run's own evidence onto the normalized evaluation (criterion 1)", () => {
   it("carries a single-hypothesis run's own collected evidence item through, narrowed to the Detail region's own shape", () => {
     const evaluation: HypothesisEvaluation = {
@@ -116,7 +106,7 @@ describe("toDetailJudgmentCall -- the no-data case still answers called:false (c
       verdict: "confirmed",
       citations: [],
       usage: { input_tokens: 12, output_tokens: 34 },
-      // elapsed_ms and prompt both absent
+
       source: "hypothesis",
       raw: {},
     };

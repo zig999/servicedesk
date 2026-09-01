@@ -7,30 +7,10 @@ import {
   renderPanel,
 } from "./case-simulation-subject-panel.test-support";
 
-// Proof for task/subject-input-requirements/present-each-requirement-with-its-required-standing's
-// own criteria over the requirement-rendering block: an input for every requirement, required and
-// optional alike (criterion 1); a required requirement's input shown as required (criterion 2) and
-// an optional one shown without that marking (criterion 3); every one of a requirement's own asking
-// capabilities shown by its own name, version and connector, plus its own input-schema hint where
-// the state carries one (criterion 4); and that the panel reads every one of these straight off the
-// state it is passed rather than deriving any of it (criterion 6). Criterion 5 (the explicit empty
-// state, and the UNDERDETERMINED note over its own wording) is proven in
-// case-simulation-subject-panel-json-view.spec.ts. The subject-type and requester sections below
-// predate this task (task/subject-derivation/subject-panel) and are unaffected by it; the
-// add-attribute control is proven in case-simulation-subject-panel-attributes.spec.ts. Shared
-// fixtures and the render helper live in case-simulation-subject-panel.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-/**
- * The requirement rows only -- a <li> carrying the requirement's own labeled Input -- as
- * opposed to a nested capability <li> underneath it, which carries no control of its own.
- * screen.getAllByRole("listitem") alone returns both levels once a requirement's own
- * capabilities render as a nested <ul>, so every test below that counts or indexes rows uses
- * this filter rather than the raw query.
- */
 function requirementRows(): HTMLElement[] {
   return screen.getAllByRole("listitem").filter((item) => within(item).queryByRole("textbox") !== null);
 }
@@ -255,10 +235,7 @@ describe("CaseSimulationSubjectPanel -- a capability's own input-schema hint, wh
 
     const firstEntryText = screen.getByText("← core-banking-connector (check-balance 1.0.0)");
     const secondEntryText = screen.getByText("← core-banking-connector (send-email 2.0.0)");
-    // Confirming each capability's own hint sits beside its own entry, and no other, is only
-    // checkable by reading the enclosing <li>'s own text, mirroring
-    // case-simulation-subject-panel-json-view.spec.ts's own established convention for reading a
-    // raw DOM ancestor.
+
     // eslint-disable-next-line testing-library/no-node-access
     const firstItem = firstEntryText.closest("li");
     // eslint-disable-next-line testing-library/no-node-access

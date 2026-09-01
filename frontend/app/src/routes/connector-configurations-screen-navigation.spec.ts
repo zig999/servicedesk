@@ -19,18 +19,6 @@ import {
   jsonResponse,
 } from "./connector-configurations-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/connector-configuration-detail-route's own
-// criteria 2 ("clicking a row ... navigates to that connector's /connectors/<connector> route")
-// and 9 ("editing an existing connector configuration from the list screen opens the new route
-// instead of the popup dialog"). ConnectorConfigurationsScreen now calls useNavigate() (this
-// task's own new row-click wiring), so -- unlike connector-configurations-screen.test-support.ts's
-// own mountConnectorConfigurationsScreen, which predates that and renders with a bare
-// QueryClientProvider -- this file needs a real router context, mirroring
-// cases-list-screen.spec.ts's own established "row click navigates" test convention exactly: a
-// small, self-contained test router (this screen at its own route, plus a dummy
-// "/connectors/$connector" leaf so navigate() has a real destination to resolve to, since what
-// renders there is connector-configuration-detail-screen.tsx's own concern, not this proof's).
-
 function buildTestRouter() {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const connectorsRoute = createRoute({

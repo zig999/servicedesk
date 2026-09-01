@@ -20,12 +20,6 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-screen-discard.test-support";
 
-// Proof for task/version-editor/discard-draft-version: the "Discard draft" control's own
-// visibility gate (criterion 1), its confirmation Dialog (criteria 2 and 3), the DELETE
-// it issues and every outcome that DELETE can answer with (criteria 4, 5 and 6), and the
-// Dialog's own "Keep draft" control (criterion 7). Shares case-version-editor-screen-
-// discard.test-support.ts's own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -49,9 +43,7 @@ describe("CaseVersionEditorScreen — the Discard draft control's own visibility
   });
 
   it("renders no Discard control when the loaded version carries no state field at all", async () => {
-    // LOADED_RECORD (edit-draft-version's own fixture) carries neither `state` nor
-    // `manifest` -- exactly the shape a version this hook has never read back through the
-    // real GET would carry.
+
     const fetchMock = createFetchStub(
       discardHandlers({ [`GET ${VERSION_PATH}`]: () => jsonResponse(LOADED_RECORD) }),
     );
@@ -94,7 +86,6 @@ describe("CaseVersionEditorScreen — opening the Discard Dialog (criterion 2)",
 
     await openDiscardDialog();
 
-    // "In-place": the route never changed underneath the Dialog.
     expect(router.state.location.pathname).toBe(`/cases/${SLUG}/versions/3`);
 
     const dialog = screen.getByRole("dialog");

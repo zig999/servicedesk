@@ -11,24 +11,6 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CasesListScreen } from "./cases-list-screen";
 
-// CasesListScreen calls useNavigate() (needs a router context, same reason
-// app-shell.spec.ts builds its own self-contained test router rather than
-// reusing route-tree.tsx's own ten-route production router) and useQuery
-// (needs a QueryClientProvider). Every render in this file goes through both,
-// mirroring app-shell.spec.ts's own createMemoryHistory/createRootRoute/
-// createRoute/createRouter/RouterProvider pattern, plus a fresh QueryClient
-// per test (retry: false, so a deliberately-unmocked fetch fails fast rather
-// than retrying) so no test's fetched/cached data leaks into another's.
-//
-// This screen issues one apiFetch (=> global fetch) call for GET /v1/cases
-// and, per case that call returns, up to three more (a probe list-case-versions
-// call, sometimes a second such call at the highest offset, and a
-// read-case-version call for authored_at) -- see cases-list-screen.tsx's own
-// fetchCaseSummary. stubFetchResponses keys a mock per exact URL string this
-// screen is known to construct, mirroring api-client.spec.ts's own
-// vi.stubGlobal("fetch", ...) pattern; a URL this test does not expect throws,
-// so an unexpected request fails the test loudly rather than hanging it.
-
 function stubFetchResponses(responses: Record<string, unknown>): void {
   const fetchMock = vi.fn(async (input: string | URL | Request) => {
     const url = typeof input === "string" ? input : input.toString();
@@ -47,9 +29,7 @@ function buildTestRouter() {
     path: "/cases",
     component: CasesListScreen,
   });
-  // A dummy leaf so "/cases/$slug" is a resolvable destination -- what
-  // renders there is case-detail-timeline's own concern, not this proof's;
-  // this file only needs the route to exist so navigate() can resolve to it.
+
   const caseDetailRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "/cases/$slug",
@@ -76,15 +56,6 @@ async function mountCasesListScreen() {
   return router;
 }
 
-/**
- * The same formatting call cases-list-screen.tsx's own formatLastUpdated
- * applies to a defined authored_at (Intl.DateTimeFormat's "medium"
- * date/"short" time styles) -- used here to turn a raw authored_at fixture
- * this test itself supplies through the mocked backend into the exact text
- * a curator would see, so the assertion checks that the correct version's
- * own authored_at reached the render, not a hand-typed literal that could
- * drift from what any real Intl implementation renders.
- */
 function expectedLastUpdated(iso: string): string {
   return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(
     new Date(iso),
@@ -105,8 +76,7 @@ describe("CasesListScreen", () => {
         offset: 0,
         pageCount: 1,
       },
-      // case-alpha: a single version, already the highest -- the probe call
-      // alone answers both version_count and the highest version's own row.
+
       "/v1/cases/case-alpha/versions?limit=1&offset=0": {
         data: [{ version: 1, state: "draft" }],
         total: 1,
@@ -115,9 +85,7 @@ describe("CasesListScreen", () => {
         pageCount: 1,
       },
       "/v1/cases/case-alpha/versions/1": { authored_at: "2024-01-15T09:30:00.000Z" },
-      // case-beta: two versions -- the probe call's own page (offset 0)
-      // does not carry the highest-numbered (offset 1) row, so a second
-      // list-case-versions call at offset=total-1 is required to read it.
+
       "/v1/cases/case-beta/versions?limit=1&offset=0": {
         data: [{ version: 1, state: "draft" }],
         total: 2,
@@ -238,11 +206,7 @@ describe("CasesListScreen", () => {
   });
 
   it("does not narrow rows by a match against a visible column other than slug", async () => {
-    // case-one's own state cell renders the visible word "Released"; typing
-    // that same word searches for a case whose *slug* contains it. Neither
-    // slug contains "released", so if the search matched any other visible
-    // field (state, version count, last-updated) case-one's row would wrongly
-    // stay narrowed-in.
+
     stubFetchResponses({
       "/v1/cases": {
         data: [{ slug: "case-one" }, { slug: "case-two" }],

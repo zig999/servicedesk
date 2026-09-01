@@ -7,19 +7,6 @@ import {
   type SimulationManifestRow,
 } from "./case-simulation-hypotheses-table-row";
 
-// task/simulation-cockpit/hypotheses-table's own criterion 3 ("A row whose last
-// run resolved inconclusive always shows its reason alongside the verdict; a
-// row that has not run this session shows no verdict") and this task's own
-// disclosed inference that a row's own displayed Hypothesis-column text is
-// sourced from its evaluation, never its routing-only hypothesisName, and is
-// blank when this session produced no evaluation for that row -- proven here
-// directly against the two exported pure helpers that decide both facts,
-// mirroring error-ui-state.spec.ts's own established convention for unit
-// testing an exported pure mapping module without rendering anything.
-// Rendering-level coverage of these same facts reaching the actual table
-// lives in case-simulation-hypotheses-table.spec.ts; these are the narrower,
-// single-reason tests over the two functions themselves.
-
 const ROW_WITHOUT_EVALUATION: SimulationManifestRow = {
   position: 1,
   hypothesisName: "H1",
@@ -30,13 +17,6 @@ function rowWithEvaluation(evaluation: SimulationHypothesisEvaluation): Simulati
   return { position: 1, hypothesisName: "H1", collects: [], evaluation };
 }
 
-/**
- * Narrows verdictCell's own `{ color, label } | string` return type down to
- * the status-cell branch through a guard (never a bare assertion), for tests
- * below that read `.label` -- every call site here always supplies an
- * `evaluation`, so verdictCell never actually returns the plain placeholder
- * string in these tests, but the guard is what lets TypeScript know it.
- */
 function verdictLabel(evaluation: SimulationHypothesisEvaluation): string {
   const cell = verdictCell(evaluation);
   if (typeof cell === "string") {
@@ -89,9 +69,6 @@ describe("verdictCell (criterion 3)", () => {
   });
 });
 
-// This task's own disclosed inference ("Verdict colors ... for the StatusTable cell"):
-// no node this task implements names a color for any of the three verdict values, so the
-// mapping is this delivery's own choice, pinned here rather than left free to drift.
 describe("verdictCell's own inferred color per verdict", () => {
   it("colors a confirmed verdict bg-success", () => {
     const cell = verdictCell({ hypothesis: "H1", verdict: "confirmed" });
@@ -118,8 +95,6 @@ describe("verdictCell's own inferred color per verdict", () => {
   });
 });
 
-// This task's own disclosed inference ("Token cost renders as a plain integer sum
-// (input_tokens + output_tokens), not a compacted/locale-formatted string").
 describe("costCell", () => {
   it("returns the plain placeholder when the row has not run this session", () => {
     expect(costCell(undefined)).toBe("—");

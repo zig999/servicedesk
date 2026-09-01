@@ -12,25 +12,6 @@ import {
   selectOption,
 } from "./capability-create-screen.test-support";
 
-// Proof for task/connector-capability-create-detail-route/capability-create-route's own criteria
-// 1-7 and 13: routing (the create screen renders at "/capabilities/new" and a capability literally
-// named "new" is still reached at the detail route), name/version editability, the shared
-// form-fields component's own reuse fingerprint, the shared create/edit hook's own create-mode
-// default, the loading/load-error phases and the Back link. Criteria 8-12 and the task's own
-// UNDERDETERMINED note live in the sibling capability-create-screen-save.spec.ts, split this way
-// to keep each file focused on one group of criteria (mirroring
-// connector-configuration-create-screen.spec.ts/-save.spec.ts's own identical split for the
-// sibling task of this same epic). Both share capability-create-screen.test-support.ts's own
-// fixtures and mounting helper.
-//
-// "Renders ... inside the app shell" (criterion 1's own wording) is not re-tested by literally
-// mounting AppShell here: every route-tree.tsx leaf renders inside AppShell as a structural,
-// independently-tested invariant (app-shell.spec.ts's own "wraps the matched route's own content"
-// test), and this file's own test router -- like every sibling screen's own test-support module --
-// mounts this screen under a bare Outlet instead. What this file proves is the half AppShell's own
-// proof cannot: that navigating to "/capabilities/new" actually resolves to this screen's own
-// content, and to no other route.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

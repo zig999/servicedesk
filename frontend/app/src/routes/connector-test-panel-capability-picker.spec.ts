@@ -16,31 +16,6 @@ import {
   mountConnectorConfigurationCreateScreen,
 } from "./connector-configuration-create-screen.test-support";
 
-// Proof for task/connector-configuration-authoring/test-connector-debug-panel's own criterion 1
-// ("The Test section's capability picker offers only capabilities currently registered with this
-// connector configuration's name as their connector"), its own disclosed composite-key
-// (name@version) inference, the empty-match and dependency-failure edge cases that criterion's
-// own dependency (useCapabilities) raises, and the explicit "only in edit mode" fact this task's
-// own dialog wiring states. Criterion 2 and the requester field live in the sibling
-// connector-test-panel-subject-and-attributes.spec.ts; criteria 4-7 in
-// connector-test-panel-request-response.spec.ts and connector-test-panel-dispatch-safety.spec.ts.
-//
-// The chosen capability's own input_schema read-only reference display (unrelated to the removed
-// sample-input field) is covered here too: the composite-key test above already proves it renders
-// the selected capability's own schema, and the fallback test below proves it degrades for an
-// input_schema that does not itself parse as JSON.
-//
-// task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check's own
-// criterion 2 closes a coverage gap left by reconcile-test-panel-attribute-rows: this file never
-// exercised "Add attribute" at all before the describe block near the bottom below, so
-// reconcile-test-panel-attribute-rows's own criterion 7 ("every existing consumer of
-// onAddAttribute keeps observing correct behavior") was vacuous specifically for this file. The
-// reconciliation behavior itself (a click reconciles rows against every ${subject:<attribute>}
-// placeholder Configuration's own text currently embeds) is proved in full, including the
-// stable-row-identity and no-extra-network-request cases, by the sibling
-// connector-test-panel-subject-and-attributes.spec.ts; the test below establishes only that this
-// file's own context reaches the same behavior, not a second full account of it.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -143,13 +118,7 @@ describe("ConnectorTestPanel — the input schema reference falls back to raw te
 });
 
 describe("ConnectorTestPanel — Add attribute reconciles to a row already named for Configuration's own placeholder (task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check, criterion 2)", () => {
-  // Configuration's text is edited to a placeholder distinct from
-  // mountTestPanelInEditMode's own default ("account-id", already asserted by the sibling
-  // connector-test-panel-subject-and-attributes.spec.ts's own reconciliation test) so this
-  // test's own assertion stands on its own rather than coupled to that default. If "Add
-  // attribute" regressed to the old append-one-empty-row behavior, the row this test finds
-  // would carry an empty Attribute value instead of "picker-panel-subject-id", and the
-  // assertion below would fail.
+
   it("adds a row already named for Configuration's own placeholder, not an empty row", async () => {
     const { dialog } = await mountTestPanelInEditMode({
       [CAPABILITIES_PATH]: () => jsonResponse(capabilitiesPage([testCapability()])),
@@ -161,19 +130,7 @@ describe("ConnectorTestPanel — Add attribute reconciles to a row already named
         value: '{"address":"https://api.example.com/${subject:picker-panel-subject-id}"}',
       },
     });
-    // task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-
-    // reconciling: "Add attribute" reconciles against the connector's own registered
-    // configuration text, not an unsaved edit, so this edit is saved first -- awaited by
-    // waitFor-polling the "Save" button's own `disabled` attribute (gated on state.isDirty,
-    // connector-configuration-form-fields.tsx's own isSaveDisabled expression) turning true,
-    // not the "Saved." acknowledgement text: use-connector-configuration-detail-view.ts's own
-    // wasSubmitSuccessfulRef never resets once justSaved clears, a real, pre-existing
-    // production defect out of this task's own scope (fuller rationale in the sibling
-    // connector-test-panel-attribute-reconciliation.spec.ts's own saveConfiguration helper, and
-    // disclosed in this task's own returned proof record). Save's own `disabled` attribute never
-    // routes through that ref -- it reflects state.isDirty directly, cleared in the same commit
-    // the mutation's onSuccess re-baselines configurationBaseline from, one render before
-    // registeredConfigurationText itself updates.
+
     const saveButton = within(dialog).getByRole("button", { name: "Save" });
     fireEvent.click(saveButton);
     await waitFor(() => {
@@ -186,16 +143,6 @@ describe("ConnectorTestPanel — Add attribute reconciles to a row already named
   });
 });
 
-// task/connector-capability-create-detail-route/connector-configurations-list-create-action
-// repointed the list screen's own "New connector configuration" button at a navigate({ to:
-// "/connectors/new" }) call instead of opening ConnectorConfigurationFormDialog in create mode --
-// that popup dialog is no longer reachable in create mode at all, so the "renders no Test section"
-// proof below now mounts the routed create screen itself
-// (ConnectorConfigurationCreateScreen, ./connector-configuration-create-screen.tsx) directly, the
-// same way connector-configuration-create-screen.spec.ts's own "renders no connector test panel"
-// test (criterion 13 of that task) already does, rather than driving it through a click on the
-// list screen's button (that click now only navigates in production, and this file's own mounting
-// harness carries no router context for it to navigate through).
 describe("ConnectorConfigurationCreateScreen — the Test section renders only in edit mode", () => {
   it("renders no Test section, and issues no read for it, on the routed create screen", async () => {
     const fetchMock = createConnectorConfigurationCreateScreenFetchStub();

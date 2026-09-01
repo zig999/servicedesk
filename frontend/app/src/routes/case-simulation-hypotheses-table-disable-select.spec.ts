@@ -14,15 +14,6 @@ import {
 } from "./case-simulation-hypotheses-table";
 import type { SimulationManifestRow } from "./case-simulation-hypotheses-table-row";
 
-// task/simulation-cockpit/screen-assembly's own divergence: case-simulation-hypotheses-table.tsx
-// gained two new, optional props this task's own criteria need -- disableSimulate (criteria 1-2)
-// and onSelectHypothesis (criterion 4) -- neither asked for by hypotheses-table's own criteria.
-// case-simulation-hypotheses-table.spec.ts's own existing suite already proves every fact that
-// table owns on its own and keeps passing unchanged against the extended component (this task's
-// own delivery record); this file proves only what the two new props themselves add, mirroring
-// that file's own router-mounting shape (a row renders a real Link, so a router context is
-// needed) rather than duplicating any of its existing assertions.
-
 const EDIT_ROUTE_PATTERN = "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName";
 
 async function mount(props: CaseSimulationHypothesesTableProps): Promise<void> {
@@ -109,10 +100,6 @@ describe("CaseSimulationHypothesesTable -- onSelectHypothesis opens the Detail r
     const onSelectHypothesis = vi.fn();
     await mount(baseProps({ onSelectHypothesis }));
 
-    // A clickable row carries role="button" (StatusTable's own established convention,
-    // status-table.spec.ts), the same role every row's own Simulate <button> carries -- filtering
-    // by tagName distinguishes the row element itself from either row's own nested Simulate
-    // button.
     const rowElements = screen
       .getAllByRole("button")
       .filter((element) => element.tagName === "TR");
@@ -127,8 +114,6 @@ describe("CaseSimulationHypothesesTable -- onSelectHypothesis opens the Detail r
   it("renders no clickable row at all when onSelectHypothesis is absent, matching hypotheses-table's own established inert-by-default behavior", async () => {
     await mount(baseProps());
 
-    // Absent onRowClick, StatusTable never overrides a row's implicit "row" role -- so every
-    // row (header plus two data rows) is still findable by that role rather than "button".
     expect(screen.getAllByRole("row")).toHaveLength(3);
   });
 });

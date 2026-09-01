@@ -12,9 +12,6 @@ import type {
 } from "./use-telemetry";
 import { useTelemetry } from "./use-telemetry";
 
-// One payload literal per cataloged event, each checked against its own
-// exported type so a case here can never silently drift from the shape
-// use-telemetry.ts actually declares.
 const caseDraftCreatedPayload = {
   slug: "case-alpha",
   version: 1,
@@ -70,10 +67,6 @@ type EventCase = {
   call: (telemetry: Telemetry) => void;
 };
 
-// The eight-event catalog, one entry per callable Telemetry exposes. Each
-// `call` invokes exactly one of the eight through the typed interface, never
-// through a cast, so a case here that no longer matches the interface fails
-// to compile rather than passing silently at runtime.
 const EVENT_CASES: EventCase[] = [
   {
     key: "caseDraftCreated",

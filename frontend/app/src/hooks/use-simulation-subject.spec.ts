@@ -13,27 +13,6 @@ import {
   stubFetch,
 } from "./use-simulation-subject.test-support";
 
-// task/subject-input-requirements/derive-subject-fields-from-input-requirements's own hook-level
-// proof: the derivation itself (criteria 1-6 and the two UNDERDETERMINED notes) is proved
-// directly, without React, in services/simulation-subject-derivation.spec.ts -- this file proves
-// what this hook adds over that pure walk: the pinned slug/version threading (criterion 9), the
-// registries this hook now composes and their loading/error pass-through (criterion 10), that a
-// required attribute never embedded as a connector placeholder is still exposed (criterion 7,
-// the same scenario services/simulation-subject-derivation.spec.ts cannot reach because that
-// module never receives connector-configuration text at all -- criterion 8), plus the
-// pre-existing curator-added-attribute, readiness, MNT-04 and D7 shared-instance behavior this
-// task's own delivery record states is preserved unchanged. Mirrors
-// use-capability-detail-view.spec.ts's own established convention -- renderHook, real Response
-// objects through a stubbed global fetch, assertions on nothing but what this hook itself
-// returns (TST-01).
-//
-// task/subject-input-requirements/expose-malformed-capability-identities's own three criteria and
-// its UNDERDETERMINED note are proved in the sibling file
-// use-simulation-subject-malformed-capabilities.spec.ts, split out of this file to stay under
-// this project's own max-lines rule -- mirrors use-capability-detail.spec.ts's own established
-// multi-file split for the same reason (its own header comment cites the same rule); TST-04's
-// divergence is disclosed in this proof's own record.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -258,11 +237,7 @@ describe("useSimulationSubject -- criterion 7: an attribute the read names requi
 
 describe("useSimulationSubject -- criteria 8 and 10: the composed reads are exactly case-input-requirements and capabilities, never a connector-configuration read", () => {
   it("resolves cleanly, with its derived field intact, even though the stubbed backend answers nothing at all for a connector-configuration endpoint", async () => {
-    // stubFetch's own default handlers (this file's own test-support) answer only the
-    // case-input-requirements and capabilities paths -- no /v1/connectors entry exists at all.
-    // If this hook still composed useConnectorConfigurations under the hood, that request would
-    // hit no handler, the stub would throw, and isRegistriesError would read true (or the hook
-    // would never settle) instead of the assertions below holding.
+
     stubFetch();
     const { result } = renderHook(() => useSimulationSubject(SOURCE, SLUG, VERSION_WITH_FIELD), {
       wrapper: createWrapper().Wrapper,
@@ -286,10 +261,6 @@ describe("useSimulationSubject -- criteria 8 and 10: the composed reads are exac
       wrapper: createWrapper().Wrapper,
     });
 
-    // Both conditions are asserted inside the same poll: an implementation that used `&&`
-    // instead of `||` would show isLoadingRegistries flip to false the moment capabilities
-    // resolves while case-input-requirements is still pending, so the two would never hold
-    // together and this would time out instead of passing.
     await waitFor(() => {
       expect(capabilitiesResolved).toBe(true);
       expect(result.current.isLoadingRegistries).toBe(true);

@@ -16,92 +16,6 @@ import {
   VersionReleasePlaceholder,
 } from "./route-placeholders";
 
-/**
- * This suite runs under Vitest's "node" environment: there is no DOM, so
- * nothing here renders a route -- it inspects the router's own registered
- * route structure instead. `router.routesById` is populated synchronously
- * inside createRouter()'s constructor (it processes the route tree before
- * any history, store or render exists), so reading it needs no navigation
- * and no jsdom.
- *
- * The expected paths and the path -> placeholder mapping below are written
- * independently of route-tree.tsx rather than derived from it -- an
- * expectation copied from the file under test would hold no matter what
- * that file declared.
- *
- * "/cases/$slug/versions/new" is the eleventh route, added by
- * task/version-editor/new-draft-creation: it is not one of the original ten
- * proposal screens (2.1-2.10) route-tree.tsx first registered, but is
- * architecturally required so the create flow and the edit flow mount as
- * genuinely distinct component instances, per that task's own disclosed
- * Notes.
- *
- * "/cases/$slug/versions/$version/manifest/hypotheses/new" is the twelfth
- * route, added by task/manifest-hypothesis-authoring/revise-hypothesis-form's
- * own criterion 1: a distinct static route for the blank New-hypothesis
- * entry point, ranking over the pre-existing "$hypothesisName" param route
- * the same way "/cases/$slug/versions/new" already ranks over
- * "/cases/$slug/versions/$version". That pre-existing param route's own
- * component also changed with this task, from ManifestHypothesisPlaceholder
- * to ReviseHypothesisScreen -- both routes are excluded from
- * EXPECTED_COMPONENT_BY_PATH below for the same reason the four earlier
- * real-screen routes already are, and are instead checked by their own
- * dedicated test beneath it.
- *
- * "/connectors" is the thirteenth route, added by
- * task/connector-configuration-authoring/connector-configuration-create-edit-form's
- * own criterion 1: a new route listing every registered connector
- * configuration, rendering ConnectorConfigurationsScreen. Excluded from
- * EXPECTED_COMPONENT_BY_PATH below for the same reason "/capabilities" and
- * "/glossary" already are -- it renders a real screen, not a placeholder --
- * and checked by its own dedicated test beneath the capabilities/glossary
- * ones instead.
- *
- * "/connectors/$connector" is the fourteenth route, added by
- * task/connector-capability-detail-editing/connector-configuration-detail-route's
- * own criterion 1: the routed connector-configuration detail/edit screen a
- * connector configurations list row now navigates to. Excluded from
- * EXPECTED_COMPONENT_BY_PATH for the same reason -- it renders a real
- * screen, not a placeholder.
- *
- * "/capabilities/$name/$version" is the fifteenth route, added by
- * task/connector-capability-detail-editing/capability-detail-route's own
- * criterion 1: the routed capability detail/edit screen a capabilities list
- * row now navigates to, addressed by both identity fields
- * (domain/integration/capability's own "identified by name and version")
- * rather than name alone. Excluded from EXPECTED_COMPONENT_BY_PATH for the
- * same reason -- it renders a real screen, not a placeholder.
- *
- * "/cases/$slug/versions/$version/simulate" is the sixteenth route, added by
- * task/simulation-cockpit/case-simulation-route's own criterion 1: the
- * curator's own entry into the Simulation Cockpit, open on a case version in
- * either draft or released state. Excluded from EXPECTED_COMPONENT_BY_PATH
- * for the same reason as the others above -- it renders a real screen -- and
- * checked by its own dedicated test beneath them instead.
- *
- * "/connectors/new" is the seventeenth route, added by
- * task/connector-capability-create-detail-route/connector-configuration-
- * create-route's own criterion 1: the routed connector-configuration create
- * screen, in place of the popup Dialog's create mode. A static "new" segment
- * ranks over the "$connector" param segment above regardless of declaration
- * order (TanStack Router sorts a route tree by specificity, not by
- * registration order), the same convention newCaseVersionRoute and
- * newManifestHypothesisRoute already establish -- criterion 2's own claim.
- * Excluded from EXPECTED_COMPONENT_BY_PATH for the same reason as the others
- * above -- it renders a real screen -- and checked by its own dedicated test
- * beneath them instead.
- *
- * "/capabilities/new" is the eighteenth route, added by
- * task/connector-capability-create-detail-route/capability-create-route's own
- * criterion 1: the routed capability create screen, in place of the popup
- * Dialog's create mode -- delivered as a sibling task of the same epic as
- * "/connectors/new" above, the same static-segment-ranks-over-dynamic-segment
- * convention applying against "/capabilities/$name/$version". Excluded from
- * EXPECTED_COMPONENT_BY_PATH for the same reason as the others above -- it
- * renders a real screen -- and checked by its own dedicated test beneath them
- * instead.
- */
-
 const EXPECTED_PATHS = [
   "/cases",
   "/cases/$slug",
@@ -123,16 +37,6 @@ const EXPECTED_PATHS = [
   "/cases/$slug/versions/$version/simulate",
 ];
 
-// /cases, /cases/$slug, /cases/$slug/versions/new, /cases/$slug/versions/$version, this task's
-// own two hypothesis routes, task/manifest-hypothesis-authoring/manifest-builder's own
-// "/cases/$slug/versions/$version/manifest", task/glossary-and-capabilities-browser/
-// capabilities-browser-screen's own "/capabilities" and task/glossary-and-capabilities-browser/
-// glossary-browser-screen's own "/glossary" are excluded from this map: all nine now render
-// real screens (CasesListScreen, CaseDetailScreen, NewCaseDraftScreen, CaseVersionEditorScreen,
-// NewHypothesisScreen, ReviseHypothesisScreen, VersionManifestScreen, CapabilitiesBrowserScreen,
-// GlossaryBrowserScreen), not a placeholder. Which component each of those nine renders is that
-// task's own criterion and its own proof's to test; this suite only answers for the three
-// routes that still render a placeholder.
 const EXPECTED_COMPONENT_BY_PATH: Record<string, unknown> = {
   "/cases/$slug/hypotheses": CaseHypothesesPlaceholder,
   "/cases/$slug/versions/$version/release": VersionReleasePlaceholder,
@@ -202,15 +106,6 @@ describe("route-tree", () => {
     expect(createRoute?.options.component).not.toBe(detailRoute?.options.component);
   });
 
-  // Proof for task/capability-create-route/retire-capability-form-dialog's own Notes: the
-  // binder's UNDERDETERMINED entry names an implementation satisfying every one of that task's
-  // own criteria while leaving the frontend app with no screen addressed by a capability's own
-  // (name, version) identity -- so an already-registered capability could no longer be opened
-  // for editing anywhere in the app. Nothing above pins what "/capabilities/$name/$version"
-  // actually renders: the "/capabilities/new" test two above only asserts that route's own
-  // component differs from this one's, never that this one is a real screen rather than, say, a
-  // placeholder or nothing at all. This test is that pin, and it fails under exactly the
-  // implementation the binder's entry names.
   it("renders the /capabilities/$name/$version route through CapabilityDetailScreen -- the capability detail/edit screen a capability's own (name, version) identity is addressed by", () => {
     const detailRoute = leafRoutes().find(
       (route) => route.fullPath === "/capabilities/$name/$version",
@@ -245,15 +140,6 @@ describe("route-tree", () => {
   });
 });
 
-/**
- * task/cases-list-and-detail/case-attributes-at-a-glance's own inference: "New draft from vX"
- * addresses the New Draft flow by adding an optional "sourceVersion" search field to this
- * pre-existing route, rather than a new route or a required parameter. Read directly off the
- * registered route's own `validateSearch` (a zod schema assigned as-is, exposing `.parse()`)
- * rather than re-declaring an expectation independent of it -- the schema itself is this
- * task's own new artifact, unlike EXPECTED_PATHS/EXPECTED_COMPONENT_BY_PATH above, which check
- * route-tree.tsx against an independently-authored expectation.
- */
 type ParsableSearchSchema = { parse: (input: unknown) => unknown };
 
 function newDraftSearchSchema(): ParsableSearchSchema {

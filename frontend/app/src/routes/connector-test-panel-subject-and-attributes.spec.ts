@@ -10,13 +10,6 @@ import {
   testCapability,
 } from "./connector-test-panel.test-support";
 
-// Proof for task/connector-configuration-authoring/test-connector-debug-panel's own criterion 2
-// ("lets the operator pick a subject type and type that subject's attribute-values directly,
-// with no list of existing subjects offered to select from"), its own disclosed
-// stable-row-identity inference (each attribute row's own locally generated id, never the
-// array's index), and the requester-is-free-text inference. Criterion 1 lives in the sibling
-// connector-test-panel-capability-picker.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -46,14 +39,7 @@ describe("ConnectorTestPanel — the subject type is drawn from the subject-type
 });
 
 describe("ConnectorTestPanel — attribute-values are typed by hand, never selected from an existing subject (criterion 2)", () => {
-  // task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows changed
-  // "Add attribute" from appending one blank row to reconciling the panel's rows against every
-  // ${subject:<attribute>} placeholder Configuration's own current text embeds. Every test below
-  // was rewritten against that reconciliation behavior (this task's own criterion 7):
-  // mountTestPanelInEditMode's own DEFAULT_TEST_PANEL_CONFIGURATION_TEXT embeds exactly one
-  // placeholder, "account-id", so "Add attribute" here reconciles to exactly one row already
-  // named "account-id" rather than a row with a free-typed name -- what remains genuinely typed
-  // by hand, and still not selected from any existing subject, is each row's own Value.
+
   it("adds a row already named for Configuration's own placeholder, and lets the operator type its value (reconciliation)", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
 
@@ -71,29 +57,13 @@ describe("ConnectorTestPanel — attribute-values are typed by hand, never selec
   it("removes exactly the row whose own Remove action was clicked, leaving the other rows' own values intact (stable-row-identity inference)", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
 
-    // Configuration's own text is edited first -- the real production route, since
-    // ConnectorTestPanel's own configurationText prop is this route's live
-    // state.configuration.value -- to embed three distinct subject-attribute placeholders at
-    // once, so one "Add attribute" click reconciles to three rows in a single call.
     fireEvent.change(within(dialog).getByLabelText("Configuration"), {
       target: {
         value:
           '{"address":"https://api.example.com/${subject:first-attribute}","query":{"a":"${subject:second-attribute}"},"headers":{"h":"${subject:third-attribute}"}}',
       },
     });
-    // task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-
-    // reconciling: "Add attribute" reconciles against the connector's own registered
-    // configuration text, not an unsaved edit, so this edit is saved first -- awaited by
-    // waitFor-polling the "Save" button's own `disabled` attribute (gated on state.isDirty,
-    // connector-configuration-form-fields.tsx's own isSaveDisabled expression) turning true,
-    // not the "Saved." acknowledgement text: use-connector-configuration-detail-view.ts's own
-    // wasSubmitSuccessfulRef never resets once justSaved clears, a real, pre-existing
-    // production defect out of this task's own scope (fuller rationale in the sibling
-    // connector-test-panel-attribute-reconciliation.spec.ts's own saveConfiguration helper, and
-    // disclosed in this task's own returned proof record). Save's own `disabled` attribute never
-    // routes through that ref -- it reflects state.isDirty directly, cleared in the same commit
-    // the mutation's onSuccess re-baselines configurationBaseline from, one render before
-    // registeredConfigurationText itself updates.
+
     const saveButton = within(dialog).getByRole("button", { name: "Save" });
     fireEvent.click(saveButton);
     await waitFor(() => {

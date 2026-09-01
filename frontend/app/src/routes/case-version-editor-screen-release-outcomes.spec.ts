@@ -15,13 +15,6 @@ import {
   versionGetCallCount,
 } from "./case-version-editor-release.test-support";
 
-// POST-outcome coverage for task/version-editor/release-draft-version (criteria 4, 5, 6
-// and 7): confirming Release, and rendering the 200/409/422 responses that POST
-// .../release can answer with. Control-visibility and checklist coverage live in the two
-// sibling spec files this task's own proof splits across, to stay under this project's
-// own max-lines rule; all three share case-version-editor-release.test-support.ts's own
-// fixtures.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -164,7 +157,6 @@ describe("CaseVersionEditorScreen — a 409 CaseVersionNotDraftAtReleaseError re
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     await waitFor(() => expect(versionGetCallCount(fetchMock)).toBe(2));
 
-    // Reopening starts from the checklist again, never a stale violations list.
     await openReleaseDialog();
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).queryByRole("alert")).toBeNull();

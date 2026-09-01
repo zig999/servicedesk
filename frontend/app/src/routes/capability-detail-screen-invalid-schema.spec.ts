@@ -13,14 +13,6 @@ import {
   putCallCount,
 } from "./capability-detail-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/capability-detail-route's own criterion 8
-// (the invalid-loaded-JSON warning), doubled for this screen's own two schema fields
-// (input_schema, output_schema) where the sibling connector-configuration-detail-route's single
-// configuration field only needed this once -- split into its own file (alongside
-// capability-detail-screen.spec.ts, -save.spec.ts and -discard.spec.ts) to stay under this
-// project's own max-lines discipline from the start. All four share
-// capability-detail-screen.test-support.ts's own fixtures and mounting helper.
-
 const INPUT_SCHEMA_WARNING =
   "This capability's stored input schema is not valid JSON. Correct it before Save can succeed.";
 const OUTPUT_SCHEMA_WARNING =
@@ -37,8 +29,7 @@ describe("CapabilityDetailScreen -- an invalid loaded input_schema is warned abo
 
     const inputSchemaField = await screen.findByLabelText<HTMLTextAreaElement>("Input schema");
     expect(screen.getByText(INPUT_SCHEMA_WARNING)).toBeTruthy();
-    // "instead of rendering it silently" (criterion 8's own wording) -- the invalid stored text
-    // stays visible beside the warning rather than being blanked or replaced.
+
     expect(inputSchemaField.value).toBe(INVALID_INPUT_SCHEMA);
   });
 
@@ -58,9 +49,7 @@ describe("CapabilityDetailScreen -- an invalid loaded input_schema is warned abo
     fireEvent.change(inputSchemaField, { target: { value: INVALID_INPUT_SCHEMA } });
 
     expect(screen.getByText(INPUT_SCHEMA_WARNING)).toBeTruthy();
-    // This route's own plain-wording banner and JsonTextareaField's own parser-message inline
-    // error (json-textarea-field.tsx's own "Invalid JSON: <message>") both render, additive to
-    // one another rather than one replacing the other (this task's own disclosed inference).
+
     const alerts = screen.getAllByRole("alert");
     expect(alerts.some((alert) => alert.textContent?.startsWith("Invalid JSON:"))).toBe(true);
     expect(screen.getByRole("button", { name: "Save" }).hasAttribute("disabled")).toBe(true);

@@ -10,25 +10,6 @@ import {
 } from "@tanstack/react-router";
 import { AppShell } from "./app-shell";
 
-// AppShell reads the currently matched route through @tanstack/react-router's
-// own useMatches() and renders sidebar Links via the router's own Link, so it
-// cannot render outside a real router context. Rather than reuse the
-// production ten-route router (route-tree.tsx), this builds a small,
-// self-contained test router -- AppShell as the root route's own component,
-// four leaf routes at the same four paths Sidebar's own links point to --
-// so each test controls exactly which route is "current" via
-// createMemoryHistory's initialEntries, without depending on the production
-// route tree's shape or on browser history.
-//
-// A fourth leaf route, "/connectors", was added by task/connector-configuration-
-// authoring/connector-configuration-create-edit-form's own criterion 1 ("a new
-// route reachable from the app's navigation"): SIDEBAR_ENTRIES now names a
-// fourth destination (app-shell.tsx's own header comment), so this file's own
-// test router has to register that path too -- Sidebar's own Link to
-// "/connectors" needs a real registered route to resolve against, the same
-// requirement the pre-existing three routes below already satisfy for Cases,
-// Glossary and Capabilities.
-
 function ScreenA() {
   return createElement("div", null, "Screen A content");
 }
@@ -71,18 +52,6 @@ function buildTestRouter(initialPath: string) {
   });
 }
 
-// A second test router, built independently of buildTestRouter above so it does
-// not disturb SIDEBAR_ENTRIES's own four-item assertion (the new route
-// task/simulation-cockpit/case-simulation-route registers is not a sidebar
-// destination, so it is added as a fifth leaf here rather than folded into
-// buildTestRouter's own four). It keeps the same four sidebar-destination
-// leaves buildTestRouter registers -- AppShell always renders Sidebar's own
-// four Links regardless of which route is current, so they need a real
-// destination to resolve an href against here too. It exists to check
-// ROUTE_LABELS's own new entry for "/cases/$slug/versions/$version/simulate"
-// -- a param route, so its own raw pathname (what a match falls back to when
-// no label is found) is the *resolved* path with real params substituted in,
-// never the literal pattern string.
 function buildSimulateTestRouter(initialPath: string) {
   const rootRoute = createRootRoute({ component: AppShell });
   const casesRoute = createRoute({
@@ -171,8 +140,6 @@ describe("AppShell", () => {
     ).toBe("/capabilities");
   });
 
-  // task/connector-configuration-authoring/connector-configuration-create-edit-form's own
-  // criterion 1: the new "/connectors" route is reachable from the app's navigation.
   it("lists a Connectors entry linking to /connectors", async () => {
     const router = buildTestRouter("/cases");
     await router.load();

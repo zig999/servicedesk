@@ -94,11 +94,6 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("generic-error");
   });
 
-  // task/cases-list-and-detail/case-attributes-at-a-glance's own criterion 5 needs this
-  // class told apart from the shared generic-error fallback (unlike the three genuinely
-  // unmapped classes above), so it resolves to its own distinct "case-not-valid" kind rather
-  // than the shared one this suite asserted before that task -- see this module's own header
-  // comment.
   it("resolves CaseNotValidError to its own distinct case-not-valid state, no longer the shared generic-error fallback", () => {
     const state = uiStateForApiError(new ApiError("CaseNotValidError", "not valid"));
     expect(state.kind).toBe("case-not-valid");
@@ -109,11 +104,6 @@ describe("uiStateForApiError", () => {
     const state = uiStateForApiError(new ApiError("SomeFutureBackendError", "unrecognized"));
     expect(state.kind).toBe("generic-error");
   });
-
-  // task/capability-authoring/capability-create-edit-form's own criterion 5 -- the registry's
-  // four named refusals (a non-read-only nature and the other three) each need their own
-  // distinct state so use-capability-form.ts's own SAVE_FAILURE_MESSAGE_BY_KIND can resolve
-  // one to a specific message rather than the shared generic-error fallback.
 
   it("resolves ConceptAlreadyAnsweredError to the concept-already-answered state", () => {
     const state = uiStateForApiError(new ApiError("ConceptAlreadyAnsweredError", "already answered"));
@@ -153,13 +143,6 @@ describe("uiStateForApiError", () => {
     expect(kinds).not.toContain("generic-error");
   });
 
-  // task/connector-configuration-authoring/connector-configuration-create-edit-form's own
-  // criterion set -- a connector configuration whose configuration is not syntactically valid
-  // JSON (rules/integration/a-connector-configuration-holds-a-well-formed-object) needs its own
-  // distinct state so use-connector-configuration-form.ts's own
-  // SAVE_FAILURE_MESSAGE_BY_KIND can resolve it to a specific message rather than the shared
-  // generic-error fallback.
-
   it("resolves ConnectorConfigurationNotWellFormedError to its own distinct connector-configuration-not-well-formed state, not the shared generic-error fallback", () => {
     const state = uiStateForApiError(
       new ApiError("ConnectorConfigurationNotWellFormedError", "not well-formed"),
@@ -167,14 +150,6 @@ describe("uiStateForApiError", () => {
     expect(state.kind).toBe("connector-configuration-not-well-formed");
     expect(state.kind).not.toBe("generic-error");
   });
-
-  // task/glossary-concept-description/concept-description-error-kind's own criterion set -- a
-  // concept registration or update naming no description
-  // (rules/glossary/a-concept-declares-its-description) needs its own distinct state so the
-  // operator console can tell the operator specifically that the description is missing rather
-  // than only a generic failure notice
-  // (scenarios/glossary/a-concept-with-no-description-is-refused); the exact wording stays the
-  // console's own, not this table's.
 
   it("resolves ConceptDescriptionRequiredError to its own distinct concept-description-required state, not the shared generic-error fallback", () => {
     const state = uiStateForApiError(

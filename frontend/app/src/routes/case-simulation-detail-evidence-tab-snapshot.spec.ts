@@ -5,15 +5,6 @@ import { CaseSimulationDetailEvidenceTab } from "./case-simulation-detail-eviden
 import { testEvidenceItem } from "./case-simulation-detail-panel.test-support";
 import type { SimulationJudgmentCall } from "./case-simulation-detail-types";
 
-// Proof for task/simulation-evidence-snapshot/evidence-tab-snapshot-rendering's own criteria
-// 1-6, proven directly against CaseSimulationDetailEvidenceTab, mirroring
-// case-simulation-detail-evidence-tab.spec.ts's own established render+assert pattern and
-// shared testEvidenceItem() fixture. Split into its own sibling file per this project's own
-// max-lines rule (MNT-01). Criterion 7 (no glossary/capability-registry read to enrich the
-// snapshot) is not independently tested here: this component issues no fetch or hook call of
-// any kind, reading only the `item` prop it already received, so no test setup could observe a
-// request that has nowhere to originate from -- verified by reading the diff instead.
-
 const NOT_CALLED: SimulationJudgmentCall = { called: false };
 
 describe("CaseSimulationDetailEvidenceTab -- shows a present concept_description (criterion 1)", () => {

@@ -1,9 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 
-// sonner is the network/DOM-adjacent boundary use-concept-form.ts's own onError handler calls
-// into; mocking it here mirrors glossary-browser-screen-concept-form-save.spec.ts's own
-// established convention.
 vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
 
 import { toast } from "sonner";
@@ -18,16 +15,6 @@ import {
   SUBJECT_TYPE_PATH,
   term,
 } from "./glossary-browser-screen.test-support";
-
-// Proof for task/glossary-concept-description/concept-form-description-field's own criteria 1,
-// 3, 4 and 5. Criterion 2 (a submitted registration carries the description in the request
-// body) is proven by the corrected assertions in the two sibling files this task's own delivery
-// also updated -- glossary-browser-screen-concept-form-save.spec.ts's own two Save tests and
-// glossary-browser-screen-concept-form-accepts.spec.ts's own two accepts tests, all four of
-// which now fill and assert `description` on the same PUT body these tests already exercised
-// for a different reason; a fifth, dedicated test here would only restate what those four
-// already establish, for the same field, on the same mutation. Split into its own sibling file
-// (mirroring the established three-way split, MNT-01) rather than folded into any of them.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -119,8 +106,3 @@ describe("GlossaryBrowserScreen — the missing-description refusal reaches the 
   });
 });
 
-// Criterion 5 (a failure no criterion names still falls through to the existing generic toast)
-// is already proven by glossary-browser-screen-concept-form-save.spec.ts's own untouched
-// "a failed save" test, which throws a plain network Error against a concept whose fixture
-// description is already non-empty (unaffected by this task) and asserts the same generic
-// message this criterion names; no new test is added here for it.

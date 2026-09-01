@@ -9,14 +9,6 @@ import {
 } from "./case-hypotheses-tab.test-support";
 import type { CaseVersionRecord } from "../services/case-version-record";
 
-// task/cases-list-and-detail/case-attributes-at-a-glance's own criterion 1: Case Detail
-// renders a third view, "Attributes", alongside the existing Versions and Hypotheses tabs.
-// This file proves only the tab-strip wiring -- a third TabsTrigger/TabsContent exists and
-// switching to it mounts CaseAttributesTab's own content in place of the other two --
-// mirroring the split case-detail-screen-hypotheses-tab.spec.ts / case-hypotheses-tab.spec.ts
-// already established for the Hypotheses tab. case-attributes-tab.spec.ts proves that
-// component's own rendered content directly.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

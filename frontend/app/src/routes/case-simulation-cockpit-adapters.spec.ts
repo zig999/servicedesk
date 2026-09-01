@@ -17,14 +17,6 @@ import type { SimulateCaseResult, SimulateEvidenceItem } from "../hooks/use-simu
 import type { Evaluation as HypothesisEvaluation } from "../hooks/use-simulate-hypothesis";
 import type { CaseVersionManifestEntry } from "../services/case-version-record";
 
-// task/simulation-cockpit/screen-assembly's own pure adapters -- the mechanism criteria 4 and 5
-// stand on: normalizing the two dispatch hooks' own distinct response shapes into one canonical
-// per-hypothesis evaluation, and shaping a completed run into each region's own already-declared
-// props. Proven directly here, as pure functions, rather than only indirectly through the
-// composed hook -- a narrower failure here names exactly which transform broke.
-// The stale-field tests for fromCaseEvaluation/fromHypothesisEvaluation/toRowEvaluation/
-// toDetailEvaluation split out to case-simulation-cockpit-adapters-stale.spec.ts (MNT-01).
-
 const MANIFEST: readonly CaseVersionManifestEntry[] = [
   {
     position: 1,

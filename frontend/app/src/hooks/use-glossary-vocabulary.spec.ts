@@ -4,22 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useGlossaryVocabularyOptions, type GlossaryVocabulary } from "./use-glossary-vocabulary";
 
-// Sibling to use-glossary-vocabulary.ts -- the hook carried no spec file of its own before
-// this widening (task/glossary-and-capabilities-browser/widen-glossary-vocabulary-union), only
-// indirect coverage through several screens' own test-support fixtures (e.g.
-// hypothesis-revision-screen.test-support.ts's baseHandlers, which never exercise
-// "subject-attribute" at all). This file proves the hook's own contract directly through
-// renderHook, matching api-client.spec.ts's own convention of stubbing only the network
-// boundary (real Response objects through a stubbed global fetch, so apiFetch()'s own JSON
-// handling runs unmodified) rather than mounting a whole screen the hook has no view of its own.
-
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 function createWrapper() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return function Wrapper({ children }: { children: ReactNode }) {
@@ -38,10 +26,6 @@ describe('useGlossaryVocabularyOptions("subject-attribute")', () => {
       .mockResolvedValue(jsonResponse({ data: [{ name: "eligibility" }, { name: "risk-tier" }] }));
     vi.stubGlobal("fetch", fetchMock);
 
-    // No cast: GlossaryVocabulary itself must admit this literal for the assignment below (and
-    // the call it feeds) to typecheck. The project's own `tsc --noEmit` step is what actually
-    // enforces that -- vitest strips types before running and would not itself fail here if the
-    // union regressed to four members, which this proof's own record discloses under untested.
     const vocabulary: GlossaryVocabulary = "subject-attribute";
     const { result } = renderHook(() => useGlossaryVocabularyOptions(vocabulary), {
       wrapper: createWrapper(),

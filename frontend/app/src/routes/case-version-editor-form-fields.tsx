@@ -10,38 +10,6 @@ import { CONSOLIDATION_REGISTERS } from "../services/case-version-form-schema";
 import type { GlossaryVocabularyOptions } from "../hooks/use-glossary-vocabulary";
 import type { SaveStatus } from "../hooks/use-edit-draft-version-form";
 
-/**
- * The Version Editor's own field markup (task/version-editor/
- * edit-draft-version), the wireframe's own field set (proposal §2.3, quoted
- * in this task's `sources`): title, when_to_use, subject, consolidation_register,
- * fallback outcome and fallback referral (action+recipient). subject is a
- * declared attribute like every other (domain/knowledge/case-version) and is
- * corrected the same way while the version stays in draft
- * (task/subject-field-fixed-bug/subject-follows-isblocked) -- it renders
- * `disabled` through `isBlocked`, never unconditionally. Kept in its own file, apart from
- * case-version-editor-screen.tsx's own loading/error composition, so
- * neither file grows toward MNT-01's three-hundred-line limit.
- *
- * Every field's label wraps its own control (FormField below) rather than
- * pointing at it through a matching htmlFor/id pair: TUI's own Select
- * (select.types.ts) spreads a caller's props only onto its outer wrapping
- * div, never onto its inner `role="combobox"` button, so an id placed on
- * Select would never reach the one element a screen reader actually
- * announces. Wrapping is the one association technique that still reaches
- * that button regardless -- native HTML treats any labelable descendant
- * (a real `<button>`, which Select's trigger is) as the label's target --
- * and it works identically for Input and Textarea, so every field uses it
- * rather than mixing two association styles for no functional reason.
- *
- * task/version-editor/view-released-version-read-only adds `isReadOnly`
- * (optional, defaulting to `false`): every field here already renders
- * `disabled` through `isBlocked` for a released version's own load, but that
- * alone still mounted this same form's own Save control, merely inert --
- * `isReadOnly` omits it outright instead, and its own onSubmit/onBlur wiring
- * with it, so a released version's read-only render carries no control that
- * could change it.
- */
-
 export type CaseVersionEditorFormFieldsProps = {
   readonly form: UseFormReturn<CaseVersionFormValues>;
   readonly status: SaveStatus;
@@ -52,19 +20,7 @@ export type CaseVersionEditorFormFieldsProps = {
   readonly recipientOptions: GlossaryVocabularyOptions;
   readonly onSubmit: (event?: BaseSyntheticEvent) => void;
   readonly onFieldBlur: () => void;
-  /**
-   * task/version-editor/view-released-version-read-only's own flag
-   * (useEditDraftVersionForm's own `isReadOnly`, "ready" phase): every field
-   * above already renders `disabled` once `isBlocked` is true, which a
-   * released version's own load already sets -- but that alone still mounts
-   * this form's own Save control, merely inert (this project's own inventory
-   * risk on this exact component: "no distinct 'read-only, no actions at
-   * all' rendering path"). `true` here omits the Save control and its own
-   * onSubmit/onBlur wiring outright, satisfying this task's own criterion
-   * ("shows no Save … control") rather than only disabling it. Defaults to
-   * `false` so every other caller (the draft-editing and blank-form call
-   * sites, neither of which sets it) renders exactly as before.
-   */
+
   readonly isReadOnly?: boolean;
 };
 
@@ -72,19 +28,6 @@ const CONSOLIDATION_REGISTER_OPTIONS: SelectOption[] = CONSOLIDATION_REGISTERS.m
   (register) => ({ value: register, label: register }),
 );
 
-/**
- * One labeled field: the label wraps its own control, and an invalid
- * control's error text sits beside it, linked back through
- * aria-describedby (EDG-03, ACC-04). The wrapped control sits in its own
- * `normal-case`/`tracking-normal`/`font-normal`/`text-foreground` div
- * rather than directly inside Label's own element: `text-transform`,
- * `letter-spacing`, `font-weight` and `color` are all CSS-inherited
- * properties, and Label's own default classes (uppercase, wide tracking,
- * accent color) would otherwise cascade into whatever text the wrapped
- * Input, Textarea or Select renders -- resetting them here keeps the
- * caption's own distinct styling while the control's own text renders
- * exactly as it would outside a label.
- */
 function FormField({
   label,
   errorId,

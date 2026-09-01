@@ -4,22 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useGlossaryConcepts } from "./use-glossary-concepts";
 
-// use-glossary-concepts.ts is a new sibling hook built for task/glossary-and-capabilities-browser/
-// glossary-browser-screen's own Concepts tab -- it carried no spec file of its own before this
-// task, unlike use-concept-options.ts (whose one existing consumer,
-// use-hypothesis-revision-form.ts, never needed a dedicated proof of the hook's own contract).
-// This file proves the hook's own contract directly through renderHook, matching
-// use-glossary-vocabulary.spec.ts's own established convention: real Response objects through a
-// stubbed global fetch, so apiFetch()'s own JSON handling runs unmodified, rather than mounting a
-// whole screen the hook has no view of its own.
-
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 function createWrapper(queryClient: QueryClient) {
   return function Wrapper({ children }: { children: ReactNode }) {
     return createElement(QueryClientProvider, { client: queryClient }, children);
@@ -72,8 +60,6 @@ describe("useGlossaryConcepts", () => {
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    // Proves description is carried through as its own field, verbatim -- including a legacy
-    // concept's own empty string, never dropped, renamed or coerced to null/undefined.
     expect(result.current.concepts).toEqual(concepts);
   });
 
@@ -118,9 +104,6 @@ describe("useGlossaryConcepts", () => {
 
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    // Proves the two hooks never share one cache entry: if useGlossaryConcepts wrote under
-    // use-concept-options.ts's own key instead of (or in addition to) its own, this second
-    // assertion would find data there too.
     expect(queryClient.getQueryData(["glossary", "concepts-with-ttl"])).toBeDefined();
     expect(queryClient.getQueryData(["glossary", "concepts"])).toBeUndefined();
   });

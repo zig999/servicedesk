@@ -8,21 +8,10 @@ import {
 } from "./case-simulation-subject-panel.test-support";
 import type { CapabilityReference } from "../hooks/use-case-input-requirements";
 
-// Proof for task/subject-input-requirements/disclose-malformed-capabilities-to-the-curator's own
-// four criteria over the new disclosure block state.capabilitiesWithMalformedInputSchema feeds,
-// split out of the sibling spec files the same way use-simulation-subject-malformed-capabilities.spec.ts
-// was split out of use-simulation-subject.spec.ts (a new, independent facet of this component's
-// own state, kept out of case-simulation-subject-panel.spec.ts to stay clear of this project's
-// own three-hundred-line MNT-01 rule, which that file already sits close to). The requirement-
-// rendering block itself, the add-attribute control and the loading/error/empty-requirement
-// states are proven in this component's three other spec files; shared fixtures and the render
-// helper live in case-simulation-subject-panel.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-/** One malformed-capability identity, as CapabilityReference carries it: bare {name, version}, nothing else. */
 function malformedCapability(overrides: Partial<CapabilityReference> = {}): CapabilityReference {
   return { name: "legacy-lookup", version: "9.9.9", ...overrides };
 }

@@ -1,93 +1,3 @@
-/**
- * Loads one connector configuration by its own identity and tracks
- * dirty/save state for the routed connector-configuration detail/edit screen
- * (task/connector-capability-detail-editing/connector-configuration-detail-hook;
- * that screen itself is a later, separate task --
- * task/connector-capability-detail-editing/connector-configuration-detail-route
- * -- this file only exposes the data layer it will consume).
- *
- * Follows use-edit-draft-version-form.ts's own routed-hook convention
- * (loading | load-error | ready phase union, a useQuery keyed by identity, a
- * useEffect re-seeding state on load, an isSubmittingRef guard against
- * double-submit) rather than use-connector-configuration-form.ts's own
- * dialog convention of reading an already-fetched row from the list
- * screen's cache -- a direct navigation or a page refresh reaches this route
- * with no such cache to read from, so this hook issues its own GET,
- * independent of use-connector-configurations.ts's own list query.
- *
- * The `form`/`configuration` field shapes mirror
- * use-connector-configuration-form.ts's own exactly (a react-hook-form
- * `connector` field validated by connector-configuration-form-schema.ts,
- * `configuration` tracked as plain text plus the validity flag
- * JsonTextareaField's own onChange reports in the same call) rather than a
- * second, differently-shaped pair -- `connector` is always disabled at the
- * call site (this hook never offers a create mode; it always loads an
- * existing record by identity), the same reasoning
- * use-connector-configuration-form.ts's own header comment states for why an
- * identity field is disabled once a record exists, but it is still tracked
- * through react-hook-form so this shape can be handed straight to the
- * existing connector-configuration-form-fields.tsx markup unchanged.
- *
- * isDirty is deliberately not react-hook-form's own formState.isDirty
- * alone: `configuration` lives outside react-hook-form (the same reasoning
- * use-connector-configuration-form.ts already gives), so it needs its own
- * comparison against the baseline this hook re-seeds on every load and every
- * successful save (STA-03 -- computed inline on every render, never mirrored
- * into its own state kept in sync by an effect).
- *
- * That comparison reads both sides through getJsonTextareaMinifiedValue --
- * the same pure function already exported for deriving what a save persists
- * -- rather than comparing the two raw strings directly. This is this task's
- * own inference: task/connector-capability-detail-editing/
- * json-textarea-pretty-print-on-load (already delivered, confirmed by
- * reading json-textarea-field.tsx in full) makes JsonTextareaField
- * pretty-print a syntactically valid loaded value on mount through its own
- * onChange, which updates this hook's `configurationValue` state a tick
- * after the load effect below has already set the baseline to the server's
- * raw (frequently minified) text -- a raw-string comparison would read as
- * dirty immediately after every load, with no edit having happened.
- * Minifying both sides before comparing is exactly the canonicalization this
- * module already performs for the save path, so reusing it here reports a
- * difference only where the JSON content itself changed, never where only
- * its formatting did (matching the connector-configuration detail route
- * task's own criterion: "differs from its originally loaded values").
- *
- * What happens when a save is refused (rules/integration/
- * a-connector-configuration-holds-a-well-formed-object) is deliberately not
- * handled here beyond letting the mutation settle -- this task's own Notes
- * name that as the connector-configuration detail route task's own concern,
- * which owns showing the registry's refusal to the operator once it exists.
- *
- * Two corrections landed after this file's own first delivery, made by
- * task/connector-capability-detail-editing/connector-configuration-detail-route
- * (the sibling task whose own concern the paragraph above already names)
- * once a failure-diagnostician found both against the running suite --
- * disclosed as that task's own divergence, since this file was delivered
- * by the sibling connector-configuration-detail-hook task:
- *
- * - The load effect below used to hardcode `configurationValid` to `true`
- *   on every load, so a stored value that does not parse as JSON never
- *   showed that sibling task's own criterion 8 warning at the moment that
- *   criterion names -- right after load, before any edit. It now derives
- *   `configurationValid` the same way the isDirty comparison above already
- *   does: through `getJsonTextareaMinifiedValue`, which returns `null` for
- *   text that does not parse (json-textarea-field.tsx's own
- *   `parseJsonText`), rather than duplicating that check with a second,
- *   hand-written `JSON.parse`.
- * - `isSubmitSuccessful` (react-query's own `mutation.isSuccess`) is a new
- *   field on the "ready" phase. use-connector-configuration-detail-view.ts
- *   (that sibling task's own composition hook) needs to tell "a save just
- *   succeeded" apart from "nothing has happened" or "a save is pending",
- *   and comparing `isSubmitting` across renders -- what it did until now --
- *   never fires when a fast-resolving mutation's pending and settled
- *   states land in the same committed render, the same
- *   failure-diagnostician finding. Nothing already exposed by this phase
- *   can answer that from outside (`onSubmit` is `void`, not a promise a
- *   caller could await), so the fix widens this phase by exactly the one
- *   fact react-query itself already derived, rather than a second,
- *   home-grown one.
- */
-
 import { useCallback, useEffect, useRef, useState, type BaseSyntheticEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
@@ -101,28 +11,6 @@ import {
 import type { ConnectorConfiguration } from "./use-connector-configurations";
 import type { ConfigurationFieldState } from "./use-connector-configuration-form";
 
-/**
- * Whether `text` satisfies rules/integration/
- * a-connector-configuration-holds-a-well-formed-object: syntactically valid
- * JSON *and* shaped as an object, not merely parseable. Corrects this hook's
- * own `configurationValid` flag (both derivations below), which previously
- * read `getJsonTextareaMinifiedValue(text) !== null` alone -- that check
- * only proves `JSON.parse` did not throw, so an array, a bare string, a
- * number, `true`, or `null` all read as valid even though none of them is
- * the object shape the registry requires.
- *
- * Deliberately scoped to this one hook rather than a change to
- * getJsonTextareaMinifiedValue/parseJsonText themselves
- * (json-textarea-field.tsx): that function also drives this hook's own
- * isDirty comparison and its save-payload minification, and is read
- * unchanged by use-capability-detail.ts's own inputSchemaValid/
- * outputSchemaValid -- tightening it there would change all of those at
- * once, none of which this correction's own scope reaches. Reads the
- * already-parsed value off the minified string getJsonTextareaMinifiedValue
- * already computed rather than a second, independent `JSON.parse` call --
- * that string is only produced once `parseJsonText` succeeded, so parsing it
- * back here is guaranteed to succeed too.
- */
 function isValidConfigurationObject(text: string): boolean {
   const minified = getJsonTextareaMinifiedValue(text);
   if (minified === null) {
@@ -141,39 +29,21 @@ export type ConnectorConfigurationDetailState =
       readonly configuration: ConfigurationFieldState;
       readonly isDirty: boolean;
       readonly isSubmitting: boolean;
-      /**
-       * react-query's own `mutation.isSuccess` for the last submitted save
-       * (this file's own header comment) -- true from the instant that
-       * save's `onSuccess` runs until a subsequent `mutate` call starts a
-       * new one, false on load and false after a failed save.
-       */
+
       readonly isSubmitSuccessful: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
     };
 
-/**
- * `connector` is the record's own identity (domain/integration/
- * connector-configuration), read by the caller from the route's own path
- * param -- this hook issues its own GET for it (criterion 1) rather than
- * expecting an already-loaded record, so a direct navigation or a page
- * refresh loads correctly with no list screen involved.
- */
 export function useConnectorConfigurationDetail(
   connector: string,
 ): ConnectorConfigurationDetailState {
   const queryClient = useQueryClient();
 
-  // Guards a second Save click arriving before react-hook-form's own
-  // validation for the first one has resolved -- same synchronous
-  // leading-edge guard use-connector-configuration-form.ts's own header
-  // comment documents in full.
   const isSubmittingRef = useRef(false);
 
   const [configurationValue, setConfigurationValue] = useState("");
   const [configurationValid, setConfigurationValid] = useState(true);
-  // The most recently loaded-or-saved configuration text (criteria 3-5) --
-  // re-seeded by the load effect below and by a successful save's own
-  // onSuccess, never by anything else.
+
   const [configurationBaseline, setConfigurationBaseline] = useState("");
 
   const query = useQuery({
@@ -187,21 +57,11 @@ export function useConnectorConfigurationDetail(
     defaultValues: { connector },
   });
 
-  // Re-seeds the form and the configuration baseline once the record loads
-  // (criterion 1) -- `form` is react-hook-form's own stable object across
-  // renders, so it is deliberately left out of this effect's own dependency
-  // array, mirroring use-edit-draft-version-form.ts's own reasoning: only a
-  // freshly loaded record should re-seed these values.
   useEffect(() => {
     if (query.data) {
       form.reset({ connector: query.data.connector });
       setConfigurationValue(query.data.configuration);
-      // criterion 8 (connector-configuration-detail-route): a loaded value
-      // that does not parse as JSON, or that parses but is not an object
-      // (task/detail-screen-corrections/configuration-validity-check), must
-      // warn immediately, not read as valid until the operator edits it --
-      // see this file's own header comment's second correction and
-      // isValidConfigurationObject above.
+
       setConfigurationValid(isValidConfigurationObject(query.data.configuration));
       setConfigurationBaseline(query.data.configuration);
     }
@@ -220,28 +80,15 @@ export function useConnectorConfigurationDetail(
         },
       ),
     onSuccess: () => {
-      // criterion 5: re-baselines to what was just saved -- the values just
-      // submitted, not whatever the response body happens to carry, so this
-      // never depends on register-connector's own response wire shape.
+
       form.reset({ connector });
       setConfigurationBaseline(configurationValue);
-      // criterion 6: both the list query and this hook's own single-record
-      // query are invalidated, so neither screen is left reading stale data.
+
       void queryClient.invalidateQueries({ queryKey: ["connector-configurations"] });
       void queryClient.invalidateQueries({ queryKey: ["connector-configuration", connector] });
     },
   });
 
-  // task/detail-screen-corrections/discard-confirmation-dialog's own correction: handed to
-  // JsonTextareaField as its own `onChange` prop, and that control's own load-detection effect
-  // (json-textarea-field.tsx) has `onChange` itself in its dependency array -- an inline arrow
-  // recreated on every render reads to that effect exactly like a caller replacing the loaded
-  // value with a new one on a render this callback did not itself cause (the confirmation
-  // Dialog this task introduces opening, or a sibling field's own edit re-rendering this hook),
-  // silently pretty-printing the operator's still-unsaved raw text. Closes over nothing but its
-  // own `useState` setters (stable for the lifetime of the component) and
-  // isValidConfigurationObject (a module-level pure function), so `[]` is the correct
-  // dependency array.
   const handleConfigurationChange = useCallback((value: string): void => {
     setConfigurationValue(value);
     setConfigurationValid(isValidConfigurationObject(value));
@@ -259,10 +106,6 @@ export function useConnectorConfigurationDetail(
     return { phase: "loading" };
   }
 
-  // criteria 3-4: differs from the baseline once minified, so pretty-printing
-  // a loaded value (json-textarea-pretty-print-on-load) or clicking
-  // Beautify never reads as dirty on its own -- see this file's own header
-  // comment.
   const isDirty =
     form.formState.isDirty ||
     getJsonTextareaMinifiedValue(configurationValue) !== getJsonTextareaMinifiedValue(configurationBaseline);
@@ -291,12 +134,7 @@ export function useConnectorConfigurationDetail(
     configuration: {
       value: configurationValue,
       isValid: configurationValid,
-      // `isValid` as reported by JsonTextareaField's own onChange is a
-      // parse-only check (json-textarea-field.tsx's own parseJsonText); this
-      // hook derives its own configurationValid from isValidConfigurationObject
-      // above instead of trusting that flag directly, so an edit to a
-      // syntactically valid but non-object value (an array, a bare string, a
-      // number, `true`, or `null`) reads as invalid the same as a load does.
+
       onChange: handleConfigurationChange,
     },
     isDirty,

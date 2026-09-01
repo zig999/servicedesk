@@ -17,12 +17,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/simulation-cockpit/screen-assembly's own criteria 4, 5 and 7: the Detail region always
-// reflects whichever run -- full-case or single-hypothesis -- last produced a given hypothesis's
-// evaluation; only a completed full-case run ever populates the Case result region; and a
-// dispatch failure is the only thing this cockpit ever surfaces as an error, never a returned
-// verdict.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 
@@ -87,9 +81,7 @@ describe("useCaseSimulationCockpit -- the Detail region reflects whichever run l
 
     expect(result.current.detail?.evaluation.hypothesis).toBe("hypothesis-a");
     expect(result.current.detail?.evaluation.verdict).toBe("inconclusive");
-    // A single-hypothesis run's own response carries its own evidence array
-    // (use-simulate-hypothesis.ts's own SimulateHypothesisResult.evidence), which this
-    // composition now reads for a hypothesis-sourced selection instead of discarding.
+
     expect(result.current.detail?.evidence).toEqual([
       {
         concept: "billing-history",

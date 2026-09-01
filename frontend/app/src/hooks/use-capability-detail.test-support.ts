@@ -3,11 +3,6 @@ import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { CapabilityDetailState } from "./use-capability-detail";
 
-// Shared fixtures and helpers for use-capability-detail.spec.ts, split out to stay under this
-// project's own max-lines rule from the start -- mirrors
-// use-connector-configuration-detail.test-support.ts's own established pattern of one
-// .test-support.ts file per unit whose own proof needs it split.
-
 export const NAME = "some-capability";
 export const VERSION = "v1";
 export const CAPABILITY_PATH = `/v1/capabilities/${NAME}/${VERSION}`;
@@ -43,8 +38,6 @@ type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Re
 
 type Handlers = Record<string, (method: string) => Response | Promise<Response>>;
 
-/** Each handler is keyed by URL and receives the request's own method, so one entry can answer
- * both a GET and a PUT to the very same path differently. */
 export function stubFetch(handlers: Handlers): Mock<FetchFn> {
   const fetchMock = vi.fn(
     async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
@@ -60,8 +53,6 @@ export function stubFetch(handlers: Handlers): Mock<FetchFn> {
   return fetchMock;
 }
 
-/** Defaults both of this hook's own reads to a successful load; a caller overrides just the
- * entry it needs to vary for its own test. */
 export function defaultHandlers(overrides: Handlers = {}): Handlers {
   return {
     [CAPABILITY_PATH]: () => jsonResponse(LOADED_CAPABILITY),
@@ -70,9 +61,6 @@ export function defaultHandlers(overrides: Handlers = {}): Handlers {
   };
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 export function createWrapper(): {
   Wrapper: (props: { children: ReactNode }) => ReactElement;
   queryClient: QueryClient;

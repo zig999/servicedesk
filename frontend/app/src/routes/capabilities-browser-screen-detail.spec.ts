@@ -18,30 +18,6 @@ import {
   jsonResponse,
 } from "./capabilities-browser-screen.test-support";
 
-// Proof for task/connector-capability-create-detail-route/capabilities-browser-create-action's
-// own criteria 1, 2 and 3: "New capability" now navigates to the routed create screen
-// (route-tree.tsx's own "/capabilities/new", CapabilityCreateScreen) instead of opening the
-// popup Dialog's create mode, and the screen holds no create/edit form-target state of its own
-// to host that Dialog (capabilities-browser-screen.tsx's own header comment).
-//
-// Every describe block this file's own prior delivery held here -- task/capability-authoring/
-// capability-create-edit-form's own criterion 1 ("New capability" opens a blank Dialog, its own
-// nature-defaults-to-read-only inference) and the concept-vocabulary loading/load-error phases
-// inside that same Dialog -- is retired outright rather than rewritten: this task's own change
-// removes the only path this screen ever had to open that Dialog (the "New capability" button's
-// onClick), so no interaction reaches a Dialog from here any more. That Dialog's own create-mode
-// behavior -- the shared useCapabilityForm hook's loading/load-error phases, its concept
-// vocabulary, its form fields -- is proven instead through the routed create screen's own proof
-// (capability-create-screen.spec.ts's own criteria 6 and 7,
-// task/connector-capability-create-detail-route/capability-create-route), which composes that
-// same hook in create mode.
-//
-// CapabilitiesBrowserScreen calls useNavigate() (capabilities-browser-screen-navigation.spec.ts's
-// own header comment explains why a bare QueryClientProvider mount is not enough once a click is
-// meant to navigate), so this file keeps that same router-based mounting convention: a small,
-// self-contained test router with a dummy "/capabilities/new" leaf (what renders there is
-// capability-create-screen.tsx's own concern, not this proof's).
-
 function buildTestRouter() {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const capabilitiesRoute = createRoute({
@@ -110,9 +86,6 @@ describe('CapabilitiesBrowserScreen — "New capability" opens no dialog (criter
 
     fireEvent.click(newCapabilityButton);
 
-    // The screen holds no formTarget state of its own to open one (criterion 3), so no dialog
-    // ever appears at any point in this interaction -- checked both immediately after the click
-    // and once the navigation this same click triggers has actually resolved.
     expect(screen.queryByRole("dialog")).toBeNull();
     await waitFor(() => expect(router.state.location.pathname).toBe("/capabilities/new"));
     expect(screen.queryByRole("dialog")).toBeNull();

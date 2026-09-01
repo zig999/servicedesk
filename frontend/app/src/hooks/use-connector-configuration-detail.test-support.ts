@@ -3,21 +3,11 @@ import { vi, type Mock } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ConnectorConfigurationDetailState } from "./use-connector-configuration-detail";
 
-// Shared fixtures and helpers for use-connector-configuration-detail.spec.ts,
-// split out to stay under this project's own max-lines rule -- mirrors
-// new-case-draft-screen.test-support.ts's own established pattern of one
-// .test-support.ts file per unit whose own proof needs it split.
-
 export const CONNECTOR = "some-connector";
 export const CONFIGURATION_PATH = `/v1/connectors/${CONNECTOR}`;
 export const LOADED_CONFIGURATION = '{"key":"value"}';
 export const UPDATED_CONFIGURATION = '{"key":"updated"}';
 
-/** Every syntactically valid JSON shape rules/integration/a-connector-configuration-holds-a-well-formed-object
- * still refuses because it is not an object -- the exact representative set
- * task/detail-screen-corrections/configuration-validity-check's own criterion 1 names, shared by
- * use-connector-configuration-detail-validity.spec.ts's own load-time and edit-time describe
- * blocks. */
 export const NON_OBJECT_CONFIGURATIONS: ReadonlyArray<{
   readonly label: string;
   readonly text: string;
@@ -39,8 +29,6 @@ export function errorResponse(code: string, status = 500): Response {
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
-/** Each handler is keyed by URL and receives the request's own method, so one entry can answer
- * both this hook's GET and its PUT to the very same path differently. */
 export function stubFetch(
   handlers: Record<string, (method: string) => Response | Promise<Response>>,
 ): Mock<FetchFn> {
@@ -60,9 +48,6 @@ export function stubFetch(
   return fetchMock;
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 export function createWrapper(): {
   Wrapper: (props: { children: ReactNode }) => ReactElement;
   queryClient: QueryClient;

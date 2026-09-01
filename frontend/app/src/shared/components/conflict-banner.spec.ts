@@ -23,11 +23,6 @@ describe("ConflictBanner", () => {
   it("renders through Banner's own markup, carrying the banner landmark, rather than bespoke conflict markup", () => {
     render(createElement(ConflictBanner, { title, message }));
 
-    // Banner's frame="none" branch -- its default, and the one ConflictBanner
-    // renders with, since it never passes a frame prop -- is a bare <header>,
-    // which (unnested in any sectioning content) carries the implicit
-    // "banner" ARIA landmark. Bespoke conflict markup built by hand, e.g. a
-    // <div> stack, would not produce this landmark at all.
     expect(screen.getByRole("banner")).not.toBeNull();
   });
 });

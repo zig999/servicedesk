@@ -9,20 +9,6 @@ import {
   page,
 } from "./glossary-browser-screen.test-support";
 
-// Proof for task/glossary-concept-description/browser-description-and-legacy-marker's own
-// criteria 2 ("The Concepts tab renders each concept's description"), 3 ("A concept whose
-// description is empty is rendered with a visible marker distinguishing it from described
-// concepts") and 4 ("A concept whose description is empty renders no invented description
-// text"), plus the delivery record's own disclosed inference that the Description column sits
-// second, right after Name. Split into its own sibling file, mirroring this same screen's own
-// established split (glossary-browser-screen-vocabulary-tabs.spec.ts, the three
-// glossary-browser-screen-concept-form*.spec.ts files) to keep this task's own proof separate
-// from glossary-browser-screen.spec.ts's own, delivered before it, and to stay under this
-// project's own max-lines rule (MNT-01). All share glossary-browser-screen.test-support.ts's own
-// fixtures and mounting helper -- unaffected by this task's own extraction of the Concepts tab's
-// body into glossary-concepts-panel.tsx, since that helper mounts GlossaryBrowserScreen itself,
-// never the panel component directly.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -109,9 +95,6 @@ describe("GlossaryBrowserScreen — an empty description renders no invented, co
       (row) => within(row).getAllByRole("cell")[1]?.textContent,
     );
 
-    // Proves the marker is a fixed literal never derived from either concept's own name or
-    // data: if it were computed per-concept (e.g. folding the concept's own name into the
-    // label), these two would differ.
     expect(descriptionCells).toEqual(["Awaiting description", "Awaiting description"]);
   });
 });

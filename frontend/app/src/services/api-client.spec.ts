@@ -1,10 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { apiFetch, ApiError } from "./api-client";
 
-// vi.stubGlobal replaces only the network boundary (fetch) -- the Response
-// objects handed back are the platform's real Response, so response.ok and
-// response.json() behave exactly as they do against a live server, and
-// apiFetch()'s own JSON-parsing and envelope-narrowing logic runs for real.
 describe("apiFetch", () => {
   afterEach(() => {
     vi.unstubAllGlobals();

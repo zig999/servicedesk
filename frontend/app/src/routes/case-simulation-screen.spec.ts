@@ -13,16 +13,6 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { CaseSimulationScreen } from "./case-simulation-screen";
 import type { CaseVersionRecord } from "../services/case-version-record";
 
-// task/simulation-cockpit/case-simulation-route's own screen, end to end
-// through the real router, the real useCaseSimulationVersion hook and the
-// real ready-view/header composition -- proving criterion 1's own "resolves
-// for both a draft and a released version's slug/version pair" and EDG-01/
-// EDG-02, unlike case-simulation-header.spec.ts and
-// case-simulation-ready-view.spec.ts, which each mount their own unit
-// directly with hand-built props. Mirrors case-version-editor-screen.
-// test-support.ts's own established mounting shape for a screen that reads
-// its own route's params.
-
 const SLUG = "some-slug";
 const VERSION = 3;
 const VERSION_PATH = `/v1/cases/${SLUG}/versions/${VERSION}`;

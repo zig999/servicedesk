@@ -8,10 +8,6 @@ import {
 } from "./case-simulation-detail-panel.test-support";
 import type { SimulationJudgmentCall } from "./case-simulation-detail-types";
 
-// task/simulation-cockpit/detail-panel's own criteria 3 and 6, proven directly against
-// CaseSimulationDetailEvidenceTab -- CaseSimulationDetailPanel's own composition of this tab as
-// its default-shown one is proven separately in case-simulation-detail-panel.spec.ts.
-
 const NOT_CALLED: SimulationJudgmentCall = { called: false };
 
 describe("CaseSimulationDetailEvidenceTab -- per collected concept (criterion 3)", () => {
@@ -143,9 +139,7 @@ describe("CaseSimulationDetailEvidenceTab -- per collected concept (criterion 3)
   });
 
   it("shows only the evidence for concepts this hypothesis collects, never an evidence item for a concept it does not", () => {
-    // A full-case run's own evidence array (this task's own types module comment) may carry
-    // more concepts than one hypothesis collects -- another hypothesis's own collected concept
-    // must not leak into this one's Evidence tab.
+
     render(
       createElement(CaseSimulationDetailEvidenceTab, {
         collects: ["Balance"],

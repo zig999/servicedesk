@@ -20,23 +20,6 @@ import {
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
 
-/**
- * The Manifest Builder (task/manifest-hypothesis-authoring/manifest-builder):
- * lists a draft version's own manifest in declared order, each row carrying
- * its own up/down reorder controls and a Remove control, plus the "+ Add
- * hypothesis" trigger (criterion 10) navigating to route-tree.tsx's own
- * "/cases/$slug/versions/$version/manifest/hypotheses/new" route -- the
- * shared Revise/New-hypothesis form task/manifest-hypothesis-authoring/
- * revise-hypothesis-form delivers. All business logic -- the load, the
- * isolated PUT/DELETE mutations and the conflict/inline-error state -- lives
- * in useManifestBuilder (ARC-02, ARC-03); this screen only reads what that
- * hook returns and renders it.
- *
- * Wired in as route-tree.tsx's "/cases/$slug/versions/$version/manifest"
- * route's own `component`, replacing VersionManifestPlaceholder.
- */
-
-/** Criterion 6's own wording, verbatim -- shown on the Remove control exactly when it is disabled (this task's own inference: the wireframe's own pre-condition text pairs this tooltip with the disabled state itself, "o botão fica desabilitado com tooltip", never with an enabled Remove that needs no explanation). */
 const REMOVE_DISABLED_TOOLTIP = "A case must keep at least one hypothesis";
 
 const MANIFEST_COLUMNS: StatusTableColumn[] = [
@@ -45,19 +28,6 @@ const MANIFEST_COLUMNS: StatusTableColumn[] = [
   { key: "actions", header: "" },
 ];
 
-/**
- * The per-row action cluster: up/down reorder buttons and a Remove control
- * behind an explicit confirmation dialog (EDG-04 -- removing a manifest
- * entry destroys data, so it is never one click away from the harmless
- * up/down buttons beside it), composed entirely over TUI's own Button,
- * Tooltip and Dialog primitives (ARC-01) rather than hand-rolled markup.
- * TUI's own Button applies `disabled:pointer-events-none`
- * (button/button.tsx), which would also block the hover Tooltip relies on if
- * it wrapped the disabled Button directly -- the plain wrapping `<span>`
- * below is this task's own inference for keeping the tooltip reachable by
- * hover while the button itself stays inert, the standard workaround for a
- * disabled trigger under this exact constraint.
- */
 export type RowActionsProps = {
   readonly row: ManifestRow;
   readonly disabled: boolean;
@@ -119,11 +89,7 @@ function RowActions({ row, disabled }: RowActionsProps): JSX.Element {
         </Dialog>
       </div>
       {row.moveErrorMessage !== null && (
-        // ACC-07: a rejected reorder changes this text with no page
-        // navigation, so it carries role="alert" -- this codebase's own
-        // established convention for a field-validation error paragraph
-        // (case-version-editor-form-fields.tsx's own FormField), reused here
-        // rather than a second convention for the same class of announcement.
+
         <p role="alert" className="text-sm text-destructive">
           {row.moveErrorMessage}
         </p>

@@ -11,17 +11,6 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CasesListScreen } from "./cases-list-screen";
 
-// task/case-authoring-console/every-async-update-is-announced's own criterion 1 (ACC-07):
-// the search-filtered row count changes with no page navigation, so it is exposed through
-// its own aria-live region. Split into its own sibling file (rather than added to
-// cases-list-screen.spec.ts, already at 359 lines -- past this project's own
-// three-hundred-line MNT-01 cap before this task even starts) mirroring
-// cases-list-screen-retry.spec.ts's own established precedent for splitting this exact
-// screen's proof by concern to stay under that same cap. The router/mount scaffolding
-// below is duplicated from cases-list-screen.spec.ts rather than imported, the same
-// reasoning cases-list-screen-retry.spec.ts's own header comment gives for its own
-// duplication: that file exports nothing.
-
 function stubCasesFetch(
   handlers: Record<string, () => Response | Promise<Response>>,
 ): ReturnType<typeof vi.fn> {

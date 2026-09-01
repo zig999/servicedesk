@@ -13,52 +13,6 @@ import {
 import { CapabilityFormFields } from "./capability-form-fields";
 import type { CapabilityDetailViewState } from "../hooks/use-capability-detail-view";
 
-/**
- * The capability detail route's own "ready" phase markup
- * (task/connector-capability-detail-editing/capability-detail-route),
- * factored out of capability-detail-screen.tsx the same way
- * connector-configuration-detail-ready-view.tsx is factored out of
- * connector-configuration-detail-screen.tsx.
- *
- * CapabilityFormFields (criterion 6) is composed exactly as
- * capability-form-dialog.tsx already composes it -- `form`, `conceptOptions`,
- * `inputSchema`, `outputSchema`, `isSubmitting`, `onSubmit` unchanged,
- * `isEditingIdentity` always true (this route never offers create mode; see
- * use-capability-detail.ts's own header comment), plus the one new optional
- * `isDirty` prop that file's own header comment now documents (criterion
- * 4).
- *
- * The two invalid-JSON warnings below (criterion 8) sit above the fields,
- * distinct from JsonTextareaField's own inline "Invalid JSON: <message>"
- * text beside each textarea itself (json-textarea-field.tsx's own header
- * comment, confirmed already covers the parse-error display) -- this is
- * this task's own additional, plain wording naming the consequence
- * (rules/integration/a-capability-declares-well-formed-schemas: the
- * registry refuses to register or update a capability whose schema is not
- * syntactically valid JSON) rather than only the parser's own message,
- * since no criterion or node states this exact wording and no such banner
- * exists anywhere else in this app to reuse -- mirroring
- * connector-configuration-detail-ready-view.tsx's own identical
- * INVALID_CONFIGURATION_WARNING for the identical reason, one warning each
- * for input_schema and output_schema since a capability declares two
- * schemas rather than the connector configuration's one field. Disclosed as
- * this task's own inference in its delivery record.
- *
- * Discard now opens a confirmation Dialog first
- * (task/detail-screen-corrections/discard-confirmation-dialog), mirroring
- * connector-configuration-detail-ready-view.tsx's own identical treatment
- * for the identical reason (that file's own header comment above states
- * the full reasoning: the Release dialog's plain two-button shape from
- * case-version-editor-ready-view.tsx rather than its typed-slug Discard
- * variant; uncontrolled Dialog state, since state.onDiscard here is the
- * same synchronous, always-succeeding form-state reset with no loading or
- * failure branch to coordinate; the confirm button wrapped in its own
- * DialogClose alongside Cancel's). Disclosed as this task's own inference
- * in its delivery record. The trigger keeps the same disabled condition
- * the un-confirmed Button carried (!state.isDirty || state.isSubmitting),
- * per this task's own criterion 3 intent.
- */
-
 const INVALID_INPUT_SCHEMA_WARNING =
   "This capability's stored input schema is not valid JSON. Correct it before Save can succeed.";
 const INVALID_OUTPUT_SCHEMA_WARNING =
@@ -139,12 +93,7 @@ export function CapabilityDetailReadyView({
               </DialogContent>
             </Dialog>
             {state.justSaved && (
-              // criterion 7's success acknowledgement -- role="status" (an
-              // implicit aria-live="polite" region) rather than a visual-only
-              // message, so a screen-reader user is told the save landed
-              // without needing to notice the text appear (ACC-07, mirroring
-              // connector-configuration-detail-ready-view.tsx's own identical
-              // use).
+
               <p role="status" className="text-sm text-foreground">
                 Saved.
               </p>

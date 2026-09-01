@@ -1,10 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 
-// sonner is the toast boundary use-connector-configuration-form.ts's own onError handler calls
-// into -- mocking it here (mirroring connector-configurations-screen-form-save.spec.ts's own
-// established convention) intercepts that call directly, so criterion 10's own assertion never
-// depends on a real Toaster mounting anything.
 vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
 
 import { toast } from "sonner";
@@ -16,16 +12,6 @@ import {
   parsedPutBody,
   putCallCount,
 } from "./connector-configuration-create-screen.test-support";
-
-// Proof for task/connector-capability-create-detail-route/connector-configuration-create-route's
-// own criteria 6-11 (dispatch under the typed name, the empty/non-empty-name guards, the
-// JSON-validity guard, refusal surfacing, and post-save navigation), the task's own UNDERDETERMINED
-// note over rules/integration/a-connector-configuration-holds-a-well-formed-object, and the
-// delivery record's own disclosed inference that post-save navigation reads the connector name
-// from the submitted form rather than from the mutation's own response body. Criteria 1-5, 12 and
-// 13 live in the sibling connector-configuration-create-screen.spec.ts, split this way to stay
-// under this project's own max-lines convention. Both share
-// connector-configuration-create-screen.test-support.ts's own fixtures and mounting helper.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -89,23 +75,13 @@ describe("ConnectorConfigurationCreateScreen -- blocks dispatch while the config
     await mountConnectorConfigurationCreateScreen(fetchMock);
 
     await fillAndSave("deepl-connector", "{not valid json");
-    // form.handleSubmit's own zod resolver settles asynchronously before the
-    // configurationValid check inside it ever runs; flush that before reading
-    // putCallCount, or this assertion can pass before the dispatch it is
-    // meant to rule out would have happened.
+
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(putCallCount(fetchMock)).toBe(0);
   });
 });
 
-// UNDERDETERMINED, from the specification (this task's own Notes) -- rules/integration/
-// a-connector-configuration-holds-a-well-formed-object refuses any registration whose
-// configuration is not a well-formed JSON object, but this screen's own dispatch gate
-// (configurationValid, use-connector-configuration-form.ts) is JSON.parse succeeding alone. The
-// two tests below state what the rule actually requires; they fail precisely when the screen's
-// gate is that JSON.parse-only implementation, which is what is delivered today -- disclosed
-// here rather than silently made to pass.
 describe.each([
   { label: "a syntactically valid JSON array", text: "[1,2,3]" },
   { label: "syntactically valid JSON null", text: "null" },
@@ -120,9 +96,7 @@ describe.each([
       await mountConnectorConfigurationCreateScreen(fetchMock);
 
       await fillAndSave("deepl-connector", text);
-      // Same flush as the invalid-JSON test above -- otherwise this assertion
-      // can pass before the async validation it is meant to exercise ever
-      // resolves, which is exactly how this gap stayed undetected.
+
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(putCallCount(fetchMock)).toBe(0);

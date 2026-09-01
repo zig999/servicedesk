@@ -4,19 +4,6 @@ import { Label } from "@tui/ui/label";
 import { Button } from "@tui/ui/button";
 import { cn } from "@tui/lib/cn";
 
-/**
- * Shared JSON beautify/minify/inline-error textarea control
- * (task/capability-authoring/json-textarea-editor): one control every field
- * needing JSON text embeds, so the parsing, the "Beautify" reformatting and
- * the invalid-JSON error message are written once rather than by each
- * consumer named in this task's own rationale (a capability's two schemas
- * and a connector configuration field among them) individually.
- *
- * A discriminated `JsonParseResult` (TYP-04) rather than a `value: unknown |
- * undefined` bag: `undefined`/`null` are themselves valid parsed JSON values
- * (`JSON.parse("null")` succeeds), so a sentinel would collide with a
- * legitimate parse result instead of distinguishing "did not parse" from it.
- */
 type JsonParseResult =
   | { readonly ok: true; readonly value: unknown }
   | { readonly ok: false; readonly message: string };
@@ -32,42 +19,11 @@ function parseJsonText(text: string): JsonParseResult {
   }
 }
 
-/**
- * Pure, exported alongside the control rather than reached through a ref: a
- * caller already holds the control's current text as its own controlled
- * `value` state (reported through `onChange` below), so submission reaches
- * for this function with that same string rather than the control needing an
- * imperative handle to hand it back out a second way. Returns `null` for
- * text that is not syntactically valid JSON -- a caller checks the `isValid`
- * flag `onChange` already reported before calling this, so `null` here is a
- * defensive second guard rather than the only guard.
- */
 export function getJsonTextareaMinifiedValue(value: string): string | null {
   const parsed = parseJsonText(value);
   return parsed.ok ? JSON.stringify(parsed.value) : null;
 }
 
-/**
- * Props are the one shape every consumer wires: `value` is the control's
- * current display text (controlled, so a caller's own "Beautify"-produced or
- * typed text round-trips through it unchanged); `onChange` reports the new
- * text and whether it is syntactically valid JSON together, in the same
- * call, so a caller's own value state and its own validity state can never
- * fall out of sync with each other the way two independent callbacks could.
- *
- * `tall` (task/capability-detail-layout/schema-editor-height-increase) is an
- * opt-in: left unset, the Textarea keeps this control's own default 10rem/
- * 160px minimum height (`min-h-40`), exactly as every consumer today
- * renders it -- connector-configuration-form-fields.tsx's `configuration`
- * field among them. Set true, the minimum height becomes 12.5rem/200px
- * instead. The increase is scoped this way, as an explicit choice each call
- * site makes, rather than by raising the shared default, because raising
- * the default would have raised every other consumer's rendered height
- * along with it -- this component carries one Textarea height class,
- * shared verbatim by every caller, and only a caller-level switch keeps
- * that sharing from also sharing a change one screen asked for and the
- * others did not.
- */
 export type JsonTextareaFieldProps = {
   readonly id: string;
   readonly label: string;
@@ -77,17 +33,6 @@ export type JsonTextareaFieldProps = {
   readonly tall?: boolean;
 };
 
-/**
- * A JSON-aware textarea: labeled, with a "Beautify" control that reformats
- * the current text as indented JSON without changing what it means as data
- * (`JSON.stringify(JSON.parse(value), null, 2)`, criterion 1), and an inline
- * error message next to the control while the current text does not parse
- * (criterion 2). No "touched" tracking gates that message -- the
- * specification states only that malformed text is refused, nothing about
- * deferring the message for a freshly empty field, and empty text is not
- * syntactically valid JSON either, so it is reported invalid the same as any
- * other malformed text (criterion 3, this task's own inference).
- */
 export function JsonTextareaField({
   id,
   label,
@@ -99,20 +44,6 @@ export function JsonTextareaField({
   const parsed = useMemo(() => parseJsonText(value), [value]);
   const errorId = `${id}-error`;
 
-  /**
-   * A `value` transition this control did not itself produce -- the very
-   * first render, or a caller replacing what was there with a freshly
-   * loaded record -- is a "load", and a load whose text is syntactically
-   * valid JSON is shown pretty-printed rather than in whatever form it
-   * arrived in (this task's own criterion 1), without touching the existing
-   * invalid-JSON display (criterion 2). `selfInitiatedRef` is what tells a
-   * load apart from `handleChange` and `handleBeautify` reporting their own
-   * text back through `value`: both set it immediately before calling
-   * `onChange`, so the effect below skips exactly the transitions this
-   * control produced and treats every other one -- including mount -- as a
-   * load, reusing the same `parsed` the render body already computed rather
-   * than parsing `value` a second time.
-   */
   const selfInitiatedRef = useRef(false);
 
   useEffect(() => {

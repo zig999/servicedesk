@@ -9,13 +9,6 @@ import {
   type CaseResultRunHypothesisVerdict,
 } from "./case-simulation-case-result-types";
 
-// task/simulation-cockpit/case-result-panel's own pure types/helpers module -- proven directly,
-// with no rendering, mirroring case-simulation-hypotheses-table-row.spec.ts's own established
-// convention for a sibling task's identically-shaped pure-helper file. Rendering-level coverage
-// of the same facts, wired through CaseSimulationCaseResultCompare and
-// CaseSimulationCaseResultPanel, lives in case-simulation-case-result-compare.spec.ts,
-// case-simulation-case-result-panel.spec.ts and case-simulation-case-result-panel-compare.spec.ts.
-
 function makeRun(overrides: Partial<CaseResultRun> = {}): CaseResultRun {
   return {
     id: "run-1",
@@ -59,8 +52,6 @@ describe("resolveCompareRuns -- criterion 4's own two-run resolution", () => {
     const first = makeRun({ id: "r1" });
     const second = makeRun({ id: "r2" });
 
-    // Deliberately selected in reverse order (r2 before r1) so an implementation that resolved
-    // by selection order, rather than by history order, would be caught here.
     expect(resolveCompareRuns([first, second], ["r2", "r1"])).toEqual([first, second]);
   });
 

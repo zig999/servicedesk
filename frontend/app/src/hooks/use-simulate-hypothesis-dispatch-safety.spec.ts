@@ -14,15 +14,6 @@ import {
   stubFetch,
 } from "./use-simulate-hypothesis.test-support";
 
-// task/simulation-cockpit/use-simulate-hypothesis's own criteria 4-6: nothing the hook does
-// writes to or invalidates any query that persists an investigation
-// (rules/investigation/a-simulation-writes-no-investigation's frontend half); a dispatch failure
-// resolves through uiStateForApiError's own convention, not a hand-checked error code; and
-// isSimulating reflects the mutation's pending state, gating a second concurrent dispatch.
-// Criteria 1-3 live in the sibling use-simulate-hypothesis-request.spec.ts, mirroring
-// connector-test-panel-dispatch-safety.spec.ts / connector-test-panel-request-response.spec.ts's
-// own established split.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

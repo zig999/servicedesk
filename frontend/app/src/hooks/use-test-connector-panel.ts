@@ -1,46 +1,3 @@
-/**
- * The Connector Configuration editor's Test section
- * (task/connector-configuration-authoring/test-connector-debug-panel,
- * contracts/integration/connector-diagnostics,
- * rules/integration/a-connector-configuration-is-tested-through-a-registered-capability):
- * state and dispatch for exercising one connector configuration's own call,
- * once, through a specific, already-registered capability that names it.
- *
- * Composes useCapabilities() and useGlossaryVocabularyOptions("subject-type")
- * rather than re-deriving either read (use-capabilities.ts,
- * use-glossary-vocabulary.ts), and dispatches the diagnostic call itself
- * through apiFetch the same way every other mutation in this app does
- * (use-connector-configuration-form.ts's own POST/PUT convention) --
- * POST /v1/test-connector (contracts/integration/connector-diagnostics).
- *
- * The subject assembled here is never a stored subject read back
- * (that contract's own "against a subject assembled the same way any other
- * observation assembles one -- never a stored subject read back"): subject
- * type and its attribute-value pairs are held as plain component state (no
- * useFieldArray, no react-hook-form -- this call is a one-shot diagnostic
- * dispatch, not a persisted resource with its own validation lifecycle),
- * recorded as this task's own inference in its delivery record. Each row
- * carries a locally generated `id` only so the fields component can key its
- * list by something stable rather than array index (MNT-04) -- that id
- * never leaves this hook; the wire body sends only `attribute`/`value`.
- *
- * `requester` is a plain free-text field: no existing screen in this app
- * collects a requester identity today (no precedent to extend), and
- * test-connector.dto.ts's own header comment states it "travels ... as an
- * unverified claim taken straight from the body" -- an operator types
- * whatever string resolveConnectorRequest needs to resolve a `${requester}`
- * placeholder, exactly the way a real observation would supply one.
- *
- * A dispatch failure (the POST to /v1/test-connector itself failing --
- * distinct from criterion 6, which is the *downstream* connector call
- * failing or timing out, carried inside a successful response's own
- * discriminated `response` field) is resolved through error-ui-state.ts's
- * central mapping the same way useConnectorConfigurationForm's own
- * saveFailureMessage is, so a future distinct wording is added there rather
- * than hand-checked at this call site (API-02) -- today no criterion states
- * one, so every kind falls back to one generic message.
- */
-
 import { useRef, useState } from "react";
 import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import type { SelectOption } from "@tui/ui/select";
@@ -51,18 +8,15 @@ import { isPlainRecord } from "../shared/services/plain-record";
 import { useCapabilities, type Capability } from "./use-capabilities";
 import { useGlossaryVocabularyOptions } from "./use-glossary-vocabulary";
 
-/** One attribute-value pair the operator types by hand, mirroring test-connector.dto.ts's own subjectAttributeValueSchema (wire shape -- no `id`). */
 export type SubjectAttributeValue = {
   readonly attribute: string;
   readonly value: string;
 };
 
-/** A subject attribute-value row as this panel edits it -- `id` is local-only, generated so the row list can be keyed stably (MNT-04) without echoing anything through the wire body. */
 export type SubjectAttributeRow = SubjectAttributeValue & {
   readonly id: string;
 };
 
-/** The request body POST /v1/test-connector validates, mirrored from testConnectorRequestSchema (test-connector.dto.ts). */
 export type TestConnectorRequestBody = {
   readonly capability: { readonly name: string; readonly version: string };
   readonly connector: string;
@@ -73,7 +27,6 @@ export type TestConnectorRequestBody = {
   readonly requester: string;
 };
 
-/** The raw outbound request actually assembled, mirrored from testConnectorRequestEchoSchema. */
 export type TestConnectorRequestEcho = {
   readonly method: string;
   readonly address: string;
@@ -81,7 +34,6 @@ export type TestConnectorRequestEcho = {
   readonly body?: unknown;
 };
 
-/** The raw outcome of the one call actually issued, mirrored from testConnectorOutcomeSchema -- never reclassified, so a timeout or a raw error is a distinct case a caller must render as such (criterion 6). */
 export type TestConnectorOutcome =
   | {
       readonly kind: "response";
@@ -93,7 +45,6 @@ export type TestConnectorOutcome =
   | { readonly kind: "timed-out"; readonly elapsedMs: number }
   | { readonly kind: "error"; readonly message: string; readonly elapsedMs: number };
 
-/** The whole test-connector response, mirrored from testConnectorResponseSchema. */
 export type TestConnectorResult = {
   readonly request: TestConnectorRequestEcho;
   readonly response: TestConnectorOutcome;
@@ -106,7 +57,6 @@ function capabilityKey(capability: Pick<Capability, "name" | "version">): string
 const GENERIC_TEST_DISPATCH_FAILURE_MESSAGE =
   "The test call could not be sent. Check the selected capability, subject and requester, then try again.";
 
-/** No criterion of this task states a distinct wording for a dispatch failure (see this file's own header comment); every mapped kind falls back to the one generic message above, through error-ui-state.ts's own central registry rather than a hand-checked error.code here. */
 const TEST_DISPATCH_FAILURE_MESSAGE_BY_KIND: Partial<Record<UiErrorStateKind, string>> = {};
 
 function testDispatchFailureMessage(error: unknown): string {
@@ -119,26 +69,6 @@ function testDispatchFailureMessage(error: unknown): string {
   return GENERIC_TEST_DISPATCH_FAILURE_MESSAGE;
 }
 
-/**
- * The test dispatch's own outcome, as one discriminated union rather than three independent
- * fields (isTesting/result/testError) a caller used to read separately
- * (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome, a TYP-04
- * corrective fix): by construction, only one branch of this union ever holds at once, so a
- * stale successful result alongside a fresh error -- previously representable, since nothing
- * cleared `result` when a subsequent call's own `testError` was set -- has no shape left to
- * occupy. "idle" is this hook's own inference for the state before any call has ever been
- * dispatched: no criterion of the corrective task names a label for it, but returning three
- * independent booleans/nullables was exactly the shape being replaced, so the union needs a
- * variant for "no call yet" the same way the fields it replaces needed `null` for it.
- *
- * A second corrective task (task/connector-test-panel-dispatch-state/derive-outcome-from-
- * mutation) changed how a value of this type is produced -- computed from useMutation's own
- * status/data/error at render/return time (testOutcomeFromMutation below) instead of a
- * second, independently-set useState assigned inside onSuccess/onError -- without touching
- * this type or the invariant above: a stale result beside a fresh error stays unrepresentable
- * either way, and onTest below now calls `mutation.reset()` before every dispatch so the
- * mutation object itself never carries a previous call's own data/error into the next one.
- */
 export type TestDispatchOutcome =
   | { readonly kind: "idle" }
   | { readonly kind: "pending" }
@@ -166,23 +96,6 @@ export type TestConnectorPanelState = {
   readonly onTest: () => void;
 };
 
-/**
- * Whether `configurationText` parses as a well-formed JSON object -- the same shape
- * domain/integration/connector-configuration requires of a registered configuration's own
- * text, checked here through shared/services/plain-record.ts's own isPlainRecord rather
- * than a private typeof/null/Array.isArray expression of this file's own
- * (task/connector-test-panel-placeholder-attributes/deduplicate-configuration-object-check
- * -- this file used to mirror simulation-subject-derivation.ts's own JSON.parse-then-
- * plain-object gate by hand because neither file exported a shared primitive to call;
- * both now call this one). Checked independently of
- * subjectPlaceholderNamesInConfiguration's own defensive read below: that function
- * already returns an empty array both for text that fails this check and for text that
- * parses fine but simply embeds no placeholder, and the two are not the same fact --
- * this task's own sixth criterion asks for the rows to be left exactly as they were only
- * in the first case, so onAddAttribute below gates on this check first rather than
- * inferring "no placeholders" from subjectPlaceholderNamesInConfiguration's own return
- * value (this hook's own inference).
- */
 function parsesAsConfigurationObject(configurationText: string): boolean {
   let parsed: unknown;
   try {
@@ -193,27 +106,6 @@ function parsesAsConfigurationObject(configurationText: string): boolean {
   return isPlainRecord(parsed);
 }
 
-/**
- * Reconciles `currentRows` against `placeholderNames` -- every distinct subject-attribute
- * placeholder name Configuration's own current text embeds, in the order
- * subjectPlaceholderNamesInConfiguration below returns them (address, then query, then
- * headers, then body, each in its own declared key order): a row whose attribute name
- * still names a currently-present placeholder keeps its own id and value unchanged
- * (criterion 2); a placeholder name with no existing row gets exactly one new, empty-
- * valued row (criterion 1); a row whose attribute name matches no currently-present
- * placeholder is dropped (criterion 3); and a name occurring more than once -- whether
- * repeated in `placeholderNames` itself (criterion 5) or carried by two existing rows --
- * collapses to one row, keeping the first occurrence in `placeholderNames`'s own order.
- * Neither criterion states a tie-break for two existing rows sharing one attribute name;
- * keeping the first is this hook's own inference, drawn from the same first-wins
- * determinism deriveRequiredFields already applies to its own attribute-name dedup
- * (services/simulation-subject-derivation.ts) rather than an invented ranking of its own
- * (see this task's delivery record). `createId` mints a fresh, locally-generated id
- * (MNT-04's stable-key convention, never sent over the wire) only for a row this call
- * adds -- a row whose name survives keeps its existing id rather than a freshly minted
- * one, since nothing in this task's criteria calls for churning an unrelated row's own
- * React key on a click that did not touch it (this hook's own inference).
- */
 function reconcileAttributeRows(
   currentRows: readonly SubjectAttributeRow[],
   placeholderNames: readonly string[],
@@ -241,19 +133,6 @@ function reconcileAttributeRows(
   });
 }
 
-/**
- * Computes this hook's own `testOutcome` from `mutation` -- useMutation's own status/data/error
- * -- instead of a second, independently-set useState kept in sync inside onSuccess/onError
- * (STA-01: server-fetched data is read directly from its own cache, never copied into a
- * separate UI store; STA-03: a value derived from other state is computed at render/return
- * time, never mirrored into its own state variable). react-query does not clear a mutation's
- * own `data`/`error` when `mutate()` is called again -- onTest below calls `mutation.reset()`
- * immediately before every dispatch, so `mutation` here always reflects only the most recent
- * call. That is what keeps this task's own criterion 2 true: a second dispatch's own failure
- * is never read alongside the first dispatch's own stale successful result, the same TYP-04
- * invariant TestDispatchOutcome's own comment above states, now maintained this way instead of
- * by a separately-set useState.
- */
 function testOutcomeFromMutation(
   mutation: UseMutationResult<TestConnectorResult, Error, TestConnectorRequestBody>,
 ): TestDispatchOutcome {
@@ -269,33 +148,11 @@ function testOutcomeFromMutation(
   }
 }
 
-/**
- * Assembles and dispatches one test-connector call for `connector`, the connector
- * configuration this panel is scoped to (criterion 1).
- *
- * `configurationText` -- the connector configuration's own current Configuration text,
- * exactly as ConnectorConfigurationDetailReadyView's own live state.configuration.value
- * holds it -- is threaded in by
- * task/connector-test-panel-placeholder-attributes/route-configuration-text-to-test-panel
- * as prop/argument plumbing, and is now read by onAddAttribute below
- * (task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows):
- * clicking "Add attribute" reconciles `attributes` against every distinct
- * '${subject:<attribute>}' placeholder Configuration's own current text embeds
- * (subjectPlaceholderNamesInConfiguration, services/simulation-subject-derivation.ts --
- * the exact walk this app's own must_not_duplicate convention already names as proven and
- * reused here rather than re-derived), in place of appending one empty row (criteria
- * 1-5, reconcileAttributeRows above). Configuration text that does not parse as a
- * well-formed JSON object at click time leaves `attributes` exactly as it was
- * (criterion 6, parsesAsConfigurationObject above).
- */
 export function useTestConnectorPanel(
   connector: string,
   configurationText: string,
 ): TestConnectorPanelState {
-  // Read at click time through .current inside onAddAttribute below, refreshed on
-  // every render the same way this file's own nextRowIdRef/isDispatchingRef are held
-  // as refs rather than state -- so a click always reconciles against the latest
-  // Configuration text this hook was called with, not a stale render's closure.
+
   const configurationTextRef = useRef(configurationText);
   configurationTextRef.current = configurationText;
 
@@ -314,8 +171,6 @@ export function useTestConnectorPanel(
   const nextRowIdRef = useRef(0);
   const isDispatchingRef = useRef(false);
 
-  // criterion 1: only capabilities currently registered with this connector
-  // configuration's own name as their connector are offered.
   const capabilityOptions: SelectOption[] = capabilities
     .filter((capability) => capability.connector === connector)
     .map((capability) => ({
@@ -351,10 +206,7 @@ export function useTestConnectorPanel(
       return;
     }
     isDispatchingRef.current = true;
-    // Clears whatever the previous dispatch left in mutation.data/mutation.error before this
-    // one starts -- react-query does not clear either on its own when mutate() is called
-    // again -- so testOutcomeFromMutation below (called at return time) always reads this
-    // call's own status/data/error, never one a prior call left behind.
+
     mutation.reset();
 
     const body: TestConnectorRequestBody = {
@@ -388,21 +240,14 @@ export function useTestConnectorPanel(
     onSubjectTypeChange: setSubjectType,
     attributes,
     onAddAttribute: () => {
-      // Criterion 6: text that does not parse as a well-formed JSON object at
-      // click time leaves `attributes` exactly as it was -- no read, no
-      // reconciliation, no state update at all.
+
       if (!parsesAsConfigurationObject(configurationTextRef.current)) {
         return;
       }
       const placeholderNames = subjectPlaceholderNamesInConfiguration(
         configurationTextRef.current,
       );
-      // Read `attributes` directly from this render's own state (the same
-      // snapshot hasCompleteAttribute/canTest above already read), rather than
-      // through setAttributes's updater form: the number of ids this click
-      // mints depends on the diff against that snapshot, and minting them
-      // inside an updater would risk nextRowIdRef incrementing more than once
-      // for one click under a double-invoking renderer.
+
       const reconciled = reconcileAttributeRows(attributes, placeholderNames, () => {
         nextRowIdRef.current += 1;
         return `test-connector-attribute-row-${nextRowIdRef.current}`;

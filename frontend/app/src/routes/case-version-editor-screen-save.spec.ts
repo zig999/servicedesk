@@ -12,11 +12,6 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-screen.test-support";
 
-// Save/state-machine/error coverage for task/version-editor/edit-draft-version.
-// Population and glossary-dropdown coverage lives in case-version-editor-screen.spec.ts,
-// split out to stay under this project's own max-lines rule; both files share the
-// fixtures and mounting helpers in case-version-editor-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -57,11 +52,7 @@ describe("CaseVersionEditorScreen — save, conflict, 404 and the save state mac
 
     const titleInput = await screen.findByLabelText("Title");
     fireEvent.change(titleInput, { target: { value: "Edited via blur" } });
-    // React implements onBlur through the native, bubbling "focusout" event,
-    // never the native "blur" event itself (which does not bubble) -- see
-    // react-dom's own event registration (registerSimpleEvent("focusout",
-    // "onBlur")). fireEvent.blur alone would never reach the form's own
-    // onBlur handler in this React 19 setup.
+
     fireEvent.focusOut(titleInput);
 
     await waitFor(() => {
@@ -86,12 +77,7 @@ describe("CaseVersionEditorScreen — save, conflict, 404 and the save state mac
 
     const titleInput = await screen.findByLabelText("Title");
     fireEvent.change(titleInput, { target: { value: "One save only" } });
-    // Blurring the field just edited and then clicking Save is one physical
-    // action that can reach the shared submit twice before either call's own
-    // "saving" state has committed -- exactly the race the implementation's
-    // own isSubmittingRef guard exists for. fireEvent.focusOut (native
-    // "focusout"), not fireEvent.blur, is what actually reaches React's own
-    // onBlur handler -- see the comment on the blur-only save test above.
+
     fireEvent.focusOut(titleInput);
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
@@ -187,22 +173,17 @@ describe("CaseVersionEditorScreen — save, conflict, 404 and the save state mac
     const titleInput = await screen.findByLabelText("Title");
     const saveButton = screen.getByRole("button", { name: "Save changes" });
 
-    // clean: nothing edited yet since the load -- Save has nothing to do.
     expect(saveButton.hasAttribute("disabled")).toBe(true);
 
-    // clean -> dirty.
     fireEvent.change(titleInput, { target: { value: "Mid-flight edit" } });
     expect(saveButton.hasAttribute("disabled")).toBe(false);
 
-    // dirty -> saving: the PATCH is in flight (patchPromise not yet resolved),
-    // and every field is blocked while it is.
     fireEvent.click(saveButton);
     await waitFor(() => {
       expect(saveButton.hasAttribute("disabled")).toBe(true);
     });
     expect(titleInput.hasAttribute("disabled")).toBe(true);
 
-    // saving -> clean, on the 200 response.
     await act(async () => {
       resolvePatch(jsonResponse({ ...LOADED_RECORD, title: "Mid-flight edit" }));
     });
@@ -255,9 +236,6 @@ describe("CaseVersionEditorScreen — save, conflict, 404 and the save state mac
     expect(screen.getByRole("button", { name: "Retry" })).toBeTruthy();
   });
 
-  // task/case-authoring-console/every-async-update-is-announced's own criterion 2
-  // (ACC-07): the "Last saved" text changes with no page navigation when a save
-  // completes, so it is exposed through its own aria-live region.
   it("exposes the 'Last saved' save-status text through an aria-live=\"polite\" region once a save completes", async () => {
     const fetchMock = createFetchStub(
       baseHandlers({

@@ -16,14 +16,6 @@ import {
   VOCABULARY_TAB_CASES,
 } from "./glossary-browser-screen.test-support";
 
-// The five term-vocabulary tabs' own listing (criteria 3-7), empty-state and load-error
-// coverage (the generic-message inference, EDG-02), plus tab-switching (at least one switch
-// actually rendering the newly active tab's own data, and firing no request for the other four
-// vocabulary paths). The six-tab strip, the Concepts tab and the two no-control criteria live
-// in the sibling glossary-browser-screen.spec.ts, to stay under this project's own max-lines
-// rule (MNT-01); both share glossary-browser-screen.test-support.ts's own fixtures and
-// mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -40,7 +32,7 @@ describe("GlossaryBrowserScreen — five term-vocabulary tabs, listing by name (
       fireEvent.click(screen.getByRole("tab", { name: tabLabel }));
 
       const rows = await screen.findAllByRole("row");
-      // header + one row per term.
+
       expect(rows).toHaveLength(4);
       expect(within(rows[1]).getByText("alpha")).toBeTruthy();
       expect(within(rows[2]).getByText("beta")).toBeTruthy();

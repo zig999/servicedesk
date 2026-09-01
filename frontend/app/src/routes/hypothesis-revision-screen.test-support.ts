@@ -13,24 +13,6 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { NewHypothesisScreen } from "./new-hypothesis-screen";
 import { ReviseHypothesisScreen } from "./revise-hypothesis-screen";
 
-// Shared fixtures and mounting helpers for hypothesis-revision-screen.spec.ts,
-// hypothesis-revision-screen-submit.spec.ts and hypothesis-revision-screen-errors.spec.ts
-// (split three ways to stay under this project's own max-lines rule), proving
-// task/manifest-hypothesis-authoring/revise-hypothesis-form. NewHypothesisScreen and
-// ReviseHypothesisScreen each read their own route's slug/version(/hypothesisName)
-// through useParams() and both call useNavigate() (the success phase's own "Open
-// Manifest Builder" control), so -- exactly like case-version-editor-screen.test-support.ts --
-// they need a real router context rather than a bare render. buildTestRouter carries both of
-// this task's own routes plus a dummy Manifest destination (criterion 10), rather than reusing
-// the production twelve-route tree.
-//
-// The shared hook issues four GETs on every visit (the draft version, the glossary concepts,
-// and the outcome/action/recipient vocabularies), a fifth GET only on the Revise route (the
-// addressed hypothesis's own revisions), and one POST on submit -- so the fetch stub below is
-// keyed by "METHOD path", mirroring every other screen test-support module's own convention. A
-// key this test does not register throws, so a request nobody expected fails the test loudly
-// rather than hanging it.
-
 export type FetchResponder = () => Response | Promise<Response>;
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
@@ -91,9 +73,6 @@ export const OUTCOME_TERMS = {
 export const ACTION_TERMS = { data: [{ name: "escalate" }, { name: "notify" }] };
 export const RECIPIENT_TERMS = { data: [{ name: "supervisor" }, { name: "customer" }] };
 
-// The highest-revision entry (3) sits first, not last, so a test asserting the form
-// pre-populates from *this* one rather than the array's last entry (1) proves criterion 3's
-// own "current revision" is picked by revision number, never by array position.
 export const H1_REVISIONS = {
   data: [
     {
@@ -139,8 +118,7 @@ function buildTestRouter(initialPath: string) {
     path: "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName",
     component: ReviseHypothesisScreen,
   });
-  // A dummy leaf so "Open Manifest Builder" (criterion 10) has a real route to resolve to --
-  // what renders there is the Manifest Builder's own concern, not this proof's.
+
   const manifestRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "/cases/$slug/versions/$version/manifest",
@@ -157,14 +135,6 @@ function buildTestRouter(initialPath: string) {
   });
 }
 
-// A second, isolated router carrying *only* the $hypothesisName route -- no static "new"
-// sibling -- so a navigation to ".../hypotheses/new" cannot be intercepted by route ranking
-// (TanStack Router ranks a static segment over a dynamic one for the same literal path, the
-// same convention this app already establishes for "versions/new" over "versions/$version",
-// confirmed directly in route-tree.tsx's own header comments). This is what lets a test
-// address ReviseHypothesisScreen directly with hypothesisName "new", to check that its own
-// code path treats that string exactly like any other name -- no special-casing internal to
-// the Revise route itself (criterion 1's own "addressed by the Revise route" half).
 function buildIsolatedReviseRouter(initialPath: string) {
   const rootRoute = createRootRoute({ component: () => createElement(Outlet) });
   const reviseHypothesisRoute = createRoute({
@@ -179,11 +149,6 @@ function buildIsolatedReviseRouter(initialPath: string) {
   });
 }
 
-// Named "mount", not "render", matching case-version-editor-screen.test-support.ts's own
-// testing-library/render-result-naming-convention precedent for a helper shaped this way.
-// Each mount function renders its own router type directly (rather than delegating to one
-// shared, generically-typed helper) since buildTestRouter and buildIsolatedReviseRouter
-// produce routers over two different, incompatible route trees.
 export async function mountHypothesisForm(
   fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
   initialPath: string = NEW_HYPOTHESIS_PATH,
@@ -240,9 +205,6 @@ export function wasRequested(fetchMock: ReturnType<typeof createFetchStub>, url:
   return fetchMock.mock.calls.some(([callUrl]) => callUrl === url);
 }
 
-// The Select primitive (frontend/tui) selects on its own onMouseDown, not onClick
-// (select.tsx) -- fireEvent.click alone never reaches it, mirroring
-// new-case-draft-screen.test-support.ts's own established convention.
 export function selectOption(labelText: string, optionName: string): void {
   const trigger = screen.getByLabelText(labelText);
   fireEvent.click(trigger);
@@ -254,7 +216,6 @@ export function checkConcept(conceptName: string): void {
   fireEvent.click(screen.getByRole("checkbox", { name: conceptName }));
 }
 
-/** Fills every field the shared form requires, with valid, glossary-backed values, so submit's own POST validates (criterion 9). Only sets hypothesis_name when the caller passes one -- the Revise route's own name field is fixed and never needs filling. */
 export async function fillValidForm(hypothesisName?: string): Promise<void> {
   const nameInput = await screen.findByLabelText("Hypothesis name");
   if (hypothesisName !== undefined) {

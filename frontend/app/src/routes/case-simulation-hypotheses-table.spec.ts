@@ -14,19 +14,6 @@ import {
 } from "./case-simulation-hypotheses-table";
 import type { SimulationManifestRow } from "./case-simulation-hypotheses-table-row";
 
-// task/simulation-cockpit/hypotheses-table's own six criteria, proven
-// directly against CaseSimulationHypothesesTable -- a presentational
-// component taking every fact as a prop, so (unlike
-// case-hypotheses-tab.test-support.ts's own mount helpers) no fetch stub or
-// QueryClientProvider is needed here: this component issues no request of
-// its own. It renders a TanStack Router Link (its own Edit action), so
-// (mirroring case-hypotheses-tab.test-support.ts's own
-// mountHypothesisRevisionHistory and case-detail-screen.spec.ts's own
-// buildTestRouter) it needs a real router context; the sibling leaf route
-// below exists solely so that Link has a real destination to resolve an href
-// against, addressed by the same route pattern
-// case-hypotheses-tab.test-support.ts's own REVISE_ROUTE_PATTERN names.
-
 const EDIT_ROUTE_PATTERN = "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName";
 
 async function mount(props: CaseSimulationHypothesesTableProps): Promise<void> {
@@ -47,7 +34,6 @@ async function mount(props: CaseSimulationHypothesesTableProps): Promise<void> {
   render(createElement(RouterProvider, { router }));
 }
 
-/** Locates a data row by its own rendered "#" (position) column value. */
 function findRowByPosition(rows: readonly HTMLElement[], position: number): HTMLElement {
   const match = rows.find(
     (row) => within(row).getAllByRole("cell")[0].textContent === String(position),
@@ -92,8 +78,7 @@ function baseProps(
   return {
     slug: "acme-widgets",
     version: 7,
-    // Deliberately out of the manifest's own precedence order (2, 1, 3) so
-    // ordering assertions below cannot pass by accident of array order.
+
     rows: [NOT_RUN_ROW, CONFIRMED_ROW, INCONCLUSIVE_ROW],
     onSimulateHypothesis: vi.fn(),
     ...overrides,
@@ -105,7 +90,7 @@ describe("CaseSimulationHypothesesTable -- one row per manifest entry, in preced
     await mount(baseProps());
 
     const rows = await screen.findAllByRole("row");
-    // header + one row per of the three manifest entries, nothing collapsed and nothing extra.
+
     expect(rows).toHaveLength(4);
 
     const dataRows = rows.slice(1);
@@ -168,10 +153,6 @@ describe("CaseSimulationHypothesesTable -- verdict and reason (criterion 3)", ()
   });
 });
 
-// This task's own disclosed inference ("Token cost renders as a plain integer sum
-// (input_tokens + output_tokens), not a compacted/locale-formatted string") -- proven here
-// against the actual rendered "Cost (tok)" column, complementing the narrower unit tests
-// over costCell itself in case-simulation-hypotheses-table-row.spec.ts.
 describe("CaseSimulationHypothesesTable -- token cost column", () => {
   it("shows the input-plus-output token sum for a row whose call has run this session", async () => {
     await mount(baseProps());
@@ -303,9 +284,6 @@ describe("CaseSimulationHypothesesTable -- the simulate action is a callback thi
   });
 });
 
-// This task's own disclosed inference ("A last-run stage-durations line (DurationsLine) is
-// built even though no numbered criterion tests it"), sourced from this task's own Notes
-// ("The bar shows the last run's measured durations without a budget comparison").
 describe("CaseSimulationHypothesesTable -- the last-run stage-durations line", () => {
   it("shows the last run's own measured collection, judgment, writing and total durations when supplied", async () => {
     await mount(

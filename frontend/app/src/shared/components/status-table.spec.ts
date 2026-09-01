@@ -4,15 +4,6 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { StatusTable } from "./status-table";
 import type { StatusTableColumn, StatusTableRow } from "./status-table";
 
-// This file stays .spec.ts (not .spec.tsx), matching this codebase's existing
-// convention for component specs (see conflict-banner.spec.ts). Rendering is
-// done through React.createElement rather than JSX syntax, since a .ts file
-// is parsed by esbuild's "ts" loader, which does not accept JSX.
-//
-// vite.config.ts's test.globals: true registers @testing-library/react's own
-// auto-cleanup against the global afterEach, so no manual cleanup() call is
-// needed here (testing-library/no-manual-cleanup).
-
 describe("StatusTable", () => {
   it("renders a header cell labeled for each given column", () => {
     const columns: StatusTableColumn[] = [
@@ -72,12 +63,6 @@ describe("StatusTable", () => {
 
     render(createElement(StatusTable, { columns, rows, onRowClick }));
 
-    // A clickable row carries role="button" (StatusTable overrides the
-    // implicit "row" role precisely so an interactive row is exposed as
-    // interactive), so getAllByRole("row") would not find it at all -- the
-    // header row keeps its implicit "row" role since it is never clickable,
-    // but it never gets a "button" role, so this list holds only data rows,
-    // in order. "Second" is the second data row, index 1.
     const target = screen.getAllByRole("button")[1];
     fireEvent.click(target);
 
@@ -101,7 +86,6 @@ describe("StatusTable", () => {
 
     render(createElement(StatusTable, { columns, rows, onRowClick }));
 
-    // Single clickable row: role="button", not the header's implicit "row".
     const target = screen.getAllByRole("button")[0];
     fireEvent.keyDown(target, { key: "Enter" });
 
@@ -157,11 +141,7 @@ describe("StatusTable", () => {
 
     const cell = screen.getAllByRole("cell")[0];
     expect(within(cell).getByText("Active")).toBeTruthy();
-    // The color dot is `aria-hidden="true"` (decorative) by design, so it is
-    // excluded from the accessibility tree and no Testing Library query --
-    // role, text, or label -- can find it; a direct query is the only way to
-    // confirm it renders alongside the label, mirroring what a sighted user
-    // still perceives even though assistive tech does not.
+
     // eslint-disable-next-line testing-library/no-node-access -- see comment above; the indicator is intentionally aria-hidden and unreachable by any RTL query
     const indicator = cell.querySelector(".bg-emerald-500");
     expect(indicator).not.toBeNull();
@@ -174,9 +154,7 @@ describe("StatusTable", () => {
     render(createElement(StatusTable, { columns, rows }));
 
     const table = screen.getByRole("table");
-    // Same reasoning as above: absence of a decorative, aria-hidden indicator
-    // cannot be asserted through any accessibility-tree-based query, since
-    // such an element (present or absent) never appears in that tree either way.
+
     // eslint-disable-next-line testing-library/no-node-access -- see comment above
     expect(table.querySelector(".bg-red-500")).toBeNull();
   });

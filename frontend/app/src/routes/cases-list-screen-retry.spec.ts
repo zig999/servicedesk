@@ -11,19 +11,6 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CasesListScreen } from "./cases-list-screen";
 
-// task/case-authoring-console/every-load-error-offers-retry's own criterion 1 (Cases
-// List) plus the two cross-cutting behaviors this task's own record asks every one of
-// its three retry controls to satisfy: exactly one more request per Retry click, and a
-// second failure following Retry still leaving the Retry control in place rather than
-// getting the screen stuck. Split into its own sibling file (rather than added to
-// cases-list-screen.spec.ts, already at 359 lines -- past this project's own
-// three-hundred-line MNT-01 cap before this task even starts) mirroring
-// case-detail-screen-hypotheses-tab.spec.ts's own established precedent for splitting a
-// screen's proof by concern to stay under that same cap. The router/mount scaffolding
-// below is duplicated from cases-list-screen.spec.ts rather than imported, the same
-// reasoning case-detail-screen.spec.ts's own header comment gives for its own
-// duplication: that file exports nothing.
-
 function stubCasesFetch(
   handlers: Record<string, () => Response | Promise<Response>>,
 ): ReturnType<typeof vi.fn> {

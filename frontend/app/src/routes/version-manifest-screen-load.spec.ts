@@ -10,12 +10,6 @@ import {
   VERSION_PATH,
 } from "./version-manifest-screen.test-support";
 
-// Load, ordering, up/down-boundary and "+ Add hypothesis" coverage for
-// task/manifest-hypothesis-authoring/manifest-builder (criteria 1, 2 and 10). Reorder,
-// remove and conflict coverage lives in the sibling spec files this task's own proof
-// splits across, to stay under this project's own max-lines rule; all share
-// version-manifest-screen.test-support.ts's own fixtures and mounting helpers.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -45,9 +39,7 @@ describe("VersionManifestScreen — loading and load-error placeholders", () => 
 describe("VersionManifestScreen — manifest ordering (criterion 1)", () => {
   it("renders every manifest entry ordered by its own declared position, with its own hypothesis name and revision number, regardless of the response's own array order", async () => {
     const fetchMock = createFetchStub({
-      // Declared array order is deliberately not position order -- position 3 first,
-      // then 1, then 2 -- so a screen that rendered array order instead of position
-      // order would fail this assertion.
+
       [`GET ${VERSION_PATH}`]: () =>
         jsonResponse({ manifest: [entry(3, "H3", 9), entry(1, "H1", 2), entry(2, "H2", 5)] }),
     });

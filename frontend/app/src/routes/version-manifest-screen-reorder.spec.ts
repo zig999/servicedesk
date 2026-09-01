@@ -18,13 +18,6 @@ import {
   VERSION_PATH,
 } from "./version-manifest-screen.test-support";
 
-// Reorder coverage for task/manifest-hypothesis-authoring/manifest-builder (criteria 3,
-// 4 and 5), plus the isBusy/two-in-flight-clicks edge case the hook's own header
-// comment discloses as an inference. Load/ordering, remove and conflict coverage live
-// in the sibling spec files this task's own proof splits across, to stay under this
-// project's own max-lines rule; all share version-manifest-screen.test-support.ts's own
-// fixtures and mounting helpers.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -44,8 +37,7 @@ describe("VersionManifestScreen — reordering (criterion 3)", () => {
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
-    // H2's own current revision (5) travels unchanged; only the position moves, to
-    // H1's own current position (1) -- the criterion's own "naming the target position".
+
     expect(parsedPutBody(fetchMock)).toEqual({ revision: 5, position: 1 });
 
     await waitFor(() => {
@@ -60,10 +52,7 @@ describe("VersionManifestScreen — reordering (criterion 3)", () => {
 
 describe("VersionManifestScreen — free-position moves are never a client-side collision (criterion 4)", () => {
   it("succeeds when the target position currently belongs to a different entry, without any client-side pre-check or blocking", async () => {
-    // Positions 1..3 are all contiguous, so H2 (position 2) is, at click time, exactly
-    // the "different entry" that currently holds the position H3 is about to move onto --
-    // a client-side occupancy guard would refuse this outright; this implementation
-    // issues the PUT regardless and lets the real endpoint decide.
+
     const fetchMock = createFetchStub({
       [`GET ${VERSION_PATH}`]: sequentialGetHandler([
         THREE_ENTRY_MANIFEST,
@@ -109,14 +98,13 @@ describe("VersionManifestScreen — a blocked swap (criterion 5)", () => {
     expect(
       within(findRow("H1")).queryByText("Another hypothesis already holds that position. Try again."),
     ).toBeNull();
-    // No refetch happens on this error path -- the list is exactly what it was before
-    // the attempt, which is this hook's own answer to "reverts the attempted move".
+
     expect(getCallCount(fetchMock)).toBe(1);
     expect(screen.getAllByText(/· rev/).map((el) => el.textContent)).toEqual([
       "H1 · rev 2",
       "H2 · rev 5",
     ]);
-    // The screen is not left stuck "busy" after the error -- the control is clickable again.
+
     expect(
       within(findRow("H2")).getByRole("button", { name: "Move H2 up" }).hasAttribute("disabled"),
     ).toBe(false);
@@ -162,8 +150,7 @@ describe("VersionManifestScreen — a move in flight (this hook's own isBusy inf
         ),
       ).toBe(true);
     });
-    // A second click on an unrelated row's own control, fired while the first move is
-    // still pending, reaches a disabled button and issues no second request.
+
     fireEvent.click(within(findRow("H1")).getByRole("button", { name: "Move H1 down" }));
     expect(putCallCount(fetchMock)).toBe(1);
 

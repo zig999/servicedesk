@@ -11,26 +11,6 @@ import {
   stubFetch,
 } from "./use-simulation-subject.test-support";
 
-// task/subject-input-requirements/hold-the-simulate-dispatch-open-for-a-missing-requirement's own
-// criteria 1-3, and its first UNDERDETERMINED note, split out of use-simulation-subject.spec.ts to
-// stay under this project's own max-lines rule -- that file's own header comment carries the full
-// rationale and TST-04 divergence this proof's own record repeats rather than restates, mirroring
-// use-simulation-subject-malformed-capabilities.spec.ts's own established multi-file split for the
-// identical reason.
-//
-// Criteria 4 and 5 (a subject holding no attribute-value at all never dispatches, and the
-// requester's own emptiness still refuses) are both already proven, unchanged by this task, in
-// use-simulation-subject.spec.ts's own "criteria 5-6: readiness" describe block -- neither is
-// re-proven here. Criterion 6 (a dispatch already running still refuses a second one) is a
-// non-regression fact over files this task's own delivery never touches
-// (use-case-simulation-cockpit.ts, use-simulate-case.ts, use-simulate-hypothesis.ts) and is already
-// covered there (use-case-simulation-cockpit-gating.spec.ts,
-// use-simulate-hypothesis-dispatch-safety.spec.ts); this proof's own record states why no test for
-// it is added here. Criteria 1 and 2's own dispatch-level assertion (the actual /v1/simulate and
-// /v1/simulate/hypothesis requests firing) lives in the sibling
-// use-case-simulation-cockpit-hold-dispatch-open-for-missing-requirement.spec.ts; this file proves
-// the shared isReady fact both dispatches gate on.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

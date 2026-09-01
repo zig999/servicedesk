@@ -9,15 +9,6 @@ import {
 import { render } from "@testing-library/react";
 import { CaseSimulationHeader, type CaseSimulationHeaderProps } from "./case-simulation-header";
 
-/**
- * Shared mounting helper for case-simulation-header.spec.ts. CaseSimulationHeader
- * renders "Edit version" and "Manifest" as @tanstack/react-router Links, so it
- * needs a real router context to resolve an href against -- mirrors
- * case-attributes-tab.test-support.ts's own established shape for a component
- * mounted directly (root route renders the component itself, taking every prop
- * from the caller rather than a route param), with destination leaves
- * registered only so those Links have somewhere real to resolve.
- */
 export async function mountCaseSimulationHeader(props: CaseSimulationHeaderProps): Promise<void> {
   const rootRoute = createRootRoute({
     component: () => createElement(CaseSimulationHeader, props),

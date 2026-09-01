@@ -13,17 +13,6 @@ import {
   prettyPrinted,
 } from "./capability-detail-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/capability-detail-route's own criteria 1
-// ("shows that capability's full record, loaded through the new hook by both name and
-// version"), 3 ("a control that returns the operator to the capabilities list") and 6 ("the
-// existing capability-form-fields.tsx markup is reused unchanged"). Criterion 8's invalid-JSON
-// warnings (doubled for this screen's own two schema fields) live in the sibling
-// capability-detail-screen-invalid-schema.spec.ts, criterion 4/7's save behavior lives in
-// capability-detail-screen-save.spec.ts, and criterion 5's discard behavior lives in
-// capability-detail-screen-discard.spec.ts -- split this way to stay under this project's own
-// max-lines discipline from the start. All four share capability-detail-screen.test-support.ts's
-// own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -51,9 +40,6 @@ describe("CapabilityDetailScreen -- shows the loaded record (criterion 1)", () =
     await waitFor(() => expect(inputSchemaField.value).toBe(prettyPrinted(LOADED_INPUT_SCHEMA)));
     await waitFor(() => expect(outputSchemaField.value).toBe(prettyPrinted(LOADED_OUTPUT_SCHEMA)));
 
-    // Proves this reached the screen through the network read this route's own hook issues, by
-    // both identity fields together, rather than a value this screen invented or read by name
-    // alone.
     expect(fetchMock.mock.calls.some(([input]) => input === CAPABILITY_PATH)).toBe(true);
   });
 });

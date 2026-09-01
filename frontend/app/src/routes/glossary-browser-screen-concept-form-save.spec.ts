@@ -1,11 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, fireEvent, screen, waitFor, within } from "@testing-library/react";
 
-// sonner is the network/DOM-adjacent boundary use-concept-form.ts's own onError handler calls
-// into; mocking it here (mirroring hypothesis-revision-screen-errors.spec.ts's own established
-// convention) intercepts that call directly, so these assertions never depend on a real Toaster
-// mounting anything -- glossary-browser-screen.test-support.ts's own mounting helper does not
-// mount AppShell/Toaster at all.
 vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
 
 import { toast } from "sonner";
@@ -22,17 +17,6 @@ import {
   SUBJECT_TYPE_PATH,
   term,
 } from "./glossary-browser-screen.test-support";
-
-// Proof for task/concept-authoring/concept-create-edit-form's own criterion 5 -- a successful
-// create or edit registers the concept at the given name, and the Concepts tab reflects the
-// change afterward -- plus the delivery record's own disclosed inference that no new
-// error-ui-state.ts entry was needed since register-concept throws no domain error, so a failed
-// save falls back to the same generic toast use-edit-draft-version-form.ts already uses. Criteria
-// 1, 2 and the name-disabled inference live in glossary-browser-screen-concept-form.spec.ts, and
-// criteria 3, 4 plus the ttl-required inference live in
-// glossary-browser-screen-concept-form-accepts.spec.ts -- split three ways to stay under this
-// project's own max-lines rule (MNT-01). All three share glossary-browser-screen.test-support.ts's
-// own fixtures and mounting helper.
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -64,9 +48,7 @@ describe("GlossaryBrowserScreen — a successful create registers the concept an
     fireEvent.change(within(dialog).getByLabelText("TTL (seconds)"), {
       target: { value: "300" },
     });
-    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
-    // description is now required, so a create submission fills it the same way name/ttl are
-    // filled above -- domain/glossary/concept's fourth attribute.
+
     fireEvent.change(within(dialog).getByLabelText("Description"), {
       target: { value: "Tracks a customer-raised dispute over a billing charge." },
     });
@@ -112,10 +94,7 @@ describe("GlossaryBrowserScreen — a successful edit replaces the concept at th
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
-    // task/glossary-concept-description/concept-form-description-field's own criterion 2:
-    // the submitted body now also carries description, pre-filled here from the edited
-    // concept's own fixture default (glossaryConcept()'s own description), left untouched by
-    // this test.
+
     expect(parsedPutBody(fetchMock)).toEqual({
       accepts: ["customer-account", "merchant"],
       ttl: 120,

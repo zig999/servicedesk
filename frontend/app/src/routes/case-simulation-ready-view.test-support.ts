@@ -22,29 +22,12 @@ import type {
   Evaluation as HypothesisEvaluation,
 } from "../hooks/use-simulate-hypothesis";
 
-// Shared fixtures and mounting helper for case-simulation-ready-view.spec.ts,
-// case-simulation-ready-view-dispatch.spec.ts and case-simulation-ready-view-selection.spec.ts
-// -- task/simulation-cockpit/screen-assembly's own composed cockpit, which now calls
-// react-query hooks (useSimulationSubject's own useCapabilities/useConnectorConfigurations,
-// CaseSimulationSubjectPanel's own useGlossaryVocabularyOptions x2, useSimulateCase,
-// useSimulateHypothesis) and needs a QueryClientProvider in the render tree to mount at all --
-// unlike this file's own previous placeholder wiring, which needed none of this. Mirrors
-// case-simulation-screen.spec.ts's own QueryClientProvider + real-router mounting shape (this
-// component renders CaseSimulationHeader's and the Hypotheses table's own real router Links) and
-// use-simulation-subject.test-support.ts's own URL-keyed fetch stub (TST-03: only the network
-// boundary this composed tree reads through is a stand-in, never this tree's own rendering).
-
 export const CAPABILITIES_PATH = "/v1/capabilities";
 export const CONNECTORS_PATH = "/v1/connectors";
 export const GLOSSARY_SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
 export const GLOSSARY_SUBJECT_ATTRIBUTE_PATH = "/v1/glossary/subject-attribute";
 export const SIMULATE_CASE_PATH = "/v1/simulate";
 
-/** fix-use-simulate-hypothesis-dispatch (a corrective increment): the hook now dispatches to one
- * fixed route regardless of slug/version -- the case identity travels in the body instead. Keeps
- * its own two parameters so every existing call site in this route's own sibling spec files
- * (`simulateHypothesisPath(SLUG, VERSION)`) still resolves to the one URL the hook actually
- * calls, without editing those call sites. */
 export function simulateHypothesisPath(_slug: string, _version: number): string {
   return "/v1/simulate/hypothesis";
 }
@@ -52,18 +35,10 @@ export function simulateHypothesisPath(_slug: string, _version: number): string 
 export const SLUG = "acme-widgets";
 export const VERSION = 7;
 
-/** derive-subject-fields-from-input-requirements-hotfix: useSimulationSubject (composed by the
- * real useCaseSimulationCockpit this file's own mountReadyView renders through) now reads
- * useCaseInputRequirements(slug, version) instead of useConnectorConfigurations() for its own
- * field set, so this shared stubFetch needs a default handler for that read too, or
- * fillSubjectReadyInView's own findByLabelText("account-id") below never finds a field to fill. */
 export function inputRequirementsPath(slug: string, version: number): string {
   return `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/input-requirements`;
 }
 
-/** Mirrors use-simulation-subject.test-support.ts's own identical fixture pair -- that file's
- * own suite already proves this exact combination derives exactly one required field,
- * "account-id". */
 export const CAPABILITY = {
   name: "fetch-billing-account",
   version: "1",
@@ -80,11 +55,6 @@ export const CONNECTOR_CONFIGURATION = {
   configuration: JSON.stringify({ address: "https://billing/${subject:account-id}" }),
 };
 
-/** Mirrors use-simulation-subject.test-support.ts's own REQUIRED_FIELD_RESPONSE exactly: one
- * required requirement, "account-id", resolved to CAPABILITY above by exact name/version
- * identity -- exactly the one field fillSubjectReadyInView below fills, and the one attribute
- * name case-simulation-ready-view-dispatch.spec.ts's own dispatched-body assertion already
- * names. */
 export const REQUIRED_FIELD_RESPONSE = {
   requirements: [
     {
@@ -159,10 +129,6 @@ function hasSubjectField(body: unknown): body is { subject: unknown } {
   return typeof body === "object" && body !== null && "subject" in body;
 }
 
-/** Narrows a handler's own parsed request body down to its `subject` field without a cast,
- * mirroring use-simulate-case.test-support.ts's own loadedResult()/confirmedEvaluation()
- * narrowing-helper convention. Throws loudly rather than letting an unrelated body shape slip
- * past as `undefined`. */
 export function bodySubject(body: unknown): unknown {
   if (!hasSubjectField(body)) {
     throw new Error("case-simulation-ready-view proof: expected a request body carrying a subject");
@@ -170,11 +136,6 @@ export function bodySubject(body: unknown): unknown {
   return body.subject;
 }
 
-/** Defaults every registry read this composed tree issues (capabilities, connector
- * configurations, both glossary vocabularies) to a successful, single-entry load; a caller
- * overrides just the endpoint it needs to vary (typically SIMULATE_CASE_PATH or
- * simulateHypothesisPath's own endpoint) for its own test. Throws loudly for any unmocked URL
- * rather than hanging the test. */
 export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn> {
   const handlers: Record<string, Handler> = {
     [CAPABILITIES_PATH]: () => jsonResponse({ data: [CAPABILITY] }),
@@ -198,11 +159,6 @@ export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn
   return fetchMock;
 }
 
-/** Mounts the composed ready view through a real router (its own header and its own Hypotheses
- * table each render a real TanStack Router Link) and a real QueryClient -- mirrors
- * case-simulation-ready-view.spec.ts's own previous mountReadyView shape, widened with the
- * QueryClientProvider this composed tree now needs to mount at all, and with the manifest-
- * hypothesis edit route the Hypotheses table's own row Edit links now resolve against. */
 export async function mountReadyView(props: CaseSimulationReadyViewProps): Promise<QueryClient> {
   const rootRoute = createRootRoute({
     component: () => createElement(CaseSimulationReadyView, props),
@@ -249,9 +205,6 @@ export async function mountReadyView(props: CaseSimulationReadyViewProps): Promi
   return queryClient;
 }
 
-/** Fills the shared subject's own one derived required field ("account-id") and the requester,
- * through the rendered Subject region, so the header's and every row's own Simulate action
- * become enabled (criterion 1). Awaits the field's own async derivation before typing into it. */
 export async function fillSubjectReadyInView(): Promise<void> {
   const requiredField = await screen.findByLabelText("account-id");
   fireEvent.change(requiredField, { target: { value: "acct-1" } });
@@ -326,9 +279,6 @@ export function inconclusiveHypothesisEvaluation(hypothesis: string): Hypothesis
   };
 }
 
-/** The evidence array and durations object a simulateHypothesisResult() fixture carries by
- * default, shaped after the route's own delivered evidenceSchema/durationsSchema
- * (fix-use-simulate-hypothesis-dispatch's own header comment on use-simulate-hypothesis.ts). */
 function hypothesisEvidence(): readonly HypothesisEvidence[] {
   return [
     {

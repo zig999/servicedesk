@@ -12,30 +12,10 @@ import type {
 } from "./use-simulate-hypothesis";
 import type { CaseSimulationCockpitState } from "./use-case-simulation-cockpit";
 
-// Shared fixtures and helpers for use-case-simulation-cockpit.ts's own split proof
-// (-gating.spec.ts, -evaluations.spec.ts, -staleness.spec.ts), mirroring
-// use-simulation-subject.test-support.ts's own URL-keyed fetch stub and
-// use-simulate-case.test-support.ts's own method/body-capturing handler shape. This hook
-// composes exactly four network boundaries through its own four already-delivered composed
-// hooks (useSimulationSubject's capabilities/connector-configurations, useSimulateCase's
-// /v1/simulate, useSimulateHypothesis's own POST /v1/simulate/hypothesis --
-// fix-use-simulate-hypothesis-dispatch's own corrected, fixed route, superseding this file's own
-// prior per-slug/version URL) -- this file stands in for those four boundaries only (TST-03),
-// never for this hook's own composition logic
-// (the gating, the shared subject, the per-hypothesis evaluation map, the case-result and
-// staleness bookkeeping), which each spec file exercises directly against the real hook.
-
 export const CAPABILITIES_PATH = "/v1/capabilities";
 export const CONNECTORS_PATH = "/v1/connectors";
 export const SIMULATE_CASE_PATH = "/v1/simulate";
 
-/** derive-subject-fields-from-input-requirements-hotfix: useSimulationSubject (composed by the
- * real useCaseSimulationCockpit this file's own stubFetch mounts) now reads
- * useCaseInputRequirements(slug, version) instead of useConnectorConfigurations() for its own
- * field set, so this shared stubFetch needs a default handler for that read too, or every
- * dependent spec's subject stays permanently un-ready. Pinned to "acme-widgets"/7 -- the exact
- * slug/version every one of this file's own dependent spec files already declares as its own
- * local SLUG/VERSION constants. */
 export const SLUG = "acme-widgets";
 export const VERSION = 7;
 
@@ -43,25 +23,12 @@ export function inputRequirementsPath(slug: string, version: number): string {
   return `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/input-requirements`;
 }
 
-/** Matches any pinned slug/version's own input-requirements URL, not only SLUG/VERSION above --
- * use-case-simulation-cockpit-staleness.spec.ts's own tests each mount this cockpit under a slug
- * unique to that test (never "acme-widgets"/7, so its own "already visited" marker cannot leak
- * between tests), so the exact-match default below cannot cover them; this pattern is this
- * stubFetch's own fallback for exactly that case. */
 const INPUT_REQUIREMENTS_URL_PATTERN = /^\/v1\/cases\/[^/]+\/versions\/\d+\/input-requirements$/;
 
-/** fix-use-simulate-hypothesis-dispatch (a corrective increment): the hook now dispatches to one
- * fixed route regardless of slug/version -- the case identity travels in the body instead
- * (this task's own header comment). Keeps its own two parameters so every existing call site in
- * this hooks directory's own sibling spec files (`simulateHypothesisPath(SLUG, VERSION)`) still
- * resolves to the one URL the hook actually calls, without editing those call sites. */
 export function simulateHypothesisPath(_slug: string, _version: number): string {
   return "/v1/simulate/hypothesis";
 }
 
-/** Mirrors use-simulation-subject.test-support.ts's own identical fixture pair exactly -- that
- * file's own suite already proves this capability/connector-configuration combination derives
- * exactly one required field, "account-id". */
 export const CAPABILITY = {
   name: "fetch-billing-account",
   version: "1",
@@ -78,10 +45,6 @@ export const CONNECTOR_CONFIGURATION = {
   configuration: JSON.stringify({ address: "https://billing/${subject:account-id}" }),
 };
 
-/** Mirrors use-simulation-subject.test-support.ts's own REQUIRED_FIELD_RESPONSE exactly: one
- * required requirement, "account-id", resolved to CAPABILITY above by exact name/version
- * identity -- so makeSubjectReady()'s own "exactly one derived required field" wait below
- * still finds one, the same as before this hook's own field-set source changed. */
 export const REQUIRED_FIELD_RESPONSE = {
   requirements: [
     {
@@ -147,10 +110,6 @@ function hasSubjectField(body: unknown): body is { subject: unknown } {
   return typeof body === "object" && body !== null && "subject" in body;
 }
 
-/** Narrows a handler's own parsed request body down to its `subject` field without a cast,
- * mirroring use-simulate-case.test-support.ts's own loadedResult()/confirmedEvaluation()
- * narrowing-helper convention. Throws loudly rather than letting an unrelated body shape slip
- * past as `undefined`. */
 export function bodySubject(body: unknown): unknown {
   if (!hasSubjectField(body)) {
     throw new Error("use-case-simulation-cockpit proof: expected a request body carrying a subject");
@@ -158,10 +117,6 @@ export function bodySubject(body: unknown): unknown {
   return body.subject;
 }
 
-/** Defaults the two registry reads useSimulationSubject composes to a successful, single-entry
- * load; a caller overrides just the endpoint it needs to vary (typically SIMULATE_CASE_PATH or
- * simulateHypothesisPath's own endpoint) for its own test. Throws loudly for any unmocked URL
- * rather than hanging the test. */
 export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn> {
   const handlers: Record<string, Handler> = {
     [CAPABILITIES_PATH]: () => jsonResponse({ data: [CAPABILITY] }),
@@ -186,10 +141,6 @@ export function stubFetch(overrides: Record<string, Handler> = {}): Mock<FetchFn
   return fetchMock;
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test (mirrors every sibling hook's own
-// test-support convention in this hooks directory).
 export function createWrapper(): {
   Wrapper: (props: { children: ReactNode }) => ReactElement;
   queryClient: QueryClient;
@@ -268,9 +219,6 @@ export function inconclusiveHypothesisEvaluation(hypothesis: string): Hypothesis
   };
 }
 
-/** The evidence array and durations object a simulateHypothesisResult() fixture carries by
- * default, shaped after the route's own delivered evidenceSchema/durationsSchema
- * (fix-use-simulate-hypothesis-dispatch's own header comment on use-simulate-hypothesis.ts). */
 function hypothesisEvidence(): readonly HypothesisEvidence[] {
   return [
     {
@@ -298,11 +246,6 @@ export function simulateHypothesisResult(
   return { evidence: hypothesisEvidence(), evaluation, durations: hypothesisDurations() };
 }
 
-/** Fills the shared subject's own one derived required field and requester so
- * `subjectState.isReady` turns true, the precondition every gating test needs before it can
- * observe the gate actually flip -- awaits the field's own async derivation (capabilities/
- * connector-configurations) before typing into it, the same waitFor-then-act shape
- * use-simulation-subject.spec.ts's own tests already establish. */
 export async function makeSubjectReady(
   result: { readonly current: CaseSimulationCockpitState },
 ): Promise<void> {

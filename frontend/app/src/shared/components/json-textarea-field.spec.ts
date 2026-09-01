@@ -6,20 +6,10 @@ import {
   getJsonTextareaMinifiedValue,
 } from "./json-textarea-field";
 
-// This file stays .spec.ts (not .spec.tsx), matching this codebase's existing
-// convention for component specs (see status-table.spec.ts, conflict-banner.spec.ts).
-// Rendering is done through React.createElement rather than JSX syntax, since a
-// .ts file is parsed by esbuild's "ts" loader, which does not accept JSX.
-//
-// vite.config.ts's test.globals: true registers @testing-library/react's own
-// auto-cleanup against the global afterEach, so no manual cleanup() call is
-// needed here (testing-library/no-manual-cleanup).
-
 describe("JsonTextareaField", () => {
   it("reformats compact JSON as two-space indented, pretty-printed text that parses back to the exact same data (Beautify)", () => {
     const onChange = vi.fn();
-    // Extra insignificant whitespace in the source proves the control is not
-    // merely echoing the original text back reformatted by coincidence.
+
     const compact = '{"z":  1,   "a":[1,2,  3]}';
 
     render(
@@ -32,12 +22,6 @@ describe("JsonTextareaField", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Beautify" }));
 
-    // Hardcoded rather than computed by re-running JSON.stringify/JSON.parse
-    // in the test itself: a computed expectation would pass even if the
-    // control performed a different, wrong transformation that happened to
-    // agree with the test's own (identical) computation. This literal is the
-    // one correct two-space-indented rendering of {z:1, a:[1,2,3]}, so any
-    // wrong formatting or any data corruption both show up as a mismatch.
     const expected =
       '{\n  "z": 1,\n  "a": [\n    1,\n    2,\n    3\n  ]\n}';
     expect(onChange).toHaveBeenCalledWith(expected, true);
@@ -108,9 +92,6 @@ describe("JsonTextareaField", () => {
       }),
     );
 
-    // No prior interaction happened -- this is the control's very first
-    // render with an empty value -- so a message here proves the error is
-    // not gated behind any "has the user touched this field yet" tracking.
     expect(screen.getByRole("alert")).not.toBeNull();
   });
 
@@ -138,8 +119,7 @@ describe("JsonTextareaField", () => {
 
     expect(firstMessage).toContain("Invalid JSON:");
     expect(secondMessage).toContain("Invalid JSON:");
-    // Two different malformed inputs producing two different messages rules
-    // out a single fixed business sentence standing in for both.
+
     expect(firstMessage).not.toBe(secondMessage);
   });
 
@@ -179,20 +159,9 @@ describe("JsonTextareaField", () => {
     expect(onChange).toHaveBeenCalledWith('{"a":', false);
   });
 
-  // Proof for task/connector-capability-detail-editing/json-textarea-pretty-print-on-load's
-  // own criteria 1 and 2: a syntactically valid loaded value is reformatted as indented text
-  // and reported through onChange immediately on mount (criterion 1), and a value that is not
-  // valid JSON is left exactly as passed, with the load effect never touching it at all
-  // (criterion 2). Also proves that record's own disclosed inference: a "load" is recognized
-  // generically, on any value transition this control did not itself produce, not only on its
-  // very first render -- since neither existing caller (both dialogs) ever exercises that
-  // second case today, it is provable only at this control's own level.
-
   it("reports a compact valid JSON value reformatted as pretty-printed text and marked valid immediately on mount, before any interaction (criterion 1)", () => {
     const onChange = vi.fn();
-    // Extra insignificant whitespace, the same reasoning as the Beautify test above: a value
-    // already in the pretty form would trivially "equal" its own reformatting even if the
-    // mount effect did nothing at all, so the fixture must be minified to prove the effect ran.
+
     const compact = '{"z":1,"a":[1,2,3]}';
 
     render(
@@ -204,7 +173,6 @@ describe("JsonTextareaField", () => {
       }),
     );
 
-    // Hardcoded rather than computed, for the same reason as the Beautify test above.
     const expected = '{\n  "z": 1,\n  "a": [\n    1,\n    2,\n    3\n  ]\n}';
     expect(onChange).toHaveBeenCalledWith(expected, true);
   });
@@ -222,10 +190,6 @@ describe("JsonTextareaField", () => {
       }),
     );
 
-    // A value already indistinguishable from its own reformatting is not itself "left in
-    // the minified form it was passed" (criterion 1's own condition), so there is nothing
-    // to report -- and a spurious call here would be exactly the kind of update a caller
-    // holding this text in its own state could loop on.
     expect(onChange).not.toHaveBeenCalled();
   });
 
@@ -247,9 +211,7 @@ describe("JsonTextareaField", () => {
       throw new Error("expected the JSON field's own control to be a textarea element");
     }
     expect(textarea.value).toBe(raw);
-    // Never called at all, not merely "not called with a reformatted value" -- the load effect
-    // for an invalid value returns before reaching onChange, so nothing about this field is
-    // reported back to a caller on mount.
+
     expect(onChange).not.toHaveBeenCalled();
   });
 
@@ -261,10 +223,6 @@ describe("JsonTextareaField", () => {
 
     const { rerender } = render(createElement(JsonTextareaField, props('{"a":1}')));
 
-    // Completes the mount's own round trip exactly as a real controlled caller would --
-    // feeding the reformatted text this control just reported back in as its own `value`
-    // prop -- so the control settles into the same state it would be in inside a real
-    // dialog, rather than this test asserting anything about a caller nothing here builds.
     const mountCall = onChange.mock.calls[0];
     if (mountCall === undefined || typeof mountCall[0] !== "string") {
       throw new Error(
@@ -274,11 +232,6 @@ describe("JsonTextareaField", () => {
     rerender(createElement(JsonTextareaField, props(mountCall[0])));
     onChange.mockClear();
 
-    // A caller replacing the loaded value entirely from outside -- never through this
-    // control's own handleChange or handleBeautify -- is the second half of "on mount and
-    // whenever a new value is loaded into it" this task's own objective states, and the
-    // disclosed inference that such a transition is always treated as a load, whenever it
-    // is not self-produced, rather than only on the component's very first render.
     rerender(createElement(JsonTextareaField, props('{"b":2}')));
 
     expect(onChange).toHaveBeenCalledWith('{\n  "b": 2\n}', true);
@@ -307,16 +260,9 @@ describe("JsonTextareaField", () => {
       ),
     );
 
-    // The second instance's invalid text is the only one that should surface
-    // an inline error, proving the two mounted instances read only their own
-    // `value` rather than sharing any state through the shared props shape.
     const alerts = screen.getAllByRole("alert");
     expect(alerts).toHaveLength(1);
-    // The first field's own value, '{"a": 1}', is valid JSON that is not itself
-    // pretty-printed, so task/connector-capability-detail-editing/json-textarea-pretty-print-on-load's
-    // own mount-time load-normalization effect already reported one onChange call for it
-    // before either textarea is touched (proved on its own terms above); the second field
-    // never parses, so that same effect never calls its own onChange at all.
+
     expect(onChangeB).not.toHaveBeenCalled();
 
     const [firstTextarea, secondTextarea] = screen.getAllByRole("textbox");
@@ -324,10 +270,6 @@ describe("JsonTextareaField", () => {
     expect(onChangeA).toHaveBeenCalledWith('{"a": 2}', true);
     expect(onChangeB).not.toHaveBeenCalled();
 
-    // Captured immediately before touching the second field, rather than hardcoded, so this
-    // assertion stays about cross-instance independence -- no further call ever reaches
-    // onChangeA once only the second field changes -- without re-asserting, a second time and
-    // with a brittle literal, the mount-time call count already proved on its own above.
     const onChangeACallsSoFar = onChangeA.mock.calls.length;
     fireEvent.change(secondTextarea, { target: { value: '{"b": 1}' } });
     expect(onChangeB).toHaveBeenCalledWith('{"b": 1}', true);
@@ -335,14 +277,6 @@ describe("JsonTextareaField", () => {
   });
 });
 
-// Proof for task/capability-detail-layout/schema-editor-height-increase's own criterion 4:
-// JsonTextareaField's own default rendered height, used by any consumer that does not
-// explicitly opt into the taller `tall` variant, remains 160px/10rem. Criteria 1-2 (the
-// capability form's input-schema/output-schema fields render at 200px/12.5rem) and criterion 3
-// (the connector-configuration form's configuration field keeps 160px/10rem) are each proven at
-// the call site that criterion names -- capability-detail-screen-schema-editor-height.spec.ts and
-// connector-configuration-detail-screen-configuration-height.spec.ts -- since each is a claim
-// about how a specific consumer wires this prop, not about this component in isolation.
 describe("JsonTextareaField -- default height when tall is not passed (task/capability-detail-layout/schema-editor-height-increase, criterion 4)", () => {
   it("renders the shared 10rem/160px minimum-height class when the tall prop is left unset entirely", () => {
     render(
@@ -355,13 +289,9 @@ describe("JsonTextareaField -- default height when tall is not passed (task/capa
     );
 
     const textarea = screen.getByRole("textbox");
-    // min-h-40 is Tailwind's own 10rem/160px minimum-height utility -- the class this component
-    // carried before this task and the one every consumer not explicitly opting into the taller
-    // variant still renders.
+
     expect(textarea.className).toContain("min-h-40");
-    // Asserted as an explicit exclusion, not merely "min-h-40 present": a build that applied both
-    // classes at once would leave Tailwind's own cascade order, rather than this component's own
-    // conditional, to decide which minimum height actually wins.
+
     expect(textarea.className).not.toContain("min-h-[12.5rem]");
   });
 });
@@ -377,10 +307,6 @@ describe("getJsonTextareaMinifiedValue", () => {
     const compact = '{"a":1,"b":[1,2]}';
     const pretty = '{\n  "a": 1,\n  "b": [\n    1,\n    2\n  ]\n}';
 
-    // Asserted against the same literal on both sides, rather than only
-    // against each other: comparing the two results to one another alone
-    // would pass just as well if both happened to be null or both wrong in
-    // the same way, proving nothing about what either actually returned.
     expect(getJsonTextareaMinifiedValue(compact)).toBe('{"a":1,"b":[1,2]}');
     expect(getJsonTextareaMinifiedValue(pretty)).toBe('{"a":1,"b":[1,2]}');
   });

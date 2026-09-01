@@ -17,11 +17,6 @@ import {
   stubFetch,
 } from "./case-simulation-ready-view.test-support";
 
-// task/simulation-cockpit/screen-assembly's own criteria 2, 3, 5 and 7, proven against the fully
-// composed cockpit rather than the hook alone -- the header's own action, every row's own
-// action, the Case result region and the dispatch-error banner are all rendered facts this
-// task's own composition is responsible for wiring together, not merely values the hook computes.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

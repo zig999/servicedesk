@@ -15,11 +15,6 @@ import {
   stubFetch,
 } from "./use-capability-detail.test-support";
 
-// task/connector-capability-detail-editing/capability-detail-hook, criteria 5-6, the "no
-// distinguishable handling for a refused save" inference, and the double-submit guard edge
-// case -- split out of use-capability-detail.spec.ts to stay under this project's own max-lines
-// rule (that file's own header comment carries the full rationale and TST-04 divergence).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

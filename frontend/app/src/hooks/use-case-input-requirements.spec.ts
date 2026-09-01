@@ -4,12 +4,6 @@ import { createElement, type ReactElement, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCaseInputRequirements } from "./use-case-input-requirements";
 
-// task/subject-input-requirements/read-case-input-requirements-hook. Proves the hook's own
-// contract directly through renderHook, mirroring use-connector-configuration-detail.spec.ts's
-// and use-capability-detail.spec.ts's own established convention for a hook with no view of its
-// own: real Response objects through a stubbed global fetch (TST-03 -- only the network boundary
-// is replaced), and assertions on nothing but what the hook itself returns (TST-01).
-
 const SLUG = "case with space";
 const VERSION = 3;
 const PATH = `/v1/cases/${encodeURIComponent(SLUG)}/versions/${VERSION}/input-requirements`;
@@ -30,9 +24,6 @@ function errorResponse(code: string, status = 500): Response {
   return new Response(JSON.stringify({ error: { code, message: code } }), { status });
 }
 
-/** Keyed by exact URL, so a hook reading the wrong path (unencoded, wrong segment order, wrong
- * param) throws here instead of silently answering -- the query then rejects and isError
- * surfaces it. */
 function stubFetch(handlers: Record<string, () => Response | Promise<Response>>) {
   const fetchMock = vi.fn(async (input: string | URL | Request): Promise<Response> => {
     const url = typeof input === "string" ? input : input.toString();
@@ -46,9 +37,6 @@ function stubFetch(handlers: Record<string, () => Response | Promise<Response>>)
   return fetchMock;
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 function createWrapper(): {
   Wrapper: (props: { children: ReactNode }) => ReactElement;
   queryClient: QueryClient;
@@ -217,9 +205,7 @@ describe("useCaseInputRequirements -- refetch reissues the GET and returns void 
 describe("useCaseInputRequirements -- issuing its own GET, independent of another hook's differently-keyed cache entry (an inference the implementation recorded)", () => {
   it("resolves from its own GET rather than a case-version cache entry an existing hook already populated for this same (slug, version)", async () => {
     const { Wrapper, queryClient } = createWrapper();
-    // Seeds exactly the key use-case-simulation-version.ts's own hook reads, with a shape this
-    // hook would never itself produce -- if useCaseInputRequirements shared that key instead of
-    // its own dedicated one, the ready result below would carry this value instead.
+
     queryClient.setQueryData(["case-version", SLUG, VERSION], { from: "case-version-cache" });
     stubFetch({ [PATH]: () => jsonResponse(RESPONSE) });
 

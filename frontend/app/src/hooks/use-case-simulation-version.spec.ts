@@ -5,11 +5,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { useCaseSimulationVersion } from "./use-case-simulation-version";
 import type { CaseVersionRecord } from "../services/case-version-record";
 
-// task/simulation-cockpit/case-simulation-route's own read hook. This file
-// proves the hook's own returned phase-union directly through renderHook,
-// mirroring use-case-attributes-at-a-glance.spec.ts's own established
-// convention for a hook with no view of its own.
-
 const SLUG = "some-slug";
 const VERSION = 3;
 const VERSION_PATH = `/v1/cases/${SLUG}/versions/${VERSION}`;

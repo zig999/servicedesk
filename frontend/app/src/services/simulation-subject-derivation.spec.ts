@@ -6,19 +6,6 @@ import {
 import type { Capability } from "../hooks/use-capabilities";
 import type { CaseInputRequirement } from "../hooks/use-case-input-requirements";
 
-// task/subject-input-requirements/derive-subject-fields-from-input-requirements: this file
-// proves the pure derivation module directly -- no React, no network -- the same way it is
-// written to be read separately from the composing hook's own render lifecycle (this module's
-// own header comment). The composing hook's own state (curator-added attributes, readiness, the
-// pinned slug/version threading, and the loading/error pass-through) is proved separately in
-// use-simulation-subject.spec.ts.
-//
-// subjectPlaceholderNamesInConfiguration's own tests below are the pre-existing ones for that
-// function, unmodified: this task's own delivery record states the function is kept
-// byte-for-byte in behavior, unchanged, for its one remaining caller
-// (hooks/use-test-connector-panel.ts) -- these tests prove it still exports and behaves exactly
-// as before, and that this file's own rewrite left it untouched.
-
 function capability(
   overrides: Pick<Capability, "name" | "version" | "connector" | "concept"> &
     Partial<Capability>,

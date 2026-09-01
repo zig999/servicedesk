@@ -13,12 +13,6 @@ import {
   testConnectorResult,
 } from "./connector-test-panel.test-support";
 
-// Proof for task/connector-configuration-authoring/test-connector-debug-panel's own criteria 4,
-// 5 and 6 -- clicking "Test" displays the raw request actually sent, a completed call displays
-// the raw response actually received, and a failed or timed-out call displays the raw error or
-// timeout rather than a parsed or summarized result. Criterion 7 and the dispatch-failure
-// inference live in the sibling connector-test-panel-dispatch-safety.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -133,16 +127,6 @@ describe("ConnectorTestPanel — a failed call displays the raw error, never a p
   });
 });
 
-// Proof for task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome's own
-// criterion -- TestConnectorPanelState's testOutcome union can no longer represent, simultaneously,
-// a result from a previous successful call and an error from a more recent failed call. This is the
-// concrete, observable consequence of that type-level guarantee: dispatch a call that succeeds
-// (asserting the panel shows that success's own result), then dispatch a second call that fails
-// (asserting the panel now shows ONLY the failure message, with no trace of the stale success --
-// its own status, headers or body -- anywhere in the rendered output). The three-independent-fields
-// shape this task replaced could fail exactly this way: TanStack Query does not clear
-// mutation.data when a later mutate() call fails, so a `result` field fed from mutation.data and a
-// `testError` field fed from the failure could both be non-null at once and both render.
 describe("ConnectorTestPanel — a later failed call discards a stale successful result entirely, leaving no trace of it in the rendered output (task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome)", () => {
   it("renders only the failure message once a second dispatch fails, with nothing of the first call's own successful result still visible", async () => {
     let dispatchCount = 0;

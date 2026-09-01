@@ -5,40 +5,16 @@ import { render } from "@testing-library/react";
 import { ConnectorConfigurationsScreen } from "./connector-configurations-screen";
 import type { ConnectorConfiguration } from "../hooks/use-connector-configurations";
 
-// Shared fixtures and mounting helper for
-// task/connector-configuration-authoring/connector-configuration-create-edit-form's own proof,
-// mirroring capabilities-browser-screen.test-support.ts's own established convention exactly:
-// a handlers-map-keyed fetch stub (an unhandled path fails the test loudly rather than hanging
-// it), a full-fidelity fixture builder, and a mounting helper that stubs global fetch and wraps
-// the screen in a bare QueryClientProvider.
-//
-// This header used to say ConnectorConfigurationsScreen calls no router hook at all -- stale
-// even before task/connector-capability-create-detail-route/
-// connector-configurations-list-create-action (row-click navigation already called useNavigate()
-// by then), and now doubly so: that task repointed the "New connector configuration" button's own
-// onClick at the same useNavigate() instance. What stays true is narrower than the old claim:
-// calling useNavigate() itself needs no RouterProvider context, only actually invoking the
-// function it returns does -- so this bare-QueryClientProvider mount still suffices for every
-// spec file here that never clicks a row or "New connector configuration" (the loading/error/
-// empty/listing suite in connector-configurations-screen.spec.ts). A spec file that does click
-// one of those two controls builds its own small, router-scaffolded mount instead
-// (connector-configurations-screen-navigation.spec.ts, connector-configurations-screen-form.spec.ts
-// and connector-configurations-screen-form-save.spec.ts each do, locally, rather than through a
-// mounting helper here).
-
 export const CONNECTORS_PATH = "/v1/connectors";
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 
-/** The shape of one element of vitest's own `Mock<FetchFn>['mock']['calls']`. */
 type RecordedCall = [string | URL | Request, RequestInit | undefined];
 
-/** The PUT path use-connector-configuration-form.ts's own mutation dispatches at (register-connector). */
 export function connectorPutPath(connector: string): string {
   return `/v1/connectors/${encodeURIComponent(connector)}`;
 }
 
-/** Every call this fetch stub recorded whose own method matches (case-insensitively "GET" by default, since that is what `init` omits). */
 export function requestsWithMethod(
   fetchMock: Mock<FetchFn>,
   method: string,
@@ -52,21 +28,12 @@ export function putCallCount(fetchMock: Mock<FetchFn>): number {
   return requestsWithMethod(fetchMock, "PUT").length;
 }
 
-/**
- * Every call this fetch stub recorded at exactly `path`, whatever method it carried --
- * mirroring connector-test-panel.test-support.ts's own callsToPath. Scoping a count to one path
- * is what lets a test over this screen's own list-read stay true once a sibling section mounted
- * inside the same dialog (e.g. ConnectorTestPanel) issues its own, unrelated reads: the total
- * call count across the whole dialog is no longer a fact this screen's own criteria state, but
- * the call count at this screen's own CONNECTORS_PATH still is.
- */
 export function callsToPath(fetchMock: Mock<FetchFn>, path: string): readonly RecordedCall[] {
   return fetchMock.mock.calls
     .filter(([input]) => (typeof input === "string" ? input : input.toString()) === path)
     .map(([input, init]): RecordedCall => [input, init]);
 }
 
-/** The JSON body of the `index`-th PUT call this fetch stub recorded (0 by default -- the first one). */
 export function parsedPutBody(fetchMock: Mock<FetchFn>, index = 0): unknown {
   const rawBody = requestsWithMethod(fetchMock, "PUT")[index]?.[1]?.body;
   if (typeof rawBody !== "string") {
@@ -81,12 +48,10 @@ export function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status });
 }
 
-/** The page envelope useConnectorConfigurations() reads only `data` out of -- total/limit/offset/pageCount are deliberately left unread, matching use-glossary-vocabulary.ts's own and use-capabilities.ts's own convention this hook mirrors. */
 export function connectorConfigurationsPage(data: readonly ConnectorConfiguration[]): unknown {
   return { data, total: data.length, limit: 20, offset: 0, pageCount: 1 };
 }
 
-/** One full-fidelity fixture carrying both fields domain/integration/connector-configuration declares. */
 export function connectorConfiguration(
   overrides: Partial<ConnectorConfiguration> = {},
 ): ConnectorConfiguration {
@@ -97,11 +62,6 @@ export function connectorConfiguration(
   };
 }
 
-/**
- * A fetch stub answering exactly the paths its own `handlers` map names; any other path fails
- * the test loudly rather than hanging it, mirroring capabilities-browser-screen.test-support.ts's
- * own createCapabilitiesFetchStub.
- */
 export function createConnectorConfigurationsFetchStub(
   handlers: Partial<Record<string, () => Response | Promise<Response>>>,
 ): Mock<FetchFn> {

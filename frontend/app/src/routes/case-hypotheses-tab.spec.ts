@@ -9,15 +9,6 @@ import {
   VERSIONS_PATH,
 } from "./case-hypotheses-tab.test-support";
 
-// task/manifest-hypothesis-authoring/hypotheses-tab's own criteria 2, 3 and 4, proven
-// directly against CaseHypothesesTab (mounted on its own, the same way
-// hypothesis-revision-screen.spec.ts mounts NewHypothesisScreen/ReviseHypothesisScreen
-// directly rather than through the whole production route tree) -- criterion 1's own
-// tab-strip wiring is proven separately in case-detail-screen-hypotheses-tab.spec.ts.
-// A row carries onRowClick, so StatusTable overrides its implicit "row" role with
-// "button" (status-table.spec.ts's own established convention, also used by
-// cases-list-screen.spec.ts for the same reason).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -73,8 +64,7 @@ describe("CaseHypothesesTab (criterion 3)", () => {
   it("shows each hypothesis's Revisions count as the endpoint's own total, never the length of the page it returned", async () => {
     const fetchMock = createFetchStub({
       [HYPOTHESES_PATH]: () => jsonResponse({ data: [{ name: "H1" }, { name: "H2" }] }),
-      // H1's own revisions page carries a single item, but its total is 5 --
-      // this is exactly the distinction this criterion states.
+
       [revisionsPath("H1")]: () => jsonResponse(H1_REVISIONS),
       [revisionsPath("H2")]: () => jsonResponse(H2_REVISIONS),
     });

@@ -11,15 +11,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/detail-evidence-capability-hotfix/flatten-detail-evidence-capability-reference's own
-// criterion 2 -- proven end to end through the composed cockpit hook, the exact pipeline that
-// crashed on a real full-case run (useCaseSimulationCockpit -> toDetailEvidence
-// (case-simulation-cockpit-adapters.ts) -> the Detail region's own `detail.evidence`), rather
-// than only against toDetailEvidence in isolation. Not folded into
-// use-case-simulation-cockpit-evaluations.spec.ts (which already asserts `detail.evidence` for a
-// hypothesis-sourced run, unaffected by this fix) since that file's own existing tests are proof
-// this corrective task did not need to add to.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 

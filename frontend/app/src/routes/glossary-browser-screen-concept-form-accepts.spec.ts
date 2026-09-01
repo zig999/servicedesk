@@ -14,16 +14,6 @@ import {
   term,
 } from "./glossary-browser-screen.test-support";
 
-// Proof for task/concept-authoring/concept-create-edit-form's own criteria 3 and 4 -- the
-// accepts field lets more than one subject type be selected and persists exactly the selected
-// set, and submitting with none selected is blocked -- plus the delivery record's own disclosed
-// inference that ttl is required client-side with no default, even though the backend accepts
-// an absent ttl. Criteria 1, 2 and the name-disabled inference live in the sibling
-// glossary-browser-screen-concept-form.spec.ts, and criterion 5 plus the generic-failure-toast
-// inference live in glossary-browser-screen-concept-form-save.spec.ts -- split three ways to
-// stay under this project's own max-lines rule (MNT-01). All three share
-// glossary-browser-screen.test-support.ts's own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -58,9 +48,7 @@ describe("GlossaryBrowserScreen — accepts persists exactly the selected set of
     fireEvent.change(within(dialog).getByLabelText("TTL (seconds)"), {
       target: { value: "60" },
     });
-    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
-    // description is now required, so a create submission fills it the same way name/ttl are
-    // filled above.
+
     fireEvent.change(within(dialog).getByLabelText("Description"), {
       target: { value: "Tracks a customer-raised dispute over a billing charge." },
     });
@@ -98,9 +86,7 @@ describe("GlossaryBrowserScreen — accepts persists exactly the selected set of
     fireEvent.click(within(dialog).getByRole("button", { name: "Save" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
-    // task/glossary-concept-description/concept-form-description-field's own criterion 2: the
-    // submitted body now also carries description, pre-filled from the edited concept's own
-    // fixture default, left untouched by this test.
+
     expect(parsedPutBody(fetchMock)).toEqual({
       accepts: ["customer-account", "onboarding"],
       ttl: 60,
@@ -143,9 +129,7 @@ describe("GlossaryBrowserScreen — ttl is required client-side, with no default
       target: { value: "billing-dispute" },
     });
     fireEvent.click(within(dialog).getByRole("checkbox", { name: "customer-account" }));
-    // task/glossary-concept-description/concept-form-description-field's own criterion 3:
-    // description is now required too, filled here so only ttl is left invalid -- otherwise
-    // this test's own single getByRole("alert") below would find two.
+
     fireEvent.change(within(dialog).getByLabelText("Description"), {
       target: { value: "Tracks a customer-raised dispute over a billing charge." },
     });

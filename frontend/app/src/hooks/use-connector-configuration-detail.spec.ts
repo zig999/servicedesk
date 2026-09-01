@@ -14,15 +14,6 @@ import {
   UPDATED_CONFIGURATION,
 } from "./use-connector-configuration-detail.test-support";
 
-// task/connector-capability-detail-editing/connector-configuration-detail-hook. This file proves
-// the hook's own contract directly through renderHook, mirroring
-// use-case-attributes-at-a-glance.spec.ts's own established convention for a hook with no view
-// of its own: real Response objects through a stubbed global fetch (TST-03 -- only the network
-// boundary is replaced), and assertions on nothing but what the hook itself returns (TST-01).
-// The fixtures and helpers above live in use-connector-configuration-detail.test-support.ts,
-// mirroring new-case-draft-screen.test-support.ts's own established pattern, so this file stays
-// under this project's own max-lines rule.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -30,10 +21,7 @@ afterEach(() => {
 describe("useConnectorConfigurationDetail -- issuing its own GET, independent of the list cache (criterion 1)", () => {
   it("resolves the ready phase from its own direct GET, not from a connector-configurations list query the caller's cache already held for this same connector", async () => {
     const { Wrapper, queryClient } = createWrapper();
-    // Seeds exactly the key use-connector-configurations.ts's own list hook reads, with a
-    // different configuration for this same connector -- if this hook read from that cache
-    // instead of issuing (and consuming) its own GET, the ready phase below would carry this
-    // value instead.
+
     queryClient.setQueryData(["connector-configurations"], {
       data: [{ connector: CONNECTOR, configuration: '{"from":"list-cache"}' }],
     });
@@ -219,9 +207,8 @@ describe("useConnectorConfigurationDetail -- re-baselining from the values submi
     stubFetch({
       [CONFIGURATION_PATH]: (method) =>
         method === "PUT"
-          ? // Simulates the sibling backend bug this task's own Notes name: the PUT response
-            // still answers `configuration` as an object rather than the JSON-string wire
-            // shape only GET was fixed for.
+          ?
+
             jsonResponse({ connector: CONNECTOR, configuration: { unexpected: "shape" } })
           : jsonResponse({ connector: CONNECTOR, configuration: LOADED_CONFIGURATION }),
     });

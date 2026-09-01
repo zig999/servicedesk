@@ -11,17 +11,6 @@ import {
   term,
 } from "./glossary-browser-screen.test-support";
 
-// Proof for task/concept-authoring/concept-create-edit-form's own criteria 1 and 2 -- the
-// "New concept" action opening a blank form, and each row's own "Edit" action opening the same
-// form pre-filled -- plus the delivery record's own disclosed inference that the name field is
-// disabled (not merely pre-filled) while editing, and the dialog's own loading/load-error
-// phases over the accepts multi-select's own subject-type vocabulary (EDG-01/EDG-02, "a
-// dependency that fails or answers slowly"). Criteria 3, 4 and the ttl-required inference live
-// in the sibling glossary-browser-screen-concept-form-accepts.spec.ts, and criterion 5 plus the
-// generic-failure-toast inference live in glossary-browser-screen-concept-form-save.spec.ts --
-// split three ways to stay under this project's own max-lines rule (MNT-01). All three share
-// glossary-browser-screen.test-support.ts's own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

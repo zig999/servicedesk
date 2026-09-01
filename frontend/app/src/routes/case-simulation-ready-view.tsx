@@ -7,29 +7,6 @@ import { CaseSimulationCaseResultPanel } from "./case-simulation-case-result-pan
 import { useCaseSimulationCockpit } from "../hooks/use-case-simulation-cockpit";
 import type { CaseSimulationVersionState } from "../hooks/use-case-simulation-version";
 
-/**
- * task/simulation-cockpit/screen-assembly: the Simulation Cockpit's own
- * "ready" phase markup, now composing every region the layout describes
- * (intake/layout/simulation-screen.md) into one working screen -- the header
- * (task/simulation-cockpit/case-simulation-route), the Subject region
- * (task/subject-derivation/subject-panel), the Hypotheses region
- * (task/simulation-cockpit/hypotheses-table), the Detail region
- * (task/simulation-cockpit/detail-panel) and the Case result region
- * (task/simulation-cockpit/case-result-panel) -- sharing one subject, one
- * dispatch-at-a-time gate and one per-hypothesis evaluation map, all computed
- * by useCaseSimulationCockpit (../hooks/use-case-simulation-cockpit.ts).
- *
- * This file itself only composes those five components and reads the
- * cockpit's own returned state (ARC-02, ARC-03): the cross-region logic --
- * gating, the shared subject, which run populates which region, the
- * return-from-editing staleness marker -- lives in that hook and in
- * ../routes/case-simulation-cockpit-adapters.ts, never inline here.
- *
- * Replaces this file's own previous placeholder wiring
- * (`canSimulate={false}`, an inert `onSimulateCase`, no other region
- * composed) now that every sibling region and both dispatch hooks exist.
- */
-
 export type CaseSimulationReadyViewProps = {
   readonly slug: string;
   readonly version: number;

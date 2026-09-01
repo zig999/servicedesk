@@ -10,21 +10,13 @@ import type {
   SimulateSubject,
 } from "./use-simulate-case";
 
-// Shared fixtures and helpers for use-simulate-case.spec.ts and
-// use-simulate-case-response-shape.spec.ts, mirroring
-// use-capability-detail.test-support.ts's own established one-support-file-per-unit pattern.
-
 export const SIMULATE_PATH = "/v1/simulate";
 export const REQUESTER = "operator@example.com";
 
-/** A case identity a real system would treat as a draft version -- this hook's own request
- * body carries no `state` field at all, so nothing here distinguishes it structurally from
- * releasedCaseRef() below except the version number a caller happens to pass. */
 export function draftCaseRef(): SimulateCaseRef {
   return { slug: "some-case", version: 1 };
 }
 
-/** A case identity a real system would treat as a released version -- see draftCaseRef() above. */
 export function releasedCaseRef(): SimulateCaseRef {
   return { slug: "some-case", version: 2 };
 }
@@ -40,10 +32,6 @@ export function requestBody(caseRef: SimulateCaseRef): SimulateCaseRequestBody {
   return { case: caseRef, subject: subject(), requester: REQUESTER };
 }
 
-/** A full, typed success response: one evidence item carrying result_detail and one without
- * it, one confirmed evaluation carrying citations and a call record and one inconclusive
- * evaluation carrying a reason and no call record, and a fully-populated assessment/cost/
- * durations record. */
 export function simulateResult(overrides: Partial<SimulateCaseResult> = {}): SimulateCaseResult {
   return {
     evidence: [
@@ -124,8 +112,6 @@ function parsedBody(init?: RequestInit): unknown {
   return JSON.parse(init.body);
 }
 
-/** Each handler receives the request's own method and its parsed JSON body, so a test can
- * inspect exactly what onSimulate dispatched without reaching into the hook's own internals. */
 export function stubFetch(handlers: Record<string, Handler>): Mock<FetchFn> {
   const fetchMock = vi.fn(
     async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
@@ -141,9 +127,6 @@ export function stubFetch(handlers: Record<string, Handler>): Mock<FetchFn> {
   return fetchMock;
 }
 
-// Built once per test and captured in this closure, not constructed inline inside the returned
-// component's own body -- a QueryClient built there would be rebuilt on every render the
-// provider tree undergoes, discarding its cache mid-test.
 export function createWrapper(): {
   Wrapper: (props: { children: ReactNode }) => ReactElement;
   queryClient: QueryClient;
@@ -155,8 +138,6 @@ export function createWrapper(): {
   return { Wrapper, queryClient };
 }
 
-/** Narrows the hook's own nullable `result` without a cast, mirroring
- * use-capability-detail.test-support.ts's own readyState()/loadErrorState() narrowing helpers. */
 export function loadedResult(state: SimulateCaseState): SimulateCaseResult {
   if (state.result === null) {
     throw new Error("expected a loaded simulate-case result");

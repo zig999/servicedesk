@@ -15,13 +15,6 @@ import {
   stubFetch,
 } from "./case-simulation-ready-view.test-support";
 
-// task/simulation-cockpit/screen-assembly's own criterion 4: selecting a hypothesis row opens
-// the Detail region for that hypothesis's latest evaluation, whether it came from a full-case
-// run or from simulating that hypothesis alone -- proven here against the fully composed
-// cockpit, where "selecting a row" is a real click on the Hypotheses table's own row rendered by
-// this composition (case-simulation-hypotheses-table.tsx's own new onSelectHypothesis prop,
-// always supplied by this task).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -36,9 +29,6 @@ async function mountReady(): Promise<void> {
   );
 }
 
-/** A clickable row carries role="button" (StatusTable's own established convention), the same
- * role every row's own Simulate <button> carries -- filtering by tagName distinguishes the row
- * element itself, in manifest position order, from either row's own nested Simulate button. */
 function rowElements(): readonly HTMLElement[] {
   return screen.getAllByRole("button").filter((element) => element.tagName === "TR");
 }

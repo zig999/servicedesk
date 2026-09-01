@@ -10,22 +10,6 @@ import {
   stubFetch,
 } from "./case-simulation-ready-view.test-support";
 
-// task/simulation-cockpit/screen-assembly rewrote this file's own previous placeholder wiring
-// (canSimulate={false}, an inert onSimulateCase, only the header composed) into the full
-// composed cockpit -- header, Subject, Hypotheses, Detail and Case result, sharing one subject
-// and one dispatch-at-a-time gate through useCaseSimulationCockpit. This file's own previous
-// three tests proved facts about that placeholder wiring (an unconditionally-disabled control,
-// no gate, no QueryClientProvider needed); two of them (the always-disabled control, and
-// clicking its inert handler) are superseded outright by the composed cockpit's own real gate,
-// proven below against the actual mechanism rather than its absence. The third (the loaded
-// record's own when_to_use and version state reaching the header) and the fourth (the record's
-// own title never rendered) describe facts this composition still holds unchanged, so they are
-// kept here, re-mounted under the QueryClientProvider this tree now needs to render at all.
-//
-// Criteria 2 (dispatch-in-flight gating), 3 (the shared subject), 5 (Case result population) and
-// 7 (the error banner) live in case-simulation-ready-view-dispatch.spec.ts; criterion 4
-// (selecting a hypothesis opens Detail) lives in case-simulation-ready-view-selection.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

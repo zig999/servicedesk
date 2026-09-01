@@ -15,24 +15,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/simulation-detail-hypothesis-hotfix/wire-hypothesis-evidence-and-prompt (a corrective
-// increment): proves the fix through the real, composed hook -- the way a browser session
-// actually reaches it -- rather than only through the pure adapters it calls. The first describe
-// block below is this task's own reproduction, made concrete: a single-hypothesis simulation
-// whose response carries real evidence and a real prompt previously left both the Evidence tab
-// and the Prompt tab empty/placeholder; this test dispatches that exact kind of response and
-// mounts the real CaseSimulationDetailPanel with what the hook now hands it, so a regression back
-// to the old behavior fails here at the rendered tab, not only in a prop's shape.
-//
-// The second and third describe blocks prove criterion 6 (a full-case run's own evidence and raw
-// response reach the Detail panel exactly as before) directly against the hook's own `detail`
-// computation, since the branch that decides which evidence a case-sourced selection reads
-// (use-case-simulation-cockpit.ts's own `selectedEvaluation.source === "case" && lastCaseResult`
-// check) lives in this file, not in the panel or its tabs -- CaseSimulationDetailPanel itself
-// cannot tell a case-sourced evaluation from a hypothesis-sourced one, so only a test against this
-// hook can show that branch still picks the run's own evidence rather than the newly-added
-// per-evaluation field.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 

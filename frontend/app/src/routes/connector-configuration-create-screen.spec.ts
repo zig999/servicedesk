@@ -5,18 +5,6 @@ import {
   mountConnectorConfigurationCreateScreen,
 } from "./connector-configuration-create-screen.test-support";
 
-// Proof for task/connector-capability-create-detail-route/connector-configuration-create-route's
-// own criteria 1-5, 12 and 13: routing/specificity, connector-field editability, the shared
-// form-fields component's own reuse fingerprint, the shared create/edit hook's own create-mode
-// default, the Back link, and the absent test panel -- plus the delivery record's own disclosed
-// inference that this screen renders no loading or load-error phase. Criteria 6-11 (dispatch, the
-// empty/non-empty-name guards, the JSON-validity guard, refusal surfacing, and post-save
-// navigation), the UNDERDETERMINED note's own test, and the disclosed inference over where the
-// post-save navigation reads the connector name from all live in the sibling
-// connector-configuration-create-screen-save.spec.ts, split this way to stay under this project's
-// own max-lines convention. Both share connector-configuration-create-screen.test-support.ts's own
-// fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

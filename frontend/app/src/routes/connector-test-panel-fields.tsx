@@ -5,34 +5,6 @@ import { Select } from "@tui/ui/select";
 import { Button } from "@tui/ui/button";
 import type { TestConnectorPanelState } from "../hooks/use-test-connector-panel";
 
-/**
- * The Test section's own inputs
- * (task/connector-configuration-authoring/test-connector-debug-panel): the
- * capability picker scoped to this connector configuration (criterion 1),
- * the subject assembled by hand -- a type plus typed attribute-value pairs,
- * no list of existing subjects offered (criterion 2) -- and the chosen
- * capability's own input_schema shown read-only alongside it. Presentation
- * only: every value and handler comes from useTestConnectorPanel
- * (ARC-02/ARC-03).
- *
- * The Select fields wrap their own Label rather than using htmlFor/id --
- * this app's own established convention, since TUI's Select only spreads
- * caller props onto its outer wrapper and not its inner interactive element
- * (case-version-editor-form-fields.tsx). Every other field here (a plain
- * Input) keeps the ordinary htmlFor/id linkage.
- *
- * Each attribute row's own Attribute field is `disabled readOnly` (task/
- * connector-test-panel-attribute-readonly/make-attribute-field-readonly),
- * carrying no onChange at all -- the same fixed-value convention this app
- * already established for a derived field on hypothesis-revision-form-
- * fields.tsx (its own Subject type field). The name it displays is exactly
- * the one useTestConnectorPanel's own onAddAttribute reconciliation already
- * derived from Configuration's `${subject:<attribute-name>}` placeholders
- * (rules/integration/an-http-connector-configuration-declares-its-call's
- * own placeholder clause); the operator can no longer type over it, only
- * remove the row (onRemoveAttribute) or edit its Value.
- */
-
 export type ConnectorTestPanelFieldsProps = {
   readonly state: TestConnectorPanelState;
 };
@@ -121,7 +93,6 @@ export function ConnectorTestPanelFields({ state }: ConnectorTestPanelFieldsProp
   );
 }
 
-/** The chosen capability's own input_schema, pretty-printed for read-only reference; falls back to the raw stored text if it somehow does not parse as JSON. */
 function formatSchemaForDisplay(schema: string): string {
   try {
     return JSON.stringify(JSON.parse(schema), null, 2);

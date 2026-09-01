@@ -11,26 +11,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// task/simulation-cockpit/screen-assembly's own criterion 6: returning to this cockpit for a
-// slug/version this tab has already visited invalidates that version's own cached query --
-// use-case-simulation-version.ts's own exact ["case-version", slug, version] key, which the
-// header, the Subject region and the Hypotheses table's own manifest rows all read -- and marks
-// the last run "stale". Every case-version record in this delivery's own fixtures carries no
-// hash or updated_at (case-version-record.ts), so rules/investigation/a-simulation-result-is-stale-
-// once-its-source-changes's own allowance for "the coarsest safe answer" -- exercised by
-// scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result's own concrete
-// "returns to the cockpit" case -- is the only branch this cockpit can ever take; no comparison
-// is computed anywhere in this file's own proof for that reason.
-//
-// This task's own delivery record discloses that useCaseSimulationHistory's own run list is
-// component-scoped React state, so a genuine full-route navigation away and back unmounts and
-// remounts this whole cockpit first, resetting that list to empty before markLastRunStale is
-// ever called against it -- the mechanism fires correctly but has nothing left to mark on a real
-// round trip today. The last test below proves exactly that current behavior, not a future fix:
-// each test below addresses this tab's own "already visited" marker under a slug unique to that
-// test, since the marker is a plain module-level Set shared by every render in this file and
-// must not let one test's visit leak into another's assertion about a first visit.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

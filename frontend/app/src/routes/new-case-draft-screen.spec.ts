@@ -9,12 +9,6 @@ import {
   SUBJECT_TYPE_TERMS,
 } from "./new-case-draft-screen.test-support";
 
-// Blank-form and subject pre-set coverage for task/version-editor/
-// new-draft-creation (criterion 2). POST/switch/conflict coverage lives in
-// new-case-draft-screen-save.spec.ts and new-case-draft-screen-conflict.spec.ts,
-// split out to stay under this project's own max-lines rule; all three share
-// the fixtures and mounting helpers in new-case-draft-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -83,15 +77,6 @@ describe("NewCaseDraftScreen", () => {
     await screen.findByLabelText("Title");
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-    // react-hook-form's own zod resolver blocks an invalid submission before
-    // the mutation's own mutationFn is ever called -- nothing this task wrote
-    // decides that; this test pins the consequence, that Save on a wholly
-    // blank form never reaches the network. Waiting for the fields' own
-    // rendered validation errors (title, when_to_use and every fallback
-    // field are all still blank) is what makes that resolution deterministic,
-    // rather than a fixed timeout guessing how long it takes; several fields
-    // render the same zod message, so this waits for at least one rather than
-    // asserting a single, necessarily-unique match.
     await waitFor(() => {
       expect(
         screen.getAllByText("String must contain at least 1 character(s)").length,

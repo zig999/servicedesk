@@ -2,20 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, screen, within } from "@testing-library/react";
 import { baseState, buildRequiredField, renderPanel } from "./case-simulation-subject-panel.test-support";
 
-// Proof for task/subject-derivation/subject-panel's own criterion 5 (the "add attribute"
-// control offers only glossary-drawn attribute names, satisfying
-// rules/investigation/a-subject-attribute-is-drawn-from-the-glossary), mounted directly against
-// CaseSimulationSubjectPanel. Criteria 1-4 are proven in case-simulation-subject-panel.spec.ts
-// and criterion 6 plus the loading/error/empty-list inferences in
-// case-simulation-subject-panel-json-view.spec.ts. Shared fixtures and the render helper live in
-// case-simulation-subject-panel.test-support.ts, whose own header comment carries this proof's
-// fixture and network-stubbing conventions.
-//
-// task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control's own
-// five criteria, and its own UNDERDETERMINED note over state.addedAttributes, are proven in the
-// last describe blocks below, appended to this same file rather than a new sibling (MNT-01's own
-// three-hundred-line ceiling, checked against this file's own line count, still leaves room).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -30,12 +16,7 @@ describe("CaseSimulationSubjectPanel -- the add-attribute control offers only gl
   });
 
   it("offers exactly the subject-attribute vocabulary's own current terms as options, when no requirement names any of them", async () => {
-    // requiredFields is overridden to [] here, rather than left at baseState's own default
-    // (which names "account-id", one of the two mocked vocabulary terms): this task's own sibling,
-    // task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control,
-    // now excludes a requirement-named attribute from these same options, so this criterion-5
-    // proof (task/subject-derivation/subject-panel) needs no requirement in play to state its own
-    // claim -- that filter's own proof lives in the last describe blocks of this file.
+
     await renderPanel(
       baseState({ requiredFields: [], addedAttributes: [{ id: "row-1", attribute: "", value: "" }] }),
     );
@@ -108,20 +89,6 @@ describe("CaseSimulationSubjectPanel -- the add-attribute control offers only gl
     expect(screen.getByRole("button", { name: "+ attribute" })).toBeTruthy();
   });
 });
-
-// Proof for task/subject-input-requirements/exclude-already-required-attributes-from-the-add-control's
-// own criteria (rules/investigation/a-composed-subject-presents-every-case-input-requirement,
-// rules/investigation/a-subject-attribute-is-drawn-from-the-glossary,
-// rules/investigation/a-subject-holds-one-value-per-attribute), mounted the same way as the rest
-// of this file. Criterion 4 (useGlossaryVocabularyOptions still answers with the whole vocabulary
-// for its other consumers) is a non-regression claim about a different component
-// (glossary-browser-screen.tsx, not this panel) and is already proven by
-// glossary-browser-screen-vocabulary-tabs.spec.ts's own it.each over VOCABULARY_TAB_CASES, whose
-// "Subject attributes" case mounts glossary-browser-screen.tsx against a stubbed
-// GET /v1/glossary/subject-attribute returning three terms and asserts all three render as
-// rows -- proving that other caller still receives useGlossaryVocabularyOptions("subject-attribute")'s
-// own unfiltered options after this task's own filtering was added inside this file's own
-// component; no new test for it is written here.
 
 describe("CaseSimulationSubjectPanel -- the add-attribute control excludes every attribute name state.requiredFields already names (criteria 1 and 3: the same assertion that proves no excluded option is offered also proves none can be picked and added a second time through this control, since onAttributeChange can only ever be invoked with an option this Select actually renders)", () => {
   it("removes the required attribute's own name from the Select's own options, leaving only the vocabulary term no requirement names", async () => {

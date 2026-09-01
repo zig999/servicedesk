@@ -23,17 +23,6 @@ import {
   stubFetch,
 } from "./use-simulate-hypothesis.test-support";
 
-// task/simulation-cockpit/use-simulate-hypothesis's own criteria 1-3, plus
-// fix-use-simulate-hypothesis-dispatch's own criteria 1-4 and 6 (a corrective increment): the
-// request dispatched names exactly one case, one subject, one requester and one hypothesis --
-// never a manifest or a collection-plan union (scenarios/investigation/
-// a-single-hypothesis-is-simulated) -- against the route the sibling case-simulation-backend
-// initiative actually delivered (POST /v1/simulate/hypothesis), and the typed success response
-// carries exactly evidence, one evaluation and durations, never an outcome or an assessment
-// field. Criteria 4-6 of use-simulate-hypothesis's own original task live in the sibling
-// use-simulate-hypothesis-dispatch-safety.spec.ts, mirroring connector-test-panel-request-
-// response.spec.ts / connector-test-panel-dispatch-safety.spec.ts's own established split.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -248,7 +237,7 @@ describe("SimulateHypothesisResult carries exactly evidence, evaluation and dura
       void r.assessment;
     }
     function assertReasonStaysExclusiveToInconclusive(e: Evaluation): void {
-      // citations is present on every branch after this fix -- never gated behind a narrowing.
+
       void e.citations;
       if (e.verdict === "inconclusive") {
         void e.reason;

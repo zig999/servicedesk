@@ -17,11 +17,6 @@ import {
   stubFetch,
 } from "./use-capability-detail.test-support";
 
-// task/connector-capability-detail-editing/capability-detail-hook, criterion 7 and the
-// "bundles the concept vocabulary"/"exposes no isEditingIdentity flag" inferences -- split out
-// of use-capability-detail.spec.ts to stay under this project's own max-lines rule (that file's
-// own header comment carries the full rationale and TST-04 divergence).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

@@ -17,18 +17,6 @@ import {
   stubFetch,
 } from "./use-capability-detail.test-support";
 
-// task/connector-capability-detail-editing/capability-detail-hook, criteria 1-4. Proves the
-// hook's own contract directly through renderHook, mirroring
-// use-connector-configuration-detail.spec.ts's own established convention for a hook with no
-// view of its own: real Response objects through a stubbed global fetch (TST-03 -- only the
-// network boundary is replaced), and assertions on nothing but what the hook itself returns
-// (TST-01). Fixtures and helpers live in use-capability-detail.test-support.ts.
-// Split across use-capability-detail.spec.ts (this file), use-capability-detail-save.spec.ts and
-// use-capability-detail-load-error.spec.ts to stay under this project's own max-lines rule --
-// mirrors new-case-draft-screen.spec.ts's own established multi-file split for the same reason
-// (its own header comment cites the same rule); TST-04's divergence is disclosed in this proof's
-// own record.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -36,9 +24,7 @@ afterEach(() => {
 describe("useCapabilityDetail -- issuing its own GET, independent of the list cache (criterion 1)", () => {
   it("resolves the ready phase from its own direct GET, not from a capabilities list query the caller's cache already held for this same (name, version)", async () => {
     const { Wrapper, queryClient } = createWrapper();
-    // Seeds exactly the key use-capabilities.ts's own list hook reads, with a different
-    // input_schema for this same (name, version) -- if this hook read from that cache instead
-    // of issuing (and consuming) its own GET, the ready phase below would carry this value.
+
     queryClient.setQueryData(["capabilities"], {
       data: [{ ...LOADED_CAPABILITY, input_schema: '{"from":"list-cache"}' }],
     });

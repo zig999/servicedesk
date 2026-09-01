@@ -14,15 +14,6 @@ import {
   stubFetch,
 } from "./use-simulation-subject.test-support";
 
-// task/subject-input-requirements/expose-malformed-capability-identities: this task's own three
-// criteria and its UNDERDETERMINED note, split out of use-simulation-subject.spec.ts to stay
-// under this project's own max-lines rule (that file's own header comment carries the full
-// rationale and TST-04 divergence). A capability the read names apart from its requirements
-// shares no identity with anything REQUIRED_FIELD_RESPONSE's own single requirement resolves
-// (CAPABILITY, "fetch-billing-account"), so a test finding this identity leaking into
-// requiredFields or a field's own capabilities array cannot be explained by coincidence -- it
-// can only mean the hook stopped passing the two lists through independently.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -110,14 +101,7 @@ describe("useSimulationSubject -- expose-malformed-capability-identities, criter
 
 describe("useSimulationSubject -- expose-malformed-capability-identities, UNDERDETERMINED note: the list is derived from the read's own capabilities_with_malformed_input_schema alone, never re-derived by inspecting each resolved capability's own stored input_schema client-side", () => {
   it("still names a capability the read itself flags as malformed even though that exact capability's own currently-registered input_schema parses as well-formed JSON -- an implementation that re-derived the list from the registered schema instead of the read would drop it here", async () => {
-    // CAPABILITY (this file's own test-support fixture) carries input_schema:
-    // '{"type":"object"}' -- well-formed JSON. The requirement below resolves it normally
-    // (so it also appears, annotated, inside requiredFields[0].capabilities), while the read
-    // itself separately names that same {name, version} identity as holding a malformed input
-    // schema. An implementation deriving capabilitiesWithMalformedInputSchema by inspecting
-    // each resolved capability's own stored input_schema (rather than passing the read's own
-    // field straight through) would find this schema well-formed and answer an empty list
-    // instead of the one entry the read itself names.
+
     const sameIdentityAsRegisteredCapability = { name: CAPABILITY.name, version: CAPABILITY.version };
     stubFetch({
       [inputRequirementsPath(SLUG, VERSION_WITH_FIELD)]: () =>

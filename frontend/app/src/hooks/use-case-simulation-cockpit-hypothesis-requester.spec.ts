@@ -13,13 +13,6 @@ import {
   stubFetch,
 } from "./use-case-simulation-cockpit.test-support";
 
-// Proof for fix-use-simulate-hypothesis-dispatch's own criterion 5:
-// "use-case-simulation-cockpit.ts's onSimulateHypothesis call site passes subjectState.requester
-// through to hypSim.onSimulate, the same value it already passes to caseSim.onSimulate." Mirrors
-// use-case-simulation-cockpit-gating.spec.ts's own "one subject, shared by both dispatches"
-// test shape (criterion 3 of task/simulation-cockpit/screen-assembly), but captures each
-// dispatch's own `requester` field rather than its `subject` field.
-
 const SLUG = "acme-widgets";
 const VERSION = 7;
 
@@ -27,8 +20,6 @@ function hasRequesterField(body: unknown): body is { requester: unknown } {
   return typeof body === "object" && body !== null && "requester" in body;
 }
 
-/** Narrows a handler's own parsed request body down to its `requester` field without a cast,
- * mirroring use-case-simulation-cockpit.test-support.ts's own bodySubject() convention. */
 function bodyRequester(body: unknown): unknown {
   if (!hasRequesterField(body)) {
     throw new Error(

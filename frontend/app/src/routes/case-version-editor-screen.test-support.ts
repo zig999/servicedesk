@@ -12,25 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { CaseVersionEditorScreen } from "./case-version-editor-screen";
 
-// Shared fixtures and mounting helpers for case-version-editor-screen.spec.ts and
-// case-version-editor-screen-save.spec.ts (split across two files to stay under
-// this project's own max-lines rule). CaseVersionEditorScreen reads its own
-// route's slug/version through useParams({ from: "/cases/$slug/versions/$version" })
-// and calls useNavigate() (for the 404 case), so -- exactly like
-// case-detail-screen.spec.ts and cases-list-screen.spec.ts -- it needs a real router
-// context rather than a bare render. This builds a small, self-contained test router
-// (CaseVersionEditorScreen at its own route, plus a dummy "/cases" leaf so
-// navigate({ to: "/cases" }) has a real route to resolve to) rather than reusing the
-// production ten-route tree.
-//
-// The hook this screen composes issues four GETs (the version itself, and the
-// outcome/action/recipient glossary vocabularies) and one PATCH (Save), so the fetch
-// stub below is keyed by "METHOD path" rather than by path alone -- a case-version.tsx
-// URL is read by GET and written by PATCH, and only the method tells them apart. A
-// key this test does not register throws, so a request nobody expected fails the test
-// loudly rather than hanging it, mirroring cases-list-screen.spec.ts's own
-// stubFetchResponses convention.
-
 export type FetchResponder = () => Response | Promise<Response>;
 
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
@@ -104,19 +85,13 @@ function buildTestRouter(initialPath: string) {
     path: "/cases/$slug/versions/$version",
     component: CaseVersionEditorScreen,
   });
-  // A dummy leaf so "/cases" is a resolvable navigate() destination for the 404
-  // case -- what renders there is cases-list-screen's own concern, not this
-  // proof's.
+
   const casesListRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "/cases",
     component: () => createElement("div", null, "Cases List Placeholder"),
   });
-  // task/simulation-cockpit/simulate-entry-links's own criterion 1 adds a
-  // "Simulate" Link to "/cases/$slug/versions/$version/simulate" -- one more
-  // dummy leaf, the same reasoning casesListRoute already gives: so that
-  // Link has a real route to resolve an href against and, unlike the two
-  // above, an actual navigation target to click through to.
+
   const caseSimulationRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "/cases/$slug/versions/$version/simulate",
@@ -133,9 +108,6 @@ function buildTestRouter(initialPath: string) {
   });
 }
 
-// Named "mount", not "render": it returns the test router instance, not a render
-// result, matching cases-list-screen.spec.ts's own testing-library/
-// render-result-naming-convention precedent for a helper shaped this way.
 export async function mountCaseVersionEditor(
   fetchMock: (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
   initialPath = `/cases/${SLUG}/versions/3`,

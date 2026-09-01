@@ -15,15 +15,6 @@ import {
 } from "./connector-test-panel.test-support";
 import { CONNECTORS_PATH } from "./connector-configurations-screen.test-support";
 
-// Proof for task/connector-configuration-authoring/test-connector-debug-panel's own criterion 7
-// ("Nothing the Test section displays is persisted as evidence or reachable from any
-// investigation screen"), its own disclosed dispatch-failure inference (resolved through
-// error-ui-state.ts's central mapping with an empty per-kind table, falling back to one generic
-// message), the "operation against state that forbids it" edge case (Test disabled until every
-// required field is filled), and the "two operations against one subject at once" edge case
-// (clicking Test twice before the first dispatch settles). Criteria 4-6 live in the sibling
-// connector-test-panel-request-response.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

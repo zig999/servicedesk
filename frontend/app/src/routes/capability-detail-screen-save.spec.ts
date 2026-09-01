@@ -12,15 +12,6 @@ import {
   putCallCount,
 } from "./capability-detail-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/capability-detail-route's own criterion 4
-// (Save gated on isDirty, over both JSON schema fields and the react-hook-form portion) and
-// criterion 7 (a successful save's own acknowledgement and reflected values). Criteria 1/3/6
-// live in capability-detail-screen.spec.ts, criterion 8 lives in
-// capability-detail-screen-invalid-schema.spec.ts, and criterion 5's discard behavior lives in
-// capability-detail-screen-discard.spec.ts -- split this way to stay under this project's own
-// max-lines discipline from the start. All four share capability-detail-screen.test-support.ts's
-// own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -99,10 +90,7 @@ describe("CapabilityDetailScreen -- a successful save (criterion 7)", () => {
     );
     expect(await screen.findByRole("status")).toBeTruthy();
     expect(screen.getByText("Saved.")).toBeTruthy();
-    // Compared as parsed data rather than as an exact string, mirroring
-    // connector-configuration-detail-screen-save.spec.ts's own identical reasoning: what
-    // criterion 7 itself states is that the screen reflects the just-saved *values*, not one
-    // particular formatting of them.
+
     expect(JSON.parse(inputSchemaField.value)).toEqual(JSON.parse(UPDATED_INPUT_SCHEMA));
     expect(JSON.parse(outputSchemaField.value)).toEqual(JSON.parse(UPDATED_OUTPUT_SCHEMA));
   });

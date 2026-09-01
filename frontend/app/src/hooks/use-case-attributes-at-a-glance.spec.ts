@@ -5,13 +5,6 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { useCaseAttributesAtAGlance } from "./use-case-attributes-at-a-glance";
 import type { CaseVersionRecord } from "../services/case-version-record";
 
-// task/cases-list-and-detail/case-attributes-at-a-glance's own business logic (ARC-03: it
-// lives in this hook, never inline in case-attributes-tab.tsx's own JSX). This file proves
-// the hook's own return value directly through renderHook, mirroring
-// use-glossary-vocabulary.spec.ts's own established convention for a hook with no view of
-// its own -- case-attributes-tab.spec.ts proves what each phase this hook returns actually
-// renders.
-
 const SLUG = "some-slug";
 const VERSIONS_PATH = `/v1/cases/${SLUG}/versions`;
 
@@ -63,9 +56,7 @@ afterEach(() => {
 
 describe("useCaseAttributesAtAGlance -- resolving the case's current version (criterion 2)", () => {
   it("resolves to the case's own draft version even when a released version numbered higher than it also exists, never to the plain highest-numbered item", async () => {
-    // The released item (5) outnumbers the draft (2) on purpose: a resolution that picked
-    // "whichever item is numbered highest" rather than "the draft, unconditionally" would
-    // choose the released version here, which is exactly what this test would catch.
+
     stubFetch({
       [VERSIONS_PATH]: () =>
         jsonResponse({ data: [{ version: 5, state: "released" }, { version: 2, state: "draft" }] }),
@@ -79,8 +70,7 @@ describe("useCaseAttributesAtAGlance -- resolving the case's current version (cr
     await waitFor(() => expect(result.current.phase).toBe("ready"));
     expect(result.current).toMatchObject({ phase: "ready", version: 2, versionState: "draft" });
     if (result.current.phase === "ready") {
-      // constraints/a-case-is-read-whole: the whole record read-case returned, not a
-      // field-by-field guess built from list-case-versions' own partial metadata.
+
       expect(result.current.record).toEqual(RECORD);
     }
   });

@@ -9,18 +9,6 @@ import {
   mountConnectorConfigurationsScreen,
 } from "./connector-configurations-screen.test-support";
 
-// Proof for task/connector-configuration-authoring/connector-configuration-create-edit-form's
-// own criterion 1 ("A new route reachable from the app's navigation lists every currently
-// registered connector configuration by name"), the loading/error/empty states its own
-// screen-level behavior presupposes, and the delivery record's own disclosed inference that
-// "New connector configuration" renders unconditionally, ahead of the loading/error/empty
-// branches. The route-reachability half of criterion 1 (the app's navigation) is proved
-// separately in app-shell.spec.ts and route-tree.spec.ts; this file covers the listing itself.
-// The New/Edit form Dialog's own behavior (criteria 2-5) lives in the sibling
-// connector-configurations-screen-form.spec.ts and connector-configurations-screen-form-save.spec.ts,
-// split this way to stay under this project's own max-lines rule (MNT-01). All three share
-// connector-configurations-screen.test-support.ts's own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -36,15 +24,6 @@ describe("ConnectorConfigurationsScreen — listing (criterion 1)", () => {
     });
     await mountConnectorConfigurationsScreen(fetchMock);
 
-    // StatusTable gives every data row role="button" rather than the implicit "row" once
-    // onRowClick is passed (task/connector-capability-detail-editing/connector-configuration-detail-route's
-    // own criterion 2 -- see status-table.spec.ts's own header row / data row distinction) -- the
-    // header row keeps its own implicit "row" role since it is never clickable, so
-    // findAllByRole("row") would now find only that one header row rather than one entry per
-    // connector configuration. Querying data rows by their own "button" role, scoped to the table
-    // itself (so this screen's own unrelated "New connector configuration" button, also
-    // role="button", is never counted alongside them), is this test's own equivalent for what it
-    // always verified: one row per connector configuration, each showing its own connector name.
     const table = await screen.findByRole("table");
     const dataRows = within(table).getAllByRole("button");
     expect(dataRows).toHaveLength(2);

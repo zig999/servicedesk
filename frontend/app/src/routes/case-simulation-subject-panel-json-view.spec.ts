@@ -8,20 +8,6 @@ import {
   SUBJECT_TYPE_PATH,
 } from "./case-simulation-subject-panel.test-support";
 
-// Proof for task/subject-derivation/subject-panel's own criterion 6 (the "view subject JSON"
-// control) and the disclosed inferences over the loading/error states for the two direct
-// glossary reads and for the composed hook's own passed-through
-// isLoadingRegistries/isRegistriesError (EDG-01/EDG-02), plus
-// task/subject-input-requirements/present-each-requirement-with-its-required-standing's own
-// criterion 5 (a pinned version whose read names no requirement at all renders an explicit empty
-// state) and its own UNDERDETERMINED note over that empty state's own wording, mounted directly
-// against CaseSimulationSubjectPanel. The requirement-rendering block itself (required standing,
-// every asking capability, its own input-schema hint) is proven in
-// case-simulation-subject-panel.spec.ts, and the add-attribute control in
-// case-simulation-subject-panel-attributes.spec.ts. Shared fixtures and the render helper live in
-// case-simulation-subject-panel.test-support.ts, whose own header comment carries this proof's
-// fixture and network-stubbing conventions.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

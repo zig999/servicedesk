@@ -12,17 +12,6 @@ export type CaseSimulationCaseResultCompareProps = {
   readonly runs: readonly [CaseResultRun, CaseResultRun];
 };
 
-/**
- * task/simulation-cockpit/case-result-panel, criterion 4: shows two runs
- * from the in-memory history side by side, hypothesis by hypothesis. Every
- * hypothesis either run judged gets exactly one row; a hypothesis only one
- * of the two runs judged renders a plain placeholder on the other side
- * rather than being dropped from the comparison silently (this file's own
- * header import of hypothesisNamesAcross, case-simulation-case-result-types.ts).
- * Verdicts render through CaseSimulationStatusDot (VERDICT_CELL), the same
- * dot-plus-label idiom every other status cell in this epic already uses
- * (ACC-08: color is never shown alone).
- */
 export function CaseSimulationCaseResultCompare({
   runs,
 }: CaseSimulationCaseResultCompareProps): JSX.Element {

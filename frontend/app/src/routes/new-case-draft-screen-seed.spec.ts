@@ -12,13 +12,6 @@ import {
   wasCalledWith,
 } from "./new-case-draft-screen.test-support";
 
-// Seeding coverage for task/version-editor/seed-new-draft-from-latest-released
-// (criteria 1 and 2, plus the "highest-numbered released entry" and
-// "no premature blank-form flash" inferences its own delivery record
-// discloses). POST-body coverage for that same task lives in
-// new-case-draft-screen-seed-post.spec.ts, split out to stay under this
-// project's own max-lines rule; both share new-case-draft-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -42,8 +35,7 @@ describe("NewCaseDraftScreen — seeding from the case's own latest released ver
     expect(screen.getByText(RELEASED_VERSION_RECORD.fallback.referral.action)).toBeTruthy();
     expect(screen.getByText(RELEASED_VERSION_RECORD.fallback.referral.recipient)).toBeTruthy();
     expect(wasCalledWith(fetchMock, "GET", versionPath(4))).toBe(true);
-    // Criterion 2's own copy is the mirror image of criterion 1: it must not
-    // appear once the form was actually seeded from a released version.
+
     expect(screen.queryByText("This is the case's first version.")).toBeNull();
   });
 
@@ -64,11 +56,6 @@ describe("NewCaseDraftScreen — seeding from the case's own latest released ver
     );
     await mountNewCaseDraft(fetchMock);
 
-    // Neither the lower-numbered released entry (2) nor the higher-numbered
-    // but still-draft entry (5) is a registered fetch key -- reading either
-    // one instead would leave that query erroring and the screen stuck on
-    // "Unable to load this form right now.", so this assertion fails loudly
-    // rather than silently seeding from the wrong version.
     expect(await screen.findByDisplayValue(higherRecord.title)).toBeTruthy();
     expect(wasCalledWith(fetchMock, "GET", versionPath(2))).toBe(false);
     expect(wasCalledWith(fetchMock, "GET", versionPath(5))).toBe(false);
@@ -102,9 +89,6 @@ describe("NewCaseDraftScreen — seeding from the case's own latest released ver
     );
     await mountNewCaseDraft(fetchMock);
 
-    // Waits until the version list has resolved and this hook's own
-    // conditional read has actually started (proving the two are sequenced,
-    // not racing) before asserting the screen is still in its loading phase.
     await waitFor(() => {
       expect(wasCalledWith(fetchMock, "GET", versionPath(4))).toBe(true);
     });

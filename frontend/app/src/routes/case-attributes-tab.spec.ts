@@ -11,12 +11,6 @@ import {
 } from "./case-attributes-tab.test-support";
 import type { CaseVersionRecord } from "../services/case-version-record";
 
-// task/cases-list-and-detail/case-attributes-at-a-glance's own criteria 1, 3, 4 and 5,
-// proven directly against CaseAttributesTab (mounted on its own, mirroring
-// case-hypotheses-tab.spec.ts's own established convention for a task's own new tab) --
-// criterion 1's own tab-strip wiring ("alongside Versions and Hypotheses") is proven
-// separately in case-detail-screen-attributes-tab.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

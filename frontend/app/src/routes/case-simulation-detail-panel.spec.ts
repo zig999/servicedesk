@@ -10,14 +10,6 @@ import {
 } from "./case-simulation-detail-panel.test-support";
 import type { CaseSimulationDetailPanelProps } from "./case-simulation-detail-types";
 
-// task/simulation-cockpit/detail-panel's own criteria 1, 2, 5 and the verdict/layout
-// inferences, proven directly against CaseSimulationDetailPanel -- criterion 3 (the Evidence
-// tab's own content) and criterion 6 (the judgment summary line) are proven against
-// CaseSimulationDetailEvidenceTab directly in case-simulation-detail-evidence-tab.spec.ts, and
-// criterion 4 (the Prompt tab) against CaseSimulationDetailPromptTab directly in
-// case-simulation-detail-prompt-tab.spec.ts. Criterion 7 (operator-only composition) is not
-// provable by a render-level test -- see this task's own proof record for why.
-
 function mount(overrides: Partial<CaseSimulationDetailPanelProps> = {}): void {
   render(createElement(CaseSimulationDetailPanel, testPanelProps(overrides)));
 }

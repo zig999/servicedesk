@@ -2,10 +2,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
 import { useCaseSimulationHistory, type NewCaseResultRun } from "./use-case-simulation-history";
 
-// task/simulation-cockpit/case-result-panel's own in-memory run-history hook. Mirrors
-// use-simulation-subject.spec.ts's own established convention for a hook proven directly through
-// renderHook and act(), with every state-changing call wrapped in its own act().
-
 function newRun(overrides: Partial<NewCaseResultRun> = {}): NewCaseResultRun {
   return {
     outcome: "resolved",

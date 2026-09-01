@@ -10,23 +10,6 @@ import {
   testCapability,
 } from "./connector-test-panel.test-support";
 
-// Proof for task/connector-test-panel-placeholder-attributes/reconcile-test-panel-attribute-rows's
-// own criteria 1-6: useTestConnectorPanel's onAddAttribute, changed from appending one empty row
-// on every click to reconciling the panel's own attribute/value rows against every
-// ${subject:<attribute>} placeholder Configuration's own current text embeds
-// (use-test-connector-panel.ts's own header comment). Every test here edits the real
-// "Configuration" textarea rendered by ConnectorConfigurationFormFields before clicking
-// "Add attribute" -- exactly the production route (connector-configuration-detail-ready-view.tsx's
-// own header comment: ConnectorTestPanel's own configurationText prop is this route's live
-// state.configuration.value), never a mount-time override invented around it.
-//
-// Also covers this task's own disclosed inferences: a still-matching row keeps its own id
-// (observed here as DOM-element identity, since MNT-04's stable key is exactly what a still-
-// matching row's own unchanged id preserves -- connector-test-panel-fields.tsx's own
-// key={row.id}); two rows that come to share one attribute name resolve to the earlier row's own
-// value; and the reconciled row order follows Configuration's own freshly read placeholder order
-// rather than the rows' own prior array order.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -60,25 +43,6 @@ function clickAddAttribute(dialog: HTMLElement): void {
   fireEvent.click(within(dialog).getByRole("button", { name: "Add attribute" }));
 }
 
-// task/connector-test-panel-tests-register-configuration/save-configuration-edits-before-
-// reconciling: "Add attribute" now reconciles against the connector's own registered
-// configuration text (registeredConfigurationText), not an unsaved edit still sitting in the
-// textarea -- so a test that edits Configuration and then relies on that edit having taken
-// effect must save it first. Clicks the same "Save" button ConnectorConfigurationFormFields
-// renders and waitFor-polls that same button's own `disabled` attribute (gated on
-// state.isDirty, connector-configuration-form-fields.tsx's own isSaveDisabled expression)
-// turning true, rather than findBy-awaiting the "Saved." acknowledgement
-// (connector-configuration-detail-ready-view.tsx's own state.justSaved text): a
-// failure-diagnostician found use-connector-configuration-detail-view.ts's own
-// wasSubmitSuccessfulRef never resets once justSaved clears, so a *second* save within one
-// test (this file's own tie test and placeholder-order test each save twice) never re-shows
-// "Saved." even though the save itself genuinely succeeds again -- a real, pre-existing
-// production defect this task does not fix (out of its own scope; disclosed in this task's own
-// returned proof record). Save's own `disabled` attribute never routes through that ref: it
-// reflects state.isDirty directly, which useConnectorConfigurationDetail's own mutation
-// onSuccess clears in the very same commit that re-baselines configurationBaseline -- the same
-// commit registeredConfigurationText (read by ConnectorTestPanel) is derived from one render
-// later, so by the time this wait resolves that later render has already settled too.
 async function saveConfiguration(dialog: HTMLElement): Promise<void> {
   const saveButton = within(dialog).getByRole("button", { name: "Save" });
   fireEvent.click(saveButton);
@@ -106,7 +70,7 @@ describe('ConnectorTestPanel — "Add attribute" adds one row per placeholder wi
 describe('ConnectorTestPanel — "Add attribute" preserves an existing row\'s value while its placeholder is still present (criterion 2)', () => {
   it("keeps the value already typed into a row whose attribute still names a current placeholder, and does not duplicate it", async () => {
     const { dialog } = await mountTestPanelInEditMode(baseHandlers());
-    // The default configuration already embeds exactly one ${subject:account-id} placeholder.
+
     clickAddAttribute(dialog);
     fireEvent.change(within(dialog).getByLabelText("Value"), { target: { value: "12345" } });
 
@@ -246,11 +210,6 @@ describe("ConnectorTestPanel — the first row keeps a name two rows come to sha
     fireEvent.change(valueInputs[0], { target: { value: "111" } });
     fireEvent.change(valueInputs[1], { target: { value: "222" } });
 
-    // The Attribute field no longer takes an onChange (now read-only,
-    // task/connector-test-panel-attribute-readonly), so the two rows are made to
-    // share one attribute name by editing Configuration's own text instead: the
-    // placeholder that used to name "region" now names "account-id" too, the very
-    // name the earlier row already carries.
     setConfigurationText(
       dialog,
       '{"address":"https://api.example.com/${subject:account-id}","body":{"r":"${subject:account-id}"}}',
@@ -283,9 +242,6 @@ describe("ConnectorTestPanel — reconciled rows follow Configuration's own curr
     fireEvent.change(valueInputs[0], { target: { value: "A" } });
     fireEvent.change(valueInputs[1], { target: { value: "B" } });
 
-    // Configuration's text now names the very same two attributes, but with beta declared
-    // before alpha (the address now carries beta, the body now carries alpha) -- the rows
-    // themselves were never reordered by anyone.
     setConfigurationText(
       dialog,
       '{"address":"https://api.example.com/${subject:beta}","body":{"a":"${subject:alpha}"}}',

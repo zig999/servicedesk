@@ -15,13 +15,6 @@ import {
   selectOption,
 } from "./hypothesis-revision-screen.test-support";
 
-// Client-side validation, submit-body and success-state coverage for
-// task/manifest-hypothesis-authoring/revise-hypothesis-form (criteria 6, 7, 8, 9 and 10). Load/
-// pre-population/dropdown coverage lives in hypothesis-revision-screen.spec.ts and the shared
-// generic failure message lives in hypothesis-revision-screen-errors.spec.ts, split three ways
-// to stay under this project's own max-lines rule; all three share the fixtures and mounting
-// helpers in hypothesis-revision-screen.test-support.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

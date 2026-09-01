@@ -46,12 +46,7 @@ const stubResult: TestConnectorResult = {
 describe("TestDispatchOutcome -- a stale succeeded result and a fresh failed message can never coexist in one value (criterion)", () => {
   it('refuses a "succeeded" outcome that also carries a fresh failed message', () => {
     const buildImpossibleOutcome = (): TestDispatchOutcome => {
-      // TestDispatchOutcome's "succeeded" member declares only `kind` and `result`; a
-      // `message` alongside them is the stale-result-plus-fresh-error combination this task's
-      // criterion makes unrepresentable, so this literal's `message` field must be excess
-      // against every member of the union. If this stops erroring, the directive immediately
-      // below itself becomes an unused-directive compile error, which is how a regression here
-      // is caught.
+
       // @ts-expect-error - excess `message` field on the "succeeded" member, described above.
       return { kind: "succeeded", result: stubResult, message: "a fresh failure message" };
     };
@@ -60,41 +55,13 @@ describe("TestDispatchOutcome -- a stale succeeded result and a fresh failed mes
 
   it('refuses a "failed" outcome that also carries a stale succeeded result', () => {
     const buildImpossibleOutcome = (): TestDispatchOutcome => {
-      // TestDispatchOutcome's "failed" member declares only `kind` and `message`; a `result`
-      // alongside them is the same impossible combination read from the other member's own
-      // side, so this literal's `result` field must be excess against every member of the
-      // union. If this stops erroring, the directive immediately below itself becomes an
-      // unused-directive compile error, which is how a regression here is caught.
+
       // @ts-expect-error - excess `result` field on the "failed" member, described above.
       return { kind: "failed", message: "a fresh failure message", result: stubResult };
     };
     expect(typeof buildImpossibleOutcome).toBe("function");
   });
 });
-
-/**
- * Runtime proof for task/connector-test-panel-dispatch-state/derive-outcome-from-mutation's own
- * two criteria:
- *
- *  1. testOutcome is computed from useMutation's own status/data/error at render/return time
- *     (testOutcomeFromMutation, use-test-connector-panel.ts's own module-level function) rather
- *     than a separately-set useState assigned inside onSuccess/onError -- proven below by
- *     showing testOutcome tracks whatever the mutation's own status currently is (idle, then
- *     pending, then succeeded) on every render, with no other path exposed to set it.
- *  2. The original TYP-04 fix still holds under that new derivation: a first dispatch's own
- *     succeeded result never survives alongside a second dispatch's own failed message, or vice
- *     versa -- proven below by dispatching twice in both orders and asserting the exact shape
- *     testOutcome holds afterwards, with no leftover field from the first call.
- *
- * useTestConnectorPanel composes two dependent reads of its own (useCapabilities,
- * useGlossaryVocabularyOptions) before a dispatch is even possible, so every test below stubs
- * global fetch for all three endpoints (TST-03: the network is the boundary stood in for, never
- * this hook's own logic) and mountReadyPanel() fills every field canTest gates on -- capability,
- * subject type, one complete attribute row, requester -- so onTest actually reaches
- * mutation.mutate(). The fixtures mirror src/routes/connector-test-panel.test-support.ts's own
- * (one capability, one subject-type term, a configuration text embedding exactly one
- * ${subject:account-id} placeholder) rather than inventing a second set of them.
- */
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -118,10 +85,6 @@ const TEST_CAPABILITY: Capability = {
 const CONFIGURATION_TEXT_WITH_PLACEHOLDER =
   '{"address":"https://api.example.com/${subject:account-id}"}';
 
-// Mirrors use-test-connector-panel.ts's own private GENERIC_TEST_DISPATCH_FAILURE_MESSAGE
-// literal -- not exported, so restated here the same way
-// connector-test-panel-fresh-failure-clears-stale-result.spec.ts's own findByText assertion
-// already hardcodes it.
 const GENERIC_TEST_DISPATCH_FAILURE_MESSAGE =
   "The test call could not be sent. Check the selected capability, subject and requester, then try again.";
 
@@ -182,9 +145,6 @@ function baseHandlers(): Partial<Record<string, FetchHandler>> {
   };
 }
 
-// Built once per test and captured in this closure, mirroring
-// use-simulate-case.test-support.ts's own createWrapper -- a QueryClient built inline inside the
-// returned component would be rebuilt on every render, discarding its cache mid-test.
 function createWrapper(): { Wrapper: (props: { children: ReactNode }) => ReactElement } {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const Wrapper = function Wrapper({ children }: { children: ReactNode }): ReactElement {
@@ -193,14 +153,6 @@ function createWrapper(): { Wrapper: (props: { children: ReactNode }) => ReactEl
   return { Wrapper };
 }
 
-/**
- * Mounts useTestConnectorPanel against a stubbed fetch (assumed already installed by the
- * caller through stubFetch, so the eventual test-connector dispatch resolves however that test
- * needs it to) and fills every field canTest gates on: selects the one stubbed capability,
- * types a subject type, adds and completes the one attribute row CONFIGURATION_TEXT_WITH_PLACEHOLDER's
- * own ${subject:account-id} placeholder reconciles to, and types a requester. Returns the live
- * renderHook `result` so each test drives its own onTest()/assertion sequence from here.
- */
 async function mountReadyPanel() {
   const { result } = renderHook(
     () => useTestConnectorPanel("deepl-connector", CONFIGURATION_TEXT_WITH_PLACEHOLDER),

@@ -1,10 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// sonner is the toast boundary use-capability-form.ts's own onError handler calls into --
-// mocking it here (mirroring capabilities-browser-screen-capability-form-save.spec.ts's own
-// established convention) intercepts that call directly, so these assertions never depend on a
-// real Toaster mounting anything -- capability-create-screen.test-support.ts's own mounting
-// helper does not mount AppShell/Toaster at all.
 vi.mock("sonner", () => ({ toast: { error: vi.fn() } }));
 
 import { toast } from "sonner";
@@ -22,17 +17,6 @@ import {
   parsedPutBody,
   putCallCount,
 } from "./capability-create-screen.test-support";
-
-// Proof for task/connector-capability-create-detail-route/capability-create-route's own criteria
-// 8-12 (dispatch at the typed name/version, the JSON-schema-validity gate, the registry's
-// concept-already-answered refusal reported back to the operator, the absence of any client-side
-// concept refusal ahead of dispatch, and the post-save navigation to the created capability's own
-// detail route), plus the task's own UNDERDETERMINED note ("no criterion holds the dispatched
-// registration to carrying the capability's other required attributes") -- its own named passing
-// implementation dispatches a register-capability request declaring no nature, no timeout and no
-// connector, which the last describe block below fails over. Criteria 1-7, 13 and their own
-// fixtures live in the sibling capability-create-screen.spec.ts. Both share
-// capability-create-screen.test-support.ts's own fixtures and mounting helper.
 
 const NAME = "translate-text";
 const VERSION = "1.0.0";

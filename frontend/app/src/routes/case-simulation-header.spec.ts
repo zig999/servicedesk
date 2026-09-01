@@ -3,13 +3,6 @@ import { fireEvent, screen } from "@testing-library/react";
 import { mountCaseSimulationHeader } from "./case-simulation-header.test-support";
 import type { CaseSimulationHeaderProps } from "./case-simulation-header";
 
-// task/simulation-cockpit/case-simulation-route's own header (criteria 3-7).
-// Mounted directly through case-simulation-header.test-support.ts's own
-// root-route helper (mirroring case-attributes-tab.spec.ts's established
-// convention for a component whose Links need a real router context to
-// resolve an href against) -- this header takes every one of its facts from
-// its own caller-supplied props, so no fetch stand-in is needed here.
-
 function baseProps(
   overrides: Partial<CaseSimulationHeaderProps> = {},
 ): CaseSimulationHeaderProps {
@@ -37,11 +30,7 @@ describe("CaseSimulationHeader -- the version's own state pill (criterion 3)", (
     await mountCaseSimulationHeader(baseProps({ versionState: "draft" }));
 
     expect(screen.getByText("Draft")).toBeTruthy();
-    // The color dot is aria-hidden (decorative -- ACC-08 pairs it with text
-    // rather than relying on it alone), so it is unreachable by any RTL
-    // role/text/label query; a direct query is the only way to confirm it
-    // renders at all, mirroring status-table.spec.ts's own established
-    // convention for the identical shape.
+
     // eslint-disable-next-line testing-library/no-node-access -- see comment above
     expect(document.querySelector(".bg-warning")).not.toBeNull();
   });

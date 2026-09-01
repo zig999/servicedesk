@@ -12,21 +12,6 @@ import {
   putCallCount,
 } from "./capability-detail-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/capability-detail-route's own criterion 5
-// (the discard-changes control, resetting every field including both JSON schema fields), plus
-// task/detail-screen-corrections/discard-confirmation-dialog's own criteria 4, 5, 6 and 7 (the
-// confirmation Dialog now inserted between this screen's own trigger and the reset it used to
-// fire immediately). Criteria 1/3/6 live in capability-detail-screen.spec.ts, criterion 8 lives
-// in capability-detail-screen-invalid-schema.spec.ts, and criterion 4/7's save behavior lives in
-// capability-detail-screen-save.spec.ts -- split this way to stay under this project's own
-// max-lines discipline from the start. All four share capability-detail-screen.test-support.ts's
-// own fixtures and mounting helper.
-//
-// The Discard trigger and the Dialog's own destructive confirm button carry the exact same
-// accessible name ("Discard changes"), so every assertion on the confirm button is scoped
-// within the Dialog itself -- mirroring case-version-editor-screen-discard.test-support.ts's own
-// discardConfirmButton precedent for an identically-worded trigger/confirm pair.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -42,16 +27,7 @@ async function mountReady(): Promise<{
   const inputSchemaField = await screen.findByLabelText<HTMLTextAreaElement>("Input schema");
   const outputSchemaField = screen.getByLabelText<HTMLTextAreaElement>("Output schema");
   const connectorField = screen.getByLabelText<HTMLInputElement>("Connector");
-  // `findByLabelText` resolves the instant the label appears -- the same render the load
-  // effect's own setState produces -- which can be before JsonTextareaField's own
-  // pretty-print-on-load effect (a second, cascading render per field) has committed. A
-  // `fireEvent.change` fired immediately after can then interleave with that still-pending
-  // effect and misread a fresh operator edit as an external load, reformatting it --
-  // see connector-configuration-detail-screen-discard.spec.ts's own mountReady for the full
-  // account of this, empirically traced with console.log instrumentation and an isolated
-  // run rather than inferred. Waiting for both schema fields' own settled,
-  // already-proven pretty-print-on-load value here closes that window before any test
-  // proceeds.
+
   await waitFor(() => {
     expect(inputSchemaField.value).toBe(prettyPrinted(LOADED_INPUT_SCHEMA));
     expect(outputSchemaField.value).toBe(prettyPrinted(LOADED_OUTPUT_SCHEMA));
@@ -59,9 +35,6 @@ async function mountReady(): Promise<{
   return { fetchMock, inputSchemaField, outputSchemaField, connectorField };
 }
 
-/** Opens the Discard confirmation Dialog from its own trigger, and waits for it to actually
- * mount -- mirrors case-version-editor-release.test-support.ts's own openReleaseDialog and
- * case-version-editor-screen-discard.test-support.ts's own openDiscardDialog convention. */
 async function openDiscardDialog(): Promise<void> {
   fireEvent.click(screen.getByRole("button", { name: "Discard changes" }));
   await screen.findByRole("dialog");
@@ -132,9 +105,6 @@ describe("CapabilityDetailScreen -- confirming Discard resets the form (discard-
     await openDiscardDialog();
     fireEvent.click(discardConfirmButton());
 
-    // Waited for first and alone: the Dialog's own confirm button shares its accessible name
-    // ("Discard changes") with the trigger still mounted beneath it, so the unscoped query
-    // below is only unambiguous once the Dialog itself has actually closed.
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(inputSchemaField.value).toBe(prettyPrinted(LOADED_INPUT_SCHEMA));
     expect(outputSchemaField.value).toBe(prettyPrinted(LOADED_OUTPUT_SCHEMA));
@@ -207,14 +177,6 @@ describe("CapabilityDetailScreen -- discard falls back to what was just saved, n
     await openDiscardDialog();
     fireEvent.click(discardConfirmButton());
 
-    // A value discard plays back through inputSchema/outputSchema.onChange reaches
-    // JsonTextareaField as an externally-loaded value (never through its own
-    // handleChange/handleBeautify), so it is reformatted the same way any freshly loaded value
-    // is (json-textarea-pretty-print-on-load) -- prettyPrinted(UPDATED_*_SCHEMA) is therefore
-    // the correct expectation here, not the raw compact string the operator originally typed.
-    // If discard fell back to the values originally loaded rather than what was just saved,
-    // these would read prettyPrinted(LOADED_INPUT_SCHEMA)/prettyPrinted(LOADED_OUTPUT_SCHEMA)
-    // instead.
     await waitFor(() =>
       expect(inputSchemaField.value).toBe(prettyPrinted(UPDATED_INPUT_SCHEMA)),
     );

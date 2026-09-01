@@ -13,22 +13,6 @@ import {
   testConnectorResult,
 } from "./connector-test-panel.test-support";
 
-// Proof for task/connector-test-panel-dispatch-state/discriminate-test-dispatch-outcome's own
-// (sole) criterion, at the runtime this hook's implementation record discloses as its own
-// second inference: testOutcome is tracked as useTestConnectorPanel's own local state, set
-// explicitly to one variant at each dispatch stage, rather than derived inline from
-// useMutation's own isPending/data/error (react-query keeps `data` from the previous
-// successful call around while a later call is pending or has errored). A test asserting the
-// type's own structure lives beside the hook itself
-// (src/hooks/use-test-connector-panel.spec.ts); this file is the runtime witness that the
-// concrete defect that inference exists to prevent -- a prior call's own successful rendering
-// still on screen beside a later call's own failure -- does not in fact happen once two calls
-// are dispatched through this panel in succession.
-//
-// This is the edge case "two operations against one subject at once" read sequentially rather
-// than concurrently (the concurrent reading -- two clicks before either settles -- is proven in
-// connector-test-panel-dispatch-safety.spec.ts's own "one dispatch per test run" test).
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

@@ -11,14 +11,6 @@ import {
   putCallCount,
 } from "./connector-configuration-detail-screen.test-support";
 
-// Proof for task/connector-capability-detail-editing/connector-configuration-detail-route's own
-// criterion 4 (Save gated on isDirty) and criterion 7 (a successful save's own acknowledgement
-// and reflected values). Criteria 1/3/6/8 live in connector-configuration-detail-screen.spec.ts
-// and criterion 5's discard behavior lives in
-// connector-configuration-detail-screen-discard.spec.ts -- split this way to stay under this
-// project's own max-lines rule (MNT-01). All three share
-// connector-configuration-detail-screen.test-support.ts's own fixtures and mounting helper.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -73,11 +65,7 @@ describe("ConnectorConfigurationDetailScreen -- a successful save (criterion 7)"
     expect(parsedPutBody(fetchMock)).toEqual({ configuration: UPDATED_CONFIGURATION });
     expect(await screen.findByRole("status")).toBeTruthy();
     expect(screen.getByText("Saved.")).toBeTruthy();
-    // Compared as parsed data rather than as an exact string: JsonTextareaField's own
-    // externally-loaded-value reformatting (json-textarea-pretty-print-on-load) may or may not
-    // have reformatted the display text by this point depending on unrelated re-renders the
-    // save's own isSubmitting/baseline transitions cause -- what criterion 7 itself states is
-    // that the screen reflects the just-saved *values*, not one particular formatting of them.
+
     expect(JSON.parse(configurationField.value)).toEqual(JSON.parse(UPDATED_CONFIGURATION));
   });
 

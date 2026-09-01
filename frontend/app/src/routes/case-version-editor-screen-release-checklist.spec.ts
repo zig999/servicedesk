@@ -13,11 +13,6 @@ import {
   VERSION_PATH,
 } from "./case-version-editor-release.test-support";
 
-// Pre-release checklist edge cases for task/version-editor/release-draft-version
-// (criterion 2's own three items, and the "no re-read concept found" inference) -- split
-// out of case-version-editor-screen-release-control.spec.ts to stay under this project's
-// own max-lines rule, sharing the same test-support fixtures.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -61,8 +56,7 @@ describe("CaseVersionEditorScreen — the checklist's own fallback-terms item (c
         within(screen.getByRole("dialog")).getByText(/!\s*Fallback resolution is set/),
       ).toBeTruthy();
     });
-    // Proves the item changed because opening the Dialog issued a real second GET, not
-    // because it reused whatever the form's own initial load already held.
+
     const outcomeCalls = fetchMock.mock.calls.filter(
       ([input]) => (typeof input === "string" ? input : input.toString()) === "/v1/glossary/outcome",
     );

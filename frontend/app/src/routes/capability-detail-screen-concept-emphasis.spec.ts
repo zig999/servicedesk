@@ -10,13 +10,6 @@ import {
   mountCapabilityDetailScreen,
 } from "./capability-detail-screen.test-support";
 
-// Concept carried a visual-emphasis treatment (a distinguishing border/background container)
-// through two prior revisions of this file; the human asked for it removed entirely (no border,
-// no background, no wrapper), so Concept is now a plain field like any other and nothing here
-// asserts a container-level distinction any more. What remains is Concept's own Select wiring --
-// value/onChange and disabled-during-submit -- which capability-detail-screen.spec.ts's own
-// getByLabelText-based assertions never exercise for this field specifically.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

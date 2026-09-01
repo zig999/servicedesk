@@ -4,13 +4,6 @@ import { render, screen } from "@testing-library/react";
 import { CaseSimulationDetailEvidenceTab } from "./case-simulation-detail-evidence-tab";
 import type { SimulationEvidenceItem, SimulationJudgmentCall } from "./case-simulation-detail-types";
 
-// task/detail-evidence-capability-hotfix/flatten-detail-evidence-capability-reference's own
-// criterion 3 -- proven directly against CaseSimulationDetailEvidenceTab's own rendered output,
-// with a hand-built SimulationEvidenceItem literal (rather than through
-// case-simulation-detail-panel.test-support.ts's own testEvidenceItem()) so the literal itself
-// stands as part of the proof: it only compiles because the type carries capabilityName,
-// capabilityVersion and connector as three flat fields with no nested capability object at all.
-
 const NOT_CALLED: SimulationJudgmentCall = { called: false };
 
 function realDetailEvidenceItem(overrides: Partial<SimulationEvidenceItem> = {}): SimulationEvidenceItem {

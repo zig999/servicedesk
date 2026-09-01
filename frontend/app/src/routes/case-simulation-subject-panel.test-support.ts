@@ -6,35 +6,6 @@ import { CaseSimulationSubjectPanel } from "./case-simulation-subject-panel";
 import type { SimulationRequiredField, SimulationSubjectState } from "../hooks/use-simulation-subject";
 import type { SimulationSubjectFieldCapability } from "../services/simulation-subject-derivation";
 
-// Shared fixtures and render helper for the Subject panel's proof, split across
-// case-simulation-subject-panel.spec.ts (the subject type, the requester, and the
-// requirement-rendering block: required standing and every asking capability's own
-// name/version/connector plus its own input-schema hint --
-// task/subject-input-requirements/present-each-requirement-with-its-required-standing),
-// case-simulation-subject-panel-attributes.spec.ts (the add-attribute control) and
-// case-simulation-subject-panel-json-view.spec.ts (the view-subject-JSON control, the
-// explicit empty-requirements state, and the loading/error states) -- mirroring
-// use-simulate-case.test-support.ts's own established one-support-file-per-unit pattern.
-//
-// buildRequiredField/buildCapability build the current SimulationRequiredField shape (an
-// attribute, its required flag, and an array of every currently-resolved asking
-// capability -- each its own name/version/connector plus a free-text input-schema hint),
-// which superseded the retired singular connector/capability/inputSchemaHint shape
-// (task/subject-input-requirements/derive-subject-fields-from-input-requirements).
-//
-// Every fixture subject built below carries at least one attribute-value: a prior task's
-// own Notes carry an UNDERDETERMINED entry over rules/investigation/a-subject-carries-at-
-// least-one-attribute, which forbids an empty subject even though nothing in this task's
-// own criteria enforces it here -- so no test built on these fixtures renders or asserts a
-// zero-attribute subject as an accepted state, that rule being enforced elsewhere
-// (use-simulation-subject-hook's own readiness gate).
-//
-// Two live network reads (useGlossaryVocabularyOptions for "subject-type" and
-// "subject-attribute") back the Type field and the add-attribute row's own Attribute field, so
-// every mount here goes through a stubbed global fetch inside a QueryClientProvider, mirroring
-// glossary-browser-screen.test-support.ts's own mountGlossaryBrowserScreen and
-// connector-test-panel.test-support.ts's own selectOptionAsync conventions.
-
 export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
 export const SUBJECT_ATTRIBUTE_PATH = "/v1/glossary/subject-attribute";
 
@@ -59,7 +30,6 @@ function createFetchStub(handlers: Partial<Record<string, () => Response | Promi
   });
 }
 
-/** Awaits both glossary reads settling (their own loading text disappearing) -- a no-op for a text already gone. */
 async function awaitGlossariesSettled(): Promise<void> {
   const loadingSubjectTypes = screen.queryByText("Loading subject types…");
   if (loadingSubjectTypes !== null) {
@@ -95,7 +65,6 @@ export async function renderPanel(
   return { fetchMock };
 }
 
-/** One asking capability, as the current DerivedSubjectField/SimulationSubjectFieldCapability shape carries it: its own name, version and connector, plus its own free-text input-schema hint (empty where none). */
 export function buildCapability(
   overrides: Partial<SimulationSubjectFieldCapability> = {},
 ): SimulationSubjectFieldCapability {
@@ -122,10 +91,7 @@ export function buildRequiredField(overrides: Partial<SimulationRequiredField> =
 export function baseState(overrides: Partial<SimulationSubjectState> = {}): SimulationSubjectState {
   return {
     requiredFields: [buildRequiredField()],
-    // task/subject-input-requirements/expose-malformed-capability-identities: disclosed,
-    // out-of-scope fallout fix -- SimulationSubjectState gained this required field and this
-    // shared fixture builder needed a default so the whole project's typecheck passes again;
-    // not new test-writing judgment, no test in this suite asserts on this value.
+
     capabilitiesWithMalformedInputSchema: [],
     requester: "",
     onRequesterChange: vi.fn(),

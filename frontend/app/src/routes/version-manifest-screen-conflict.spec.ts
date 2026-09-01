@@ -13,12 +13,6 @@ import {
   VERSION_PATH,
 } from "./version-manifest-screen.test-support";
 
-// Conflict coverage for task/manifest-hypothesis-authoring/manifest-builder (criterion
-// 9), over both of the operations that can trigger it. Load/ordering, reorder and
-// remove coverage live in the sibling spec files this task's own proof splits across, to
-// stay under this project's own max-lines rule; all share
-// version-manifest-screen.test-support.ts's own fixtures and mounting helpers.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

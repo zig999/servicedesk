@@ -12,15 +12,6 @@ import {
   stubFetch,
 } from "./use-simulate-case.test-support";
 
-// task/detail-evidence-capability-hotfix/flatten-detail-evidence-capability-reference's own
-// criterion 4 -- SimulateEvidenceItem declares capability_name and capability_version as flat
-// string fields, matching src/src/http/dto/simulate-case.dto.ts's own evidenceSchema. Proven
-// end to end against the real dispatch, with a stubbed response shaped exactly as a real
-// POST /v1/simulate response body is captured in this task's own reproduction
-// ("capability_name":"perfil-mobile-tecnico-reader","capability_version":"1.0.0", no `capability`
-// object at all) -- a raw JSON body rather than a typed literal, since that is what actually
-// crosses the wire and what this task's own reproduction captured.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

@@ -13,11 +13,6 @@ import {
   stubFetch,
 } from "./use-simulate-case.test-support";
 
-// Proof for task/simulation-cockpit/use-simulate-case's own criteria 1, 5, 6 and 7, and two of
-// its recorded inferences (the request body's own wire shape, and the absence of a computed
-// can-simulate flag). Criteria 2-4 (the typed response shape) live in the sibling
-// use-simulate-case-response-shape.spec.ts.
-
 afterEach(() => {
   vi.unstubAllGlobals();
 });

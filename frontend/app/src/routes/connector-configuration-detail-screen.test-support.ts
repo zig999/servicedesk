@@ -12,26 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { ConnectorConfigurationDetailScreen } from "./connector-configuration-detail-screen";
 
-// Shared fixtures and mounting helper for connector-configuration-detail-screen.spec.ts and its
-// siblings connector-configuration-detail-screen-save.spec.ts and
-// connector-configuration-detail-screen-discard.spec.ts (split across three files to stay under
-// this project's own max-lines rule, mirroring case-version-editor-screen.test-support.ts's own
-// established convention of one .test-support.ts file shared by a base spec plus save/discard
-// siblings). ConnectorConfigurationDetailScreen reads its own route's connector through
-// useParams({ from: "/connectors/$connector" }) and renders a Link to "/connectors", so -- exactly
-// like case-version-editor-screen.spec.ts -- it needs a real router context rather than a bare
-// render; this builds a small, self-contained test router (the screen at its own route, plus a
-// dummy "/connectors" leaf so the Back link has a real destination) rather than reusing
-// route-tree.tsx's own production tree.
-//
-// The screen composes useConnectorConfigurationDetailView (its own GET/PUT at
-// CONFIGURATION_PATH) and reuses ConnectorTestPanel unchanged, which issues its own two
-// independent reads (GET /v1/capabilities, GET /v1/glossary/subject-type) the moment the ready
-// phase mounts. baseHandlers below answers all three by default, mirroring
-// case-version-editor-screen.test-support.ts's own baseHandlers convention, so a test that does
-// not care about ConnectorTestPanel's own fields never has to repeat them; a key this test does
-// not register throws, so a request nobody expected fails the test loudly rather than hanging it.
-
 export const CONNECTOR = "some-connector";
 export const CONFIGURATION_PATH = `/v1/connectors/${CONNECTOR}`;
 export const CAPABILITIES_PATH = "/v1/capabilities";
@@ -40,19 +20,11 @@ export const SUBJECT_TYPE_PATH = "/v1/glossary/subject-type";
 export const LOADED_CONFIGURATION = '{"key":"value"}';
 export const UPDATED_CONFIGURATION = '{"key":"updated"}';
 export const INVALID_CONFIGURATION = "{not valid json";
-/** Syntactically valid JSON, refused by rules/integration/a-connector-configuration-holds-a-well-formed-object
- * for not being an object -- alongside INVALID_CONFIGURATION (unparsable text) and
- * NULL_CONFIGURATION below, the three isValid=false-triggering shapes
- * task/connector-configuration-warning-text/warning-states-the-object-requirement's own criteria
- * name. */
+
 export const ARRAY_CONFIGURATION = "[1,2,3]";
-/** Syntactically valid JSON, refused for the same reason as ARRAY_CONFIGURATION above -- see that
- * constant's own comment. */
+
 export const NULL_CONFIGURATION = "null";
 
-/** JsonTextareaField's own mount-time pretty-print effect reformats a syntactically valid loaded
- * value before any test can observe it (json-textarea-pretty-print-on-load, already delivered) --
- * every assertion on the field's own displayed text uses this rather than the raw fixture. */
 export function prettyPrinted(value: string): string {
   return JSON.stringify(JSON.parse(value), null, 2);
 }
@@ -72,9 +44,6 @@ function emptyPage(): unknown {
 type FetchFn = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
 export type FetchResponder = (method: string) => Response | Promise<Response>;
 
-/** Each handler is keyed by URL and receives the request's own method, mirroring
- * case-version-editor-screen.test-support.ts's own METHOD-keyed convention -- this screen's own
- * CONFIGURATION_PATH answers both a GET (load) and a PUT (save) to the very same URL. */
 export function createFetchStub(handlers: Record<string, FetchResponder>): Mock<FetchFn> {
   return vi.fn(async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
     const url = typeof input === "string" ? input : input.toString();
@@ -88,8 +57,6 @@ export function createFetchStub(handlers: Record<string, FetchResponder>): Mock<
   });
 }
 
-/** Answers the load GET with `configuration`, plus both of ConnectorTestPanel's own reads with
- * an empty page -- see this file's own header comment. */
 export function baseHandlers(
   configuration: string,
   overrides: Record<string, FetchResponder> = {},
@@ -109,9 +76,7 @@ function buildTestRouter(initialPath: string) {
     path: "/connectors/$connector",
     component: ConnectorConfigurationDetailScreen,
   });
-  // A dummy leaf so "/connectors" is a resolvable Back-link destination -- what renders there is
-  // connector-configurations-screen.tsx's own concern, not this proof's, mirroring
-  // case-version-editor-screen.test-support.ts's own dummy "/cases" leaf.
+
   const listRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: "/connectors",
@@ -124,9 +89,6 @@ function buildTestRouter(initialPath: string) {
   });
 }
 
-// Named "mount", not "render", matching case-version-editor-screen.test-support.ts's own
-// testing-library/render-result-naming-convention precedent for a helper shaped this way -- it
-// returns the test router instance, not a render result.
 export async function mountConnectorConfigurationDetailScreen(
   fetchMock: FetchFn,
   initialPath = `/connectors/${CONNECTOR}`,

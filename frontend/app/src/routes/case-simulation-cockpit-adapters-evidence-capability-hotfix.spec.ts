@@ -2,21 +2,6 @@ import { describe, expect, it } from "vitest";
 import { toDetailEvidence } from "./case-simulation-cockpit-adapters";
 import type { SimulateEvidenceItem } from "../hooks/use-simulate-case";
 
-// task/detail-evidence-capability-hotfix/flatten-detail-evidence-capability-reference's own
-// criteria 2 and 4, and its own recorded inference on the Detail region's camelCase naming --
-// proven directly against toDetailEvidence (case-simulation-cockpit-adapters.ts), the exact
-// function the reproduction's own stack trace names as the one that threw. Split into its own
-// file (mirroring case-simulation-cockpit-adapters-stale.spec.ts's own established split
-// convention for this unit) rather than folded into case-simulation-cockpit-adapters.spec.ts,
-// since that file's own existing "toDetailEvidence" describe block is a fixed pre-existing test
-// (this corrective task's own authorized fixture-correction exception) rather than new proof
-// written for this task.
-
-/** The exact evidence item shape a real POST /v1/simulate response sends (this task's own
- * reproduction: a captured response body carrying "capability_name":"perfil-mobile-tecnico-reader",
- * "capability_version":"1.0.0" and no `capability` object at all) -- constructing this as a
- * SimulateEvidenceItem literal is itself part of the proof: it only compiles because the type
- * now declares these two fields flat (criterion 4). */
 function realEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): SimulateEvidenceItem {
   return {
     concept: "perfil-mobile-tecnico",

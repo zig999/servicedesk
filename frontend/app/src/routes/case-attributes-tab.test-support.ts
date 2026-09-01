@@ -11,13 +11,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { CaseAttributesTab } from "./case-attributes-tab";
 
-// Shared fixtures and a mounting helper for task/cases-list-and-detail/
-// case-attributes-at-a-glance's own proof, mirroring case-hypotheses-tab.test-support.ts's
-// own established convention (one shared fetch-stub scaffold for a task's own new tab,
-// mounted on its own -- case-detail-screen-attributes-tab.spec.ts proves the tab-strip
-// wiring separately, reusing case-hypotheses-tab.test-support.ts's own mountCaseDetailScreen
-// rather than a second copy of it here).
-
 export const SLUG = "some-slug";
 export const VERSIONS_PATH = `/v1/cases/${SLUG}/versions`;
 
@@ -48,13 +41,6 @@ export function createFetchStub(
   });
 }
 
-/**
- * CaseAttributesTab takes its slug as a prop, not a route param (mirroring
- * case-hypotheses-tab.test-support.ts's own mountCaseHypothesesTab), so the root route's own
- * component renders it directly. The two leaf routes exist only so this component's own
- * Links ("Continue editing" / "View released vX" / "New draft from vX") have a real
- * destination to resolve an href against.
- */
 export async function mountCaseAttributesTab(fetchMock: FetchFn, slug: string = SLUG): Promise<void> {
   vi.stubGlobal("fetch", fetchMock);
   const rootRoute = createRootRoute({

@@ -3,17 +3,6 @@ import { toDetailEvidence } from "./case-simulation-cockpit-adapters";
 import type { SimulateEvidenceItem, SimulateFieldSemantics } from "../hooks/use-simulate-case";
 import type { Evidence, FieldSemantics } from "../hooks/use-simulate-hypothesis";
 
-// Proof for task/simulation-evidence-snapshot/evidence-snapshot-wire-types's own criteria 1-4:
-// SimulateEvidenceItem and Evidence both declare fields/concept_description as optional wire
-// fields, and toDetailEvidence carries both onto the Detail region's own camelCase
-// fields/conceptDescription, absent staying absent rather than coerced. Mirrors
-// case-simulation-cockpit-adapters-stale.spec.ts's own established pattern for an identically-
-// shaped optional-field carry-through proof, split into its own sibling file for the same
-// MNT-01 reason that file's own header comment states.
-
-/** Mirrors case-simulation-cockpit-adapters-evidence-capability-hotfix.spec.ts's own
- * realEvidenceItem() baseline -- the fields this snapshot widens are deliberately absent by
- * default, so a caller opts each test into exactly the shape it needs. */
 function baseEvidenceItem(overrides: Partial<SimulateEvidenceItem> = {}): SimulateEvidenceItem {
   return {
     concept: "perfil-mobile-tecnico",
