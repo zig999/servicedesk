@@ -6,7 +6,7 @@ import type { Evaluation } from './evaluation.js';
 import { collectEvidence } from './evidence-collection-stage.js';
 import type { Evidence } from './evidence.js';
 import type { IHypothesisEvaluator } from './hypothesis-evaluator.port.js';
-import { JUDGMENT_STAGE_BUDGET_MS, maxElapsedMs } from './investigation-pipeline.js';
+import { JUDGMENT_STAGE_BUDGET_MS, maxElapsedMs, readClockMs } from './investigation-pipeline.js';
 import { judgeHypotheses } from './judgment-stage.js';
 import type { IObservationSource } from './observation-source.port.js';
 import { buildSubject } from './subject.js';
@@ -44,6 +44,7 @@ export type SimulateHypothesisPipelineResult = {
 export async function runSimulateHypothesisPipeline(
   options: SimulateHypothesisPipelineOptions,
 ): Promise<SimulateHypothesisPipelineResult> {
+  const pipelineStartedAtMs = readClockMs();
   const subject = buildSubject(options.subjectType, options.subjectAttributes);
   const entry = manifestEntryNamed(options.case, options.hypothesis);
   const narrowedCase: Case = { ...options.case, manifest: [entry] };
@@ -57,13 +58,14 @@ export async function runSimulateHypothesisPipeline(
     now: options.now,
     deadline: options.deadline,
   });
+  const judgmentBeginsAtMs = options.now + (readClockMs() - pipelineStartedAtMs);
   const evaluations = await judgeHypotheses({
     case: narrowedCase,
     evidenceByHypothesis: new Map([[options.hypothesis, evidence]]),
     evaluator: options.evaluator,
     poolSize: options.poolSize,
-    now: options.now,
-    deadline: Math.min(options.deadline, options.now + JUDGMENT_STAGE_BUDGET_MS),
+    now: judgmentBeginsAtMs,
+    deadline: Math.min(options.deadline, judgmentBeginsAtMs + JUDGMENT_STAGE_BUDGET_MS),
   });
   const evaluation = onlyEvaluationOf(evaluations);
   return { evidence, evaluation, durations: durationsOf(evidence, evaluation) };

@@ -129,6 +129,22 @@ class RecordingHypothesisEvaluator implements IHypothesisEvaluator {
   }
 }
 
+class HangingHypothesisEvaluator implements IHypothesisEvaluator {
+  public evaluate(): Promise<EvaluationOutcome> {
+    return new Promise(() => {});
+  }
+}
+
+class DelayedObservationSource implements IObservationSource {
+  public constructor(
+    private readonly delayMs: number,
+    private readonly outcome: ObservationOutcome,
+  ) {}
+  public observeConcept(): Promise<ObservationOutcome> {
+    return new Promise((resolve) => setTimeout(() => resolve(this.outcome), this.delayMs));
+  }
+}
+
 function baseOptions(overrides: Partial<SimulateHypothesisPipelineOptions> = {}): SimulateHypothesisPipelineOptions {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(aCapability('concept-a'));
@@ -245,6 +261,33 @@ it('answers a judgment duration of zero when no-data means the evaluator was nev
   expect(evaluator.judgedCriteria).toEqual([]);
   expect(result.evaluation).toMatchObject({ hypothesis: 'h1', verdict: 'inconclusive', reason: 'no-data' });
   expect(result.durations.judgment).toBe(0);
+});
+
+it('measures judgment\'s own deadline from the clock at the moment judgment actually begins, so a collection stage that consumed part of the propagated deadline leaves judgment correspondingly less real time than its own nominal budget — never the full nominal budget measured from the pipeline\'s entry instant', async () => {
+  const collectionDelayMs = 3_000;
+  const tightDeadlineMs = 6_000;
+  const observationSource = new DelayedObservationSource(collectionDelayMs, { result: 'ok', observation: 'observed-concept-a' });
+  const options = baseOptions({
+    hypothesis: 'h1',
+    observationSource,
+    evaluator: new HangingHypothesisEvaluator(),
+    now: 0,
+    deadline: tightDeadlineMs,
+  });
+
+  const resultPromise = runSimulateHypothesisPipeline(options);
+  let settled = false;
+  resultPromise.then(() => {
+    settled = true;
+  });
+
+  await vi.advanceTimersByTimeAsync(tightDeadlineMs - 1);
+  expect(settled).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  const result = await resultPromise;
+
+  expect(result.evaluation).toEqual({ hypothesis: 'h1', verdict: 'inconclusive', reason: 'deadline-exceeded', citations: [] });
 });
 
 const MODULE_PATH = fileURLToPath(new URL('../../../investigation/simulate-hypothesis-pipeline.ts', import.meta.url));

@@ -1,7 +1,7 @@
 import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
 import type { Assessment } from './assessment.js';
-import { runInvestigationPipeline, type InvestigationPipelineOptions } from './investigation-pipeline.js';
+import { readClockMs, runInvestigationPipeline, type InvestigationPipelineOptions } from './investigation-pipeline.js';
 import { buildInvestigation, type BuildInvestigationOptions } from './investigation-factory.js';
 import type { IInvestigationStore } from './investigation-store.port.js';
 import type { Investigation } from './investigation.js';
@@ -25,11 +25,19 @@ export type RunDiagnosisOptions = InvestigationPipelineOptions & {
 };
 
 export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {
+  const pipelineStartedAtMs = readClockMs();
   const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);
   const investigation = await buildInvestigation(
     buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
   );
-  await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline, durations });
+  const elapsedBeforePersistenceMs = readClockMs() - pipelineStartedAtMs;
+  await writeWithinDeadline({
+    store: options.store,
+    investigation,
+    now: options.now,
+    deadline: options.deadline,
+    elapsedBeforePersistenceMs,
+  });
   return investigation.assessment;
 }
 
@@ -72,20 +80,19 @@ type WriteWithinDeadlineArgs = {
   readonly now: number;
   readonly deadline: number;
 
-  readonly durations: Durations;
+  readonly elapsedBeforePersistenceMs: number;
 };
 
 async function writeWithinDeadline(args: WriteWithinDeadlineArgs): Promise<void> {
-  const { store, investigation, now, deadline, durations } = args;
-  const stageBoundMs = persistenceStageBoundMs(now, deadline, durations);
+  const { store, investigation, now, deadline, elapsedBeforePersistenceMs } = args;
+  const stageBoundMs = persistenceStageBoundMs(now, deadline, elapsedBeforePersistenceMs);
   const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));
   if (!settled) {
     throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs);
   }
 }
 
-function persistenceStageBoundMs(now: number, deadline: number, durations: Durations): number {
-  const elapsedBeforePersistenceMs = durations.collection + durations.judgment + durations.writing;
+function persistenceStageBoundMs(now: number, deadline: number, elapsedBeforePersistenceMs: number): number {
   return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));
 }
 

@@ -265,7 +265,11 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:7aabf2f4110fcbd8695083994b3fff288956f9616d06fa996f5dd0c63f2a68b2"
+        },
+        {
+          "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
+          "digest": "sha256:c91b571b03ff49a6fe27b06ce46fac08d6bd573f9eb3da54dd07f8a2fbfee858"
         }
       ]
     },
@@ -5025,7 +5029,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:7aabf2f4110fcbd8695083994b3fff288956f9616d06fa996f5dd0c63f2a68b2"
         }
       ]
     },

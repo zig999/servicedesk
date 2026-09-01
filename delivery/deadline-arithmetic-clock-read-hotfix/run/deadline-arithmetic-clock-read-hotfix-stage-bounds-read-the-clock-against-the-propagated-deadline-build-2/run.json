@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/deadline-arithmetic-clock-read-hotfix-stage-bounds-read-the-clock-against-the-propagated-deadline-build-2",
+  "cwd": "/home/siegfriedneto/projects/wt-deadline-arithmetic-clock-read-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T14:33:34.769+00:00",
+      "ended_at": "2026-09-01T14:33:38.252+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T14:33:38.252+00:00",
+      "ended_at": "2026-09-01T14:33:42.816+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T14:33:42.816+00:00",
+      "ended_at": "2026-09-01T14:33:46.838+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T14:33:46.838+00:00",
+      "ended_at": "2026-09-01T14:33:47.280+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

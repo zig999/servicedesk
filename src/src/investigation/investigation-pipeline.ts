@@ -97,6 +97,10 @@ export function maxElapsedMs(values: readonly number[]): number {
   return values.length === 0 ? 0 : Math.max(...values);
 }
 
+export function readClockMs(): number {
+  return Date.now();
+}
+
 function collectEvidenceOptions(options: InvestigationPipelineOptions, subject: Subject): CollectEvidenceOptions {
   return {
     case: options.case,
