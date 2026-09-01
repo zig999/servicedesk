@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/durations-total-real-elapsed-hotfix",
+      "kind": "epic",
+      "file": "epic/durations-total-real-elapsed-hotfix.md",
+      "title": "Durations total real-elapsed hotfix",
+      "summary": "The single corrective task that computes durations.total as the whole call's real elapsed time and round-trips durations.writing's absence correctly, now that domain/investigation/durations decides both facts."
+    },
+    {
+      "id": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "task",
+      "file": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly.md",
+      "title": "durations.total is measured to the record's own assembly; durations.writing round-trips absence",
+      "summary": "Fixes investigation-pipeline.ts and simulate-hypothesis-pipeline.ts to compute durations.total as the real elapsed time from the same entry instant the deadline was propagated from to the moment the record carrying it is assembled, instead of summing the per-stage figures, and fixes relational-investigation-store.repository.ts to make durations_writing nullable and round-trip its absence correctly.",
+      "epic": "durations-total-real-elapsed-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/durations-total-real-elapsed-hotfix",
+      "to": "domain/investigation/durations",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/durations-total-real-elapsed-hotfix",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "domain/investigation/durations",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "to": "constraints/the-stored-schema-mirrors-the-declared-model",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
