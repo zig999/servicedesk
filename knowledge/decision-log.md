@@ -1672,4 +1672,31 @@ entries:
       at all, the same way a timeout of zero or less bounds no call -- the reasoning transfers
       without alteration, and reading it the other way here would leave two structurally identical
       attributes governed by two different rules for the same kind of value.
+  - location: domain/investigation/durations.md
+    field: attributes.total
+    unstated: >-
+      This same field was decided moments earlier in this log as "the moment the response is
+      ready", but an execution-contract-binder judging a plan-work task against that text found it
+      physically impossible for an investigation: durations is one of the attributes
+      buildInvestigationOptions assembles onto the Investigation record before writeWithinDeadline
+      persists it (src/investigation/run-diagnosis.ts), so total must already hold a value before
+      persistence begins, and persistence is what stands between that assembly and the response
+      becoming ready. The prior decision asked total to cover a span (the persistence stage, and
+      everything after it) that has not happened yet at the instant total is fixed.
+    decided: >-
+      total is the real elapsed time from the run's own entry instant to the moment the record
+      carrying this same durations value is assembled -- before persistence, for an investigation;
+      before the answer leaves, for a simulation, which persists nothing. It still excludes never
+      the sum of collection, judgment and writing, but for an investigation it now necessarily
+      excludes the persistence stage itself, since durations cannot describe a stage that has not
+      yet run when it is fixed.
+    why: >-
+      The binder's finding is not a second reading to weigh against the first -- it is a
+      contradiction the first reading cannot survive, so this entry corrects rather than
+      supersedes the original motivation for deciding total at all (a stage-figure sum still loses
+      the overhead and the inter-stage gaps constraints/the-deadline-is-an-absolute-propagated-instant's
+      own rationale names). The corrected endpoint is the latest instant the record itself proves
+      total can actually be measured to: assembly, which precedes every use the record is put to
+      afterward. Naming that instant, rather than "the response", is what makes the attribute
+      answerable by the code that has to compute it.
 ---
