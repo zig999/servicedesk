@@ -104,7 +104,7 @@ const costSchema = z.object({
 const durationsSchema = z.object({
   collection: z.number(),
   judgment: z.number(),
-  writing: z.number(),
+  writing: z.number().optional(),
   total: z.number(),
 });
 

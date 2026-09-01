@@ -49,7 +49,7 @@ interface IInvestigationRow {
   readonly cost_output_tokens: number;
   readonly durations_collection: number;
   readonly durations_judgment: number;
-  readonly durations_writing: number;
+  readonly durations_writing: number | null;
   readonly durations_total: number;
   readonly written_at: Date;
 }
@@ -442,7 +442,7 @@ function investigationOf(parts: IAssembledInvestigation): Investigation {
     durations: {
       collection: row.durations_collection,
       judgment: row.durations_judgment,
-      writing: row.durations_writing,
+      ...(row.durations_writing !== null ? { writing: row.durations_writing } : {}),
       total: row.durations_total,
     },
     written_at: row.written_at.toISOString(),

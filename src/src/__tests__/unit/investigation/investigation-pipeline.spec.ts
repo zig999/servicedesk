@@ -231,9 +231,27 @@ it('answers one record carrying evidence, evaluations, resolved, assessment, cos
       prompt: 'the consolidation prompt',
     },
     cost: { calls: 2, input_tokens: 11, output_tokens: 7 },
-    durations: { collection: 0, judgment: 50, writing: 7, total: 57 },
+    durations: { collection: 0, judgment: 50, writing: 7, total: 0 },
     prompts: { writing: 'the consolidation prompt' },
   });
+});
+
+it('computes durations.total as the real wall-clock elapsed time from pipeline entry to the moment its result is assembled, never as collection + judgment + writing', async () => {
+  const delayMs = 3_000;
+  const delayedObservationSource: IObservationSource = {
+    observeConcept: () =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve({ result: 'ok', observation: 'observed-concept-a' }), delayMs);
+      }),
+  };
+  const options = baseOptions({ observationSource: delayedObservationSource });
+
+  const resultPromise = runInvestigationPipeline(options);
+  await vi.advanceTimersByTimeAsync(delayMs);
+  const result = await resultPromise;
+
+  expect(result.durations.total).toBe(delayMs);
+  expect(result.durations.total).not.toBe(result.durations.collection + result.durations.judgment + (result.durations.writing ?? 0));
 });
 
 it('runs buildSubject before collecting any evidence or judging any hypothesis, refusing an empty subject attribute set without reaching either stage', async () => {

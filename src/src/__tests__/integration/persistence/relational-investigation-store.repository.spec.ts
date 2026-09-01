@@ -242,6 +242,25 @@ it(
 );
 
 it(
+  'writes and reads back an investigation whose durations.writing is absent, storing it as a real SQL NULL now that the column is nullable, and reads it back with durations.writing absent entirely',
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-no-writing-duration-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const base = anIntegrationInvestigation({ id, fixtures });
+    const investigation: Investigation = { ...base, durations: { collection: base.durations.collection, judgment: base.durations.judgment, total: base.durations.total } };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(investigation);
+    const answered = await store.read(id);
+
+    expect(answered?.document).toEqual(investigation);
+    expect(answered?.document).not.toHaveProperty('durations.writing');
+  },
+  15000,
+);
+
+it(
   "refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged",
   async () => {
     const fixtures = await freshFixtures();

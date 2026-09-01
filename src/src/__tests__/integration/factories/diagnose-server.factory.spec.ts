@@ -355,7 +355,8 @@ const TOTAL_PROVIDER_CALLS = 3;
 
 it(
   'persists real, non-zero cost and durations for the judgment and consolidation calls, ' +
-    'now that the Anthropic adapters themselves report real usage and elapsed_ms',
+    'now that the Anthropic adapters themselves report real usage and elapsed_ms, with durations_total ' +
+    'exceeding the sum of the three stage figures since it measures the whole pipeline\'s own real elapsed time',
   async () => {
     await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
 
@@ -369,7 +370,7 @@ it(
     expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
     expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
     expect(written?.durations_collection).toBeGreaterThan(0);
-    expect(written?.durations_total).toBe(
+    expect(written?.durations_total).toBeGreaterThan(
       (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
     );
   },

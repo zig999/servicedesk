@@ -1066,7 +1066,7 @@ it("sums cost.input_tokens and cost.output_tokens across every judgment call's o
   expect((document as Investigation).cost.output_tokens).toBe(16);
 });
 
-it("computes durations.collection and durations.judgment as the largest of their own stage's per-unit elapsed_ms, durations.writing as the consolidation call's own elapsed_ms, and durations.total as the sum of the three", async () => {
+it("computes durations.collection and durations.judgment as the largest of their own stage's per-unit elapsed_ms, durations.writing as the consolidation call's own elapsed_ms, and durations.total as the real wall-clock time elapsed from pipeline entry to the record's own assembly — never the sum of the three", async () => {
   const store = new InMemoryInvestigationStore();
   const observationSource = new PerConceptDelayedObservationSource();
   observationSource.delay('concept-a', 100);
@@ -1086,7 +1086,23 @@ it("computes durations.collection and durations.judgment as the largest of their
   expect(durations.collection).toBe(300);
   expect(durations.judgment).toBe(200);
   expect(durations.writing).toBe(400);
-  expect(durations.total).toBe(900);
+  expect(durations.total).toBe(300);
+});
+
+it('excludes persistence entirely from durations.total, since total is measured before the record is handed to the store', async () => {
+  const store = new DelayedInvestigationStore(1_000);
+  const observationSource = new DelayedObservationSource(200, { result: 'ok', observation: 'observed-concept-a' });
+  const consolidator = new ScriptedAssessmentConsolidator({
+    text: 'consolidated text', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'a-prompt',
+  });
+  const options = baseOptions({ store, observationSource, consolidator });
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(1_200);
+  await resultPromise;
+  const stored = await store.read('investigation-1');
+
+  expect((stored?.document as Investigation).durations.total).toBe(200);
 });
 
 async function durationsForOneRun(runTiming: {

@@ -379,7 +379,7 @@ it('persists and reads back concept, subject-type, subject-attribute, action, ou
   expect(capabilityRows).toEqual([{ nature: 'read-only', timeout: 1000, connector: 'a-connector' }]);
 });
 
-it('holds every domain column NOT NULL except exactly the six columns the model declares optional', async () => {
+it('holds every domain column NOT NULL except exactly the seven columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
      WHERE table_schema = $1 AND table_name <> 'schema_migrations' AND is_nullable = 'YES'
@@ -393,6 +393,7 @@ it('holds every domain column NOT NULL except exactly the six columns the model 
     { table_name: 'investigation_evaluations', column_name: 'reason' },
     { table_name: 'investigation_evidence', column_name: 'result_detail' },
     { table_name: 'investigations', column_name: 'assessment_determining_hypothesis' },
+    { table_name: 'investigations', column_name: 'durations_writing' },
     { table_name: 'investigations', column_name: 'ticket_ref' },
   ]);
 });
