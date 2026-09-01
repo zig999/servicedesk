@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "implementation",
+      "file": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant.md",
+      "title": "written_at now stamps the store's settle instant, not the request's entry instant",
+      "summary": "run-diagnosis.ts reads written_at from a fresh clock reading taken at persistence time for each physical write attempt, replacing the request-entry-instant read the corrective fix targets.",
+      "task": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant"
+    },
+    {
+      "id": "proof/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "proof",
+      "file": "proof/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant.md",
+      "title": "written_at records the settle instant — proof",
+      "summary": "Four tests over run-diagnosis.spec.ts prove written_at is read from a fresh clock reading taken at persistence time per physical write attempt, never from the request's entry instant and never restamped over an already-present record.",
+      "task": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "to": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

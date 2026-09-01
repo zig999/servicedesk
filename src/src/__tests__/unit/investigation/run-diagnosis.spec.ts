@@ -331,6 +331,25 @@ class FailOnceThenAlreadyStoredInvestigationStore implements IInvestigationStore
   }
 }
 
+class DelayedRejectThenSucceedInvestigationStore implements IInvestigationStore {
+  private readonly inner = new InMemoryInvestigationStore();
+  private calls = 0;
+  public constructor(
+    private readonly delayMs: number,
+    private readonly firstError: Error,
+  ) {}
+  public write(investigation: Investigation): Promise<void> {
+    this.calls += 1;
+    if (this.calls === 1) {
+      return new Promise((_resolve, reject) => setTimeout(() => reject(this.firstError), this.delayMs));
+    }
+    return this.inner.write(investigation);
+  }
+  public async read(id: string): Promise<StoredInvestigation | undefined> {
+    return this.inner.read(id);
+  }
+}
+
 function expectedOkEvidence(concept: string, observation: string): Evidence {
   return {
     concept,
@@ -748,6 +767,70 @@ it('settles successfully without raising the deadline error when the retry — n
   const assessment = await runDiagnosis(options);
 
   expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
+});
+
+it("reads written_at from the clock at persistence time, distinctly later than the request's own entry instant once collection has consumed real wall-clock time", async () => {
+  const REQUEST_ENTRY_INSTANT = 1_700_000_000_000;
+  vi.setSystemTime(REQUEST_ENTRY_INSTANT);
+  const store = new InMemoryInvestigationStore();
+  const consolidator = new FakeAssessmentConsolidator();
+  consolidator.seed(
+    { evaluations: [CONFIRMED_H1_EVALUATION], evidence: [{ ...expectedOkEvidence('concept-a', 'observed-concept-a'), elapsed_ms: 500 }], consolidationRegister: 'plain' },
+    HAPPY_PATH_TEXT,
+  );
+  const options = baseOptions({
+    store,
+    observationSource: new DelayedObservationSource(500, { result: 'ok', observation: 'observed-concept-a' }),
+    consolidator,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(500);
+  await resultPromise;
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).written_at).toBe(new Date(REQUEST_ENTRY_INSTANT + 500).toISOString());
+});
+
+it("records written_at from the retry's own fresh clock reading when the retry — not the first attempt — is the one that settles, never from the first attempt's own start", async () => {
+  const START_INSTANT = 1_700_000_000_000;
+  vi.setSystemTime(START_INSTANT);
+  const store = new DelayedRejectThenSucceedInvestigationStore(500, new Error('a transient write failure'));
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(500);
+  await resultPromise;
+  const stored = await store.read('investigation-1');
+
+  expect((stored?.document as Investigation).written_at).toBe(new Date(START_INSTANT + 500).toISOString());
+});
+
+it('leaves the already-present record\'s own written_at untouched, never restamping it, when the first write attempt finds the investigation already stored', async () => {
+  const store = new InMemoryInvestigationStore();
+  store.preoccupy('investigation-1');
+  const options = baseOptions({ store });
+
+  await runDiagnosis(options);
+  const stored = await store.read('investigation-1');
+
+  expect(stored?.document).toEqual({ id: 'investigation-1' });
+});
+
+it('reads written_at from the clock immediately before dispatching a write attempt, not from a reading taken after the store confirms that attempt has settled', async () => {
+  const START_INSTANT = 1_700_000_000_000;
+  vi.setSystemTime(START_INSTANT);
+  const store = new DelayedInvestigationStore(500);
+  const options = baseOptions({ store, now: 0, deadline: 20_000 });
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(500);
+  await resultPromise;
+  const stored = await store.read('investigation-1');
+
+  expect((stored?.document as Investigation).written_at).toBe(new Date(START_INSTANT).toISOString());
 });
 
 it('tightens judgment\'s own deadline to no more than the nominal five-second budget, even where the declared deadline leaves far more room', async () => {
