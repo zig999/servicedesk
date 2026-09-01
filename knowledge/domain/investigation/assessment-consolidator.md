@@ -11,4 +11,4 @@ Outcome, referral and the determining hypothesis are never decided here — they
 
 ## Responsibility
 
-Given every required hypothesis's evaluation, the evidence any of their citations name, and the pinned case's own consolidation register, return the assessment's text together with the call's own usage, elapsed_ms and prompt.
+Given every required hypothesis's evaluation, the evidence any of their citations name, and the pinned case's own consolidation register, return the assessment's text together with the register that call used and the call's own usage, elapsed_ms and prompt.

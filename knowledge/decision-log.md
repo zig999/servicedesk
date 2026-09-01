@@ -1699,4 +1699,95 @@ entries:
       total can actually be measured to: assembly, which precedes every use the record is put to
       afterward. Naming that instant, rather than "the response", is what makes the attribute
       answerable by the code that has to compute it.
+  - location: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference.md
+    field: statement
+    unstated: >-
+      Whether an investigation's ticket_ref may hold the empty string as a value, or whether a
+      ticket reference given as the empty string is the absence of a ticket reference. The
+      element declares ticket_ref optional and its Description says not every diagnose call
+      carries a ticket, but no node anywhere says what an empty one is -- the specification's
+      four empty-string readings are each scoped to their own element (a capability's
+      attributes, a connector configuration's name, a subject's attribute-value, a simulation's
+      requester) and none reaches this attribute.
+    decided: >-
+      An empty string is no ticket reference at all -- ticket_ref never holds it. A diagnose call
+      giving an empty ticket reference records no ticket reference and reads back none, and the
+      call is not refused for it.
+    why: >-
+      Mirrors this specification's own established idiom for an empty string, stated four times
+      and never contradicted: a-capability-declares-its-contract ("an attribute that is absent or
+      an empty string is undeclared"), a-connector-configuration-names-its-connector ("An empty
+      string is treated as no name at all"), a-diagnosed-subject-covers-its-cases-required-attributes
+      and a-simulation-carries-its-requester (each reading "no value, or an empty one" as one
+      absence). ticket_ref's only stated role is correlation with the ticketing system for
+      traceability and audit, participating in no matching or deduplication logic, and an empty
+      string correlates with nothing -- so admitting it as a value would give the audit link two
+      indistinguishable encodings of nothing rather than one honest absence. The refusal half of
+      the sibling rules does not carry across, because those attributes are required and this one
+      is not: absence is already a decided, lawful state of ticket_ref, so an empty string
+      reaching it needs no new refusal, only the same reading. Stated as a rule constraining
+      domain/investigation/investigation rather than added to the element's Description, since
+      the element schema's attribute declaration admits only name, type, required and many, and
+      an operative claim living only in a Description has no addressable home.
+  - location: rules/investigation/the-consolidation-answer-states-its-register.md
+    field: statement
+    unstated: >-
+      What the assessment-consolidator's answer carries. The port's own node enumerates the text
+      plus the call's usage, elapsed_ms and prompt and stops there, while
+      domain/investigation/assessment requires a register the writing call settled on "whichever
+      side supplied it" -- so no node states that the port's answer itself names which register
+      the call used, nor what it names where the pinned case version declares none.
+    decided: >-
+      A consolidation call's answer states the one register that call used to produce the text --
+      the pinned case version's own declared register where it holds one, the register the
+      consolidation adapter defaulted to where the version declares none -- alongside the text and
+      that call's own usage, elapsed_ms and prompt; held as a new invariant constraining
+      domain/investigation/assessment-consolidator and domain/investigation/assessment.
+    why: >-
+      domain/knowledge/case-version already leaves an absent register to "whatever register its
+      own adapter defaults to", a fact settled where the call ran and unknowable to a caller in
+      advance, while domain/investigation/assessment already requires the register on every
+      assessment; the call's own answer is therefore the only supply path that can satisfy that
+      requirement in the default case, which is why the answer states it rather than a caller
+      reconstructing it. Stated unconditionally rather than only in the default case, so one
+      answer shape serves both and a reader never has to work out which side supplied the
+      register this time -- mirroring usage, elapsed_ms and prompt, which already ride this same
+      answer and are already required on the same element for the same "consolidation always
+      runs" reason. A rule holds it because a domain-service declares no return in its own
+      frontmatter, so a rule's statement is the only addressable home the fact's shape admits; the
+      port node's Responsibility prose is brought into agreement with it and decides nothing on
+      its own.
+  - location: rules/investigation/a-citation-stays-within-the-hypothesis-collects.md
+    field: statement
+    unstated: >-
+      Whether the containment requirement is enforced over an evaluation produced without any
+      judgment call -- inconclusive with reason no-data, whose citations name the evidence whose
+      result is not ok -- and what the system answers where such a citation names a concept
+      outside the judged revision's collects, given the rule's own remedy (refuse the response,
+      one retry, fall back to judgment-failure) presupposes an evaluator response that does not
+      exist there. The rule's statement was unqualified over every evaluation while its rationale
+      and its only scenario (scenarios/investigation/a-foreign-citation-is-refused) both speak of
+      the evaluator's response, and scenarios/investigation/a-collection-timeout-degrades-to-no-data
+      requires a no-data evaluation to cite evidence without saying what holds that citation to
+      the collects.
+    decided: >-
+      The containment holds over every evaluation, whatever produced it, and is not weakened for
+      a no-data one; where the evaluation was produced without any judgment call, it is held by
+      drawing those citations from the evidence collected for that same revision's own collects,
+      rather than by any check over a response -- so no refusal and no retry runs on that path,
+      and the refuse-and-retry remedy is scoped to an outcome an evaluator returned.
+    why: >-
+      Home and form follow the sibling invariant
+      rules/investigation/a-cited-field-exists-in-the-capability-output-schema, which states its
+      own no-data case inside its own statement rather than in a second node. The remedy's scope
+      is not new: this rule's own rationale is that a foreign citation is an invented reference
+      because the judgment prompt contained nothing else, and a-foreign-citation-is-refused's
+      given is already "the evaluator's response" -- a no-data evaluation went through no prompt
+      and returned no response, so neither the refusal nor the retry has anything to act on. The
+      containment itself stays universal rather than being exempted for no-data, because it names
+      the obligation the synthesis actually bears -- draw those citations from that revision's own
+      collected evidence -- which is falsifiable against a synthesis that drew from anything else,
+      and inventing a further refusal for the violation half would state a behavior nothing can
+      reach, the same reasoning already used in refusing to issue a write into a non-positive
+      bound and in fixing durations.total at an instant the record can actually be measured to.
 ---
