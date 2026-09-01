@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/no-data-citation-field-omitted-hotfix",
+      "kind": "epic",
+      "file": "epic/no-data-citation-field-omitted-hotfix.md",
+      "title": "No-data citation field omitted hotfix",
+      "summary": "The single corrective task that omits field entirely on a no-data citation, now that domain/investigation/citation and rules/investigation/a-cited-field-exists-in-the-capability-output-schema decide field is absent for that case, instead of filling it with an empty string sentinel."
+    },
+    {
+      "id": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "task",
+      "file": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted.md",
+      "title": "A no-data citation omits field, never an empty-string sentinel",
+      "summary": "Fixes judgment-stage.ts's noDataEvaluation and anthropic-hypothesis-evaluator.adapter.ts's noDataOutcome to construct a no-data citation with concept alone, omitting field entirely, instead of filling field with an empty string.",
+      "epic": "no-data-citation-field-omitted-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/no-data-citation-field-omitted-hotfix",
+      "to": "domain/investigation/citation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/no-data-citation-field-omitted-hotfix",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "domain/investigation/citation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "to": "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}
