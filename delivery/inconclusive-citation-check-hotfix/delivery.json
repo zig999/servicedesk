@@ -16,6 +16,22 @@
       "title": "Inconclusive citation check hotfix — proof",
       "summary": "Corrects two judgment-stage.spec.ts tests whose assertions asserted the pre-fix behavior, adds five tests proving the task's three criteria, and adds the missing register field to a run-diagnosis.spec.ts fixture that was the sole blocker of npm run typecheck.",
       "task": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked"
+    },
+    {
+      "id": "review/inconclusive-citation-check-hotfix",
+      "kind": "review",
+      "file": "review/inconclusive-citation-check-hotfix.md",
+      "title": "inconclusive-citation-check-hotfix, review",
+      "summary": "What three passes found over the source and tests holding an inconclusive evaluation's citations to the same hypothesis-collects containment check confirmed and refuted evaluations already receive; the captured suite run passed clean, so no failures pass ran.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Where an inconclusive outcome's citations fail that check, the outcome is answered the same way a confirmed or refuted outcome that fails the check already is (the existing retry, and judgment-failure where the retry also fails or the deadline admits none) — never recorded with an out-of-collects citation as if it had passed."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -42,6 +58,12 @@
       "to": "implementation/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/inconclusive-citation-check-hotfix",
+      "to": "task/inconclusive-citation-check-hotfix/inconclusive-evaluations-citations-are-checked",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

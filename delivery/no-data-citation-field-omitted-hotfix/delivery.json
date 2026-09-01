@@ -16,6 +16,20 @@
       "title": "A no-data citation omits field, and now persists and reads back without one",
       "summary": "Proves all four criteria of no-data-citation-field-omitted -- the two construction sites omit field entirely for a no-data citation, a confirmed/refuted citation keeps carrying both concept and field unaffected, and a no-data citation now writes and reads back through the real store and the restructured investigation_evaluation_citations schema without the not-null/primary-key crash that used to be the terminal behavior -- correcting the test that had pinned that crash to the fix that replaced it.",
       "task": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted"
+    },
+    {
+      "id": "review/no-data-citation-field-omitted-hotfix",
+      "kind": "review",
+      "file": "review/no-data-citation-field-omitted-hotfix.md",
+      "title": "no-data-citation-field-omitted-hotfix, review",
+      "summary": "What four passes found over the source and tests omitting field from a no-data citation and restructuring investigation_evaluation_citations' primary key so it persists.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -42,6 +56,12 @@
       "to": "implementation/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/no-data-citation-field-omitted-hotfix",
+      "to": "task/no-data-citation-field-omitted-hotfix/no-data-citation-field-omitted",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

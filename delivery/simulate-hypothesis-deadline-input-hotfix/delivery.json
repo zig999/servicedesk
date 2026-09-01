@@ -16,6 +16,23 @@
       "title": "Proof for production-simulate-hypothesis.factory.ts's runner taking now/deadline from its caller",
       "summary": "Corrects the pre-existing production-simulate-hypothesis.factory.ts spec to the new caller-supplied-deadline behavior (unblocking typecheck) and adds tests proving the four criteria and the two recorded inferences, including the controller's own now/deadline computation.",
       "task": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated"
+    },
+    {
+      "id": "review/simulate-hypothesis-deadline-input-hotfix",
+      "kind": "review",
+      "file": "review/simulate-hypothesis-deadline-input-hotfix.md",
+      "title": "simulate-hypothesis-deadline-input-hotfix, review",
+      "summary": "What three passes found over the source and tests making the simulate-hypothesis runner take now/deadline from its caller; the captured suite run passed clean, so no failures pass ran.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every other wiring production-simulate-hypothesis.factory.ts performs (capabilities, glossary, connector configurations, observation source, evaluator, poolSize) is unchanged.",
+        "The now and deadline this runner is given reach runSimulateHypothesisPipeline unchanged, so each of the pipeline's own stages still receives the minimum of its nominal budget and the time remaining before that same propagated deadline — the deadline this task's runner accepts is never merely accepted and left unused."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -30,6 +47,12 @@
       "to": "implementation/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/simulate-hypothesis-deadline-input-hotfix",
+      "to": "task/simulate-hypothesis-deadline-input-hotfix/deadline-taken-from-caller-and-propagated",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

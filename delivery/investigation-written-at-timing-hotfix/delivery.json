@@ -16,6 +16,23 @@
       "title": "written_at records the settle instant — proof",
       "summary": "Four tests over run-diagnosis.spec.ts prove written_at is read from a fresh clock reading taken at persistence time per physical write attempt, never from the request's entry instant and never restamped over an already-present record.",
       "task": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant"
+    },
+    {
+      "id": "review/investigation-written-at-timing-hotfix",
+      "kind": "review",
+      "file": "review/investigation-written-at-timing-hotfix.md",
+      "title": "investigation-written-at-timing-hotfix, review",
+      "summary": "What three passes found over the source and tests stamping written_at from the clock at persistence time; the captured suite run passed clean, so no failures pass ran.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A write that finds the record already present (settles without a new write, per rules/investigation/an-investigation-is-written-once) reads written_at from the existing record, never restamping it.",
+        "written_at on a persisted investigation is read from the clock at the moment the store confirms the write settled, never from the request's entry instant."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -42,6 +59,12 @@
       "to": "implementation/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/investigation-written-at-timing-hotfix",
+      "to": "task/investigation-written-at-timing-hotfix/written-at-records-the-settle-instant",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

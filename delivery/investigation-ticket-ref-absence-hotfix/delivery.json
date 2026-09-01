@@ -16,6 +16,23 @@
       "title": "ticket_ref round-trips absence, never the empty string",
       "summary": "Tests over relational-investigation-store.repository.ts proving that an absent or empty-string ticket_ref is written and read back as absence, and that a given non-empty ticket_ref is written and read back exactly unchanged, replacing the two pre-existing tests that had pinned the coalesce-to-empty-string bug this task fixes.",
       "task": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence"
+    },
+    {
+      "id": "review/investigation-ticket-ref-absence-hotfix",
+      "kind": "review",
+      "file": "review/investigation-ticket-ref-absence-hotfix.md",
+      "title": "investigation-ticket-ref-absence-hotfix, review",
+      "summary": "What four passes found over the source and tests making ticket_ref round-trip absence as absence, never as an empty string.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A diagnose call giving an empty string as its ticket reference is recorded and read back as an absent ticket_ref, never as an empty-string value, matching rules/investigation/an-empty-ticket-reference-is-no-ticket-reference."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -42,6 +59,12 @@
       "to": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/investigation-ticket-ref-absence-hotfix",
+      "to": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

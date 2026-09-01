@@ -16,6 +16,23 @@
       "title": "Judgment-stage dead-throw removal — proof",
       "summary": "Proves that hypothesisNamed's and evidenceFor's throw branches are gone, their return types stay non-optional with no reintroduced fallback, and judgeHypotheses' behavior over a well-formed case is otherwise unchanged, by retiring the two tests that asserted the removed throws and adding source-structure and behavioral tests in their place.",
       "task": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws"
+    },
+    {
+      "id": "review/judgment-stage-dead-throws-removal-hotfix",
+      "kind": "review",
+      "file": "review/judgment-stage-dead-throws-removal-hotfix.md",
+      "title": "judgment-stage-dead-throws-removal-hotfix, review",
+      "summary": "What three passes found over the source and tests removing judgment-stage.ts's two throws for conditions the specification already makes unreachable; the captured suite run passed clean, so no failures pass ran.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Every name requires-evaluation-of(case) returns resolves to a hypothesis in that same case's own manifest (rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses); judgment-stage.ts's hypothesisNamed no longer contains a throw for the case where it does not.",
+        "The evidence map judgment-stage.ts is given always holds an entry for every hypothesis requires-evaluation-of(case) names, given that hypothesis collects at least one concept; judgment-stage.ts's evidenceFor no longer contains a throw for the case where it does not."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -36,6 +53,12 @@
       "to": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/judgment-stage-dead-throws-removal-hotfix",
+      "to": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

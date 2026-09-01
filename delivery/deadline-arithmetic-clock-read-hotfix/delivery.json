@@ -16,6 +16,26 @@
       "title": "Stage bounds read the clock against the propagated deadline — proof",
       "summary": "Three new tests, added into the two pre-existing spec files that already cover run-diagnosis.ts and simulate-hypothesis-pipeline.ts, each constructed to fail against the pre-fix (durations-summing / entry-instant-anchored) implementation and pass only against the delivered clock-read fix; plus one pre-existing test corrected to expect the now-correct refusal instead of the old buggy pass-through.",
       "task": "task/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline"
+    },
+    {
+      "id": "review/deadline-arithmetic-clock-read-hotfix",
+      "kind": "review",
+      "file": "review/deadline-arithmetic-clock-read-hotfix.md",
+      "title": "deadline-arithmetic-clock-read-hotfix, review",
+      "summary": "What four passes found over the source and tests making run-diagnosis.ts's persistence bound and simulate-hypothesis-pipeline.ts's judgment bound read the real clock against the propagated deadline.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "unproven": [
+        "A collection stage that consumes more than its own nominal budget results in the stage that follows it (persistence in run-diagnosis.ts; judgment in simulate-hypothesis-pipeline.ts) receiving correspondingly less time than its own nominal budget, measured against the clock — never the stage's full nominal budget regardless of how much time collection actually used.",
+        "That computation is written so it remains correct if durations.writing were ever absent — it never assumes the attribute is present — even though, for a diagnosis, durations.writing is currently always present, because investigation-pipeline.ts's own consolidation call is unconditional.",
+        "Where the persistence stage's own bound (computed as above) is zero or less at the moment persistence begins, no write attempt is issued at all and the store is never called — InvestigationWriteDeadlineExceededError is raised immediately, exactly as rules/investigation/no-stage-aborts-on-its-deadline already states for this case.",
+        "simulate-hypothesis-pipeline.ts's judgment stage deadline is computed as the minimum of JUDGMENT_STAGE_BUDGET_MS and the time remaining before the propagated deadline, measured from the clock at the moment judgment begins — never anchored to the run's entry instant regardless of how long collection took."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -42,6 +62,12 @@
       "to": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/deadline-arithmetic-clock-read-hotfix",
+      "to": "task/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

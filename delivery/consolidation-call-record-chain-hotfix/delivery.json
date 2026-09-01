@@ -16,6 +16,20 @@
       "title": "Proof for register/usage/elapsed_ms/prompt reaching the assessment",
       "summary": "Proves the consolidation call's register, usage, elapsed_ms and prompt now reach the Assessment an investigation-pipeline run returns and a diagnosis persists and reads back, with register always exactly what consolidate() answered rather than what the caller requested, and that the HTTP wire response stays narrowed to the four legacy DiagnoseResponseDto fields.",
       "task": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment"
+    },
+    {
+      "id": "review/consolidation-call-record-chain-hotfix",
+      "kind": "review",
+      "file": "review/consolidation-call-record-chain-hotfix.md",
+      "title": "consolidation-call-record-chain-hotfix, review",
+      "summary": "What four passes found over the source and tests carrying register, usage, elapsed_ms and prompt from the consolidation call to the assessment and through persistence.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "failures",
+        "standard"
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -60,6 +74,12 @@
       "to": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/consolidation-call-record-chain-hotfix",
+      "to": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

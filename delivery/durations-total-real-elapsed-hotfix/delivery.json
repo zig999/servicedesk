@@ -16,6 +16,23 @@
       "title": "durations.total measured to record assembly; durations.writing round-trips absence — proof",
       "summary": "Tests proving investigation-pipeline.ts and simulate-hypothesis-pipeline.ts now compute durations.total as real wall-clock elapsed time (never a stage-figure sum), that the persisted total round-trips unchanged, and that the store's durations_writing column round-trips both absence and presence exactly -- plus corrections to five pre-existing tests across the wider suite that baked in the old sum-based total and would otherwise fail (or silently under-prove) against the delivered fix.",
       "task": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly"
+    },
+    {
+      "id": "review/durations-total-real-elapsed-hotfix",
+      "kind": "review",
+      "file": "review/durations-total-real-elapsed-hotfix.md",
+      "title": "durations-total-real-elapsed-hotfix, review",
+      "summary": "What three passes found over the source and tests computing durations.total as real elapsed time and making durations_writing round-trip absence; the captured suite run passed clean, so no failures pass ran.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "investigation-pipeline.ts's returned durations.total equals the real elapsed time measured from the same entry instant the deadline was propagated from to the moment its result (the record durations.total itself belongs to) is assembled, before that record is handed to persistence — not collection + judgment + writing.",
+        "simulate-hypothesis-pipeline.ts's returned durations.total equals the real elapsed time measured from the same entry instant the deadline was propagated from to the moment its result is assembled — not collection + judgment."
+      ],
+      "findings": 7
     }
   ],
   "edges": [
@@ -42,6 +59,12 @@
       "to": "implementation/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/durations-total-real-elapsed-hotfix",
+      "to": "task/durations-total-real-elapsed-hotfix/total-measured-to-record-assembly",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
