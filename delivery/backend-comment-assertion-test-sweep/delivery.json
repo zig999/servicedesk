@@ -16,6 +16,42 @@
       "title": "Existing behavioral tests continuing to pass over the comment-assertion removals",
       "summary": "Cites, per edited-in-place file with at least one surviving test, one pre-existing behavioral test that already runs unmodified and would fail on any regression the removal could have caused; this removal-only task authorizes no new test.",
       "task": "task/backend-comment-assertion-test-sweep/remove-comment-assertion-tests"
+    },
+    {
+      "id": "review/backend-comment-assertion-test-sweep",
+      "kind": "review",
+      "file": "review/backend-comment-assertion-test-sweep.md",
+      "title": "Backend comment-assertion test sweep, first review",
+      "summary": "What four passes found over the removal of 37 comment-assertion tests and three whole test files from the backend suite.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "No file outside src/__tests__ changes -- no production source, and no production comment, is touched by this task.",
+        "Running the full backend suite after the removals passes, with no remaining test in any of the 19 files above weakened, skipped, or rewritten to tolerate comment content the removed test used to check.",
+        "src/__tests__/unit/capability-registry/capability-registry.service.spec.ts no longer contains the three tests whose assertions read capability-registry.service.ts's own comment prose (readCapabilityByIdentity's contract-membership comment, pageCountOf's constraints/listings-are-paged citation, refuseContractDepartures' doc comment); every other test in the file is unchanged.",
+        "src/__tests__/unit/capability-registry/capability.spec.ts, whose sole test asserts domain/integration/capability's own doc-comment attribution, is deleted entirely.",
+        "src/__tests__/unit/case/validate-case-coherence.spec.ts no longer contains its three doc-comment-citation tests (namedVocabularyTerms' two citations, conceptViolations' one); every other test in the file is unchanged.",
+        "src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts no longer contains its three comment-assertion tests (ConnectorConfigurationResolution's scoping comment, pageCountOf's citation, wellFormedConfiguration's classification comment); every other test in the file is unchanged.",
+        "src/__tests__/unit/domain-depends-on-no-infrastructure-bypass-mention-scan.spec.ts, whose six tests exist only to test the exemption logic for a comment citing a specification-node identity inside a domain-boundary substring scan, is deleted entirely.",
+        "src/__tests__/unit/errors/status-map.spec.ts no longer contains the six tests asserting the header comment's prose (the two-node and eleven-node citations, the top paragraph, the 404/409/422 group enumeration, the \"reached this table\" narrative, and the InvestigationWriteDeadlineExceededError attribution); every one of the file's remaining behavioral status-mapping tests is unchanged.",
+        "src/__tests__/unit/glossary/glossary-store.port.spec.ts no longer contains its two doc-comment-citation tests; every other test in the file is unchanged.",
+        "src/__tests__/unit/glossary/glossary.service.spec.ts no longer contains its two comment-assertion tests (pageCountOf's citation and the discarded-task-path doc-comment test); every other test in the file is unchanged.",
+        "src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts no longer contains its two comment-assertion tests (the dependency comment and the transport-status comment); every other test in the file is unchanged.",
+        "src/__tests__/unit/http/read-connector-configuration.controller.spec.ts no longer contains its one transport-status-comment test; every other test in the file is unchanged.",
+        "src/__tests__/unit/http/test-connector.controller.spec.ts no longer contains its one header-comment masking-paragraph test; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/citation-validation.spec.ts no longer contains its one HypothesisCitationContext doc-comment test; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/draft-assessment-text.spec.ts no longer contains its one module-header-attribution test; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/fake-observation-source.adapter.spec.ts no longer contains its one observeConcept doc-comment-citation test; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts no longer contains its one DEFAULT_STATUS_ENDING comment-citation test; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/judgment-stage.spec.ts no longer contains its five doc-comment attribution/citation tests; every other test in the file is unchanged.",
+        "src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts no longer contains its three module-header citation/attribution tests; every other test in the file is unchanged.",
+        "src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts no longer contains its one discarded-task-path doc-comment-citation test; every other test in the file is unchanged.",
+        "src/__tests__/unit/vitest-config-migration-replay-headroom.spec.ts is deleted entirely, as named for whole removal; only its second test (\"explains why fileParallelism is disabled without naming any database provider\") reads comment prose -- its first test (\"declares a testTimeout raised above the prior 40000ms value\") is behavioral and is deleted along with it, by the same explicit whole-file removal, not because it reads a comment."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -30,6 +66,12 @@
       "to": "implementation/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/backend-comment-assertion-test-sweep",
+      "to": "task/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }
