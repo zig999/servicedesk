@@ -1,0 +1,82 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/consolidation-call-record-chain-hotfix",
+      "kind": "epic",
+      "file": "epic/consolidation-call-record-chain-hotfix.md",
+      "title": "Consolidation call-record chain hotfix",
+      "summary": "The single corrective task that carries the consolidation call's own register, usage, elapsed_ms and prompt through to the returned and stored assessment, which domain/investigation/assessment already requires as four attributes and the current chain drops."
+    },
+    {
+      "id": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "task",
+      "file": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment.md",
+      "title": "Consolidation call-record chain carries register, usage, elapsed_ms and prompt",
+      "summary": "Fixes the consolidation write-up chain so the four call-record attributes domain/investigation/assessment already requires (register, usage, elapsed_ms, prompt) reach the returned and stored assessment, instead of being computed at the consolidation call and dropped before the assessment is built or persisted.",
+      "epic": "consolidation-call-record-chain-hotfix"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/consolidation-call-record-chain-hotfix",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/consolidation-call-record-chain-hotfix",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/consolidation-call-record-chain-hotfix",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/consolidation-call-record-chain-hotfix",
+      "to": "domain/investigation/usage",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/consolidation-call-record-chain-hotfix",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/usage",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}
