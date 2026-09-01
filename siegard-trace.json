@@ -5928,6 +5928,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses",
+      "digest": "sha256:ea0bd177af216a5d9b97ecd919cce9d03c63147bbbfdc08df70f635d5d745808",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:6f294f82a8d439d05e2ad3cd9d0c529e5e3f817e2e955fdf51ab2a6f53855ea5"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/the-contract-check-reads-the-current-registration",
       "digest": "sha256:df11e0cf29f5361fb9f82ad56bf88db3f8463ce6ce25bf3cfd63d7de364cff99",
       "files": [

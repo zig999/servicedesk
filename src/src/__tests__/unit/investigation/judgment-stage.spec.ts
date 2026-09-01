@@ -702,24 +702,83 @@ it("refuses a citation naming a field only a capability re-registered after coll
   expect(evaluator.calls).toHaveLength(2);
 });
 
-it('throws naming the missing hypothesis when evidenceByHypothesis carries no entry for a required hypothesis', async () => {
-  const evaluator = new ScriptedHypothesisEvaluator();
-  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
-  const evidenceByHypothesis = new Map<string, readonly Evidence[]>();
+function functionBodyOf(source: string, functionName: string): string {
+  const pattern = new RegExp(`function ${functionName}\\([^)]*\\)[^{]*\\{([\\s\\S]*?)\\n\\}`);
+  const match = source.match(pattern);
+  if (match === null) {
+    throw new Error(`${functionName} was not found in judgment-stage.ts`);
+  }
+  return match[1];
+}
 
-  await expect(
-    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
-  ).rejects.toThrow(/h1/);
+it("hypothesisNamed's declared return type stays the non-optional Hypothesis, never Hypothesis | undefined, so a silent fallback cannot type-check for a name absent from the case's hypotheses", async () => {
+  const source = await moduleSource();
+
+  expect(source).toMatch(/function hypothesisNamed\(theCase: Case, name: string\): Hypothesis \{/);
+  expect(source).not.toMatch(/function hypothesisNamed\([^)]*\): Hypothesis \| undefined/);
 });
 
-it("throws naming the hypothesis when a required name is not found among the case's own hypotheses", async () => {
+it("evidenceFor's declared return type stays the non-optional readonly Evidence[], never readonly Evidence[] | undefined, so a silent fallback cannot type-check for a hypothesis absent from evidenceByHypothesis", async () => {
+  const source = await moduleSource();
+
+  expect(source).toMatch(/function evidenceFor\(name: string, evidenceByHypothesis: ReadonlyMap<string, readonly Evidence\[\]>\): readonly Evidence\[\] \{/);
+  expect(source).not.toMatch(/function evidenceFor\([^)]*\): readonly Evidence\[\] \| undefined/);
+});
+
+it("hypothesisNamed's body no longer contains a throw for a name absent from the case's own hypotheses", async () => {
+  const source = await moduleSource();
+
+  const body = functionBodyOf(source, 'hypothesisNamed');
+
+  expect(body).not.toMatch(/throw/);
+});
+
+it("evidenceFor's body no longer contains a throw for a required hypothesis absent from evidenceByHypothesis", async () => {
+  const source = await moduleSource();
+
+  const body = functionBodyOf(source, 'evidenceFor');
+
+  expect(body).not.toMatch(/throw/);
+});
+
+it("hypothesisNamed introduces no fallback or default value in the removed throw's place", async () => {
+  const source = await moduleSource();
+
+  const body = functionBodyOf(source, 'hypothesisNamed');
+
+  expect(body).not.toMatch(/\?\?/);
+  expect(body).not.toMatch(/\|\|/);
+});
+
+it("evidenceFor introduces no fallback or default value in the removed throw's place", async () => {
+  const source = await moduleSource();
+
+  const body = functionBodyOf(source, 'evidenceFor');
+
+  expect(body).not.toMatch(/\?\?/);
+  expect(body).not.toMatch(/\|\|/);
+});
+
+it("no longer rejects naming the missing hypothesis when a required name is not found among the case's own hypotheses — only the unguarded property access fails, with no message naming it", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCaseWithMismatchedHypotheses([aHypothesis('h1', ['concept-a'])], []);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([['h1', [anEvidence({ concept: 'concept-a' })]]]);
 
-  await expect(
-    judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
-  ).rejects.toThrow(/h1/);
+  const result = judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 });
+
+  await expect(result).rejects.toBeInstanceOf(TypeError);
+  await expect(result).rejects.not.toThrow(/h1/);
+});
+
+it('no longer rejects naming the missing hypothesis when evidenceByHypothesis carries no entry for a required hypothesis — only the unguarded property access fails, with no message naming it', async () => {
+  const evaluator = new ScriptedHypothesisEvaluator();
+  const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>();
+
+  const result = judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 });
+
+  await expect(result).rejects.toBeInstanceOf(TypeError);
+  await expect(result).rejects.not.toThrow(/h1/);
 });
 
 it('imports no ICapabilityQuery and reads no capability-registry port at all — judgeHypotheses takes only evidence already collected, never a registry to resolve live', async () => {

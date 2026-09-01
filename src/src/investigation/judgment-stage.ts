@@ -210,19 +210,11 @@ function toEvidenceItems(evidence: readonly Evidence[]): readonly EvidenceItem[]
 }
 
 function hypothesisNamed(theCase: Case, name: string): Hypothesis {
-  const hypothesis = theCase.hypotheses.find((candidate) => candidate.name === name);
-  if (hypothesis === undefined) {
-    throw new Error(`no hypothesis named ${JSON.stringify(name)} exists in case ${JSON.stringify(theCase.slug)}`);
-  }
-  return hypothesis;
+  return theCase.hypotheses.find((candidate) => candidate.name === name)!;
 }
 
 function evidenceFor(name: string, evidenceByHypothesis: ReadonlyMap<string, readonly Evidence[]>): readonly Evidence[] {
-  const evidence = evidenceByHypothesis.get(name);
-  if (evidence === undefined) {
-    throw new Error(`no evidence was supplied for required hypothesis ${JSON.stringify(name)}`);
-  }
-  return evidence;
+  return evidenceByHypothesis.get(name)!;
 }
 
 function noDataEvaluation(name: string, nonOkEvidence: readonly Evidence[]): Evaluation {

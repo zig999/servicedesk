@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "implementation",
+      "file": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws.md",
+      "title": "Remove judgment-stage.ts's two throws for conditions the specification already makes unreachable",
+      "summary": "Deletes hypothesisNamed's and evidenceFor's throw branches in judgment-stage.ts, relying on a compile-time non-null assertion in their place so both functions keep their non-optional return types with no runtime fallback.",
+      "task": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws"
+    },
+    {
+      "id": "proof/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "proof",
+      "file": "proof/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws.md",
+      "title": "Judgment-stage dead-throw removal — proof",
+      "summary": "Proves that hypothesisNamed's and evidenceFor's throw branches are gone, their return types stay non-optional with no reintroduced fallback, and judgeHypotheses' behavior over a well-formed case is otherwise unchanged, by retiring the two tests that asserted the removed throws and adding source-structure and behavioral tests in their place.",
+      "task": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "task/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "to": "implementation/judgment-stage-dead-throws-removal-hotfix/remove-the-two-unreachable-throws",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
