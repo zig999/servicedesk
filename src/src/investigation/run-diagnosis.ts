@@ -32,10 +32,18 @@
 // widening past its own objective; see this delivery's own `deferred` entry.
 //
 // Persistence is the one stage rules/investigation/no-stage-aborts-on-its-deadline
-// exempts from degrading: its write is raced against what remains of its own
-// nominal budget, and a write that does not conclude in time raises
-// InvestigationWriteDeadlineExceededError rather than ever answering an
-// assessment with no record behind it
+// exempts from degrading: its own stage bound is the minimum of its nominal
+// budget and whatever of the propagated deadline still remains once
+// collection, judgment and writing have already run — computed from the
+// pipeline's own already-measured durations rather than a fresh clock read
+// (constraints/the-deadline-is-an-absolute-propagated-instant). A first write
+// attempt is held to the whole of that bound, and a failed first attempt is
+// retried exactly once, bounded by whatever of that same bound the first
+// attempt's own elapsed time left unspent; either attempt finding the
+// investigation's own id already stored counts as settled rather than a
+// duplicate or a failure (rules/investigation/an-investigation-is-written-once).
+// A write that settles neither way raises InvestigationWriteDeadlineExceededError
+// rather than ever answering an assessment with no record behind it
 // (rules/investigation/the-response-follows-the-record,
 // scenarios/investigation/no-response-without-a-record). The assessment this
 // call answers is exactly the written investigation's own — never computed a
@@ -61,6 +69,7 @@
 // internal one — reused, at the integration level, to prove criterion 5's
 // deadline-exceeded branch against a real, deliberately slowed write.
 
+import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
 import type { Assessment } from './assessment.js';
 import { runInvestigationPipeline, type InvestigationPipelineOptions } from './investigation-pipeline.js';
@@ -82,10 +91,11 @@ import type { Evidence } from './evidence.js';
 const PERSISTENCE_STAGE_BUDGET_MS = 2_000;
 
 /**
- * Answered by racePersist below once its bound elapses without the write
- * settling — never itself a domain outcome, only this module's own internal
- * marker, the same convention evidence-collection-stage.ts's own TIMED_OUT
- * already keeps for its own race.
+ * Answered once a persistence attempt's shared stage timeout elapses first
+ * (stageTimeout, raceWriteAttempt below) — never itself a domain outcome,
+ * only this module's own internal marker, the same convention
+ * evidence-collection-stage.ts's own TIMED_OUT already keeps for its own
+ * race.
  */
 const WRITE_TIMED_OUT = Symbol('investigation-write-timeout');
 
@@ -151,7 +161,7 @@ export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assess
   const investigation = await buildInvestigation(
     buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
   );
-  await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline });
+  await writeWithinDeadline({ store: options.store, investigation, now: options.now, deadline: options.deadline, durations });
   return investigation.assessment;
 }
 
@@ -203,45 +213,121 @@ type WriteWithinDeadlineArgs = {
   readonly investigation: Investigation;
   readonly now: number;
   readonly deadline: number;
+  /**
+   * This run's own already-measured durations (collection, judgment,
+   * writing) — the only source this module reads to know how much of the
+   * propagated deadline persistence starts with, never a fresh clock read
+   * (constraints/the-deadline-is-an-absolute-propagated-instant).
+   */
+  readonly durations: Durations;
 };
 
 /**
- * Writes the given investigation, never waiting past the minimum of
- * PERSISTENCE_STAGE_BUDGET_MS and what remains of the given (now, deadline)
- * pair — the one stage this composition never lets degrade silently
- * (rules/investigation/no-stage-aborts-on-its-deadline's own persistence
- * exception): a write that does not settle in time raises
+ * Writes the given investigation within persistence's own stage bound: the
+ * minimum of PERSISTENCE_STAGE_BUDGET_MS and whatever of the propagated
+ * deadline actually remains once collection, judgment and writing have
+ * already run (rules/investigation/no-stage-aborts-on-its-deadline). A bound
+ * of zero or less issues no write at all, raising at once; otherwise a first
+ * attempt is held to the whole of that bound and, only where it fails before
+ * the bound elapses, one retry runs in whatever of it is left
+ * (persistWithinBound below). A write that settles neither way raises
  * InvestigationWriteDeadlineExceededError instead of ever answering an
  * assessment with no record behind it.
  */
 async function writeWithinDeadline(args: WriteWithinDeadlineArgs): Promise<void> {
-  const { store, investigation, now, deadline } = args;
-  const boundMs = Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now));
-  const outcome = await racePersist(store.write(investigation), boundMs);
-  if (outcome === WRITE_TIMED_OUT) {
-    throw new InvestigationWriteDeadlineExceededError(investigation.id, boundMs);
+  const { store, investigation, now, deadline, durations } = args;
+  const stageBoundMs = persistenceStageBoundMs(now, deadline, durations);
+  const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));
+  if (!settled) {
+    throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs);
   }
 }
 
 /**
- * Races one write() call against boundMs, answering WRITE_TIMED_OUT once
- * that bound elapses without it settling — the same race shape
- * evidence-collection-stage.ts's own raceObservation already keeps,
- * including letting a genuine rejection (e.g. InvestigationAlreadyStoredError)
- * propagate unmodified rather than being read as a timeout.
+ * Persistence's own stage bound: the minimum of its nominal budget and the
+ * time actually remaining before the propagated deadline at the moment
+ * persistence begins — never the request's stale entry instant. "Remaining"
+ * is computed from now, deadline and the pipeline's own already-measured
+ * durations.collection/judgment/writing (investigation-pipeline.ts's own
+ * durationsOf) alone: collection, judgment and consolidation have all
+ * already run by the time persistence starts, and this module never reads
+ * the system clock itself
+ * (constraints/the-deadline-is-an-absolute-propagated-instant).
  */
-function racePersist(write: Promise<void>, boundMs: number): Promise<void | typeof WRITE_TIMED_OUT> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => resolve(WRITE_TIMED_OUT), boundMs);
-    write.then(
-      () => {
-        clearTimeout(timer);
-        resolve(undefined);
-      },
-      (error: unknown) => {
-        clearTimeout(timer);
-        reject(error);
-      },
-    );
+function persistenceStageBoundMs(now: number, deadline: number, durations: Durations): number {
+  const elapsedBeforePersistenceMs = durations.collection + durations.judgment + durations.writing;
+  return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));
+}
+
+/**
+ * Runs the first write attempt and, only where it fails before the stage
+ * bound elapses, one retry — both racing the one timer created here, so the
+ * retry never opens a second grant of time and a first attempt that
+ * consumes the whole bound leaves nothing for a retry to run in
+ * (rules/investigation/no-stage-aborts-on-its-deadline). Either attempt
+ * finding the investigation's own id already stored counts as settled
+ * (rules/investigation/an-investigation-is-written-once), never as a
+ * duplicate or a failure.
+ */
+async function persistWithinBound(store: IInvestigationStore, investigation: Investigation, stageBoundMs: number): Promise<boolean> {
+  const timeout = stageTimeout(stageBoundMs);
+  try {
+    const first = await raceWriteAttempt(store.write(investigation), timeout.promise);
+    if (first !== 'failed') {
+      return first === 'settled';
+    }
+    const retry = await raceWriteAttempt(store.write(investigation), timeout.promise);
+    return retry === 'settled';
+  } finally {
+    timeout.cancel();
+  }
+}
+
+/**
+ * One outcome a raced write attempt answers: 'settled' where the write
+ * resolved or found the investigation's own id already stored, 'failed'
+ * where it rejected with anything else while the stage bound had not yet
+ * elapsed, or the shared WRITE_TIMED_OUT marker once that bound elapsed
+ * first.
+ */
+type WriteAttemptOutcome = 'settled' | 'failed' | typeof WRITE_TIMED_OUT;
+
+/**
+ * Races one write() call against the shared stage timeout — the same race
+ * shape evidence-collection-stage.ts's own raceObservation already keeps. A
+ * rejection with InvestigationAlreadyStoredError answers 'settled': the
+ * investigation's own id already identifies the one record it was sent to
+ * write, so this attempt found exactly what it was trying to persist
+ * (rules/investigation/an-investigation-is-written-once) rather than having
+ * failed or duplicated it. Any other rejection answers 'failed', letting
+ * persistWithinBound above decide whether a retry still fits the bound.
+ */
+function raceWriteAttempt(write: Promise<void>, timeout: Promise<typeof WRITE_TIMED_OUT>): Promise<WriteAttemptOutcome> {
+  const settlement = write.then(
+    (): WriteAttemptOutcome => 'settled',
+    (error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ? 'settled' : 'failed'),
+  );
+  return Promise.race([settlement, timeout]);
+}
+
+/**
+ * One shared timeout, created once per stage bound so both the first
+ * attempt and its retry race against the same real, elapsing wall-clock
+ * window rather than each opening its own — the retry's own remaining time
+ * is exactly whatever of this one timer real time has not yet consumed when
+ * it starts, so this module never measures elapsed time with a clock read
+ * of its own. cancel() clears the underlying timer once persistWithinBound
+ * above has its answer, whichever way.
+ */
+type StageTimeout = {
+  readonly promise: Promise<typeof WRITE_TIMED_OUT>;
+  readonly cancel: () => void;
+};
+
+function stageTimeout(boundMs: number): StageTimeout {
+  let timerId: ReturnType<typeof setTimeout> | undefined;
+  const promise = new Promise<typeof WRITE_TIMED_OUT>((resolve) => {
+    timerId = setTimeout(() => resolve(WRITE_TIMED_OUT), boundMs);
   });
+  return { promise, cancel: () => clearTimeout(timerId) };
 }

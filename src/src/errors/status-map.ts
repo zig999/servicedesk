@@ -2,7 +2,7 @@
 // status in one place, and no handler chooses a status inline") — this
 // project's own standard states that COR-04 requires the table to exist
 // without stating what it contains (backend-node-service.yaml's own
-// `elsewhere` note). That silence no longer covers every entry below: twelve
+// `elsewhere` note). That silence no longer covers every entry below: thirteen
 // specification nodes now fix a status as a decided fact —
 // CapabilityIdentityNotFoundError's HTTP 404
 // (constraints/the-capability-identity-read-refuses-an-unregistered-identity),
@@ -52,12 +52,17 @@
 // (rules/knowledge/a-concept-accepts-the-declared-subject-type, whose own
 // statement refuses a hypothesis-revision request "with an HTTP 422
 // response reporting a ConceptRefusesSubjectTypeError" when a concept it
-// collects does not accept the case version's declared subject type), and
+// collects does not accept the case version's declared subject type),
 // ConceptDescriptionRequiredError's HTTP 422
 // (rules/glossary/a-concept-declares-its-description, whose own statement
 // refuses the registry registering or updating a concept with no
 // description "with an HTTP 422 response reporting a
-// ConceptDescriptionRequiredError")
+// ConceptDescriptionRequiredError"), and
+// InvestigationWriteDeadlineExceededError's HTTP 500
+// (rules/investigation/no-stage-aborts-on-its-deadline, whose own statement
+// closes with "a persistence that settles no write, in either case, is
+// answered with an HTTP 500 response reporting an
+// InvestigationWriteDeadlineExceededError")
 // — while every other entry's status stays this project's own engineering
 // decision, not a fact the specification holds or should hold, so it is
 // written here rather than left for a handler to pick inline.
@@ -150,7 +155,17 @@
 // this task. the eleventh reaches it not because a new route was exposed —
 // PUT /v1/glossary/concepts/{name} already existed — but because
 // GlossaryService.registerConcept now raises it, since a concept's
-// description is a newly required domain attribute this task adds.
+// description is a newly required domain attribute this task adds. A write
+// that could not be settled within what remained of persistence's own stage
+// bound (InvestigationWriteDeadlineExceededError,
+// rules/investigation/no-stage-aborts-on-its-deadline) answers 500 Internal
+// Server Error — the one entry in this table whose status matches the
+// handler's own unmapped default, named here anyway (task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries)
+// so the requester reads which condition failed rather than the same bare
+// internal-error envelope an error this table does not name still answers
+// with; run-diagnosis.ts already raises this error whenever persistence's
+// own stage bound elapses with no write settled, and until this hotfix that
+// raise fell through unlabeled.
 // An error class this table does not name is left unmapped, and
 // error-handler.middleware.ts keeps answering it with 500, exactly as it
 // does today (COR-04's own note that none of this codebase's errors is
@@ -181,6 +196,7 @@ import { HypothesisNotInManifestError } from './hypothesis-not-in-manifest.error
 import { HypothesisRevisionCollectsNoConceptError } from './hypothesis-revision-collects-no-concept.error.js';
 import { IncompleteCapabilityContractError } from './incomplete-capability-contract.error.js';
 import { IncompleteConnectorConfigurationError } from './incomplete-connector-configuration.error.js';
+import { InvestigationWriteDeadlineExceededError } from './investigation-write-deadline-exceeded.error.js';
 import { MalformedCapabilityInputSchemaError } from './malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from './manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from './manifest-would-hold-no-hypothesis.error.js';
@@ -195,7 +211,7 @@ type DomainErrorClass = new (...args: never[]) => Error;
  * routes raise, keyed to the transport status it resolves to. Iteration
  * order is insertion order, so a subclass placed after its own base class
  * here would be found by the base class's entry first — none of these
- * thirty extends another, so that never arises today.
+ * thirty-one extends another, so that never arises today.
  */
 const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<DomainErrorClass, number>([
   [CaseNotFoundError, 404],
@@ -228,6 +244,7 @@ const STATUS_BY_ERROR_CLASS: ReadonlyMap<DomainErrorClass, number> = new Map<Dom
   [HypothesisRevisionCollectsNoConceptError, 422],
   [ConceptRefusesSubjectTypeError, 422],
   [ConceptDescriptionRequiredError, 422],
+  [InvestigationWriteDeadlineExceededError, 500],
 ]);
 
 /**

@@ -12,6 +12,7 @@ import { afterEach, expect, it } from 'vitest';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseVersionNotReleasableError } from '../../../errors/case-version-not-releasable.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
+import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 
 /** A minimal Fastify instance wired with the real handleUnexpectedError, and one GET route that always rejects with the given value — the one seam this file's tests drive and observe. */
@@ -59,6 +60,31 @@ it("answers a mapped domain error with its own class name as the code and its ow
       code: 'CaseNotFoundError',
       message: 'no version 1 of the case "a-slug" is stored',
       details: { slug: 'a-slug', version: 1 },
+    },
+  });
+});
+
+// ------------------------------------------------------------------ task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries,
+// criterion 9: "Every path that raises InvestigationWriteDeadlineExceededError is answered to the
+// requester as an HTTP 500 response naming InvestigationWriteDeadlineExceededError as the reported
+// condition." Before this hotfix the status map named no status for this class at all, so this
+// exact request would have fallen to the generic, unnamed 500 envelope the "still answers 500 with
+// the unchanged generic envelope..." test below proves for every class the table still does not
+// name — this proves the 500 this specific class now answers is the named domainEnvelope branch
+// instead.
+
+it('answers InvestigationWriteDeadlineExceededError with a named 500 envelope, naming the error rather than falling back to the generic, unnamed one', async () => {
+  app = buildAppThatRejectsWith(new InvestigationWriteDeadlineExceededError('investigation-1', 300));
+
+  const response = await app.inject({ method: 'GET', url: '/throw' });
+
+  expect(response.statusCode).toBe(500);
+  expect(response.json()).toEqual({
+    error: {
+      code: 'InvestigationWriteDeadlineExceededError',
+      message:
+        'the investigation with id "investigation-1" could not be written within the 300ms remaining of the declared deadline, so no assessment is returned without a corresponding record',
+      details: { id: 'investigation-1', remainingMs: 300 },
     },
   });
 });

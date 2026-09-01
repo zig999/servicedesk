@@ -25,6 +25,7 @@ import { HypothesisNotInManifestError } from '../../../errors/hypothesis-not-in-
 import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
 import { IncoherentCaseError } from '../../../errors/incoherent-case.error.js';
 import { IncompleteConnectorConfigurationError } from '../../../errors/incomplete-connector-configuration.error.js';
+import { InvestigationWriteDeadlineExceededError } from '../../../errors/investigation-write-deadline-exceeded.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
@@ -252,6 +253,21 @@ it('resolves ConceptDescriptionRequiredError to 422', () => {
   expect(status).toBe(422);
 });
 
+// ------------------------------------------------------------------ task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries,
+// criterion 9: "Every path that raises InvestigationWriteDeadlineExceededError is answered to the
+// requester as an HTTP 500 response naming InvestigationWriteDeadlineExceededError as the reported
+// condition." Before this hotfix, this class fell through this table unmapped, answering the
+// handler's own generic, unnamed 500 fallback instead — the full request/response wiring for that
+// distinction is proved in error-handler.middleware.spec.ts; this is the mapping half.
+
+it('resolves InvestigationWriteDeadlineExceededError to 500', () => {
+  const error = new InvestigationWriteDeadlineExceededError('an-investigation-id', 300);
+
+  const status = statusForError(error);
+
+  expect(status).toBe(500);
+});
+
 // ------------------------------------------------------------------ criterion 3
 
 it('returns undefined for a typed domain error the table does not name', () => {
@@ -319,7 +335,11 @@ it("the header comment names eleven specification nodes that now fix a status as
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  expect(header).toContain('twelve specification nodes now fix a status as a decided fact');
+  // task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries
+  // added a thirteenth specification-fixed status (InvestigationWriteDeadlineExceededError) to the
+  // same header paragraph, so the count in prose changed again from twelve to thirteen — asserted
+  // here only as the running count; that citation itself is asserted in this hotfix's own test below.
+  expect(header).toContain('thirteen specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorConfigurationNotWellFormedError');
@@ -387,5 +407,21 @@ it('the header\'s own "reached this table" narrative explains the ninth and tent
     'the ninth and tenth reach it not because a new route was exposed but because this hotfix closes ' +
       'a gap left when revise-hypothesis was first delivered — POST /v1/cases/:slug/hypotheses already ' +
       'raised both, unmapped, before this task.',
+  );
+});
+
+// ------------------------------------------------------------------ task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries,
+// criterion 9: the header names InvestigationWriteDeadlineExceededError's own governing rule
+// alongside the HTTP 500 it fixes, quoting the rule's own closing clause — the same
+// citation-alongside-status pattern every other specification-fixed entry above already keeps.
+
+it("the header names InvestigationWriteDeadlineExceededError's HTTP 500 as a fact rules/investigation/no-stage-aborts-on-its-deadline decides, quoting its own closing clause", async () => {
+  const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
+  const header = proseOf(source.slice(0, source.indexOf('import {')));
+
+  expect(header).toContain("InvestigationWriteDeadlineExceededError's HTTP 500");
+  expect(header).toContain('rules/investigation/no-stage-aborts-on-its-deadline');
+  expect(header).toContain(
+    'a persistence that settles no write, in either case, is answered with an HTTP 500 response reporting an InvestigationWriteDeadlineExceededError',
   );
 });

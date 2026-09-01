@@ -305,11 +305,77 @@ class HangingInvestigationStore implements IInvestigationStore {
   }
 }
 
-/** A write that rejects immediately with the given error — for a test that proves a genuine persistence failure propagates unmodified. */
+/** A write that rejects immediately with the given error, every time it is called — for a test proving that a genuine, persistent write failure exhausts the first attempt and its one retry alike (rather than being propagated unmodified, which is no longer this module's own behavior once a retry exists). attempts counts every call, so a test can confirm the retry was actually issued. */
 class RejectingInvestigationStore implements IInvestigationStore {
+  public attempts = 0;
   public constructor(private readonly error: Error) {}
   public write(): Promise<void> {
+    this.attempts += 1;
     return Promise.reject(this.error);
+  }
+  public async read(): Promise<StoredInvestigation | undefined> {
+    return undefined;
+  }
+}
+
+/** Rejects with the given error on its first call only, then succeeds on every call after — for a test proving a failed first attempt is retried and the retry itself settles normally. */
+class FailOnceThenSucceedInvestigationStore implements IInvestigationStore {
+  private readonly inner = new InMemoryInvestigationStore();
+  public attempts = 0;
+  public constructor(private readonly firstError: Error) {}
+  public async write(investigation: Investigation): Promise<void> {
+    this.attempts += 1;
+    if (this.attempts === 1) {
+      throw this.firstError;
+    }
+    await this.inner.write(investigation);
+  }
+  public async read(id: string): Promise<StoredInvestigation | undefined> {
+    return this.inner.read(id);
+  }
+}
+
+/** Rejects with the given error on its first call only, after first consuming delayMs of real wall-clock time, then hangs forever on every call after — for a test proving the retry races the very same shared stage timer as the first attempt, rather than opening a fresh grant of its own. */
+class DelayedRejectThenHangInvestigationStore implements IInvestigationStore {
+  private calls = 0;
+  public constructor(
+    private readonly delayMs: number,
+    private readonly firstError: Error,
+  ) {}
+  public write(): Promise<void> {
+    this.calls += 1;
+    if (this.calls === 1) {
+      return new Promise((_resolve, reject) => setTimeout(() => reject(this.firstError), this.delayMs));
+    }
+    return new Promise(() => {});
+  }
+  public async read(): Promise<StoredInvestigation | undefined> {
+    return undefined;
+  }
+}
+
+/** Never settles, like HangingInvestigationStore, but counts how many times it was called — for a test proving a first attempt that runs out the stage bound is never retried. */
+class CountingHangingInvestigationStore implements IInvestigationStore {
+  public calls = 0;
+  public write(): Promise<void> {
+    this.calls += 1;
+    return new Promise(() => {});
+  }
+  public async read(): Promise<StoredInvestigation | undefined> {
+    return undefined;
+  }
+}
+
+/** Rejects with the given error on its first call, then rejects with InvestigationAlreadyStoredError on every call after — for a test proving a retry (not the first attempt) that finds the record already there also counts as settled. */
+class FailOnceThenAlreadyStoredInvestigationStore implements IInvestigationStore {
+  private calls = 0;
+  public constructor(private readonly firstError: Error) {}
+  public async write(investigation: Investigation): Promise<void> {
+    this.calls += 1;
+    if (this.calls === 1) {
+      throw this.firstError;
+    }
+    throw new InvestigationAlreadyStoredError(investigation.id);
   }
   public async read(): Promise<StoredInvestigation | undefined> {
     return undefined;
@@ -500,19 +566,43 @@ it('does not resolve until persistence has actually written the investigation, t
   expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
 });
 
-it('propagates a genuine persistence failure instead of returning an assessment or reframing it as a deadline error', async () => {
+// task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries:
+// this test used to assert that a genuine persistence failure propagated to the caller unmodified.
+// That is no longer this module's own behavior once a failed first attempt is retried once
+// (criterion 5): where the retry also fails outright, neither attempt has settled, and
+// InvestigationWriteDeadlineExceededError is raised instead (criterion 8) — the raw failure is
+// never surfaced to the caller once a retry exists to answer it. attempts confirms the retry was
+// actually issued rather than this test passing for the unrelated reason of a first-attempt-only
+// failure.
+it('raises InvestigationWriteDeadlineExceededError, not the raw failure, once both a genuine first-attempt write failure and its retry reject outright', async () => {
   const failure = new Error('disk is full');
-  const options = baseOptions({ store: new RejectingInvestigationStore(failure) });
+  const store = new RejectingInvestigationStore(failure);
+  const options = baseOptions({ store, now: 0, deadline: 20_000 });
 
-  await expect(runDiagnosis(options)).rejects.toBe(failure);
+  const error = await runDiagnosis(options).catch((caught: unknown) => caught);
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect((error as InvestigationWriteDeadlineExceededError).context).toEqual({ id: 'investigation-1', remainingMs: 2_000 });
+  expect(store.attempts).toBe(2);
 });
 
-it('propagates the store\'s own refusal when an investigation with this id is already stored, rather than returning an assessment', async () => {
+// This test used to assert that the store's own InvestigationAlreadyStoredError propagated to the
+// caller as a rejection. That is no longer this module's own behavior: criterion 7 now counts any
+// attempt — the first or the retry — that finds the investigation's own id already stored as
+// settled successfully, so runDiagnosis resolves normally instead of rejecting, without a second
+// record ever being persisted (proving the implementation's own disclosed inference that this path
+// answers from the locally-built investigation rather than re-reading the store, since the
+// pre-occupied document is not itself a valid Investigation and could not equal HAPPY_PATH_ASSESSMENT
+// if it had been re-read).
+it('resolves normally, with no retry issued, when the first write attempt finds the investigation already stored under its own id', async () => {
   const store = new InMemoryInvestigationStore();
   store.preoccupy('investigation-1');
   const options = baseOptions({ store });
 
-  await expect(runDiagnosis(options)).rejects.toBeInstanceOf(InvestigationAlreadyStoredError);
+  const assessment = await runDiagnosis(options);
+
+  expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
+  expect(store.writeCount).toBe(1);
 });
 
 it('propagates a genuine failure from a composed stage, never masking it as an assessment', async () => {
@@ -523,15 +613,24 @@ it('propagates a genuine failure from a composed stage, never masking it as an a
   await expect(runDiagnosis(options)).rejects.toBe(failure);
 });
 
-it('refuses the second of two concurrent runs for the same investigation id once the first has already written it, never producing two assessments for one record', async () => {
+// This test used to assert that exactly one of two concurrent runs for the same investigation id
+// was refused. That is no longer this module's own behavior: criterion 7 now counts the losing
+// attempt's own InvestigationAlreadyStoredError as settled rather than a failure, so both runs
+// resolve normally, and the store still ends up holding exactly the one record the winning attempt
+// wrote — never a duplicate.
+it('settles both of two concurrent runs for the same investigation id successfully, neither raising the deadline error, while the store still ends up holding exactly one record', async () => {
   const store = new InMemoryInvestigationStore();
   const optionsA = baseOptions({ store, id: 'shared-id' });
   const optionsB = baseOptions({ store, id: 'shared-id' });
 
   const outcomes = await Promise.allSettled([runDiagnosis(optionsA), runDiagnosis(optionsB)]);
 
-  expect(outcomes.filter((outcome) => outcome.status === 'fulfilled')).toHaveLength(1);
-  expect(outcomes.filter((outcome) => outcome.status === 'rejected')).toHaveLength(1);
+  expect(outcomes).toEqual([
+    { status: 'fulfilled', value: HAPPY_PATH_ASSESSMENT },
+    { status: 'fulfilled', value: HAPPY_PATH_ASSESSMENT },
+  ]);
+  const document = await writtenDocument(store, 'shared-id');
+  expect(document).toMatchObject({ id: 'shared-id' });
 });
 
 // ------------------------------- criterion 2: a persistence timeout is an error, not an assessment
@@ -592,6 +691,135 @@ it('clamps persistence\'s own bound to zero rather than negative, once the given
   const error = await resultPromise;
 
   expect((error as InvestigationWriteDeadlineExceededError).context.remainingMs).toBe(0);
+});
+
+it('issues no write attempt at all when persistence\'s own bound is zero or less, raising immediately instead', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options = baseOptions({
+    store,
+    consolidator: deadlineExceededConsolidator('deadline-exceeded text'),
+    now: 1_000,
+    deadline: 500,
+  });
+
+  const resultPromise = runDiagnosis(options).catch((caught: unknown) => caught);
+  // Judgment's own bound clamps to zero the same way under this tight a deadline
+  // (unrelated, pre-existing degrade behavior this task does not change), and its own
+  // zero-delay stage timer still needs a tick to resolve — the same runAllTimersAsync the
+  // existing "clamps persistence's own bound to zero..." test above already needs, for the
+  // same reason.
+  await vi.runAllTimersAsync();
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect(store.writeCount).toBe(0);
+});
+
+// --------------- task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries
+
+it('bounds persistence by the time actually remaining once collection has already consumed part of the declared deadline, never by the deadline computed against the request\'s original entry instant', async () => {
+  // now=0, deadline=1_000: had the old, pre-fix computation (deadline - now, ignoring
+  // durations already spent) still applied, persistence's own bound here would be
+  // min(2_000, 1_000) = 1_000ms. Collection alone consumes 700ms of real time
+  // (DelayedObservationSource), so the fixed formula's own bound is instead
+  // min(2_000, 1_000 - 700) = 300ms — provable by observing exactly when, after the 700ms
+  // collection delay, the persistence timeout itself fires.
+  // FakeAssessmentConsolidator's own fixture lookup key includes the collected evidence's own
+  // elapsed_ms, so a run whose collection genuinely takes 700ms of real time (rather than the
+  // frozen-clock 0ms baseOptions()'s own default consolidator is seeded for) needs its own
+  // consolidator seeded for that real value — the same technique the "forwards its own (now,
+  // deadline) pair..." test above already establishes.
+  const consolidator = new FakeAssessmentConsolidator();
+  consolidator.seed(
+    { evaluations: [CONFIRMED_H1_EVALUATION], evidence: [{ ...expectedOkEvidence('concept-a', 'observed-concept-a'), elapsed_ms: 700 }], consolidationRegister: 'plain' },
+    HAPPY_PATH_TEXT,
+  );
+  const options = baseOptions({
+    store: new HangingInvestigationStore(),
+    observationSource: new DelayedObservationSource(700, { result: 'ok', observation: 'observed-concept-a' }),
+    consolidator,
+    now: 0,
+    deadline: 1_000,
+  });
+
+  const resultPromise = runDiagnosis(options).catch((error: unknown) => error);
+  await vi.advanceTimersByTimeAsync(700); // lets collection's own real delay elapse
+  const tracker = trackSettlement(resultPromise);
+  await vi.advanceTimersByTimeAsync(299);
+  expect(tracker.settled()).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect((error as InvestigationWriteDeadlineExceededError).context.remainingMs).toBe(300);
+});
+
+it('holds the first write attempt to the whole of the persistence stage bound — its own unchanged 2000ms nominal budget — rather than capping it below to reserve time for a retry', async () => {
+  // An implementation that reserved part of the bound for a retry (e.g. capping the first
+  // attempt at half of it) would time this first attempt out before 1_999ms, since only
+  // some smaller fraction of the nominal 2_000ms budget would remain available to it.
+  const store = new DelayedInvestigationStore(1_999);
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  const resultPromise = runDiagnosis(options);
+  await vi.advanceTimersByTimeAsync(1_999);
+  const assessment = await resultPromise;
+
+  expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
+});
+
+it('retries exactly once after a first attempt fails outright, succeeding on that retry when it still fits within what remains of the stage bound', async () => {
+  const store = new FailOnceThenSucceedInvestigationStore(new Error('a transient write failure'));
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  const assessment = await runDiagnosis(options);
+
+  expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
+  expect(store.attempts).toBe(2);
+});
+
+it('bounds the retry by whatever of the stage bound the first attempt\'s own elapsed time left unspent, rather than granting it a fresh budget of its own', async () => {
+  // The first attempt itself consumes 1_500ms of the 2_000ms nominal bound before failing
+  // outright, leaving 500ms for the retry — which then hangs forever. An implementation that
+  // gave the retry its own fresh 2_000ms grant (rather than racing the same shared timer)
+  // would only raise the deadline error at 1_500 + 2_000 = 3_500ms; this fix raises it at
+  // exactly the original bound's own end, 2_000ms.
+  const failure = new Error('a slow, transient write failure');
+  const store = new DelayedRejectThenHangInvestigationStore(1_500, failure);
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  const resultPromise = runDiagnosis(options).catch((error: unknown) => error);
+  const tracker = trackSettlement(resultPromise);
+  await vi.advanceTimersByTimeAsync(1_999);
+  expect(tracker.settled()).toBe(false);
+
+  await vi.advanceTimersByTimeAsync(1);
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect((error as InvestigationWriteDeadlineExceededError).context.remainingMs).toBe(2_000);
+});
+
+it('does not retry when the first attempt runs until the stage bound itself elapses without settling', async () => {
+  const store = new CountingHangingInvestigationStore();
+  const options = baseOptions({ store, now: 0, deadline: 800 });
+
+  const resultPromise = runDiagnosis(options).catch((error: unknown) => error);
+  await vi.advanceTimersByTimeAsync(800);
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect(store.calls).toBe(1);
+});
+
+it('settles successfully without raising the deadline error when the retry — not the first attempt — finds the investigation already stored', async () => {
+  const store = new FailOnceThenAlreadyStoredInvestigationStore(new Error('a transient write failure'));
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  const assessment = await runDiagnosis(options);
+
+  expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
 });
 
 it('tightens judgment\'s own deadline to no more than the nominal five-second budget, even where the declared deadline leaves far more room', async () => {

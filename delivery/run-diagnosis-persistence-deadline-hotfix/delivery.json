@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "implementation",
+      "file": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries.md",
+      "title": "Persistence deadline uses remaining time and retries",
+      "summary": "Fixes writeWithinDeadline in run-diagnosis.ts to bound persistence's write against the time actually remaining before the propagated deadline (derived from the pipeline's own already-measured durations, never a clock read), retries a failed first attempt once within whatever of that same bound is left, treats any attempt that finds the investigation's own id already stored as settled, and maps InvestigationWriteDeadlineExceededError to a named HTTP 500 in status-map.ts.",
+      "task": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries"
+    },
+    {
+      "id": "proof/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "proof",
+      "file": "proof/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries.md",
+      "title": "Persistence deadline uses remaining time and retries — proof",
+      "summary": "Tests for run-diagnosis.ts's fixed persistence bound/retry/id-keyed-settlement behavior and status-map.ts's new InvestigationWriteDeadlineExceededError mapping, reconciling pre-existing tests that asserted the exact old behavior this task deliberately replaced.",
+      "task": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "rules/investigation/an-investigation-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "to": "implementation/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

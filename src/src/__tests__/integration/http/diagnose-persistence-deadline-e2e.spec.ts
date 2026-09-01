@@ -422,15 +422,51 @@ type IAssertDeadlineExceededOptions = {
   readonly connection: DatabaseConnection;
 };
 
-/** Asserts the three things this scenario supports observably: the run actually reached persistence (never trusting the 500 alone, which an unrelated failure could equally produce), the response is exactly handleUnexpectedError's own generic 500 fallback — never the assessment — and the investigation is not yet readable at the very moment that response was sent. */
+/**
+ * Asserts the four things this scenario supports observably: the run actually reached persistence
+ * (never trusting the 500 alone, which an unrelated failure could equally produce), the response
+ * names InvestigationWriteDeadlineExceededError as the reported condition rather than answering
+ * handleUnexpectedError's own generic, unnamed 500 fallback — never the assessment —, the response's
+ * own envelope carries this run's own captured id and a plausible remainingMs, and the investigation
+ * is not yet readable at the very moment that response was sent.
+ *
+ * task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries's
+ * own criterion 9 changed what this response answers: before that hotfix, status-map.ts named no
+ * status for this class at all, so this exact scenario fell to the generic
+ * `{ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } }` envelope this
+ * file used to assert here — the hotfix maps the class to a named HTTP 500 instead, so this
+ * assertion is reconciled to the new envelope rather than the old, now-incorrect one.
+ *
+ * remainingMs is read from the response itself rather than pinned to a literal: this file exercises
+ * a real database connection whose own real, unmocked query latency (for the case, glossary and
+ * capability reads that precede persistence) is not something this test controls to the millisecond
+ * the way run-diagnosis.spec.ts's own fake-timer unit tests do — pinning an exact figure here would
+ * make this test flaky over real, ordinary I/O jitter that has nothing to do with the behavior under
+ * proof. The bound is `<= PERSISTENCE_STAGE_BUDGET_MS` because it can only ever be smaller than the
+ * nominal 2000ms once any real time is spent in the stages that precede persistence, and `> 0`
+ * because a persistence run that ever reached its own write attempt (delayed.wasReached()) only
+ * does so once its own bound was positive (task/run-diagnosis-persistence-deadline-hotfix's own
+ * criterion 3).
+ */
 async function assertDeadlineExceeded(options: IAssertDeadlineExceededOptions): Promise<void> {
   expect(options.delayed.wasReached()).toBe(true);
   expect(options.response.statusCode).toBe(500);
-  expect(options.response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
-
   expect(options.capturedId).toBeDefined();
+  const id = options.capturedId as string;
+
+  const body = options.response.json() as { error: { code: string; message: string; details?: { id: string; remainingMs: number } } };
+  expect(body.error.code).toBe('InvestigationWriteDeadlineExceededError');
+  expect(body.error.details).toBeDefined();
+  const remainingMs = (body.error.details as { id: string; remainingMs: number }).remainingMs;
+  expect(body.error.details).toEqual({ id, remainingMs });
+  expect(remainingMs).toBeGreaterThan(0);
+  expect(remainingMs).toBeLessThanOrEqual(2_000);
+  expect(body.error.message).toBe(
+    `the investigation with id "${id}" could not be written within the ${remainingMs}ms remaining of the declared deadline, so no assessment is returned without a corresponding record`,
+  );
+
   const store = new RelationalInvestigationStore(options.connection);
-  const immediatelyAfterResponse = await store.read(options.capturedId as string);
+  const immediatelyAfterResponse = await store.read(id);
   expect(immediatelyAfterResponse).toBeUndefined();
 }
 
@@ -457,7 +493,7 @@ afterAll(async () => {
 });
 
 it(
-  'answers 500, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline',
+  'answers a named 500 reporting InvestigationWriteDeadlineExceededError, never the assessment, and leaves no investigation readable by its id immediately afterward, when the investigation write is slowed past the persistence deadline',
   async () => {
     const delayed = createTrackedDelayingConnection(connection);
     const { app, capturedId } = buildDelayedTestApp(delayed.connection, fixture);

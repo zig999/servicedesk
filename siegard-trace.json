@@ -265,7 +265,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
+          "digest": "sha256:b06c693ba8cf29cfe0e3bedbad042c3c32ddc062fdd9e2ab898a6a259a1985af"
         }
       ]
     },
@@ -4875,7 +4875,7 @@
     },
     {
       "node": "rules/investigation/an-investigation-is-written-once",
-      "digest": "sha256:e6c9cd02cba929a6c624bae4acfe3e2477c70eb3aceed5ae7890f5cae1df299d",
+      "digest": "sha256:d5b09968891fdd142cbdb506e5d0cf059ca21339695692173c358eaa90086713",
       "files": [
         {
           "path": "src/src/errors/investigation-already-stored.error.ts",
@@ -4887,7 +4887,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:a33385901a779312330ffae2a4ee59a737ef3185d422865ef0896a66f5d6e96d"
+          "digest": "sha256:b06c693ba8cf29cfe0e3bedbad042c3c32ddc062fdd9e2ab898a6a259a1985af"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
@@ -4969,8 +4969,12 @@
     },
     {
       "node": "rules/investigation/no-stage-aborts-on-its-deadline",
-      "digest": "sha256:9c00b0ff72e3d3cf826392ada83bf149aa4656ed9b2fe8eb32d0fe8ffba9c7ee",
+      "digest": "sha256:5832f0761e32de6442a4d6f7b2226a19faa34a5e1c111d6047a93e8a5640c97e",
       "files": [
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:fa573b7c58d8b147ee4acf173bb9c928636596f81c978a46e0e22840171b9061"
+        },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
           "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
@@ -4985,7 +4989,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
+          "digest": "sha256:b06c693ba8cf29cfe0e3bedbad042c3c32ddc062fdd9e2ab898a6a259a1985af"
         }
       ]
     },
