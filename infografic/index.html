@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>ServicedeskN1 — Modelo de Domínio</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 1.8rem; margin-bottom: 0; }
+  .subtitle { color: #555; margin-top: 4px; margin-bottom: 32px; }
+  section { margin-bottom: 32px; padding: 16px 20px; border-left: 4px solid #ccc; background: #fafafa; }
+  section h2 { margin-top: 0; font-size: 1.2rem; }
+  .entity { margin-bottom: 10px; }
+  .entity strong { color: #111; }
+  .entity span.tag { display: inline-block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; background: #ddd; color: #333; padding: 1px 6px; border-radius: 3px; margin-left: 6px; }
+  .flow { font-family: monospace; background: #111; color: #eee; padding: 16px; border-radius: 6px; overflow-x: auto; white-space: pre; font-size: 0.85rem; }
+  .legend { font-size: 0.85rem; color: #555; }
+  footer { font-size: 0.85rem; color: #777; border-top: 1px solid #ddd; padding-top: 16px; margin-top: 40px; }
+  .block-1 { border-left-color: #6b8f71; }
+  .block-2 { border-left-color: #5b7fa6; }
+  .block-3 { border-left-color: #b6852c; }
+  .block-4 { border-left-color: #a5495c; }
+</style>
+</head>
+<body>
+
+<h1>ServicedeskN1 — Modelo de Domínio</h1>
+<p class="subtitle">Do roteiro de investigação (Case / Hypothesis) à execução (Investigation)</p>
+
+<section class="block-1">
+  <h2>1. Vocabulário</h2>
+  <p>O glossário compartilhado que todo o resto referencia.</p>
+  <div class="entity"><strong>Concept</strong> — observação nomeada que uma hipótese pode coletar (ttl de frescor, subject types aceitos).</div>
+  <div class="entity">Termos de apoio (sem caixa própria): Subject Type, Subject Attribute, Action, Outcome, Recipient.</div>
+</section>
+
+<section class="block-2">
+  <h2>2. Roteiro de Conhecimento</h2>
+  <p>O que é definido antes de qualquer execução — casos e hipóteses versionados.</p>
+  <div class="entity"><strong>Case</strong> <span class="tag">identidade</span> → <strong>Case Version</strong> <span class="tag">conteúdo versionado</span></div>
+  <div class="entity"><strong>Hypothesis</strong> <span class="tag">identidade</span> → <strong>Hypothesis Revision</strong> <span class="tag">critério / coleta / resolução</span></div>
+  <div class="entity">Case Version compõe várias Hypothesis Revisions, em ordem (Manifest Entry).</div>
+  <div class="entity">Hypothesis Revision coleta N Concepts.</div>
+</section>
+
+<section class="block-3">
+  <h2>3. Integração</h2>
+  <p>Como uma observação é obtida no mundo real.</p>
+  <div class="entity"><strong>Capability</strong> — responde exatamente 1 Concept.</div>
+  <div class="entity"><strong>Connector Configuration</strong> — configuração nomeada que uma Capability referencia (ligação lógica, sem FK garantida no banco).</div>
+</section>
+
+<section class="block-4">
+  <h2>4. Execução</h2>
+  <p>O que acontece quando um Case roda de fato, contra um Subject real.</p>
+  <div class="entity"><strong>Investigation</strong> — uma execução, pinada em 1 Case Version, sobre 1 Subject.</div>
+  <div class="entity"><strong>Evidence</strong> — o que cada Capability retornou para um Concept.</div>
+  <div class="entity"><strong>Evaluation</strong> — veredito de cada Hypothesis (confirmed / refuted / inconclusive).</div>
+  <div class="entity"><strong>Citation</strong> — evidência específica que sustenta um veredito.</div>
+  <div class="entity"><strong>Assessment</strong> — resultado final (outcome + referral).</div>
+</section>
+
+<section>
+  <h2>5. Diagrama de relações</h2>
+  <div class="flow">Case ──1:N── Case Version
+Case ──1:N── Hypothesis ──1:N── Hypothesis Revision
+Case Version ──N:M── Hypothesis Revision   (via Manifest Entry, ordenado)
+Hypothesis Revision ──N:M── Concept        (collects)
+
+Capability ──N:1── Concept                 (answers)
+Capability ┄┄0..1┄┄ Connector Configuration (nomeia, sem FK)
+
+Investigation ──N:1── Case Version         (pinned)
+Investigation ──1:N── Evidence ──N:1── Capability
+                                 └─N:1── Concept
+Investigation ──1:N── Evaluation ──1:N── Citation ──N:1── Concept
+Investigation ──1:1── Assessment</div>
+</section>
+
+<footer>
+  <p class="legend"><strong>Legenda:</strong> linha cheia = FK garantida no banco · linha tracejada = referência lógica sem FK (Capability ↔ Connector Configuration).</p>
+  <p class="legend"><strong>Nota:</strong> "Simulation" não é uma entidade — é um fluxo efêmero que reusa o mesmo pipeline (Subject → Evidence → Evaluation → Assessment) sem persistir em Investigation.</p>
+</footer>
+
+</body>
+</html>
