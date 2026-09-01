@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/judgment-stage-dead-throws-removal-hotfix-remove-the-two-unreachable-throws-suite",
+  "cwd": "/home/siegfriedneto/projects/wt-judgment-stage-dead-throws-removal-hotfix/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T15:53:09.435+00:00",
+      "ended_at": "2026-09-01T15:53:12.670+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T15:53:12.671+00:00",
+      "ended_at": "2026-09-01T15:53:17.336+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T15:53:17.336+00:00",
+      "ended_at": "2026-09-01T15:53:21.222+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T15:53:21.222+00:00",
+      "ended_at": "2026-09-01T15:53:21.678+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-01T15:53:21.678+00:00",
+      "ended_at": "2026-09-01T15:55:27.991+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

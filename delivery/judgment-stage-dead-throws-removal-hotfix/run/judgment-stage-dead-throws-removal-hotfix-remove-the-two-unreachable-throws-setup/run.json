@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/judgment-stage-dead-throws-removal-hotfix-remove-the-two-unreachable-throws-setup",
+  "cwd": "/home/siegfriedneto/projects/wt-judgment-stage-dead-throws-removal-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T15:38:32.222+00:00",
+      "ended_at": "2026-09-01T15:38:36.308+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}
