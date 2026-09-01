@@ -1,22 +1,3 @@
-// Proof for the published query over the real relational store, against a real, externally
-// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned): a read
-// answers the registration as the database holds it at that moment — a registration made or
-// changed since the previous read answers as it now stands, never as remembered — and a holding
-// with two rows answering one concept, inserted directly against the real table bypassing every
-// API, is refused rather than resolved by any ordering
-// (rules/integration/one-capability-answers-one-concept).
-//
-// Sibling fix, disclosed in this task's own proof record: this file used to seed a fresh temp
-// directory per test and hand-edit capability.json directly; createCapabilityQuery and
-// createCapabilityRegistry now take the one shared DatabaseConnection this task's own cutover
-// wires everywhere, so this file seeds a fresh concept through the real database and, for the
-// hand-edited scenario, inserts two capability rows directly against the real table instead of
-// writing a second record into a JSON array.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { CapabilityRegistration } from '../../../capability-registry/capability.js';
@@ -32,7 +13,6 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** A registration declaring the whole contract, as a caller would submit it, for the given concept. */
 function completeRegistration(concept: string, overrides: CapabilityRegistration = {}): CapabilityRegistration {
   return {
     name: 'a-capability',
@@ -66,7 +46,6 @@ afterEach(async () => {
   }
 });
 
-/** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
 async function aFreshConcept(): Promise<string> {
   const name = `capability-query-concept-${randomUUID()}`;
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
@@ -77,7 +56,7 @@ async function aFreshConcept(): Promise<string> {
 it('answers a capability registered since the previous read, never a remembered absence', async () => {
   const concept = await aFreshConcept();
   const query = createCapabilityQuery(pool);
-  await query.readCapability(concept); // answers the absence, baiting a memory
+  await query.readCapability(concept);
   const registered = await createCapabilityRegistry(pool).registerCapability(completeRegistration(concept));
 
   const resolution = await query.readCapability(concept);
@@ -90,7 +69,7 @@ it('answers a changed registration as it now stands, never the record it replace
   const registry = createCapabilityRegistry(pool);
   const query = createCapabilityQuery(pool);
   await registry.registerCapability(completeRegistration(concept, { connector: 'an-old-connector' }));
-  await query.readCapability(concept); // answers the old connector, baiting a memory
+  await query.readCapability(concept);
   const changed = await registry.registerCapability(completeRegistration(concept, { connector: 'a-new-connector' }));
 
   const resolution = await query.readCapability(concept);

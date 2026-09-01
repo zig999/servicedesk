@@ -1,47 +1,3 @@
-// An audit over the observation-source modules under src/investigation:
-// evidence-result.ts, observation-source.port.ts and
-// fake-observation-source.adapter.ts import no framework, no driver and no
-// provider client, and nothing of the standard library either, so
-// infrastructure cannot be reached from them directly
-// (constraints/the-domain-depends-on-no-infrastructure) — and the fake is
-// the only concrete class implementing IObservationSource
-// (task/evidence-collection/observation-source-port, criterion 2). The
-// implementation record names this automated sweep as deferred to this
-// proof rather than silently assumed already covered by inspection alone.
-// The "only concrete adapter" check reads the whole shared investigation
-// directory but scopes by which interface a class implements, not by a
-// raw ".adapter.ts" file count — that directory is shared with
-// task/hypothesis-judgment/hypothesis-evaluator-port's own fake adapter,
-// and a directory-wide file count would answer for both ports at once.
-// (Retroactive correction: this check originally counted every .adapter.ts
-// file in the directory, which held only by accident of there being one
-// task delivered here at the time; it broke the moment a legitimate
-// sibling fake landed beside it, so it is rescoped here to what criterion 2
-// actually requires — a task-scoped fact, not a directory-wide one.)
-//
-// (Second retroactive correction, by
-// task/assessment-consolidation-adapter/anthropic-assessment-consolidator's
-// own test-author: the forbidden-package sweep below reads every .ts file
-// in the shared directory, unlike the single-implementer check above, and
-// so it began reporting anthropic-assessment-consolidator.adapter.ts's own,
-// entirely intended, @anthropic-ai/sdk import as an offense the moment that
-// file landed — this proof's own criteria never named that file, so
-// asserting over it was ground this proof never owned. Excluded by name
-// below rather than rescoped to a fixed file list, so every file this sweep
-// already covered — including evaluation.ts and evidence.ts, which own no
-// import-purity audit of their own — stays covered.)
-//
-// (Third retroactive correction, by
-// task/http-observation-runtime/http-declarative-observation-source's own
-// test-author: that task's own objective is a second, legitimate concrete
-// class answering IObservationSource — a generic HTTP adapter beside the
-// fake — so the "exactly one implementer" count below broke the moment its
-// own file landed, exactly the shape the first retroactive correction's own
-// comment already names as this check's known failure mode. Rescoped again
-// to what task/evidence-collection/observation-source-port's own criterion 2
-// and this new task's own objective together now establish: exactly these
-// two named implementers, sorted so the comparison holds regardless of the
-// order readdir happens to enumerate them in.)
 import { readdir, readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
@@ -50,22 +6,11 @@ import { expect, it } from 'vitest';
 
 const INVESTIGATION_DIRECTORY = fileURLToPath(new URL('../../../investigation/', import.meta.url));
 
-/**
- * Live-model adapters this shared directory now also holds, beside the
- * fakes this file's own header describes —
- * task/assessment-consolidation-adapter/anthropic-assessment-consolidator's
- * and task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator's own
- * production adapters, each reaching @anthropic-ai/sdk by its own task's own
- * criteria, never by accident. Excluded from the forbidden-package sweep
- * below so a task's own legitimate infrastructure adapter does not make this
- * file — whose own criteria never named it — report a false offender.
- */
 const KNOWN_INFRASTRUCTURE_ADAPTERS = [
   'anthropic-assessment-consolidator.adapter.ts',
   'anthropic-hypothesis-evaluator.adapter.ts',
 ];
 
-/** Frameworks, database drivers and provider clients — what criterion 2 forbids the fake adapter to import. */
 const FORBIDDEN_PACKAGES = [
   'fastify',
   'express',
@@ -98,15 +43,12 @@ const FORBIDDEN_PACKAGES = [
   '@modelcontextprotocol/sdk',
 ];
 
-/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
-/** Every module specifier one source text imports. */
 function importSpecifiersOf(source: string): string[] {
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** Every .ts file directly under the investigation directory. */
 async function investigationFiles(): Promise<readonly string[]> {
   const files = (await readdir(INVESTIGATION_DIRECTORY)).filter((file) => file.endsWith('.ts'));
   if (files.length === 0) {
@@ -115,7 +57,6 @@ async function investigationFiles(): Promise<readonly string[]> {
   return files;
 }
 
-/** Reads every observation-source module's import specifiers, keyed by file name. */
 async function investigationImports(): Promise<ReadonlyMap<string, readonly string[]>> {
   const imports = new Map<string, readonly string[]>();
   for (const file of await investigationFiles()) {
@@ -125,17 +66,14 @@ async function investigationImports(): Promise<ReadonlyMap<string, readonly stri
   return imports;
 }
 
-/** Whether a specifier names a Node standard-library module, prefixed or bare. */
 function isStandardLibrary(specifier: string): boolean {
   return specifier.startsWith('node:') || builtinModules.includes(specifier);
 }
 
-/** Whether a specifier names one of the forbidden packages, or a path inside one. */
 function isForbiddenPackage(specifier: string): boolean {
   return FORBIDDEN_PACKAGES.some((name) => specifier === name || specifier.startsWith(`${name}/`));
 }
 
-/** Every offending import, named by file and specifier so a failure says where. */
 function offendersAmong(
   imports: ReadonlyMap<string, readonly string[]>,
   offends: (specifier: string) => boolean,

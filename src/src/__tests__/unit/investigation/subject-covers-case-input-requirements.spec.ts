@@ -1,10 +1,3 @@
-// Proof for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute:
-// refuseSubjectMissingRequiredCaseInputs() is the one place
-// rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes is enforced — this
-// file proves the pure comparison in isolation, against SubjectAttributeValue and
-// CaseInputRequirement values built directly, without going through HTTP or the case-input-requirements
-// read itself (the latter proved separately, in __tests__/unit/case/case-input-requirements.spec.ts;
-// the controller wiring proved in __tests__/unit/http/diagnose.controller.spec.ts).
 import { expect, it } from 'vitest';
 import type { CaseInputRequirement } from '../../../case/case-input-requirements.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
@@ -26,8 +19,6 @@ function pair(attribute: string, value: string): SubjectAttributeValue {
   return { attribute, value };
 }
 
-// ------------------------------------------------------------------ criterion 1
-
 it('throws a SubjectDoesNotCoverCaseInputsError when the subject holds no attribute-value for an attribute a requirement names required', () => {
   const requirements = [requiredRequirement('contract-number')];
 
@@ -35,8 +26,6 @@ it('throws a SubjectDoesNotCoverCaseInputsError when the subject holds no attrib
 
   expect(refuse).toThrow(SubjectDoesNotCoverCaseInputsError);
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it('names every missing required attribute together, each with the capabilities that require it, when more than one required attribute is missing at once', () => {
   const requirements = [
@@ -59,8 +48,6 @@ it('names every missing required attribute together, each with the capabilities 
   ]);
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('does not refuse a subject missing only an attribute a requirement leaves optional', () => {
   const requirements = [optionalRequirement('a-nice-to-have-attribute')];
 
@@ -68,8 +55,6 @@ it('does not refuse a subject missing only an attribute a requirement leaves opt
 
   expect(refuse).not.toThrow();
 });
-
-// ------------------------------------------------------------------ criterion 4
 
 it('does not throw when the subject covers every required attribute the requirements name', () => {
   const requirements = [requiredRequirement('contract-number')];
@@ -85,8 +70,6 @@ it('does not throw when the derived requirements hold no entries at all', () => 
 
   expect(refuse).not.toThrow();
 });
-
-// ------------------------------------------------------------------ inference: "empty" reads as the empty-string value
 
 it("treats an attribute-value pair whose value is the empty string as uncovered, the same as the attribute's outright absence", () => {
   const requirements = [requiredRequirement('contract-number')];

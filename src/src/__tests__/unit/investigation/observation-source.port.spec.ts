@@ -1,40 +1,12 @@
-// Proof for task/evidence-collection/observation-source-port: the fake
-// adapter, the only concrete IObservationSource this task ships, answers
-// exactly what a test seeded for one concept and one subject — the ok
-// ending carrying the actual observation the caller asked for, the other
-// three carrying nothing but their ending — and never throws for any of the
-// four evidence-result endings, throwing only for a concept-and-subject pair
-// nothing seeded, which is a test-setup fault rather than a fifth ending.
-//
-// Also the proof for task/subject-identity-rework/observation-source-subject-shape's
-// own criterion 3 — the fake's fixture key is composed from every
-// attribute-value pair of the subject's whole set, not from a bare id or
-// from any one pair alone. The SUBJECT_ONE/SUBJECT_TWO fixtures above predate
-// that task and each carry only one attribute-value pair, left as they stood
-// for the tests that only need two distinguishable subjects; the fixtures and
-// tests below it are this task's own, built to actually exercise a whole
-// attribute-value SET — an extra pair, a second pair, an attribute name, an
-// order, and a governed type all made to matter to the composed key, and a
-// subject built with none of them refused no differently by this port or its
-// fake than one built with several.
 import { expect, it } from 'vitest';
 import { FakeObservationSource } from '../../../investigation/fake-observation-source.adapter.js';
 import type { IObservationSource, Subject } from '../../../investigation/observation-source.port.js';
 
-/** The requester identity the port requires on every call, spelled out rather than left implicit. */
 const A_REQUESTER = 'a-requester';
 
-/** Two distinct subjects, so a test can prove the fake answers by the pair and not by either half alone. */
 const SUBJECT_ONE: Subject = { type: 'a-subject-type', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
 const SUBJECT_TWO: Subject = { type: 'a-subject-type', attributes: [{ attribute: 'id', value: 'another-subject-id' }] };
 
-/**
- * A subject and a second one sharing its type and its first attribute-value
- * pair, but carrying one more pair the first does not — a difference in the
- * whole attribute-value SET, not in one pair's value, so a fixture key built
- * from a subset (the first pair alone) must not answer for the superset, and
- * vice versa.
- */
 const SUBJECT_WITH_ONE_ATTRIBUTE: Subject = {
   type: 'a-multi-attribute-subject-type',
   attributes: [{ attribute: 'id', value: 'shared-id-value' }],
@@ -47,7 +19,6 @@ const SUBJECT_WITH_AN_EXTRA_ATTRIBUTE: Subject = {
   ],
 };
 
-/** Two subjects sharing a type and their first attribute-value pair, differing only in their second. */
 const SUBJECT_TWO_ATTRIBUTES_VARIANT_A: Subject = {
   type: 'a-multi-attribute-subject-type',
   attributes: [
@@ -63,7 +34,6 @@ const SUBJECT_TWO_ATTRIBUTES_VARIANT_B: Subject = {
   ],
 };
 
-/** Two subjects whose one attribute-value pair carries the same value under a different attribute name. */
 const SUBJECT_NAMED_ID: Subject = {
   type: 'a-multi-attribute-subject-type',
   attributes: [{ attribute: 'id', value: 'the-shared-value' }],
@@ -73,7 +43,6 @@ const SUBJECT_NAMED_PHONE: Subject = {
   attributes: [{ attribute: 'phone', value: 'the-shared-value' }],
 };
 
-/** Two subjects carrying the same two attribute-value pairs, supplied in reverse order. */
 const SUBJECT_PAIRS_IN_ORDER: Subject = {
   type: 'a-multi-attribute-subject-type',
   attributes: [
@@ -89,7 +58,6 @@ const SUBJECT_PAIRS_REVERSED: Subject = {
   ],
 };
 
-/** Two subjects of different governed types sharing the exact same attribute-value set. */
 const SUBJECT_OF_TYPE_ONE: Subject = {
   type: 'first-subject-type',
   attributes: [{ attribute: 'id', value: 'a-shared-attribute-value' }],
@@ -99,17 +67,8 @@ const SUBJECT_OF_TYPE_TWO: Subject = {
   attributes: [{ attribute: 'id', value: 'a-shared-attribute-value' }],
 };
 
-/**
- * A subject carrying no attribute-value pair at all. Whether a Subject may
- * be built this way is rules/investigation/a-subject-carries-at-least-one-attribute's
- * question, enforced by buildSubject in subject.ts — not by this port or its
- * fake, which perform no attribute count check of their own
- * (task/subject-identity-rework/observation-source-subject-shape's own
- * criterion 2).
- */
 const SUBJECT_WITH_NO_ATTRIBUTES: Subject = { type: 'an-attributeless-subject-type', attributes: [] };
 
-/** The subject under test, held as the published contract rather than as the class behind it. */
 function sourceOver(fake: FakeObservationSource): IObservationSource {
   return fake;
 }

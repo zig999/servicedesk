@@ -1,13 +1,3 @@
-// Proof for task/relational-stores/glossary-store, over a stand-in for IConnectableQueryable — the
-// driver boundary TST-03 permits a stand-in for — so RelationalGlossaryStore's own mechanics are
-// observed independently of any real database: which statement text and params reach the
-// connection for each of the five term vocabularies and for the two concept tables, exactly when
-// BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen relative to writeTerms' own whole replace and
-// readConcepts' own two-table assembly, and how a driver failure reaches the caller as this
-// store's own typed error. The real-effect half — that a write actually persists, that the whole
-// replace really rolls back together against a real constraint, and that a real duplicate name
-// inside one write is refused by the table's own primary key rather than silently deduped — is
-// proven separately, against a real database, in this file's own integration-level sibling.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
@@ -15,7 +5,6 @@ import { GlossaryStoreError } from '../../../errors/glossary-store.error.js';
 import type { IConnectableQueryable } from '../../../persistence/database-access.js';
 import { RelationalGlossaryStore } from '../../../persistence/relational-glossary-store.repository.js';
 
-/** A bare connection whose own query() is backed by the given implementation — the shape readTerms calls directly, with no transaction opened. */
 function fakeBareConnection(query: IConnectableQueryable['query']): IConnectableQueryable {
   return { query } as unknown as IConnectableQueryable;
 }
@@ -25,7 +14,6 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake IConnectableQueryable whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape writeTerms' and readConcepts' own transactions run through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
 ): { connection: IConnectableQueryable; client: IFakeClient } {
@@ -34,7 +22,6 @@ function fakeTransactionConnection(
   return { connection: { connect } as unknown as IConnectableQueryable, client };
 }
 
-/** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */
 function collapsedTexts(recorded: readonly { text: string }[]): string[] {
   return recorded.map((entry) => entry.text.replace(/\s+/g, ' ').trim());
 }
@@ -44,7 +31,6 @@ interface IRoutedConceptRows {
   readonly accepts: readonly unknown[];
 }
 
-/** A handleQuery that answers readConcepts' own two SELECTs from the given rows, recording every statement it saw in order — one row set per table, routed by which table the statement names. */
 function recordingConceptQuery(rows: IRoutedConceptRows): {
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>;
   recorded: { text: string; params?: readonly unknown[] }[];
@@ -58,8 +44,6 @@ function recordingConceptQuery(rows: IRoutedConceptRows): {
   };
   return { handleQuery, recorded };
 }
-
-// ---------------------------------------------------------------- criterion 1
 
 it.each([
   ['subject-type', 'subject_types'],
@@ -77,8 +61,6 @@ it.each([
   expect(query.mock.calls[0]?.[0]).toBe(`SELECT name FROM ${table}`);
   expect(answered).toEqual(rows);
 });
-
-// ---------------------------------------------------------------- criterion 3
 
 it("answers the second call's own rows, never a value the first call already answered", async () => {
   const query = vi
@@ -110,8 +92,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(caught).toBeInstanceOf(GlossaryStoreError);
   expect((caught as Error).cause).toBe(driverFailure);
 });
-
-// ---------------------------------------------------------------- criterion 4: write mechanics
 
 it('deletes every existing row and inserts exactly the given terms, in that order, inside one transaction', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
@@ -187,8 +167,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(client.query).toHaveBeenCalledWith('ROLLBACK');
   expect(client.release).toHaveBeenCalledTimes(1);
 });
-
-// ---------------------------------------------------------------- criterion 2
 
 it('answers each concept with its name, the subject types it accepts, its ttl and its description', async () => {
   const { handleQuery } = recordingConceptQuery({
@@ -287,8 +265,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
-// ---------------------------------------------------------------- task/concept-authoring/glossary-store-concept-write, criterion 3
-
 it("inserts each given concept's own name, ttl and description into concepts, and no concept_accepts row where it accepts nothing", async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection } = fakeTransactionConnection(async (text, params) => {
@@ -321,8 +297,6 @@ it('inserts one concept_accepts row per subject type the given concept accepts, 
   ]);
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 8
-
 it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task path anywhere — the file header, the class doc comment and insertMissingTerms' own doc comment all cite rules/glossary/the-non-conclusion-outcomes-precede-the-first-case instead", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../persistence/relational-glossary-store.repository.ts', import.meta.url)), 'utf8');
 
@@ -330,16 +304,6 @@ it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task pat
   const citationCount = source.split('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case').length - 1;
   expect(citationCount).toBeGreaterThanOrEqual(3);
 });
-
-// ------------------------------------------------------------------ task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity
-//
-// The mechanics half of this task's own fix, independent of any real database (this file's own
-// header explains the split): which statements writeConcepts now sends, and which it never sends
-// again. The real effect — that a referenced "concepts" row survives, that a referenced row's own
-// update succeeds, that a foreign key never breaks — is proven against a real database in this
-// file's own integration-level sibling.
-
-// ------------------------------------------------------------------ criterion 7, inference (no reimplementation of removal-by-absence as a scoped DELETE)
 
 it(
   'never issues a DELETE against concepts — not an unfiltered one, and not one scoped to the given names either — no matter how many concepts are given',
@@ -361,8 +325,6 @@ it(
   },
 );
 
-// ------------------------------------------------------------------ criterion 4, inference (INSERT ... ON CONFLICT DO UPDATE, never a SELECT-then-branch)
-
 it(
   'runs exactly one statement against concepts per given concept, always the same upsert-by-identity INSERT ... ON CONFLICT (name) DO UPDATE, never a SELECT or any other form',
   async () => {
@@ -382,8 +344,6 @@ it(
     );
   },
 );
-
-// ------------------------------------------------------------------ criterion 5, inference (every given concept's own accepts reconciled, not only one)
 
 it(
   "reconciles concept_accepts once per given concept, each one's own DELETE and INSERTs carrying only that concept's own name — for every concept in the given array, not only the first",
@@ -413,13 +373,6 @@ it(
     ]);
   },
 );
-
-// ------------------------------------------------------------------ UNDERDETERMINED, from the task's own Notes: domain/investigation/evidence's
-// concept_description snapshot immutability. No criterion of this task pins it, so this proves the
-// actual fix directly — writeConcepts never touches investigation_evidence at all — by asserting no
-// statement it runs, for any given concept, ever names that table. An implementation that also
-// rewrote investigation_evidence.concept_description when a cited concept's own description changed
-// would still satisfy every criterion this task states, and would fail this test.
 
 it(
   "issues no statement referencing investigation_evidence, even when a given concept's description differs from whatever was stored before — writeConcepts never touches that table, so an evidence item's own snapshotted concept_description is never at risk of being rewritten by this call",

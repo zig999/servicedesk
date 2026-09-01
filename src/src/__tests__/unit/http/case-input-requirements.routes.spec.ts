@@ -1,14 +1,3 @@
-// Proof for task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements: GET
-// /v1/cases/{slug}/versions/{version}/input-requirements exercised through Fastify's own
-// app.inject() against a local instance registering createCaseInputRequirementsRoutesPlugin() and
-// error-handler.middleware.ts's own handleUnexpectedError directly — the same shape
-// read-case.routes.spec.ts already establishes. The published ICaseInputRequirementsQuery is a
-// stand-in here (TST-03 — a stand-in replaces a boundary, never business logic):
-// readCaseInputRequirements is exactly the seam CaseInputRequirementsControllerDependencies
-// declares, stood in for by a vi.fn(); the derivation itself — deriveCaseInputRequirements — is
-// proved separately in __tests__/unit/case/case-input-requirements.spec.ts, and its composition
-// with read-case's own pipeline in __tests__/unit/case/case-query.service.spec.ts. This file proves
-// only that the route, controller and DTO carry that contract's promise onto the wire unchanged.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { CaseInputRequirementsResult } from '../../../case/case-input-requirements.js';
@@ -21,7 +10,6 @@ import { handleUnexpectedError } from '../../../http/error-handler.middleware.js
 
 type ReadMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<CaseInputRequirementsResult>>>;
 
-/** A held result carrying one required attribute asked for by one capability, and one capability named apart for a currently malformed input schema — so an assertion on the wire body can tell both halves of the response apart. */
 function heldResult(): CaseInputRequirementsResult {
   return {
     requirements: [
@@ -31,7 +19,6 @@ function heldResult(): CaseInputRequirementsResult {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler. */
 function buildTestApp(): { app: FastifyInstance; read: ReadMock } {
   const read: ReadMock = vi.fn();
   const caseInputRequirementsQuery: ICaseInputRequirementsQuery = { readCaseInputRequirements: read };
@@ -48,8 +35,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ contracts/knowledge/case-input-requirements
 
 it('answers 200 with the requirements and the malformed capabilities named apart, exactly as the query resolved them', async () => {
   const built = buildTestApp();
@@ -71,8 +56,6 @@ it('resolves the slug and version exactly as the path names them, the version co
 
   expect(built.read).toHaveBeenCalledWith('a-slug', 7);
 });
-
-// ------------------------------------------------------------------ inference: reuses read-case's own not-found/not-valid refusals
 
 it('refuses with the status the status map assigns CaseNotFoundError, when no version answers the named slug and version', async () => {
   const built = buildTestApp();
@@ -97,8 +80,6 @@ it('answers the unchanged generic envelope, never a partial body, when the named
   expect(response.statusCode).toBe(500);
   expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers 400 for a non-numeric version segment, without ever reaching the query', async () => {
   const built = buildTestApp();

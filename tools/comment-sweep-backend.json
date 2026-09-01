@@ -1,0 +1,4184 @@
+{
+  "target": "backend",
+  "written_at": "2026-09-01T01:25:24.567Z",
+  "files": [
+    {
+      "path": "src/__tests__/integration/capability-registry/capability-query.port.spec.ts",
+      "removed": 23,
+      "before": "sha256:0994b7c1b6be8a3d8cf50fa0578381667365b824bd13266f1a25680f8c14cbf7",
+      "after": "sha256:74730dd7ef9cb23302c46197ddfdd476daf298db5c37b311ef7c458dbeaa66f4",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/create-draft.operation.spec.ts",
+      "removed": 43,
+      "before": "sha256:9e119a427d1aaf35d93ec827b50dc4632d696aac09fe23652fdec04cc41c52cf",
+      "after": "sha256:94def37627c3494ca063d7c4f0155e49a0acfe7376e0282b97fe443fde001db9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/discard.operation.spec.ts",
+      "removed": 39,
+      "before": "sha256:619cfeaa7eb425b2d23b193b04b2fc495cd21e296e6ea4ebabde2b537d43d6de",
+      "after": "sha256:312a2faa627edf38602b7480d88de0f0b95a8fd39ac80d6742f7ad58edb5d7fa",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/manifest-collects-survive-release.spec.ts",
+      "removed": 41,
+      "before": "sha256:4ab9f4af1cb1cbf42ea1f52f98b0f6f47ca549c713917bb98611758d2e4dc679",
+      "after": "sha256:4fa1b6ffc70fdcfe4c93e169b2bfd5592d6d29e06190d6729d89eb571e9e4afc",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/manifest-composition.operations.spec.ts",
+      "removed": 49,
+      "before": "sha256:b5652fd4240cba86f30fbea73ca2d7b66b052cc5ed18c49e6ae136bd872a015e",
+      "after": "sha256:fd3c80133e11d7940af182778843030a99f4648f3709eb68d4350ad7ec6992a3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/release.operation.spec.ts",
+      "removed": 56,
+      "before": "sha256:da5ab9a6f696910c050f2452e99e6b3ff8b4fcafd4ac04de0615f35c8ec3153e",
+      "after": "sha256:7c7e377dcd67e7fe8402f9ce93d78c65e20c186fabfbc4ed2f18ac355a311572",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/case/revise-hypothesis.operation.spec.ts",
+      "removed": 76,
+      "before": "sha256:5fd9fa4e432ca6cc9591891eaf3daba2a15a447d3d41473a28d9a67a82126156",
+      "after": "sha256:ad5ecfe28e88f1cbbc4fc3f91474c4a087621271f675161f0b219e292806e033",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/capability-registry.factory.spec.ts",
+      "removed": 26,
+      "before": "sha256:2cb98257b740cad11464c264bc90d79971f807a319e94cc15f9865ca12123015",
+      "after": "sha256:5d5357366831c6c30ce8159ef6401c7c600d93663b2ed90f43cf1c099fdb6759",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/case-query.factory.spec.ts",
+      "removed": 66,
+      "before": "sha256:9e474a13fef75058877ecbf4e9dab0cd248d8933c2e3cc5a26c0b8b905776f27",
+      "after": "sha256:20fa1e48f6f58f99caf85ec99736ea522f7f0fbac3285fd6de0082afb9f59950",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/connector-configuration-registry.factory.spec.ts",
+      "removed": 19,
+      "before": "sha256:d8b12a8d2d3009ccc000ea320713c452f63d7d6d14a246291d22b66bf4a07011",
+      "after": "sha256:2e79c48beeb82bc3ce1ffc5a3fa553c0a038b1c64a46cb34d279612e00829607",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+      "removed": 91,
+      "before": "sha256:6c5ad1c0f018bd4fdd6a5298709d7476a76389987ffd4f1ed5eeef131c629111",
+      "after": "sha256:63a22d00eb9f4a5fd4aea5c22ef9d98c79ff167ec0184b320952763aac0455b7",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/glossary.factory.spec.ts",
+      "removed": 26,
+      "before": "sha256:91894d0acab5e77d6f629207984b8cfde18eb0442c37530bbc2cc3a483beb1ac",
+      "after": "sha256:8a6a78893a257b2a2e0e79b713c4a5a6a70d1dd8cb61787c172527199182575f",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/production-diagnose.factory.spec.ts",
+      "removed": 46,
+      "before": "sha256:254b929eca15af1064c1f9ae1c09512c3479bf845cb9c7759401eac86d2e68e4",
+      "after": "sha256:89489aabfbe74c668ce63bdd5a1b790e3c6fdb2448de9e7d4b3664fd70428410",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/simulate-case-server.factory.spec.ts",
+      "removed": 53,
+      "before": "sha256:9f6273c6673f777b32b793b8f678c5e2be2ee1651c9f3d188a0fcaf108666ad8",
+      "after": "sha256:55c9f1a60ee4d4221447ad3d05c2896e1c33886411bf0d6ab711e31c3181995f",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/simulate-hypothesis-server.factory.spec.ts",
+      "removed": 41,
+      "before": "sha256:c5b1b3909b22ff669b0f337ba7e3b873a3e42fcf7eb8839e7a37f60a1e069b28",
+      "after": "sha256:f38060bcf06f323cbe05087b000554415accaffe6eb554709e8df931a6ea87c3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/factories/store-wiring.spec.ts",
+      "removed": 49,
+      "before": "sha256:2778a503a2bc7952e2a7138ebc88d63fbacb7c59b01678c31105a44b56d6b54f",
+      "after": "sha256:9c1efc1d24a4150ae717eb5c6304e893874098af57b9b6f9c9158b7b4526ecf5",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/fixtures/case-fixture-reads-clean.spec.ts",
+      "removed": 45,
+      "before": "sha256:b92dd63e108d3ad042568d1495fe93b124232baf67583542b6d8e85385021601",
+      "after": "sha256:7199639c46a2d265233acc4058c409c849c9b244714ee00cee7720fb66bc4585",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/glossary/glossary-query.port.spec.ts",
+      "removed": 24,
+      "before": "sha256:c85cb601545e1617834fbf3a20ee8a888fc4df167f5787595e765aa8448a2128",
+      "after": "sha256:e2c8f04d5ee6c67abba23614918ef822e0edd203d98c5baac6a1cb2fde5e233b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/http/diagnose-e2e.spec.ts",
+      "removed": 78,
+      "before": "sha256:f037eb1e42ce36f3998a92b15cf0f4bb1f603dedd251686711a27079027c0d3e",
+      "after": "sha256:589392385a3885845ba846b62d00a72d17e98cb1872ac0208455d8ce98880932",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/http/diagnose-persistence-deadline-e2e.spec.ts",
+      "removed": 77,
+      "before": "sha256:2a54cd741082c92d7f8e91ab0b7a044b76491e0a80d75b50e2c330edd5451c30",
+      "after": "sha256:7a5aba4ce9767f08e6e1cc67d28b288cb9159aab5b0e05b33ac19901833a528c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/case-version-lifecycle-schema.spec.ts",
+      "removed": 42,
+      "before": "sha256:bff483a253c8c59f22f396a00576c55d1de170e20ede5617c70cbb1476ee84ac",
+      "after": "sha256:63c92df0bf413e454bdc7c1f2b858c8105107ba0040ecd7c0efc075d2026e3ec",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/database-access.spec.ts",
+      "removed": 29,
+      "before": "sha256:6eab5b77352f9eea48db834a87340ba153f55e65b55ffb5bd6ebaf0b47951227",
+      "after": "sha256:945eb3ef0a1fa35e3d5ecdd5335b388a2895bd70f1bdd8232605efda1f0196e5",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/glossary-concept-description-schema.spec.ts",
+      "removed": 36,
+      "before": "sha256:c6311083dcc4666cc5e4b70ba8b5f02e716f198a403830526480889708e06a45",
+      "after": "sha256:e280974897c25adf923d7faf8dd99f6c6552ba7173b76c691d2b082181c69ed6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/investigation-evidence-semantics-snapshot-schema.spec.ts",
+      "removed": 42,
+      "before": "sha256:f4ecc0d67ee8f6f576ba6c5aa7b2673c592e131b81828ada432ceeee52851c2c",
+      "after": "sha256:d7454f3013a60f70bf6bd36041155f3146d0e24feda4d8963a20a6b30614ffa7",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/isolated-connection.spec.ts",
+      "removed": 62,
+      "before": "sha256:e8f627977029ff02860b513aeee8aab87f9b986a1155134f3c8db781bd47a6a3",
+      "after": "sha256:e9010994c7107a9ca541f246d50e429395935a4d3fa128e7f65adbf68eedeb56",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/migration-runner.spec.ts",
+      "removed": 48,
+      "before": "sha256:5704cc6749e664dbbda55e5e23c8bf1abb91245bd8e416f92152e1bd3d7c4eb7",
+      "after": "sha256:e4ccd248186494922ee8c64fcec051a1bda67b094f71f154fa79c99a20df1ff1",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/pg-client.d.ts",
+      "removed": 13,
+      "before": "sha256:9e8a3d75719d11435dad214884a2698fb54908fab309582a1b44fffc25866821",
+      "after": "sha256:812fb7db90e149ba110a5c3a482972a96bcccb1c5110fd76b3bbd5a315f6e2e2",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/protect-released-hypothesis-revision-collects-schema.spec.ts",
+      "removed": 43,
+      "before": "sha256:4e9b5a92d239f7b70be340c2f99cca927167da6e99cfd93917a1d8246162cc30",
+      "after": "sha256:b0c3d00e2fcdc4e1a9f56c7b611ec52e21cccb09c95143916c2d5a400d5ac44a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/relational-capability-store.repository.spec.ts",
+      "removed": 97,
+      "before": "sha256:654a6efb7b0702e3b09c496849d576fe80994ceb19b100064868c98f4e3437ce",
+      "after": "sha256:9c7f7aefa21ef7f305fe9d394cf45a189c501b55ada6767bc77b557107aa303d",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/relational-case-store.repository.spec.ts",
+      "removed": 138,
+      "before": "sha256:d5bab27f7e3bee6c0d5a992336eaf056f15e754e2e4c903437289cef1e15f58b",
+      "after": "sha256:12d1eb4c81b95a0f5c16ad4571ece06b79b9713b1a5e0b46c9ca60f16dc5bfa6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/relational-connector-configuration-store.repository.spec.ts",
+      "removed": 77,
+      "before": "sha256:b2aab5263ae1ee088991f954b2a8afe522a6ef79872a36d1f1d4c223ef3843d5",
+      "after": "sha256:a5ff5331beb4cf8acbbc1d1fcc5b3c19ec80bf95e8db611a1a6953d0245d8f09",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/relational-glossary-store.repository.spec.ts",
+      "removed": 184,
+      "before": "sha256:88e5c6dbf4dcbb5b4241cb7e0f41b599211351625316c6ba31c4de4f0f9ff5ec",
+      "after": "sha256:56f41bc50b543f1d2cf139e19edcfbd293a78cdc0e15f41d1e06b75403d5ca0a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts",
+      "removed": 76,
+      "before": "sha256:0b771e48e0f5cba526adbf6cfce50f6781ba2e6f19dbe0e535c7949159846cd7",
+      "after": "sha256:bffe4e96ac50b79f71c858f9200057a4b6ea2d7b920d3b46cf4f425cd8f2f892",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/persistence/schema-migrations.spec.ts",
+      "removed": 71,
+      "before": "sha256:9a37402c10b1035f8fa4ff12e6a10cc250474a3396c6e3d6bbc3bb0350b3cb63",
+      "after": "sha256:5184e4b01efae742ecf28a125fd28c749d47ae93cf68dee0fd056e62b6d649d9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/seed.spec.ts",
+      "removed": 97,
+      "before": "sha256:f6bbbfc8275dc1e24fce1d92096716e01a82e1a53a4b4eee3c4ddb1a6519501a",
+      "after": "sha256:2294ab721bf04ab3285fee507acc4d8e7ddcbf1360a899992b511226495dee15",
+      "eligible": [
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-type",
+        "domain/knowledge/case-version",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/integration/vitest-global-setup.spec.ts",
+      "removed": 53,
+      "before": "sha256:15bc652705d4729a1013045e18c8ec8a038e36f47feb0ebd910c336481ea8760",
+      "after": "sha256:91b3e71078ee53dcd37d608bacfc682e6b44b4ecc2616031d64c7b2c7e2fae44",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/capability-registry/capability-input-schema-shape.spec.ts",
+      "removed": 10,
+      "before": "sha256:cec085b374ebe3cd8544649d0c5401622777f0a237058127f6b3df51351cddb2",
+      "after": "sha256:2d15c91e962b14fddb4852ad62ed42a0db1e56b084db88ac0ba470c35f140aac",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/capability-registry/capability-query.port.spec.ts",
+      "removed": 14,
+      "before": "sha256:adee925fb45c048f920bc5bca6ddaeebe104df72af61d22e1b6c6dbd6598304e",
+      "after": "sha256:6f8e90804e97c5e69931c0a7d9e5bbc98aaf0eeedcbab8d2a4128b797845be3f",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/capability-registry/capability-registry.service.spec.ts",
+      "removed": 85,
+      "before": "sha256:6155b6553078f52048886c1fb7995a09839683499fc459f010ad9af0ef8e7950",
+      "after": "sha256:c63de366f55e3c3ed792f4e07ec8952f71a4c9ac2ec5980940f6bd6cef9c513b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/capability-registry/capability.spec.ts",
+      "removed": 5,
+      "before": "sha256:0129f47bef2758a505b553f80322720e7288c63535c910a039f37774a0f74457",
+      "after": "sha256:840142fac5ee197eb75c78d4334bd91b66052f9d7ae07d3c152589b9b94f0481",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/capability-registry/no-network-persistence.spec.ts",
+      "removed": 11,
+      "before": "sha256:bc31378c349def68178cd5ec684d50c9bcb7c588b1efc51732e8720a8fbcb53e",
+      "after": "sha256:95b3993f230ba4e191365b954060a6a4c335df3d754db3921f81388904975122",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/case-document-modules.spec.ts",
+      "removed": 13,
+      "before": "sha256:4d1e70e9087e6fb1610353aa323ef2e57fff5ff3c425e8ea0883dccf225a2f07",
+      "after": "sha256:63573d1d74d1a693607f61b9d9be5c15eb1f9c47c1dd53d82592ba4edaec75bd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/case-input-requirements.spec.ts",
+      "removed": 25,
+      "before": "sha256:bb573af1157bd9f6babe561c7ab1c8d67eb7d6e26622d7e86600395b8340b512",
+      "after": "sha256:d7d55e44edf3257e47545e1f091ae2f540d5fbfbd2c464dcd7bd91ac0d7a6b10",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/case-query.service.spec.ts",
+      "removed": 72,
+      "before": "sha256:fdd72408f9f774a462e292417db0749085259290284e6c03f3092e6c467b4823",
+      "after": "sha256:bca2a6a2e53861c3a7c0ff4545b1a50a78da5d1ef103dbdf6b5e523a8b150dca",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/case-resolution.spec.ts",
+      "removed": 80,
+      "before": "sha256:8619348ea267545cfec7f89f86ef77aac5b520d4dd1921f49f0d77bb70e823b6",
+      "after": "sha256:83c0b61526de507045f8c906ced8841a454afcde2593adb2f0f824068fc81a64",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/parse-case-document.spec.ts",
+      "removed": 51,
+      "before": "sha256:e21171fc118e01b875af47ed29d41e392545fa8ee7824cd4c863d3ceedfd20b4",
+      "after": "sha256:8570d4355c827625a25916ffa7749192d823923aaff5f84456336e1547101e94",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/case/validate-case-coherence.spec.ts",
+      "removed": 70,
+      "before": "sha256:72c4eab4f70909adb56dc136318c7566daaecc4a634ce3b8c75b5eaabe9ad9c4",
+      "after": "sha256:eea71acaeff2ba99bab37f7c81744d0ada92ef4d95558c9d375eb0cafce6741c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/config/env.spec.ts",
+      "removed": 39,
+      "before": "sha256:71237ecb9e5c4af010b70da5ef4dff8bd710155f7f9b87bd39208db216d6ea07",
+      "after": "sha256:78d69c838d1a79e814716bc3a6bcd7ffd01df78e4868f1585d9d816252fe4db1",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/connector-registry/connector-configuration-registry.service.spec.ts",
+      "removed": 93,
+      "before": "sha256:9a32796140c992779077e13d2eb1e089706efd20246570ff798e2107854dcccb",
+      "after": "sha256:604b154c63a4c3a2b8fd1ee1bac56185498987d272a3b97b8055eaa9ec79f4ff",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/connector-registry/connector-placeholder-declaration-check.spec.ts",
+      "removed": 12,
+      "before": "sha256:2da9c1b5efb1e9cf559bcecfd8aa40785a5f242a612a34c59be7abef5b68eebd",
+      "after": "sha256:dcbc9500e03306059e19ff5e6c9ae4a9220f7ab9ecd3577ffd2c39306b57c3fa",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/dependency-manifest.spec.ts",
+      "removed": 11,
+      "before": "sha256:eccf88a51680e96b06a193e39919a5d3e49d76a8e25d29a7bdcbe1218148f3ae",
+      "after": "sha256:59b3d43f9ee5314d5428f698c796ab61a483f2376551938b89d705e48c47156c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/deployment-provisions-no-database-service.spec.ts",
+      "removed": 8,
+      "before": "sha256:b9daeb48b8c04b432af7a8d85a1123ced6d56ddd289c6ba25f081f7b6b32d61f",
+      "after": "sha256:d2c471ef3bc5d8f18cda8f26e4b5a3a063c3ea6759be9fb04f3acbf71c7e2dba",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/domain-depends-on-no-infrastructure-bypass-mention-scan.spec.ts",
+      "removed": 18,
+      "before": "sha256:0be7b0981ee8624df5fad83d0929bc68b76bee4c350a07cb22a481750c865010",
+      "after": "sha256:64ae4e5287f9861e8906b6cccad1e716fadaec643857b7cbbdc9f69998be2470",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/domain-depends-on-no-infrastructure.spec.ts",
+      "removed": 77,
+      "before": "sha256:8f8210183d620c83226050fbff11659afe6df814a8ae8be1f4949d6f1ca08b85",
+      "after": "sha256:c8c2beffdd10f6c61791fcede266359ada776369bbe59df16703819aa4cbac8b",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/errors/status-map.spec.ts",
+      "removed": 93,
+      "before": "sha256:645bdfd3f51c7d8bcc51aeacc23ae751f22d1b22056d568c96cc92bf0f84c7ae",
+      "after": "sha256:128fee17a6c7af4a91167029107ba921e4079c93604ab7f1ed4b456c39d4f623",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/factories/production-diagnose.factory.spec.ts",
+      "removed": 38,
+      "before": "sha256:125e82214195586396e16edf47f0af8ec4ff0a852922d44fc3725a1ba3c659ef",
+      "after": "sha256:a3cdf0eafc135bd85a5e955d2fce47c9bb128c98a6a43542f2c05b643882077a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/factories/production-simulate-hypothesis.factory.spec.ts",
+      "removed": 33,
+      "before": "sha256:561c01618446f440721da62790e7d4e629c370b57e28110a3ed4f7b0bf9c3363",
+      "after": "sha256:da92c8ae973a469df8c8e2b29f4ca6b82426a1abe27777906bcfdbec9c327846",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/factories/production-simulate.factory.spec.ts",
+      "removed": 32,
+      "before": "sha256:61c31363ce79cab2cae4e43aa203fd5f1af40e69598971c97f9f965bb37e48e4",
+      "after": "sha256:a48e1d11d011bc9c2d9f680dcfd62fdb98ab09f475b7237ec138ea2c028a4968",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/factories/simulate.factory.spec.ts",
+      "removed": 40,
+      "before": "sha256:a1bf1e2125c220a9d3a239469960babd99e73c0ee303cf9eee9e0f1bce522216",
+      "after": "sha256:0e290049ef56cd36b2ba3286fd07bd4340229bc5d34fb51690e1ed9b4676d623",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/factories/store-wiring.spec.ts",
+      "removed": 25,
+      "before": "sha256:a2a8f1d1a728a8d0f38e271ab6adc3d2fc1f93c73d01815ed73365c96b04394f",
+      "after": "sha256:9f8c9c44217e37ddd0b05aa6922948b016c569879d7480051a30afd5913920c2",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/fixtures/case-fixture-glossary-and-capability-coverage.spec.ts",
+      "removed": 11,
+      "before": "sha256:2c08f3d8df8bf12470ca61eae40ccf9cc4f05a54f669035181c8b596195d90af",
+      "after": "sha256:7fb1c8d294c466ca80284174d1cd66109b8feca36c2958dc908a25d58137a5cd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/fixtures/case-fixture-observations.spec.ts",
+      "removed": 7,
+      "before": "sha256:93716c8e8d73fe44c8bd067d585b5362c214516afaee62c578e05672003ee2a3",
+      "after": "sha256:1155fdb37e4c8d4a013b506a2ee18363a6ce6ed7278b1b36c82be96d93c890fc",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/fixtures/case-fixture-shape.spec.ts",
+      "removed": 18,
+      "before": "sha256:b98f597548d2cda57ee20953519d8b8953ea4b3e59eac0e575aa44ef8dd61c3e",
+      "after": "sha256:1a264ff34b37ed924638db3a0c20db18b29dbe08e2913e00eaf07eee8989f6d9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/glossary/glossary-query.port.spec.ts",
+      "removed": 9,
+      "before": "sha256:12ce94b93fd95b2b83e47ba16b16899c8c0c3326e81170015ade78e6eb78489f",
+      "after": "sha256:9cafd4b6ac32178bbc93aeec7adbe4b0d32d51a4fbddd818b53b42fcccdf3f71",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/glossary/glossary-store.port.spec.ts",
+      "removed": 6,
+      "before": "sha256:7292a90e59d636162992d2db9a40a050f1cb6446906a9c63b6252fa9299fb200",
+      "after": "sha256:c8c7635fd218b7125e115765d0dcdf5e3b1a4f7cb6cbaa64c5c33b7dc798c225",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/glossary/glossary.service.list-concepts.spec.ts",
+      "removed": 10,
+      "before": "sha256:ebf31c455c1de1decd8450095478a21296aad7de01efe8a440cd6b30458046d4",
+      "after": "sha256:78b1829f7df0b90b58d7021ee71331fda000edd642257b39eed1159b825f5ce9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/glossary/glossary.service.spec.ts",
+      "removed": 26,
+      "before": "sha256:ebf9019b744eed3029ac71fdc29f9fc360e5432f424e5f9ef0aec76a98f28c87",
+      "after": "sha256:15d4aa9eed08e0ad4a7d81249a7ed1b131ec4cf0ba762d9a0238d3add8ca8040",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/glossary/vocabulary-modules.spec.ts",
+      "removed": 12,
+      "before": "sha256:b0c1a774b2b85ddc9ce7775bd2dceac3bfe4603baae837de2734b824da5c5fc3",
+      "after": "sha256:3d883692af2bab861b5472977fb92ff8ef2757e9c2615b10767daab580879dda",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/build-app.spec.ts",
+      "removed": 79,
+      "before": "sha256:a6e66233d897f2ed2357a4f774bce0f0e29d7af97f7af30c1257f1d89b0f0c5c",
+      "after": "sha256:1de46d78f7a6046ee1bf6e5ad7fff97a8ba55a41ff577240cf753c435b2a8b38",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/case-input-requirements.routes.spec.ts",
+      "removed": 16,
+      "before": "sha256:5978c1ffce1dd2451409197823558697790c1c9e1dd719af192833c285771943",
+      "after": "sha256:eceaf9e802d88a39491f86d5dcc0aca53f00249af03309387431072d59659478",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/create-draft.routes.spec.ts",
+      "removed": 47,
+      "before": "sha256:3c09b172e619578f111e4ab5846a2a3302f38b4b04fc39a12da530e0fb452d2e",
+      "after": "sha256:4515fea0b455c4fe57a58b27e7324eba746c0eb17acc18a3837ce4ad3303c99a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/diagnose.controller.spec.ts",
+      "removed": 44,
+      "before": "sha256:2b066f44fc7a53ffd6dc2b4da1f57fa651731f286edf5fda231aefae99f88e91",
+      "after": "sha256:7bb4d6c7bd88215fe9b9085dc7f3f027dbf08160dfc57798930f5e656417f798",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/diagnose.routes.spec.ts",
+      "removed": 20,
+      "before": "sha256:bb48643eb65a35b5bd8a46b6ddff29f5b8e1f3f48bcefb66077983466d29afac",
+      "after": "sha256:1486d220b3ca947ce36060da947c59b0d2927c38a4731272755e24be355d1b8a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/discard.routes.spec.ts",
+      "removed": 22,
+      "before": "sha256:f2e58db56ee15e06a5cea37ba725cbe59f8fb226c21f7a579df8820bde1de970",
+      "after": "sha256:b97ec8fc7ade3e14e16b9fa95178ae295380dd82d33c1cfb1cbda6f228294215",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/error-handler.middleware.spec.ts",
+      "removed": 21,
+      "before": "sha256:2b6695973089773ab0fa066b0be5b6a462f4c2f610ec81669bebd28f51703d42",
+      "after": "sha256:d9d33baf77ce97bb9c7e14c2e025dd968b397da03f07335740ed2475a34f62f3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-capabilities.routes.spec.ts",
+      "removed": 24,
+      "before": "sha256:bb07aa1d36e723c202e4c207bd8b9a1bed01d4f839f6ca24be39efb42da4c962",
+      "after": "sha256:67540b2c19621a10b22376b623e41635fdc7e06635b037926c91c43a1d233768",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-case-versions.routes.spec.ts",
+      "removed": 31,
+      "before": "sha256:1230c19d7bfb9bb3ce807c891dc7ee01d311cb948b73b87228e09d6ada972065",
+      "after": "sha256:a62c54be7cec137b5dc6cebfd686dff0fed669ab3343e07b973edbdf7455986c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-cases.routes.spec.ts",
+      "removed": 23,
+      "before": "sha256:f62ffe9abcb16114e47fe2a3fabc84e2be89816cd3c0d5e418c32a3c473e3b98",
+      "after": "sha256:910704756d1f4891bbd2fc9774d5db57afb962c083448a9ac14275520715df07",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-concepts.routes.spec.ts",
+      "removed": 25,
+      "before": "sha256:93fb77ea18430ef429d3ad06ba4e90a1001a85a1538277b65e5506aa47e572eb",
+      "after": "sha256:44fdcba3b64b29a3855e9039872b9246a9ad57d7b4e8568e6a49ac85ac2b3eca",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-connector-configurations.routes.spec.ts",
+      "removed": 20,
+      "before": "sha256:7c42eccdd61f1681ca7086434daed40b4cbe433ea57cfaf348007aa6478d3bcb",
+      "after": "sha256:5473aac8f28dbc94aece607373aef10a266db12fa6f93ac02bc40a51e7ee88fd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-hypotheses.routes.spec.ts",
+      "removed": 30,
+      "before": "sha256:d2732c72d66a724b72caccaf41602ef99b124f9c12479270533291f31695ad61",
+      "after": "sha256:1e4f7076a697d75e51868c4ad1fb03dcc1cfd7924dfdbce492fedf7431de32fb",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-hypothesis-revisions.routes.spec.ts",
+      "removed": 45,
+      "before": "sha256:e343b6dffeae8774f630a2337183670c1cb495ebee53102029f9f84e13c22b3e",
+      "after": "sha256:e21922c275d4876d3ab2b9dd35fbaac3876183574dbf9ee0ffcb6cd6e6f5fe87",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/list-vocabulary-terms.routes.spec.ts",
+      "removed": 22,
+      "before": "sha256:70a71f67d3468dd3af8f11ff89396478dbc3841f5ce633222d48b0db1eff684c",
+      "after": "sha256:0ceefc641107dd1b24112ca277a813e95329dc9e198ca7075c3df48c6754b05a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/place-hypothesis.routes.spec.ts",
+      "removed": 28,
+      "before": "sha256:7b461ba8be3056af438a399b28f9cbc24e6df1bdda7c7593c53ce2f354923468",
+      "after": "sha256:839a1824f1b4f26edfa0edfce466645a4adfbd09571a275537f609e41a6a1d3c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-capability-by-identity-rate-limit.middleware.spec.ts",
+      "removed": 35,
+      "before": "sha256:7ce1f3450532564a2927b41dce1cd60f2c41068f4630adf4fe60460be20d527b",
+      "after": "sha256:cc8ddae5dc74d3f8d3cf52dbb925eda85417f54ed8cff05c2b251a858024cc8f",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-capability-by-identity.controller.spec.ts",
+      "removed": 15,
+      "before": "sha256:c0aa7f5ceed124ef3ef311ba73ec27933e51ba0856335df50e6e6e7189791ff4",
+      "after": "sha256:60f9b941792784bee6c560300e8c4a5fc0d8f3cbc4333baedb2fe816d1ce2015",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-capability-by-identity.routes.spec.ts",
+      "removed": 20,
+      "before": "sha256:afe1943423a960079b7ed88a8a0e9037ae1537290343585baace36d541be537b",
+      "after": "sha256:3a341be888675cdb3e6dbfcd128239800086a03d69d2cd7d41dfa0447f0bdab9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-capability.routes.spec.ts",
+      "removed": 19,
+      "before": "sha256:ccb59a9c385f53794e71a03020e99b7f382424c8f30cfe054fc6604095d139be",
+      "after": "sha256:42d5e107eeae2d134e79bfed2d06719ac3c24b1c127192db3eeecea1bd85996c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-case.routes.spec.ts",
+      "removed": 27,
+      "before": "sha256:21bcd5320ac3e9b0a8f58dfdf20ff396fe18923291154c58874305aacdb4605a",
+      "after": "sha256:f6b274c8aa4b69c357036b20ab18f4e087167f802e868a604bf85a1b7c56bd99",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-concept.routes.spec.ts",
+      "removed": 22,
+      "before": "sha256:9127065429b853c858f33b8df089758e225e05f0548177b2a3c183a89d74586d",
+      "after": "sha256:e46d515a7c28dbb89f0a69252ddeb77e82f8da66a80477fdfb9088d1cf715304",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-connector-configuration.controller.spec.ts",
+      "removed": 18,
+      "before": "sha256:a38ee0d96ffc76bb8cc8fd42de7fee90f420374bce4a438027eaabbc1a7973ef",
+      "after": "sha256:598f1bbe14fc5ebad36bf11a757f2418ae0429602171bd0aaa5c24228d9ded79",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-connector-configuration.routes.spec.ts",
+      "removed": 18,
+      "before": "sha256:d6bfffcc929e611a026c47efe12c738be4f6bc955425f9dd1207c21edef53fb8",
+      "after": "sha256:828c9ff463d58fe5a5f5f92d95784b7f62ab000e0cdeca627dba184895ae4330",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/read-vocabulary-term.routes.spec.ts",
+      "removed": 20,
+      "before": "sha256:65c233e5dbc362c9a0e8291ea1464a82241b819c1302ebe56ba29be9b0ca2b48",
+      "after": "sha256:94a4c09264c7afeeba33a72fed82cf76794de170fc375fd16e456fb83d60876c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/register-capability.routes.spec.ts",
+      "removed": 82,
+      "before": "sha256:9d2880366413fe749452db8ded0bfe2f1720edf7901bfc1b950eedfdc653fa63",
+      "after": "sha256:a363da65af124794835f0c989c9c7c7d4ac1025b0f1a7e68aff98b3295c823b6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/register-concept.routes.spec.ts",
+      "removed": 58,
+      "before": "sha256:1ce0052fbc6a141c08bf723b914c9d105c23f85e3b04e57a1ddabcf283b9a3a2",
+      "after": "sha256:0daf44eb6e25c32a4c486760bbdfd84bf5ffa764a9950e69cf3b9f08ecbed5b9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/register-connector.routes.spec.ts",
+      "removed": 59,
+      "before": "sha256:00ca47668c60516546ef6e3fbaaef642975dcc1036934c4d34fb299456d69e98",
+      "after": "sha256:c4b6f032b4ee64728ccda462063ff382e4638e62bacf5b2c9bf30d156719c519",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/release.routes.spec.ts",
+      "removed": 29,
+      "before": "sha256:ee893356d00b51ccb7f0989d866d658ac10766ced76cb24897b959b10922a535",
+      "after": "sha256:9c1003d844aa23c4c0778a60aeb39a5e1c966b3521c00721e1a39c45728c2470",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/remove-hypothesis.routes.spec.ts",
+      "removed": 24,
+      "before": "sha256:1fe60864b92d028cb75b4de411749fed7c4c096014d3d90be058fbeb798f304e",
+      "after": "sha256:b4c14c225b0b473aa3a0d5c8e2b2228b9ef2b73486e861adc740ea9f49b2d52a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/revise-hypothesis.routes.spec.ts",
+      "removed": 42,
+      "before": "sha256:596f1ab5f1e11ca1a943c77829b0ccc449e7095aff2917d773d54b5386a4eb47",
+      "after": "sha256:99a2d04655f56720f50422ca86397aeea026d63b089cb9d21107d57a09bd16ab",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/simulate-case.controller.spec.ts",
+      "removed": 26,
+      "before": "sha256:dd51e65562728b499c95807e4b79bcfe4ee609a7b5515a917bcffa41f602bc2b",
+      "after": "sha256:6c47779fc1b0e84177f120332752e876f14395f852aa2ab54d4a365c38d1d036",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/simulate-hypothesis.controller.spec.ts",
+      "removed": 23,
+      "before": "sha256:e267c497a924d7cea7317833554f2578bd0df4917a98af2173176eb0df16d42d",
+      "after": "sha256:db038c46fca9046d08b2ae6532b9642e3e22d027dffb00df5494a61f95b4af27",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/test-connector.controller.spec.ts",
+      "removed": 47,
+      "before": "sha256:bd91402276a96f553059df48d1c7b4ae44542c6452332577a384446adaffdb5c",
+      "after": "sha256:f25400e2eb2337d8786df379401ffd252fa166953131fa6253831a41aaf28aae",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/test-connector.routes.spec.ts",
+      "removed": 73,
+      "before": "sha256:8c35aeb69daf2eea384eda40ee833a4f586074dcf13c6ef6e3e01bfc3195a5f6",
+      "after": "sha256:ac4cde2d5a6d817dfb2050be79d9b59437ed8332bb8a8260e188472b09870430",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http/update-draft.routes.spec.ts",
+      "removed": 28,
+      "before": "sha256:b3648cb3b60c1ef214c189648c837d156fdb251658c7edcbbb7a2964069dad1a",
+      "after": "sha256:c3a7079b340fb7eb7cb2be3100100dadba198ab87794108a25910d8517a510d2",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http-connector/connector-request-resolver.spec.ts",
+      "removed": 16,
+      "before": "sha256:0f4d90bfe64d1c71662ee32cb017a0109a601f045d703c879908a76b4daa7be2",
+      "after": "sha256:eea5fb467ad5aa2dd75047754e9f25585cc255388db7b4f55b48d4f35e428479",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/http-connector/response-path-extractor.spec.ts",
+      "removed": 5,
+      "before": "sha256:1b8cbd125a3917554461a57a30b06c6a183ba028fdf4edafef492494611ff4aa",
+      "after": "sha256:4a10c9b8d2ee2c4e1523e4dc826addc0fcc8888676e2899e6642cdb61fee2439",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/anthropic-assessment-consolidator.adapter.spec.ts",
+      "removed": 29,
+      "before": "sha256:39f776b211e1d4b32ce970a47d60e85cedeed2faccb5d1042e2039709d3bfdd3",
+      "after": "sha256:328329cf5d0224964861232011ac066e295508bb4d40be9020bed11228b1a7da",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/anthropic-hypothesis-evaluator-modules.spec.ts",
+      "removed": 14,
+      "before": "sha256:2a295755e0b193a16bc181ae025a55d62bae79ce2b37e120e17cd79a22fc74d2",
+      "after": "sha256:025f35f4c0810f55d9f25015be529f4c632c3c651dc6e1b511af94c20b051eae",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
+      "removed": 18,
+      "before": "sha256:369684907399cc2f62db99d6fbc8afa443650e9b67a9ed060411c470a01feaf5",
+      "after": "sha256:2b2e4ba824c718e34b6e2722f559f25deeb546bfc782254194f469b9ed4119f7",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/assessment-consolidator-modules.spec.ts",
+      "removed": 36,
+      "before": "sha256:c7d992baef288a265fb9b62e92c4181afbf6ed4bedac9523acb7329757efb414",
+      "after": "sha256:6fa950901c7c664b9d9ee912d0c8c93559d428bf4cd789ef5a221f475164580b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/assessment-consolidator.port.spec.ts",
+      "removed": 26,
+      "before": "sha256:c3fe41c3299f06600c423a6ccabc58c864795a4fc82dbf79284d4f6737d0385c",
+      "after": "sha256:4313d63f499af2aa081376ca2e1b8ac278100226feeaa36db1ca57d71629c848",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/citation-validation.spec.ts",
+      "removed": 26,
+      "before": "sha256:748c226a331124dbdf1c91894915b4ac44ddc5b0ff870b7b9ee615a03da7bec1",
+      "after": "sha256:554489214dc8606f3c481c5eabd408ab29364b5ff05ec25f6500edd02c4d10bd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/consolidation-register.spec.ts",
+      "removed": 5,
+      "before": "sha256:f23c085300b2d67a03a6921412d7eb529473dfa0e04f323c46b7f8b5cff0ff55",
+      "after": "sha256:7dbe130db29272e7a74e7e9ad747520f24c6d21b966488ada23b543e50172704",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/draft-assessment-text-modules.spec.ts",
+      "removed": 24,
+      "before": "sha256:a9de6f72b73f36757402188fce7067040d30d7f28d87d325970be840b45fdd63",
+      "after": "sha256:690a97a96269e344924e63a6edb473cd2abae1f6c256fc63222fa9cbaac59a7d",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/draft-assessment-text.spec.ts",
+      "removed": 47,
+      "before": "sha256:16fb1d26a06770496e95cbe4d36ee4c7f614daf669e1666a179be0753bb24f3d",
+      "after": "sha256:39666d4ee8308217b9ec7459eb4796bd7ac76cf656273e414f8b7c0a81eb1ed1",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/evidence-collection-stage.spec.ts",
+      "removed": 71,
+      "before": "sha256:b6eed1382f7fc928c3b691eaef699df4eb28888b46343dccfeebaa3f1c85bfe0",
+      "after": "sha256:f77e738b7052db214827aafa95026fdca95935ddce76b18fbf40cdd98abd9bd9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/fake-observation-source.adapter.spec.ts",
+      "removed": 8,
+      "before": "sha256:f8fda15fb3bb77ee70287bebc969799cdec056c7b13343d765382deb5b469d57",
+      "after": "sha256:e7ccaae78d39418ea03be0b271fbb0169783bf5eaff5cbb1b3d1c7b99e379ba3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/field-semantics.spec.ts",
+      "removed": 15,
+      "before": "sha256:e85b1cee31b696d157f1fb26f42dfc48b976883a9e17df65925ae582e04e04aa",
+      "after": "sha256:7512e20edac3f3b1f417e06d91195b9754db35508c0215a2350e1707052b0573",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/http-declarative-observation-source.adapter.spec.ts",
+      "removed": 80,
+      "before": "sha256:8510102a41319a5835c4f5474b24227eb6ac28c9b5e0a4f2af5558aba13b58cb",
+      "after": "sha256:fbf6f10cae0c1fa323232bc7ea75bf7c32ea558ad95e27abb4bf9120140babc6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/hypothesis-evaluator-modules.spec.ts",
+      "removed": 31,
+      "before": "sha256:a09c928dd8f0c05c02efa16605a2dc9a74db372df90c0c5d9f593d4ef1993009",
+      "after": "sha256:66c597c06daf46e723abe6ab33f797acab1edd1e7557d93f2c28392e1f09ef9b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/hypothesis-evaluator.port.spec.ts",
+      "removed": 37,
+      "before": "sha256:616a3b9aaa5d3f0a14fc74953e2e27dfc46a5927e13e6002394d6bcef1ab1ca5",
+      "after": "sha256:e40e167073248fe75df9d790e58efdc45620245b37281a7733aff60708b66932",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/investigation-factory-modules.spec.ts",
+      "removed": 27,
+      "before": "sha256:e66d2a31722d772c28430722d14df48bb103b1f3ec77f4e188346ad02b17c31e",
+      "after": "sha256:081c87fe59be2eca859555792b2a16b312249be2913dc644a4f619c6fc2287fe",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/investigation-factory.spec.ts",
+      "removed": 105,
+      "before": "sha256:4d84da9a156cafc2daabc495c8c505815cc74f601cd3964a872f94696b9a608f",
+      "after": "sha256:9abaedc38f7ada94f1bc4753465d5dbd673fb2fe8ddc1eb562f6b8fb44b556a9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/investigation-pipeline.spec.ts",
+      "removed": 37,
+      "before": "sha256:7219883bb94fead7010aa9980ad34b6a7cecad7ef2e372ad65f930db51289c6f",
+      "after": "sha256:76617d30ec8f443001394b60b1885f54e95b34200b4b0d4fe73d9911abfb5520",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/judgment-stage.spec.ts",
+      "removed": 58,
+      "before": "sha256:33c6049663487341563544f936acd179e0f0beb0923c80c48069eb6e27c98ee3",
+      "after": "sha256:f305d28229b010d0713de0e47d048741698c80a064eee46f4c54e985bf2a3043",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/observation-source-modules.spec.ts",
+      "removed": 53,
+      "before": "sha256:343bc5bcf4ed50513882909650a910fbace8c89d1faf5e2efb83200ec700e2f6",
+      "after": "sha256:704ffc787c0ddd37a56616f5071a4cb8b4e33e81bb9de9235ef17e245a824beb",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/observation-source.port.spec.ts",
+      "removed": 28,
+      "before": "sha256:f86fab40ecffb7d733f3e5a676897885b9c2fe9ab6d3af508deb881e1385cccc",
+      "after": "sha256:143c2bdfc8675d22e743b477a6e83691b92a5b1f69744605dc449db5fe7cd4a3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/resolve-and-narrow-input.spec.ts",
+      "removed": 44,
+      "before": "sha256:381b7b408a8c715fe31a432075bcb700297dc7d77ec4c6bf8ed556057a978868",
+      "after": "sha256:9304b09e9f95abbf2110c96bb60fe6850bb3c680b1cc0110eb88d4088a6775f2",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/run-diagnosis.spec.ts",
+      "removed": 133,
+      "before": "sha256:45c42ebaf481a8492ab1740e54927e2203bc6b0536fa381f1dc8b1639448e69c",
+      "after": "sha256:766242188d7b30a89a85fb0aed19b53528e70882df48337256083d4755b15011",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts",
+      "removed": 33,
+      "before": "sha256:79abd0f4836010f17b1d263ad8e21289d72b099a5b01ce2319741a2fc8b4ff19",
+      "after": "sha256:7348af81591dfc1b984c1021aae6facd4e0b54ef6519118ca4c480b27c942e2d",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/subject-covers-case-input-requirements.spec.ts",
+      "removed": 12,
+      "before": "sha256:c69db07c3ea3eebf280005f869ef96c6253ddcbbf951684b771b30625037a0d1",
+      "after": "sha256:e1650a65c79e6f71631ad1b7fd235e0b107ff2c9e72d65a5b676bfd3273b67ee",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/investigation/subject.spec.ts",
+      "removed": 19,
+      "before": "sha256:97c7020b0bc5e654ad59b24d756443e788470e21fb3a83eed44b2867cbb1adcc",
+      "after": "sha256:35317b58129570b914a19ed3eeeb08a1daac9c804f9b1eef6cf257a40e9050d4",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/migrate.spec.ts",
+      "removed": 14,
+      "before": "sha256:c931bc2949aabe777af7c1567fd748b652d1c46355f1d7ca05c39410b85aa8b0",
+      "after": "sha256:0cc78944b4bcf17671d1d492945b973dc9d8899e0bfeaf7cccc7070198b7ca93",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/no-test-creates-or-alters-a-table.spec.ts",
+      "removed": 14,
+      "before": "sha256:59d9f5a43cd0651e0ec2f0e23c1e4bdeeae11be52b22ed15e24b444ebd85f908",
+      "after": "sha256:764ea1fc678f6f8c4e1dd0b3fe61772a86044d927f7aabb61106648b996d8af2",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/database-access.spec.ts",
+      "removed": 27,
+      "before": "sha256:731d2c74ab49e8a1ef57b9d746e333845e16b8b00594cb253a755699fe84d9e9",
+      "after": "sha256:aa5c15dbcc74affc8e84901014ab71c079030c3b69a9141aabee369871bfc897",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/database-connection.spec.ts",
+      "removed": 16,
+      "before": "sha256:f7b45dd8d768480d891f9c0d7752fc105166957d0eec0780fedf5be9a5aed795",
+      "after": "sha256:e9f45b6e1d31bea3cdb140a888080772c6615e6bedb00fb81949ecac3f8d707e",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/migration-runner.spec.ts",
+      "removed": 12,
+      "before": "sha256:c82f7af4ec239ccd44d8d7567055d163133c4e8b1f68d63eacaaf3cfd6d0e5a0",
+      "after": "sha256:600d21e348f4369033a49e34eae0bd8bf67587ed1ef0ee7122f88ab5b10a8dc0",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/relational-capability-store.repository.spec.ts",
+      "removed": 29,
+      "before": "sha256:0436773ce144219f6bedbf81592f30e6aa874d5e28311b18d8ba41747be1292f",
+      "after": "sha256:ddd39856988593411a36972a900aac7820f744b5214ea6fc64cb5ba6e8fed652",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/relational-case-store.repository.spec.ts",
+      "removed": 48,
+      "before": "sha256:35217cadc34eb0f3c1fdc7e2ac85bc33574c9b7659d466df6e23a6c4e10729dc",
+      "after": "sha256:94ef76fcf7631924a6b7286944376dd167ba00c791c0390bf821b47743bc3adf",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/relational-connector-configuration-store.repository.spec.ts",
+      "removed": 28,
+      "before": "sha256:d26815f62583008fca66ecaed97d325a1f309a53cbe4c8764bf8bfc2779b0985",
+      "after": "sha256:3c2f4b339cf6ea667485dda181ce4f067beb256d11f40ed0915504bb310f7e24",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/relational-glossary-store.repository.spec.ts",
+      "removed": 36,
+      "before": "sha256:d21b7b743275766621c3343213648bb3b59445e346f0c3dd42cf86f058d4f37f",
+      "after": "sha256:94d1da238d5c9391ac81212af6d4c4287c4287a3f6baf06bd44f63314d7d91a9",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts",
+      "removed": 70,
+      "before": "sha256:71583a575a86c9b5137d194e54563167344f8a759c535559bf5d53ed2fbdc9c7",
+      "after": "sha256:daf77be87dad2c05e218fc3c5ba794642b655fff433cf7c2b3713514ac904c64",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/seed.spec.ts",
+      "removed": 31,
+      "before": "sha256:fb5171b2b8d5318cdb1f5b8d28e27e4363d425816d70a3b7ba1342c067696fce",
+      "after": "sha256:211fd8e99aa58eec22292f1918c59eb1ae85723a4bd3a71f4ce326269b73faad",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/types/pagination.spec.ts",
+      "removed": 22,
+      "before": "sha256:fa9f36eefba7674572d03999d5bc36a76fdd4b2d8915845d4d013f6e39b6b77d",
+      "after": "sha256:423db4fbe62c59c6a20728c7d82eb5365fd46c6910bf3ada2cb066be0d0ebef6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/__tests__/unit/vitest-config-migration-replay-headroom.spec.ts",
+      "removed": 9,
+      "before": "sha256:01d2eb685262f33f2c8caf681096d58f682e24d9d8123f8bca5f06ed55567477",
+      "after": "sha256:e5b11f48329f3bc3dd8e8b9abb39b33d15f4f5ee47bd45a2a6599cf5ca2230dd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/capability-input-schema-shape.ts",
+      "removed": 23,
+      "before": "sha256:2ebfb36f60ccf355dba718fa7e69b8c70ccbba5bd30a8d0578142e5efbb886c1",
+      "after": "sha256:d8435609f371c2f5ec54b14974fc0b12ad0dffafaa804c92aeffdc195a50e89f",
+      "eligible": [
+        "domain/integration/capability",
+        "rules/integration/a-capability-input-schema-holds-a-well-formed-object"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/capability-query.port.ts",
+      "removed": 4,
+      "before": "sha256:87b14d774aa8f18455a5602370556dd99e7504a4ffb562956f03d2bd3156bd86",
+      "after": "sha256:c995fbcf19c1ead31a05289b66a227d3fdeda8fc1d68367fa01004d72fa1a07b",
+      "eligible": [
+        "contracts/integration/capability-registry",
+        "domain/integration/capability",
+        "domain/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/capability-registry.service.ts",
+      "removed": 22,
+      "before": "sha256:6c6350c794a8c8ab157d5e68878a1082ee71f863a54339616cf52dffc2e0f89f",
+      "after": "sha256:217728ae61493dc10d2473493fa96f728d374c2c1533b0fb55d148db3e5cb68a",
+      "eligible": [
+        "constraints/listings-are-paged",
+        "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+        "contracts/integration/capability-registry",
+        "domain/integration/capability",
+        "domain/integration/capability-registry",
+        "rules/integration/a-capability-declares-its-contract",
+        "rules/integration/a-capability-declares-well-formed-schemas",
+        "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+        "rules/integration/a-capability-is-read-only",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "rules/integration/one-capability-answers-one-concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/capability-store.port.ts",
+      "removed": 3,
+      "before": "sha256:b5035da3b642db62ff7ebed048658b0f36b58a1a0ae45d647f6d230627f25756",
+      "after": "sha256:1ee8480481cd68b1755b4c57546d6494440dd5f123c1d7b28338a6b66d0de9ba",
+      "eligible": [
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/capability.ts",
+      "removed": 16,
+      "before": "sha256:2818977a314140703451a271308f02e5bc5fbf1ab2c890030c20c959cae718c0",
+      "after": "sha256:64b4965184adee493fb4f8a976efd5b2587fe7db2540e6695fc073f4a5faf112",
+      "eligible": [
+        "domain/integration/capability",
+        "domain/integration/capability-nature",
+        "rules/integration/a-capability-declares-its-contract"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/capability-registry/connector-configurations-reader.port.ts",
+      "removed": 17,
+      "before": "sha256:3699ef22e9994ca1232bf63fcd2388cbfa6d826a5e65ec986d6983d87715a598",
+      "after": "sha256:9150bc452a14cbbe033e12d1e97ff55c1c454680eb3c615b42486ad590172168",
+      "eligible": [
+        "domain/integration/capability-registry",
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-input-requirements.port.ts",
+      "removed": 13,
+      "before": "sha256:148eb1f8059b90e6faba471ee2da2c4c0b8e8abf7874f3a6e49aabd7374afb45",
+      "after": "sha256:8d6353ed323648015c7c89e50b571f13b070bf6454a87604d9d68cb1c2046841",
+      "eligible": [
+        "contracts/knowledge/case-input-requirements"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-input-requirements.ts",
+      "removed": 50,
+      "before": "sha256:b997a7ef23d996564d5ea7d446ca783fc692127a101294546d8e5ff45f2a519c",
+      "after": "sha256:3a62a5e1e9b0ff663c0c21c9e7e4286e57044680cecb6dd61dd3b7a7e13465c5",
+      "eligible": [
+        "domain/knowledge/case-input-requirement",
+        "rules/knowledge/a-case-versions-input-requirements-are-derived",
+        "rules/knowledge/the-contract-check-reads-the-current-registration",
+        "scenarios/integration/a-legacy-capability-declares-no-input-attributes"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-query.port.ts",
+      "removed": 7,
+      "before": "sha256:4c176803dd9f70a04fe1a2352e46a81e24bdeeb99df974bdd968f116fb25079a",
+      "after": "sha256:91a06912aee3ad555e8237a85dc356bccb6adc5637be321dce9c790038612f3e",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "rules/investigation/replay-is-pinned"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-query.service.ts",
+      "removed": 55,
+      "before": "sha256:68008c9fcbfaf4125125503881344053572363d306644c8a537d3ff38a698859",
+      "after": "sha256:69be56ac10becbaab6acbd1b1a94428b23918630d1df9a8725aee04da1aae370",
+      "eligible": [
+        "constraints/a-case-is-read-whole",
+        "contracts/knowledge/case-query",
+        "contracts/system/case-authoring",
+        "domain/knowledge/case",
+        "domain/knowledge/hypothesis",
+        "rules/investigation/replay-is-pinned",
+        "rules/knowledge/a-case-versions-input-requirements-are-derived",
+        "rules/knowledge/a-slug-identifies-one-case",
+        "rules/knowledge/every-case-version-remains-readable",
+        "rules/knowledge/the-contract-check-reads-the-current-registration",
+        "rules/knowledge/validation-runs-at-every-read"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-resolution.ts",
+      "removed": 30,
+      "before": "sha256:b7c4fcab04835162d2ab38c6d8e48b54a7564f3ed9a56d6e13951266b563fdd6",
+      "after": "sha256:e3bf48dc8c55bfc3eba865bf237b1d5b955052e984dba0c0de194b5fb924fa69",
+      "eligible": [
+        "domain/investigation/verdict",
+        "domain/knowledge/case",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "domain/knowledge/referral",
+        "domain/knowledge/resolution",
+        "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+        "rules/knowledge/hypotheses-are-ordered-by-precedence",
+        "scenarios/investigation/a-single-hypothesis-is-simulated",
+        "scenarios/knowledge/no-confirmation-falls-back",
+        "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case-store.port.ts",
+      "removed": 177,
+      "before": "sha256:28c03cb8c7d20c1281fe21e5ba3f1624166d9b67fea825552895122a5ff5f075",
+      "after": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27",
+      "eligible": [
+        "constraints/a-case-is-read-whole",
+        "contracts/knowledge/case-lifecycle",
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+        "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+        "rules/knowledge/every-case-version-remains-readable"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/case.ts",
+      "removed": 63,
+      "before": "sha256:30d99d3b1584bac53c23c70636ae0676a1315fadf411a1c1a0b6380d7fe15094",
+      "after": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-type",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state",
+        "domain/knowledge/consolidation-register",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "domain/knowledge/referral",
+        "domain/knowledge/resolution",
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+        "rules/knowledge/a-hypothesis-declares-a-criterion",
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+        "rules/knowledge/a-slug-identifies-one-case",
+        "rules/knowledge/hypotheses-are-ordered-by-precedence"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/create-draft.operation.ts",
+      "removed": 42,
+      "before": "sha256:8d2912bb9cf387d39f547de799401ea75199be303381ab3819a82be4ac45167a",
+      "after": "sha256:2816c7ffeb4c93464ba0abfe41bc7f66ce082febbedebbac5a64b1ce760df6fe",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/discard.operation.ts",
+      "removed": 32,
+      "before": "sha256:807196811dfde49deef4caf5d9a2988474d3c6076f8864da65eedeaa84686d94",
+      "after": "sha256:f1957fc9c6f222a7d78ecb3920d6d4fbea2543ead4de68b939b6fe4d85663320",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "rules/knowledge/only-a-draft-case-version-may-be-discarded"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/manifest-composition.operations.ts",
+      "removed": 49,
+      "before": "sha256:46d6ab4b0d1d737634a14a01c62524ce3f102d8e25fb4e4feb0f5362cded6989",
+      "after": "sha256:eef2bd0aa5c63f34b971b582f01a2c51a84a31e73a8eeae0a3a97726bb9abf17",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "domain/knowledge/manifest-entry",
+        "rules/knowledge/a-case-has-at-least-one-hypothesis",
+        "rules/knowledge/a-case-version-is-written-once",
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/parse-case-document.ts",
+      "removed": 31,
+      "before": "sha256:2bb330cf0393a4e29810c32d10c40e6237ccf8fc3cc91bbce5bc0e192bd10fc9",
+      "after": "sha256:9e3913e4944f5153e372fc0a990560cb32dac72ba94165b4755de32842a27415",
+      "eligible": [
+        "contracts/system/case-authoring",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state",
+        "domain/knowledge/consolidation-register",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "domain/knowledge/referral",
+        "domain/knowledge/resolution",
+        "rules/knowledge/a-case-has-at-least-one-hypothesis",
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+        "rules/knowledge/a-hypothesis-declares-a-criterion",
+        "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+        "rules/knowledge/a-slug-identifies-one-case",
+        "rules/knowledge/every-position-declares-a-resolution",
+        "rules/knowledge/hypotheses-are-ordered-by-precedence",
+        "rules/knowledge/validation-runs-at-every-read"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/release.operation.ts",
+      "removed": 44,
+      "before": "sha256:a49fdb9a777430969fa3fc322c559ebb447c369ce9fae6510f48b6ea8ac08f48",
+      "after": "sha256:fd53e698f6bdf6a2a1f92162172529929c7de5bc50a61e4641f434cf54444675",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/knowledge/case-lifecycle",
+        "contracts/system/case-authoring",
+        "domain/knowledge/case-version",
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+        "rules/knowledge/a-slug-identifies-one-case",
+        "rules/knowledge/the-contract-check-reads-the-current-registration",
+        "rules/knowledge/validation-runs-at-every-read"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/revise-hypothesis.operation.ts",
+      "removed": 63,
+      "before": "sha256:7b32a0a80dc347a631b28d751b68322f8d6378d6fe28993286924ce2b0381b00",
+      "after": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+        "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+        "rules/knowledge/case-terms-exist-in-the-glossary"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/case/validate-case-coherence.ts",
+      "removed": 35,
+      "before": "sha256:b27b6460562d73d5fdb323352f5cfeb9e461fd46cbce7fa93c1be1fef4ccd873",
+      "after": "sha256:cc1a9281b725763630649210362bcf26c977cfa6bb63205f7b9fdf9a8763d2ef",
+      "eligible": [
+        "contracts/knowledge/capability-check",
+        "contracts/knowledge/vocabulary-terms",
+        "contracts/system/case-authoring",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/referral",
+        "domain/knowledge/resolution",
+        "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+        "rules/knowledge/case-terms-exist-in-the-glossary",
+        "rules/knowledge/every-collected-concept-has-a-read-only-capability",
+        "rules/knowledge/the-contract-check-reads-the-current-registration",
+        "scenarios/knowledge/a-subject-mismatch-refuses-the-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/config/env.ts",
+      "removed": 38,
+      "before": "sha256:b58068ec5b263e3d52e6356bc2b8ada0c88a546c9e17b2ffb9fe24e484be3c04",
+      "after": "sha256:0bd8b346a61ea9ffac741f2bee880b70bc7597e07daf5faf98b3a6e2c68d0c60",
+      "eligible": [
+        "constraints/the-database-is-externally-provisioned",
+        "constraints/the-system-persists-to-one-relational-database"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/connector-registry/capabilities-reader.port.ts",
+      "removed": 13,
+      "before": "sha256:01edeee5e40a072957dee8afd2f16d6540b470d84dd0e9cb8c9b82bc39e1f0b1",
+      "after": "sha256:07b31d7a625c669d9eee99450888ec7b859ebc5d828c4373716ad174e862e368",
+      "eligible": [
+        "domain/integration/capability",
+        "domain/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/connector-registry/connector-configuration-registry.service.ts",
+      "removed": 20,
+      "before": "sha256:1b49f7359982c4d2b69cea70169f36cc17c22f723aaaea56bdcb09404f9e02ff",
+      "after": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35",
+      "eligible": [
+        "constraints/listings-are-paged",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration",
+        "domain/integration/connector-configuration-registry",
+        "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+        "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/connector-registry/connector-configuration-store.port.ts",
+      "removed": 3,
+      "before": "sha256:68c02f5c32bf1d37f90c22542796a94940fd8c4a9d1e4de4f15e61a1c272b858",
+      "after": "sha256:0feeb0c19f7e679b944ea213839009f342cb8be01bd74dd536c34635c7541f14",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": [
+        "constraints/the-domain-depends-on-no-infrastructure"
+      ]
+    },
+    {
+      "path": "src/connector-registry/connector-configuration.ts",
+      "removed": 19,
+      "before": "sha256:1ba2d66a15f541cf88c83ead94e8f7445d79f4c340918ebd0bfac5e3c829ac92",
+      "after": "sha256:e803ff9486bf11176f6e8170106e9cc153b5f92e1ff768dd499c11e8afc73c50",
+      "eligible": [
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/connector-registry/connector-placeholder-declaration-check.ts",
+      "removed": 29,
+      "before": "sha256:50f70954954067229e2e501b7709a351cb9696c9329c212b64c52a5ab4f145fc",
+      "after": "sha256:474e8f7600bee3db1116c796f50e88c349593b060a217d7b46c043f214930e0c",
+      "eligible": [
+        "domain/integration/capability",
+        "domain/integration/connector-configuration",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-connector-mismatch.error.ts",
+      "removed": 1,
+      "before": "sha256:dadfa511e42a8f551e2894b3615bae0b99c996a1cff8f9e2b85acd6dc4ae0ed9",
+      "after": "sha256:d7dd3ed4eddca4b69b4186f0f7c295e89a8fce49ad5f36d93d5eee9df6168024",
+      "eligible": [
+        "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-identity-not-found.error.ts",
+      "removed": 1,
+      "before": "sha256:ff499937c862839c47f08b85d64ca7d891f0257e7189cec746057a589654db48",
+      "after": "sha256:4d087435f07c4d7046ec69255f619ae0ba61a612e31ec17847db8c6fa705b3bd",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-not-read-only.error.ts",
+      "removed": 1,
+      "before": "sha256:c3820ed8117072ccd42447d48ec2a0dc514b88fc47df359495c85085600b139b",
+      "after": "sha256:0dc42f7baed312da076acbe708af9290736ab6a9b1ab2f289c30a8b5a008463b",
+      "eligible": [
+        "rules/integration/a-capability-is-read-only"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-not-registered-for-test.error.ts",
+      "removed": 1,
+      "before": "sha256:226f13044a70b5b2679a4c0c9813531b3ea5f6401a95fbeb672219778b9895d6",
+      "after": "sha256:1f5aae7941c2ec4ac6bf65d036ad5c5a7fbbf48a9960f6f4eea9e30f2f03d73e",
+      "eligible": [
+        "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-not-resolved-for-observation.error.ts",
+      "removed": 1,
+      "before": "sha256:1a3122510adb43659ca00402cc0ee323eff828ffeb8e95ebbe0affbd4da34ced",
+      "after": "sha256:d950824f27f9d90e3c9369add54000fe4f6fbe9db822da40f1395d2ca960718a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-schema-not-well-formed.error.ts",
+      "removed": 1,
+      "before": "sha256:ae7cb6d44e7d2b4401a823dd08261937c8a910b9c3c59d81e178d78af66c25d4",
+      "after": "sha256:1efe9ee278d694852ef4de6c967e9a59af91a0cef3c29530ccdb5dc0059ff6f6",
+      "eligible": [
+        "rules/integration/a-capability-declares-well-formed-schemas"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/capability-store.error.ts",
+      "removed": 1,
+      "before": "sha256:2ab30bf6bd80ca6f6ba08dee5009873577b0944839019e6de183bb162217f81f",
+      "after": "sha256:537e38a47701f18f635bceeaa904c283e9942b8bae251e75da7ed07a77f568b3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-already-has-draft.error.ts",
+      "removed": 1,
+      "before": "sha256:3f38a4a10c62d2c96df6e7c1fcf238dcdbe67cfb4392afaaea71ab47bdfa26f2",
+      "after": "sha256:67436c25b8d979e455c538f0bba82d519175d40618e26942919295df6203e137",
+      "eligible": [
+        "rules/knowledge/a-case-has-at-most-one-draft"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-holds-no-draft.error.ts",
+      "removed": 1,
+      "before": "sha256:9ff9d75667721b97866f9cd7c567352c3d6cdf0d8bcfb083ebb6e83ab56be2ca",
+      "after": "sha256:824535aef9e3670cd44724513d90cca9b4cbd775f1c36e29f58f3e763ad92c16",
+      "eligible": [
+        "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-not-found.error.ts",
+      "removed": 1,
+      "before": "sha256:92bc1349600bf06963262dedd8358e2b0b364849476761eab4bc186593f08db9",
+      "after": "sha256:2638de3a260c5485982be9026d6dba5c64f6c7cdf4eb023fcaada9871e124333",
+      "eligible": [
+        "contracts/system/case-authoring"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-not-valid.error.ts",
+      "removed": 1,
+      "before": "sha256:178d031c94334854e637f9e70b4189f8fa0714d9afc535455f934658000084d3",
+      "after": "sha256:58000db76ad560163e8c9baef7e1f2684a19a5527ee80c6f4e3a0f32cf712b56",
+      "eligible": [
+        "contracts/system/case-authoring"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-store.error.ts",
+      "removed": 1,
+      "before": "sha256:6fd734ca34e230f965d99848266c77efba727626db99e2f130ea17fb1e06eb15",
+      "after": "sha256:164dc6e1d3b7852548a496b061b8083d1fcec37d819ee621f5dec1784a0d8fdc",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-version-already-stored.error.ts",
+      "removed": 1,
+      "before": "sha256:452cdf9ab3a5a8f8ff8b33bd14337eef55dff6715bee5d371ef6f6f2e6ddd59f",
+      "after": "sha256:bd9b68b0545ee0fe82b30ea251de624e8d112eca07d1ea3f6e23d64434b4c8d6",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-version-not-draft-at-release.error.ts",
+      "removed": 1,
+      "before": "sha256:04a67bacd34247774fc7496c66ab9ace2837f63a930cca901da905b9af622039",
+      "after": "sha256:91e2e1855a2021b94af860a6a5605283cad6f2bf0b0f5df19e4b10d015423df2",
+      "eligible": [
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-version-not-draft.error.ts",
+      "removed": 1,
+      "before": "sha256:b9bf07cd4b9b0ffb8279863a4173a04527971010c7c569718eee3c7a6d189370",
+      "after": "sha256:d7b2b127256eb30379192629898af08415864070ceda4379a6f3eb6291d82831",
+      "eligible": [
+        "rules/knowledge/a-case-version-is-written-once",
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+        "rules/knowledge/only-a-draft-case-version-may-be-discarded"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-version-not-releasable.error.ts",
+      "removed": 1,
+      "before": "sha256:f5dd62796a4c4bae9f08f75cc63a32f82c71abaad06fbf709126373720750dee",
+      "after": "sha256:caa5bed0714902e892c4591b503b0457d6017e1f3f1f2883aa1cf0ba3e396404",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/case-version-not-released.error.ts",
+      "removed": 1,
+      "before": "sha256:3ced7974ab96720028b28a344f0454a99e4176ca1c31896a5678ad8bce5ea8d0",
+      "after": "sha256:6c115a5c12465e4c3c9003745e98dd21a4320e0a8d1446d121ff5f15b08eb36b",
+      "eligible": [
+        "rules/investigation/only-a-released-case-version-is-diagnosed",
+        "scenarios/investigation/a-draft-case-version-refuses-diagnosis"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-already-answered.error.ts",
+      "removed": 2,
+      "before": "sha256:431ebdbfc941319243f10cc39322105a012eabbc0c54f540124481b08219771f",
+      "after": "sha256:a83e5475a04aa79d1f0333c74120d8bb3265aa822719eb2c910dea24e15ebdf8",
+      "eligible": [
+        "rules/integration/one-capability-answers-one-concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-description-required.error.ts",
+      "removed": 1,
+      "before": "sha256:5f847fc4dccfd3847910d8a569134a2036a43bee4e600b57744cd0cbb62df338",
+      "after": "sha256:3a27418094918d5889bac121bba0dd9ce5aa4ade893cebe8835a7d9da8f6fb06",
+      "eligible": [
+        "rules/glossary/a-concept-declares-its-description",
+        "scenarios/glossary/a-concept-with-no-description-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-not-answered.error.ts",
+      "removed": 1,
+      "before": "sha256:152673f80e0cabe5f4860f1f84f094d39a4112673e0679be58cf5b0ab1d6bd24",
+      "after": "sha256:4740d1f7d457db683d970da9a7278c5d6ab7b3480dd9dae54ae26a99df20e263",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-not-held.error.ts",
+      "removed": 1,
+      "before": "sha256:40f31dda42b74a473a7dd2d08389048d821cf81af825561cf0c6d8f37ac66845",
+      "after": "sha256:cb30ae1c2d80d875676459a7d7ddc019fd5cd3b9d27968f57deeaf60e8f1c51e",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-not-in-glossary.error.ts",
+      "removed": 1,
+      "before": "sha256:114cb8acca78ba8e6f39ba67429f8f5d0db972d3b359dc20f81f952874ecf884",
+      "after": "sha256:3a0f81fb3bfb57c2262695c880704f15206add74a5760ba52ef2e8a35c542285",
+      "eligible": [
+        "rules/knowledge/case-terms-exist-in-the-glossary"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/concept-refuses-subject-type.error.ts",
+      "removed": 1,
+      "before": "sha256:4d7e0e4a7ec48466d376bc33b27b5b65b75d900b8fe4521a707aa5245125b82c",
+      "after": "sha256:21e9dbf9f7548faef72a0b4efb99260c3d83a949d23f314b3608b6975d4c7e24",
+      "eligible": [
+        "rules/knowledge/a-concept-accepts-the-declared-subject-type"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-configuration-not-found.error.ts",
+      "removed": 1,
+      "before": "sha256:9ca4f9df53ce0607094885b653f05b10cae9ea365f5c6d8aa26ba93c5b330f58",
+      "after": "sha256:36d8e75c752cceec8735b53e0311e226e6085143b0972e0670940a52bb39ed46",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-configuration-not-registered.error.ts",
+      "removed": 1,
+      "before": "sha256:23e49d9764fc1aeb4783ffd5757478187e9cff7e699e28730088436aea6ba18c",
+      "after": "sha256:8cfc9d012566470328b29629d13db86eb0c33cb2f1ed3b9dced52d420f9f085d",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-configuration-not-well-formed.error.ts",
+      "removed": 1,
+      "before": "sha256:fd2816b4707124d40345ed6de32200d5c6cb979c445fbb5b8253ff5ca1c9cfd8",
+      "after": "sha256:9016aebf4718fbeae04990308ff3babea3ee6b4068959bb9dcec8780b290c93a",
+      "eligible": [
+        "rules/integration/a-connector-configuration-holds-a-well-formed-object"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-configuration-store.error.ts",
+      "removed": 1,
+      "before": "sha256:b098d859e781f5eeda542c776fe3e339ae4386588f9ee5e66dc08f51b3c69d17",
+      "after": "sha256:4cd464c5d19268d38d82cf0c0d64434ecca90b7b1a6818c8248176d12230b404",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-placeholder-not-resolved.error.ts",
+      "removed": 1,
+      "before": "sha256:1ee9acbad65a81ce8c7cad3937a3a1f90d1d143b744aa4f877055aac4b3c9646",
+      "after": "sha256:7298207ac11cf85a638870295b8ac1a6dc067fe1c364ce7bd1a3b623d18ebf67",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/connector-placeholder-outside-input-schema.error.ts",
+      "removed": 3,
+      "before": "sha256:65350dd2ff097174b7326b1e5250a71e6a2b4b698be0f7ad43a1ae6b91464ba3",
+      "after": "sha256:3d5386fbcfca6a633fd873eb363c5ffeff6d5f233f92314fa6b7a87fa1e69b05",
+      "eligible": [
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "scenarios/integration/a-connector-configuration-with-an-orphaned-placeholder-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/duplicate-concept-answer.error.ts",
+      "removed": 2,
+      "before": "sha256:21f6b236ef7b5f66e88eb7399ce880bb885301d2348efa62b6b03ff28a70cbca",
+      "after": "sha256:095cb98c8b0196b721019e55f2e4e203058ea5967de857d4e1a5339eb7257b25",
+      "eligible": [
+        "rules/integration/one-capability-answers-one-concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/duplicate-glossary-name.error.ts",
+      "removed": 1,
+      "before": "sha256:c0cc6e6d9efed8f1221ef1c5f88c1693bd506eb5f64b95fccb84f4edb45fe350",
+      "after": "sha256:617565bd37f69898d2d2f0c733fd322c999558693dbb7c2f44e3923a036fd55e",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/glossary-store.error.ts",
+      "removed": 1,
+      "before": "sha256:23286d7fa715283c578797a68bf2443068d521b44706922e8334ee00e05fb2f5",
+      "after": "sha256:3efaa2e95cc8a98958278c9e66949a82b3197defb951cf4135da45cc2fe54c29",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/hypothesis-not-in-manifest.error.ts",
+      "removed": 1,
+      "before": "sha256:8dc0f560d75505998ea77f9af36b33a3ff636ba93d16765d5da1ed1ec892903b",
+      "after": "sha256:8de175a2ee59d05b80b1c93591214a500f50270166da5054048afb783a26872d",
+      "eligible": [
+        "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/hypothesis-revision-collects-no-concept.error.ts",
+      "removed": 1,
+      "before": "sha256:8d466efc931d4db2228dd077c530fdb31c92b358b723ec8401c6469df751d21d",
+      "after": "sha256:27c11ee717286814da538e8e512a0cacd4f9a06aeaeb82b4a15388f891ff0944",
+      "eligible": [
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/incoherent-case.error.ts",
+      "removed": 1,
+      "before": "sha256:5d4b3178df6abd539caa7e74b485a51784fb7c6b3df22664903963aaf9c05036",
+      "after": "sha256:8d7a4522ba4945efe129e8ee8235eae0671f643f425adb6a214994fbab363a52",
+      "eligible": [
+        "contracts/system/case-authoring"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/incomplete-capability-contract.error.ts",
+      "removed": 1,
+      "before": "sha256:669b4e23f0539519c89c6b361deb5d4d1d9132630e685a3e6ec713d9df4083f6",
+      "after": "sha256:3964566a7e3a63f37d1730be1d64db21814f7c3a3107c7f6d22ff45448b29d66",
+      "eligible": [
+        "rules/integration/a-capability-declares-its-contract"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/incomplete-connector-call-descriptor.error.ts",
+      "removed": 1,
+      "before": "sha256:d4838bda43dddd1bf9cbb7064f054ac50de8926fc8602c20356c41d7e6749e1f",
+      "after": "sha256:ab5e7a20e1b7330001b88915b31ed8c694f5a69852986bf3dd3e30cf6fdf5b17",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/incomplete-connector-configuration.error.ts",
+      "removed": 1,
+      "before": "sha256:ad23c75c1191413e8437fdeb661c4c114037a8954cfd0696a7f5d1caee6793e6",
+      "after": "sha256:8eefa8f775d51670b18c0a0f3e41341c3b11fb63e80df0beff2d5b25e524e7d3",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/invalid-case-document.error.ts",
+      "removed": 1,
+      "before": "sha256:1b04de8df3c9b35b31f91556c50b8ebe20c7b5103da9d994894ca5b929b5feb3",
+      "after": "sha256:ef50a2fa3485a03c7739461640b00527281d2582c95d5bc8bc71bd2b52a504ab",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/invalid-environment.error.ts",
+      "removed": 1,
+      "before": "sha256:08dc787d5c456568d31ee74c526769913d8affaeb87d11790f0ff71eeb26c729",
+      "after": "sha256:649f478c8fee2d05205a6bca1a0f2ebac5f86a4eeba06b81bcb366622337a87c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/investigation-already-stored.error.ts",
+      "removed": 1,
+      "before": "sha256:623d646aca410331c9b2a3554b6ae28b5b0b5610d1137cee139fc3ccdeed119e",
+      "after": "sha256:071ab0559e0ed3e004f59d1e693addb6b728bbeb527c3a346be673af3ce2f6a6",
+      "eligible": [
+        "rules/investigation/an-investigation-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/investigation-not-buildable.error.ts",
+      "removed": 1,
+      "before": "sha256:50e9159d1fa53aeef2c3c28fcf8bec2b077e304232fe877de7c3cadfb9e14fa0",
+      "after": "sha256:68113bf7fd274485409757a8fa2c98bbb136cf568bf1a38d239e56f59f85edf4",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/investigation-store.error.ts",
+      "removed": 1,
+      "before": "sha256:1c3979365d8fb40e7c4d83db2981c7d0823088874c8cc78a7d2f3bb076f8903a",
+      "after": "sha256:42adf024145b2d0173f0610ea6de62e3d883e3818a46008c4c2bb436256e15f4",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/investigation-write-deadline-exceeded.error.ts",
+      "removed": 1,
+      "before": "sha256:466b080452b2d638bf707c3d9db72dbd789dabd23732e350dfbb1761b5f793a8",
+      "after": "sha256:c7c87265592b8c57f6c95345e2051940dca69430b5e5336a699ba52886829f68",
+      "eligible": [
+        "scenarios/investigation/no-response-without-a-record"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/malformed-capability-input-schema.error.ts",
+      "removed": 1,
+      "before": "sha256:279507f508c6cdc3c734bf95bf041b54f5bba34fddceedfc30a5f909f95a9713",
+      "after": "sha256:1c41943bedf8f43607ca3d64b3de901dfc0a10623352e155c22ee9a9060fb9f9",
+      "eligible": [
+        "rules/integration/a-capability-input-schema-holds-a-well-formed-object"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/malformed-http-connector-configuration.error.ts",
+      "removed": 1,
+      "before": "sha256:a077031fd80edbb268396e404ade0da6f7dd596b7eeee3f0580f71b63d26e545",
+      "after": "sha256:e07d67ea4de8e39e819ea7d67cbe277d793d7f8ee6e6b3602f4a1365b3f5f67b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/manifest-position-occupied.error.ts",
+      "removed": 1,
+      "before": "sha256:a1cecfcb8a96664fcbd933c1e2d2ce50f8fbd7b2f0ef3b746615857769bae44f",
+      "after": "sha256:eb8864b7b6f8a083e764d2f101a5e4dcc5ee3ed5f40215854ddd51abb8353a0a",
+      "eligible": [
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/manifest-would-hold-no-hypothesis.error.ts",
+      "removed": 1,
+      "before": "sha256:84a4af3684de3942a2ed755656797e51906c195f2dd3e1b2489f284a3e8a22cf",
+      "after": "sha256:b092a8a5fe7c122dae7763eaf18b723fc80bb97dd78f46ecbd49920d8febd517",
+      "eligible": [
+        "rules/knowledge/a-case-has-at-least-one-hypothesis"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/migration-step.error.ts",
+      "removed": 1,
+      "before": "sha256:fe0619caa9caa29c96931cd8825ec54f7bd27eef4721a1c58685fd18950f14c2",
+      "after": "sha256:a3a272d06888c316ec830b32a0644c78adb8c4695f17f510c2588113bbbc9b8e",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/requester-required.error.ts",
+      "removed": 1,
+      "before": "sha256:2be4037589f3daec58414e6f102c0b629596e6945fe97052287ecf0497efbf20",
+      "after": "sha256:9721c9548fbdb1970c2e228afaea4ea0c415ad99b8580064d9f17f2ac0a67129",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/status-map.ts",
+      "removed": 175,
+      "before": "sha256:fa573b7c58d8b147ee4acf173bb9c928636596f81c978a46e0e22840171b9061",
+      "after": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2",
+      "eligible": [
+        "rules/investigation/no-stage-aborts-on-its-deadline"
+      ],
+      "stale_before_sweep": [
+        "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+        "contracts/integration/connector-configuration-registry",
+        "contracts/investigation/diagnosis",
+        "rules/glossary/a-concept-declares-its-description",
+        "rules/integration/a-capability-input-schema-holds-a-well-formed-object",
+        "rules/integration/a-connector-configuration-holds-a-well-formed-object",
+        "rules/integration/a-connector-configuration-names-its-connector",
+        "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+        "rules/investigation/a-simulated-hypothesis-absent-from-the-manifest-is-refused",
+        "rules/knowledge/a-concept-accepts-the-declared-subject-type",
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+        "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+        "rules/knowledge/case-terms-exist-in-the-glossary",
+        "scenarios/glossary/a-concept-with-no-description-is-refused",
+        "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute"
+      ]
+    },
+    {
+      "path": "src/errors/subject-attribute-not-in-glossary.error.ts",
+      "removed": 1,
+      "before": "sha256:9653b8c378e12e12060d2bcb07f51595db6615bc9ad0c06ae68746e5fae8e52b",
+      "after": "sha256:ca58e15032bb3f069593c575ff01d3a375ab379e7cb1b739e607833949057b10",
+      "eligible": [
+        "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/subject-carries-no-attribute.error.ts",
+      "removed": 1,
+      "before": "sha256:b8eafe6b856b35822b5ec23c711a29a6a2203bfe5afffe1a2cab3e79d324e190",
+      "after": "sha256:273cf874ca8e342b3cb39d5189bfee4d8b2af1c10750f171cf2de1133857af5c",
+      "eligible": [
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/subject-does-not-cover-case-inputs.error.ts",
+      "removed": 4,
+      "before": "sha256:53541639fc4476158138e679c889e5b825c9c72cc790beab801e073c3ae59b84",
+      "after": "sha256:a8ed17b847a9bcba6e87f55c1cefa40729b39dfd70dceaa7fb3cbfdc7ceaa253",
+      "eligible": [
+        "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+        "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/vocabulary-term-not-held.error.ts",
+      "removed": 1,
+      "before": "sha256:d0df1c6045aed97b77f69c6e03a960d80ca54e7f11011c792115f3d7f457f16c",
+      "after": "sha256:0db2d6959f8163af734d4df5e37cb6863fa112a77cf8cb60de86c16a12f88809",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/errors/written-at-required.error.ts",
+      "removed": 1,
+      "before": "sha256:757b029a92733cfad2d86c038776b3e96c9eff35ece8cbb5e68fffdd8c53109c",
+      "after": "sha256:83cdb5a7c9248589ca47f84e6bfbc8c8afa8fe08c99000128491a303c2c1380f",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/build-app.factory.ts",
+      "removed": 34,
+      "before": "sha256:aa59192efa16b12a9b6071f11c9a7cf7dfe629ce04d2327d93e8587a04b5aa14",
+      "after": "sha256:9568ff1e0f1713bd15475585f58723fbba51dd7c2815547b579af8221ce2fca4",
+      "eligible": [
+        "contracts/glossary/glossary-authoring",
+        "contracts/integration/capability-registry",
+        "contracts/integration/connector-configuration-registry",
+        "contracts/knowledge/case-input-requirements",
+        "domain/integration/connector-configuration-registry",
+        "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/capability-registry.factory.ts",
+      "removed": 4,
+      "before": "sha256:61acbdfd7705bee6c5973fd86fc01b8e0558a4914f9344ff356bb424373b7a53",
+      "after": "sha256:e29c3ab38b9c6cc8e4f0eb8408388a0c098ac2a88ae63dc18b2e13584dd6893d",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "domain/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/case-input-requirements.factory.ts",
+      "removed": 23,
+      "before": "sha256:744cf5416e31f71572a92c31491045dec1a79efa772c539e8f9000a26726f99a",
+      "after": "sha256:f6a4127b6e0f22e7b0a9e1242dc8c571202c834e1e0b021896701b0de62179f1",
+      "eligible": [
+        "contracts/knowledge/case-input-requirements"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/case-lifecycle.factory.ts",
+      "removed": 2,
+      "before": "sha256:579d840a3597aa508bc2a6a6b90fc3262dd4dfc0c1c59e69ce7e3230902dd88e",
+      "after": "sha256:28aa30d4ecea6c2629a624b21730e4735e0d6a18adf940abb8a1a8b802acdf33",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/case-query.factory.ts",
+      "removed": 1,
+      "before": "sha256:0d7882cce3747b0250d0f0f12f42e5b5310bcdececf6cd513d4e52a0711465b6",
+      "after": "sha256:6b22973c777f4fc92816266553389c8eacddb2c64aef89f88e3610a301d9dfc5",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/case-store.factory.ts",
+      "removed": 1,
+      "before": "sha256:173746a1b46f217b09cdc05052daf02e98af89caeaf5d00c3f9cc4245f970845",
+      "after": "sha256:90ab92d2822cfbd6d4a7a560af27686a32453f8397b92bdf0f27563af0cd0690",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/connector-configuration-registry.factory.ts",
+      "removed": 3,
+      "before": "sha256:05e0bc62cc687ce4a5bb313acc54b658dc30495498e5cb130f4d2de47d200cca",
+      "after": "sha256:688b4ede5969421a4551907b34b21db4b9f6e6c1221b19dc15bcc633673897f9",
+      "eligible": [
+        "domain/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/diagnose-server.factory.ts",
+      "removed": 33,
+      "before": "sha256:0324e08810b6331645b8caf325b1d9454e626868db708346fb77a8ca406d5134",
+      "after": "sha256:ad97eba955741c07e452d3854c639300338981a66307a9e7cc456b2b68cad5b2",
+      "eligible": [
+        "constraints/the-database-is-externally-provisioned",
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/knowledge/case-input-requirements"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/diagnose.factory.ts",
+      "removed": 3,
+      "before": "sha256:978aa20df15edb4424777be3b8d0fdb49446e74b9df7b5f1e638c72ad6ef8ecc",
+      "after": "sha256:791e1dbfad9623ef2ebc5740a8228620d26a3bfeac6c2bf06a220e7c578b790e",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/glossary.factory.ts",
+      "removed": 2,
+      "before": "sha256:6bd555ad42af4f9798167cbe12a6c68543f86297c290b9b6ebc8813721947fff",
+      "after": "sha256:a31e8d1c293c94dca2688e1a33bad43fbffb53fedecc4eef4e1ccafc08ccc6d6",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/investigation-store.factory.ts",
+      "removed": 1,
+      "before": "sha256:3c72e9923facb95a209f773f8c0d1f8a63126cc44c87b0c155923a3651a9b9a4",
+      "after": "sha256:799785ef847feb44216e18b9011f3e2a89f88833add0dbc1e3d2d018494bd3fa",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/production-diagnose.factory.ts",
+      "removed": 8,
+      "before": "sha256:38b96fb72b2b561ba58923a051edf57421511a61b07b2bba9dd09b927b28dee1",
+      "after": "sha256:8c4482281452e277b95f2ac64b207fcde0ec6e4614c4b2caaaeecc426b4837ab",
+      "eligible": [
+        "constraints/diagnosis-answers-synchronously",
+        "constraints/the-deadline-is-an-absolute-propagated-instant",
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/investigation/diagnosis",
+        "rules/investigation/an-answer-arrives-within-the-declared-deadline"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/production-simulate-hypothesis.factory.ts",
+      "removed": 25,
+      "before": "sha256:927264548ca72ffc3dc8c346207935e8cf174feab5e6a6dc37463a0c53413df4",
+      "after": "sha256:f1a401fe56e6474497c0a02fc5d9074bde9850de41de117ca365b617226398a0",
+      "eligible": [
+        "rules/investigation/a-simulation-writes-no-investigation",
+        "scenarios/investigation/a-simulation-never-enters-the-cache"
+      ],
+      "stale_before_sweep": [
+        "contracts/investigation/case-simulation"
+      ]
+    },
+    {
+      "path": "src/factories/production-simulate.factory.ts",
+      "removed": 24,
+      "before": "sha256:8038d3005dd34de5f2f92fe443a5becff53ea0bd4497131076a055163b9e9268",
+      "after": "sha256:428f51833958a57af8d2833cf5945fc11e0f69120472cafbed073c4ef2f068c0",
+      "eligible": [
+        "contracts/investigation/case-simulation"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/factories/simulate.factory.ts",
+      "removed": 50,
+      "before": "sha256:453fe647f0632037c36ba0c6187a05aadd0974c0ba4456f15126d41337f30024",
+      "after": "sha256:75fd46d541c3b0fd6f6edb2441e1d7f6fe0a57ec5b746df133cd766fe664d487",
+      "eligible": [
+        "rules/investigation/a-simulation-writes-no-investigation",
+        "scenarios/investigation/a-simulation-never-enters-the-cache"
+      ],
+      "stale_before_sweep": [
+        "contracts/investigation/case-simulation"
+      ]
+    },
+    {
+      "path": "src/glossary/glossary-query.port.ts",
+      "removed": 7,
+      "before": "sha256:45043efe83cc0b2e0e6a2da8d1fad52bb30da04bc130d007badd6c2d3af73592",
+      "after": "sha256:7c6e2e1ae523ee575472face5a243c5b3cfe51e848f5c32105749c7a0c1ee980",
+      "eligible": [
+        "contracts/glossary/glossary-query",
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-attribute",
+        "domain/glossary/subject-type"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/glossary/glossary-store.port.ts",
+      "removed": 6,
+      "before": "sha256:df43d80ec7a892e29724540c34867787f0bee2ad5aa56a8289024c8a2f0b6939",
+      "after": "sha256:a4515abf9aaee7a25f70abf995c335422666d940bc9d8bac3e533272559ef369",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/glossary/glossary-authoring",
+        "domain/glossary/concept",
+        "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/glossary/glossary.service.ts",
+      "removed": 12,
+      "before": "sha256:d90e54f0899e58773f9f56f20cfd7edd374ed913ec2976d96db301408c4ba19c",
+      "after": "sha256:aa9aba8194040a644f0559bd3cbedbc015445680e772faeb77f8ddd01d2bcd4a",
+      "eligible": [
+        "constraints/listings-are-paged",
+        "contracts/glossary/glossary-authoring",
+        "contracts/glossary/glossary-query",
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-attribute",
+        "domain/glossary/subject-type",
+        "rules/glossary/a-concept-declares-its-description",
+        "rules/glossary/a-registered-concept-is-never-removed",
+        "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+        "rules/knowledge/a-collected-concept-declares-a-ttl",
+        "scenarios/glossary/a-concept-with-no-description-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/glossary/terms.ts",
+      "removed": 17,
+      "before": "sha256:4a06ef9be45aa484a09ab92316bff03fabaa8fbecdc0dfbbc9d29765848569af",
+      "after": "sha256:28974b23105b3ce4bc9868279456ac8570b2dad6caeb2440f37bcd913fe341ce",
+      "eligible": [
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-attribute",
+        "domain/glossary/subject-type",
+        "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+        "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+        "rules/knowledge/a-collected-concept-declares-a-ttl"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/build-app.ts",
+      "removed": 32,
+      "before": "sha256:add0d43b1fd600e8c8fe254aa32a3a106a51dca205a3faeb76be3a3690949ceb",
+      "after": "sha256:dd1b4978ece2c6523ec675812ebff9b3d12fac0b7a8042296b2d6aa20807649d",
+      "eligible": [
+        "contracts/glossary/glossary-authoring",
+        "contracts/integration/capability-registry",
+        "contracts/knowledge/case-input-requirements",
+        "domain/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/case-input-requirements.controller.ts",
+      "removed": 23,
+      "before": "sha256:f5d93aa852b62951d0129f3494c485fc89d4051acb625afc607ae0a129f5e11b",
+      "after": "sha256:1768ab4ec58e23e9d4bab3c53e6cf43582b49b17db5e5033dbbaa61655caa575",
+      "eligible": [
+        "contracts/knowledge/case-input-requirements"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/case-input-requirements.routes.ts",
+      "removed": 20,
+      "before": "sha256:ede9119bfb0e701a4fac343c43e93fb6791f8e9273dfa00f849ec56b047f81ed",
+      "after": "sha256:11d7f993c15ad38c1a62e53b24c5d25db88e716a4aac6ddde04e160ed7415a89",
+      "eligible": [
+        "contracts/knowledge/case-input-requirements"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/create-draft.controller.ts",
+      "removed": 29,
+      "before": "sha256:9c285e321446568c1aa8bd662b0e0ebd2a1ca693d598c3173abe4c9511cd5fc0",
+      "after": "sha256:f9a551abce11dd07eaa2c7d690b723b5ca9a10d8a5f8be6b281f6c9b3c45a0f9",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/create-draft.routes.ts",
+      "removed": 29,
+      "before": "sha256:0146705678a042da2b7634cd43befb3f050155b01763673aa4393e9d322a5e00",
+      "after": "sha256:2c985269c05bce7bc91f64c705af7f6583fccf37b12284e963509d059b120b50",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case",
+        "rules/knowledge/a-case-has-at-most-one-draft"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/diagnose.controller.ts",
+      "removed": 34,
+      "before": "sha256:dba594b69fe28158a5098e287cd7281a8dcca02a4cf365244c41887c93e3a87f",
+      "after": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851",
+      "eligible": [
+        "contracts/investigation/diagnosis",
+        "contracts/knowledge/case-input-requirements",
+        "contracts/system/guided-diagnosis",
+        "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+        "rules/investigation/only-a-released-case-version-is-diagnosed",
+        "rules/knowledge/the-contract-check-reads-the-current-registration",
+        "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute",
+        "scenarios/investigation/a-draft-case-version-refuses-diagnosis"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/diagnose.routes.ts",
+      "removed": 13,
+      "before": "sha256:2f86fa537750c573b726e16c360b632f0e5ef29befdedc9ffe6b38768cf48e47",
+      "after": "sha256:941ba62620f7babdaa34998ccbdd5870cdceade802de23c7e604adf9123ed0a8",
+      "eligible": [
+        "constraints/diagnosis-answers-synchronously",
+        "contracts/investigation/diagnosis",
+        "contracts/system/guided-diagnosis"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/discard.controller.ts",
+      "removed": 29,
+      "before": "sha256:0ab0c61763b81940478fd8cda9580f05896ae9f8449a11469c54a0b2a842e354",
+      "after": "sha256:424b941499668ff8344ab39373779a46850672ba2ab873cb53ba9cec43ac1598",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/discard.routes.ts",
+      "removed": 26,
+      "before": "sha256:bbcc3a44d1dc30a665a2e21bf0fefff76f2a8f4602475f49c7d67460dd9034f8",
+      "after": "sha256:e362444445114dda2a91a77d96379275843144127bf7cb5ee4a92a498c3660f4",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version-state",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/case-input-requirements.dto.ts",
+      "removed": 24,
+      "before": "sha256:6cd47b35124bf8c3d48fbc8366c7d4b7f086f5e24ac6882a3effa3b35e280127",
+      "after": "sha256:fe4cdd250d116b4fe9b9d65eb3199b507d441065bbf945995292234b3a5a87a5",
+      "eligible": [
+        "contracts/knowledge/case-input-requirements",
+        "domain/knowledge/case-input-requirement"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/create-draft.dto.ts",
+      "removed": 29,
+      "before": "sha256:851940bb86b74c97bd8397f292b2544c1015b9a3ec49a3611f72ad17e1c2fa1f",
+      "after": "sha256:ac7718bd3529519fd3f45dc2e489175501dd8a5e44b878c219c97034ad21b828",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/diagnose.dto.ts",
+      "removed": 19,
+      "before": "sha256:32183d155420c48997e92cec8b38eabe590494200cca28663bb9a245c9c9c10d",
+      "after": "sha256:0fc7550e137185aaf85d192ed364052829e828436a3d41401f8fc1d60d16fffa",
+      "eligible": [
+        "contracts/investigation/diagnosis",
+        "contracts/system/guided-diagnosis",
+        "domain/investigation/assessment"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/discard.dto.ts",
+      "removed": 14,
+      "before": "sha256:34e233adc29717304ec82641c6413c58d0a489d6691b8eba5afc705ed2157259",
+      "after": "sha256:2879aba3684a9c594452e8412e1162074c8965576354346a2b2abc7f8b88c68c",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-capabilities.dto.ts",
+      "removed": 22,
+      "before": "sha256:c910690f717db95f40ae1ae5b8df7313ad0aafabab1e119e25ce2bda9d32b544",
+      "after": "sha256:1adf91248bce672ff1ea70f876266e34afb3cc4d9d8a59206b4373906d869f0c",
+      "eligible": [
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-case-versions.dto.ts",
+      "removed": 28,
+      "before": "sha256:c53d09f0138e2e225c07d3e0ca26a5224e3e3fb2303673d3209d57741647f78b",
+      "after": "sha256:14f710d1350f33eac599d08844a8b2ee9461a6c098b8f20e1bf6a06e732a2376",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-cases.dto.ts",
+      "removed": 28,
+      "before": "sha256:aadf73f5d438753af776bb8122a2e1046e33f36a75451e5247b5d7a87ea2f95d",
+      "after": "sha256:8b52552ab70b4320057c8d7e49c45e01235b2b3c0dc9115d2f49e6caae14cbe3",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-concepts.dto.ts",
+      "removed": 21,
+      "before": "sha256:6d67b161be8c3ba5cfd4a158b16c69962c3d75afaff9eab4fb35bb3227b7749e",
+      "after": "sha256:1729dac5d88ff522cbb8d025a21ed12ca4e4574bee3c51799c04034686bc168c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-connector-configurations.dto.ts",
+      "removed": 36,
+      "before": "sha256:892a2837e9d9b562f00da2908410f9a7d0108c7653394cdacea8cea31a773198",
+      "after": "sha256:b0cc43d916d128a244a68532435eb27f6c5be410684820098d78a97de72e0de7",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-hypotheses.dto.ts",
+      "removed": 29,
+      "before": "sha256:251348c671f5eaf87973ba117c53229f2959c8c0da9981a958d9e413dbc52cee",
+      "after": "sha256:17646754c4a83cb1d0570ea2db852359c50f5e74bce983d489edea569b2f20c3",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-hypothesis-revisions.dto.ts",
+      "removed": 37,
+      "before": "sha256:ade59e5cac9006e231b811bc1d3727e73f7c935355e8b2820df286be32975776",
+      "after": "sha256:b2f37f8eeaf696bc16cccaeb8405d227a208b6f7e9a0a717b3475ddc31926dac",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/hypothesis"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/list-vocabulary-terms.dto.ts",
+      "removed": 34,
+      "before": "sha256:5af2cd037f61375d89ca7764437f99d7e3fa9f41ca1f54663cc53f234138bb1f",
+      "after": "sha256:39ecee09751e5d01ccfb84437c22e98e93ef293f2ce2b99bff8bc9505af39803",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/place-hypothesis.dto.ts",
+      "removed": 32,
+      "before": "sha256:45609c5e1ea749517b0f1649e7206cc54f8afbbc76192675d530364ae16bf205",
+      "after": "sha256:1bf5ac6dd52a0fb4293abd61465dbad249a8a4f7cb93b3ca9cecdf474284d004",
+      "eligible": [
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-capability-by-identity.dto.ts",
+      "removed": 24,
+      "before": "sha256:830b1afbfde6717cd0d25e051a4fb9e1e3c847efb370d7db8d101caeab5a3677",
+      "after": "sha256:ad50ca4fa6ce85aa92c76e58aed2a21678cc9d07a86d290b448ff06999d39b88",
+      "eligible": [
+        "domain/integration/capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-capability.dto.ts",
+      "removed": 10,
+      "before": "sha256:4a078bb0cb59464cfc6690e677bf086b8e7297a25424436dbc8b2301fbe86261",
+      "after": "sha256:fa1dfa0cb0a90288709a63240289fa601d5617981e1edc0055867519034ea919",
+      "eligible": [
+        "contracts/integration/capability-registry",
+        "domain/integration/capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-case.dto.ts",
+      "removed": 40,
+      "before": "sha256:cdf733ad8b614079e9c6c50099dc932fb9adda6386d2a35f6babe58924fd56a4",
+      "after": "sha256:30c1e4cd7c9c69bf50101774d1b6691a6897d17bd69dad81f18fa75e9f83806e",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "domain/knowledge/resolution"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-concept.dto.ts",
+      "removed": 21,
+      "before": "sha256:97826313959e934484e725f706ad853f7a016db48f2af569925f2f8256199397",
+      "after": "sha256:b917fe57d40f12dd00f73a1891dd5b42850c4539af4b4560d8e0f7dc5db29258",
+      "eligible": [
+        "domain/glossary/concept",
+        "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-connector-configuration.dto.ts",
+      "removed": 28,
+      "before": "sha256:2c791e53e9743743701dc1bae90babddc6efc24200939e00f6e7c792a2b3e11e",
+      "after": "sha256:fc7cc10c691ed4532c277d42a3b086349306f99f845e02cac8a05ffffb652a97",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/read-vocabulary-term.dto.ts",
+      "removed": 17,
+      "before": "sha256:d41c97d643a8b7230ae5c65126ff5b3c7c3d60f17d9df85b64fac92f1d5d723b",
+      "after": "sha256:562bfd4cf63edb094956957d2bdf4e04f6b7d207c53ccd3b908cca459eaca101",
+      "eligible": [
+        "contracts/glossary/glossary-query",
+        "domain/glossary/action",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-attribute",
+        "domain/glossary/subject-type"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/register-capability.dto.ts",
+      "removed": 52,
+      "before": "sha256:71f83e82ad0f36452922404c233ea5d302420bb1e684ce1be43c63ce80c45259",
+      "after": "sha256:1b4f7cae0a7f11c2feb0f97434c1cf60233d4992235b66b23bea4e727f909604",
+      "eligible": [
+        "constraints/a-malformed-request-is-refused-with-a-validation-error",
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/register-concept.dto.ts",
+      "removed": 47,
+      "before": "sha256:6fb0735f1e272e76820e541bb0969345bd375de4c45c4b0a7062856307255d56",
+      "after": "sha256:c9b6707f45573fa2cc7e8ad06a39e306faef8787915efaecd61c8743e54a3a83",
+      "eligible": [
+        "contracts/glossary/glossary-authoring",
+        "rules/glossary/a-concept-declares-its-description"
+      ],
+      "stale_before_sweep": [
+        "domain/glossary/concept"
+      ]
+    },
+    {
+      "path": "src/http/dto/register-connector.dto.ts",
+      "removed": 34,
+      "before": "sha256:d535a049d4f93f714411fbf8fbefae1b0f95c836af8d9ae6cbedf902c2badc95",
+      "after": "sha256:8f6ed2718f71e01071ae9391e61759167cc2254fb9ad0334c4518548f90c382e",
+      "eligible": [
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/release.dto.ts",
+      "removed": 14,
+      "before": "sha256:5c6d81b1e107e364cc6db38b16f496076d9712efec1db540e2b59b96374ca4c7",
+      "after": "sha256:39c6bb5c36110d2f62a7f04bd7609bb29bc76eddac98866daf6410987358b27c",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/remove-hypothesis.dto.ts",
+      "removed": 19,
+      "before": "sha256:ff0fa12e3af41964dd3d1c085363a0220490f7947c3b428c330038a6f842b54c",
+      "after": "sha256:43ea7db3cb1bf210d83f6521376de3bb91859991864a01ef4a25d2a5f03c7b81",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/manifest-entry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/revise-hypothesis.dto.ts",
+      "removed": 46,
+      "before": "sha256:1dbb68763074d2fc62899aa1e4143762dca6f66a630d664daef6a0d4233373b8",
+      "after": "sha256:ffa7a4ee2503ee1ffb5c36b10643e87b612afbda71cb13b3563fc61819848175",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/resolution"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/simulate-case.dto.ts",
+      "removed": 46,
+      "before": "sha256:51ea2aa6871db748a43b73fbd32f4830939f5d934bdc52f827cbcc67fa5b8ea5",
+      "after": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99",
+      "eligible": [
+        "contracts/investigation/case-simulation",
+        "domain/investigation/assessment",
+        "domain/investigation/citation",
+        "domain/investigation/cost",
+        "domain/investigation/durations",
+        "domain/investigation/evaluation",
+        "domain/investigation/evaluation-reason",
+        "domain/investigation/evidence",
+        "domain/investigation/evidence-result",
+        "domain/investigation/subject",
+        "domain/investigation/subject-attribute-value",
+        "domain/investigation/usage",
+        "domain/investigation/verdict",
+        "domain/knowledge/referral",
+        "domain/knowledge/resolution",
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/simulate-hypothesis.dto.ts",
+      "removed": 40,
+      "before": "sha256:0796fddc79088e2aef0647c525646ba77c15ba12af23e169ca7366b31254f66a",
+      "after": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb",
+      "eligible": [
+        "contracts/investigation/case-simulation",
+        "domain/investigation/citation",
+        "domain/investigation/durations",
+        "domain/investigation/evaluation",
+        "domain/investigation/evaluation-reason",
+        "domain/investigation/evidence",
+        "domain/investigation/evidence-result",
+        "domain/investigation/subject",
+        "domain/investigation/subject-attribute-value",
+        "domain/investigation/usage",
+        "domain/investigation/verdict",
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/test-connector.dto.ts",
+      "removed": 56,
+      "before": "sha256:64fcb2ea2ff9305a1e88b55e478f22e1ec793899728a9b7a1981e6fc9b8a553c",
+      "after": "sha256:244666dc5497d1913a3dc5f4952fc374cc6345e36c4e1bf5fcd8f0739323c38b",
+      "eligible": [
+        "contracts/integration/connector-diagnostics",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/dto/update-draft.dto.ts",
+      "removed": 39,
+      "before": "sha256:72d498198d2cf6cef62a9cb1a0276cfa8a3ddb89ab4aab0c9732c6f46320eb8f",
+      "after": "sha256:b09e0fd91ef6c6e39a21845c702741262bdb9b33a8f8285482c828507ce8a8f8",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "domain/knowledge/consolidation-register",
+        "domain/knowledge/resolution"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/error-handler.middleware.ts",
+      "removed": 23,
+      "before": "sha256:2ca5e23c3f22958e9a4a7236e47efe7848c3795ebcd7f9fb786f2ba03288ced1",
+      "after": "sha256:74e7a4876f61fa209646960caa30dfb04fe691ae5df8cea13e860702ded7ad1b",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-capabilities.controller.ts",
+      "removed": 23,
+      "before": "sha256:62011d396ff589677df1c917a3f4547d3e205a949c38371e7667998e281ee731",
+      "after": "sha256:60f08ccb262f0b65ec5992119f8d876c434be5daf8e1d28e10297c4a69b6b459",
+      "eligible": [
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-capabilities.routes.ts",
+      "removed": 16,
+      "before": "sha256:c437a210cbb0744d301cb2cff4e9cefb7f7f5dbc5d187f408f3f5c6e5719c6f4",
+      "after": "sha256:f9c44b627cdbdefbfe8de33c2fc67341f7fc2e778eb4a25135e087bed0c6d9d0",
+      "eligible": [
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-case-versions.controller.ts",
+      "removed": 29,
+      "before": "sha256:a395ee75646ad101821bc9dc88c74bfef6f99b9dd82b682cc59f9e831d86d565",
+      "after": "sha256:408dae16b7d9669837d7e00b5a5a514c5a39d7c676c55e485a845266ee5379f6",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-case-versions.routes.ts",
+      "removed": 20,
+      "before": "sha256:422372ba3e76fe0905c82bee02d2b5cffa046875994e792ab0cc4e88314af4bb",
+      "after": "sha256:c5293fe311ac63af27f73d5b7cdc10b42f827ee16cf1cc732b01157724ab7b12",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-cases.controller.ts",
+      "removed": 27,
+      "before": "sha256:30d76f01d9521d4a84bd687de21aff268117aab1b6ebbf9b743a4391195d9136",
+      "after": "sha256:3ad506c276f40b7b0eb7e3a01c46bcc9cf5de54b2674538c8355fe3f1cfe2ee7",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-cases.routes.ts",
+      "removed": 18,
+      "before": "sha256:7122f3c0ee44b51b86d9c8c7c0ec9ff9f8f6fae7940478615a0e9ab73c28d444",
+      "after": "sha256:5cbd1d9831dfe1eee5a75117e2de069edaad748d09d9beb2ed7f766c6c62ddc4",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-concepts.controller.ts",
+      "removed": 23,
+      "before": "sha256:15f869ab7a7229cc4d4ca97ca9aa77811e8521681603bdc7e9295f4565cd0692",
+      "after": "sha256:a028965ca5bacc96b26dc241ebf0674efa35bcfc996a50a90ac34837f81a287d",
+      "eligible": [
+        "contracts/glossary/glossary-query",
+        "domain/glossary/concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-concepts.routes.ts",
+      "removed": 16,
+      "before": "sha256:40aa6350852d976b1d267ee49aa1ff60b9dc4cf0180dac36b50a2279ff53b273",
+      "after": "sha256:33cf37cb73fa59a46a77f7da097c28a766f2150dfd4940d286a6140bfc3e76b6",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-connector-configurations.controller.ts",
+      "removed": 46,
+      "before": "sha256:ed2b4f1a729090c5edd6108485f845a38838de399f4b89021eb9a690150d7ca8",
+      "after": "sha256:84833702d0a72e09977267cb9ea7f77dd90d309617adc7f9cf1b39e2a3b00331",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-connector-configurations.routes.ts",
+      "removed": 27,
+      "before": "sha256:4fed3787c5d0de747989250b2f592188da6d6bb2fc8a2f1dd9943a00acc305cd",
+      "after": "sha256:c2a6cfb2aba0f75318e1d79e591107f4f5c52ca297c67a8b060bef020f0254f9",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-hypotheses.controller.ts",
+      "removed": 29,
+      "before": "sha256:6542a783bbb15c832b77c1778a27170251492c572a09eeed37a356ba5bc9f069",
+      "after": "sha256:6e99edd441efdcac108311685507800843348a320748970c1c9f05e5c595bfaa",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-hypotheses.routes.ts",
+      "removed": 20,
+      "before": "sha256:eab4aefc154efdfa3aefe6f5e59ba9f32e0dab39d120ce38d2038f79df544a21",
+      "after": "sha256:5496d83dde5aca8f56da01fd079eab93f8069f64d2aba69abe7ca9c9f152725d",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-hypothesis-revisions.controller.ts",
+      "removed": 36,
+      "before": "sha256:215d28ba1cc8cb674ea99ada840cb884c889beed49fada5fce355aaa43d473aa",
+      "after": "sha256:8d5d0e39b904b6e5a61c985d07b19e1e7427ba2344cb8572a9af71551346fffe",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-hypothesis-revisions.routes.ts",
+      "removed": 28,
+      "before": "sha256:f20ed77a0f501427e398b5bc5b762f3e91fe4fd46975c6a9c7cbf80deff60376",
+      "after": "sha256:35789a0a2afe07c2d6ba9f29d04a0440dbd7f09002d9b97663a6a3a55fe3628d",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-vocabulary-terms.controller.ts",
+      "removed": 26,
+      "before": "sha256:2e9b79ba35c25d7015308a0d272e79992e1bb484c4c8e0348f323aa393702d29",
+      "after": "sha256:c1be029aac38a99584f10e3043883c33c7ca70089105a283d724a70c1a5906df",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/list-vocabulary-terms.routes.ts",
+      "removed": 33,
+      "before": "sha256:b1bdbd20bcd5a64898ade128d52c49c8dd48665a106b362b034db69757a6e1f0",
+      "after": "sha256:51a7422ac8efefe6a2ab98a1883578afbdae64032777386b799b24663e9d56e2",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/place-hypothesis.controller.ts",
+      "removed": 38,
+      "before": "sha256:03b00077737b056bcd160917ee7c94c81593929de9a449c9924c45d9205aedb1",
+      "after": "sha256:3deb54dccacfcb2d0003189888251eb104727faaeae641a5d6f87465977de39c",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/place-hypothesis.routes.ts",
+      "removed": 30,
+      "before": "sha256:1148b9f1b0a777401028d8f4195a58e106d0fc3c61db3160f2c1ead9fa65bc17",
+      "after": "sha256:8211dee1e91cfb8d38f4f16177f8dff5eafdef3e4ec7d99f0f2d3a0a8a0ac639",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state",
+        "rules/knowledge/a-case-version-is-written-once",
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-capability-by-identity-rate-limit.middleware.ts",
+      "removed": 60,
+      "before": "sha256:146b3a2d061e379d78515439d244bf33e36c042496cc7f73b41283a4fdf1a61e",
+      "after": "sha256:84eb8623d7fb5d1be91513b5f80ee5c21710bc51627d1687a20734e6b2edf1e0",
+      "eligible": [
+        "constraints/the-capability-identity-read-is-rate-limited"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-capability-by-identity.controller.ts",
+      "removed": 44,
+      "before": "sha256:df2431ee454af8720ece7e284218916385d5a5031e342bad6d906144eed0bf2b",
+      "after": "sha256:0bb0c7da926651d101d91edd64c88b454f795ce235af9efcf70b04323cc69b66",
+      "eligible": [
+        "constraints/the-capability-identity-read-refuses-an-unregistered-identity",
+        "contracts/integration/capability-registry",
+        "domain/integration/capability"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-capability-by-identity.routes.ts",
+      "removed": 40,
+      "before": "sha256:e0c86312463798f63a2248f9b77e835f0b8c06cf2755207ed5e0dc13578cfe20",
+      "after": "sha256:14bd81853cfd6b7709e2ddc0d7bac067d90a622b72d19b140c08ee73a3c694c6",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "constraints/the-capability-identity-read-is-rate-limited",
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-capability.controller.ts",
+      "removed": 17,
+      "before": "sha256:ccefe195e0bab09d970de14ab0432877d22572c2fcb5fb7467e7ec1c487344fd",
+      "after": "sha256:e706b10dfff61205555b3ac3efb1a58b725ddfea771d1cdff749a25b3005e812",
+      "eligible": [
+        "contracts/integration/capability-registry",
+        "domain/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-capability.routes.ts",
+      "removed": 14,
+      "before": "sha256:9c7c34dd54d3103483bf0f0e806de0abefd6fe60008ca177cfdda6b4085c5170",
+      "after": "sha256:3d988b1717ecf8efc3ddfcc44f2d585ef7ebfeb616988607265d079b79c6d45c",
+      "eligible": [
+        "contracts/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-case.controller.ts",
+      "removed": 22,
+      "before": "sha256:dbc5e2ef19ede27dc1809798f2382117bd2d7d9e28f39923e31809391df2fd87",
+      "after": "sha256:3a835f1bde38926e9e204de38e3531e0fe32e65e84bca3356e9451e2de000e5e",
+      "eligible": [
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-case.routes.ts",
+      "removed": 18,
+      "before": "sha256:5bb5fe6e9d397c71b60032428098a319de61710c85c75f45a143357168d7608a",
+      "after": "sha256:5c24f89af8de6525e8aa1b5aefb44addc45b362aba0fc9a77c8f2136ab0efbce",
+      "eligible": [
+        "contracts/knowledge/case-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-concept.controller.ts",
+      "removed": 18,
+      "before": "sha256:d53319a752558c8ef5d99043f82e80c9dcba03c8938387685db6a975e380d9e4",
+      "after": "sha256:e460e2ad8ddbe419729f3e6b0e99cde28136047905c6f71f4bd117cd72082a80",
+      "eligible": [
+        "domain/glossary/concept",
+        "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone"
+      ],
+      "stale_before_sweep": [
+        "contracts/glossary/glossary-query"
+      ]
+    },
+    {
+      "path": "src/http/read-concept.routes.ts",
+      "removed": 14,
+      "before": "sha256:7ddbfa35382dd5306f12eeb5086f64642ae7a46c53a68ebd8b113b3d136ca7c8",
+      "after": "sha256:9e862b2739672937f49add40519fd4eaa67911e398c71bbca0615648fd9b5fb5",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-connector-configuration.controller.ts",
+      "removed": 61,
+      "before": "sha256:205e5ae5a44d6f5b9418662e57f1a8826b2230b8c89f5091ed6621f9498b7a88",
+      "after": "sha256:c436adb4c19b0608cd637f2d2d1899b1e2d6bc041d78f687114ac98454a747ed",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration",
+        "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-connector-configuration.routes.ts",
+      "removed": 23,
+      "before": "sha256:2ca2e764472bb015c8860b44b7a6630ff27f3a083fc3b622c3206391707646be",
+      "after": "sha256:822c66d997856f7afb376bfc27f4bffe83ef02f647ce5f19dc1cdb6014691553",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-vocabulary-term.controller.ts",
+      "removed": 19,
+      "before": "sha256:bd29783cd5d422ce20df6029e13cc3bbedc1004f0d3663f26e65651766401b1e",
+      "after": "sha256:e9600bc404703f9fa9ccf858cfebaa0f5bd522e5e5a62787378ccdea1b2ee6b1",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/read-vocabulary-term.routes.ts",
+      "removed": 15,
+      "before": "sha256:b665972cd8c3b4966a13cb8202e4939c6e37b3743bbfc7a65e8119a99b927f9d",
+      "after": "sha256:54a6e938e7345ac71a77b56ae592fe821848945921bf209593b3fea89a9011dc",
+      "eligible": [
+        "contracts/glossary/glossary-query"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-capability.controller.ts",
+      "removed": 25,
+      "before": "sha256:0c3327166b6aa2ae2924cb578c21c1cc8024d2deca281424ba66b9295c0edc9d",
+      "after": "sha256:4826f87ce6895b5ce38dcee55da76ac7c79e850289fd15cfabdba603affdd235",
+      "eligible": [
+        "contracts/integration/capability-registry",
+        "domain/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-capability.routes.ts",
+      "removed": 40,
+      "before": "sha256:f1ee8bd008d4bff3c26358c91d543079e1ea98c76868b69d078178fa4d3fdec8",
+      "after": "sha256:5f558308eab1cc4e9226813f5e30e259b23ee2c2039adba7b280159c1b11ebd2",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/capability-registry",
+        "domain/integration/capability-registry"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-concept.controller.ts",
+      "removed": 19,
+      "before": "sha256:7f17a7b898ca46d8b1245bc94db95510babc0ad00c1a3030b93bcb6e10bd23f5",
+      "after": "sha256:e6cf48945efbe85ae8f10cdc63ee8034b42ab6d2a3d5f5eb5d8ca6890ca06215",
+      "eligible": [
+        "contracts/glossary/glossary-authoring",
+        "domain/glossary/concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-concept.routes.ts",
+      "removed": 33,
+      "before": "sha256:390f4120bdf6132b0804f85739b39572fa35131ad4c439c4cd442dc68ab6f8c3",
+      "after": "sha256:ee5fc5ef64218ac51be2b98cf31e2b195f3faef79cac972125e155464aa68952",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/glossary/glossary-authoring",
+        "domain/glossary/concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-connector.controller.ts",
+      "removed": 22,
+      "before": "sha256:3687d1e9775aa3b0607e9f9ba9ba06c23807f2c18eab7d22600ac18d4809cfe8",
+      "after": "sha256:47e3e768c900d2fe2d9792b15cc51c93b32ca70bb5a822a16b39442968df39b9",
+      "eligible": [
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/register-connector.routes.ts",
+      "removed": 39,
+      "before": "sha256:8d30544fab101cfe95ddccc81dc1a204d9a7cd9760cdf11ccb878ace9971529b",
+      "after": "sha256:8bfb72faee47566996c6e6af04aeb046f8a7a42cb922c6b2af9e36c5dbcc701b",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/release.controller.ts",
+      "removed": 38,
+      "before": "sha256:d62348ac9670573410ae72c984b920f0a39234baf0b7460fc1bed41e89fa25fc",
+      "after": "sha256:eb92b2dbeaacdd3de40128359cc9d59dac4f9035b058e9dc460ac65276d7b982",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/release.routes.ts",
+      "removed": 22,
+      "before": "sha256:c57c39227fff91fbdfaae5499d13e6038bd5ee56dd5b851b44a9d2e19b60ebe0",
+      "after": "sha256:a5f05943bc2acb80cff05228c05f5016bacd7c346d77a18365be9b5abeea6365",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version-state",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/remove-hypothesis.controller.ts",
+      "removed": 32,
+      "before": "sha256:266ab4c644f63101b0c40c4fa9eb1ae1f61de748de07effbb69ca033bb4596f9",
+      "after": "sha256:3cbf8440f94a85a82a2a2c809e4c80634eda9d4e18a456523ad7e93ed072dcd5",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/remove-hypothesis.routes.ts",
+      "removed": 25,
+      "before": "sha256:6bd04ab788649b9a37c59d233f35d6057b67e83086424a8138627f8118c7a869",
+      "after": "sha256:5555ba9b8c89f714499fe0c1578a1edef50f0328e854d6496de88191750e91b3",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version-state",
+        "rules/knowledge/a-case-has-at-least-one-hypothesis",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/revise-hypothesis.controller.ts",
+      "removed": 38,
+      "before": "sha256:6c4c0d9c09a489f53067d4f0ce8822de1b2e12e3328239c81dd0be5729c441fa",
+      "after": "sha256:8b0ef8567ee1905b3183d912a1516822e97d8ce7911cf175d32d8803e8530eb2",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/revise-hypothesis.routes.ts",
+      "removed": 29,
+      "before": "sha256:2844f78c9e9979d2ce36520b1c36fa65cc82a5b30463ac9ab4c08a1a6d1202df",
+      "after": "sha256:65522e2287346754e964341090f644358c34cc04308977c97dfd0885645adfee",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/simulate-case.controller.ts",
+      "removed": 38,
+      "before": "sha256:116ef1b79080cdd0173a286e92f84f1f2cc7e8327636580539016045960d7f77",
+      "after": "sha256:ebabebf7ff171d1bd315a5a2acae3cfb57bd62d99564f26d8a4fcf7aed4b470b",
+      "eligible": [
+        "contracts/investigation/case-simulation",
+        "domain/investigation/subject",
+        "domain/knowledge/case-version-state",
+        "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+        "rules/investigation/a-subject-carries-at-least-one-attribute",
+        "scenarios/investigation/a-draft-case-version-is-simulated"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/simulate-case.routes.ts",
+      "removed": 15,
+      "before": "sha256:724c5fe88f11012f2e51428eb620898b9b6ac7a1f29e8326d77c6d6f41d6438b",
+      "after": "sha256:3864e3581952ffcd471d9ca5d8941b38cb56ba81945c1e62ca70985d4672486b",
+      "eligible": [
+        "contracts/investigation/case-simulation"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/simulate-hypothesis.controller.ts",
+      "removed": 36,
+      "before": "sha256:7a17023cb6a035b5063195398671fe72998b83188f3ea0bc7450db5efa1411ae",
+      "after": "sha256:47395760c00daf932c747e221ef97330e6dd27c88dc24e307a3796d06bc0863c",
+      "eligible": [
+        "contracts/investigation/case-simulation",
+        "domain/investigation/subject",
+        "domain/knowledge/case-version",
+        "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/simulate-hypothesis.routes.ts",
+      "removed": 17,
+      "before": "sha256:908547f4bba3fded23026d7fb0e6ffc2b949b1b70febe6946fd2fa2453de6f72",
+      "after": "sha256:0eb9cfb2f9c73c1e052b3b4d3917bcec8e179a7a66c234a1cedb7c88c5168b4c",
+      "eligible": [
+        "contracts/investigation/case-simulation"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/test-connector.controller.ts",
+      "removed": 71,
+      "before": "sha256:71c05a44c12b07fdb0c7185c7df407b9d629cde3ded2aee697ee068967c3ac3f",
+      "after": "sha256:cf1a0eb31604bf558be04afcdb3a0abb21ff3f1ffe42774c742b54b84d962101",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/connector-diagnostics",
+        "domain/integration/connector-configuration",
+        "rules/integration/a-connector-configuration-is-tested-through-a-registered-capability",
+        "rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "rules/integration/a-diagnostic-response-masks-a-resolved-credential"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/test-connector.routes.ts",
+      "removed": 25,
+      "before": "sha256:35ffe0e3a85fe2f3d577f05977a62787530a3e8224d3a0dde69c54a8a0983973",
+      "after": "sha256:d4e41d3cbbe62f22acbf5139c45fc7a8b766d3aba2db7dd2ca7e03ab9f5b52af",
+      "eligible": [
+        "constraints/no-route-enforces-authentication",
+        "contracts/integration/connector-diagnostics"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/update-draft.controller.ts",
+      "removed": 39,
+      "before": "sha256:ea9451aa5b546156203e3654bfdf9cdebf79842941f0e8fb11cb05b8a68a0e68",
+      "after": "sha256:d0f600276072de1339f8d4c0a0426affbb91f745fe94c8f29a8b82da6416ee47",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http/update-draft.routes.ts",
+      "removed": 20,
+      "before": "sha256:35e91689a9ffd111eca330d86b3be9b4cc01608e4b3711b9b07102184e7c1734",
+      "after": "sha256:6108ce9908dea71d2d8d551a8ff63a7c1c579e5d89c289a4b075bf0ae7cbc682",
+      "eligible": [
+        "contracts/knowledge/case-lifecycle",
+        "domain/knowledge/case-version-state",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http-connector/connector-call-descriptor.ts",
+      "removed": 25,
+      "before": "sha256:10cb7db68036e610050ed472e5bc0442fd25a3727e68dd457f7ddeb71fbe644d",
+      "after": "sha256:b06b70a7d9e845179b903b269158bfe59a59e2219b919049c9c83baf17d83df2",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/system/corporate-records"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http-connector/connector-http-issuer.ts",
+      "removed": 21,
+      "before": "sha256:d541ff2f51f89317f964d34d045d7773e71cdf5f1c60655bfcea55a5a0fd01ae",
+      "after": "sha256:628aba8c83efa87821ee63a87adbad5fef57be1d6b47f6d8f91d2e6ac569e53c",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http-connector/connector-request-resolver.ts",
+      "removed": 57,
+      "before": "sha256:ffbaccd4ac152636a1476158c7a256b35e5f28725c66476054da85008bf7b28d",
+      "after": "sha256:9fd84075994aab944bd949950bc70e0ad16135fd1cf55c38ee8f262f51e57e0a",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/integration/concept-observation",
+        "contracts/integration/corporate-records-source",
+        "contracts/system/corporate-records",
+        "rules/integration/a-connector-placeholder-is-declared-by-its-capability",
+        "rules/investigation/collection-runs-in-the-requester-scope"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http-connector/http-connector-call-configuration.ts",
+      "removed": 24,
+      "before": "sha256:ff62dc0d6c91e7b3a83bb0f90108b4ff82a27430e5fb1d453be5f9acf92dea8b",
+      "after": "sha256:86d0651e94f310893fd0270fc4f7a2237b1a8c10c55a9ba77d0b4a4992670b6d",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/http-connector/response-path-extractor.ts",
+      "removed": 49,
+      "before": "sha256:326ff6865e475491e76623c834becc97941244ebe759ac6aec7f37e5225dcb59",
+      "after": "sha256:81575389eb0d6c1e459bba954f59a484de7d2e9a45ef15844d343156de53e8ba",
+      "eligible": [
+        "constraints/evidence-normalization-is-an-anticorruption-layer",
+        "rules/integration/evidence-arrives-in-the-glossary-vocabulary"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/index.ts",
+      "removed": 5,
+      "before": "sha256:bb3ecf3a12b26b84ba08a7171bd6f28380013b3602c79527f9c4f8a818a17ae0",
+      "after": "sha256:b05d5bf98fc79e8b4d664cdaa3062ec73d417eee65a18347f7e194696e457201",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/anthropic-assessment-consolidator.adapter.ts",
+      "removed": 49,
+      "before": "sha256:dd7d946a72f40e632efd551468098d7bf12d01267a1af794978f801d23bd5e2b",
+      "after": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2",
+      "eligible": [
+        "constraints/consolidation-runs-behind-a-port",
+        "constraints/the-consolidation-prompt-is-closed",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/assessment",
+        "domain/investigation/assessment-consolidator",
+        "domain/investigation/usage"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
+      "removed": 71,
+      "before": "sha256:4bc0b74b3c41d5aa8f3b60cf7eb6d2868262f151485b1eea89a3097b265b0dcf",
+      "after": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876",
+      "eligible": [
+        "constraints/judgment-runs-behind-a-port",
+        "constraints/the-judgment-prompt-is-closed",
+        "domain/investigation/usage",
+        "rules/investigation/a-decided-evaluation-cites-evidence",
+        "rules/investigation/judgment-does-not-infer",
+        "rules/investigation/judgment-reads-the-evidence-snapshot",
+        "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone"
+      ],
+      "stale_before_sweep": [
+        "domain/investigation/evaluation",
+        "domain/investigation/hypothesis-evaluator",
+        "rules/investigation/an-inconclusive-evaluation-declares-its-reason"
+      ]
+    },
+    {
+      "path": "src/investigation/assessment-consolidator.port.ts",
+      "removed": 25,
+      "before": "sha256:72743542e9f02838df17652d0d1c66401bd169e24b3d3e3b76ef6f1c64918728",
+      "after": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104",
+      "eligible": [
+        "constraints/consolidation-runs-behind-a-port",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/assessment",
+        "domain/investigation/assessment-consolidator",
+        "domain/investigation/evidence",
+        "rules/investigation/the-outcome-comes-from-the-case",
+        "rules/investigation/the-writing-input-is-narrowed"
+      ],
+      "stale_before_sweep": [
+        "domain/investigation/evaluation"
+      ]
+    },
+    {
+      "path": "src/investigation/assessment.ts",
+      "removed": 13,
+      "before": "sha256:6599d1bf795e1432ca390ad0ea8bdf25088de29962f51544d833206204b83cd1",
+      "after": "sha256:8aecd978a8553fe5c0e57b1de8c8909d183b3e55d9f9119b221dc9f15c7b3c2e",
+      "eligible": [
+        "domain/investigation/assessment"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/citation-validation.ts",
+      "removed": 27,
+      "before": "sha256:7d6fb1b6b2dce7415bd2f56774e8a714f3159611c030cbb078c822886c5f1c3c",
+      "after": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00",
+      "eligible": [
+        "domain/investigation/citation",
+        "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+        "rules/investigation/judgment-reads-the-evidence-snapshot",
+        "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment"
+      ],
+      "stale_before_sweep": [
+        "domain/knowledge/hypothesis-revision",
+        "rules/investigation/a-citation-stays-within-the-hypothesis-collects"
+      ]
+    },
+    {
+      "path": "src/investigation/citation.ts",
+      "removed": 6,
+      "before": "sha256:be1f1d556382f766cc70b8926f3b959ed9dfbb73cdb3018fa198fdd96a9b8172",
+      "after": "sha256:c0f71b5ca0440b4f8b6df0a939f23bf7f6758ccbe3c71a3d2e91ff90459ca2b0",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/consolidation-register.ts",
+      "removed": 16,
+      "before": "sha256:ab9b2313ddf062c518411ad21f5356e682d5987b24cca7139822d7c892f9dd82",
+      "after": "sha256:84f7e620674b018b07921cb02ecb4c15b35fa57029e7e78171f128820af7c559",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/knowledge/consolidation-register"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/cost.ts",
+      "removed": 3,
+      "before": "sha256:769bf6383aafb8e5f8d89a5dfdcefd3ab4af17c447125ffd3092bd0fa364b647",
+      "after": "sha256:9cbc8f106204fa79d346580c424ff17316ddeb4d1410f72fbc5e89b1c3d4e609",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/cost"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/draft-assessment-text.ts",
+      "removed": 48,
+      "before": "sha256:8e69b5fbd3ac052036b2cb55e07d23de1b5901d3d92c33d024a7570f3e9fa0ff",
+      "after": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9",
+      "eligible": [
+        "constraints/consolidation-runs-behind-a-port",
+        "domain/investigation/assessment-consolidator",
+        "domain/knowledge/case-version",
+        "domain/knowledge/consolidation-register",
+        "rules/investigation/the-outcome-comes-from-the-case",
+        "rules/investigation/the-writing-input-is-narrowed"
+      ],
+      "stale_before_sweep": [
+        "domain/investigation/assessment"
+      ]
+    },
+    {
+      "path": "src/investigation/durations.ts",
+      "removed": 4,
+      "before": "sha256:5bc4f4438f4b56c443846d872af3c607af4101580442e715af913264f47de794",
+      "after": "sha256:d3fa7017ff9041175a8cb8eb79a8c16d3502d22b6c875938a7d78de4a891424b",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/durations"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/evaluation-reason.ts",
+      "removed": 8,
+      "before": "sha256:e44e40daf5e6b2b1f84dbe95df87266c4549ac82c32a64c21030dd366bd1ebed",
+      "after": "sha256:8c7626a1cc353ee667ec1f865f65d61858f0aa4882621739c1b5343d93b5a194",
+      "eligible": [
+        "domain/investigation/evaluation-reason"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/evaluation.ts",
+      "removed": 20,
+      "before": "sha256:46f09a5cc3dc509104d443217331620ba1c967e524a9407a677409af96452b74",
+      "after": "sha256:bcd999459da43662a39a22d2c655bd794eabc78b79e2421ff6194390ef74d921",
+      "eligible": [
+        "domain/investigation/evaluation",
+        "domain/investigation/verdict",
+        "rules/investigation/a-decided-evaluation-cites-evidence"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/evidence-collection-stage.ts",
+      "removed": 53,
+      "before": "sha256:5b1adaf13b6ac078b181425b02619bce98534ec0de7176facfa6cee9b3a7177f",
+      "after": "sha256:a4e391cd3786eb83c0c8051d1dab289da766ba34bb71511478dbd2396e3ab90a",
+      "eligible": [
+        "contracts/investigation/observation-source",
+        "domain/investigation/evidence",
+        "domain/investigation/evidence-result",
+        "domain/investigation/field-semantics",
+        "domain/investigation/subject",
+        "rules/integration/an-unresolvable-observation-ends-unavailable",
+        "rules/investigation/collection-has-its-own-budget-within-the-total",
+        "rules/investigation/collection-runs-in-the-requester-scope",
+        "rules/investigation/one-evidence-per-collected-concept",
+        "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+        "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget"
+      ],
+      "stale_before_sweep": [
+        "constraints/the-deadline-is-an-absolute-propagated-instant",
+        "rules/integration/an-http-connector-configuration-declares-its-call",
+        "rules/investigation/no-stage-aborts-on-its-deadline"
+      ]
+    },
+    {
+      "path": "src/investigation/evidence-result.ts",
+      "removed": 6,
+      "before": "sha256:568cea3f8c827646743d4b3dea5747fdc52d30d4fbd63f9db06c1034c8e57661",
+      "after": "sha256:d3d4fbf8d154bafbd8c4ad053bc86d773778d24cce5416edbb8583c40bcf1a54",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/evidence-result"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/evidence.ts",
+      "removed": 17,
+      "before": "sha256:338967b6e8d5f759cadc40c6c294cab84a327726ff702bd645d23cc8bbbf5f3c",
+      "after": "sha256:ccb4823cce5005a2ade898ba771e53a0ff8812802c9ae6d8e4b83fbf5683db7f",
+      "eligible": [
+        "domain/investigation/evidence"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/fake-assessment-consolidator.adapter.ts",
+      "removed": 28,
+      "before": "sha256:041cf6e98b6a48b40fadeebf67d4a24764d6700231a3291d7863897d1dd236d7",
+      "after": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e",
+      "eligible": [
+        "constraints/consolidation-runs-behind-a-port",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/assessment",
+        "domain/investigation/assessment-consolidator",
+        "domain/investigation/evaluation",
+        "domain/investigation/evidence",
+        "domain/investigation/usage",
+        "rules/investigation/the-outcome-comes-from-the-case"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/fake-hypothesis-evaluator.adapter.ts",
+      "removed": 23,
+      "before": "sha256:e4bf8f311897ddc4f73f97944e03e2188e6e2aa796f845686880e54a1209a82f",
+      "after": "sha256:bea520100d95b091dd84e2ad3040bdd426b69c7b8b8420b7160524a3b735f96d",
+      "eligible": [
+        "constraints/judgment-runs-behind-a-port",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/evaluation",
+        "domain/investigation/usage"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/fake-observation-source.adapter.ts",
+      "removed": 10,
+      "before": "sha256:32e6640ef593788166d09c140af464c87eead13e30c595d9ddcda8ea5cc62832",
+      "after": "sha256:96add48e39ba5954ff4b38c8e3871aa02b280bc714defaba2182e68105e669e3",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/integration/concept-observation",
+        "contracts/investigation/observation-source",
+        "domain/investigation/evidence-result",
+        "domain/investigation/subject",
+        "domain/investigation/subject-attribute-value"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/field-semantics.ts",
+      "removed": 19,
+      "before": "sha256:ff778210f58356f24bc9069921c854a5877b2e4bb34f6d627c0da3cdfdac470b",
+      "after": "sha256:ec8e302d1b434a27610bf7ce6daf18b552709618557fbbcc6051a0fdc623c9e7",
+      "eligible": [],
+      "stale_before_sweep": [
+        "domain/investigation/field-semantics"
+      ]
+    },
+    {
+      "path": "src/investigation/http-declarative-observation-source.adapter.ts",
+      "removed": 82,
+      "before": "sha256:c1a73911c6762ba9dce186c72f464a56ded355aea6e766ae053e02ac1f133551",
+      "after": "sha256:b5cad73f45a967326a23e281be28d2a0983ef21a83f032a9178194210e483035",
+      "eligible": [
+        "constraints/evidence-normalization-is-an-anticorruption-layer",
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/integration/concept-observation",
+        "contracts/integration/corporate-records-source",
+        "contracts/investigation/observation-source",
+        "contracts/system/corporate-records",
+        "domain/integration/capability",
+        "domain/investigation/evidence-result",
+        "rules/integration/an-http-connector-configuration-declares-its-call",
+        "rules/integration/an-unclassified-status-ends-unavailable",
+        "rules/integration/an-unresolvable-observation-ends-unavailable",
+        "rules/integration/evidence-arrives-in-the-glossary-vocabulary",
+        "rules/investigation/collection-has-its-own-budget-within-the-total",
+        "rules/investigation/collection-runs-in-the-requester-scope",
+        "rules/investigation/no-stage-aborts-on-its-deadline",
+        "scenarios/integration/an-optional-attribute-absent-degrades-its-observation",
+        "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+        "scenarios/investigation/a-slow-capability-yields-to-the-collection-budget"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/hypothesis-evaluator.port.ts",
+      "removed": 25,
+      "before": "sha256:73130fd6d2fb399c164dc277b2bbb25f0bb17e8f7ae4aef15d3d3fd88141e512",
+      "after": "sha256:ae5e3e8fb8f7e51247624b7dab9a55d83e4197208a83d26c8ae36ee81c1a1552",
+      "eligible": [
+        "constraints/judgment-runs-behind-a-port",
+        "constraints/the-judgment-prompt-is-closed",
+        "domain/investigation/hypothesis-evaluator",
+        "domain/investigation/verdict",
+        "rules/investigation/a-decided-evaluation-cites-evidence",
+        "rules/investigation/judgment-reads-the-evidence-snapshot"
+      ],
+      "stale_before_sweep": [
+        "rules/investigation/an-inconclusive-evaluation-declares-its-reason"
+      ]
+    },
+    {
+      "path": "src/investigation/investigation-factory.ts",
+      "removed": 62,
+      "before": "sha256:e42c6522031954d95ff2ecd7508ebe008a2e76fb6a2c9c875a9fec3f5a9fdb50",
+      "after": "sha256:fc67cf6a17cbbd3c736c225e101f302714a05de688507245758069dfeee3977e",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/investigation/glossary-source",
+        "domain/glossary/subject-attribute",
+        "domain/investigation/investigation",
+        "domain/investigation/subject",
+        "domain/investigation/subject-attribute-value",
+        "rules/investigation/a-subject-attribute-is-drawn-from-the-glossary",
+        "rules/investigation/a-subject-carries-at-least-one-attribute",
+        "rules/investigation/one-evaluation-per-required-hypothesis",
+        "rules/investigation/one-evidence-per-collected-concept",
+        "rules/investigation/replay-is-pinned"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/investigation-pipeline.ts",
+      "removed": 56,
+      "before": "sha256:7fe35c0c15b858a10c56f43a402b292fb2d2c9e6c00b15fb3b80f974cb107518",
+      "after": "sha256:4ac8035751f1a30dd7217b180bf359f3e5979a1c45919303b1a205164b414179",
+      "eligible": [
+        "domain/investigation/cost",
+        "domain/investigation/subject",
+        "domain/knowledge/resolution",
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": [
+        "domain/investigation/assessment",
+        "domain/investigation/durations",
+        "domain/investigation/evaluation",
+        "domain/investigation/evidence"
+      ]
+    },
+    {
+      "path": "src/investigation/investigation-store.port.ts",
+      "removed": 11,
+      "before": "sha256:c67fd8457a40c8c64458200feaac8f7b198665458bc1f5885590dea67d857db5",
+      "after": "sha256:c3f363b47b77a65ed88c06b75cf20c4a2c26c6222c46ede9054ca1fa3bf51876",
+      "eligible": [
+        "rules/investigation/an-investigation-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/investigation.ts",
+      "removed": 29,
+      "before": "sha256:3b00a58eb5922c226d1c815a3f7ab8ab481379186aee7b19b4c390a65dcb4b45",
+      "after": "sha256:54e23a1125069acd221e3ce4c7eaa68dc51a07cb356b0ba878ea9da4b48906fc",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/investigation",
+        "rules/investigation/replay-is-pinned"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/judgment-stage.ts",
+      "removed": 73,
+      "before": "sha256:36c99e1f6831f474626a7acfa346ae4a29a7a8c33f3168999cc7a3edc319e24a",
+      "after": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f",
+      "eligible": [
+        "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+        "constraints/judgment-runs-behind-a-port",
+        "constraints/the-judgment-prompt-is-closed",
+        "contracts/integration/capability-registry",
+        "domain/investigation/evaluation-reason",
+        "domain/investigation/hypothesis-evaluator",
+        "domain/investigation/verdict",
+        "domain/knowledge/case-version",
+        "rules/investigation/a-citation-stays-within-the-hypothesis-collects",
+        "rules/investigation/a-decided-evaluation-cites-evidence",
+        "rules/investigation/an-inconclusive-evaluation-declares-its-reason",
+        "rules/investigation/judgment-reads-the-evidence-snapshot",
+        "rules/investigation/one-evaluation-per-required-hypothesis",
+        "scenarios/investigation/a-collection-timeout-degrades-to-no-data",
+        "scenarios/investigation/a-foreign-citation-is-refused",
+        "scenarios/investigation/a-queued-judgment-is-deadline-exceeded",
+        "scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment"
+      ],
+      "stale_before_sweep": [
+        "constraints/the-deadline-is-an-absolute-propagated-instant",
+        "domain/investigation/evaluation",
+        "rules/investigation/a-cited-field-exists-in-the-capability-output-schema",
+        "rules/investigation/no-stage-aborts-on-its-deadline"
+      ]
+    },
+    {
+      "path": "src/investigation/observation-source.port.ts",
+      "removed": 24,
+      "before": "sha256:38d37fb1ac3c3128b8a6b0965c020e4d7bd7faf6663e2da9aa46a820215f1810",
+      "after": "sha256:38f071ffa063e01559319a2be36bc37f66114bf497ae13f230d186a9e6ff45ec",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "contracts/integration/concept-observation",
+        "contracts/investigation/observation-source",
+        "domain/investigation/evidence",
+        "domain/investigation/evidence-result",
+        "rules/integration/an-unresolvable-observation-ends-unavailable",
+        "rules/investigation/collection-has-its-own-budget-within-the-total",
+        "rules/investigation/collection-runs-in-the-requester-scope"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/resolve-and-narrow-input.ts",
+      "removed": 44,
+      "before": "sha256:e9885c6d8e9a56e36e9db9ce6a8e5a57719cb3a80e4e147f2a2e7dcf89729ef6",
+      "after": "sha256:e377ea330c5373f159d0337746dbc1502bbfcf3062bdff616d7ec7a89968d4fa",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/investigation/assessment",
+        "domain/investigation/citation",
+        "domain/investigation/evaluation",
+        "domain/investigation/evidence",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "rules/investigation/the-outcome-comes-from-the-case",
+        "rules/investigation/the-writing-input-is-narrowed",
+        "scenarios/knowledge/no-confirmation-falls-back",
+        "scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/run-diagnosis.ts",
+      "removed": 85,
+      "before": "sha256:b06c693ba8cf29cfe0e3bedbad042c3c32ddc062fdd9e2ab898a6a259a1985af",
+      "after": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815",
+      "eligible": [
+        "constraints/the-deadline-is-an-absolute-propagated-instant",
+        "rules/investigation/an-investigation-is-written-once",
+        "rules/investigation/no-stage-aborts-on-its-deadline"
+      ],
+      "stale_before_sweep": [
+        "constraints/diagnosis-answers-synchronously",
+        "constraints/hypotheses-are-judged-in-isolated-parallel-calls",
+        "contracts/investigation/case-source",
+        "contracts/investigation/diagnosis",
+        "domain/investigation/cost",
+        "domain/investigation/durations",
+        "domain/investigation/investigation",
+        "rules/investigation/an-answer-arrives-within-the-declared-deadline",
+        "rules/investigation/replay-is-pinned",
+        "rules/investigation/the-response-follows-the-record",
+        "scenarios/investigation/no-response-without-a-record"
+      ]
+    },
+    {
+      "path": "src/investigation/simulate-hypothesis-pipeline.ts",
+      "removed": 34,
+      "before": "sha256:cbc5307948a95dba5113441ede7d523f7d2763180878782a77abd31baf934af9",
+      "after": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff",
+      "eligible": [
+        "domain/investigation/subject",
+        "rules/investigation/a-simulation-writes-no-investigation",
+        "scenarios/investigation/a-single-hypothesis-is-simulated"
+      ],
+      "stale_before_sweep": [
+        "contracts/investigation/case-simulation",
+        "domain/investigation/durations",
+        "domain/investigation/evaluation",
+        "domain/knowledge/hypothesis-revision"
+      ]
+    },
+    {
+      "path": "src/investigation/subject-attribute-value.ts",
+      "removed": 12,
+      "before": "sha256:b257e0fca1f82490d002338429fa6e9d8a5a534f9ca27d1c69fcb1c1516bce66",
+      "after": "sha256:a886c99bc70dcece01733d18cc327dda41fde2b6b76834d95ce8def94413dbac",
+      "eligible": [
+        "domain/glossary/subject-attribute",
+        "domain/investigation/subject-attribute-value"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/subject-covers-case-input-requirements.ts",
+      "removed": 31,
+      "before": "sha256:9188206b5fb1cba52f29ed477c813ef2bed883ca0c08a07cd24fe389f692e29d",
+      "after": "sha256:91a54c80c51ac99fe7751c585335d0afefb0ccaf5dcf7d0297e5576d8255b58b",
+      "eligible": [
+        "rules/investigation/a-diagnosed-subject-covers-its-cases-required-attributes",
+        "scenarios/investigation/a-diagnose-refuses-a-subject-missing-a-required-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/subject.ts",
+      "removed": 29,
+      "before": "sha256:5fa15fa69f15e3b7abdfd14b8d52df132a23d6ee164da7f34fce9fa3fffa76c8",
+      "after": "sha256:8692d7b56dae60361e4fe3413a08f8b4de445a1d0b8889d32f7b5f0c433bfb88",
+      "eligible": [
+        "constraints/the-domain-depends-on-no-infrastructure",
+        "domain/glossary/subject-type",
+        "domain/investigation/subject",
+        "rules/investigation/a-subject-carries-at-least-one-attribute"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/usage.ts",
+      "removed": 6,
+      "before": "sha256:43900ba505f8e2eacf6ebb42d58b8a897729e6764d8ed84df42e5480e35e5f1d",
+      "after": "sha256:93dbd934a8961d4afee9d62d5f243326bafdf1c4e7e93cb191b700499464478d",
+      "eligible": [
+        "domain/investigation/usage"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/investigation/verdict.ts",
+      "removed": 7,
+      "before": "sha256:80045a477ac07b9eb18aa443d29bc4d92b398ba36c1355d7356e9d938b488a68",
+      "after": "sha256:62fb185a2917a2a51bfb0ef75234c9bbb028c5455f25db5965c29c5febd55b31",
+      "eligible": [
+        "domain/investigation/verdict"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/migrate.ts",
+      "removed": 11,
+      "before": "sha256:319cdf78feb5cf77aed295b2fc2119efccfe924121a7ae15c5a630f125ce20c0",
+      "after": "sha256:062eadb0e03808f4547b003ded32dca71d2d8bd2aa13fe8a26de02953a4b48b0",
+      "eligible": [
+        "constraints/the-database-is-externally-provisioned",
+        "constraints/the-schema-replays-from-its-scripts"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/database-access.ts",
+      "removed": 53,
+      "before": "sha256:aad5a54847b2e62ba25e86b65f4f1b94fc35317dccb8e0f9d7ff6fd0ac8f3db7",
+      "after": "sha256:31f7a3e7ef441896f64d7ab515dc7dc4959549856924abc0cd891064b3dc33a1",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/database-connection.ts",
+      "removed": 14,
+      "before": "sha256:22b311b8b06f1ab8a537f7b85497eea69c44e7fad2bc670b2c1b3ad5bb225062",
+      "after": "sha256:e5d722ec56bded77f7118f9d27de8bb75d264738666eb27c22072bbe43a9bc82",
+      "eligible": [
+        "constraints/the-database-is-externally-provisioned"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/isolated-connection.ts",
+      "removed": 56,
+      "before": "sha256:d3d0e2f863d5a45e83b59796224a4150e87432a29f951866ff88d1a0145b9900",
+      "after": "sha256:99b819bf078d5f73fcb3176e365eb5cdacb788fbd04b8a1e87d69bd88b398384",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/migration-runner.ts",
+      "removed": 50,
+      "before": "sha256:1e906ba668e1b1bd02b8bc201f7c4f32187c1d01f0bc24ab7ff8c42346b6cd98",
+      "after": "sha256:6a6a42403d8e7b8fddab8da7ca21ab903c3eca7f9d4ea5100e71140c72995f86",
+      "eligible": [
+        "constraints/the-schema-replays-from-its-scripts"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/pg.d.ts",
+      "removed": 33,
+      "before": "sha256:e00f8c1a90254c3b82ef100338dca82a26e8374da9463a88cf20598d24b384a1",
+      "after": "sha256:386ab8fb76dda16295b8e6fbd4b6e8586947859a5ad13ff8a43d5ee67c489f07",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/relational-capability-store.repository.ts",
+      "removed": 49,
+      "before": "sha256:2e362cca8473299f5f10c26e3856cb477d100f3f9a065967a02d73725519b29f",
+      "after": "sha256:82a4e772c3615577e8a32dc3ce264f44704a8f384973c1dcd7dddb28105918b9",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/integration/capability-registry",
+        "domain/integration/capability",
+        "domain/integration/capability-nature",
+        "domain/integration/capability-registry",
+        "domain/investigation/evidence",
+        "rules/knowledge/the-contract-check-reads-the-current-registration"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/relational-case-store.repository.ts",
+      "removed": 231,
+      "before": "sha256:bc192f22f769814a1b32bfdfa12d922bd4441aef4fe29cb48ba3ae083ea73365",
+      "after": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670",
+      "eligible": [
+        "constraints/a-case-is-read-whole",
+        "contracts/knowledge/case-lifecycle",
+        "contracts/knowledge/case-query",
+        "domain/knowledge/case",
+        "domain/knowledge/case-version",
+        "domain/knowledge/case-version-state",
+        "domain/knowledge/hypothesis",
+        "domain/knowledge/hypothesis-revision",
+        "domain/knowledge/manifest-entry",
+        "rules/knowledge/a-case-has-at-most-one-draft",
+        "rules/knowledge/a-case-version-is-written-once",
+        "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+        "rules/knowledge/a-case-version-number-is-never-reused",
+        "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+        "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+        "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+        "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+        "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+        "rules/knowledge/a-slug-identifies-one-case",
+        "rules/knowledge/every-case-version-remains-readable",
+        "rules/knowledge/hypotheses-are-ordered-by-precedence"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/relational-connector-configuration-store.repository.ts",
+      "removed": 62,
+      "before": "sha256:89ebe71c8978658142cd95fb35c92eb5eec04b2511c60660de5292811293bbb8",
+      "after": "sha256:ecaca164d5a27e2012a85f97ec921db18a952669c96e286107aa4348acbee6f8",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/integration/connector-configuration-registry",
+        "domain/integration/connector-configuration",
+        "domain/integration/connector-configuration-registry"
+      ],
+      "stale_before_sweep": [
+        "constraints/the-domain-depends-on-no-infrastructure"
+      ]
+    },
+    {
+      "path": "src/persistence/relational-glossary-store.repository.ts",
+      "removed": 106,
+      "before": "sha256:137052a00c2df1407562f1863a85861082600ddcbebed15f6e1562f1a0a1324b",
+      "after": "sha256:6cb04ea0a73ac2a6920d8802aa2f673fd993ce05bdfb06fc0258d0e869cb57eb",
+      "eligible": [
+        "constraints/the-system-persists-to-one-relational-database",
+        "contracts/glossary/glossary-authoring",
+        "domain/glossary/action",
+        "domain/glossary/concept",
+        "domain/glossary/outcome",
+        "domain/glossary/recipient",
+        "domain/glossary/subject-attribute",
+        "domain/glossary/subject-type",
+        "rules/glossary/a-vocabulary-holds-each-name-once",
+        "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+        "scenarios/investigation/a-legacy-concept-without-a-description-judges-by-name-alone"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/persistence/relational-investigation-store.repository.ts",
+      "removed": 131,
+      "before": "sha256:74c4e6fbb1a2c67cc5ac9ebed003a0f05a7a9c9419eec0ed4dc50f5e4b915400",
+      "after": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695",
+      "eligible": [
+        "constraints/the-stored-schema-mirrors-the-declared-model",
+        "constraints/the-system-persists-to-one-relational-database",
+        "domain/investigation/citation",
+        "domain/investigation/cost",
+        "domain/investigation/evaluation-reason",
+        "domain/investigation/evidence-result",
+        "domain/investigation/field-semantics",
+        "domain/investigation/subject",
+        "domain/investigation/subject-attribute-value",
+        "domain/investigation/verdict",
+        "rules/investigation/an-investigation-is-written-once"
+      ],
+      "stale_before_sweep": [
+        "domain/investigation/assessment",
+        "domain/investigation/durations",
+        "domain/investigation/evaluation",
+        "domain/investigation/evidence",
+        "domain/investigation/investigation"
+      ]
+    },
+    {
+      "path": "src/seed.ts",
+      "removed": 68,
+      "before": "sha256:f5815d174f33ca379c132f0f21c41c3e5a73f99117be3473fc88e961f1c2e98e",
+      "after": "sha256:2699f00a453b1520c2b1b173b088689fa74cbaa9d330e14ba04bab19512e1309",
+      "eligible": [
+        "domain/glossary/outcome",
+        "rules/glossary/the-non-conclusion-outcomes-precede-the-first-case",
+        "rules/knowledge/a-case-version-is-written-once"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/types/pagination.ts",
+      "removed": 50,
+      "before": "sha256:b822e838b2061e8b28793b1d855d30abaa7b237ac9c5498597c20288406abd4e",
+      "after": "sha256:43837cbd046f2a2425948c53efb6b5f7e7ac2c39046967c5fd31009e20b4105a",
+      "eligible": [],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "src/vitest-global-setup.ts",
+      "removed": 58,
+      "before": "sha256:003ced3c62403d3f3c7f46dee9048e34484ed8a6608a088ce925492c686ef2d1",
+      "after": "sha256:e457a1a666950915acaa06424ffb5dcc587934ef5e79fd01c05ab1934d9757ae",
+      "eligible": [
+        "constraints/the-database-is-externally-provisioned",
+        "constraints/the-schema-replays-from-its-scripts",
+        "domain/knowledge/hypothesis-revision",
+        "rules/knowledge/a-hypothesis-collects-at-least-one-concept"
+      ],
+      "stale_before_sweep": []
+    },
+    {
+      "path": "vitest.config.ts",
+      "removed": 58,
+      "before": "sha256:704ae3c2c3475c8f8514c4f9e655a1bc399c6789cc9e7de8861f54be5d60c754",
+      "after": "sha256:a8c514610ab1ec2790b79b957335aa55da7fb36cca08351b92beca27dd9ae9dc",
+      "eligible": [
+        "constraints/the-schema-replays-from-its-scripts"
+      ],
+      "stale_before_sweep": []
+    }
+  ],
+  "failed_proof": []
+}

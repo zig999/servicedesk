@@ -1,29 +1,9 @@
-// Proof for task/relational-stores/capability-store, over a stand-in for DatabaseConnection — the
-// driver boundary TST-03 permits a stand-in for — so RelationalCapabilityStore's own mechanics are
-// observed independently of any real database: which statement text and params reach the
-// connection, how a read row maps onto a Capability, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK
-// happen relative to writeCapabilities' own per-identity upsert, and how a driver failure reaches
-// the caller as this store's own typed error. The real-effect half — that a write actually
-// persists, that the whole batch really rolls back together against a real constraint, and that
-// the database itself excludes a registration with an absent schema or connector — is proven
-// separately, against a real database, in this file's own integration-level sibling.
-//
-// The two write-mechanics tests below were rewritten for
-// task/capability-registry-write-upsert-hotfix: writeCapabilities no longer issues a table-wide
-// DELETE followed by one INSERT per kept-and-incoming capability (the mechanism that failed with a
-// Postgres 23503 the moment any capabilities row was referenced by investigation_evidence); it now
-// issues one INSERT ... ON CONFLICT (name, version) DO UPDATE per given capability, and no DELETE
-// statement at all, ever. The reproduction of the original failure — a capability row already
-// referenced by investigation_evidence, written again, succeeding and never being deleted — is
-// proven against a real database and a real foreign key in this file's own integration-level
-// sibling, since a stand-in connection cannot enforce a foreign key.
 import { expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
 import { CapabilityStoreError } from '../../../errors/capability-store.error.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCapabilityStore } from '../../../persistence/relational-capability-store.repository.js';
 
-/** One registration as the registry holds it, for writing through the store — the same shape the sibling file-store proof already builds (file-capability-store.repository.spec.ts). */
 function capabilityRecord(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -38,7 +18,6 @@ function capabilityRecord(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A bare connection whose own query() is backed by the given implementation — the shape readCapabilities calls directly, with no transaction opened. */
 function fakeBareConnection(query: DatabaseConnection['query']): DatabaseConnection {
   return { query } as unknown as DatabaseConnection;
 }
@@ -48,7 +27,6 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake DatabaseConnection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape writeCapabilities' own transaction runs through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
 ): { connection: DatabaseConnection; client: IFakeClient } {
@@ -57,12 +35,9 @@ function fakeTransactionConnection(
   return { connection: { connect } as unknown as DatabaseConnection, client };
 }
 
-/** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */
 function collapsedTexts(recorded: readonly { text: string }[]): string[] {
   return recorded.map((entry) => entry.text.replace(/\s+/g, ' ').trim());
 }
-
-// ---------------------------------------------------------------- criterion 1
 
 it('answers a read with every declared attribute — name, version, nature, both schemas, timeout, connector and concept', async () => {
   const row = {
@@ -82,8 +57,6 @@ it('answers a read with every declared attribute — name, version, nature, both
 
   expect(answered).toEqual([capabilityRecord()]);
 });
-
-// ---------------------------------------------------------------- criterion 2
 
 it("answers the second call's own rows, never a value the first call already answered", async () => {
   const firstRow = { ...capabilityRecord({ name: 'first' }) };
@@ -115,8 +88,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect((caught as Error).cause).toBe(driverFailure);
 });
 
-// ---------------------------------------------------------------- edge case: a row holding a nature the enumeration does not declare
-
 it("raises this store's own typed error rather than answering a row whose nature is outside the declared enumeration", async () => {
   const row = { ...capabilityRecord(), nature: 'destructive' };
   const query = vi.fn().mockResolvedValue({ rows: [row] });
@@ -124,8 +95,6 @@ it("raises this store's own typed error rather than answering a row whose nature
 
   await expect(store.readCapabilities()).rejects.toBeInstanceOf(CapabilityStoreError);
 });
-
-// ---------------------------------------------------------------- write mechanics: per-identity upsert inside one transaction, criterion 4
 
 it('upserts each given capability by its own (name, version) identity, inside one transaction, and never sends a DELETE', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
@@ -151,8 +120,6 @@ it('upserts each given capability by its own (name, version) identity, inside on
   expect(client.release).toHaveBeenCalledTimes(1);
 });
 
-// ---------------------------------------------------------------- edge case: writing an empty set, criterion 4
-
 it('sends no statement but BEGIN and COMMIT, and in particular no DELETE, when writing an empty set', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
   const { connection, client } = fakeTransactionConnection(async (text, params) => {
@@ -166,8 +133,6 @@ it('sends no statement but BEGIN and COMMIT, and in particular no DELETE, when w
   expect(collapsedTexts(recorded)).toEqual(['BEGIN', 'COMMIT']);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
-
-// ---------------------------------------------------------------- write failure wrapping
 
 it("raises this store's own typed error, carrying the driver failure as its cause, and rolls back, when the write is refused", async () => {
   const driverFailure = new Error('the driver refused this write');

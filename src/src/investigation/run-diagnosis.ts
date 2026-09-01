@@ -1,74 +1,3 @@
-// The composition root that runs one already-resolved, fresh investigation
-// synchronously, end to end
-// (task/diagnose-entry-point/diagnose-pipeline-composition): collection,
-// judgment, resolve-and-narrow, drafting and persistence, wired exactly
-// once, over a case, a subject and a narrative this call's own caller has
-// already resolved (constraints/diagnosis-answers-synchronously) — this
-// module never fetches or re-resolves the case itself, so the investigation
-// it runs is exactly the case its caller already read and pinned by slug
-// and version at the start of the request (contracts/investigation/case-source).
-//
-// Stages 1–4 (buildSubject, collectEvidence, judgeHypotheses, resolveAndNarrow,
-// draftAssessment) no longer live here: they are extracted into
-// investigation-pipeline.ts's own runInvestigationPipeline
-// (task/case-simulation-pipeline/extract-shared-investigation-pipeline), so a
-// future simulate composition can call exactly that function rather than
-// this one re-deciding any one stage's own logic a second time. This module
-// keeps only what is specific to diagnose's own composition: calling that
-// shared function, then building and writing the Investigation
-// (buildInvestigation, writeWithinDeadline) — the two steps a simulate
-// composition never adds.
-//
-// Takes `now` and `deadline` as explicit parameters and never reads the
-// system clock internally, the same discipline every stage it composes
-// already keeps (constraints/the-deadline-is-an-absolute-propagated-instant):
-// the same (now, deadline) pair given to this whole call is the one pair
-// every stage-bound call is computed from inside runInvestigationPipeline,
-// each intersected with its own nominal budget where one is declared
-// (rules/investigation/an-answer-arrives-within-the-declared-deadline's own
-// stage breakdown). Drafting (draft-assessment-text.ts) takes no deadline
-// parameter at all and is called unbounded — an existing gap in that
-// already-delivered module, not one this composition can close without
-// widening past its own objective; see this delivery's own `deferred` entry.
-//
-// Persistence is the one stage rules/investigation/no-stage-aborts-on-its-deadline
-// exempts from degrading: its own stage bound is the minimum of its nominal
-// budget and whatever of the propagated deadline still remains once
-// collection, judgment and writing have already run — computed from the
-// pipeline's own already-measured durations rather than a fresh clock read
-// (constraints/the-deadline-is-an-absolute-propagated-instant). A first write
-// attempt is held to the whole of that bound, and a failed first attempt is
-// retried exactly once, bounded by whatever of that same bound the first
-// attempt's own elapsed time left unspent; either attempt finding the
-// investigation's own id already stored counts as settled rather than a
-// duplicate or a failure (rules/investigation/an-investigation-is-written-once).
-// A write that settles neither way raises InvestigationWriteDeadlineExceededError
-// rather than ever answering an assessment with no record behind it
-// (rules/investigation/the-response-follows-the-record,
-// scenarios/investigation/no-response-without-a-record). The assessment this
-// call answers is exactly the written investigation's own — never computed a
-// second time — and only once that write has concluded
-// (rules/investigation/an-investigation-is-written-once,
-// rules/investigation/replay-is-pinned).
-//
-// The built Investigation's own written_at (buildInvestigationOptions below,
-// task/case-and-investigation-model/investigation-record-shape) is stamped
-// from this same propagated `now` rather than a second clock read, since
-// nothing else instant-shaped reaches this composition and the one write
-// that follows happens shortly after with no further stage in between.
-//
-// This same "response only after the write, an error rather than an
-// assessment when it does not conclude in time" behavior is also what
-// task/service-on-the-database/diagnose-end-to-end's own criteria 4 and 5
-// hold this module to, once every dependency above is wired against the real
-// database rather than a fake (task/service-on-the-database/store-wiring):
-// that task adds no seam of its own for this, since createDiagnoseRunner
-// (diagnose.factory.ts) already takes the shared DatabaseConnection as an
-// ordinary parameter, the exact seam diagnose-e2e.spec.ts already uses to
-// compose against a real connection outside createDiagnoseHttpServer's own
-// internal one — reused, at the integration level, to prove criterion 5's
-// deadline-exceeded branch against a real, deliberately slowed write.
-
 import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';
 import { InvestigationWriteDeadlineExceededError } from '../errors/investigation-write-deadline-exceeded.error.js';
 import type { Assessment } from './assessment.js';
@@ -81,49 +10,13 @@ import type { Durations } from './durations.js';
 import type { Evaluation } from './evaluation.js';
 import type { Evidence } from './evidence.js';
 
-/**
- * Persistence's own nominal budget inside the declared total deadline
- * (rules/investigation/an-answer-arrives-within-the-declared-deadline's own
- * two-second slice) — the one stage
- * rules/investigation/no-stage-aborts-on-its-deadline exempts from
- * degrading, so its own overrun is an error rather than a recorded fact.
- */
 const PERSISTENCE_STAGE_BUDGET_MS = 2_000;
 
-/**
- * Answered once a persistence attempt's shared stage timeout elapses first
- * (stageTimeout, raceWriteAttempt below) — never itself a domain outcome,
- * only this module's own internal marker, the same convention
- * evidence-collection-stage.ts's own TIMED_OUT already keeps for its own
- * race.
- */
 const WRITE_TIMED_OUT = Symbol('investigation-write-timeout');
 
-/**
- * Everything runDiagnosis needs beyond what runInvestigationPipeline itself
- * already declares (investigation-pipeline.ts's own InvestigationPipelineOptions):
- * the fields buildInvestigation and the write step need — the investigation's
- * own id, the optional ticket reference, the narrative, which prompt version
- * and model were used, and the store the written investigation goes to.
- * glossary is no longer declared here of its own: it is inherited from
- * InvestigationPipelineOptions, which collectEvidence itself now also reads
- * through (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics)
- * — the one instance this call's own caller supplies serves both
- * buildInvestigation's subject-attribute check and collectEvidence's
- * concept-description reads.
- */
 export type RunDiagnosisOptions = InvestigationPipelineOptions & {
   readonly id: string;
-  /**
-   * Correlation with the ticketing system, never a matching key
-   * (contracts/investigation/diagnosis's own "case, subject, narrative and
-   * requester in, with an optional ticket reference") — optional because not
-   * every diagnose call carries a ticket
-   * (domain/investigation/investigation's own "requester is always given,
-   * ticket_ref is not"). Passed straight through into
-   * BuildInvestigationOptions below unchanged, including its absence
-   * (task/case-and-investigation-model/ticket-ref-is-optional).
-   */
+
   readonly ticket_ref?: string;
   readonly narrative: string;
   readonly prompt_version: string;
@@ -131,31 +24,6 @@ export type RunDiagnosisOptions = InvestigationPipelineOptions & {
   readonly store: IInvestigationStore;
 };
 
-/**
- * Runs one already-resolved, fresh investigation end to end
- * (task/diagnose-entry-point/diagnose-pipeline-composition): calls
- * investigation-pipeline.ts's own runInvestigationPipeline for stages 1–4
- * (buildSubject, collectEvidence, judgeHypotheses, resolveAndNarrow,
- * draftAssessment — task/case-simulation-pipeline/extract-shared-investigation-pipeline),
- * builds the whole Investigation from its answered record — the one factory
- * that can build a valid one, which re-validates the subject against the
- * glossary and the case's own totality requirements before anything is
- * constructed — writes it, racing that write against what remains of its
- * own nominal budget, and answers with the written investigation's own
- * assessment only once that write has concluded
- * (rules/investigation/the-response-follows-the-record,
- * scenarios/investigation/no-response-without-a-record).
- *
- * cost and durations are never computed here: runInvestigationPipeline
- * already accumulates both from every judged evaluation's own usage and the
- * one consolidation call's own usage/elapsed_ms, and from every concept's
- * and hypothesis's own already-measured elapsed_ms
- * (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) —
- * this composition only carries the answered values through into
- * buildInvestigation, preserving this module's own "never reads the system
- * clock internally" (task/diagnose-entry-point/diagnose-pipeline-composition,
- * proved by run-diagnosis.spec.ts's own criterion 5).
- */
 export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {
   const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);
   const investigation = await buildInvestigation(
@@ -170,22 +38,12 @@ type BuildInvestigationArgs = {
   readonly evidence: readonly Evidence[];
   readonly evaluations: readonly Evaluation[];
   readonly assessment: Assessment;
-  /** This run's own accumulated cost, answered above by runInvestigationPipeline — never read from options, which no longer carries one (task/investigation-telemetry/diagnose-reports-real-cost-and-durations). */
+
   readonly cost: Cost;
-  /** This run's own measured durations, answered above by runInvestigationPipeline — never read from options, for the same reason. */
+
   readonly durations: Durations;
 };
 
-/**
- * buildInvestigation's own options, assembled from this call's given options
- * and every completed stage's own output. written_at is derived from this
- * whole run's own `now` — the one instant already propagated into this
- * composition rather than a fresh clock read taken here
- * (this module's own "never reads the system clock internally"); the built
- * Investigation is a single immutable value with no later step to stamp a
- * closer instant onto it, so `now` is the nearest instant to the one write
- * that follows shortly after (task/case-and-investigation-model/investigation-record-shape).
- */
 function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestigationOptions {
   const { options, evidence, evaluations, assessment, cost, durations } = args;
   return {
@@ -213,27 +71,10 @@ type WriteWithinDeadlineArgs = {
   readonly investigation: Investigation;
   readonly now: number;
   readonly deadline: number;
-  /**
-   * This run's own already-measured durations (collection, judgment,
-   * writing) — the only source this module reads to know how much of the
-   * propagated deadline persistence starts with, never a fresh clock read
-   * (constraints/the-deadline-is-an-absolute-propagated-instant).
-   */
+
   readonly durations: Durations;
 };
 
-/**
- * Writes the given investigation within persistence's own stage bound: the
- * minimum of PERSISTENCE_STAGE_BUDGET_MS and whatever of the propagated
- * deadline actually remains once collection, judgment and writing have
- * already run (rules/investigation/no-stage-aborts-on-its-deadline). A bound
- * of zero or less issues no write at all, raising at once; otherwise a first
- * attempt is held to the whole of that bound and, only where it fails before
- * the bound elapses, one retry runs in whatever of it is left
- * (persistWithinBound below). A write that settles neither way raises
- * InvestigationWriteDeadlineExceededError instead of ever answering an
- * assessment with no record behind it.
- */
 async function writeWithinDeadline(args: WriteWithinDeadlineArgs): Promise<void> {
   const { store, investigation, now, deadline, durations } = args;
   const stageBoundMs = persistenceStageBoundMs(now, deadline, durations);
@@ -243,32 +84,11 @@ async function writeWithinDeadline(args: WriteWithinDeadlineArgs): Promise<void>
   }
 }
 
-/**
- * Persistence's own stage bound: the minimum of its nominal budget and the
- * time actually remaining before the propagated deadline at the moment
- * persistence begins — never the request's stale entry instant. "Remaining"
- * is computed from now, deadline and the pipeline's own already-measured
- * durations.collection/judgment/writing (investigation-pipeline.ts's own
- * durationsOf) alone: collection, judgment and consolidation have all
- * already run by the time persistence starts, and this module never reads
- * the system clock itself
- * (constraints/the-deadline-is-an-absolute-propagated-instant).
- */
 function persistenceStageBoundMs(now: number, deadline: number, durations: Durations): number {
   const elapsedBeforePersistenceMs = durations.collection + durations.judgment + durations.writing;
   return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));
 }
 
-/**
- * Runs the first write attempt and, only where it fails before the stage
- * bound elapses, one retry — both racing the one timer created here, so the
- * retry never opens a second grant of time and a first attempt that
- * consumes the whole bound leaves nothing for a retry to run in
- * (rules/investigation/no-stage-aborts-on-its-deadline). Either attempt
- * finding the investigation's own id already stored counts as settled
- * (rules/investigation/an-investigation-is-written-once), never as a
- * duplicate or a failure.
- */
 async function persistWithinBound(store: IInvestigationStore, investigation: Investigation, stageBoundMs: number): Promise<boolean> {
   const timeout = stageTimeout(stageBoundMs);
   try {
@@ -283,25 +103,8 @@ async function persistWithinBound(store: IInvestigationStore, investigation: Inv
   }
 }
 
-/**
- * One outcome a raced write attempt answers: 'settled' where the write
- * resolved or found the investigation's own id already stored, 'failed'
- * where it rejected with anything else while the stage bound had not yet
- * elapsed, or the shared WRITE_TIMED_OUT marker once that bound elapsed
- * first.
- */
 type WriteAttemptOutcome = 'settled' | 'failed' | typeof WRITE_TIMED_OUT;
 
-/**
- * Races one write() call against the shared stage timeout — the same race
- * shape evidence-collection-stage.ts's own raceObservation already keeps. A
- * rejection with InvestigationAlreadyStoredError answers 'settled': the
- * investigation's own id already identifies the one record it was sent to
- * write, so this attempt found exactly what it was trying to persist
- * (rules/investigation/an-investigation-is-written-once) rather than having
- * failed or duplicated it. Any other rejection answers 'failed', letting
- * persistWithinBound above decide whether a retry still fits the bound.
- */
 function raceWriteAttempt(write: Promise<void>, timeout: Promise<typeof WRITE_TIMED_OUT>): Promise<WriteAttemptOutcome> {
   const settlement = write.then(
     (): WriteAttemptOutcome => 'settled',
@@ -310,15 +113,6 @@ function raceWriteAttempt(write: Promise<void>, timeout: Promise<typeof WRITE_TI
   return Promise.race([settlement, timeout]);
 }
 
-/**
- * One shared timeout, created once per stage bound so both the first
- * attempt and its retry race against the same real, elapsing wall-clock
- * window rather than each opening its own — the retry's own remaining time
- * is exactly whatever of this one timer real time has not yet consumed when
- * it starts, so this module never measures elapsed time with a clock read
- * of its own. cancel() clears the underlying timer once persistWithinBound
- * above has its answer, whichever way.
- */
 type StageTimeout = {
   readonly promise: Promise<typeof WRITE_TIMED_OUT>;
   readonly cancel: () => void;

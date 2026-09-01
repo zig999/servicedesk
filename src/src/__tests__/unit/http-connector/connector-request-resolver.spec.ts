@@ -1,11 +1,3 @@
-// Proof for task/http-observation-runtime/descriptor-placeholder-resolver: the pure translation
-// step that turns a Subject's attribute-values, the collection's own requester identity and a
-// connector's own opaque call configuration into the concrete address/query/headers/body of one
-// outbound HTTP request, with a credential sourced from the environment by name and every
-// '${kind[:argument]}' placeholder resolved through one shared string-substitution mechanism —
-// never executed as code, and never left unresolved. No stand-in is used anywhere below (TST-03):
-// resolveConnectorRequest is a pure function of its own arguments, and the `env` option it already
-// exposes is the injected boundary override this task's own module documents, not a fake.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -15,13 +7,10 @@ import { ConnectorPlaceholderNotResolvedError } from '../../../errors/connector-
 import { IncompleteConnectorCallDescriptorError } from '../../../errors/incomplete-connector-call-descriptor.error.js';
 import type { Subject } from '../../../investigation/subject.js';
 
-/** A requester identity, spelled out rather than left implicit. */
 const A_REQUESTER = 'a-requester';
 
-/** A Subject carrying the one attribute most tests below substitute from. */
 const A_SUBJECT: Subject = { type: 'a-subject-type', attributes: [{ attribute: 'id', value: '12345' }] };
 
-/** Runs an action expected to throw, returning what it threw — or undefined where it did not, so an assertion against the result still fails visibly rather than the test silently passing. */
 function thrownBy(action: () => unknown): unknown {
   try {
     action();
@@ -253,12 +242,6 @@ it('leaves the body absent when the descriptor declares none, rather than defaul
 
   expect(assembled.body).toBeUndefined();
 });
-
-// ------------------------------------------------------------------ subjectAttributePlaceholderNamesIn
-// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check:
-// every Subject-attribute placeholder name embedded anywhere in one connector configuration's own
-// call text, reused by the shared orphaned-placeholder check (connector-placeholder-declaration-check.spec.ts)
-// rather than proven twice.
 
 it("extracts a Subject-attribute placeholder's own attribute name from call text", () => {
   const names = subjectAttributePlaceholderNamesIn('https://api.example.com/records/${subject:customer_document}');

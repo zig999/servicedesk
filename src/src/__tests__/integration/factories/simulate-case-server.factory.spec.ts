@@ -1,48 +1,9 @@
-// Proof for task/case-simulation-pipeline/simulate-case-operation, criterion 8 and the real-world
-// half of criteria 1, 2 and 3: the real, end-to-end wiring createDiagnoseHttpServer assembles for
-// POST /v1/simulate against a real, externally provisioned PostgreSQL database
-// (constraints/the-database-is-externally-provisioned) — the real relational case query over the
-// fixture's own committed case data (case intermittent-connection-outage/1) for the released-state
-// scenario, and a freshly created, never-released draft version of a second case for the
-// draft-state scenario, both reached entirely through Fastify's own app.inject() against
-// createDiagnoseHttpServer(env)'s own instance, never a hand-rolled substitute for the route or the
-// controller. This is the closest available analog to diagnose-server.factory.spec.ts's own
-// established convention, trimmed to what this task's own criteria need: reachability for a real
-// process, the complete record for a case version in either declared state, and — the strongest
-// available evidence for "no investigation is written" — a direct read of the investigations table
-// itself after a real call, rather than only the structural absence of a write-capable dependency
-// unit tests elsewhere in this delivery already establish.
-//
-// Divergence (TST-04): this file's own name corresponds to no single production file — its subject
-// is createDiagnoseHttpServer (diagnose-server.factory.ts), the same composition root
-// diagnose-server.factory.spec.ts already mirrors and already owns. It was written standalone
-// rather than appended there to avoid growing an already-large, delicate, shared fixture file (and
-// its beforeAll/afterAll) any change here risks for every diagnose test that file already proves;
-// this file seeds and tears down its own state independently, so — since vitest.config.ts's own
-// fileParallelism: false runs every test file strictly sequentially — it never races
-// diagnose-server.factory.spec.ts's own identical use of the same released fixture, whichever of
-// the two runs first.
-//
-// Two stand-ins replace the two network boundaries this pipeline crosses (TST-03 — a stand-in
-// replaces a boundary, never business logic), exactly as diagnose-server.factory.spec.ts already
-// establishes: @anthropic-ai/sdk, mocked the same way, and the platform's own global fetch,
-// HttpDeclarativeObservationSource's own one HTTP call, with no client injectable from production
-// wiring. The model's own answer is deliberately never valid JSON, so every hypothesis judged here
-// falls through to inconclusive/judgment-failure and the case's own declared fallback answers —
-// deterministic regardless of which hypothesis is judged first or what either connector's own
-// mocked response carries, since neither hypothesis ever confirms.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
-/** Mirrors diagnose-server.factory.spec.ts's own hoisted Anthropic mock exactly, since createProductionSimulationRunner wires the identical real, Anthropic-backed adapters simulate's own composition does. */
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
   const createMock = vi.fn(
     (_options: { model: string }) =>
@@ -75,16 +36,13 @@ const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.ur
 const RELEASED_SLUG = 'intermittent-connection-outage';
 const RELEASED_VERSION = 1;
 
-/** This file's own draft case, never released — a new slug so it never touches the shared, already-released fixture version-1 that other integration files also read. */
 const DRAFT_SLUG = 'simulate-case-operation-draft-fixture';
 
-/** The connector the fixture case's own first hypothesis (customer-equipment-fault) and this file's own draft case alike collect through, and the fixed address this suite registers it against — no placeholder, so the resolved request never depends on the subject or requester under test. */
 const EQUIPMENT_STATUS_CONNECTOR = 'corporate-records-equipment-status-connector';
 const NETWORK_OUTAGE_CONNECTOR = 'corporate-records-network-outage-connector';
 const EQUIPMENT_STATUS_ADDRESS = 'https://corporate-records.test/equipment-status';
 const NETWORK_OUTAGE_ADDRESS = 'https://corporate-records.test/network-outage';
 
-/** Stands in for the network boundary (TST-03) HttpDeclarativeObservationSource's own global fetch reaches: every call answers 200 with a body carrying both connectors' own declared response-map fields, so neither connector's own call ever reaches a real address. */
 const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
   new Response(JSON.stringify({ status: 'ok', active: false }), { status: 200, headers: { 'content-type': 'application/json' } }),
 );
@@ -195,7 +153,6 @@ async function placeFixtureHypotheses(lifecycle: CaseLifecycleOperations, fixtur
   }
 }
 
-/** Writes the committed fixture case's own document, released — mirrors diagnose-server.factory.spec.ts's own insertFixtureCase exactly, for the released-state half of this file's own tests. */
 async function insertReleasedFixtureCase(connection: DatabaseConnection): Promise<void> {
   const store = createCaseStore(connection);
   const alreadyStored = await store.assembleVersion(RELEASED_SLUG, RELEASED_VERSION);
@@ -218,7 +175,6 @@ async function insertReleasedFixtureCase(connection: DatabaseConnection): Promis
   await lifecycle.release(fixture.slug, draft.version);
 }
 
-/** Revises then places this file's own draft case's one hypothesis, pulled out of insertDraftFixtureCase below so that function's own body stays inside the standard's max-lines-per-function rule (MNT-01) — the same split diagnose-server.factory.spec.ts's own placeFixtureHypotheses already establishes for the released fixture case's own manifest. */
 async function placeDraftHypothesis(lifecycle: CaseLifecycleOperations, version: number): Promise<void> {
   const revised = await lifecycle.reviseHypothesis({
     slug: DRAFT_SLUG,
@@ -237,7 +193,6 @@ async function placeDraftHypothesis(lifecycle: CaseLifecycleOperations, version:
   });
 }
 
-/** This file's own draft case, deliberately left in draft state: one hypothesis collecting the same already-registered equipment-status concept the released fixture case's own first hypothesis collects, so no extra capability or connector configuration is needed beyond what this file already registers above. Never released — proving that criterion 1 (a draft-state case version is simulated) is answered against a version genuinely still in draft, not merely one that has not yet reached the release call. */
 async function insertDraftFixtureCase(connection: DatabaseConnection): Promise<number> {
   const store = createCaseStore(connection);
   const alreadyStored = await store.assembleVersion(DRAFT_SLUG, 1);
@@ -286,7 +241,6 @@ async function deleteTolerantly(connection: DatabaseConnection, text: string, pa
   }
 }
 
-/** Removes this file's own draft case. */
 async function cleanupDraftFixtureCase(connection: DatabaseConnection): Promise<void> {
   await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [DRAFT_SLUG]);
   await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [DRAFT_SLUG]);
@@ -296,7 +250,6 @@ async function cleanupDraftFixtureCase(connection: DatabaseConnection): Promise<
   await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [DRAFT_SLUG]);
 }
 
-/** Removes the shared, released fixture case's own rows, mirroring diagnose-server.factory.spec.ts's own cleanupFixtureSeeded exactly — table set and order rewired against the case-version-lifecycle schema, same as that file. fileParallelism: false (vitest.config.ts) runs every test file strictly sequentially, so this file's own beforeAll always re-seeds everything it needs from scratch regardless of what an earlier file's own afterAll already removed; this file returns the database to that same clean state afterward, rather than leaving the fixture and its glossary/capability/connector rows as permanent litter for whichever file happens to run last. */
 async function cleanupReleasedFixtureCase(connection: DatabaseConnection): Promise<void> {
   await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [RELEASED_SLUG]);
   await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [RELEASED_SLUG]);
@@ -306,14 +259,12 @@ async function cleanupReleasedFixtureCase(connection: DatabaseConnection): Promi
   await deleteTolerantly(connection, 'DELETE FROM cases WHERE slug = $1', [RELEASED_SLUG]);
 }
 
-/** Removes the two connector configurations this file's own beforeAll registered. */
 async function cleanupConnectorConfigurations(connection: DatabaseConnection): Promise<void> {
   await connection.query('DELETE FROM connector_configurations WHERE connector = ANY($1)', [
     [EQUIPMENT_STATUS_CONNECTOR, NETWORK_OUTAGE_CONNECTOR],
   ]);
 }
 
-/** Removes every glossary and capability row this file's own beforeAll seeded, mirroring diagnose-server.factory.spec.ts's own equivalent cleanup exactly — excluding the two non-conclusion outcomes, which are this suite's own global seed (vitest-global-setup.ts), never this file's own to remove. */
 async function cleanupGlossaryAndCapabilities(connection: DatabaseConnection): Promise<void> {
   const capabilities = JSON.parse(await readFile(join(FIXTURES_ROOT, 'capability', 'capability.json'), 'utf8')) as ReadonlyArray<{ name: string; version: string }>;
   for (const capability of capabilities) {
@@ -348,7 +299,6 @@ function baseEnv(): Env {
   };
 }
 
-/** Every investigation row written under the given requester, freshly read from the real table — this file's own strongest evidence for criterion 3 ("no investigation is written"). */
 async function investigationCountFor(connection: DatabaseConnection, requester: string): Promise<number> {
   const { rows } = await connection.query<{ count: string }>('SELECT COUNT(*)::text AS count FROM investigations WHERE requester = $1', [requester]);
   return Number(rows[0]?.count ?? '0');
@@ -393,8 +343,6 @@ function requestBodyFor(slug: string, version: number, requesterName: string): R
   };
 }
 
-// ------------------------------------------------------- criterion 8, and the real-world half of criterion 2
-
 it(
   "reaches simulate-case's own controller through createDiagnoseHttpServer's real composition and answers 200 with the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a released-state pinned case version",
   async () => {
@@ -410,8 +358,6 @@ it(
   },
 );
 
-// ----------------------------------------------------------------- the real-world half of criterion 1
-
 it(
   'answers 200 with the complete record likewise for a draft-state pinned case version, never released',
   async () => {
@@ -424,8 +370,6 @@ it(
     expect(Object.keys(body).sort()).toEqual(['assessment', 'cost', 'durations', 'evaluations', 'evidence', 'resolved']);
   },
 );
-
-// ------------------------------------------------------------------------------------ criterion 3
 
 it(
   'writes no investigation row for the requester a real simulate-case call ran under, even though the call itself succeeds',

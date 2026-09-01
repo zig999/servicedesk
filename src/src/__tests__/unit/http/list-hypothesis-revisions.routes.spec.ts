@@ -1,23 +1,3 @@
-// Proof for task/case-query-http/list-hypothesis-revisions-route: GET
-// /v1/cases/{slug}/hypotheses/{name}/revisions exercised through Fastify's own app.inject()
-// against a local instance registering createListHypothesisRevisionsRoutesPlugin() and
-// error-handler.middleware.ts's own handleUnexpectedError directly — the same shape
-// list-hypotheses.routes.spec.ts already establishes for a single-:slug-plus-pagination route,
-// adapted for this route's second path parameter (:name, the hypothesis's own bare name), the
-// same second-segment precedent read-vocabulary-term.routes.spec.ts already keeps for its own
-// :vocabulary/:name pair. The published case-query read is a stand-in here (TST-03 — a stand-in
-// replaces a boundary, never business logic): ICaseQuery.listHypothesisRevisions is exactly the
-// seam ListHypothesisRevisionsControllerDependencies declares, stood in for by a vi.fn();
-// case-query.service.ts's own listHypothesisRevisions — a direct pass-through onto the case
-// store — is proved separately in __tests__/unit/case/case-query.service.spec.ts, and the case
-// store's own CaseNotFoundError refusal (covering both an unknown slug and an unknown hypothesis
-// name under a known slug, since a single existence check against the hypotheses identity row
-// answers both absences at once — relational-case-store.repository.ts's own
-// listHypothesisRevisions) is proved separately in
-// __tests__/integration/persistence/relational-case-store.repository.spec.ts. This file proves
-// only that the route, controller and DTO carry that contract's promise onto the wire unchanged,
-// and that the controller's own pagination-bound resolution (defaultLimit, maxLimit, offset
-// defaulting to 0) behaves as list-hypotheses.controller.ts's own resolvePagination already does.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { HypothesisRevisionListItem } from '../../../case/case-store.port.js';
@@ -34,7 +14,6 @@ type ListHypothesisRevisionsMock = ReturnType<
   >
 >;
 
-/** A page of two revisions one hypothesis currently holds, every PaginatedResponse<HypothesisRevisionListItem> field present, overridable per test. Carries no hypothesis_name — HypothesisRevisionListItem omits it, this listing already being scoped to one named hypothesis by its own path parameter (case-store.port.ts's own header comment). */
 function heldPage(overrides: Partial<PaginatedResponse<HypothesisRevisionListItem>> = {}): PaginatedResponse<HypothesisRevisionListItem> {
   return {
     data: [
@@ -49,21 +28,12 @@ function heldPage(overrides: Partial<PaginatedResponse<HypothesisRevisionListIte
   };
 }
 
-/**
- * One Fastify instance registering exactly this route plugin plus the shared error handler —
- * mirrors what build-app.ts wires for diagnose, read-case, list-cases, list-case-versions and
- * list-hypotheses, ahead of the still-outstanding task that wires this route into build-app.ts
- * itself. defaultLimit and maxLimit default to two distinct, deliberately non-coincidental
- * figures so a test asserting one is never satisfied by mistaking it for the other.
- */
 function buildTestApp(bounds: { defaultLimit?: number; maxLimit?: number } = {}): {
   app: FastifyInstance;
   listHypothesisRevisions: ListHypothesisRevisionsMock;
 } {
   const listHypothesisRevisions: ListHypothesisRevisionsMock = vi.fn();
-  // readCase, listCases, listCaseVersions and listHypotheses are no part of what this file proves
-  // (list-hypothesis-revisions-route's own ICaseQuery seam is listHypothesisRevisions alone) —
-  // stubbed only so this fake keeps satisfying ICaseQuery, which still declares all four.
+
   const readCase = vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>();
   const caseQuery: ICaseQuery = {
     readCase,
@@ -89,8 +59,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it("answers 200 with the paginated page of every revision the named hypothesis holds, for a request naming its own offset and limit", async () => {
   const built = buildTestApp();
@@ -164,27 +132,10 @@ it("answers each of two requests naming different (slug, hypothesis name) pairs 
   expect(built.listHypothesisRevisions).toHaveBeenNthCalledWith(2, 'slug-b', 'hypothesis-b', { offset: 0, limit: 20 });
 });
 
-// ------------------------------------------------------------------ criterion 2
-//
-// The route raises the identical CaseNotFoundError whether the :slug or the :name (or both) names
-// nothing this case has originated — case-query.service.ts's own listHypothesisRevisions is a bare
-// pass-through onto the case store, and the store's own existence check queries the hypotheses
-// table by (case_slug, name), a single foreign-key-backed row whose absence is one refusal
-// covering both cases (relational-case-store.repository.ts's own listHypothesisRevisions, and this
-// controller's own header comment). So this route, controller and DTO layer has exactly one seam
-// to prove here — that a rejected caseQuery.listHypothesisRevisions call propagates unchanged to
-// the status map — regardless of which of the two names was the one that did not exist; which of
-// the two absences actually triggered it is the store's own distinction to prove, in
-// relational-case-store.repository.spec.ts, not this route's.
-
 it('refuses with the status the status map assigns CaseNotFoundError, when the named slug names no case at all', async () => {
   const built = buildTestApp();
   app = built.app;
-  // The store's own refusal for this exact absence names no particular version at all — it
-  // stands in its own NO_VERSION_NAMED sentinel (0) where CaseNotFoundError's constructor still
-  // requires one (relational-case-store.repository.ts's own header comment on that constant).
-  // Constructed here directly, matching that store-level convention, since this file's own
-  // ICaseQuery stand-in never runs the real store.
+
   built.listHypothesisRevisions.mockRejectedValueOnce(new CaseNotFoundError('an-absent-slug', 0));
 
   const response = await app.inject({ method: 'GET', url: '/v1/cases/an-absent-slug/hypotheses/a-hypothesis/revisions' });
@@ -211,8 +162,6 @@ it(
     expect(body.error.code).toBe('CaseNotFoundError');
   },
 );
-
-// ------------------------------------------------------------------ inferred pagination resolution
 
 it('defaults offset to 0 when the request names none', async () => {
   const built = buildTestApp();
@@ -254,8 +203,6 @@ it('passes a limit exactly equal to the configured maxLimit through unclamped', 
 
   expect(built.listHypothesisRevisions).toHaveBeenCalledWith('a-slug', 'a-hypothesis', { offset: 0, limit: 50 });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers the paginated envelope with an empty data array and a total of zero, unchanged, when the named hypothesis currently holds no revision', async () => {
   const built = buildTestApp();

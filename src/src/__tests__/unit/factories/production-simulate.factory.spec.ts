@@ -1,19 +1,3 @@
-// Proof for task/case-simulation-pipeline/simulate-case-operation: the composition logic of
-// createProductionSimulationRunner itself, isolated from the already-delivered, already-proven
-// no-cache composition it wires by mocking createSimulationRunner (../../../factories/simulate.factory.js)
-// — the boundary this factory composes against — the identical shape
-// production-diagnose.factory.spec.ts already establishes for its own sibling factory.
-// @anthropic-ai/sdk is mocked too, since both Anthropic-backed adapters this factory always
-// constructs would otherwise call the real SDK's own constructor, which throws synchronously with
-// no credential in this environment.
-//
-// This task's own Notes carry an UNDERDETERMINED entry: a simulate-case implementation whose
-// collection stage reused diagnose's own cache would satisfy every other criterion. The import-scan
-// test below is this factory's own share of excluding it — production-simulate.factory.ts imports
-// nothing resembling a cache, an observation source, or diagnose's own write path — alongside
-// simulate.factory.spec.ts's own already-delivered, already-proven structural guarantee (criterion 4
-// there) that createSimulationRunner itself accepts no externally-supplied observation source at
-// all, so nothing this factory could pass into it could ever be a cache.
 import { afterEach, beforeEach, expect, expectTypeOf, it, vi } from 'vitest';
 
 const { anthropicConstructorMock } = vi.hoisted(() => {
@@ -55,10 +39,8 @@ import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-h
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 
-/** The specification's own declared total deadline budget, restated here as the value this suite expects the factory to compute — never read from the factory's own source, so a change to the constant there is exactly what would fail this suite. */
 const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
 
-/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value. */
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -74,10 +56,8 @@ function aCase(): Case {
   };
 }
 
-/** A bare stand-in for DatabaseConnection, never queried in this file since createSimulationRunner is mocked — only its own identity matters, to the pass-through test below. */
 const FAKE_CONNECTION = {} as unknown as DatabaseConnection;
 
-/** Every field ProductionSimulationDependencies declares, all arbitrary except where a test reads one back. */
 function baseDependencies(overrides: Partial<ProductionSimulationDependencies> = {}): ProductionSimulationDependencies {
   return {
     connection: FAKE_CONNECTION,
@@ -90,7 +70,6 @@ function baseDependencies(overrides: Partial<ProductionSimulationDependencies> =
   };
 }
 
-/** Every field ProductionSimulationCall declares, all arbitrary — nothing in this file's tests reads their content. */
 function baseCall(): ProductionSimulationCall {
   return {
     subjectType: 'a-subject-type',
@@ -123,8 +102,6 @@ type WiredPassThroughFields = {
   readonly connection: DatabaseConnection;
 };
 
-// ------------------------------------------------------- pass-through wiring
-
 it('passes the caller-given connection, pool size and default consolidation register through to createSimulationRunner, unchanged', () => {
   const dependencies = baseDependencies();
 
@@ -144,8 +121,6 @@ it('always wires a real AnthropicHypothesisEvaluator and AnthropicAssessmentCons
   expect(wired.evaluator).toBeInstanceOf(AnthropicHypothesisEvaluator);
   expect(wired.consolidator).toBeInstanceOf(AnthropicAssessmentConsolidator);
 });
-
-// --------------------------- the (now, deadline) pair reaching the wired runner
 
 it('computes the deadline as its own start instant plus the specification-declared twenty-second budget, and propagates that exact pair to the wired runner', async () => {
   const runner = createProductionSimulationRunner(baseDependencies());
@@ -176,8 +151,6 @@ it("stamps a fresh (now, deadline) pair on a second call, never the first call's
   expect(secondDeadline).toBe(secondNow + EXPECTED_DEADLINE_BUDGET_MS);
 });
 
-// --------------------------------------- adapters built once, not once per call
-
 it('constructs the Anthropic client once when the runner is created, never again on either of two later calls', async () => {
   const runner = createProductionSimulationRunner(baseDependencies());
   const countAfterCreation = anthropicConstructorMock.mock.calls.length;
@@ -185,11 +158,9 @@ it('constructs the Anthropic client once when the runner is created, never again
   await runner(baseCall());
   await runner(baseCall());
 
-  expect(countAfterCreation).toBeGreaterThanOrEqual(2); // one evaluator, one consolidator
+  expect(countAfterCreation).toBeGreaterThanOrEqual(2);
   expect(anthropicConstructorMock.mock.calls.length).toBe(countAfterCreation);
 });
-
-// --------------------------------- no apiKey parameter, credential from environment
 
 it('constructs both Anthropic-backed adapters with the credential resolved from the environment alone, since ProductionSimulationDependencies exposes no apiKey field of its own', () => {
   process.env.ANTHROPIC_API_KEY = 'an-env-test-key';
@@ -202,13 +173,11 @@ it('constructs both Anthropic-backed adapters with the credential resolved from 
   }
 });
 
-// ---------- rules/investigation/a-simulation-writes-no-investigation, scenarios/investigation/a-simulation-never-enters-the-cache
-
 const MODULE_PATH = fileURLToPath(new URL('../../../factories/production-simulate.factory.ts', import.meta.url));
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
-/** Exact compiled basenames of the write-capable production composition's own modules — matched by the whole final path segment, never a substring, so this never flags the legitimate simulate.factory.js this file imports for real. */
+
 const FORBIDDEN_WRITE_PATH_BASENAMES = ['diagnose.factory.js', 'production-diagnose.factory.js', 'run-diagnosis.js', 'investigation-factory.js'];
-/** Nothing resembling a caching layer or an externally-supplied observation source exists anywhere in this tree today (simulate.factory.ts's own header comment); this scan is this factory's own share of the same structural guarantee — a future cache module would have to be imported by name to reach this file, and this asserts none is. */
+
 const FORBIDDEN_CACHE_LIKE_BASENAMES = ['cache.js', 'caching-observation-source.adapter.js', 'observation-cache.js'];
 
 async function productionSimulateFactoryImports(): Promise<readonly string[]> {
@@ -216,7 +185,6 @@ async function productionSimulateFactoryImports(): Promise<readonly string[]> {
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** The final path segment of a module specifier — the unit a basename check must compare against, never the whole specifier. */
 function basenameOf(specifier: string): string {
   return specifier.split('/').pop() ?? specifier;
 }
@@ -242,8 +210,6 @@ it('imports HttpDeclarativeObservationSource nowhere: the observation source thi
   expect(observationSourceImports).toEqual([]);
 });
 
-// ----------------------- type-level: no observation-source or write-capable field could ever be passed
-
 it('ProductionSimulationDependencies carries exactly connection, poolSize, defaultConsolidationRegister, evaluatorModel, evaluatorMaxTokens, consolidatorModel and consolidatorMaxTokens — no observation-source field of its own', () => {
   expectTypeOf<ProductionSimulationDependencies>().toEqualTypeOf<{
     readonly connection: DatabaseConnection;
@@ -264,8 +230,6 @@ it('ProductionSimulationCall carries exactly subjectType, subjectAttributes, cas
     readonly requester: string;
   }>();
 });
-
-// ---------------------------------------------- edge case: the wired runner rejects
 
 it("propagates a rejection from the wired runner to this factory's own caller, unchanged", async () => {
   const failure = new Error('a pipeline failure');

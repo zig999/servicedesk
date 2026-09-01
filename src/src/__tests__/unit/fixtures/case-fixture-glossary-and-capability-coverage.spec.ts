@@ -1,12 +1,3 @@
-// Proof that every term the fixture case and its hypotheses name resolves against the fixture's own
-// glossary vocabulary files and capability registrations, read as five separate files rather than
-// through the composed read-case path — so a term present in the case but missing from exactly one
-// vocabulary file is caught here independently of the bundled coherence refusal
-// (rules/knowledge/case-terms-exist-in-the-glossary, rules/knowledge/a-concept-accepts-the-declared-subject-type,
-// rules/knowledge/every-collected-concept-has-a-read-only-capability, rules/knowledge/a-collected-concept-declares-a-ttl,
-// rules/glossary/the-non-conclusion-outcomes-precede-the-first-case, domain/glossary/subject-type,
-// domain/glossary/concept, domain/glossary/outcome, domain/glossary/action, domain/glossary/recipient,
-// domain/integration/capability).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,8 +22,6 @@ async function readJsonArray<T>(...segments: readonly string[]): Promise<readonl
   const text = await readFile(join(FIXTURES_ROOT, ...segments), 'utf8');
   return JSON.parse(text) as readonly T[];
 }
-
-// -------------------------------------------------------- criterion 4: every named term is in the glossary
 
 it("names a subject type that exists in the fixture glossary's subject-type vocabulary", async () => {
   const theCase = await loadFixtureCase();
@@ -64,8 +53,6 @@ it('carries both non-conclusion outcomes in its own outcome vocabulary file, ahe
     expect(names).toContain(nonConclusion.name);
   }
 });
-
-// ------------------------------------------ criterion 5: collected concepts and their capabilities
 
 it("registers every concept the fixture hypotheses collect to accept the case's own declared subject type, per the fixture glossary's own concept file", async () => {
   const theCase = await loadFixtureCase();

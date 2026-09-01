@@ -1,16 +1,7 @@
-// Proof for task/hypothesis-judgment-adapter/anthropic-hypothesis-evaluator:
-// AnthropicHypothesisEvaluator never reaches the network. @anthropic-ai/sdk
-// is a boundary (TST-03), stood in for by a mocked constructor and a mocked
-// messages.create — what crosses that boundary (the request sent, and
-// whether it was sent at all) is the only externally observable trace of
-// this adapter's own prompt-assembly, no-data short-circuit and
-// response-parsing behavior, since none of those are exported from the
-// module under test.
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-hypothesis-evaluator.adapter.js';
 import type { CaseContext, EvidenceItem } from '../../../investigation/hypothesis-evaluator.port.js';
 
-/** What one mocked messages.create() call receives — only the fields this suite reads. */
 type MockedCreateParams = {
   readonly model: string;
   readonly max_tokens: number;
@@ -19,13 +10,6 @@ type MockedCreateParams = {
   readonly tools?: unknown;
 };
 
-/**
- * What one mocked messages.create() call answers — the content shape
- * textOf()/parseJudgment() read, plus the optional usage field this suite's
- * own criteria-1/2/3 tests give a mocked response so evaluate() has
- * message.usage to read from
- * (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing).
- */
 type MockedMessage = {
   readonly content: readonly { readonly type: string; readonly text: string }[];
   readonly usage?: { readonly input_tokens: number; readonly output_tokens: number };
@@ -39,18 +23,16 @@ const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
 
 vi.mock('@anthropic-ai/sdk', () => ({ default: anthropicConstructorMock }));
 
-/** One well-formed model answer carrying exactly this text, in the one shape textOf()/parseJudgment() ever read. */
 function messageWithText(text: string): MockedMessage {
   return { content: [{ type: 'text', text }] };
 }
 
-/** The subject under test, with an explicit apiKey so no test depends on the host's own environment unless it says so. */
 function createEvaluator(options?: { readonly maxTokens?: number; readonly model?: string }): AnthropicHypothesisEvaluator {
   return new AnthropicHypothesisEvaluator({ apiKey: 'a-test-api-key', model: options?.model ?? 'a-test-model', maxTokens: options?.maxTokens });
 }
 
 const A_CRITERION = 'a-criterion';
-/** A representative ok evidence item, carrying a non-empty fields array (one field with its own type and description) and a non-empty concept_description — used across tests that are not themselves about prompt shape, so its exact content is otherwise arbitrary. */
+
 const SOME_OK_EVIDENCE: readonly EvidenceItem[] = [
   {
     concept: 'concept-one',
@@ -169,7 +151,6 @@ it('carries the given criterion, evidence observation, its own concept descripti
   expect(content).toContain('the-marker-when-to-use');
 });
 
-/** Extracts one item's own rendered block — from its own opening `<item concept="...">` tag up to the following `</item>` — so a test can assert what is, and is not, inside that one item's own block without a false positive from another item's content elsewhere in the same prompt. */
 function itemBlockOf(content: string, concept: string): string {
   const openTag = `<item concept="${concept}">`;
   const start = content.indexOf(openTag);
@@ -502,11 +483,6 @@ it('sends exactly the model the caller configured, not a hardcoded default', asy
 
   expect(createMock.mock.calls[0]?.[0]).toMatchObject({ model: 'a-configured-model' });
 });
-
-// ---------- task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing:
-// ---------- criteria 1-3, replacing this suite's own now-obsolete placeholder-behavior tests
-// ---------- above (task/investigation-telemetry/widen-judgment-and-consolidation-ports' own
-// ---------- criterion 5, which this task deliberately replaced)
 
 it("answers a decided verdict carrying usage read exactly from the provider response's own message.usage, alongside the measured elapsed_ms and the sent prompt", async () => {
   const citation = { concept: 'concept-one', field: 'field-one' };

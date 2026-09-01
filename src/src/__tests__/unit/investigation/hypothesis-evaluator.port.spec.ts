@@ -1,40 +1,15 @@
-// Proof for task/hypothesis-judgment/hypothesis-evaluator-port: the fake
-// adapter, the only concrete IHypothesisEvaluator this task ships, answers
-// exactly what a test seeded for one criterion — confirmed and refuted
-// carrying the citations seeded with them, inconclusive carrying the reason
-// seeded with it and whatever citations were seeded alongside — and never
-// throws for any of the three verdicts, throwing only for a criterion
-// nothing seeded, which is a test-setup fault rather than a fourth verdict.
-//
-// task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's
-// own criterion 1 (every seeded answer also carries a deterministic
-// zero-valued usage and elapsed_ms, overriding whatever a seed itself
-// carries for either) supersedes what several of the tests below used to
-// prove — under the depended-upon widen-judgment-and-consolidation-ports
-// task, this fake was left byte-for-byte untouched by the widened port's own
-// new, optional call-record fields, and a seeded usage/elapsed_ms/prompt
-// survived a call unchanged. Every `toEqual` below that used to omit
-// usage/elapsed_ms now includes the zeroed values this task's own criterion 1
-// requires, and the two tests that specifically proved the old, now-superseded
-// guarantees (a non-zero seeded usage/elapsed_ms passed through unchanged; the
-// source declaring neither field at all) are replaced with the equivalent-
-// strength successors below, proving this task's own new guarantee instead.
 import { expect, it } from 'vitest';
 import { FakeHypothesisEvaluator } from '../../../investigation/fake-hypothesis-evaluator.adapter.js';
 import type { Citation } from '../../../investigation/citation.js';
 import type { CaseContext, EvidenceItem, IHypothesisEvaluator } from '../../../investigation/hypothesis-evaluator.port.js';
 import type { Usage } from '../../../investigation/usage.js';
 
-/** A criterion string, spelled out rather than left implicit. */
 const A_CRITERION = 'a-criterion';
 
-/** The deterministic zero-valued usage every seeded FakeHypothesisEvaluator answer now carries (task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing's own criterion 1), regardless of what a seed itself specifies for either. */
 const ZEROED_USAGE: Usage = { input_tokens: 0, output_tokens: 0 };
 
-/** The deterministic zero-valued elapsed_ms every seeded FakeHypothesisEvaluator answer now carries, for the same reason. */
 const ZEROED_ELAPSED_MS = 0;
 
-/** The evidence a call carries — the fake computes nothing from it, so its content is arbitrary. It carries a non-empty fields array (one field with its own type and description) and a non-empty concept_description so this fixture itself exercises the widened EvidenceItem shape (fields: readonly FieldSemantics[], concept_description: string) rather than merely satisfying the compiler with empty values. */
 const SOME_EVIDENCE: readonly EvidenceItem[] = [
   {
     concept: 'a-concept',
@@ -45,10 +20,8 @@ const SOME_EVIDENCE: readonly EvidenceItem[] = [
   },
 ];
 
-/** The pinned case's own situational context a call carries — the fake computes nothing from it either, so its content is arbitrary. */
 const A_CASE_CONTEXT: CaseContext = { title: 'a-title', whenToUse: 'a-when-to-use' };
 
-/** The subject under test, held as the published contract rather than as the class behind it. */
 function evaluatorOver(fake: FakeHypothesisEvaluator): IHypothesisEvaluator {
   return fake;
 }
@@ -135,11 +108,6 @@ it('answers the outcome seeded for this criterion, not the one seeded for a diff
   });
 });
 
-// ---------- task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing: criterion 1
-// (supersedes task/investigation-telemetry/widen-judgment-and-consolidation-ports' own criterion 1,
-// which this exact test used to prove a seeded usage/elapsed_ms passed through a call unchanged —
-// criterion 1 above now fixes both at zero for every answer regardless of what a seed carries)
-
 it('overrides a seeded non-zero usage and elapsed_ms with the deterministic zero on every answer, while still carrying a seeded prompt through unchanged', async () => {
   const fake = new FakeHypothesisEvaluator();
   const citations: readonly [Citation, ...Citation[]] = [{ concept: 'a-concept', field: 'a-field' }];
@@ -157,13 +125,6 @@ it('overrides a seeded non-zero usage and elapsed_ms with the deterministic zero
     prompt: 'the materialized judgment prompt',
   });
 });
-
-// ---------- task/investigation-telemetry/fake-adapters-return-zeroed-usage-and-timing: criterion 1's
-// own prompt-scope inference (supersedes task/investigation-telemetry/widen-judgment-and-consolidation-ports'
-// own criterion 5, which this exact test used to prove — by scanning the source's own text — that this
-// fake declared no usage, elapsed_ms or prompt field at all; usage and elapsed_ms are now genuinely
-// declared and attached by every answer, so that proof is replaced with a behavioral one: prompt alone
-// stays exactly as a seed carries it, present or absent, never itself defaulted the way usage/elapsed_ms now are)
 
 it('attaches the deterministic zero-valued usage and elapsed_ms even where a seeded outcome carries no prompt at all, leaving the answered outcome without a prompt key of its own', async () => {
   const fake = new FakeHypothesisEvaluator();

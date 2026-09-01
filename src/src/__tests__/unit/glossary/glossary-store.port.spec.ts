@@ -1,8 +1,3 @@
-// Proof for task/stale-specification-citations/citations-corrected's own criterion 8, over
-// glossary-store.port.ts: insertMissingTerms' own doc comment cites
-// rules/glossary/the-non-conclusion-outcomes-precede-the-first-case, in place of the discarded
-// task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome path this comment used to
-// name.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -15,8 +10,6 @@ it('no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task pat
   expect(source).not.toContain('task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome');
   expect(source).toContain('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case');
 });
-
-// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 3
 
 it("readConcepts' own doc comment cites rules/knowledge/a-collected-concept-declares-a-ttl for the ttl-absent-on-read claim, rather than stating it without attribution", async () => {
   const source = await readFile(MODULE_PATH, 'utf8');

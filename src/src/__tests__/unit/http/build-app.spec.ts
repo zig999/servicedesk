@@ -1,31 +1,3 @@
-// Proof for task/http-surface/diagnose-http-endpoint: the HTTP surface itself
-// — build-app.ts, diagnose.routes.ts, diagnose.controller.ts and
-// dto/diagnose.dto.ts — exercised through Fastify's own app.inject() against
-// buildApp() directly, never a hand-rolled substitute for the route or the
-// controller. The wired production pipeline is a stand-in here: runDiagnose
-// is exactly the function-value seam DiagnoseControllerDependencies
-// declares, stood in for by a vi.fn() (TST-03 — a stand-in replaces a
-// boundary, never business logic; the pipeline behind that seam is business
-// logic this task does not own). The real pipeline, run end to end against
-// the real fixture case and a mocked Anthropic client, is proven separately
-// in __tests__/integration/factories/diagnose-server.factory.spec.ts.
-//
-// Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
-// record: buildApp() now takes a BuildAppDependencies value — one field per route this initiative
-// registers, nineteen in all — rather than a DiagnoseControllerDependencies-shaped object alone.
-// buildTestApp() below still names only diagnose's own dependencies, since every test above and
-// below it exercises only the diagnose route; stubBuildAppDependencies() wraps that one value into
-// the full shape buildApp() now requires, stubbing every other route's own dependencies minimally
-// (TST-03 — a stand-in replaces a boundary; every one of those eighteen fields is exactly that, a
-// boundary this file's own scenarios never exercise).
-//
-// This file's own new tests, added for that same task, sit in their own two sections below: one
-// proving build-app.ts's own criterion 1 (one stated registration convention rather than one
-// registered call site per route), and one proving criterion 2 (every one of the eighteen other
-// route plugins is actually reachable — a request against each one reaches its own controller
-// rather than 404). Criterion 3 (the diagnose route's own registration preserved exactly as it
-// already answers) is what every test already in this file proves by continuing to pass unmodified
-// in behavior — only buildTestApp()'s own call site changed, never what it asserts.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import type { FastifyInstance } from 'fastify';
@@ -52,7 +24,6 @@ import type { InvestigationPipelineResult } from '../../../investigation/investi
 import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
 import type { PaginatedResponse } from '../../../types/pagination.js';
 
-/** A minimally valid Case, never read for its content by any test here: every test supplies its own runDiagnose stand-in, so nothing in this file ever reaches the real pipeline this case would otherwise feed; manifest stays empty for the same reason (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function minimalCase(): Case {
   return {
     slug: 'a-case',
@@ -70,13 +41,8 @@ function minimalCase(): Case {
   };
 }
 
-/** Answers minimalCase() unconditionally, regardless of the slug/version given — this file's own tests only assert on the HTTP surface, never on which case was requested. The `hash` answered here is read-case's own store-level content pin (ReadCaseResult.hash — sha256 of the stored document's bytes), never a field of Case itself, which carries no hash at all; a fixed placeholder serves since no test in this file reads it. */
 function stubCaseQuery(theCase: Case): ICaseQuery {
-  // listCases, listCaseVersions, listHypotheses and listHypothesisRevisions are no part of what
-  // this file proves (this file's own routes never reach any of them) — stubbed only so this fake
-  // keeps satisfying ICaseQuery now that task/case-query-http/list-cases-route,
-  // list-case-versions-route, list-hypotheses-route and list-hypothesis-revisions-route added them
-  // to it.
+
   return {
     readCase: async () => ({ case: theCase, hash: 'a-hash' }),
     listCases: vi.fn(),
@@ -86,7 +52,6 @@ function stubCaseQuery(theCase: Case): ICaseQuery {
   };
 }
 
-/** Everything diagnoseRequestSchema requires, as a plain object rather than the imported DTO type — some tests below intentionally break this shape to prove the validation boundary refuses it. */
 function validRequestBody(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     case: { slug: 'a-case', version: 1 },
@@ -99,12 +64,10 @@ function validRequestBody(overrides: Record<string, unknown> = {}): Record<strin
 
 type RunDiagnoseMock = ReturnType<typeof vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>>;
 
-/** An empty page of T, shaped exactly as src/types/pagination.ts's own PaginatedResponse requires — sufficient for any of this file's own stubbed listing dependencies to resolve without throwing, never asserted on for its own content by any test in this file. */
 function emptyPage<T>(): PaginatedResponse<T> {
   return { data: [], total: 0, limit: 10, offset: 0, pageCount: 0 };
 }
 
-/** A minimally valid ICaseStore stand-in (TST-03): every write resolves void (or, where the port declares one, the smallest valid answer), so a route reaches its own controller and completes without throwing before ever reaching the shared error handler — never asserted on for its own returned content by any test in this file. */
 function stubCaseStore(): ICaseStore {
   return {
     assembleVersion: async () => undefined,
@@ -123,7 +86,6 @@ function stubCaseStore(): ICaseStore {
   };
 }
 
-/** A minimally valid ICapabilityQuery stand-in (TST-03): readCapability answers a held capability so read-capability-route's own controller never raises ConceptNotAnsweredError (mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubCapabilityQuery(): ICapabilityQuery {
   return {
     readCapability: async (concept) => ({
@@ -134,7 +96,6 @@ function stubCapabilityQuery(): ICapabilityQuery {
   };
 }
 
-/** A minimally valid IGlossaryQuery stand-in (TST-03): both reads answer a held term/concept so read-vocabulary-term-route's and read-concept-route's own controllers never raise their own typed not-held errors (both mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubGlossaryQuery(): IGlossaryQuery {
   return {
     readVocabularyTerm: async (_vocabulary, name) => ({ held: true, term: { name } }),
@@ -144,7 +105,6 @@ function stubGlossaryQuery(): IGlossaryQuery {
   };
 }
 
-/** A minimally valid ReadCapabilityByIdentityControllerDependencies stand-in (TST-03): resolves a held capability under whichever (name, version) identity is asked, so read-capability-by-identity-route's own controller never raises CapabilityIdentityNotFoundError (mapped to 404 by status-map.ts) for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubReadCapabilityByIdentity(): ReadCapabilityByIdentityControllerDependencies {
   return {
     readCapabilityByIdentity: async (name, version) => ({
@@ -153,7 +113,6 @@ function stubReadCapabilityByIdentity(): ReadCapabilityByIdentityControllerDepen
   };
 }
 
-/** A minimally valid RegisterCapabilityControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed Capability so register-capability-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubRegisterCapability(): RegisterCapabilityControllerDependencies {
   return {
     registerCapability: async () => ({
@@ -169,7 +128,6 @@ function stubRegisterCapability(): RegisterCapabilityControllerDependencies {
   };
 }
 
-/** A minimally valid RegisterConceptControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed Concept so register-concept-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubRegisterConcept(): RegisterConceptControllerDependencies {
   return {
     registerConcept: async () => ({
@@ -181,7 +139,6 @@ function stubRegisterConcept(): RegisterConceptControllerDependencies {
   };
 }
 
-/** A minimally valid RegisterConnectorControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed ConnectorConfiguration so register-connector-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubRegisterConnector(): RegisterConnectorControllerDependencies {
   return {
     registerConnector: async () => ({
@@ -191,14 +148,12 @@ function stubRegisterConnector(): RegisterConnectorControllerDependencies {
   };
 }
 
-/** A minimally valid ReadConnectorConfigurationControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a fixed ConnectorConfiguration so read-connector-configuration-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubReadConnectorConfiguration(): ReadConnectorConfigurationControllerDependencies {
   return {
     readConnectorConfiguration: async () => ({ connector: 'a-connector', configuration: JSON.stringify({}) }),
   };
 }
 
-/** A minimally valid ListConnectorConfigurationsControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves an empty page so list-connector-configurations-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubListConnectorConfigurations(): ListConnectorConfigurationsControllerDependencies {
   return {
     listConnectorConfigurations: async () => emptyPage(),
@@ -207,7 +162,6 @@ function stubListConnectorConfigurations(): ListConnectorConfigurationsControlle
   };
 }
 
-/** A minimally valid TestConnectorControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: resolves a held capability whose own connector matches the request's connector, a held connector configuration, and an httpClient stand-in resolving a minimal Response — so test-connector-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file. */
 function stubTestConnector(): TestConnectorControllerDependencies {
   return {
     readCapabilityByIdentity: async (name, version) => ({
@@ -222,7 +176,6 @@ function stubTestConnector(): TestConnectorControllerDependencies {
   };
 }
 
-/** A minimally valid InvestigationPipelineResult, sufficient for simulateCaseResponseSchema's own answer to validate — never asserted on for its own content by any test in this file besides this task's own new tests below, which build their own instead. */
 const MINIMAL_SIMULATION_RESULT: InvestigationPipelineResult = {
   evidence: [],
   evaluations: [],
@@ -233,7 +186,6 @@ const MINIMAL_SIMULATION_RESULT: InvestigationPipelineResult = {
   prompts: { writing: 'a prompt' },
 };
 
-/** The HTTP response simulateCaseResponseSchema actually admits for MINIMAL_SIMULATION_RESULT: the identical six fields, minus `prompts` — the response DTO's own field never carried in the wire body — so the reachability assertion below compares against what the controller's real response shape can hold, not against runSimulate's own internal stub value. */
 const EXPECTED_SIMULATE_RESPONSE_BODY = {
   evidence: MINIMAL_SIMULATION_RESULT.evidence,
   evaluations: MINIMAL_SIMULATION_RESULT.evaluations,
@@ -243,7 +195,6 @@ const EXPECTED_SIMULATE_RESPONSE_BODY = {
   durations: MINIMAL_SIMULATION_RESULT.durations,
 };
 
-/** A minimally valid SimulateCaseControllerDependencies stand-in (TST-03), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies: reuses the same caseQuery and glossaryQuery this file already builds for diagnose's own sibling stubs, and resolves a minimally valid complete record through runSimulate — so simulate-case-route's own controller never reaches a domain refusal for a reason unrelated to this file's own registration proof — never asserted on for its own returned content by any test in this file except this task's own new tests below, which do assert on it. */
 function stubSimulateCase(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateCaseControllerDependencies {
   return {
     caseQuery,
@@ -252,14 +203,12 @@ function stubSimulateCase(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery):
   };
 }
 
-/** A minimally valid SimulateHypothesisPipelineResult, sufficient for simulateHypothesisResponseSchema's own answer to validate — companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, mirroring MINIMAL_SIMULATION_RESULT's own purpose exactly: never asserted on for its own content by any test in this file. */
 const MINIMAL_HYPOTHESIS_SIMULATION_RESULT: SimulateHypothesisPipelineResult = {
   evidence: [],
   evaluation: { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', citations: [] },
   durations: { collection: 0, judgment: 0, total: 0 },
 };
 
-/** A minimally valid SimulateHypothesisControllerDependencies stand-in (TST-03), companion fix for task/case-simulation-pipeline/simulate-hypothesis-operation, disclosed in that task's own implementation record under `preserved`: BuildAppDependencies and BuildAppDependenciesInputs both gained a new required simulateHypothesis field, so this file's own stubBuildAppDependencies() needs a companion stub the same way stubSimulateCase already supplies one for simulateCase — reuses the same caseQuery and glossaryQuery instances, and resolves a minimally valid record through runSimulateHypothesis, never asserted on for its own returned content by any test in this file. */
 function stubSimulateHypothesis(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): SimulateHypothesisControllerDependencies {
   return {
     caseQuery,
@@ -268,9 +217,6 @@ function stubSimulateHypothesis(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQ
   };
 }
 
-/** The named shape of stubQueryDependentFields()'s own return value, held as a module-level type
- * alias rather than written inline in that function's own signature so the type's own line span
- * is never counted against its function's max-lines-per-function budget. */
 type QueryDependentFields = Pick<
   BuildAppDependencies,
   | 'updateDraft'
@@ -286,12 +232,6 @@ type QueryDependentFields = Pick<
   | 'listConcepts'
 >;
 
-/** The eleven BuildAppDependencies fields that resolve from caseQuery and/or glossaryQuery alone
- * (update-draft, release, read-case, the four case-listing routes, and the four glossary-reading
- * routes), extracted to its own helper (MNT-01) rather than inlined in stubBuildAppDependencies:
- * same stand-ins, same caseQuery/glossaryQuery instances stubBuildAppDependencies() already builds
- * for diagnose and simulateCase, only grouped here to keep stubBuildAppDependencies() itself within
- * the standard's max-lines-per-function rule — no dependency or value changes. */
 function stubQueryDependentFields(caseQuery: ICaseQuery, glossaryQuery: IGlossaryQuery): QueryDependentFields {
   return {
     updateDraft: { caseStore: stubCaseStore(), caseQuery },
@@ -308,14 +248,6 @@ function stubQueryDependentFields(caseQuery: ICaseQuery, glossaryQuery: IGlossar
   };
 }
 
-/**
- * Every one of the eighteen route plugins besides diagnose this task registers, stubbed minimally
- * around the one given diagnose dependency: this file's own scenarios exercise only the diagnose
- * route, so every other field only needs to let its own route reach its own controller and resolve
- * without throwing before ever reaching the shared error handler (TST-03) — never asserted on for
- * its own returned content by any test in this file except the reachability tests criterion 2 owns
- * below, which assert only on the response's status code.
- */
 function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): BuildAppDependencies {
   const caseQuery = stubCaseQuery(minimalCase()); const glossaryQuery = stubGlossaryQuery();
   return {
@@ -340,7 +272,6 @@ function stubBuildAppDependencies(diagnose: DiagnoseControllerDependencies): Bui
   };
 }
 
-/** One Fastify instance built against buildApp() itself, plus the runDiagnose stand-in it was wired with — the one seam this whole file's tests drive and observe. Wraps the given diagnose dependencies into the full BuildAppDependencies buildApp() now requires (register-routes-in-build-app's own sibling fix, disclosed above); every field beyond diagnose is stubBuildAppDependencies()'s own concern, never this function's. */
 function buildTestApp(): { app: FastifyInstance; runDiagnose: RunDiagnoseMock } {
   const runDiagnose = vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>();
   const dependencies: DiagnoseControllerDependencies = {
@@ -360,8 +291,6 @@ afterEach(async () => {
   app = undefined;
 });
 
-// ------------------------------------------------------------------ criterion 1
-
 it('answers 200 with the assessment the diagnose call produced, for a request naming an existing case, subject, narrative and requester', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -377,8 +306,6 @@ it('answers 200 with the assessment the diagnose call produced, for a request na
   expect(response.statusCode).toBe(200);
   expect(response.json()).toEqual(expectedAssessment);
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it('carries exactly outcome, referral, determining_hypothesis and text when the resolved outcome names a determining hypothesis', async () => {
   const built = buildTestApp();
@@ -413,8 +340,6 @@ it('omits determining_hypothesis and carries no verdict, citation or evidence fi
   expect(body).not.toHaveProperty('evidence');
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it("answers each of two requests naming the same case, subject, narrative and requester with that call's own resolved assessment, never a cached or joined value", async () => {
   const built = buildTestApp();
   app = built.app;
@@ -445,13 +370,6 @@ it('invokes the diagnose call under a fresh id for each of two requests naming t
   expect(firstId).not.toBe(secondId);
 });
 
-// ------------------------------------------------------------------ criterion 4
-
-// This test used to assert the controller supplied the empty string as a placeholder for an
-// absent ticket_ref — the behavior task/case-and-investigation-model/ticket-ref-is-optional
-// removed (diagnose.controller.ts no longer synthesizes `body.ticket_ref ?? ''`), so the
-// assertion below now states what that task's own criteria 2 and 3 require instead: an absent
-// ticket_ref threads through as an absence, not an invented placeholder.
 it('passes ticket_ref through as undefined to the diagnose call when the request names none, inventing no placeholder', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -473,8 +391,6 @@ it('passes a given ticket_ref straight through to the diagnose call, unchanged',
   expect(response.statusCode).toBe(200);
   expect(built.runDiagnose.mock.calls[0]?.[0].ticket_ref).toBe('TCK-42');
 });
-
-// ------------------------------------------------------------------ criterion 5
 
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
@@ -502,8 +418,6 @@ it("runs the diagnose call under exactly the body's own requester, even when the
   expect(built.runDiagnose.mock.calls[0]?.[0].requester).toBe('requester-in-body');
 });
 
-// ------------------------------------------------------------------ criterion 6
-
 const HTTP_LAYER_RELATIVE_PATHS = [
   '../../../http/build-app.ts',
   '../../../http/diagnose.routes.ts',
@@ -527,14 +441,10 @@ it("imports fastify, and no second HTTP or router framework, across build-app, t
   expect(forbidden).toEqual([]);
 });
 
-// ------------------------------------------------------- register-routes-in-build-app, criterion 1
-
 it('registers every route plugin through one shared app.register() call site, never one repeated per route', async () => {
   const file = fileURLToPath(new URL('../../../http/build-app.ts', import.meta.url));
   const source = await readFile(file, 'utf8');
-  // Comment lines are stripped first: this file's own header comment mentions "app.register()" in
-  // prose, and counting that occurrence alongside the real call site would pass this assertion
-  // regardless of whether the source actually registers through one call site or nineteen.
+
   const codeOnly = source
     .split('\n')
     .filter((line) => !line.trim().startsWith('//'))
@@ -545,8 +455,6 @@ it('registers every route plugin through one shared app.register() call site, ne
   expect(registerCallSites).toHaveLength(1);
 });
 
-// ------------------------------------------------------- register-routes-in-build-app, criterion 2
-
 type RegisteredRouteRequest = {
   readonly description: string;
   readonly method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -554,7 +462,6 @@ type RegisteredRouteRequest = {
   readonly payload?: Record<string, unknown>;
 };
 
-/** One validly-shaped request against each of the eighteen route plugins this task registers besides diagnose (already proven reachable by every test above), so a 404 answered here could only mean the route was never registered by build-app.ts's own loop — never a 400 raised by this route's own DTO validation over a request this file shaped wrong. */
 const A_RESOLUTION = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } };
 const REGISTERED_ROUTE_REQUESTS: readonly RegisteredRouteRequest[] = [
   { description: 'read-capability', method: 'GET', url: '/v1/capabilities/a-concept' },
@@ -604,8 +511,6 @@ it.each(REGISTERED_ROUTE_REQUESTS)(
   },
 );
 
-// ------------------------------------------------------------------ edge cases
-
 it('refuses with 400 a request whose body names no narrative', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -643,8 +548,6 @@ it('answers 500 with a generic message, never the rejected call\'s own error tex
   expect(response.body).not.toContain('sensitive internal detail');
 });
 
-// ------------------------------------------------------- registry-reads/read-capability-by-identity-route, criterion 3
-
 it(
   "reaches read-capability-by-identity's own controller on the very first request a freshly built app instance ever receives, " +
     'proving it is registered in routePlugins() with no dependency on any prior call to list-capabilities',
@@ -657,8 +560,6 @@ it(
     expect(response.statusCode).toBe(200);
   },
 );
-
-// ------------------------------------------------------- registry-reads/read-capability-by-identity-route, inference: path coexistence
 
 it(
   'answers the GET to /v1/capabilities/{name}/{version} through read-capability-by-identity and the PUT to the identical path ' +
@@ -685,9 +586,6 @@ it(
   },
 );
 
-// ------------------------------------------------------- case-simulation-pipeline/simulate-case-operation, criterion 8
-
-/** Everything simulateCaseRequestSchema requires, as a plain object — this file's own registration proof only, not simulate-case's own domain behavior (proven separately in simulate-case.controller.spec.ts and the real-composition integration proof against diagnose-server.factory.ts). */
 function validSimulateRequestBody(): Record<string, unknown> {
   return {
     case: { slug: 'a-case', version: 1 },
@@ -721,8 +619,6 @@ it('refuses with 400 a simulate-case request whose subject carries no attribute 
 
   expect(response.statusCode).toBe(400);
 });
-
-// ------------------------------------------------------- diagnose-input-schema-contract/derive-case-input-requirements
 
 it(
   "reaches read-case-input-requirements's own controller through buildApp()'s registration, answering the query's own result unchanged, on the very first request a freshly built app instance ever receives",

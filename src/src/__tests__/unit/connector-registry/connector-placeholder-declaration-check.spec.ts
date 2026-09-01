@@ -1,19 +1,10 @@
-// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
-// (rules/integration/a-connector-placeholder-is-declared-by-its-capability): orphanedPlaceholders
-// names every Subject-attribute placeholder a connector configuration's own call text embeds that
-// a capability's declared input-schema properties does not hold — never a requester or credential
-// placeholder, whatever the capability declares. Pure, so no stand-in is needed anywhere below
-// (TST-03): both arguments are plain values, never a store or a network boundary.
 import { expect, it } from 'vitest';
 import { orphanedPlaceholders } from '../../../connector-registry/connector-placeholder-declaration-check.js';
 
-/** A well-formed input schema declaring exactly the given property names, so a test can state which Subject attributes the capability holds without spelling out the whole JSON Schema shape each time. */
 function inputSchemaDeclaring(...propertyNames: readonly string[]): string {
   const properties = Object.fromEntries(propertyNames.map((name) => [name, {}]));
   return JSON.stringify({ properties });
 }
-
-// ------------------------------------------------------------------ criterion 1
 
 it("names a Subject-attribute placeholder as orphaned when the capability's declared properties does not name it", () => {
   const configurationText = 'https://api.example.test/records/${subject:customer_document}';
@@ -22,8 +13,6 @@ it("names a Subject-attribute placeholder as orphaned when the capability's decl
 
   expect(orphaned).toEqual(['customer_document']);
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it("names no orphaned placeholder for a Subject-attribute placeholder the capability's declared properties does name", () => {
   const configurationText = 'https://api.example.test/records/${subject:customer_document}';
@@ -41,8 +30,6 @@ it('names only the undeclared placeholder, leaving a declared one out, when the 
   expect(orphaned).toEqual(['customer_document']);
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('never names a requester placeholder orphaned, even when the capability declares no properties at all', () => {
   const configurationText = 'https://api.example.test/as/${requester}';
 
@@ -58,8 +45,6 @@ it('never names a credential placeholder orphaned, even when the capability decl
 
   expect(orphaned).toEqual([]);
 });
-
-// ------------------------------------------------------------------ inference: a raw input_schema is read through declaredInputSchemaShape's own permissive posture
 
 it('treats an undefined input_schema as declaring no properties, naming every embedded Subject-attribute placeholder as orphaned', () => {
   const configurationText = '${subject:customer_document}';
@@ -84,8 +69,6 @@ it('treats an input_schema whose properties is not declared as an object as decl
 
   expect(orphaned).toEqual(['customer_document']);
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers the empty array when the call text embeds no placeholder at all', () => {
   const configurationText = 'https://api.example.test/records';

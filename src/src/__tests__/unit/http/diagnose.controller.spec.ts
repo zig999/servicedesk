@@ -1,25 +1,3 @@
-// Proof for task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version:
-// handleDiagnoseRequest refuses a diagnose request naming a draft-state pinned
-// case version with the new CaseVersionNotReleasedError before
-// dependencies.runDiagnose — the sole entry into collection, judgment and
-// writing (this file's own header comment) — is ever called, and a
-// released-state pinned version still proceeds through runDiagnose exactly as
-// it did before this task. ICaseQuery.readCase and dependencies.runDiagnose
-// are stand-ins here (TST-03 — each is a boundary this controller calls,
-// never business logic of its own): case-query.service.ts's own readCase is
-// proved separately in __tests__/unit/case/case-query.service.spec.ts, and the
-// wired production pipeline in
-// __tests__/integration/factories/production-diagnose.factory.spec.ts and the
-// end-to-end __tests__/integration/http/diagnose-e2e.spec.ts. CaseNotFoundError
-// and CaseNotValidError, readCase's own pre-existing refusals, are untouched
-// by this task and not re-proved here.
-//
-// Also carries task/investigation-telemetry/diagnose-reports-real-cost-and-durations's
-// own criterion 1 (diagnose.controller.ts no longer references UNMEASURED_COST
-// or UNMEASURED_DURATIONS): this is the one spec file exercising
-// diagnose.controller.ts, so the assembled-call assertion below no longer
-// asserts a cost or durations shape, and a source-text scan proves neither
-// placeholder identifier survives in the file itself.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
@@ -34,12 +12,10 @@ import { handleDiagnoseRequest, type DiagnoseControllerDependencies } from '../.
 import type { DiagnoseRequestDto } from '../../../http/dto/diagnose.dto.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -53,7 +29,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A case version as case-query would already hold it, overridable per test so state/slug/version vary without a second builder. */
 function heldCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -83,17 +58,10 @@ type ReadCaseInputRequirementsMock = ReturnType<
   typeof vi.fn<(slug: string, version: number) => Promise<CaseInputRequirementsResult>>
 >;
 
-/** An empty derived-requirements result: no attribute is named at all, so no gate this task adds ever refuses over it — the default every existing test in this file (written before this task) keeps relying on. */
 function noRequirements(): CaseInputRequirementsResult {
   return { requirements: [], capabilities_with_malformed_input_schema: [] };
 }
 
-/**
- * Wires DiagnoseControllerDependencies with a readCase stand-in that always answers the given case,
- * a runDiagnose stand-in the test configures per case, and a readCaseInputRequirements stand-in the
- * test may override (defaulting to noRequirements(), the shape every pre-existing test in this file
- * relies on) (TST-03).
- */
 function buildDependencies(
   readCaseResult: ReadCaseResult,
   requirementsResult: CaseInputRequirementsResult = noRequirements(),
@@ -123,8 +91,6 @@ function buildDependencies(
   };
   return { dependencies, readCase, runDiagnose, readCaseInputRequirements };
 }
-
-// ------------------------------------------------------------------ criterion 1
 
 it('refuses a diagnose request naming a draft-state pinned case version by throwing exactly a CaseVersionNotReleasedError', async () => {
   const { dependencies } = buildDependencies({ case: heldCase({ state: 'draft' }) });
@@ -162,10 +128,6 @@ it('never calls runDiagnose — the sole entry into collection, judgment and wri
   expect(runDiagnose).not.toHaveBeenCalled();
 });
 
-// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute:
-// the new gate sits after the released-state check, so a draft-state pinned version must still be
-// refused by CaseVersionNotReleasedError alone, without ever consulting the case-input-requirements
-// read the new gate depends on.
 it('never queries the case-input-requirements for a draft-state pinned version, so the existing released-state refusal still runs first', async () => {
   const { dependencies, readCaseInputRequirements } = buildDependencies({ case: heldCase({ state: 'draft' }) });
 
@@ -174,9 +136,6 @@ it('never queries the case-input-requirements for a draft-state pinned version, 
   expect(readCaseInputRequirements).not.toHaveBeenCalled();
 });
 
-// ------------------------------------------------------------------ criterion 3
-
-/** DiagnoseRequestDto for a released-state pinned version, carrying every field runDiagnose's assembled call must reflect unchanged. */
 function releasedDiagnoseRequestBody(): DiagnoseRequestDto {
   return {
     case: { slug: 'a-released-slug', version: 2 },
@@ -187,14 +146,12 @@ function releasedDiagnoseRequestBody(): DiagnoseRequestDto {
   };
 }
 
-/** What one assembled-call assertion needs beyond the runDiagnose mock and the controller's own result: the released case and request body the call must reflect, and the Assessment runDiagnose was configured to resolve. */
 type AssembledCallExpectation = {
   releasedCase: Case;
   body: DiagnoseRequestDto;
   expectedAssessment: Assessment;
 };
 
-/** Asserts runDiagnose was called exactly once with every field assembled unchanged from the request and the configured dependencies, and that the controller's result is exactly runDiagnose's resolved Assessment. */
 function expectRunDiagnoseCalledOnceAndAssembled(
   runDiagnose: RunDiagnoseMock,
   expectation: AssembledCallExpectation,
@@ -232,8 +189,6 @@ it('proceeds exactly as before for a released-state pinned version: calls runDia
   expectRunDiagnoseCalledOnceAndAssembled(runDiagnose, { releasedCase, body, expectedAssessment }, result);
 });
 
-// ------ task/investigation-telemetry/diagnose-reports-real-cost-and-durations: criterion 1
-
 const CONTROLLER_MODULE_PATH = fileURLToPath(new URL('../../../http/diagnose.controller.ts', import.meta.url));
 
 it('no longer references UNMEASURED_COST or UNMEASURED_DURATIONS anywhere in its own source', async () => {
@@ -243,21 +198,15 @@ it('no longer references UNMEASURED_COST or UNMEASURED_DURATIONS anywhere in its
   expect(source).not.toMatch(/UNMEASURED_DURATIONS/);
 });
 
-// ------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute
-
 const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
 
-/** A CaseInputRequirementsResult carrying exactly the given requirement entries, malformed list always empty (this task's own tests never exercise that branch). */
 function requirementsWith(...entries: CaseInputRequirement[]): CaseInputRequirementsResult {
   return { requirements: entries, capabilities_with_malformed_input_schema: [] };
 }
 
-/** REQUEST_BODY's own subject, replaced with one attribute this task's own requirement fixtures never name, so a required entry is always left uncovered. */
 function bodyWithUnrelatedSubjectAttribute(): DiagnoseRequestDto {
   return { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-unrelated-attribute', value: 'a-value' }] } };
 }
-
-// criterion 1
 
 it('refuses a diagnose request whose subject leaves a required case input missing, throwing exactly a SubjectDoesNotCoverCaseInputsError', async () => {
   const requirements = requirementsWith({ attribute: 'contract-number', required: true, capabilities: [A_REQUIRED_CAPABILITY] });
@@ -286,8 +235,6 @@ it("reads the case-input-requirements by the pinned case's own slug and version,
   expect(readCaseInputRequirements).toHaveBeenCalledWith('a-different-slug', 9);
 });
 
-// criterion 2
-
 it('names every missing required attribute together with the capabilities that require it, on the refusal thrown by the controller', async () => {
   const secondCapability = { name: 'network-outage-check', version: '2.0.0' };
   const requirements = requirementsWith(
@@ -310,8 +257,6 @@ it('names every missing required attribute together with the capabilities that r
   ]);
 });
 
-// criterion 3
-
 it('does not refuse a subject missing only an attribute the derived requirements leave optional', async () => {
   const requirements = requirementsWith({ attribute: 'a-nice-to-have-attribute', required: false, capabilities: [A_REQUIRED_CAPABILITY] });
   const { dependencies, runDiagnose } = buildDependencies({ case: heldCase({ state: 'released' }) }, requirements);
@@ -322,8 +267,6 @@ it('does not refuse a subject missing only an attribute the derived requirements
 
   expect(result).toEqual(expectedAssessment);
 });
-
-// criterion 4
 
 it('reaches runDiagnose when the subject covers every required attribute the derived requirements name', async () => {
   const requirements = requirementsWith({ attribute: 'an-attribute', required: true, capabilities: [A_REQUIRED_CAPABILITY] });

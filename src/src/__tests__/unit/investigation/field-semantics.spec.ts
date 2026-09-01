@@ -1,13 +1,3 @@
-// Proof for domain/investigation/field-semantics, as field-semantics.ts's own concrete shape:
-// fieldSemanticsOf reads a capability's own output schema structurally, as a JSON Schema's
-// top-level `properties` object, answering one FieldSemantics entry per key that object declares —
-// each entry's own `name` is that key, and its own `type`/`description` travel along only where the
-// schema states them as strings, exactly as the node's own "an operator's own hint, never enforced"
-// keeps them optional rather than validated or coerced. A schema that is not parseable JSON, or that
-// holds no top-level `properties` object, answers an empty array rather than throwing — the same
-// "malformed or absent is nothing declared, never a fault" posture citation-validation.ts's own
-// declaredFieldsOf and capability-input-schema-shape.ts's own declaredInputSchemaShape already keep
-// for their own schemas (this module's own header comment).
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -15,16 +5,13 @@ import { fieldSemanticsOf } from '../../../investigation/field-semantics.js';
 
 const MODULE_PATH = fileURLToPath(new URL('../../../investigation/field-semantics.ts', import.meta.url));
 
-/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
-/** Every module specifier field-semantics.ts itself imports. */
 async function fieldSemanticsImports(): Promise<readonly string[]> {
   const source = await readFile(MODULE_PATH, 'utf8');
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** A JSON-Schema-shaped output_schema declaring exactly the given top-level properties object. */
 function schemaWithProperties(properties: Record<string, unknown>): string {
   return JSON.stringify({ type: 'object', properties });
 }
@@ -143,14 +130,12 @@ it('answers an empty array for a schema that parses to a bare JSON scalar, such 
   expect(fieldSemanticsOf('42')).toEqual([]);
 });
 
-/** The bare content between the braces of field-semantics.ts's own named import from citation-validation.js, or undefined where it holds no such import at all. */
 async function citationValidationImportBody(): Promise<string | undefined> {
   const source = await readFile(MODULE_PATH, 'utf8');
   const match = /import\s*\{([^}]*)\}\s*from\s*['"][^'"]*citation-validation\.js['"]/.exec(source);
   return match?.[1];
 }
 
-/** The individual binding names field-semantics.ts's own import statement names from citation-validation.js. */
 async function citationValidationImportedNames(): Promise<readonly string[]> {
   const body = await citationValidationImportBody();
   return body === undefined ? [] : body.split(',').map((name) => name.trim()).filter((name) => name.length > 0);

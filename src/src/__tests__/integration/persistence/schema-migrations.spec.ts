@@ -1,36 +1,3 @@
-// Proof for task/relational-substrate/schema-migrations, against a real, externally provisioned
-// PostgreSQL database (constraints/the-database-is-externally-provisioned) reached through
-// DATABASE_URL — the schema this task ships is the thing under test, so nothing here stands in
-// for the store itself (TST-03).
-//
-// Every test but the first runs inside its own transaction (BEGIN in beforeEach, ROLLBACK in
-// afterEach) against one schema the whole suite shares, seeded once in beforeAll with the
-// glossary rows most tests reference by foreign key; nothing a test writes outlives it, and no
-// test depends on another having run first. The first test applies every migration script to a
-// second, disposable schema of its own, to prove the replay property directly against an empty
-// database rather than one this file has already migrated.
-//
-// Covers, from the task: criteria 1 and 7-10 directly (replay, and the four unique keys); criteria
-// 2-6 through the round-trips and the one NOT-NULL/nullable totality check below (the pairing of
-// each column to a Domain Model attribute is a mapping fact this suite cannot observe by running
-// the schema, and is left to the specification-conformance review — see the accompanying report's
-// `untested`); the task's own inferences about flattened naming, foreign-key-typed references, the
-// TEXT+CHECK enumeration encoding and schema_migrations' own shape; and the task's own
-// UNDERDETERMINED note — the last test below excludes exactly the candidate it names: a
-// case_versions relation whose unique key answers "written once" but leaves an already-stored
-// row's own columns open to an ordinary UPDATE.
-//
-// Divergences from the project's standard, disclosed here rather than left for a reader to find:
-//   - STK-08 ("boundary input ... is parsed by a Zod schema") is departed from below: DATABASE_URL
-//     is read directly from process.env rather than through config/env.ts's loadEnv, because
-//     loadEnv refuses unless every other application variable is also configured, which would
-//     couple this schema-only suite to the whole application's environment for a value it uses
-//     once, verbatim, with no caller downstream of it.
-//   - TST-04 ("mirrors the path of the unit under test") is departed from below: the unit under
-//     test is migrations/*.sql, nine files sitting outside src/src (this task's own rationale
-//     calls the whole schema "one artifact" precisely so it is not split across files or tasks),
-//     so there is no single TypeScript path for this file to mirror; it is named for the artifact
-//     as a whole instead.
 import { randomUUID } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -40,26 +7,12 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 const MIGRATIONS_DIR = fileURLToPath(new URL('../../../../migrations', import.meta.url));
 
-/** The Postgres SQLSTATE codes this suite's refusal assertions match against, named so the same five-character value is never repeated as an unexplained literal (TYP-04). */
 const NOT_NULL_VIOLATION = '23502';
 const FOREIGN_KEY_VIOLATION = '23503';
 const UNIQUE_VIOLATION = '23505';
 const CHECK_VIOLATION = '23514';
 const INVALID_TEXT_REPRESENTATION = '22P02';
 
-/**
- * Every table the scripts create together, independent of which element or column pairs with
- * which — the observable shape criterion 1 asks replay to produce. Extended for
- * task/connector-registration/connector-configuration-persistence's own
- * migrations/0008-connector-configuration.sql: connector_configurations is the one table that
- * script adds, holding wherever a connector's own call configuration is kept
- * (constraints/the-system-persists-to-one-relational-database) rather than a file. Extended again
- * for task/case-lifecycle-persistence/case-version-lifecycle-schema's own
- * migrations/0009-case-version-lifecycle-schema.sql: it drops hypothesis_collects and replaces the
- * old flat hypotheses table with an identity-only one, plus hypothesis_revisions,
- * hypothesis_revision_collects (each revision's own collects) and case_version_hypotheses (the
- * manifest tying one case version's own precedence position to a hypothesis's revision).
- */
 const EXPECTED_TABLES = [
   'actions',
   'capabilities',
@@ -106,13 +59,11 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** The migration file names under migrations/, sorted so their zero-padded prefix decides the order they are applied in. */
 async function migrationFilesInOrder(): Promise<readonly string[]> {
   const entries = await readdir(MIGRATIONS_DIR);
   return entries.filter((name) => name.endsWith('.sql')).sort();
 }
 
-/** Applies every migration file, in the order their own file names number them, against the given connection — nothing performed by hand beyond running their text verbatim. */
 async function applyMigrations(client: Client): Promise<void> {
   for (const file of await migrationFilesInOrder()) {
     const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
@@ -149,7 +100,6 @@ interface IHypothesisOptions {
   name: string;
 }
 
-/** hypotheses is identity-only since 0009: (case_slug, name), no content and no case_version. */
 async function insertHypothesis(client: Client, options: IHypothesisOptions): Promise<void> {
   await client.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [options.slug, options.name]);
 }
@@ -162,7 +112,6 @@ interface IHypothesisRevisionOptions {
   criterion?: string | null;
 }
 
-/** hypothesis_revisions since 0009: one numbered row per revision of a hypothesis's own content, carrying the criterion and the flattened resolution that used to sit on hypotheses itself. */
 async function insertHypothesisRevision(client: Client, options: IHypothesisRevisionOptions): Promise<void> {
   const criterionText = options.criterion === undefined ? 'A representative criterion.' : options.criterion;
   await client.query(
@@ -181,7 +130,6 @@ interface IHypothesisRevisionCollectsOptions {
   conceptName: string;
 }
 
-/** hypothesis_revision_collects since 0009: one row per concept one hypothesis revision collects, replacing the old case-version-scoped hypothesis_collects. */
 async function insertHypothesisRevisionCollects(client: Client, options: IHypothesisRevisionCollectsOptions): Promise<void> {
   await client.query(
     'INSERT INTO hypothesis_revision_collects (case_slug, hypothesis_name, revision, concept_name) VALUES ($1,$2,$3,$4)',
@@ -197,7 +145,6 @@ interface ICaseVersionHypothesisOptions {
   position: number;
 }
 
-/** case_version_hypotheses since 0009: the manifest tying one case version's own precedence position to a hypothesis's own revision — where position-uniqueness now lives (rules/knowledge/a-hypothesis-position-is-unique-within-its-case). */
 async function insertCaseVersionHypothesis(client: Client, options: ICaseVersionHypothesisOptions): Promise<void> {
   await client.query(
     'INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position) VALUES ($1,$2,$3,$4,$5)',
@@ -293,7 +240,6 @@ async function insertSubjectAttributeValue(client: Client, options: ISubjectAttr
   );
 }
 
-/** A whole stored case version plus one investigation pinned to it, the parent every evidence/evaluation/citation/subject-attribute-value test needs. */
 async function aStoredInvestigation(client: Client, glossary: IGlossary, id = `inv-${randomUUID()}`): Promise<string> {
   const slug = `case-${randomUUID()}`;
   await insertCase(client, slug);
@@ -349,8 +295,6 @@ afterEach(async () => {
   await client.query('ROLLBACK');
 });
 
-// ---------------------------------------------------------------- criterion 1: replay
-
 it('applies every migration script, in the order their file names number them, to a fresh empty database and produces every relation the model needs and none it does not', async () => {
   const freshSchema = `fresh_${randomUUID().replace(/-/g, '_')}`;
   await client.query(`CREATE SCHEMA "${freshSchema}"`);
@@ -364,8 +308,6 @@ it('applies every migration script, in the order their file names number them, t
   );
   expect(rows.map((row) => row.table_name)).toEqual(EXPECTED_TABLES);
 });
-
-// ---------------------------------------------------------------- criteria 2-4: round trips
 
 it('persists and reads back a full case, hypothesis revision, resolution, referral and its collects', async () => {
   const slug = 'a-full-case';
@@ -437,8 +379,6 @@ it('persists and reads back concept, subject-type, subject-attribute, action, ou
   expect(capabilityRows).toEqual([{ nature: 'read-only', timeout: 1000, connector: 'a-connector' }]);
 });
 
-// ---------------------------------------------------------------- criteria 3-5: required vs optional
-
 it('holds every domain column NOT NULL except exactly the six columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
@@ -471,8 +411,6 @@ it('accepts and stores an investigation with no ticket_ref, one of the five attr
 
   expect(rows).toEqual([{ ticket_ref: null }]);
 });
-
-// ---------------------------------------------------------------- criterion 6: enumerations
 
 it('accepts exactly the three values verdict declares and refuses one it does not', async () => {
   const investigationId = await aStoredInvestigation(client, glossary);
@@ -556,8 +494,6 @@ it('declares each of the five enumeration columns as plain text, not a native Po
   expect(rows.every((row) => row.data_type === 'text')).toBe(true);
 });
 
-// ---------------------------------------------------------------- inference: typed references are real foreign keys
-
 it('refuses a case version whose subject names a subject type the glossary does not hold', async () => {
   const slug = 'a-case-with-an-unregistered-subject-type';
   await insertCase(client, slug);
@@ -570,8 +506,6 @@ it('refuses a case version whose subject names a subject type the glossary does 
     ),
   ).rejects.toMatchObject({ code: FOREIGN_KEY_VIOLATION });
 });
-
-// ---------------------------------------------------------------- inference: SQL types
 
 it("refuses a non-numeric value for a case version's integer-typed version column", async () => {
   const slug = 'a-case-with-a-non-numeric-version';
@@ -586,8 +520,6 @@ it("refuses a non-numeric value for a case version's integer-typed version colum
   ).rejects.toMatchObject({ code: INVALID_TEXT_REPRESENTATION });
 });
 
-// ---------------------------------------------------------------- inference: schema_migrations' own shape
-
 it('shapes schema_migrations as exactly filename and applied_at, the one relation the model exempts', async () => {
   const { rows } = await client.query<{ column_name: string }>(
     'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 ORDER BY column_name',
@@ -596,8 +528,6 @@ it('shapes schema_migrations as exactly filename and applied_at, the one relatio
 
   expect(rows.map((row) => row.column_name)).toEqual(['applied_at', 'filename']);
 });
-
-// ---------------------------------------------------------------- inference: many-valued identity keys
 
 it('refuses a second evidence row for one investigation under a concept it already collected', async () => {
   const investigationId = await aStoredInvestigation(client, glossary);
@@ -617,16 +547,12 @@ it('refuses a second evaluation row for one investigation under a hypothesis alr
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 
-// ---------------------------------------------------------------- criterion 7: a-slug-identifies-one-case
-
 it('refuses a second case stored under a slug already in use', async () => {
   const slug = 'a-duplicate-slug';
   await insertCase(client, slug);
 
   await expect(insertCase(client, slug)).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
-
-// ---------------------------------------------------------------- criterion 8: a-case-version-is-written-once ("written once")
 
 it('refuses storing the same case version a second time under its own slug and version', async () => {
   const slug = 'a-case';
@@ -635,13 +561,6 @@ it('refuses storing the same case version a second time under its own slug and v
 
   await expect(insertCaseVersion(client, { slug, version: 1, glossary })).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
-
-// ---------------------------------------------------------------- criterion 9: a-hypothesis-position-is-unique-within-its-case
-//
-// Since 0009, position-uniqueness is case_version_hypotheses' own constraint (UNIQUE over
-// (case_slug, case_version, position)), not hypotheses' — two distinct, identity-only hypotheses
-// each get their own revision, and only the manifest entry naming the second one at an
-// already-used position is refused.
 
 it('refuses a second manifest entry of one case version sharing an already-used position', async () => {
   const slug = 'a-case-with-two-hypotheses-at-one-position';
@@ -658,11 +577,6 @@ it('refuses a second manifest entry of one case version sharing an already-used 
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
 
-// ---------------------------------------------------------------- criterion 10: a-hypothesis-name-is-unique-within-its-case
-//
-// Since 0009, this is hypotheses' own PRIMARY KEY over (case_slug, name) directly — no case_version
-// or position involved, since the identity-only table now holds nothing else.
-
 it('refuses a second hypothesis of one case sharing an already-used name', async () => {
   const slug = 'a-case-with-two-hypotheses-sharing-a-name';
   await insertCase(client, slug);
@@ -672,16 +586,6 @@ it('refuses a second hypothesis of one case sharing an already-used name', async
     insertHypothesis(client, { slug, name: 'shared-name' }),
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
-
-// ---------------------------------------------------------------- UNDERDETERMINED: excludes an updatable stored row
-//
-// rules/knowledge/a-case-version-is-written-once states two things: "written once" and "never
-// altered". Criterion 8's unique key answers only the first. This test excludes the candidate the
-// task's own Notes name: a case_versions relation whose unique key stands, but whose already-
-// stored row's own columns remain open to an ordinary UPDATE. It observes the state the rule
-// actually cares about — whether the row changed — rather than committing to one enforcement
-// mechanism, via a SAVEPOINT that recovers cleanly whether the UPDATE was refused outright or
-// silently accepted.
 
 it("leaves an already-stored case version's own columns unchanged after an ordinary UPDATE attempts to alter them", async () => {
   const slug = 'an-immutable-case';

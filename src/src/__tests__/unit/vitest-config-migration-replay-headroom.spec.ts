@@ -1,12 +1,3 @@
-// Proof for task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying,
-// criteria 5 and 6: vitest.config.ts's own testTimeout is raised above its prior 40000ms value, and
-// the comment explaining why fileParallelism is disabled no longer names a database provider
-// ("Neon") this project does not use. Both are read from vitest.config.ts's own source text on disk,
-// never from a value this file computes itself, so what makes either test fail is a real regression
-// in that file — the number lowered back to (or below) 40000, or the vendor name reintroduced into
-// that specific paragraph. The two later, historical testTimeout paragraphs that still name "Neon"
-// (disclosed in this task's own implementation record as deliberately out of scope) are never
-// inspected here — only the one paragraph this task's own criterion names.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';

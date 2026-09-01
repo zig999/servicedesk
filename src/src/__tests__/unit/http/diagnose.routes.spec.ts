@@ -1,14 +1,3 @@
-// Proof for task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version, at the wire:
-// POST /v1/diagnose exercised through Fastify's own app.inject() against a local instance
-// registering createDiagnoseRoutesPlugin() and error-handler.middleware.ts's own
-// handleUnexpectedError directly — the same shape read-case.routes.spec.ts already establishes.
-// ICaseQuery.readCase and the wired runDiagnose function are stand-ins here (TST-03 — each is a
-// boundary this route's own dependencies call, never business logic of its own): what
-// handleDiagnoseRequest itself does with them is proved at the unit level in
-// __tests__/unit/http/diagnose.controller.spec.ts; this file proves only that a draft-state
-// pinned version answers on the wire with the status status-map.ts assigns
-// CaseVersionNotReleasedError, and that a released-state pinned version still answers 200 with
-// the resolved assessment, unchanged.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
@@ -21,12 +10,10 @@ import { createDiagnoseRoutesPlugin } from '../../../http/diagnose.routes.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { Assessment } from '../../../investigation/assessment.js';
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -40,7 +27,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A case version as case-query would already hold it, overridable per test so state varies without a second builder. */
 function heldCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -67,12 +53,10 @@ const REQUEST_BODY = {
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 type RunDiagnoseMock = ReturnType<typeof vi.fn<(call: ProductionDiagnoseCall) => Promise<Assessment>>>;
 
-/** An empty derived-requirements result: no attribute is named at all, so no gate this task adds ever refuses over it — the default every pre-existing test in this file keeps relying on. */
 function noRequirements(): CaseInputRequirementsResult {
   return { requirements: [], capabilities_with_malformed_input_schema: [] };
 }
 
-/** One Fastify instance registering exactly the diagnose route plugin plus the shared error handler — mirrors what build-app.ts wires, the same convention read-case.routes.spec.ts already establishes. requirementsResult defaults to noRequirements(), so a test naming none keeps the pre-existing shape. */
 function buildTestApp(
   pinnedCase: Case,
   requirementsResult: CaseInputRequirementsResult = noRequirements(),
@@ -103,8 +87,6 @@ afterEach(async () => {
   app = undefined;
 });
 
-// ------------------------------------------------------------------ criterion 1
-
 it('answers 409 with the CaseVersionNotReleasedError envelope, naming the pinned slug, version and state, for a draft-state pinned version', async () => {
   const built = buildTestApp(heldCase({ slug: 'a-slug', version: 1, state: 'draft' }));
   app = built.app;
@@ -126,8 +108,6 @@ it('never calls the wired diagnose runner for a draft-state pinned version at th
   expect(built.runDiagnose).not.toHaveBeenCalled();
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('answers 200 with the resolved assessment, unchanged, for a released-state pinned version', async () => {
   const built = buildTestApp(heldCase({ state: 'released' }));
   app = built.app;
@@ -140,11 +120,8 @@ it('answers 200 with the resolved assessment, unchanged, for a released-state pi
   expect(response.json()).toEqual(expectedAssessment);
 });
 
-// ------------------------------------------------------------------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute
-
 const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
 
-/** REQUEST_BODY's own subject, replaced with one attribute this section's own requirement fixtures never name, so the one required entry below is always left uncovered. */
 function requestBodyWithUnrelatedSubjectAttribute(): Record<string, unknown> {
   return { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [{ attribute: 'an-unrelated-attribute', value: 'a-value' }] } };
 }

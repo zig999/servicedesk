@@ -1,15 +1,3 @@
-// Proof for task/case-simulation-pipeline/simulate-case-operation: handleSimulateCaseRequest reads
-// the pinned case through ICaseQuery regardless of its declared state, refuses before the pipeline
-// ever runs where the subject carries no attribute-value at all or names an attribute the glossary
-// does not hold, reuses case-query's own errors unchanged for an unknown slug or version, and
-// otherwise calls runSimulate and answers its whole record — evidence, evaluations, resolved,
-// assessment, cost and durations — unchanged, carrying no narrative or ticket-reference field.
-// ICaseQuery.readCase, IGlossaryQuery.readVocabularyTerm and runSimulate are stand-ins here
-// (TST-03 — each is a boundary this controller calls, never business logic of its own): the same
-// shape diagnose.controller.spec.ts already establishes for its own sibling controller. The wired
-// production composition itself (production-simulate.factory.ts, simulate.factory.ts) is proven
-// separately, at the unit level in simulate.factory.spec.ts and at the real-composition level
-// against diagnose-server.factory.ts.
 import { expect, expectTypeOf, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
@@ -23,12 +11,10 @@ import { handleSimulateCaseRequest, type SimulateCaseControllerDependencies } fr
 import type { SimulateCaseRequestDto } from '../../../http/dto/simulate-case.dto.js';
 import type { InvestigationPipelineResult } from '../../../investigation/investigation-pipeline.js';
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -42,7 +28,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A case version as case-query would already hold it, overridable per test so state/slug/version vary without a second builder — mirrors diagnose.controller.spec.ts's own heldCase exactly. */
 function heldCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -65,7 +50,6 @@ const REQUEST_BODY: SimulateCaseRequestDto = {
   requester: 'a-requester',
 };
 
-/** InvestigationPipelineResult's own complete record, exactly the six fields simulate-case's own response forwards unchanged, plus the one field it deliberately never forwards (prompts) — so a test asserting the controller's own answer strips prompts proves it rather than merely restating what runSimulate happened to return. */
 function completeRecord(): InvestigationPipelineResult {
   return {
     evidence: [
@@ -99,7 +83,6 @@ type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => P
 type ReadVocabularyTermMock = ReturnType<typeof vi.fn<IGlossaryQuery['readVocabularyTerm']>>;
 type RunSimulateMock = ReturnType<typeof vi.fn<(call: ProductionSimulationCall) => Promise<InvestigationPipelineResult>>>;
 
-/** Wires SimulateCaseControllerDependencies with a readCase stand-in that always answers the given case, a glossary stand-in that holds every attribute by default, and a runSimulate stand-in the test configures per case (TST-03). */
 function buildDependencies(
   readCaseResult: ReadCaseResult,
 ): { dependencies: SimulateCaseControllerDependencies; readCase: ReadCaseMock; readVocabularyTerm: ReadVocabularyTermMock; runSimulate: RunSimulateMock } {
@@ -124,8 +107,6 @@ function buildDependencies(
   const dependencies: SimulateCaseControllerDependencies = { caseQuery, glossary, runSimulate };
   return { dependencies, readCase, readVocabularyTerm, runSimulate };
 }
-
-// ------------------------------------------------------------------ criteria 1 and 2
 
 it('returns the complete record — evidence, evaluations, resolved, assessment, cost and durations — for a draft-state pinned case version, unchanged', async () => {
   const { dependencies, runSimulate } = buildDependencies({ case: heldCase({ state: 'draft' }) });
@@ -174,12 +155,8 @@ it('reads the pinned case through readCase with no branch on its declared state,
   expect(releasedDependencies.runSimulate).toHaveBeenCalledTimes(1);
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('SimulateCaseControllerDependencies declares exactly caseQuery, glossary and runSimulate — no store, event bus or other write-capable dependency the controller could call', () => {
-  // A structural guarantee over the real production type (simulate-case.controller.ts), not over
-  // any fixture this file built: no investigation-writing or event-emitting call is even reachable
-  // from handleSimulateCaseRequest, because nothing it could call is ever handed to it.
+
   expectTypeOf<SimulateCaseControllerDependencies>().toEqualTypeOf<{
     readonly caseQuery: ICaseQuery;
     readonly glossary: IGlossaryQuery;
@@ -198,8 +175,6 @@ it('answers exactly what runSimulate resolved, calling neither a store nor any o
   expect(runSimulate).toHaveBeenCalledTimes(1);
 });
 
-// ------------------------------------------------------------------ criterion 4
-
 it('refuses a request whose subject carries no attribute-value at all, throwing exactly a SubjectCarriesNoAttributeError, before runSimulate is ever called', async () => {
   const { dependencies, runSimulate } = buildDependencies({ case: heldCase() });
   const bodyWithNoAttributes: SimulateCaseRequestDto = { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [] } };
@@ -209,8 +184,6 @@ it('refuses a request whose subject carries no attribute-value at all, throwing 
   await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
   expect(runSimulate).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 5
 
 it('refuses a request naming a subject attribute the glossary does not hold, throwing exactly a SubjectAttributeNotInGlossaryError, before runSimulate is ever called', async () => {
   const { dependencies, readVocabularyTerm, runSimulate } = buildDependencies({ case: heldCase() });
@@ -242,8 +215,6 @@ it("names the offending attribute on the thrown refusal, applying the same rule 
   await expect(rejection).rejects.toMatchObject({ context: { attributes: ['an-ungoverned-attribute'] } });
 });
 
-// ------------------------------------------------------------------ criterion 6
-
 it('reuses case-query\'s own CaseNotFoundError unchanged for an unknown case slug or version, before runSimulate is ever called', async () => {
   const { dependencies, readCase, runSimulate } = buildDependencies({ case: heldCase() });
   const notFound = new CaseNotFoundError('an-unknown-slug', 9);
@@ -265,8 +236,6 @@ it("reuses case-query's own CaseNotValidError unchanged for an incoherent case v
   await expect(rejection).rejects.toBe(notValid);
   expect(runSimulate).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 7
 
 it('answers exactly evidence, evaluations, resolved, assessment, cost and durations — no narrative and no ticket_ref field, and no prompts field either', async () => {
   const { dependencies, runSimulate } = buildDependencies({ case: heldCase() });

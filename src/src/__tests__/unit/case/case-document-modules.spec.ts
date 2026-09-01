@@ -1,8 +1,3 @@
-// An audit over the case document model's modules — everything under
-// src/case and the typed refusals beside them under src/errors: they import no
-// framework, no driver and no provider client, and nothing but one another
-// at all, so no second store is reachable from the model
-// (constraints/the-domain-depends-on-no-infrastructure).
 import { readdir, readFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,13 +6,11 @@ import * as caseModule from '../../../case/case.js';
 
 const CASE_DIRECTORY = fileURLToPath(new URL('../../../case/', import.meta.url));
 
-/** The typed refusals beside the model under src/errors, swept with it. */
 const ERROR_MODULES = [
   'invalid-case-document.error.ts',
   'incoherent-case.error.ts',
 ].map((file) => fileURLToPath(new URL(`../../../errors/${file}`, import.meta.url)));
 
-/** Frameworks, database drivers and provider clients — what criterion 10 forbids a document-model module to import. */
 const FORBIDDEN_PACKAGES = [
   'fastify',
   'express',
@@ -50,15 +43,12 @@ const FORBIDDEN_PACKAGES = [
   '@modelcontextprotocol/sdk',
 ];
 
-/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
-/** Every module specifier one source text imports. */
 function importSpecifiersOf(source: string): string[] {
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** Reads every document-model module's import specifiers, keyed by file name; refuses an empty audit. */
 async function documentModelImports(): Promise<ReadonlyMap<string, readonly string[]>> {
   const files = (await readdir(CASE_DIRECTORY)).filter((file) => file.endsWith('.ts'));
   if (files.length === 0) {
@@ -76,17 +66,14 @@ async function documentModelImports(): Promise<ReadonlyMap<string, readonly stri
   return imports;
 }
 
-/** Whether a specifier names one of the forbidden packages, or a path inside one. */
 function isForbiddenPackage(specifier: string): boolean {
   return FORBIDDEN_PACKAGES.some((name) => specifier === name || specifier.startsWith(`${name}/`));
 }
 
-/** Whether a specifier reaches outside the model's own modules — anything that is not a relative path. */
 function reachesOutsideTheModel(specifier: string): boolean {
   return !specifier.startsWith('./') && !specifier.startsWith('../');
 }
 
-/** Every offending import, named by file and specifier so a failure says where. */
 function offendersAmong(
   imports: ReadonlyMap<string, readonly string[]>,
   offends: (specifier: string) => boolean,

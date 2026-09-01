@@ -1,32 +1,3 @@
-// Proof for task/case-lifecycle-operations/manifest-composition-operations, against a real,
-// externally provisioned PostgreSQL database reached through DATABASE_URL — RelationalCaseStore is
-// the real collaborator behind ICaseStore here, so nothing in this file stands in for the store or
-// for placeHypothesis/removeHypothesis themselves (TST-03); they are what is under test.
-//
-// Every case this file writes carries a manifest-ops-prefixed slug plus a fresh randomUUID(), so no
-// test here can collide with a row another suite file wrote, and every row a test commits is deleted
-// again in this file's own afterEach, in the order case_version_hypotheses,
-// hypothesis_revision_collects, hypothesis_revisions, hypotheses, case_versions, cases — the order
-// their own foreign keys require — the same convention relational-case-store.repository.spec.ts and
-// case-version-lifecycle-schema.spec.ts already keep.
-//
-// Two tests below (criterion 3, place and remove) call store.release() for real, so
-// migrations/0009's own release-conditioned rules now make that released case_versions row (and its
-// own case_version_hypotheses entry) permanent — an ordinary DELETE against one is a silent no-op,
-// and a DELETE against whatever it still references (a hypothesis-revision, a glossary row) fails on
-// that surviving row's own foreign key. deleteTolerantly below runs every cleanup statement expecting
-// exactly that — the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already
-// establishes for this migration's consequence.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses it:
-// (STK-08) DATABASE_URL is read directly from process.env below rather than through config/env.ts's
-// loadEnv, because loadEnv refuses unless every other application variable is configured too, which
-// this file has no use for.
-//
-// Setup for every test below uses this module's own placeHypothesis to seed a manifest entry
-// (rather than the store's own placeHypothesis primitive directly), so the same draft-state and
-// occupied-position guards this suite proves also run during setup — no test here depends on a
-// primitive this module never exercises.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { placeHypothesis, removeHypothesis } from '../../../case/manifest-composition.operations.js';
@@ -54,12 +25,10 @@ interface IGlossary {
 
 const FOREIGN_KEY_VIOLATION = '23503';
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -86,7 +55,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every glossary row a fresh case's fallback and every hypothesis's own resolution reference, uniquely named and tracked for this file's own afterEach cleanup. */
 async function freshGlossary(): Promise<IGlossary> {
   const subjectType = `manifest-ops-subject-${randomUUID()}`;
   const outcome = `manifest-ops-outcome-${randomUUID()}`;
@@ -103,7 +71,6 @@ async function freshGlossary(): Promise<IGlossary> {
   return { subjectType, outcome, action, recipient };
 }
 
-/** One glossary concept a hypothesis-revision may collect, freshly and uniquely named, tracked for this file's own afterEach cleanup. */
 async function freshConcept(): Promise<string> {
   const name = `manifest-ops-concept-${randomUUID()}`;
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
@@ -111,7 +78,6 @@ async function freshConcept(): Promise<string> {
   return name;
 }
 
-/** A fresh case, claimed together with its first draft version, through this store's own createDraft. */
 async function aFreshDraftCase(glossary: IGlossary): Promise<{ slug: string; version: number }> {
   const slug = `manifest-ops-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
@@ -134,7 +100,6 @@ interface IPlaceOptions {
   readonly concept: string;
 }
 
-/** Originates one fresh hypothesis-revision and adopts it into the named draft's manifest through this module's own placeHypothesis — the SUT seeds itself rather than a store primitive it does not exercise. */
 async function placeFreshHypothesis(options: IPlaceOptions): Promise<{ hypothesisName: string; revision: number }> {
   const hypothesisName = `hypothesis-${randomUUID()}`;
   const revision = await store.insertHypothesisRevision({
@@ -190,8 +155,6 @@ afterEach(async () => {
   await cleanupWrittenGlossary();
 });
 
-// ---------------------------------------------------------------- criterion 1
-
 it('places a hypothesis-revision at a position not yet occupied in a draft manifest', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -202,8 +165,6 @@ it('places a hypothesis-revision at a position not yet occupied in a draft manif
   const manifest = await manifestOf(slug, version);
   expect(manifest).toEqual([{ position: 1, hypothesis_revision: expect.objectContaining({ hypothesis_name: hypothesisName, revision }) }]);
 });
-
-// ---------------------------------------------------------------- criterion 2
 
 it('refuses placing a hypothesis-revision at a position already occupied by a different hypothesis', async () => {
   const glossary = await freshGlossary();
@@ -217,8 +178,6 @@ it('refuses placing a hypothesis-revision at a position already occupied by a di
   await expect(attempt).rejects.toBeInstanceOf(ManifestPositionOccupiedError);
   await expect(attempt).rejects.toMatchObject({ context: { slug, version, position: 1 } });
 });
-
-// ---------------------------------------------------------------- boundary of criterion 2: occupied by itself is not "occupied"
 
 it('does not refuse re-placing the same hypothesis at the position it already occupies, adopting a new revision there instead', async () => {
   const glossary = await freshGlossary();
@@ -234,8 +193,6 @@ it('does not refuse re-placing the same hypothesis at the position it already oc
   expect(secondRevision).not.toBe(firstRevision);
 });
 
-// ---------------------------------------------------------------- criterion 3 (place)
-
 it('refuses placing a hypothesis-revision against a version that is not in draft state', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -250,8 +207,6 @@ it('refuses placing a hypothesis-revision against a version that is not in draft
   await expect(attempt).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
 });
 
-// ---------------------------------------------------------------- criterion 3 (remove)
-
 it('refuses removing a manifest entry against a version that is not in draft state', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -264,8 +219,6 @@ it('refuses removing a manifest entry against a version that is not in draft sta
   await expect(attempt).rejects.toBeInstanceOf(CaseVersionNotDraftError);
   await expect(attempt).rejects.toMatchObject({ context: { slug, version, state: 'released' } });
 });
-
-// ---------------------------------------------------------------- criterion 4
 
 it('refuses removing the last remaining entry of a draft manifest, naming that the manifest would hold no hypothesis', async () => {
   const glossary = await freshGlossary();
@@ -280,8 +233,6 @@ it('refuses removing the last remaining entry of a draft manifest, naming that t
   expect(await manifestOf(slug, version)).toHaveLength(1);
 });
 
-// ---------------------------------------------------------------- criterion 5
-
 it('never deletes the hypothesis-revision a removed manifest entry referenced', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -295,8 +246,6 @@ it('never deletes the hypothesis-revision a removed manifest entry referenced', 
   expect(await revisionRowsFor(slug, [first])).toEqual([{ hypothesis_name: first, revision: firstRevision }]);
 });
 
-// ---------------------------------------------------------------- criterion 6
-
 it('swaps two placed hypotheses onto each other\'s position, through this module\'s own place and remove calls, creating no new hypothesis-revision for either', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -305,8 +254,6 @@ it('swaps two placed hypotheses onto each other\'s position, through this module
   const { hypothesisName: second, revision: secondRevision } = await placeFreshHypothesis({ slug, version, position: 2, glossary, concept });
   const beforeSwap = await revisionRowsFor(slug, [first, second]);
 
-  // A direct two-call swap is refused (see the sibling test below); reaching the swapped
-  // arrangement through this module's own operations requires freeing one position first.
   await removeHypothesis(store, { slug, version, hypothesis_name: second });
   await placeHypothesis(store, { slug, version, hypothesis_name: first, revision: firstRevision, position: 2 });
   await placeHypothesis(store, { slug, version, hypothesis_name: second, revision: secondRevision, position: 1 });
@@ -315,8 +262,6 @@ it('swaps two placed hypotheses onto each other\'s position, through this module
   expect(manifest.map((entry) => [entry.position, entry.hypothesis_revision.hypothesis_name])).toEqual([[1, second], [2, first]]);
   expect(await revisionRowsFor(slug, [first, second])).toEqual(beforeSwap);
 });
-
-// ---------------------------------------------------------------- contested evidence for criterion 6's documented mechanism
 
 it("refuses placing a hypothesis directly at a position a different, still-placed hypothesis occupies, so a bare two-call swap (place each hypothesis straight at the other's still-occupied position) is refused rather than reordering them", async () => {
   const glossary = await freshGlossary();
@@ -330,8 +275,6 @@ it("refuses placing a hypothesis directly at a position a different, still-place
   await expect(attempt).rejects.toBeInstanceOf(ManifestPositionOccupiedError);
 });
 
-// ---------------------------------------------------------------- inference: a hypothesis name absent from the manifest is never the ground for refusing an emptied manifest
-
 it('does not refuse removing a hypothesis name that is not part of the manifest, even where the manifest holds only one entry', async () => {
   const glossary = await freshGlossary();
   const concept = await freshConcept();
@@ -343,8 +286,6 @@ it('does not refuse removing a hypothesis name that is not part of the manifest,
   expect(await manifestOf(slug, version)).toHaveLength(1);
 });
 
-// ---------------------------------------------------------------- edge case: absent version, shared by both operations' own draft-state guard
-
 it('refuses placing a hypothesis-revision against a version that was never stored', async () => {
   const slug = `manifest-ops-absent-${randomUUID()}`;
 
@@ -353,8 +294,6 @@ it('refuses placing a hypothesis-revision against a version that was never store
   await expect(attempt).rejects.toBeInstanceOf(CaseNotFoundError);
   await expect(attempt).rejects.toMatchObject({ context: { slug, version: 1 } });
 });
-
-// ---------------------------------------------------------------- edge case: two placements racing for the same free position
 
 it('lets only one of two concurrent placements to the same free position succeed, the other refused through ManifestPositionOccupiedError', async () => {
   const glossary = await freshGlossary();

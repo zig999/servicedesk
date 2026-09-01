@@ -1,89 +1,3 @@
-// The relational adapter behind the investigation module's own store port
-// (task/relational-stores/investigation-store): one built investigation
-// lives whole across "investigations", "investigation_evidence",
-// "investigation_evaluations", "investigation_evaluation_citations" and
-// "investigation_subject_attribute_values"
-// (migrations/0005-investigation.sql,
-// constraints/the-stored-schema-mirrors-the-declared-model). It implements
-// the same IInvestigationStore
-// persistence/file-investigation-store.repository.ts already implements,
-// rather than replacing it (constraints/the-domain-depends-on-no-infrastructure):
-// no investigation module imports a driver or opens a file.
-//
-// write() inserts the investigation's own root row first, then every
-// subject-attribute-value, evidence and evaluation-plus-citations row, all
-// as one unit of work (constraints/the-system-persists-to-one-relational-database,
-// criterion 1): a failure at any point rolls the whole insert back, so no
-// part of a record this call did not finish writing is ever left behind
-// (criterion 2). Write-once is decided by the root insert's own primary key
-// over id, never by a read first
-// (rules/investigation/an-investigation-is-written-once, criterion 3): a
-// duplicate id's own INSERT fails there with Postgres' own unique-violation
-// code, mapped to this module's own already-declared
-// InvestigationAlreadyStoredError — never a fresh id refused on that ground
-// (criterion 4). Every statement after that one is wrapped in the store's
-// own generic InvestigationStoreError instead, since only the root row's
-// own key answers "already stored". No statement below is ever an UPDATE,
-// so a record already stored is altered by no later write (criterion 9).
-//
-// read() answers the whole record back through one transaction too: the
-// root row, then its subject-attribute-values, its own evidence
-// (rules/investigation/one-evidence-per-collected-concept) and its own
-// evaluations together with their own citations
-// (rules/investigation/one-evaluation-per-required-hypothesis) — an absent
-// id answering undefined before any child table is ever read. read()
-// answers the StoredInvestigation document/hash shape
-// relational-case-store.repository.ts's own readVersion already
-// established for the identical port pattern (this task's own inference,
-// recorded in the delivery record): `hash` is sha256 of the assembled
-// document's own deterministic JSON serialization rather than of bytes
-// read off a disk, since there is no file and no disk bytes once the
-// content is rows.
-//
-// Every evidence row's capability_name/capability_version columns already
-// exist on investigation_evidence (migrations/0005-investigation.sql,
-// applied before this task ran): domain/investigation/evidence's own
-// required cardinality-1 relationship to domain/integration/capability —
-// which registered capability, at which version, produced this observation
-// — so this task adds no migration of its own. write() and read() carry
-// both columns through unchanged, alongside the eight fields criterion 6
-// names explicitly (this task's own UNDERDETERMINED note).
-//
-// investigation_evidence also carries fields and concept_description
-// (migrations/0013-investigation-evidence-semantics-snapshot.sql,
-// task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot):
-// domain/investigation/evidence's own snapshotted semantics, assembled by
-// evidence-collection-stage.ts at collection time and never re-read
-// afterward. concept_description is a plain TEXT column, the same shape
-// migrations/0012-glossary-concept-description.sql already gave
-// concepts.description. fields is one JSONB column holding the whole
-// snapshotted array, serialized explicitly (JSON.stringify) on write since
-// it is a real array of objects rather than already-held JSON text, and
-// read back as the driver's own parsed JS value on read — the same JSONB
-// shape migrations/0008-connector-configuration.sql and
-// relational-connector-configuration-store.repository.ts already establish
-// for a structured value this schema does not decompose into named columns
-// (this task's own inference, recorded in the delivery record). Both
-// columns carry a DEFAULT ('[]'::jsonb, '') so a row stored before this
-// migration ran reads back the same honest-empty snapshot
-// domain/investigation/evidence already sanctions for exactly that legacy
-// case, never a read failure.
-//
-// Names no import of 'pg', and no longer even names database-connection.ts's
-// own DatabaseConnection: IConnectableQueryable and the
-// runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
-// already declares are the only things this file names for the pool it is
-// given (STK-05) — a shape the concrete DatabaseConnection (pg Pool) already
-// satisfies structurally, with no change to database-connection.ts itself,
-// which remains the only module that imports the driver.
-//
-// Every statement below names its table unqualified, the same convention
-// every sibling relational store in this tree already documents at length
-// (relational-case-store.repository.ts, persistence/migration-runner.ts's
-// own header): it resolves against whatever schema the connecting role's
-// own server-side default names, safe to trust under this project's
-// transaction-pooling DATABASE_URL.
-
 import { createHash } from 'node:crypto';
 import { InvestigationAlreadyStoredError } from '../errors/investigation-already-stored.error.js';
 import { InvestigationStoreError } from '../errors/investigation-store.error.js';
@@ -110,7 +24,6 @@ import {
   type RaiseStoreError,
 } from './database-access.js';
 
-/** One row of "investigations", exactly the columns migrations/0005-investigation.sql declares. written_at is typed Date because node-postgres parses a timestamptz column into one by default, the same convention relational-case-store.repository.ts's own authored_at already documents. */
 interface IInvestigationRow {
   readonly requester: string;
   readonly ticket_ref: string | null;
@@ -135,17 +48,6 @@ interface IInvestigationRow {
   readonly written_at: Date;
 }
 
-/**
- * One row of "investigation_evidence", exactly the columns beyond its own
- * key. observed_at is typed Date for the same reason IInvestigationRow's
- * written_at is. fields is typed readonly FieldSemantics[] directly rather
- * than unknown, because node-postgres already parses a jsonb column into a
- * plain JS value on read — the same driver auto-conversion
- * relational-connector-configuration-store.repository.ts's own
- * IConnectorConfigurationRow.configuration already documents, for a
- * different jsonb column
- * (migrations/0013-investigation-evidence-semantics-snapshot.sql).
- */
 interface IEvidenceRow {
   readonly concept: string;
   readonly inputs: string;
@@ -162,40 +64,32 @@ interface IEvidenceRow {
   readonly concept_description: string;
 }
 
-/** One row of "investigation_evaluations", exactly the columns beyond its own key. */
 interface IEvaluationRow {
   readonly hypothesis: string;
   readonly verdict: string;
   readonly reason: string | null;
 }
 
-/** One row of "investigation_evaluation_citations": which evaluation cites which concept and field. */
 interface ICitationRow {
   readonly hypothesis: string;
   readonly concept: string;
   readonly field: string;
 }
 
-/** Every value domain/investigation/evidence-result declares, reused rather than re-listing them (MNT-03), the same convention relational-capability-store.repository.ts's own CAPABILITY_NATURE_VALUES already keeps. */
 const EVIDENCE_RESULT_VALUES: ReadonlySet<string> = new Set<string>(EVIDENCE_RESULTS);
 
-/** Every value domain/investigation/verdict declares, reused the same way. */
 const VERDICT_VALUES: ReadonlySet<string> = new Set<string>(VERDICTS);
 
-/** Every value domain/investigation/evaluation-reason declares, reused the same way. */
 const EVALUATION_REASON_VALUES: ReadonlySet<string> = new Set<string>(EVALUATION_REASONS);
 
-/** Schema-qualified table names, named once and reused across every statement below rather than repeated as literals (TYP-04). */
 const INVESTIGATIONS_TABLE = 'investigations';
 const INVESTIGATION_EVIDENCE_TABLE = 'investigation_evidence';
 const INVESTIGATION_EVALUATIONS_TABLE = 'investigation_evaluations';
 const INVESTIGATION_EVALUATION_CITATIONS_TABLE = 'investigation_evaluation_citations';
 const INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE = 'investigation_subject_attribute_values';
 
-/** Postgres' own error code for a unique-constraint violation — the signal write-once is decided by, never a value spelled out where it is compared (TYP-04). */
 const UNIQUE_VIOLATION_CODE = '23505';
 
-/** The parameterized INSERT text for one investigation's own root row, named once so investigationStatement stays well within a function's own line budget (MNT-01). */
 const INVESTIGATION_INSERT_TEXT = `INSERT INTO ${INVESTIGATIONS_TABLE}
     (id, requester, ticket_ref, narrative, subject_type, prompt_version, model,
      pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
@@ -203,15 +97,6 @@ const INVESTIGATION_INSERT_TEXT = `INSERT INTO ${INVESTIGATIONS_TABLE}
      durations_collection, durations_judgment, durations_writing, durations_total, written_at)
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`;
 
-/**
- * The relational adapter of the investigation module's own store port: one
- * built investigation is written whole, in one transaction, refused
- * through this store's own typed error exactly where its id's key already
- * exists (criterion 1, criterion 2, criterion 3, criterion 4), and read
- * back together with every evidence item, every evaluation and its
- * citations, the assessment, the cost and the durations (criterion 5,
- * criterion 6, criterion 7, criterion 8).
- */
 export class RelationalInvestigationStore implements IInvestigationStore {
   public constructor(private readonly connection: IConnectableQueryable) {}
 
@@ -224,9 +109,6 @@ export class RelationalInvestigationStore implements IInvestigationStore {
   }
 }
 
-// ---------------------------------------------------------------- write
-
-/** Inserts the root row first, refused through InvestigationAlreadyStoredError exactly where its own key already holds this id, then every child row — never an UPDATE anywhere in this module (criterion 9). */
 async function writeWholeInvestigation(tx: IQueryable, investigation: Investigation): Promise<void> {
   await runStatement(tx, investigationStatement(investigation), raiseRootInsertFailure(investigation.id));
   for (const statement of childStatementsFor(investigation)) {
@@ -234,7 +116,6 @@ async function writeWholeInvestigation(tx: IQueryable, investigation: Investigat
   }
 }
 
-/** Every child row one whole write needs, in an order that always satisfies the foreign key each one carries back to the root row just inserted: every subject-attribute-value, every evidence item, then every evaluation immediately followed by its own citations. */
 function childStatementsFor(investigation: Investigation): readonly IStatement[] {
   return [
     ...investigation.subject.attributes.map((attribute) => subjectAttributeValueStatement(investigation.id, attribute)),
@@ -243,12 +124,10 @@ function childStatementsFor(investigation: Investigation): readonly IStatement[]
   ];
 }
 
-/** The one INSERT the root row needs, from every attribute domain/investigation/investigation declares plus the flattened subject, pinned case, assessment, cost and durations (constraints/the-stored-schema-mirrors-the-declared-model). */
 function investigationStatement(investigation: Investigation): IStatement {
   return { text: INVESTIGATION_INSERT_TEXT, params: investigationParams(investigation) };
 }
 
-/** Every parameter INVESTIGATION_INSERT_TEXT's own positional placeholders need, in that exact order — split into the four groups below rather than one long literal, so each stays a small, named piece (MNT-01). */
 function investigationParams(investigation: Investigation): readonly unknown[] {
   return [
     ...identityParams(investigation),
@@ -259,7 +138,6 @@ function investigationParams(investigation: Investigation): readonly unknown[] {
   ];
 }
 
-/** id, requester, ticket_ref, narrative, the subject's own type, prompt_version, model and the pinned case's own slug and version — every column the root row carries ahead of its own assessment, cost and durations. ticket_ref travels exactly as the aggregate holds it, including the empty string the upstream boundary already uses where none was given (this task's own inference, recorded in the delivery record). */
 function identityParams(investigation: Investigation): readonly unknown[] {
   return [
     investigation.id,
@@ -274,22 +152,18 @@ function identityParams(investigation: Investigation): readonly unknown[] {
   ];
 }
 
-/** The assessment's own five columns, flattened (domain/investigation/assessment): outcome and, from its referral, action and recipient, then its optional determining_hypothesis and its text. */
 function assessmentParams(assessment: Assessment): readonly unknown[] {
   return [assessment.outcome, assessment.referral.action, assessment.referral.recipient, assessment.determining_hypothesis ?? null, assessment.text];
 }
 
-/** The cost's own three columns (domain/investigation/cost). */
 function costParams(cost: Cost): readonly unknown[] {
   return [cost.calls, cost.input_tokens, cost.output_tokens];
 }
 
-/** The durations' own four columns (domain/investigation/durations). */
 function durationsParams(durations: Durations): readonly unknown[] {
   return [durations.collection, durations.judgment, durations.writing, durations.total];
 }
 
-/** Inserts one row of the subject's own attribute-values (domain/investigation/subject-attribute-value). */
 function subjectAttributeValueStatement(investigationId: string, attribute: SubjectAttributeValue): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE} (investigation_id, attribute, value) VALUES ($1, $2, $3)`,
@@ -297,24 +171,6 @@ function subjectAttributeValueStatement(investigationId: string, attribute: Subj
   };
 }
 
-/**
- * Inserts one evidence item's own row, whole (domain/investigation/evidence):
- * every declared attribute plus the capability reference this task's own
- * UNDERDETERMINED note requires a column for, plus elapsed_ms
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms,
- * 0011-investigation-evidence-elapsed-ms.sql), plus fields and
- * concept_description
- * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot,
- * migrations/0013-investigation-evidence-semantics-snapshot.sql). fields is
- * serialized explicitly (JSON.stringify) before it is sent, since it is a
- * real array of objects rather than already-held JSON text — the driver
- * would otherwise serialize a JS array as a Postgres array literal instead
- * of JSON, the same explicit-serialization step
- * relational-connector-configuration-store.repository.ts's own
- * insertStatementFor documents for its own jsonb column, adapted here
- * because that sibling's own domain value already holds JSON text while
- * this one holds a real array.
- */
 function evidenceStatement(investigationId: string, evidence: Evidence): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVIDENCE_TABLE}
@@ -339,7 +195,6 @@ function evidenceStatement(investigationId: string, evidence: Evidence): IStatem
   };
 }
 
-/** One evaluation's own row, immediately followed by one row per citation it carries — kept together so the FK from citations to this evaluation is always satisfied by the statement just before it. */
 function evaluationStatements(investigationId: string, evaluation: Evaluation): readonly IStatement[] {
   return [
     evaluationStatement(investigationId, evaluation),
@@ -347,7 +202,6 @@ function evaluationStatements(investigationId: string, evaluation: Evaluation): 
   ];
 }
 
-/** Inserts one evaluation's own row (domain/investigation/evaluation): its hypothesis, its verdict and, where inconclusive, its reason. */
 function evaluationStatement(investigationId: string, evaluation: Evaluation): IStatement {
   const reason = evaluation.verdict === 'inconclusive' ? evaluation.reason : null;
   return {
@@ -356,7 +210,6 @@ function evaluationStatement(investigationId: string, evaluation: Evaluation): I
   };
 }
 
-/** Inserts one row of one evaluation's own citations (domain/investigation/citation). */
 function citationStatement(investigationId: string, hypothesis: string, citation: Citation): IStatement {
   return {
     text: `INSERT INTO ${INVESTIGATION_EVALUATION_CITATIONS_TABLE} (investigation_id, hypothesis, concept, field) VALUES ($1, $2, $3, $4)`,
@@ -364,24 +217,18 @@ function citationStatement(investigationId: string, hypothesis: string, citation
   };
 }
 
-/** Whether a failure the driver raised is Postgres' own unique-violation code (TYP-02's guard, the same convention json-file.ts's own ENOENT check already keeps for a different code). */
 function isUniqueViolation(cause: unknown): boolean {
   return cause instanceof Error && 'code' in cause && cause.code === UNIQUE_VIOLATION_CODE;
 }
 
-/** Builds the raise callback the root insert's own statement runs through: a unique-violation on its own primary key is this id already being stored (rules/investigation/an-investigation-is-written-once, criterion 3), answered through the existing typed error rather than the store's own generic one; anything else is wrapped the same way every other statement's own failure is. */
 function raiseRootInsertFailure(id: string): RaiseStoreError {
   return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));
 }
 
-/** Builds this store's own typed error for a failed write, carrying the driver failure as its cause. */
 function raiseWriteFailure(cause: unknown): Error {
   return new InvestigationStoreError('a write against the investigation store failed', { operation: 'write' }, { cause });
 }
 
-// ---------------------------------------------------------------- read
-
-/** Reads one whole investigation, root together with its subject-attribute-values, evidence and evaluations, through the one connection the caller's own transaction checked out: an absent id answers undefined before any child table is ever read (never a partial assembly). */
 async function readWholeInvestigation(tx: IQueryable, id: string): Promise<StoredInvestigation | undefined> {
   const row = await queryOneOrAbsent<IInvestigationRow>(tx, investigationSelect(id), raiseReadFailure);
   if (row === undefined) {
@@ -406,7 +253,6 @@ function investigationSelect(id: string): IStatement {
   };
 }
 
-/** Every subject-attribute-value one investigation holds, sorted for a deterministic result — the table carries no ordinal column of its own. */
 async function readSubjectAttributeValues(tx: IQueryable, id: string): Promise<readonly SubjectAttributeValue[]> {
   return runStatement<SubjectAttributeValue>(
     tx,
@@ -419,7 +265,6 @@ async function readSubjectAttributeValues(tx: IQueryable, id: string): Promise<r
   );
 }
 
-/** Every evidence item one investigation holds, one per concept its collection plan named (rules/investigation/one-evidence-per-collected-concept), sorted by concept for a deterministic result. */
 async function readEvidence(tx: IQueryable, id: string): Promise<readonly Evidence[]> {
   const rows = await runStatement<IEvidenceRow>(
     tx,
@@ -433,21 +278,6 @@ async function readEvidence(tx: IQueryable, id: string): Promise<readonly Eviden
   return rows.map(evidenceOf);
 }
 
-/**
- * One evidence row assembled into the shape domain/investigation/evidence
- * declares, including the capability pin this task's own UNDERDETERMINED
- * note requires and elapsed_ms
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms),
- * plus fields and concept_description, read back exactly as the row's own
- * two columns hold them
- * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot,
- * migrations/0013-investigation-evidence-semantics-snapshot.sql). A row
- * stored before this migration ran answers row.fields as the empty array
- * and row.concept_description as the empty string — both columns' own
- * DEFAULT — the same honest-empty snapshot
- * domain/investigation/evidence already sanctions for exactly that legacy
- * case, so this read never has to special-case it here.
- */
 function evidenceOf(row: IEvidenceRow): Evidence {
   return {
     concept: row.concept,
@@ -466,7 +296,6 @@ function evidenceOf(row: IEvidenceRow): Evidence {
   };
 }
 
-/** Narrows a stored result to evidence-result's own four declared values, raising this store's own typed error where a row somehow holds a value the enumeration does not (TYP-02) — the same defensive-narrow convention relational-capability-store.repository.ts's own toCapability already keeps. */
 function resultOf(value: string): EvidenceResult {
   if (!isEvidenceResult(value)) {
     throw raiseReadFailure(new Error(`investigation_evidence holds an unrecognized result "${value}"`));
@@ -478,7 +307,6 @@ function isEvidenceResult(value: string): value is EvidenceResult {
   return EVIDENCE_RESULT_VALUES.has(value);
 }
 
-/** Every evaluation one investigation holds, one per hypothesis its pinned case required (rules/investigation/one-evaluation-per-required-hypothesis), each carrying its own citations, sorted by hypothesis for a deterministic result. */
 async function readEvaluations(tx: IQueryable, id: string): Promise<readonly Evaluation[]> {
   const rows = await runStatement<IEvaluationRow>(
     tx,
@@ -493,7 +321,6 @@ async function readEvaluations(tx: IQueryable, id: string): Promise<readonly Eva
   return rows.map((row) => evaluationOf(row, citations.get(row.hypothesis) ?? []));
 }
 
-/** Every citation each evaluation of one investigation carries, grouped by the evaluation's own hypothesis name — the citations table carries no order of its own, so each group is read back sorted by concept then field for a deterministic result. */
 async function citationsByHypothesis(tx: IQueryable, id: string): Promise<ReadonlyMap<string, Citation[]>> {
   const rows = await runStatement<ICitationRow>(
     tx,
@@ -513,7 +340,6 @@ async function citationsByHypothesis(tx: IQueryable, id: string): Promise<Readon
   return grouped;
 }
 
-/** One evaluation row plus its already-grouped citations, assembled into the shape domain/investigation/evaluation declares — each branch's verdict written as its own literal so it matches exactly the corresponding member of the Evaluation union, the same convention judgment-stage.ts's own asEvaluation already keeps. */
 function evaluationOf(row: IEvaluationRow, citations: readonly Citation[]): Evaluation {
   const verdict = verdictOf(row);
   if (verdict === 'confirmed') {
@@ -525,7 +351,6 @@ function evaluationOf(row: IEvaluationRow, citations: readonly Citation[]): Eval
   return { hypothesis: row.hypothesis, verdict, reason: reasonOf(row), citations };
 }
 
-/** Narrows a stored verdict to verdict's own three declared values (TYP-02). */
 function verdictOf(row: IEvaluationRow): Verdict {
   if (!isVerdict(row.verdict)) {
     throw raiseReadFailure(new Error(`investigation_evaluations holds an unrecognized verdict "${row.verdict}" for hypothesis "${row.hypothesis}"`));
@@ -537,7 +362,6 @@ function isVerdict(value: string): value is Verdict {
   return VERDICT_VALUES.has(value);
 }
 
-/** An inconclusive row's own reason, required by domain/investigation/evaluation for that verdict: raises where the column is null or holds a value evaluation-reason does not declare (TYP-02) — a decided verdict never reaches this call at all. */
 function reasonOf(row: IEvaluationRow): EvaluationReason {
   if (row.reason === null) {
     throw raiseReadFailure(new Error(`investigation_evaluations holds an inconclusive verdict with no reason for hypothesis "${row.hypothesis}"`));
@@ -552,7 +376,6 @@ function isEvaluationReason(value: string): value is EvaluationReason {
   return EVALUATION_REASON_VALUES.has(value);
 }
 
-/** A confirmed or refuted row's own citations, required non-empty by domain/investigation/evaluation for those two verdicts (TYP-02's guard: the length check below narrows before the cast it accompanies) — raises rather than silently building a value the type does not actually satisfy. */
 function nonEmptyCitations(citations: readonly Citation[], hypothesis: string): readonly [Citation, ...Citation[]] {
   if (citations.length === 0) {
     throw raiseReadFailure(new Error(`investigation_evaluations holds a decided verdict for hypothesis "${hypothesis}" with no citations`));
@@ -560,14 +383,10 @@ function nonEmptyCitations(citations: readonly Citation[], hypothesis: string): 
   return citations as readonly [Citation, ...Citation[]];
 }
 
-/** Builds this store's own typed error for a failed read, carrying the driver failure as its cause. */
 function raiseReadFailure(cause: unknown): Error {
   return new InvestigationStoreError('a read against the investigation store failed', { operation: 'read' }, { cause });
 }
 
-// ---------------------------------------------------------------- assembly
-
-/** Every part readWholeInvestigation gathers, bundled into one object rather than five positional parameters (MNT-01). */
 interface IAssembledInvestigation {
   readonly id: string;
   readonly row: IInvestigationRow;
@@ -576,7 +395,6 @@ interface IAssembledInvestigation {
   readonly evaluations: readonly Evaluation[];
 }
 
-/** The whole investigation these rows together answer, in the exact shape domain/investigation/investigation declares. */
 function investigationOf(parts: IAssembledInvestigation): Investigation {
   const { id, row, attributes, evidence, evaluations } = parts;
   return {
@@ -602,7 +420,6 @@ function investigationOf(parts: IAssembledInvestigation): Investigation {
   };
 }
 
-/** The root row's own five assessment columns, unflattened back into domain/investigation/assessment's own shape. */
 function assessmentOf(row: IInvestigationRow): Assessment {
   return {
     outcome: row.assessment_outcome,
@@ -612,19 +429,6 @@ function assessmentOf(row: IInvestigationRow): Assessment {
   };
 }
 
-/**
- * The content identity of the document this read assembled — sha256 of its
- * deterministic JSON serialization, the equivalent
- * relational-case-store.repository.ts's own contentHash already establishes
- * for the identical StoredCaseVersion.hash pattern once a document is rows
- * rather than a file's own bytes (this task's own inference, recorded in
- * the delivery record): an investigation is written once and never altered
- * (rules/investigation/an-investigation-is-written-once), so the rows one
- * id ever answers never change, and investigationOf above always builds
- * its object literal in the same key order, so the same JSON text — and
- * therefore the same hash — answers every read of one already-stored
- * investigation.
- */
 function contentHash(document: Investigation): string {
   return createHash('sha256').update(JSON.stringify(document), 'utf8').digest('hex');
 }

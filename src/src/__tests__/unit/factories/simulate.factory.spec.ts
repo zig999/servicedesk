@@ -1,25 +1,5 @@
-// Proof for task/case-simulation-pipeline/no-cache-simulation-composition.
-//
-// diagnose.factory.ts, the sibling this factory is written to mirror, carries no spec file of its
-// own to read a convention from. The closest established analog for a composition-root wiring
-// factory in this tree is production-diagnose.factory.spec.ts (unit): it isolates its own
-// composition logic from "the already-delivered pipeline it wires" by mocking that pipeline's own
-// entry point as "the boundary this factory composes against" (TST-03 — a stand-in replaces a
-// boundary, never business logic; the pipeline this factory hands off to is a separately delivered,
-// separately tested unit, not this factory's own logic). This file follows the identical shape:
-// runInvestigationPipeline (investigation-pipeline.ts) is mocked as the boundary
-// createSimulationRunner composes against, and capability-registry.factory.ts,
-// connector-configuration-registry.factory.ts and the HttpDeclarativeObservationSource adapter are
-// each mocked as the store/network boundaries this factory wires without owning.
-//
-// Criterion 4 — "nothing the composition collects is capable of entering a cache, whether or not a
-// cache layer exists elsewhere in the tree" — is a structural guarantee this factory achieves by
-// accepting no externally-supplied IObservationSource at all, so there is nothing to inject and
-// nothing a runtime test could substitute a cache into. It is proven at the type level instead
-// (src/__tests__/unit/types/pagination.spec.ts's own established convention for a fact only
-// TypeScript's own checker can falsify): SimulationDependencies is pinned to its exact shape with
 // expectTypeOf, and a `@ts-expect-error` literal shows the compiler refuses a dependency object
-// that also carries an observationSource field.
+
 import { beforeEach, expect, expectTypeOf, it, vi } from 'vitest';
 
 const { runInvestigationPipelineMock, capturedPipelineCalls, producedPipelineResults } = vi.hoisted(() => {
@@ -75,28 +55,24 @@ import type { IObservationSource, ObservationOutcome } from '../../../investigat
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 
-/** Answers no-data unconditionally — never exercised at runtime, since runInvestigationPipeline is mocked, but a well-typed collaborator so SimulationDependencies compiles. */
 class FakeHypothesisEvaluator implements IHypothesisEvaluator {
   public async evaluate(): Promise<EvaluationOutcome> {
     return { verdict: 'inconclusive', reason: 'no-data', citations: [] };
   }
 }
 
-/** Answers a fixed write-up unconditionally — never exercised at runtime, for the same reason as FakeHypothesisEvaluator above. */
 class FakeAssessmentConsolidator implements IAssessmentConsolidator {
   public async consolidate(): Promise<ConsolidationOutcome> {
     return { text: 'unused-text', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'unused-prompt' };
   }
 }
 
-/** Answers ok unconditionally — used only in the type-level tests below, to show the compiler refuses it on SimulationDependencies; never constructed by the factory under test. */
 class UnusedObservationSource implements IObservationSource {
   public async observeConcept(): Promise<ObservationOutcome> {
     return { result: 'ok', observation: 'unused' };
   }
 }
 
-/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value. */
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -112,10 +88,8 @@ function aCase(): Case {
   };
 }
 
-/** A bare stand-in for DatabaseConnection, never queried in this file since createCapabilityQuery and createConnectorConfigurationRegistry are both mocked — only its own identity matters, to the pass-through test below. */
 const FAKE_CONNECTION = {} as unknown as DatabaseConnection;
 
-/** Every field SimulationDependencies declares, all arbitrary except where a test reads one back. */
 function baseDependencies(overrides: Partial<SimulationDependencies> = {}): SimulationDependencies {
   return {
     connection: FAKE_CONNECTION,
@@ -127,7 +101,6 @@ function baseDependencies(overrides: Partial<SimulationDependencies> = {}): Simu
   };
 }
 
-/** Every field SimulationCall declares, all arbitrary — nothing in this file's tests reads their content beyond identity. */
 function baseCall(overrides: Partial<SimulationCall> = {}): SimulationCall {
   return {
     subjectType: 'a-subject-type',
@@ -140,7 +113,6 @@ function baseCall(overrides: Partial<SimulationCall> = {}): SimulationCall {
   };
 }
 
-/** The fields this suite reads back off whatever was actually passed to the mocked runInvestigationPipeline. */
 type WiredPipelineCall = {
   readonly capabilities: unknown;
   readonly observationSource: unknown;
@@ -164,8 +136,6 @@ beforeEach(() => {
   capturedPipelineCalls.length = 0;
   producedPipelineResults.length = 0;
 });
-
-// ------------------------------------------- criterion 1: wires the shared pipeline and its adapters
 
 it('builds capabilities and the connector-configuration registry from the given connection, and constructs its own observation source from exactly those two', () => {
   const dependencies = baseDependencies();
@@ -221,11 +191,9 @@ it('answers exactly what runInvestigationPipeline resolved with, the whole recor
   expect(result).toBe(producedPipelineResults[0]);
 });
 
-// --------------- criterion 2: a distinct assembly, never a conditional inside the production composition
-
 const MODULE_PATH = fileURLToPath(new URL('../../../factories/simulate.factory.ts', import.meta.url));
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
-/** Exact compiled basenames of the production composition's own modules — matched by the whole final path segment, never a substring. */
+
 const FORBIDDEN_PRODUCTION_BASENAMES = ['diagnose.factory.js', 'production-diagnose.factory.js', 'run-diagnosis.js'];
 
 async function simulateFactoryImports(): Promise<readonly string[]> {
@@ -233,7 +201,6 @@ async function simulateFactoryImports(): Promise<readonly string[]> {
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** The final path segment of a module specifier, the unit a basename check must compare against, never the whole specifier. */
 function basenameOf(specifier: string): string {
   return specifier.split('/').pop() ?? specifier;
 }
@@ -244,8 +211,6 @@ it('imports nothing from diagnose.factory.ts, production-diagnose.factory.ts or 
   const forbidden = specifiers.filter((specifier) => FORBIDDEN_PRODUCTION_BASENAMES.includes(basenameOf(specifier)));
   expect(forbidden).toEqual([]);
 });
-
-// -------------------------------------------- criterion 3: constructs each adapter once per call
 
 it('constructs capabilities, the connector-configuration registry and its own observation source exactly once when the runner is created, before the returned runner is ever invoked', () => {
   createSimulationRunner(baseDependencies());
@@ -287,8 +252,6 @@ it("constructs a fresh capabilities instance for a second call to the outer fact
   expect(secondCapabilities).not.toBe(firstCapabilities);
 });
 
-// ------------- criterion 4: structurally incapable of entering a cache, since none can be injected
-
 it('SimulationDependencies carries exactly connection, evaluator, consolidator, poolSize and defaultConsolidationRegister — no observation-source parameter of its own', () => {
   expectTypeOf<SimulationDependencies>().toEqualTypeOf<{
     readonly connection: DatabaseConnection;
@@ -307,14 +270,11 @@ it('refuses a SimulationDependencies literal that also supplies an externally-bu
     poolSize: 3,
     defaultConsolidationRegister: 'plain',
     // @ts-expect-error — SimulationDependencies exposes no observationSource field; createSimulationRunner
-    // constructs its own HttpDeclarativeObservationSource internally, so nothing here could ever
-    // substitute a caching decorator implementing the same published IObservationSource port.
+
     observationSource: new UnusedObservationSource(),
   };
   void invalid;
 });
-
-// -------------------- inference: SimulationCall carries no persistence-only field of its own
 
 it('SimulationCall carries exactly subjectType, subjectAttributes, case, requester, now and deadline — no narrative, ticket_ref, id, prompt_version, model, glossary or store field', () => {
   expectTypeOf<SimulationCall>().toEqualTypeOf<{
@@ -336,13 +296,11 @@ it('refuses a SimulationCall literal that also supplies a narrative', () => {
     now: 1_000,
     deadline: 21_000,
     // @ts-expect-error — SimulationCall carries no narrative field: contracts/investigation/case-simulation's
-    // own "neither operation carries a narrative or a ticket reference."
+
     narrative: 'a narrative',
   };
   void invalid;
 });
-
-// ---------------------------------------------- edge case: the wired pipeline call rejects
 
 it("propagates a rejection from runInvestigationPipeline to the runner's own caller, unchanged", async () => {
   const failure = new Error('a pipeline failure');

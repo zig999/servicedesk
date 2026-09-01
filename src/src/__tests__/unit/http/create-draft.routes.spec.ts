@@ -1,21 +1,3 @@
-// Proof for task/case-lifecycle-http/create-draft-route: POST /v1/cases
-// exercised through Fastify's own app.inject() against a local instance
-// registering createCreateDraftRoutesPlugin() and
-// error-handler.middleware.ts's own handleUnexpectedError directly — the
-// same shape update-draft.routes.spec.ts already establishes, adapted for a
-// route with a single dependency and no path parameters (everything arrives
-// in the body). CaseLifecycleOperations['createDraft'] is a stand-in here
-// (TST-03 — a stand-in replaces a boundary, never business logic):
-// create-draft.operation.ts's own CreateDraftOperation, which delegates the
-// next-version number, the at-most-one-draft refusal and the manifest's copy
-// source entirely to the case store beneath it, is proved separately in its
-// own unit spec. This file proves only that the route, controller and DTO
-// carry that operation's promise onto the wire unchanged — including the
-// one promise this task's own UNDERDETERMINED note singles out: a slug
-// already naming an existing case with no open draft must still succeed,
-// originating that case's own next draft, because the route adds no
-// slug-existence pre-check of its own (create-draft.controller.ts's own
-// header comment).
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Resolution } from '../../../case/case.js';
@@ -28,12 +10,10 @@ import { createCreateDraftRoutesPlugin } from '../../../http/create-draft.routes
 
 type CreateDraftMock = ReturnType<typeof vi.fn<(input: CreateDraftBodyDto) => Promise<CreatedDraft>>>;
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'no-hypothesis-confirmed'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** A full, valid create-draft request body, every one of createDraftBodySchema's required attributes present and both optional ones supplied. */
 function validCreateDraftBody(overrides: Partial<CreateDraftBodyDto> = {}): CreateDraftBodyDto {
   return {
     slug: 'a-slug',
@@ -48,7 +28,6 @@ function validCreateDraftBody(overrides: Partial<CreateDraftBodyDto> = {}): Crea
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors update-draft.routes.spec.ts's own buildTestApp, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; createDraft: CreateDraftMock } {
   const createDraft: CreateDraftMock = vi.fn();
   const dependencies: CreateDraftControllerDependencies = { createDraft };
@@ -65,8 +44,6 @@ afterEach(async () => {
   app = undefined;
 });
 
-// ------------------------------------------------------------------ criterion 1
-
 it('answers 201 with the slug and version createDraft originated, calling createDraft with the parsed body exactly as sent', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -81,34 +58,12 @@ it('answers 201 with the slug and version createDraft originated, calling create
   expect(built.createDraft).toHaveBeenCalledWith(body);
 });
 
-// ------------------------------------------------------------------ UNDERDETERMINED-defeating test
-//
-// This task's own UNDERDETERMINED note rules out a reading where POST
-// /v1/cases refuses every request naming a slug that already identifies a
-// case, regardless of whether that case currently holds an open draft — a
-// reading that would satisfy every criterion as literally stated (the slug
-// this test names never appears in a rejected call, and criteria 2 and 3
-// are proved by separate tests), yet contradicts domain/knowledge/case's own
-// responsibility to "originate a new draft version when a curator starts
-// revising it" and contracts/knowledge/case-lifecycle's own "revising a
-// released case always starts the next draft." CreateDraftControllerDependencies
-// narrows to createDraft alone (no read/exists operation is ever wired to
-// this route), so there is structurally nothing here the route could use to
-// pre-check slug existence; this test additionally proves it behaviorally,
-// by mocking createDraft to resolve successfully — never reject — for a slug
-// that already identifies an existing case with no open draft, and asserting
-// the route still answers 201 with the originated draft rather than refusing
-// outright.
-
 it('still succeeds, originating the next draft, for a slug already naming an existing case that currently holds no open draft', async () => {
   const built = buildTestApp();
   app = built.app;
   const body = validCreateDraftBody({ slug: 'an-existing-slug-without-open-draft' });
   const createdDraft: CreatedDraft = { slug: 'an-existing-slug-without-open-draft', version: 7 };
-  // createDraft resolves — never rejects — proving the route itself raises
-  // no refusal of its own for a slug that already identifies a case; the
-  // only refusal this operation can produce is CaseAlreadyHasDraftError,
-  // which this test does not trigger.
+
   built.createDraft.mockResolvedValueOnce(createdDraft);
 
   const response = await app.inject({ method: 'POST', url: '/v1/cases', payload: body });
@@ -117,8 +72,6 @@ it('still succeeds, originating the next draft, for a slug already naming an exi
   expect(response.json()).toEqual(createdDraft);
   expect(built.createDraft).toHaveBeenCalledWith(body);
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it('refuses with the status the status map assigns CaseAlreadyHasDraftError when the named case already holds an open draft', async () => {
   const built = buildTestApp();
@@ -136,8 +89,6 @@ it('refuses with the status the status map assigns CaseAlreadyHasDraftError when
   expect(responseBody.error.code).toBe('CaseAlreadyHasDraftError');
   expect(responseBody.error.details).toEqual({ slug: 'a-slug-with-a-draft' });
 });
-
-// ------------------------------------------------------------------ criterion 3
 
 it('answers 400 for a body missing the required title attribute, without ever reaching createDraft', async () => {
   const built = buildTestApp();
@@ -174,8 +125,6 @@ it('answers 400 for a body missing the required slug attribute, without ever rea
   expect(response.statusCode).toBe(400);
   expect(built.createDraft).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('succeeds when consolidation_register is omitted from the body entirely, calling createDraft with it absent rather than defaulted to some value', async () => {
   const built = buildTestApp();

@@ -1,18 +1,8 @@
-// Proof for task/capability-input-schema-contract/refuse-malformed-capability-input-schema:
-// inputSchemaShapeProblems names every way an already-parsed input schema value departs from
-// the declared shape (rules/integration/a-capability-input-schema-holds-a-well-formed-object) —
-// properties not an object once declared, required not an array, or required naming a key
-// properties does not hold — reading an absent properties key as declaring it implicitly empty
-// rather than a departure. declaredInputSchemaShape is the permissive shared reader every other
-// consumer uses: properties and required both empty for anything that does not parse as JSON,
-// is undefined, or does not hold the shape, rather than throwing or refusing.
 import { expect, it } from 'vitest';
 import {
   declaredInputSchemaShape,
   inputSchemaShapeProblems,
 } from '../../../capability-registry/capability-input-schema-shape.js';
-
-// ------------------------------------------------------------------ inputSchemaShapeProblems
 
 it('reports no problem for a parsed value declaring an empty properties object and no required array', () => {
   const problems = inputSchemaShapeProblems({ properties: {} });
@@ -70,8 +60,6 @@ it('reports both problems together when properties and required depart from the 
     'required names a key absent from properties: a',
   ]);
 });
-
-// ------------------------------------------------------------------ declaredInputSchemaShape
 
 it('reads the declared properties and required keys from a well-formed input_schema', () => {
   const shape = declaredInputSchemaShape('{"properties":{"a":{},"b":{}},"required":["a"]}');

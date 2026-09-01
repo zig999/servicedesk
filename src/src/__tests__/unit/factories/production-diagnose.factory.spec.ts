@@ -1,26 +1,3 @@
-// Proof for task/diagnose-composition-root/wire-diagnose-runner: the
-// composition logic of createProductionDiagnoseRunner itself, isolated from
-// the already-delivered pipeline it wires by mocking createDiagnoseRunner
-// (../../../factories/diagnose.factory.js) — the boundary this factory
-// composes against — the same way anthropic-hypothesis-evaluator.adapter.spec.ts
-// mocks @anthropic-ai/sdk to observe what crosses its own boundary.
-// @anthropic-ai/sdk is mocked too, since both Anthropic-backed adapters this
-// factory always constructs would otherwise call the real SDK's own
-// constructor, which throws synchronously with no credential in this
-// environment. What actually runs the pipeline end to end — the real
-// adapters, the real relational store over a real database
-// (task/service-on-the-database/store-wiring), the given requester reaching
-// a real observation source, two calls writing two independent
-// investigations — is production-diagnose.factory.spec.ts under
-// __tests__/integration instead.
-//
-// Sibling fix, disclosed in this task's own proof record: baseDependencies()
-// below used to carry three data-directory strings
-// (investigationDataDirectory, glossaryDataDirectory,
-// capabilityDataDirectory); ProductionDiagnoseDependencies now carries the
-// one connection field this task's own cutover wires everywhere, so this
-// file passes a bare stand-in DatabaseConnection instead — createDiagnoseRunner
-// is mocked in this file, so nothing here ever issues a real query through it.
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 const { anthropicConstructorMock } = vi.hoisted(() => {
@@ -54,17 +31,14 @@ import {
   type ProductionDiagnoseDependencies,
 } from '../../../factories/production-diagnose.factory.js';
 
-/** The specification's own declared total deadline budget, restated here as the value this suite expects the factory to compute — never read from the factory's own source, so a change to the constant there is exactly what would fail this suite. */
 const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
 
-/** Answers ok unconditionally — never exercised in this file, since createDiagnoseRunner itself is mocked, but still a well-typed collaborator so ProductionDiagnoseDependencies compiles. */
 class UnusedObservationSource implements IObservationSource {
   public async observeConcept(): Promise<ObservationOutcome> {
     return { result: 'ok', observation: 'unused' };
   }
 }
 
-/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value; manifest stays empty since nothing here ever reaches collectionPlan/requiresEvaluationOf over it (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -80,10 +54,8 @@ function aCase(): Case {
   };
 }
 
-/** A bare stand-in for DatabaseConnection, never queried in this file since createDiagnoseRunner is mocked — only its own identity matters, to the pass-through test below. */
 const FAKE_CONNECTION = {} as unknown as DatabaseConnection;
 
-/** Every field ProductionDiagnoseDependencies declares, all arbitrary except where a test reads one back. */
 function baseDependencies(overrides: Partial<ProductionDiagnoseDependencies> = {}): ProductionDiagnoseDependencies {
   return {
     connection: FAKE_CONNECTION,
@@ -97,7 +69,6 @@ function baseDependencies(overrides: Partial<ProductionDiagnoseDependencies> = {
   };
 }
 
-/** Every field ProductionDiagnoseCall declares, all arbitrary — nothing in this file's tests reads their content. */
 function baseCall(): ProductionDiagnoseCall {
   return {
     id: 'investigation-1',
@@ -129,15 +100,12 @@ afterEach(() => {
   }
 });
 
-/** The pass-through fields this suite reads back off whatever was actually passed to the mocked createDiagnoseRunner — a local, narrower view rather than the real DiagnoseDependencies type, since this file never constructs a real evaluator/consolidator pair to satisfy that type fully. */
 type WiredPassThroughFields = {
   readonly observationSource: IObservationSource;
   readonly poolSize: number;
   readonly defaultConsolidationRegister: string;
   readonly connection: DatabaseConnection;
 };
-
-// ------------------------------------------------------- criterion 1: pass-through wiring
 
 it('passes the caller-given observation source, pool size, connection and default consolidation register through to the wired dependencies, unchanged', () => {
   const dependencies = baseDependencies();
@@ -159,8 +127,6 @@ it('always wires a real AnthropicHypothesisEvaluator and AnthropicAssessmentCons
   expect(wired.evaluator).toBeInstanceOf(AnthropicHypothesisEvaluator);
   expect(wired.consolidator).toBeInstanceOf(AnthropicAssessmentConsolidator);
 });
-
-// --------------------------- criterion 4: the (now, deadline) pair reaching the wired runner
 
 it('computes the deadline as its own start instant plus the specification-declared twenty-second budget, and propagates that exact pair to the wired runner', async () => {
   const runner = createProductionDiagnoseRunner(baseDependencies());
@@ -191,8 +157,6 @@ it('stamps a fresh (now, deadline) pair on a second call, never the first call\'
   expect(secondDeadline).toBe(secondNow + EXPECTED_DEADLINE_BUDGET_MS);
 });
 
-// --------------------------------------- inference: adapters built once, not once per call
-
 it('constructs the Anthropic client once when the runner is created, never again on either of two later calls', async () => {
   const runner = createProductionDiagnoseRunner(baseDependencies());
   const countAfterCreation = anthropicConstructorMock.mock.calls.length;
@@ -200,11 +164,9 @@ it('constructs the Anthropic client once when the runner is created, never again
   await runner(baseCall());
   await runner(baseCall());
 
-  expect(countAfterCreation).toBeGreaterThanOrEqual(2); // one evaluator, one consolidator
+  expect(countAfterCreation).toBeGreaterThanOrEqual(2);
   expect(anthropicConstructorMock.mock.calls.length).toBe(countAfterCreation);
 });
-
-// --------------------------------- inference: no apiKey parameter, credential from environment
 
 it('constructs both Anthropic-backed adapters with the credential resolved from the environment alone, since ProductionDiagnoseDependencies exposes no apiKey field of its own', () => {
   process.env.ANTHROPIC_API_KEY = 'an-env-test-key';
@@ -217,11 +179,9 @@ it('constructs both Anthropic-backed adapters with the credential resolved from 
   }
 });
 
-// ---------------------------------------------- criteria 2 and 6: what this module imports
-
 const MODULE_PATH = fileURLToPath(new URL('../../../factories/production-diagnose.factory.ts', import.meta.url));
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
-/** Exact compiled basenames of the six retired modules — matched by the whole final path segment, never a substring, so this never flags the legitimate diagnose.factory.js this file imports for real. */
+
 const FORBIDDEN_LEGACY_BASENAMES = [
   'diagnose.js',
   'idempotency-key.js',
@@ -237,7 +197,6 @@ async function productionDiagnoseFactoryImports(): Promise<readonly string[]> {
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** The final path segment of a module specifier — 'diagnose.factory.js' from '../factories/diagnose.factory.js' — the unit a basename check must compare against, never the whole specifier. */
 function basenameOf(specifier: string): string {
   return specifier.split('/').pop() ?? specifier;
 }

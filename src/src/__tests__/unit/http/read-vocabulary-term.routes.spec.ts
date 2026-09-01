@@ -1,14 +1,3 @@
-// Proof for task/glossary-query-http/read-vocabulary-term-route: GET /v1/glossary/{vocabulary}/{name}
-// exercised through Fastify's own app.inject() against a local instance registering
-// createReadVocabularyTermRoutesPlugin() and error-handler.middleware.ts's own handleUnexpectedError
-// directly — the same shape read-concept.routes.spec.ts already establishes, adapted for this
-// route's second path parameter (the closed set of five term vocabularies). The published
-// glossary-query read is a stand-in here (TST-03 — a stand-in replaces a boundary, never business
-// logic): IGlossaryQuery.readVocabularyTerm is exactly the seam ReadVocabularyTermControllerDependencies
-// declares, stood in for by a vi.fn(); the domain behavior behind that seam — how a resolution is
-// answered, held or not — is proved separately in __tests__/unit/glossary/glossary-query.port.spec.ts.
-// This file proves only that the route, controller and DTO carry that contract's promise onto the
-// wire unchanged, and that the closed vocabulary enum is enforced before the query is ever reached.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
@@ -21,21 +10,16 @@ import { createReadVocabularyTermRoutesPlugin } from '../../../http/read-vocabul
 
 type ReadVocabularyTermMock = ReturnType<typeof vi.fn<(vocabulary: TermVocabulary, name: string) => Promise<TermResolution>>>;
 
-/** A term as the glossary would already hold it, for seeding the stand-in query — its one name attribute, since criterion 1 asks for the term "exactly as the glossary currently holds it" and none of the five vocabularies carries anything beyond that name. */
 function heldTerm(overrides: Partial<GlossaryTerm> = {}): GlossaryTerm {
   return { name: 'a-term', ...overrides };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors read-concept.routes.spec.ts's own buildTestApp(), ahead of the still-outstanding task that wires this route into build-app.ts. */
 function buildTestApp(): { app: FastifyInstance; readVocabularyTerm: ReadVocabularyTermMock } {
   const readVocabularyTerm: ReadVocabularyTermMock = vi.fn();
   const glossaryQuery: IGlossaryQuery = {
     readVocabularyTerm,
     readConcept: () => Promise.reject(new Error('read-vocabulary-term.routes.spec.ts never exercises readConcept')),
-    // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-    // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-    // task/glossary-query-http/list-concepts-query-extension): this route
-    // under test never calls either.
+
     listVocabularyTerms: () => Promise.reject(new Error('listVocabularyTerms is not scripted for this file')),
     listConcepts: () => Promise.reject(new Error('listConcepts is not scripted for this file')),
   };
@@ -52,8 +36,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the term currently held by the named vocabulary, exactly as the glossary holds it', async () => {
   const built = buildTestApp();
@@ -108,8 +90,6 @@ it.each(TERM_VOCABULARIES)(
   },
 );
 
-// ------------------------------------------------------------------ criterion 2
-
 it('refuses with the status the status map assigns VocabularyTermNotHeldError, when the named vocabulary does not currently hold the term', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -122,8 +102,6 @@ it('refuses with the status the status map assigns VocabularyTermNotHeldError, w
   expect(body.error.code).toBe('VocabularyTermNotHeldError');
   expect(body.error.details).toEqual({ vocabulary: 'recipient', name: 'an-absent-term' });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers 400 for a :vocabulary segment naming none of the five term vocabularies, never reaching the glossary query', async () => {
   const built = buildTestApp();

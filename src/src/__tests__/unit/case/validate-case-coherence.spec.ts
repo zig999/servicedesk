@@ -1,23 +1,3 @@
-// Proof for the coherence rules a structurally valid case answers to at
-// reading (task/case-model/case-coherence-validation): every named term
-// exists in the glossary (rules/knowledge/case-terms-exist-in-the-glossary),
-// every collected concept accepts the declared subject type
-// (rules/knowledge/a-concept-accepts-the-declared-subject-type,
-// scenarios/knowledge/a-subject-mismatch-refuses-the-case), every collected
-// concept is answered by a current read-only capability declaring its
-// contract (rules/knowledge/every-collected-concept-has-a-read-only-capability),
-// the capability check reads the registration as it stands right now
-// (rules/knowledge/the-contract-check-reads-the-current-registration), and a
-// case violating several rules is refused once with every violation named
-// (contracts/system/case-authoring, scoped here to coherence over a
-// structurally valid case — the joint refusal that also carries structural
-// problems is read-case's own proof; caseCoherenceViolations resolving
-// rather than throwing, exercised throughout this file, is what lets that
-// composition exist). Both ports are stood in for by small mutable
-// in-memory fakes (contracts/knowledge/vocabulary-terms,
-// contracts/knowledge/capability-check) — never the glossary or capability
-// registry services — so the checks are proven against the published reads
-// alone.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -37,19 +17,15 @@ import type {
 } from '../../../glossary/glossary-query.port.js';
 import type { Concept, TermVocabulary } from '../../../glossary/terms.js';
 
-/** The one nature that registers, spelled here rather than imported so a drift in the source fails. */
 const READ_ONLY = 'read-only';
-/** The nature the registry never lets answer a concept, for the capability-gap tests. */
+
 const MUTATING = 'mutating';
 
-/** The fixture's subject types: the accepted one, and the one the scenario's mismatch declares. */
 const SUBJECT_CONTRACT = 'contract';
 const SUBJECT_CUSTOMER = 'customer';
 
-/** The one concept every fixture case collects, unless a test departs from it. */
 const CONCEPT = 'equipment-state';
 
-/** The vocabulary terms the coherent fixture names, each distinct from its fallback counterpart. */
 const OUTCOME = 'issue-resolved';
 const FALLBACK_OUTCOME = 'inconclusive';
 const ACTION = 'notify-customer';
@@ -57,15 +33,8 @@ const FALLBACK_ACTION = 'escalate';
 const RECIPIENT = 'support-queue';
 const FALLBACK_RECIPIENT = 'escalation-queue';
 
-/** The prose a hypothesis carries that no coherence check ever reads. */
 const UNCONSULTED_CRITERION = 'prose the coherence checks never read';
 
-/**
- * Stands in for the glossary boundary (contracts/knowledge/vocabulary-terms):
- * a holding a test seeds and un-seeds directly, so a term or a concept the
- * glossary does not hold is exactly what the test says it is — never derived
- * from a real store.
- */
 class FakeGlossaryQuery implements IGlossaryQuery {
   private readonly terms = new Set<string>();
   private readonly concepts = new Map<string, Concept>();
@@ -97,10 +66,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
     return concept === undefined ? { held: false, name } : { held: true, concept };
   }
 
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-  // task/glossary-query-http/list-concepts-query-extension): this file's own
-  // scenarios never call either.
   public async listVocabularyTerms(): Promise<never> {
     throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
   }
@@ -110,19 +75,10 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   }
 }
 
-/** The one key a term is held or forgotten under: its vocabulary paired with its name. */
 function termKey(vocabulary: TermVocabulary, name: string): string {
   return `${vocabulary}:${name}`;
 }
 
-/**
- * Stands in for the capability-registry boundary
- * (contracts/knowledge/capability-check): a mutable holding, so criterion 4
- * can validate the same case before and after a registration changes what
- * the port answers, and an injectable failure, so an upstream integrity
- * error can be observed reaching the caller rather than becoming a
- * violation of the case.
- */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly capabilities = new Map<string, Capability>();
   private readonly failures = new Map<string, Error>();
@@ -144,31 +100,19 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
 
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
-  // (task/capability-registry-http/list-capabilities-query-extension): this
-  // file's own scenarios never call listCapabilities.
   public async listCapabilities(): Promise<never> {
     throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
   }
 }
 
-/** One resolution as the aggregate holds it: an outcome paired with its referral. */
 function resolutionOf(outcome: string, action: string, recipient: string): Resolution {
   return { outcome, referral: { action, recipient } };
 }
 
-/** One hypothesis carrying exactly what the coherence checks consult — none of these checks reads a declared position, so this file's own manifest builder below assigns one from array order alone. */
 function hypothesisOf(name: string, collects: readonly string[], resolution: Resolution): Hypothesis {
   return { name, criterion: UNCONSULTED_CRITERION, collects, resolution };
 }
 
-/**
- * One manifest entry mirroring one flat Hypothesis fixture, position
- * assigned from array order — case-resolution.ts's own collectionPlan,
- * which every coherence check here reaches through, reads theCase.manifest
- * exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation),
- * so every case fixture below must keep both fields in agreement.
- */
 function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
   return {
     position,
@@ -182,14 +126,6 @@ function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntr
   };
 }
 
-/**
- * A structurally valid case declaring subject contract, one hypothesis
- * collecting the one fixture concept, and a fallback naming its own
- * distinct terms — every attribute the coherence checks read, for a test to
- * depart from one at a time. A test overriding `hypotheses` gets its own
- * manifest rebuilt to match, so collectionPlan (read from manifest alone)
- * and declaredResolutions (read from hypotheses alone) never disagree.
- */
 function caseOf(overrides: Partial<Case> = {}): Case {
   const hypotheses =
     overrides.hypotheses ?? [hypothesisOf('h1', [CONCEPT], resolutionOf(OUTCOME, ACTION, RECIPIENT))];
@@ -208,7 +144,6 @@ function caseOf(overrides: Partial<Case> = {}): Case {
   };
 }
 
-/** A glossary holding every term and the one concept the fixture case names, accepting only contract. */
 function coherentGlossary(): FakeGlossaryQuery {
   const glossary = new FakeGlossaryQuery();
   glossary.holdTerm('subject-type', SUBJECT_CONTRACT);
@@ -222,7 +157,6 @@ function coherentGlossary(): FakeGlossaryQuery {
   return glossary;
 }
 
-/** A capability answering the fixture concept, declaring its whole contract, for tests to depart from. */
 function coherentCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'equipment-state-reader',
@@ -237,39 +171,31 @@ function coherentCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A registry answering the fixture concept with a complete, current, read-only capability. */
 function coherentCapabilities(): FakeCapabilityQuery {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(coherentCapability());
   return capabilities;
 }
 
-/** How a refusal names a vocabulary term the glossary does not hold, exactly as the module states it. */
 function missingTermViolation(role: string, name: string): string {
   return `the ${role} "${name}" does not exist in the glossary`;
 }
 
-/** How a refusal names a collected concept the glossary does not hold, exactly as the module states it. */
 function missingConceptViolation(name: string): string {
   return `the concept "${name}" does not exist in the glossary`;
 }
 
-/** How a refusal names a concept whose accepted subjects disagree with the declared one. */
 function mismatchViolation(concept: string, subject: string): string {
   return `the concept "${concept}" does not accept the subject type "${subject}" the case declares`;
 }
 
-/** How a refusal names a concept no capability currently answers at all. */
 function noCapabilityViolation(concept: string): string {
   return `no read-only capability currently answers the concept "${concept}"`;
 }
 
-/** How a refusal names a concept whose answering capability departs from the declared contract. */
 function capabilityGapViolation(concept: string, lacks: string): string {
   return `the capability answering the concept "${concept}" ${lacks}`;
 }
-
-// ---------------------------------------------------------------- criterion 1: terms exist in the glossary
 
 it('refuses a case naming a subject type the glossary does not hold, naming the term', async () => {
   const theCase = caseOf();
@@ -316,15 +242,10 @@ it('refuses a case collecting a concept the glossary does not hold, naming the c
   const glossary = coherentGlossary();
   glossary.forgetConcept(CONCEPT);
 
-  // The capability registry still answers the concept, so the only
-  // violation this case can hold is the concept's absence from the
-  // glossary — isolating criterion 1 from criterion 3.
   const violations = await caseCoherenceViolations(theCase, glossary, coherentCapabilities());
 
   expect(violations).toEqual([missingConceptViolation(CONCEPT)]);
 });
-
-// ------------------------------------------- criterion 2: a concept accepts the declared subject type
 
 it(
   'refuses a case whose collected concept does not accept the declared subject type, naming both ' +
@@ -339,8 +260,6 @@ it(
     expect(violations).toEqual([mismatchViolation(CONCEPT, SUBJECT_CUSTOMER)]);
   },
 );
-
-// --------------------------------------- criterion 3: every collected concept has a read-only capability
 
 it('refuses a case collecting a concept no capability currently answers, naming the concept', async () => {
   const theCase = caseOf();
@@ -384,23 +303,19 @@ it('refuses a case whose answering capability declares a non-integer timeout, na
   expect(violations).toEqual([capabilityGapViolation(CONCEPT, 'declares no timeout')]);
 });
 
-// -------------------------------------------- criterion 4: reads the current registration, not a memory
-
 it('reads the capability registration as it stands at the moment of validation, not a remembered one', async () => {
   const theCase = caseOf();
   const glossary = coherentGlossary();
-  const capabilities = new FakeCapabilityQuery(); // nothing registered yet
+  const capabilities = new FakeCapabilityQuery();
 
   await expect(validateCaseCoherence(theCase, glossary, capabilities)).rejects.toBeInstanceOf(
     IncoherentCaseError,
   );
 
-  capabilities.hold(coherentCapability()); // the concept registers between the two readings
+  capabilities.hold(coherentCapability());
 
   await expect(validateCaseCoherence(theCase, glossary, capabilities)).resolves.toBeUndefined();
 });
-
-// --------------------------------------------------- criterion 5: several violations, refused once
 
 it('refuses a case violating several coherence rules at once, naming every violation', async () => {
   const theCase = caseOf({ subject: SUBJECT_CUSTOMER });
@@ -424,8 +339,6 @@ it('refuses a case violating several coherence rules at once, naming every viola
   });
 });
 
-// --------------------------------------------------- criterion 6: no coherence violation, no refusal
-
 it('does not refuse a case that violates no coherence rule', async () => {
   const theCase = caseOf();
 
@@ -434,11 +347,9 @@ it('does not refuse a case that violates no coherence rule', async () => {
   ).resolves.toBeUndefined();
 });
 
-// -------------------------------------------------------------- named-term deduplication (inference)
-
 it('names an absent term once no matter how many positions of the case name it', async () => {
   const theCase = caseOf({
-    // The fallback now names the same absent action as the one hypothesis.
+
     fallback: resolutionOf(FALLBACK_OUTCOME, ACTION, FALLBACK_RECIPIENT),
   });
   const glossary = coherentGlossary();
@@ -449,13 +360,11 @@ it('names an absent term once no matter how many positions of the case name it',
   expect(violations).toEqual([missingTermViolation('action', ACTION)]);
 });
 
-// -------------------------------------------------- rule independence and stable order (inferences)
-
 it('names an unregistered concept once for the glossary and once for the capability, independently', async () => {
   const theCase = caseOf();
   const glossary = coherentGlossary();
   glossary.forgetConcept(CONCEPT);
-  const capabilities = new FakeCapabilityQuery(); // answers nothing either
+  const capabilities = new FakeCapabilityQuery();
 
   const violations = await caseCoherenceViolations(theCase, glossary, capabilities);
 
@@ -473,8 +382,8 @@ it("answers violations in the case's declared order — vocabulary terms, then c
     ],
   });
   const glossary = coherentGlossary();
-  glossary.forgetTerm('recipient', RECIPIENT); // one vocabulary violation
-  const capabilities = new FakeCapabilityQuery(); // both concepts unanswered
+  glossary.forgetTerm('recipient', RECIPIENT);
+  const capabilities = new FakeCapabilityQuery();
 
   const violations = await caseCoherenceViolations(theCase, glossary, capabilities);
 
@@ -486,8 +395,6 @@ it("answers violations in the case's declared order — vocabulary terms, then c
     noCapabilityViolation('second-missing-concept'),
   ]);
 });
-
-// --------------------------- an upstream registry integrity failure propagates (inference, edge case)
 
 it('lets a duplicate-concept-answer failure from the capability port reach the caller rather than becoming a violation of the case', async () => {
   const theCase = caseOf();
@@ -502,14 +409,10 @@ it('lets a duplicate-concept-answer failure from the capability port reach the c
   await expect(caseCoherenceViolations(theCase, glossary, capabilities)).rejects.toBe(failure);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
-
-/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
 async function moduleSource(): Promise<string> {
   return readFile(fileURLToPath(new URL('../../../case/validate-case-coherence.ts', import.meta.url)), 'utf8');
 }
 
-/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
 function docCommentBefore(source: string, marker: string): string {
   const markerIndex = source.indexOf(marker);
   if (markerIndex === -1) {
@@ -521,7 +424,6 @@ function docCommentBefore(source: string, marker: string): string {
   return before.slice(commentStart, commentEnd + 2);
 }
 
-/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a phrase or citation the source wraps across lines is still matched as one continuous string. */
 function normalizedProse(commentBlock: string): string {
   return commentBlock
     .split('\n')

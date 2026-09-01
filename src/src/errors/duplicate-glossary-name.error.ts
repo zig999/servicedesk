@@ -1,7 +1,3 @@
-/**
- * A business error of the glossary: a vocabulary's records hold one name
- * twice, where the published language demands each term exist exactly once.
- */
 export class DuplicateGlossaryNameError extends Error {
   public readonly context: Readonly<{ vocabulary: string; name: string }>;
 

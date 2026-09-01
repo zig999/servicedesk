@@ -1,23 +1,3 @@
-// Proof for task/case-lifecycle-http/release-route: POST
-// /v1/cases/{slug}/versions/{version}/release exercised through Fastify's
-// own app.inject() against a local instance registering
-// createReleaseRoutesPlugin() and error-handler.middleware.ts's own
-// handleUnexpectedError directly — the same shape update-draft.routes.spec.ts
-// and read-case.routes.spec.ts already establish, adapted for release's own
-// no-body shape and its own pair of dependencies (release, caseQuery).
-// Both CaseLifecycleOperations['release'] and ICaseQuery.readCase are
-// stand-ins here (TST-03 — a stand-in replaces a boundary, never business
-// logic): release.operation.ts's own release — which refuses through
-// CaseVersionNotDraftAtReleaseError where the named version is not in draft
-// state, through CaseVersionNotReleasableError naming every violated rule
-// together where its assembled manifest fails a structural or coherence
-// rule, and through CaseNotFoundError where the slug/version is not stored
-// at all — is proved separately in its own operation spec; case-query
-// .service.ts's own readCase is proved separately in
-// case-query.service.spec.ts. This file proves only that the route,
-// controller and DTO carry those contracts' promises onto the wire
-// unchanged, in the release-then-read-back order release.controller.ts's
-// own header comment states.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
@@ -33,12 +13,10 @@ import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.
 type ReleaseMock = ReturnType<typeof vi.fn<CaseLifecycleOperations['release']>>;
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -52,7 +30,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A released case version, as case-query would read it back once release has moved it out of draft — carrying released_at, present only once released (domain/knowledge/case-version). */
 function heldReleasedCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -70,7 +47,6 @@ function heldReleasedCase(overrides: Partial<Case> = {}): Case {
   };
 }
 
-/** ICaseQuery stood in whole: readCase alone is this file's own seam, the same convention update-draft.routes.spec.ts's own caseQuery stub keeps. */
 function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   return {
     readCase,
@@ -81,7 +57,6 @@ function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors update-draft.routes.spec.ts's own buildTestApp, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; release: ReleaseMock; readCase: ReadCaseMock } {
   const release: ReleaseMock = vi.fn();
   const readCase: ReadCaseMock = vi.fn();
@@ -101,8 +76,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the version now in released state, read back whole through the published case-query and projected the same way read-case-route already is', async () => {
   const built = buildTestApp();
@@ -147,8 +120,6 @@ it('calls release before readCase, so the response reflects the transition just 
   expect(callOrder).toEqual(['release', 'readCase']);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('refuses with the status the status map assigns CaseVersionNotDraftAtReleaseError, and never reads the version back, when the named version is already released', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -162,8 +133,6 @@ it('refuses with the status the status map assigns CaseVersionNotDraftAtReleaseE
   expect(body.error.details).toEqual({ slug: 'a-slug', version: 3, state: 'released' });
   expect(built.readCase).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 3
 
 it('refuses with the status the status map assigns CaseVersionNotReleasableError, naming every violated rule together, and never reads the version back, when the assembled manifest fails more than one rule', async () => {
   const built = buildTestApp();
@@ -179,8 +148,6 @@ it('refuses with the status the status map assigns CaseVersionNotReleasableError
   expect(body.error.details).toEqual({ slug: 'a-slug', version: 3, violations });
   expect(built.readCase).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('refuses with the status the status map assigns CaseNotFoundError, and never reads the version back, when no version answers the named slug and version', async () => {
   const built = buildTestApp();

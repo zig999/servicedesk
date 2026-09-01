@@ -1,40 +1,3 @@
-// Proof for task/case-lifecycle-http/revise-hypothesis-route: POST
-// /v1/cases/{slug}/hypotheses exercised through Fastify's own app.inject()
-// against a local instance registering createReviseHypothesisRoutesPlugin()
-// and error-handler.middleware.ts's own handleUnexpectedError directly — the
-// same shape create-draft.routes.spec.ts already establishes for a
-// 201-on-success write route with a single dependency, adapted for this
-// route's own :slug path segment plus a full body.
-// CaseLifecycleOperations['reviseHypothesis'] is a stand-in here (TST-03 — a
-// stand-in replaces a boundary, never business logic):
-// revise-hypothesis.operation.ts's own ReviseHypothesisOperation, which
-// decides the empty-collects, unknown-concept and subject-refusal checks and
-// delegates identity-claim and numbering to the case store beneath it, is
-// proved separately in its own unit spec. This file proves only that the
-// route, controller and DTO carry that operation's promise onto the wire
-// unchanged — including the one promise this task's own DTO header comment
-// singles out as its own disclosed inference: collects is validated as an
-// array of non-empty strings without a top-level non-empty requirement,
-// because rules/knowledge/a-hypothesis-collects-at-least-one-concept is
-// already a typed, contextful refusal the domain operation itself raises, so
-// this boundary must not intercept an empty collects array with a generic
-// 400 before that refusal is ever reached.
-//
-// Criterion 3 ("A request naming a case slug that does not exist is refused
-// with the status status-map assigns CaseNotFoundError") is not proved here.
-// Tracing the call graph this route delegates to: revise-hypothesis.operation.ts's
-// own refuseWithoutDraft calls ICaseStore.findDraftVersion(slug), which
-// returns undefined both for a slug the "cases" table holds no row for and
-// for an existing case currently holding no draft — both throw
-// CaseHoldsNoDraftError, never CaseNotFoundError. task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals
-// later gave CaseHoldsNoDraftError its own entry in src/errors/status-map.ts
-// (409, proved below), but that is still not the 404 this criterion states
-// for CaseNotFoundError — the two classes remain distinct entries mapped to
-// distinct statuses. Writing a test asserting a 404 here would fail against
-// the real call graph, and a test asserting the actual 409 would misrepresent
-// it as what this criterion requires; neither belongs in this file, so the
-// gap is recorded in this proof's own `untested` instead.
-
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { CaseLifecycleOperations } from '../../../factories/case-lifecycle.factory.js';
@@ -50,7 +13,6 @@ import type { ReviseHypothesisBodyDto } from '../../../http/dto/revise-hypothesi
 
 type ReviseHypothesisMock = ReturnType<typeof vi.fn<CaseLifecycleOperations['reviseHypothesis']>>;
 
-/** A full, valid revise-hypothesis request body, every one of reviseHypothesisBodySchema's required attributes present. */
 function validReviseHypothesisBody(overrides: Partial<ReviseHypothesisBodyDto> = {}): ReviseHypothesisBodyDto {
   return {
     hypothesis_name: 'a-hypothesis',
@@ -62,7 +24,6 @@ function validReviseHypothesisBody(overrides: Partial<ReviseHypothesisBodyDto> =
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors create-draft.routes.spec.ts's own buildTestApp. */
 function buildTestApp(): { app: FastifyInstance; reviseHypothesis: ReviseHypothesisMock } {
   const reviseHypothesis: ReviseHypothesisMock = vi.fn();
   const dependencies: ReviseHypothesisControllerDependencies = { reviseHypothesis };
@@ -78,8 +39,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 201 with the hypothesis_name and revision reviseHypothesis originated, calling reviseHypothesis with exactly the path slug merged onto the parsed body, for a hypothesis named for the first time', async () => {
   const built = buildTestApp();
@@ -108,8 +67,6 @@ it('answers 201 with the next revision number reviseHypothesis originated, calli
   expect(response.json()).toEqual(revised);
   expect(built.reviseHypothesis).toHaveBeenCalledWith({ slug: 'a-slug', ...body });
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it('answers 400 for a body missing the required criterion attribute, without ever reaching reviseHypothesis', async () => {
   const built = buildTestApp();
@@ -197,8 +154,6 @@ it(
   },
 );
 
-// ------------------------------------------------------------------ edge cases (COR-04)
-
 it('answers the unchanged generic envelope, never a partial body or leaked detail, when reviseHypothesis rejects with a generic, non-domain error', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -210,8 +165,6 @@ it('answers the unchanged generic envelope, never a partial body or leaked detai
   expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
   expect(response.body).not.toContain('a sensitive internal detail nobody outside the server should see');
 });
-
-// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals, criterion 5
 
 it("answers 409 with CaseHoldsNoDraftError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
   const built = buildTestApp();

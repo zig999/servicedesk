@@ -1,81 +1,9 @@
-// Proof for task/http-surface/diagnose-http-endpoint: the real, end-to-end wiring
-// createDiagnoseHttpServer assembles against a real, externally provisioned PostgreSQL database
-// (constraints/the-database-is-externally-provisioned) — the real relational case query over the
-// fixture's own committed case/glossary/capability data (case intermittent-connection-outage/1,
-// task/case-fixture/author-diagnose-fixture-case), seeded once into the real tables below, the
-// real production diagnose runner, and (since task/http-observation-runtime/production-wiring-swap)
-// the real HttpDeclarativeObservationSource built from the capability and connector-configuration
-// registries this same connection backs, observing each collected concept through a connector
-// configuration this file registers below — reached entirely through Fastify's own app.inject()
-// against POST /v1/diagnose, never a hand-rolled substitute for the route. Two stand-ins replace
-// the two network boundaries this pipeline crosses (TST-03 — a stand-in replaces a boundary, never
-// business logic): @anthropic-ai/sdk, mocked the same way production-diagnose.factory.spec.ts and
-// case-fixture-reads-clean.spec.ts already do, and (since that same swap) the platform's own global
-// fetch HttpDeclarativeObservationSource issues its one HTTP call through, with no client injectable
-// from production wiring. The model's own answer is deliberately never valid JSON, so every
-// hypothesis judged here falls through to inconclusive/judgment-failure and the case's own declared
-// fallback answers — deterministic regardless of which of the fixture case's two hypotheses is
-// judged first, or what either connector's own mocked response carries, since neither hypothesis
-// ever confirms. What the HTTP surface itself does with an injected runDiagnose stand-in — the exact
-// response shape, ticket_ref handling, freshness of the generated id, and header independence — is
-// proven at the unit level instead, in __tests__/unit/http/build-app.spec.ts.
-//
-// Sibling fix, disclosed in this task's own proof record: this file used to build four fresh
-// temp directories per test, copy the fixture's own committed directories into them and count
-// written *.json files under a scratch investigation directory; createDiagnoseHttpServer now
-// builds its one DatabaseConnection from env.DATABASE_URL and threads it into every store this
-// task's own cutover wires (task/service-on-the-database/store-wiring), so this file seeds the
-// committed fixture's own case, glossary and capability data into the real tables once, identifies
-// each test's own written investigation by a freshly generated requester rather than by scanning a
-// directory, and removes every row it seeded again in its own afterAll, so a sibling integration
-// file that wipes a glossary table wholesale (relational-glossary-store.repository.spec.ts's own
-// wipeGlossaryTables()) never meets a foreign key this file's own rows still hold open.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
-//
-// Reconciled for task/http-observation-runtime/production-wiring-swap, disclosed in that task's
-// own proof record rather than its implementation (its own deferred entry names this file as the
-// proof pass's own to settle): createDiagnoseHttpServer no longer constructs FakeObservationSource
-// seeded from this fixture's own observations.json, so the Env literal below no longer names
-// OBSERVATIONS_FIXTURE_FILE (dropped from the Env type itself) and this file instead registers a
-// connector configuration for each connector the fixture case's own two collected concepts name
-// (corporate-records-equipment-status-connector, corporate-records-network-outage-connector),
-// through the same createConnectorConfigurationRegistry wiring
-// connector-configuration-registry.factory.spec.ts already exercises. A second stand-in joins
-// @anthropic-ai/sdk at the network boundary (TST-03): HttpDeclarativeObservationSource issues its
-// one HTTP call through the platform's own global fetch with no injectable client in production
-// wiring, so this file stubs globalThis.fetch for the whole suite rather than letting it reach a
-// real network address. The model's own answer stays deliberately invalid JSON regardless, so
-// which of the two fetched connectors answers what is immaterial to the fixture's own declared
-// fallback outcome this file already asserted before this swap.
 import { randomUUID } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
-/**
- * Every call this suite's mocked @anthropic-ai/sdk answers — both judgment
- * calls and the one consolidation call alike, since createMock backs the
- * single shared client both AnthropicHypothesisEvaluator and
- * AnthropicAssessmentConsolidator construct — now carries a realistic,
- * non-zero usage field (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing:
- * both adapters read this exact field, message.usage/response.usage, rather
- * than discarding or placeholding it) and answers after a real, deliberate
- * delay (MOCK_RESPONSE_DELAY_MS) so every adapter's own Date.now()-measured
- * elapsed_ms is genuinely, deterministically non-zero rather than reading a
- * lucky same-millisecond 0. The token counts and delay below are declared
- * again as literals inside vi.hoisted()'s own callback rather than read from
- * the named constants beneath it: vitest hoists that whole call above every
- * other module-level statement, including these declarations, so a closure
- * over them would read past their own temporal dead zone. The two copies are
- * kept equal by hand; the named constants exist so the cost/duration
- * assertions below read as the values they are rather than the same magic
- * numbers spelled out twice with no name (TYP-04).
- */
 const MOCK_INPUT_TOKENS_PER_CALL = 120;
 const MOCK_OUTPUT_TOKENS_PER_CALL = 45;
 const MOCK_RESPONSE_DELAY_MS = 10;
@@ -112,13 +40,11 @@ const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.ur
 const SLUG = 'intermittent-connection-outage';
 const VERSION = 1;
 
-/** The two connectors the fixture case's own hypotheses collect through (capability.json), and the fixed address this suite registers each of them against — no placeholder, so the resolved request never depends on the subject or requester under test. */
 const EQUIPMENT_STATUS_CONNECTOR = 'corporate-records-equipment-status-connector';
 const NETWORK_OUTAGE_CONNECTOR = 'corporate-records-network-outage-connector';
 const EQUIPMENT_STATUS_ADDRESS = 'https://corporate-records.test/equipment-status';
 const NETWORK_OUTAGE_ADDRESS = 'https://corporate-records.test/network-outage';
 
-/** Stands in for the network boundary (TST-03) HttpDeclarativeObservationSource's own global fetch reaches: every call answers 200 with a body carrying both connectors' own declared response-map fields, so neither connector's own call ever reaches a real address. Typed with fetch's own two parameters (both unused by the stand-in) so a call's own address is still readable off fetchMock.mock.calls below. */
 const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
   new Response(JSON.stringify({ status: 'ok', active: false }), { status: 200, headers: { 'content-type': 'application/json' } }),
 );
@@ -131,14 +57,12 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** One glossary vocabulary fixture file, parsed into its own table's own INSERT text. */
 async function readTermNames(file: string): Promise<readonly string[]> {
   const raw = await readFile(join(FIXTURES_ROOT, 'glossary', file), 'utf8');
   const records = JSON.parse(raw) as ReadonlyArray<{ name: string }>;
   return records.map((record) => record.name);
 }
 
-/** Inserts every row the committed fixture's own case, glossary and capability data need, each guarded by ON CONFLICT DO NOTHING so calling this more than once across this suite's own files never fails or duplicates a row — the fixture is meant to be read, not owned, by any one test. */
 async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void> {
   await insertTerms(connection, 'subject_types', await readTermNames('subject-type.json'));
   await insertTerms(connection, 'subject_attributes', await readTermNames('subject-attribute.json'));
@@ -151,7 +75,6 @@ async function ensureFixtureSeeded(connection: DatabaseConnection): Promise<void
   await insertConnectorConfigurations(connection);
 }
 
-/** Registers a connector configuration for each of the fixture case's own two collected concepts' connectors, through the real registry wiring — replacing rather than duplicating on a re-run, since register-connector holds one row per connector identity. */
 async function insertConnectorConfigurations(connection: DatabaseConnection): Promise<void> {
   const registry = createConnectorConfigurationRegistry(connection);
   await registry.registerConnector({
@@ -205,7 +128,6 @@ async function insertCapabilities(connection: DatabaseConnection): Promise<void>
   }
 }
 
-/** One manifest entry exactly as the committed fixture document declares it — its own declared position and hypothesis name alongside the content revise-hypothesis needs, the same flat shape seed.ts's own CaseFixtureManifestEntry reads (task/case-lifecycle-operations/wire-and-retire-author-case-version). */
 type CaseFixtureManifestEntry = {
   readonly position: number;
   readonly hypothesis_name: string;
@@ -214,7 +136,6 @@ type CaseFixtureManifestEntry = {
   readonly resolution: { readonly outcome: string; readonly referral: { readonly action: string; readonly recipient: string } };
 };
 
-/** The committed fixture case document's own whole shape, read exactly as committed — mirrors seed.ts's own CaseFixture. */
 type CaseFixtureDocument = {
   readonly slug: string;
   readonly title: string;
@@ -226,15 +147,6 @@ type CaseFixtureDocument = {
   readonly manifest: readonly CaseFixtureManifestEntry[];
 };
 
-/**
- * Revises then places every fixture-declared hypothesis at its own fixture-declared position, in
- * the fixture's own declared order — the per-hypothesis half of insertFixtureCase's own sequence
- * below, pulled out into its own function only so that insertFixtureCase's own body stays inside
- * the standard's max-lines-per-function rule; the sequence and behavior are exactly what
- * insertFixtureCase's own loop ran before this split (this delivery's own inference — the
- * extraction changes nothing but where the lines are counted), the same split seed.ts's own
- * seedCase already made into placeFixtureHypotheses.
- */
 async function placeFixtureHypotheses(
   lifecycle: CaseLifecycleOperations,
   fixture: CaseFixtureDocument,
@@ -259,15 +171,6 @@ async function placeFixtureHypotheses(
   }
 }
 
-/**
- * Writes the fixture case's own committed document through the six published case-lifecycle
- * operations — createDraft, then revise-and-place every declared hypothesis at its own declared
- * position (placeFixtureHypotheses above), then release — exactly the sequence seed.ts itself runs
- * (task/case-lifecycle-operations/wire-and-retire-author-case-version), rather than through the
- * store directly, which no longer takes a whole document. assembleVersion answers undefined for an
- * unstored version, so this checks the case is not already stored first, the same idempotency guard
- * seed.ts's own alreadySeeded() keeps.
- */
 async function insertFixtureCase(connection: DatabaseConnection): Promise<void> {
   const store = createCaseStore(connection);
   const alreadyStored = await store.assembleVersion(SLUG, VERSION);
@@ -290,15 +193,12 @@ async function insertFixtureCase(connection: DatabaseConnection): Promise<void> 
   await lifecycle.release(fixture.slug, draft.version);
 }
 
-/** Removes every row this file's own beforeAll seeded, in an order that always satisfies their own foreign keys — so this file leaves the glossary and capability tables exactly as it found them, and a sibling suite that owns one of those tables wholesale (relational-glossary-store.repository.spec.ts's own wipeGlossaryTables()) never meets a row this file left behind. By the time this runs, every test's own afterEach has already deleted every investigation this file wrote, so no foreign key still holds the pinned case open. */
 const FOREIGN_KEY_VIOLATION = '23503';
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this fixture releases the seeded version for real, so migrations/0009's own release-conditioned rules make that row (and whatever it still references) permanent; the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this migration's consequence. */
 async function deleteTolerantly(connection: DatabaseConnection, text: string, params: readonly unknown[]): Promise<void> {
   try {
     await connection.query(text, params);
@@ -308,12 +208,7 @@ async function deleteTolerantly(connection: DatabaseConnection, text: string, pa
 }
 
 async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<void> {
-  // Table set and order rewired against the case-version-lifecycle schema
-  // (task/case-lifecycle-persistence/case-version-lifecycle-schema): the flat
-  // hypothesis_collects/hypotheses pair this file used to delete is gone, replaced by
-  // hypothesis_revision_collects, case_version_hypotheses, hypothesis_revisions and the now
-  // identity-only hypotheses — the same table set and order release.operation.spec.ts's own
-  // afterEach already established for cleaning up after a released version.
+
   await deleteTolerantly(connection, 'DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [SLUG]);
   await deleteTolerantly(connection, 'DELETE FROM case_version_hypotheses WHERE case_slug = $1', [SLUG]);
   await deleteTolerantly(connection, 'DELETE FROM hypothesis_revisions WHERE case_slug = $1', [SLUG]);
@@ -331,11 +226,7 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   }
   await deleteTolerantly(connection, 'DELETE FROM subject_types WHERE name = ANY($1)', [await readTermNames('subject-type.json')]);
   await deleteTolerantly(connection, 'DELETE FROM subject_attributes WHERE name = ANY($1)', [await readTermNames('subject-attribute.json')]);
-  // The fixture's own outcome.json happens to list both non-conclusion outcomes among its own
-  // terms; excluded here rather than deleted, since they are the glossary's own suite-wide seed
-  // (vitest-global-setup.ts), never this fixture's own to remove — deleting them mid-suite races
-  // GlossaryService.withNonConclusionOutcomes' own top-up against any other file's currently-live
-  // hypothesis row (task/service-on-the-database/store-wiring, disclosed in that task's own delivery).
+
   const nonConclusionNames = new Set(NON_CONCLUSION_OUTCOMES.map((outcome) => outcome.name));
   const fixtureOwnedOutcomes = (await readTermNames('outcome.json')).filter((name) => !nonConclusionNames.has(name));
   await deleteTolerantly(connection, 'DELETE FROM outcomes WHERE name = ANY($1)', [fixtureOwnedOutcomes]);
@@ -344,14 +235,12 @@ async function cleanupFixtureSeeded(connection: DatabaseConnection): Promise<voi
   await cleanupConnectorConfigurations(connection);
 }
 
-/** Removes the two connector configurations this file's own beforeAll registered, so a sibling suite reading the whole table (connector-configuration-registry.factory.spec.ts's own afterEach, filtered to its own connector-registry-factory- prefix, never collides) never meets a row this file left behind. */
 async function cleanupConnectorConfigurations(connection: DatabaseConnection): Promise<void> {
   await connection.query('DELETE FROM connector_configurations WHERE connector = ANY($1)', [
     [EQUIPMENT_STATUS_CONNECTOR, NETWORK_OUTAGE_CONNECTOR],
   ]);
 }
 
-/** The request body this suite submits, naming a fresh requester per test so this file's own investigation rows never collide with another test's. */
 function requestBodyFor(requester: string): Record<string, unknown> {
   return {
     case: { slug: SLUG, version: VERSION },
@@ -372,7 +261,6 @@ interface IInvestigationRow {
   readonly durations_total: number;
 }
 
-/** Every investigation row written under the given requester, freshly read from the real table. */
 async function investigationsFor(connection: DatabaseConnection, requester: string): Promise<readonly IInvestigationRow[]> {
   const { rows } = await connection.query<IInvestigationRow>(
     `SELECT id, cost_calls, cost_input_tokens, cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total
@@ -382,7 +270,6 @@ async function investigationsFor(connection: DatabaseConnection, requester: stri
   return rows;
 }
 
-/** Deletes every row this file's own tests wrote under the given requester's investigations, in an order that always satisfies their own foreign keys. */
 async function cleanupInvestigationsFor(connection: DatabaseConnection, requester: string): Promise<void> {
   const { rows } = await connection.query<{ id: string }>('SELECT id FROM investigations WHERE requester = $1', [requester]);
   const ids = rows.map((row) => row.id);
@@ -396,18 +283,6 @@ async function cleanupInvestigationsFor(connection: DatabaseConnection, requeste
   await connection.query('DELETE FROM investigations WHERE id = ANY($1)', [ids]);
 }
 
-/**
- * The Env every test below builds createDiagnoseHttpServer from, absent OBSERVATIONS_FIXTURE_FILE
- * now that env.ts no longer declares it (task/http-observation-runtime/production-wiring-swap) —
- * named once so a test needing its own separate app (the corrupted-fixture criterion-3 test below)
- * never redeclares this literal (MNT-03).
- *
- * Sibling fix, disclosed in task/case-lifecycle-http/register-routes-in-build-app's own proof
- * record: envSchema now also requires PAGINATION_DEFAULT_LIMIT and PAGINATION_MAX_LIMIT (both
- * coerced positive integers) — createDiagnoseHttpServer now threads both through to every listing
- * route's own dependencies via build-app.factory.ts's own buildAppDependencies — so both are named
- * here too, even though no test in this file exercises any of those other eighteen routes directly.
- */
 function baseEnv(): Env {
   return {
     PORT: 3000,
@@ -433,18 +308,6 @@ beforeAll(async () => {
   await ensureFixtureSeeded(seedingConnection);
 });
 
-/** Raised from vitest's own 10000ms hookTimeout default, the same plain per-hook-argument
- * mechanism seed.spec.ts's own beforeAll/afterAll already establish (60000ms there — the
- * codebase's own existing convention for a hook that needs more than the default, checked
- * against that file and release.operation.spec.ts before picking this one). Running the full
- * suite (89 files) twice in a row shows this exact hook occasionally failing with "Hook timed
- * out in 10000ms", though this file in isolation passes cleanly in ~80s with no lock found in
- * pg_stat_activity/pg_locks while reproducing directly — not a deadlock, but accumulated latency:
- * this file's own tests already take ~10s each against the real network and database, so
- * cleanupFixtureSeeded's own several sequential DELETE statements (including two now touching
- * the release-protected hypothesis_revision_collects table) have very little headroom left under
- * the 10-second default once 88 other files have already put load on the same pooled Neon
- * connection. 30000ms gives real headroom without masking a genuine hang. */
 afterAll(async () => {
   await cleanupFixtureSeeded(seedingConnection);
   await seedingConnection.end();
@@ -465,8 +328,6 @@ afterEach(async () => {
   await cleanupInvestigationsFor(seedingConnection, requester);
 });
 
-// ------------------------------------------------------- criteria 1 and 2
-
 it(
   'answers 200 with exactly the fixture case\'s own declared fallback outcome, referral and drafted text — no verdict, ' +
     'citation, evidence item or determining_hypothesis — for a request naming the seeded canonical subject',
@@ -482,8 +343,6 @@ it(
   },
 );
 
-// ------------------------------------------------- inference: env's models reach the provider
-
 it("sends the caller-configured evaluator and consolidator models to the provider, both read once from this factory's own Env", async () => {
   await app.inject({ method: 'POST', url: '/v1/diagnose', payload: requestBodyFor(requester) });
 
@@ -492,37 +351,6 @@ it("sends the caller-configured evaluator and consolidator models to the provide
   expect(sentModels).toContain('a-test-consolidator-model');
 });
 
-// ----- task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing: real
-// ----- judgment and writing cost and duration, now that both adapters read the provider's own
-// ----- response instead of discarding it or answering a placeholder
-
-/**
- * run-diagnosis.ts (task/investigation-telemetry/diagnose-reports-real-cost-and-durations) counts
- * and sums real usage/elapsed_ms off the pipeline's own stages; until this task, the two Anthropic
- * adapters this suite's own mocked @anthropic-ai/sdk stands behind still fed it placeholders or
- * nothing at all for the judgment and consolidation calls, so this row read partly zero. Now that
- * both adapters read message.usage/response.usage and measure elapsed_ms with Date.now() around
- * their own call, every provider call this fixture's own investigation makes contributes real,
- * non-zero cost and duration:
- * - The fixture case (fixtures/case/intermittent-connection-outage/1.json) declares exactly two
- *   hypotheses, both collecting a concept this suite's own fetchMock answers 200/ok for — so both
- *   are judged (no no-data degrade), and the model's own deliberately-invalid-JSON answer resolves
- *   each to inconclusive/judgment-failure via outcomeFromModelText's own fallback, which still
- *   carries the call's own usage since a response did come back. Neither citation validation nor a
- *   retry ever runs (that path is only for a decided verdict), so this is exactly two judgment
- *   calls, never more.
- * - Exactly one consolidation call always runs (domain/investigation/assessment).
- * - createMock's own hoisted mock answers every one of those three calls alike (the same shared
- *   client backs both adapters), each carrying MOCK_INPUT_TOKENS_PER_CALL/MOCK_OUTPUT_TOKENS_PER_CALL
- *   and a real MOCK_RESPONSE_DELAY_MS-long delay — so cost.calls is exactly TOTAL_PROVIDER_CALLS,
- *   cost.input_tokens/output_tokens are exactly that many multiples of the per-call token counts
- *   (investigation-pipeline.ts's own costOf sums every judged evaluation's own usage plus the one
- *   consolidation usage), and durations.judgment/writing are each individually measured but bounded
- *   below by MOCK_RESPONSE_DELAY_MS, the one guarantee a real wall-clock measurement can make
- *   without asserting an exact millisecond count nothing pins.
- * - durations.total is exactly the sum of the three stage durations, unchanged from before this
- *   task (investigation-pipeline.ts's own durationsOf).
- */
 const TOTAL_PROVIDER_CALLS = 3;
 
 it(
@@ -547,8 +375,6 @@ it(
   },
 );
 
-// ---------------------- task/http-observation-runtime/production-wiring-swap, criteria 1 and 2
-
 it(
   "reaches the network to observe a concept the case collects, rather than answering from FakeObservationSource's static fixture",
   async () => {
@@ -567,8 +393,6 @@ it(
     expect(calledUrls).toEqual(expect.arrayContaining([EQUIPMENT_STATUS_ADDRESS, NETWORK_OUTAGE_ADDRESS]));
   },
 );
-
-// --------------------------- task/http-observation-runtime/production-wiring-swap, criterion 3
 
 it(
   'answers correctly even while the retired static observations fixture holds unparseable content, proving no production path still reads it',

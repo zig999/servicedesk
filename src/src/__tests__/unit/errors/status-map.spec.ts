@@ -1,10 +1,3 @@
-// Proof for task/case-lifecycle-http/status-map: statusForError() resolves
-// each of the seven typed domain error classes this HTTP surface raises to
-// the transport status the table assigns it (COR-04), and returns undefined
-// for anything the table does not name — the caller's own signal to keep
-// answering 500 unchanged. error-handler.middleware.ts's own consultation of
-// this function is proved separately, in
-// __tests__/unit/http/error-handler.middleware.spec.ts.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -32,8 +25,6 @@ import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-wou
 import { statusForError } from '../../../errors/status-map.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
 
-// ------------------------------------------------------------------ criterion 2
-
 it('resolves CaseNotFoundError to 404', () => {
   const error = new CaseNotFoundError('a-slug', 1);
 
@@ -42,9 +33,6 @@ it('resolves CaseNotFoundError to 404', () => {
   expect(status).toBe(404);
 });
 
-// Added for task/capability-registry-http/read-capability-route, whose own criterion 2 depends
-// on this exact entry: "a request naming a concept no capability currently answers is refused
-// with the status status-map assigns".
 it('resolves ConceptNotAnsweredError to 404', () => {
   const error = new ConceptNotAnsweredError('a-concept');
 
@@ -53,9 +41,6 @@ it('resolves ConceptNotAnsweredError to 404', () => {
   expect(status).toBe(404);
 });
 
-// Added for task/registry-reads/read-capability-by-identity-route, whose own criterion 2 depends
-// on this exact entry: "a request naming a (name, version) pair that is not currently registered
-// is refused ... mapped through status-map.ts".
 it('resolves CapabilityIdentityNotFoundError to 404', () => {
   const error = new CapabilityIdentityNotFoundError('a-name', '1.0.0');
 
@@ -64,9 +49,6 @@ it('resolves CapabilityIdentityNotFoundError to 404', () => {
   expect(status).toBe(404);
 });
 
-// Added for task/case-simulation-pipeline/simulate-hypothesis-operation, whose own criterion 4
-// depends on this exact entry: "A hypothesis name absent from the version's manifest is refused
-// with an HTTP 404 response reporting a HypothesisNotInManifestError."
 it('resolves HypothesisNotInManifestError to 404', () => {
   const error = new HypothesisNotInManifestError('a-slug', 1, 'an-absent-hypothesis');
 
@@ -107,11 +89,6 @@ it('resolves CaseVersionNotDraftAtReleaseError to 409', () => {
   expect(status).toBe(409);
 });
 
-// Added for task/diagnose-release-gate/refuse-diagnosis-of-a-draft-case-version, whose own
-// criterion 2 depends on this exact entry: the new error is registered in status-map.ts's
-// STATUS_BY_ERROR_CLASS table, mapped to a status this project decides as its own engineering
-// choice — 409, grouped with this table's other "an operation the named resource's own current
-// state forbids" entries.
 it('resolves CaseVersionNotReleasedError to 409', () => {
   const error = new CaseVersionNotReleasedError('a-slug', 1, 'draft');
 
@@ -136,14 +113,6 @@ it('resolves ManifestWouldHoldNoHypothesisError to 422', () => {
   expect(status).toBe(422);
 });
 
-// Added for task/connector-configuration-registration-conformance/incomplete-name-refusal-status,
-// whose own criteria 1-3 depend on this exact entry: registerConnector's own isUndeclared check
-// (connector-configuration-registry.service.ts) throws this one class identically for an absent
-// connector attribute and for one declared as the empty string — connector-configuration-registry.service.spec.ts's
-// own "refuses a registration that declares no connector identity" and "treats a connector identity
-// declared as the empty string as undeclared" already prove that throw side — so this single entry
-// answers both: whichever of the two conditions raised the error, it must resolve to 422 rather than
-// falling through to the table's unmapped default (criterion 3).
 it('resolves IncompleteConnectorConfigurationError to 422', () => {
   const error = new IncompleteConnectorConfigurationError(['connector is undeclared']);
 
@@ -152,9 +121,6 @@ it('resolves IncompleteConnectorConfigurationError to 422', () => {
   expect(status).toBe(422);
 });
 
-// Added for task/capability-input-schema-contract/refuse-malformed-capability-input-schema,
-// whose own criterion 6 depends on this exact entry: "MalformedCapabilityInputSchemaError
-// resolves to 422 through the shared status map."
 it('resolves MalformedCapabilityInputSchemaError to 422', () => {
   const error = new MalformedCapabilityInputSchemaError(['a problem']);
 
@@ -163,9 +129,6 @@ it('resolves MalformedCapabilityInputSchemaError to 422', () => {
   expect(status).toBe(422);
 });
 
-// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute,
-// whose own criterion 1 depends on this exact entry: "... refused with an HTTP 422 response
-// reporting SubjectDoesNotCoverCaseInputsError ...".
 it('resolves SubjectDoesNotCoverCaseInputsError to 422', () => {
   const error = new SubjectDoesNotCoverCaseInputsError([
     { attribute: 'contract-number', capabilities: [{ name: 'equipment-status-lookup', version: '1.0.0' }] },
@@ -176,9 +139,6 @@ it('resolves SubjectDoesNotCoverCaseInputsError to 422', () => {
   expect(status).toBe(422);
 });
 
-// Added for task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder,
-// whose own criterion 1 depends on this exact entry: "... refused with an HTTP 422 response
-// reporting ConnectorPlaceholderOutsideInputSchemaError."
 it('resolves ConnectorPlaceholderOutsideInputSchemaError to 422', () => {
   const error = new ConnectorPlaceholderOutsideInputSchemaError([
     { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{"properties":{}}' }] },
@@ -198,10 +158,6 @@ it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same 
 
   expect(draftStatus).toBe(positionStatus);
 });
-
-// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals,
-// criteria 1-4: the four revise-hypothesis refusals this hotfix maps, each
-// previously unmapped and falling through to the generic 500.
 
 it('resolves CaseHoldsNoDraftError to 409', () => {
   const error = new CaseHoldsNoDraftError('a-slug');
@@ -240,11 +196,6 @@ it('resolves ConceptRefusesSubjectTypeError to 422', () => {
   expect(status).toBe(422);
 });
 
-// ------------------------------------------------------------------ task/concept-description/concept-registration-requires-a-description,
-// criterion 1: "A concept registration naming no description is refused with an HTTP 422 response
-// reporting ConceptDescriptionRequiredError." GlossaryService.registerConcept's own throw of this
-// class is proved separately, in glossary.service.spec.ts; this is the mapping half.
-
 it('resolves ConceptDescriptionRequiredError to 422', () => {
   const error = new ConceptDescriptionRequiredError('a-concept', undefined);
 
@@ -253,13 +204,6 @@ it('resolves ConceptDescriptionRequiredError to 422', () => {
   expect(status).toBe(422);
 });
 
-// ------------------------------------------------------------------ task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries,
-// criterion 9: "Every path that raises InvestigationWriteDeadlineExceededError is answered to the
-// requester as an HTTP 500 response naming InvestigationWriteDeadlineExceededError as the reported
-// condition." Before this hotfix, this class fell through this table unmapped, answering the
-// handler's own generic, unnamed 500 fallback instead — the full request/response wiring for that
-// distinction is proved in error-handler.middleware.spec.ts; this is the mapping half.
-
 it('resolves InvestigationWriteDeadlineExceededError to 500', () => {
   const error = new InvestigationWriteDeadlineExceededError('an-investigation-id', 300);
 
@@ -267,8 +211,6 @@ it('resolves InvestigationWriteDeadlineExceededError to 500', () => {
 
   expect(status).toBe(500);
 });
-
-// ------------------------------------------------------------------ criterion 3
 
 it('returns undefined for a typed domain error the table does not name', () => {
   const error = new IncoherentCaseError('a-slug', ['a violation']);
@@ -284,11 +226,6 @@ it('returns undefined for a thrown value that is not an Error at all', () => {
   expect(status).toBeUndefined();
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 1
-
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')
@@ -308,37 +245,10 @@ it("the header comment names the two specification nodes that now fix a status a
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 1
-
-// The round-one test above named "two specification nodes" and did not require
-// ConnectorConfigurationNotWellFormedError's own citation; round two adds a third
-// specification-fixed status to the same header paragraph, so the count in prose changed
-// from two to three and the count itself is asserted only here rather than duplicated above.
-// task/case-simulation-pipeline/simulate-hypothesis-operation then added a fourth
-// specification-fixed status (HypothesisNotInManifestError) to the same header paragraph, so the
-// count in prose changed again from three to four.
-// task/capability-input-schema-contract/refuse-malformed-capability-input-schema then added a
-// fifth specification-fixed status (MalformedCapabilityInputSchemaError) to the same header
-// paragraph, so the count in prose changed again from four to five.
-// task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute then
-// added a sixth specification-fixed status (SubjectDoesNotCoverCaseInputsError) to the same
-// header paragraph, so the count in prose changed again from five to six.
-// task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder
-// then added a seventh specification-fixed status (ConnectorPlaceholderOutsideInputSchemaError) to
-// the same header paragraph, so the count in prose changed again from six to seven.
-// task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals then added an eighth
-// through an eleventh specification-fixed status (CaseHoldsNoDraftError, ConceptNotInGlossaryError,
-// HypothesisRevisionCollectsNoConceptError, ConceptRefusesSubjectTypeError) to the same header
-// paragraph, so the count in prose changed again from seven to eleven — asserted here only as the
-// running count; the four new citations themselves are asserted in this hotfix's own tests below.
 it("the header comment names eleven specification nodes that now fix a status as a decided fact, and states ConnectorConfigurationNotWellFormedError's 422 and SubjectDoesNotCoverCaseInputsError's 422 and ConnectorPlaceholderOutsideInputSchemaError's 422 as facts their own rules decide rather than as this project's own engineering decision", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
 
-  // task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries
-  // added a thirteenth specification-fixed status (InvestigationWriteDeadlineExceededError) to the
-  // same header paragraph, so the count in prose changed again from twelve to thirteen — asserted
-  // here only as the running count; that citation itself is asserted in this hotfix's own test below.
   expect(header).toContain('thirteen specification nodes now fix a status as a decided fact');
   expect(header).toContain("ConnectorConfigurationNotWellFormedError's HTTP 422");
   expect(header).toContain('rules/integration/a-connector-configuration-holds-a-well-formed-object');
@@ -351,8 +261,6 @@ it("the header comment names eleven specification nodes that now fix a status as
   expect(header).toContain('with an HTTP 422 response reporting a ConnectorPlaceholderOutsideInputSchemaError naming every orphaned placeholder together with the capability that fails to declare it');
   expect(header).toContain("every other entry's status stays this project's own engineering decision");
 });
-
-// ------------------------------------------------------------------ task/revise-hypothesis-status-map-hotfix/map-status-for-typed-refusals, criterion 6
 
 it("the header's top paragraph cites each of the four hotfix classes' own governing rule alongside the HTTP status it fixes", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
@@ -394,11 +302,6 @@ it("the header's own 404/409/422 group enumeration names each of the four hotfix
   );
 });
 
-// Proves the record's own disclosed inference: the ninth and tenth entries' own "reached this
-// table" ordinal narrative was extended to explain they arrived via this hotfix rather than a
-// newly-exposed route — the alternative the record considered and rejected was leaving that
-// narrative unextended, silently treating a hotfix addition the same as every prior route-exposure
-// addition.
 it('the header\'s own "reached this table" narrative explains the ninth and tenth entries arrived through this hotfix rather than a newly-exposed route', async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');
   const header = proseOf(source.slice(0, source.indexOf('import {')));
@@ -409,11 +312,6 @@ it('the header\'s own "reached this table" narrative explains the ninth and tent
       'raised both, unmapped, before this task.',
   );
 });
-
-// ------------------------------------------------------------------ task/run-diagnosis-persistence-deadline-hotfix/persistence-deadline-uses-remaining-time-and-retries,
-// criterion 9: the header names InvestigationWriteDeadlineExceededError's own governing rule
-// alongside the HTTP 500 it fixes, quoting the rule's own closing clause — the same
-// citation-alongside-status pattern every other specification-fixed entry above already keeps.
 
 it("the header names InvestigationWriteDeadlineExceededError's HTTP 500 as a fact rules/investigation/no-stage-aborts-on-its-deadline decides, quoting its own closing clause", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../errors/status-map.ts', import.meta.url)), 'utf8');

@@ -1,12 +1,3 @@
-// Proof for task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation:
-// handleReadCapabilityByIdentityRequest itself, exercised directly as a plain function call rather
-// than through Fastify — the one seam this task's own relocation touches. Proves the controller now
-// performs no held-check-and-throw of its own (criterion 2): it returns exactly whatever its one
-// injected readCapabilityByIdentity dependency resolves, and propagates exactly whatever it rejects
-// with, unaltered — never branching on a resolution shape of its own. The dependency itself is a
-// stand-in (TST-03 — a stand-in replaces a boundary, never business logic): the real service-level
-// wrapper it is wired to in production, CapabilityRegistryService.readCapabilityByIdentityOrThrow,
-// is proved separately in capability-registry.service.spec.ts.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -17,7 +8,6 @@ import {
   type ReadCapabilityByIdentityControllerDependencies,
 } from '../../../http/read-capability-by-identity.controller.js';
 
-/** A capability exactly as the service-level wrapper's held branch would resolve it, every declared attribute present. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -31,8 +21,6 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
     ...overrides,
   };
 }
-
-// ------------------------------------------------------------------ criterion 2
 
 it('returns exactly the capability its readCapabilityByIdentity dependency resolves, unwrapped and untransformed', async () => {
   const capability = heldCapability({ name: 'a-known-capability', version: '2.0.0' });
@@ -72,11 +60,6 @@ it('calls its readCapabilityByIdentity dependency with exactly the given name an
   expect(received).toEqual(['Mixed-Case', '1.0.0-RC.1']);
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 3
-
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')

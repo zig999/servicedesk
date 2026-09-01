@@ -1,18 +1,3 @@
-// Proof for task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry:
-// isCitationValid answers true only where a citation's concept is one the
-// judged hypothesis's own collects names AND its field exists among the
-// field names its own cited evidence item snapshotted at the moment it was
-// collected (rules/investigation/a-citation-stays-within-the-hypothesis-collects,
-// rules/investigation/a-cited-field-exists-in-the-capability-output-schema,
-// rules/investigation/judgment-reads-the-evidence-snapshot) — never resolved
-// through a live capability-registry read: this file constructs no
-// capability-registry fake and no output-schema map at all, only Evidence
-// values carrying their own already-snapshotted `fields`. Every other
-// proposed citation is refused, and a concept with no matching evidence
-// refuses the same way, without ever throwing. acceptedCitations filters a
-// proposed set of citations the same way, keeping only the accepted ones in
-// the order they were proposed. Pure and synchronous throughout, so no fake
-// timers or async handling is needed here.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -28,7 +13,6 @@ import {
 import type { Evidence } from '../../../investigation/evidence.js';
 import type { FieldSemantics } from '../../../investigation/field-semantics.js';
 
-/** One collected concept's whole Evidence record, defaulted so a test states only what it is about — the concept and, where given, its own snapshotted fields. */
 function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
   return {
     inputs: 'an-input',
@@ -46,7 +30,6 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
   };
 }
 
-/** The field names given, each as a bare FieldSemantics entry (no type or description) — exactly the shape an evidence item's own `fields` snapshot carries. */
 function fieldsDeclaring(...names: readonly string[]): readonly FieldSemantics[] {
   return names.map((name) => ({ name }));
 }
@@ -103,7 +86,7 @@ it("refuses a citation naming a field that exists among some OTHER evidence item
     collects: ['a-collected-concept', 'a-different-collected-concept'],
     evidence: [citedEvidence, otherEvidence],
   };
-  // field-on-b exists in context.evidence overall, but never on the item this citation's own concept names.
+
   const citation: Citation = { concept: 'a-collected-concept', field: 'field-on-b' };
 
   expect(isCitationValid(context, citation)).toBe(false);
@@ -128,9 +111,6 @@ it('filters a proposed set of citations to only those accepted, keeping the acce
   expect(result).toEqual([options.citations[0], options.citations[3]]);
 });
 
-// ---------- task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry: no live capability-registry path left in this file at all
-
-/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
 async function moduleSource(): Promise<string> {
   return readFile(fileURLToPath(new URL('../../../investigation/citation-validation.ts', import.meta.url)), 'utf8');
 }
@@ -143,9 +123,6 @@ it('declares no outputSchemas field, no capabilityOutputSchemaKey helper and no 
   expect(source).not.toMatch(/CapabilityOutputSchemas/);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
-
-/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
 function docCommentBefore(source: string, marker: string): string {
   const markerIndex = source.indexOf(marker);
   if (markerIndex === -1) {
@@ -157,7 +134,6 @@ function docCommentBefore(source: string, marker: string): string {
   return before.slice(commentStart, commentEnd + 2);
 }
 
-/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a citation the source wraps across lines is still matched as one continuous string. */
 function normalizedProse(commentBlock: string): string {
   return commentBlock
     .split('\n')
@@ -179,10 +155,6 @@ it("HypothesisCitationContext's doc comment cites domain/knowledge/hypothesis-re
   expect(comment).toContain('domain/knowledge/hypothesis-revision');
   expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
 });
-
-// ---------- task/investigation-json-guard-consolidation/export-shared-json-guards:
-// parseJsonOrUndefined and isPlainObject are now importable from this module, each
-// still behaving exactly as it did while module-private.
 
 it('parseJsonOrUndefined, imported directly from citation-validation.ts, parses valid JSON text into its value', () => {
   const parsed = parseJsonOrUndefined('{"a":1}');

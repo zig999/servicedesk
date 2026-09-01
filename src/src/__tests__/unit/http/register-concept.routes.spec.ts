@@ -1,20 +1,3 @@
-// Proof for task/concept-authoring/register-concept-route: PUT
-// /v1/glossary/concepts/{name} exercised through Fastify's own app.inject()
-// against a local instance registering createRegisterConceptRoutesPlugin()
-// directly — the same shape register-capability.routes.spec.ts already
-// establishes for the identical create-or-replace-at-a-known-identity shape,
-// adapted for a route whose identity is a single path segment and whose body
-// carries the rest of the registration.
-// GlossaryService['registerConcept'] is the one stand-in here (TST-03 — a
-// stand-in replaces a boundary, never business logic): the service's own
-// create-or-replace-by-name holding is proved separately over the store; this
-// file proves only that the route, controller and DTO carry that promise onto
-// the wire unchanged — a valid request's path and body compose into one
-// ConceptRegistration handed to registerConcept unmodified, each request's
-// own resolution reaches the wire rather than a cached or joined one, and no
-// authentication guard stands in front of any of it — plus the DTO's own
-// required accepts and the params schema's own non-empty :name refuse a
-// malformed request before registerConcept is ever reached.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
@@ -26,7 +9,6 @@ import { createRegisterConceptRoutesPlugin } from '../../../http/register-concep
 
 type RegisterConceptMock = ReturnType<typeof vi.fn<(registration: ConceptRegistration) => Promise<Concept>>>;
 
-/** Every attribute registerConceptBodySchema requires, overridable per test. */
 function validBody(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     accepts: ['a-subject-type'],
@@ -34,7 +16,6 @@ function validBody(overrides: Record<string, unknown> = {}): Record<string, unkn
   };
 }
 
-/** A concept as the glossary would answer it, every declared attribute present, overridable per test. */
 function heldConcept(overrides: Partial<Concept> = {}): Concept {
   return {
     name: 'a-name',
@@ -45,7 +26,6 @@ function heldConcept(overrides: Partial<Concept> = {}): Concept {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin — mirrors register-capability.routes.spec.ts's own buildTestApp. */
 function buildTestApp(): { app: FastifyInstance; registerConcept: RegisterConceptMock } {
   const registerConcept: RegisterConceptMock = vi.fn();
   const dependencies: RegisterConceptControllerDependencies = { registerConcept };
@@ -60,8 +40,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the held concept registerConcept resolved, for a valid registration at the name the path names', async () => {
   const built = buildTestApp();
@@ -85,19 +63,6 @@ it('composes the path-carried name with the body into one registration, calling 
   expect(built.registerConcept).toHaveBeenCalledWith({ name: 'a-name', accepts: ['x', 'y'], ttl: 120 });
 });
 
-// ------------------------------------------------------------------ criterion 2 — replaces in place, never a second entry
-//
-// The route holds no create-or-replace logic of its own (this task's own
-// disclosed inference: it answers 200 with whatever registerConcept
-// resolves, for both the create case and the replace case) — the store-level
-// fact that a second registration at a held name replaces the held record
-// rather than adding a second one is GlossaryService's own concern, proved
-// separately. What this route can and does prove on its own is that it never
-// answers a previous or cached resolution: two successive requests at the
-// same name each carry their own body through to registerConcept and each
-// answer that call's own resolution — consistent with a single entry held
-// and replaced at that name rather than accumulated.
-
 it("answers each of two requests at the same name with that request's own resolution, never a cached or joined value", async () => {
   const built = buildTestApp();
   app = built.app;
@@ -116,8 +81,6 @@ it("answers each of two requests at the same name with that request's own resolu
   expect(built.registerConcept).toHaveBeenNthCalledWith(1, { name: 'a-name', accepts: ['first-subject-type'] });
   expect(built.registerConcept).toHaveBeenNthCalledWith(2, { name: 'a-name', accepts: ['second-subject-type'] });
 });
-
-// ------------------------------------------------------------------ criterion 3
 
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
@@ -149,17 +112,6 @@ it('answers 200 for a request carrying an authorization header naming no credent
   expect(response.statusCode).toBe(200);
 });
 
-// ------------------------------------------------------------------ task/concept-description/concept-registration-requires-a-description
-//
-// registerConceptBodySchema's own description field is Zod-optional (the
-// implementation's own disclosed inference: deliberately deferring the
-// refusal for an absent description to GlossaryService.registerConcept
-// itself, so its own typed 422 ConceptDescriptionRequiredError is what
-// answers it, rather than this route's generic 400 VALIDATION_ERROR
-// envelope). registerConcept itself is a stand-in here, so this proves only
-// that a body naming no description clears this boundary rather than being
-// refused before ever reaching it.
-
 it('lets a request whose body names no description at all reach registerConcept unmodified, rather than refusing it here with a 400', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -170,8 +122,6 @@ it('lets a request whose body names no description at all reach registerConcept 
   expect(response.statusCode).toBe(200);
   expect(built.registerConcept).toHaveBeenCalledWith({ name: 'a-name', accepts: ['a-subject-type'] });
 });
-
-// ------------------------------------------------------------------ basic validation
 
 it('answers 400 for a wholly empty body, without ever reaching registerConcept', async () => {
   const built = buildTestApp();
@@ -197,19 +147,6 @@ it(
   },
 );
 
-// ------------------------------------------------------------------ task/glossary-concept-write-upsert-hotfix/write-concepts-upserts-by-identity
-//
-// rules/glossary/a-concept-declares-its-description's own stated outcome — "refused ... with an
-// HTTP 422 response reporting a ConceptDescriptionRequiredError" — proven here as the wire itself
-// answers it, on both paths this task's own Notes name: creating at a brand-new name, and replacing
-// at a name the glossary already holds. registerConcept is a stand-in everywhere else in this file
-// (TST-03); here the real GlossaryService runs behind the route instead, backed by a minimal
-// in-memory stand-in for the store boundary alone, and the app also wires the same error handler
-// buildApp.ts wires (setErrorHandler(handleUnexpectedError)) — the one place a domain error becomes a
-// transport status (COR-04) — so what these two tests observe is the actual wire outcome, never only
-// the service's own thrown class.
-
-/** A minimal store stand-in carrying only what GlossaryService.registerConcept itself reads and writes — the store boundary alone (TST-03); every other IGlossaryStore method is unreached by these two tests and answers trivially. */
 class MinimalGlossaryStore implements IGlossaryStore {
   private concepts: readonly ConceptRegistration[];
 
@@ -234,7 +171,6 @@ class MinimalGlossaryStore implements IGlossaryStore {
   }
 }
 
-/** One Fastify instance registering the real register-concept route behind a real GlossaryService, plus the same error handler buildApp.ts wires — so a thrown domain error reaches the wire exactly as production answers it, unlike buildTestApp()'s bare Fastify() with no error handler of its own. */
 function buildRealServiceApp(seed: readonly ConceptRegistration[] = []): FastifyInstance {
   const glossary = new GlossaryService(new MinimalGlossaryStore(seed));
   const app = Fastify();

@@ -1,19 +1,3 @@
-// Proof for task/case-lifecycle-persistence/relational-case-store-for-lifecycle, over a stand-in
-// for DatabaseConnection — the driver boundary TST-03 permits a stand-in for — so
-// RelationalCaseStore's own mechanics are observed independently of any real database: which
-// statement text and params reach the connection, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK/
-// release happen relative to each store primitive's own unit of work, how a joined row set maps
-// onto an AssembledCaseVersion, and how a driver failure — generic or a specific named constraint
-// violation — reaches the caller as this store's own typed error. The real-effect half — that a
-// draft's manifest is really copied, that a second draft is really refused by the schema's own
-// partial unique index under a genuine race, that a released version's row and manifest entries
-// really cannot be moved afterward, and that discard leaves a released version untouched — is
-// proven separately, against a real database, in this file's own integration-level sibling.
-//
-// Full replacement of this file's previous content, which targeted readVersion/writeVersion/
-// listVersions and StoredCaseVersion: none of the three exist anymore (case-store.port.ts's own
-// header comment), replaced below by assembleVersion, createDraft, insertHypothesisRevision,
-// placeHypothesis, removeManifestEntry, release and discard.
 import { expect, it, vi } from 'vitest';
 import {
   type AssembledCaseVersion,
@@ -28,12 +12,10 @@ import { ManifestPositionOccupiedError } from '../../../errors/manifest-position
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalCaseStore } from '../../../persistence/relational-case-store.repository.js';
 
-/** Postgres' own unique-violation SQLSTATE, the same code the adapter itself disambiguates by constraint name (TYP-04). */
 const UNIQUE_VIOLATION_CODE = '23505';
 
 type Row = Record<string, unknown>;
 
-/** A bare connection whose own query() is backed by the given implementation — the shape placeHypothesis, removeManifestEntry and release each call directly, with no transaction opened. */
 function fakeBareConnection(query: DatabaseConnection['query']): DatabaseConnection {
   return { query } as unknown as DatabaseConnection;
 }
@@ -43,7 +25,6 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake DatabaseConnection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape assembleVersion, createDraft, insertHypothesisRevision and discard each run their own unit of work through. */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: Row[] }>,
 ): { connection: DatabaseConnection; client: IFakeClient } {
@@ -52,7 +33,6 @@ function fakeTransactionConnection(
   return { connection: { connect } as unknown as DatabaseConnection, client };
 }
 
-/** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */
 function collapsedTexts(recorded: readonly { text: string }[]): string[] {
   return recorded.map((entry) => entry.text.replace(/\s+/g, ' ').trim());
 }
@@ -63,7 +43,6 @@ interface IRoutedRows {
   readonly collects?: readonly Row[];
 }
 
-/** A handleQuery that answers assembleVersion's own three SELECTs from the given rows, routed by which table each statement names, recording every statement it saw in order. */
 function recordingQuery(rows: IRoutedRows): {
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: Row[] }>;
   recorded: { text: string; params?: readonly unknown[] }[];
@@ -79,7 +58,6 @@ function recordingQuery(rows: IRoutedRows): {
   return { handleQuery, recorded };
 }
 
-/** One row of "case_versions", matching aResolution()'s own default fallback triple. */
 function caseVersionRow(overrides: Row = {}): Row {
   return {
     title: 'A title',
@@ -96,7 +74,6 @@ function caseVersionRow(overrides: Row = {}): Row {
   };
 }
 
-/** One joined manifest row, position plus its adopted hypothesis-revision's own content. */
 function manifestRow(overrides: Row = {}): Row {
   return {
     position: 1,
@@ -110,17 +87,14 @@ function manifestRow(overrides: Row = {}): Row {
   };
 }
 
-/** One row of a manifest entry's own adopted revision's collects. */
 function collectRow(overrides: Row = {}): Row {
   return { hypothesis_name: 'a-hypothesis', concept_name: 'a-concept', ...overrides };
 }
 
-/** A resolution as any of the three shapes this store flattens carries it, its outcome/action/recipient held fixed since no test here varies them independently. */
 function aResolution(overrides: Partial<Resolution> = {}): Resolution {
   return { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, ...overrides };
 }
 
-/** A driver failure carrying Postgres' own unique-violation code and, where named, the constraint that fired — the shape the adapter's own isConstraintViolation guard disambiguates by. */
 function uniqueViolation(constraint?: string): Error {
   return Object.assign(new Error('duplicate key value violates unique constraint'), {
     code: UNIQUE_VIOLATION_CODE,
@@ -128,15 +102,8 @@ function uniqueViolation(constraint?: string): Error {
   });
 }
 
-// ================================================================== assembleVersion
-
-// ---------------------------------------------------------------- criterion 1
-
 it('assembles one version together with its manifest, joining each entry to its own adopted hypothesis-revision and its collects, all through the one transaction it opens, and delegates the ordering to the query it sends', async () => {
-  // The rows here arrive already in the order the real SELECT's own ORDER BY cvh.position would
-  // hand back (this file's own integration-level sibling proves that real ordering against a real
-  // database); this test proves the store neither resorts nor reverses what the query answers, and
-  // that the query it actually sends states that ordering itself.
+
   const { handleQuery, recorded } = recordingQuery({
     caseVersions: [caseVersionRow()],
     manifest: [
@@ -160,8 +127,6 @@ it('assembles one version together with its manifest, joining each entry to its 
   ]);
   expect(client.release).toHaveBeenCalledTimes(1);
 });
-
-// ---------------------------------------------------------------- criterion 2
 
 it('answers undefined and reads no manifest at all, when case_versions holds no row for the given slug and version', async () => {
   const { handleQuery, recorded } = recordingQuery({ caseVersions: [] });
@@ -187,8 +152,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
-// ---------------------------------------------------------------- inference: slug/version come from the given key
-
 it('takes the assembled version\'s own slug and version from the given key', async () => {
   const { handleQuery } = recordingQuery({ caseVersions: [caseVersionRow()] });
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -200,8 +163,6 @@ it('takes the assembled version\'s own slug and version from the given key', asy
   expect(answered?.version).toBe(42);
 });
 
-// ---------------------------------------------------------------- inference: authored_at converted with toISOString()
-
 it("reads authored_at back as the Date column parses to, converted with its own toISOString()", async () => {
   const authoredAt = new Date('2024-03-01T10:15:30.250Z');
   const { handleQuery } = recordingQuery({ caseVersions: [caseVersionRow({ authored_at: authoredAt })] });
@@ -212,8 +173,6 @@ it("reads authored_at back as the Date column parses to, converted with its own 
 
   expect(answered?.authored_at).toBe('2024-03-01T10:15:30.250Z');
 });
-
-// ---------------------------------------------------------------- inference: consolidation_register narrowed to its own enumeration
 
 it('leaves consolidation_register out of the assembled version entirely when the stored value is null', async () => {
   const { handleQuery } = recordingQuery({ caseVersions: [caseVersionRow({ consolidation_register: null })] });
@@ -243,8 +202,6 @@ it("raises this store's own typed error rather than answering a row whose consol
   await expect(store.assembleVersion('a-slug', 1)).rejects.toBeInstanceOf(CaseStoreError);
 });
 
-// ---------------------------------------------------------------- inference: state narrowed to its own enumeration, released_at present only when the row carries one
-
 it('leaves released_at out of the assembled version entirely when the stored row is a draft with no released_at', async () => {
   const { handleQuery } = recordingQuery({ caseVersions: [caseVersionRow({ state: 'draft', released_at: null })] });
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -263,10 +220,6 @@ it("raises this store's own typed error rather than answering a row whose state 
 
   await expect(store.assembleVersion('a-slug', 1)).rejects.toBeInstanceOf(CaseStoreError);
 });
-
-// ================================================================== createDraft
-
-// ---------------------------------------------------------------- criterion 3, criterion 4
 
 function aCreateDraftInput(overrides: Partial<CreateDraftInput> = {}): CreateDraftInput {
   return {
@@ -352,10 +305,6 @@ it('still raises the generic CaseStoreError for a draft-insert failure that is n
   await expect(rejection).rejects.not.toBeInstanceOf(CaseAlreadyHasDraftError);
 });
 
-// ================================================================== insertHypothesisRevision
-
-// ---------------------------------------------------------------- criterion 6, criterion 7
-
 function aHypothesisRevisionInput(overrides: Partial<HypothesisRevisionInput> = {}): HypothesisRevisionInput {
   return {
     slug: 'a-slug',
@@ -403,10 +352,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
-// ================================================================== placeHypothesis / removeManifestEntry
-
-// ---------------------------------------------------------------- criterion 8
-
 function aPlaceHypothesisInput(overrides: Partial<PlaceHypothesisInput> = {}): PlaceHypothesisInput {
   return { slug: 'a-slug', version: 1, hypothesis_name: 'a-hypothesis', revision: 1, position: 1, ...overrides };
 }
@@ -442,8 +387,6 @@ it('still raises the generic CaseStoreError for a place-hypothesis failure that 
   await expect(rejection).rejects.not.toBeInstanceOf(ManifestPositionOccupiedError);
 });
 
-// ---------------------------------------------------------------- criterion 9
-
 it('removes only the named manifest entry through a single statement, never touching the hypothesis-revision it referenced', async () => {
   const query = vi.fn().mockResolvedValue({ rows: [] });
   const store = new RelationalCaseStore(fakeBareConnection(query));
@@ -456,10 +399,6 @@ it('removes only the named manifest entry through a single statement, never touc
   expect(text).not.toContain('hypothesis_revisions');
   expect(params).toEqual(['a-slug', 1, 'a-hypothesis']);
 });
-
-// ================================================================== release / discard
-
-// ---------------------------------------------------------------- criterion 10
 
 it('transitions the version to released, recording the instant of release, through a single statement', async () => {
   const query = vi.fn().mockResolvedValue({ rows: [] });
@@ -483,8 +422,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
-
-// ---------------------------------------------------------------- criterion 11
 
 it("removes a draft version's own manifest entries before its own row, as one unit of work, never touching any hypothesis-revision", async () => {
   const recorded: { text: string }[] = [];
@@ -516,8 +453,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toBeInstanceOf(CaseStoreError);
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
-
-// ---------------------------------------------------------------- inference: an assembled version's own shape is stable end to end
 
 it('answers an AssembledCaseVersion carrying exactly the manifest entries it was given, with no entry lost or duplicated', async () => {
   const { handleQuery } = recordingQuery({

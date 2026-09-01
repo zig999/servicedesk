@@ -1,17 +1,3 @@
-// Proof for task/registry-reads/read-capability-by-identity-route: GET
-// /v1/capabilities/{name}/{version}, exercised through Fastify's own app.inject() against a
-// local instance registering createReadCapabilityByIdentityRoutesPlugin() and
-// error-handler.middleware.ts's own handleUnexpectedError directly — the same shape
-// read-connector-configuration.routes.spec.ts exercises its own sibling route through.
-// CapabilityRegistryService's own readCapabilityByIdentity is a stand-in here (TST-03 — a
-// stand-in replaces a boundary, never business logic): the plain function seam
-// ReadCapabilityByIdentityControllerDependencies declares is stood in for by a vi.fn(); the
-// domain resolution behind that seam — CapabilityRegistryService.readCapabilityByIdentity
-// itself — is that service's own concern, proved separately.
-//
-// The route's own wiring into build-app.ts's routePlugins() (criterion 3) is proved in
-// build-app.spec.ts instead, where buildApp() itself, not this file's isolated plugin, is what
-// answers.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
@@ -28,7 +14,6 @@ type ReadCapabilityByIdentityMock = ReturnType<
   typeof vi.fn<(name: string, version: string) => Promise<Capability>>
 >;
 
-/** A capability exactly as the registry would already hold it, every one of the eight declared attributes present, for seeding the stand-in read. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -43,7 +28,6 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler. */
 function buildTestApp(): { app: FastifyInstance; readCapabilityByIdentity: ReadCapabilityByIdentityMock } {
   const readCapabilityByIdentity: ReadCapabilityByIdentityMock = vi.fn();
   const dependencies: ReadCapabilityByIdentityControllerDependencies = { readCapabilityByIdentity };
@@ -59,8 +43,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the capability currently registered under the named (name, version) identity, carrying its whole declared contract', async () => {
   const built = buildTestApp();
@@ -103,8 +85,6 @@ it("answers each of two requests naming different identities with that request's
   expect((second.json() as Capability).name).toBe('capability-b');
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('answers 404 with CapabilityIdentityNotFoundError and the requested identity as details, when no capability is currently registered under the named (name, version) identity', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -127,8 +107,6 @@ it('raises a CapabilityIdentityNotFoundError instance that is none of ConceptNot
   expect(error).not.toBeInstanceOf(ConnectorConfigurationNotFoundError);
   expect(error).not.toBeInstanceOf(CapabilityNotRegisteredForTestError);
 });
-
-// ------------------------------------------------------------------ criterion 4
 
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
@@ -153,8 +131,6 @@ it('answers 200 for a request carrying an authorization header naming no credent
 
   expect(response.statusCode).toBe(200);
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it(
   'answers 400 via validation for a request with an empty :name segment, never reaching readCapabilityByIdentity — Fastify still ' +

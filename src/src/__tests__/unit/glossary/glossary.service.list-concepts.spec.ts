@@ -1,29 +1,11 @@
-// Proof for task/glossary-query-http/list-concepts-query-extension:
-// GlossaryService.listConcepts answers every concept currently registered,
-// paginated per src/types/pagination.ts (API-01 through API-04), reusing
-// concepts()'s own established behavior — the ttl default and the
-// duplicate-name assertion — unchanged. A companion to
-// glossary.service.spec.ts rather than an addition to it: see this record's
-// own `divergences` for why the file sits beside it instead of inside it.
 import { expect, it } from 'vitest';
 import { DuplicateGlossaryNameError } from '../../../errors/duplicate-glossary-name.error.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
 import type { Concept, ConceptRegistration, GlossaryTerm } from '../../../glossary/terms.js';
 
-/**
- * The default the criterion states in its own words — sixty seconds — spelled
- * here rather than imported from the source, so the test fails if the
- * source's constant drifts from what the task states.
- */
 const SIXTY_SECONDS = 60;
 
-/**
- * Stands in for the store boundary, holding only concept registrations —
- * listConcepts reaches no term vocabulary, so the three term-vocabulary
- * methods are never called by any test in this file and simply refuse if
- * they ever were.
- */
 class ConceptOnlyGlossaryStore implements IGlossaryStore {
   public constructor(private readonly concepts: readonly ConceptRegistration[] = []) {}
 
@@ -46,7 +28,6 @@ class ConceptOnlyGlossaryStore implements IGlossaryStore {
   public async writeConcepts(_concepts: readonly Concept[]): Promise<void> {}
 }
 
-/** Builds five distinct concept registrations, named a through e, each ttl-less. */
 function fiveConcepts(): readonly ConceptRegistration[] {
   return ['concept-a', 'concept-b', 'concept-c', 'concept-d', 'concept-e'].map((name) => ({
     name,

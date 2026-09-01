@@ -1,21 +1,3 @@
-// Proof for task/relational-stores/investigation-store, over a stand-in for DatabaseConnection — the
-// driver boundary TST-03 permits a stand-in for — so RelationalInvestigationStore's own mechanics are
-// observed independently of any real database: which statement text and params reach the connection,
-// exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen relative to write()'s own ordered
-// inserts and read()'s own whole assembly, how a stored row maps back onto an Investigation and its
-// parts, and how a driver failure or an unrecognized enumeration value reaches the caller as this
-// store's own typed error.
-//
-// This file is also where this task's own UNDERDETERMINED note is partly excluded: a store persisting
-// only the eight fields criterion 6 names, with no capability pin, would still pass a test that never
-// looks at capability_name/capability_version — "carries each evidence item's capability_name and
-// capability_version pin" below asserts the pin travels through write()'s own params and read()'s own
-// assembled Evidence, not only the eight named fields. The other half — that a write naming a
-// capability/version the real capabilities table does not hold is refused by a real foreign key — is
-// proven separately, against a real database, in this file's own integration-level sibling; so is the
-// real-effect half of write-once (a real primary-key violation leaving the stored record untouched)
-// and of criterion 2 (a real constraint violation partway through a multi-statement write leaving
-// nothing behind).
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -30,7 +12,6 @@ import type { Investigation } from '../../../investigation/investigation.js';
 import type { IConnectableQueryable } from '../../../persistence/database-access.js';
 import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
-/** The path of the module under test, read as text below for this file's own criterion-10 check. */
 const MODULE_SOURCE_PATH = fileURLToPath(new URL('../../../persistence/relational-investigation-store.repository.ts', import.meta.url));
 
 interface IFakeClient {
@@ -38,7 +19,6 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake connect()-capable connection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape write() and read() both run their one transaction through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
 ): { connection: IConnectableQueryable; client: IFakeClient } {
@@ -47,7 +27,6 @@ function fakeTransactionConnection(
   return { connection: { connect } as unknown as IConnectableQueryable, client };
 }
 
-/** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */
 function collapsedTexts(recorded: readonly { text: string }[]): string[] {
   return recorded.map((entry) => entry.text.replace(/\s+/g, ' ').trim());
 }
@@ -60,7 +39,6 @@ interface IRoutedRows {
   readonly citations?: readonly unknown[];
 }
 
-/** A handleQuery that answers read()'s five SELECTs from the given rows and lets every write INSERT succeed with no rows, recording every statement it saw in order — one row set per table, routed by which table the statement names. */
 function recordingQuery(rows: IRoutedRows): {
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>;
   recorded: { text: string; params?: readonly unknown[] }[];
@@ -78,7 +56,6 @@ function recordingQuery(rows: IRoutedRows): {
   return { handleQuery, recorded };
 }
 
-/** One row of "investigations", matching the default Investigation anInvestigation() below builds. */
 function investigationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     requester: 'a-requester',
@@ -106,13 +83,6 @@ function investigationRow(overrides: Record<string, unknown> = {}): Record<strin
   };
 }
 
-/**
- * One row of "investigation_evidence", matching anEvidence()'s own defaults. fields/concept_description
- * default to the same empty pair anEvidence() defaults to — node-postgres already parses a jsonb
- * column into a plain JS value by the time a row reaches evidenceOf(), so a fixture row simulates
- * that parsed shape directly rather than a serialized string
- * (migrations/0013-investigation-evidence-semantics-snapshot.sql).
- */
 function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     concept: 'a-concept',
@@ -132,26 +102,14 @@ function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, un
   };
 }
 
-/** One row of "investigation_evaluations". */
 function evaluationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return { hypothesis: 'a-hypothesis', verdict: 'confirmed', reason: null, ...overrides };
 }
 
-/** One row of "investigation_evaluation_citations". */
 function citationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return { hypothesis: 'a-hypothesis', concept: 'a-concept', field: 'a-field', ...overrides };
 }
 
-/**
- * One Evidence item, matching evidenceRow()'s own defaults, so a test may build one side from the
- * document and the other from the row and compare them directly. fields/concept_description default
- * to the empty pair domain/investigation/evidence's own honest-degradation reading already sanctions
- * ("a concept whose capability never resolved snapshots no fields at all", "a concept collected before
- * it declared a description snapshots an empty one") — an ordinary default for a test fixture, not a
- * placeholder this store answers regardless of input: write()'s own params now carry whatever fields/
- * concept_description a given Evidence holds, and read() now answers back exactly the row's own two
- * columns (migrations/0013-investigation-evidence-semantics-snapshot.sql).
- */
 function anEvidence(overrides: Partial<Evidence> = {}): Evidence {
   return {
     concept: 'a-concept',
@@ -176,7 +134,6 @@ interface IDecidedOverrides {
   readonly citations?: readonly [Citation, ...Citation[]];
 }
 
-/** One confirmed or refuted Evaluation, its citations required non-empty by the type itself. */
 function aDecidedEvaluation(overrides: IDecidedOverrides = {}): Evaluation {
   const hypothesis = overrides.hypothesis ?? 'a-hypothesis';
   const citations = overrides.citations ?? [{ concept: 'a-concept', field: 'a-field' }];
@@ -189,7 +146,6 @@ interface IInconclusiveOverrides {
   readonly citations?: readonly Citation[];
 }
 
-/** One inconclusive Evaluation, carrying a reason and whatever citations it grounds on, possibly none. */
 function anInconclusiveEvaluation(overrides: IInconclusiveOverrides = {}): Evaluation {
   return {
     hypothesis: overrides.hypothesis ?? 'a-hypothesis',
@@ -199,7 +155,6 @@ function anInconclusiveEvaluation(overrides: IInconclusiveOverrides = {}): Evalu
   };
 }
 
-/** A whole Investigation, matching investigationRow()/evidenceRow()/evaluationRow() together by default. */
 function anInvestigation(overrides: Partial<Investigation> = {}): Investigation {
   return {
     id: 'an-investigation-id',
@@ -219,8 +174,6 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
     ...overrides,
   };
 }
-
-// ---------------------------------------------------------------- criterion 1
 
 it("sends every declared attribute of the root row — identity, subject type, prompt version, model, pinned case, assessment, cost, durations and written_at — as the root insert's own params, in order", async () => {
   const { handleQuery, recorded } = recordingQuery({});
@@ -299,8 +252,6 @@ it("carries each evidence item's capability_name and capability_version pin into
   ]);
 });
 
-// ---------------------------------------------------------------- criterion 2
-
 it("rolls back and raises this store's own typed error, carrying the driver failure as its cause, when an evidence insert fails after the root row and the subject attribute-values already succeeded", async () => {
   const driverFailure = new Error('the driver refused this insert');
   const handleQuery = async (text: string): Promise<{ rows: unknown[] }> => {
@@ -317,8 +268,6 @@ it("rolls back and raises this store's own typed error, carrying the driver fail
   expect(client.query).toHaveBeenCalledWith('ROLLBACK');
   expect(client.release).toHaveBeenCalledTimes(1);
 });
-
-// ---------------------------------------------------------------- criterion 3
 
 it("refuses a second write of an id already stored through InvestigationAlreadyStoredError, mapped from the root insert's own unique-violation, without any SELECT ever run before it", async () => {
   const driverFailure = Object.assign(new Error('duplicate key value violates unique constraint "investigations_pkey"'), { code: '23505' });
@@ -337,8 +286,6 @@ it("refuses a second write of an id already stored through InvestigationAlreadyS
   await expect(rejection).rejects.toMatchObject({ context: { id: 'an-already-stored-id' } });
   expect(recorded.some((entry) => entry.text.includes('SELECT'))).toBe(false);
 });
-
-// ---------------------------------------------------------------- criterion 5
 
 it('answers absence, not a rejection, and reads no further, when investigations holds no row for the given id', async () => {
   const { handleQuery, recorded } = recordingQuery({});
@@ -398,8 +345,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   await expect(rejection).rejects.toMatchObject({ cause: driverFailure });
 });
 
-// ---------------------------------------------------------------- criterion 6
-
 it('assembles each evidence item with its concept, inputs, observation, observed_at, ttl, origin, result and its capability pin, including result_detail when it carried one', async () => {
   const { handleQuery } = recordingQuery({
     investigation: investigationRow(),
@@ -423,8 +368,6 @@ it("raises this store's own typed error rather than answering a row whose result
 
   await expect(store.read('an-investigation-id')).rejects.toBeInstanceOf(InvestigationStoreError);
 });
-
-// ---------------------------------------------------------------- criterion 7
 
 it('assembles a confirmed evaluation with its hypothesis, verdict and citations, and no reason', async () => {
   const { handleQuery } = recordingQuery({
@@ -495,8 +438,6 @@ it("raises this store's own typed error rather than answering an inconclusive ev
   await expect(store.read('an-investigation-id')).rejects.toBeInstanceOf(InvestigationStoreError);
 });
 
-// ---------------------------------------------------------------- criterion 8
-
 it('assembles the assessment with its outcome, referral, determining_hypothesis and text, when a hypothesis was named', async () => {
   const { handleQuery } = recordingQuery({ investigation: investigationRow({ assessment_determining_hypothesis: 'a-hypothesis' }) });
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -522,8 +463,6 @@ it('leaves determining_hypothesis out of the assembled assessment when the fallb
   expect(answered.assessment).not.toHaveProperty('determining_hypothesis');
 });
 
-// ---------------------------------------------------------------- criterion 9
-
 it('issues no UPDATE statement anywhere while writing a whole investigation', async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -534,16 +473,12 @@ it('issues no UPDATE statement anywhere while writing a whole investigation', as
   expect(recorded.some((entry) => entry.text.includes('UPDATE'))).toBe(false);
 });
 
-// ---------------------------------------------------------------- criterion 10
-
 it('opens no file of any kind: this module names no filesystem import and calls no filesystem function', async () => {
   const source = await readFile(MODULE_SOURCE_PATH, 'utf8');
 
   const filesystemReaches = [/['"]node:fs(?:\/promises)?['"]/, /\breadFileSync\b/, /\bwriteFileSync\b/, /\breadFile\s*\(/, /\bwriteFile\s*\(/];
   expect(filesystemReaches.some((pattern) => pattern.test(source))).toBe(false);
 });
-
-// ---------------------------------------------------------------- inference: deterministic ordering on read
 
 it('reads evidence ordered by concept, evaluations ordered by hypothesis, citations ordered by hypothesis then concept then field, and subject attribute-values ordered by attribute then value', async () => {
   const { handleQuery, recorded } = recordingQuery({ investigation: investigationRow() });
@@ -558,8 +493,6 @@ it('reads evidence ordered by concept, evaluations ordered by hypothesis, citati
   expect(texts.some((text) => text.includes('FROM investigation_evaluations') && text.includes('ORDER BY hypothesis'))).toBe(true);
   expect(texts.some((text) => text.includes('FROM investigation_evaluation_citations') && text.includes('ORDER BY hypothesis, concept, field'))).toBe(true);
 });
-
-// ---------------------------------------------------------------- inference: the hash is sha256 of the assembled document's own JSON
 
 it("computes StoredInvestigation's own hash as sha256 of the assembled document's own JSON serialization", async () => {
   const { handleQuery } = recordingQuery({
@@ -579,8 +512,6 @@ it("computes StoredInvestigation's own hash as sha256 of the assembled document'
   expect(answered?.hash).toBe(expectedHash);
 });
 
-// ---------------------------------------------------------------- inference: ticket_ref travels unchanged, including the empty string
-
 it('sends ticket_ref exactly as the given investigation holds it, including the empty string used where no ticket was given', async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -592,13 +523,6 @@ it('sends ticket_ref exactly as the given investigation holds it, including the 
   expect(rootInsert?.params?.[2]).toBe('');
 });
 
-// This store's own write() is unmodified by task/case-and-investigation-model/ticket-ref-is-optional
-// (that task's own recorded deferral), but Investigation.ticket_ref is now optional, so a caller may
-// now pass it an Investigation whose ticket_ref is undefined rather than the empty string; the test
-// below is the fast, DB-independent half of that task's own recorded inference — that write() still
-// forwards the value unmodified rather than choking on it or coercing it into something else — the
-// other half (that node-postgres itself serializes an undefined bound parameter to a real SQL NULL)
-// needs a live connection and is proven separately, in this file's own integration-level sibling.
 it('sends ticket_ref as undefined in the root insert\'s own params when the given investigation carries no ticket_ref at all', async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
@@ -619,16 +543,6 @@ it('answers ticket_ref as the empty string when the stored column itself is a SQ
 
   expect(answered.ticket_ref).toBe('');
 });
-
-// ---------------------------------------------------------------- task/investigation-telemetry/evidence-collection-measures-elapsed-ms
-//
-// The whole-object tests above (criterion 1's own params assertion, criterion 6's own read
-// assembly) already carry elapsed_ms through their fixtures' shared defaults, but a mismatch
-// on any of their other eleven fields would fail them for that unrelated reason too. The two
-// tests below isolate this task's own persistence-round-trip inference — that
-// RelationalInvestigationStore's evidenceStatement() and evidenceOf(row) needed to change even
-// though this file sits outside this task's own inventory node area — to elapsed_ms alone, on
-// each side of the round trip.
 
 it("sends the evidence item's own elapsed_ms as the evidence insert's own twelfth param, not silently dropped from the row this store persists — ahead of fields and concept_description, which migrations/0013 added after it", async () => {
   const { handleQuery, recorded } = recordingQuery({});
@@ -654,19 +568,6 @@ it("assembles the stored row's own elapsed_ms into the read Evidence's own elaps
 
   expect(answered.evidence[0]?.elapsed_ms).toBe(777);
 });
-
-// ---------------------------------------------------------------- task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot
-//
-// migrations/0013-investigation-evidence-semantics-snapshot.sql gives investigation_evidence real
-// fields and concept_description columns, superseding the sibling task's own disclosed,
-// compile-preserving placeholder (fields always [], concept_description always '', neither ever
-// forwarded by write()) that the two tests immediately above this section used to isolate. The two
-// tests below isolate this task's own real round trip instead — that evidenceStatement() forwards
-// whatever fields/concept_description a given Evidence item carries, serializing fields explicitly,
-// and that evidenceOf(row) answers a stored row's own two columns directly — distinct from the
-// whole-object equality assertions elsewhere in this file (criterion 6's own read assembly,
-// criterion 1's own params assertion), which would fail on a mismatch of any of Evidence's other
-// eleven attributes for an unrelated reason too.
 
 it("sends the evidence item's own fields, JSON-serialized, and its own concept_description as the evidence insert's own thirteenth and fourteenth params, when the given evidence carries non-empty values for both", async () => {
   const { handleQuery, recorded } = recordingQuery({});

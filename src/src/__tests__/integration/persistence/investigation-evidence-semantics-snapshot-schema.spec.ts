@@ -1,34 +1,3 @@
-// Proof for task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot's own schema
-// migration (migrations/0013-investigation-evidence-semantics-snapshot.sql), against a real,
-// externally provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned) —
-// the two column-adding statements this script adds are what is under test, so nothing here stands in
-// for the schema itself (TST-03). RelationalInvestigationStore's own write/read of the two new columns
-// is proven separately, independent of any real database, in this task's own unit-level sibling
-// (relational-investigation-store.repository.spec.ts under __tests__/unit); this file is concerned
-// only with what applying migrations/0013 itself does to a schema's existing rows.
-//
-// Follows glossary-concept-description-schema.spec.ts's, case-version-lifecycle-schema.spec.ts's and
-// protect-released-hypothesis-revision-collects-schema.spec.ts's own established pattern for observing
-// a migration's effect on data that predates it: each test below creates its own private, disposable
-// schema, applies every migration script up to (and excluding) this task's own migration, inserts the
-// row(s) it needs before that migration ever runs, applies that migration alone, and only then
-// asserts. Each test creates and drops its own schema entirely within its own body, so nothing a test
-// writes outlives it, no test depends on another having run first, and no state survives past it.
-//
-// Divergences from the project's standard, disclosed here for the same reason
-// glossary-concept-description-schema.spec.ts, case-version-lifecycle-schema.spec.ts,
-// protect-released-hypothesis-revision-collects-schema.spec.ts and schema-migrations.spec.ts already
-// disclose them:
-//   - STK-08 ("boundary input ... is parsed by a Zod schema") is departed from below: DATABASE_URL is
-//     read directly from process.env rather than through config/env.ts's loadEnv, because loadEnv
-//     refuses unless every other application variable is also configured, which this schema-only
-//     suite has no use for.
-//   - TST-04 ("mirrors the path of the unit under test") is departed from below: the unit under test
-//     is migrations/0013-investigation-evidence-semantics-snapshot.sql, a file sitting outside src/src
-//     entirely, so there is no single TypeScript path for this file to mirror; it is named for the
-//     migration artifact instead, exactly as schema-migrations.spec.ts,
-//     case-version-lifecycle-schema.spec.ts, protect-released-hypothesis-revision-collects-schema.spec.ts
-//     and glossary-concept-description-schema.spec.ts already are.
 import { randomUUID } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -47,13 +16,11 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** Every migration file's own name, in the order their zero-padded prefix numbers them. */
 async function migrationFilesInOrder(): Promise<string[]> {
   const entries = await readdir(MIGRATIONS_DIR);
   return entries.filter((name) => name.endsWith('.sql')).sort();
 }
 
-/** Applies exactly the given migration files' text, verbatim, in the order given (MIG-01). */
 async function applyMigrationFiles(client: Client, files: readonly string[]): Promise<void> {
   for (const file of files) {
     const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
@@ -74,7 +41,6 @@ interface IFixtureIds {
   readonly investigationId: string;
 }
 
-/** Every name one fresh fixture bundle needs, generated with no database call of its own. */
 function freshFixtureIds(): IFixtureIds {
   const suffix = randomUUID().replace(/-/g, '_');
   return {
@@ -91,11 +57,6 @@ function freshFixtureIds(): IFixtureIds {
   };
 }
 
-/**
- * Every glossary, capability and case row one investigation_evidence row's own foreign keys need,
- * inserted under the given, already-generated names — split out of insertInvestigationRow below so
- * each function stays within a function's own line budget (MNT-01).
- */
 async function insertUpstreamFixtureRows(client: Client, ids: IFixtureIds): Promise<void> {
   await client.query('INSERT INTO subject_types (name) VALUES ($1)', [ids.subjectType]);
   await client.query('INSERT INTO outcomes (name) VALUES ($1)', [ids.outcome]);
@@ -114,7 +75,6 @@ async function insertUpstreamFixtureRows(client: Client, ids: IFixtureIds): Prom
   );
 }
 
-/** The one investigations root row one investigation_evidence row's own foreign key needs, referencing exactly the fixtures insertUpstreamFixtureRows just wrote. */
 async function insertInvestigationRow(client: Client, ids: IFixtureIds): Promise<void> {
   await client.query(
     `INSERT INTO investigations
@@ -131,7 +91,6 @@ async function insertInvestigationRow(client: Client, ids: IFixtureIds): Promise
   );
 }
 
-/** One investigation_evidence row, inserted with none of the columns this task's own migration adds — exactly the shape a row already stored before migrations/0013 ever ran would hold. */
 async function insertLegacyEvidenceRow(client: Client, ids: IFixtureIds): Promise<void> {
   await client.query(
     `INSERT INTO investigation_evidence
@@ -141,7 +100,6 @@ async function insertLegacyEvidenceRow(client: Client, ids: IFixtureIds): Promis
   );
 }
 
-/** Every fixture and legacy-evidence row one test below needs, built against one fresh private schema — split out of each test body so each stays within a function's own line budget (MNT-01). */
 async function seedPriorSchemaWithLegacyEvidence(client: Client): Promise<IFixtureIds> {
   const files = await migrationFilesInOrder();
   await applyMigrationFiles(client, files.filter((name) => name < TARGET_MIGRATION));
@@ -151,8 +109,6 @@ async function seedPriorSchemaWithLegacyEvidence(client: Client): Promise<IFixtu
   await insertLegacyEvidenceRow(client, ids);
   return ids;
 }
-
-// ---------------------------------------------------------------- criterion 2
 
 it(
   "reads an investigation_evidence row stored before this migration back with its own honest-empty snapshot — fields as an empty array, concept_description as the empty string, never a read failure — while every column it already carried (concept, capability pin, elapsed_ms) survives unchanged",
@@ -188,8 +144,6 @@ it(
   },
 );
 
-// ---------------------------------------------------------------- inference: fields is one jsonb column, not a decomposed child table
-
 it(
   'adds fields as a jsonb column and concept_description as a text column to investigation_evidence, both NOT NULL',
   async () => {
@@ -221,8 +175,6 @@ it(
   },
 );
 
-// ---------------------------------------------------------------- criterion 3
-
 const OTHER_TABLES: ReadonlyArray<{ readonly table: string; readonly column: string; readonly value: (ids: IFixtureIds) => string }> = [
   { table: 'concepts', column: 'name', value: (ids) => ids.concept },
   { table: 'capabilities', column: 'name', value: (ids) => ids.capabilityName },
@@ -236,7 +188,6 @@ interface IRowLocator {
   readonly value: string;
 }
 
-/** Every row of the given table matching the given column/value pair — this test's own private, single-row snapshot, comparable before and after the target migration runs. */
 async function snapshotRow(client: Client, locator: IRowLocator): Promise<readonly unknown[]> {
   const { rows } = await client.query(`SELECT * FROM ${locator.table} WHERE ${locator.column} = $1`, [locator.value]);
   return rows;

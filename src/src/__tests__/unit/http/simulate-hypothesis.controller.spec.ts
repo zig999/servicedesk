@@ -1,18 +1,3 @@
-// Proof for task/case-simulation-pipeline/simulate-hypothesis-operation:
-// handleSimulateHypothesisRequest reads the pinned case through ICaseQuery,
-// refuses before runSimulateHypothesis ever runs where the subject carries no
-// attribute-value at all or names an attribute the glossary does not hold,
-// lets a HypothesisNotInManifestError raised by runSimulateHypothesis
-// propagate unchanged, and otherwise answers exactly evidence, evaluation and
-// durations — no resolved outcome and no assessment. ICaseQuery.readCase,
-// IGlossaryQuery.readVocabularyTerm and runSimulateHypothesis are stand-ins
-// here (TST-03 — each is a boundary this controller calls, never business
-// logic of its own): the same shape simulate-case.controller.spec.ts already
-// establishes for its own sibling controller, narrowed to this operation's
-// own three-field response. The wired production composition itself
-// (production-simulate-hypothesis.factory.ts) is proven separately, at the
-// unit level in production-simulate-hypothesis.factory.spec.ts and at the
-// real-composition level against diagnose-server.factory.ts.
 import { expect, expectTypeOf, it, vi } from 'vitest';
 import type { Case, ManifestEntry } from '../../../case/case.js';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
@@ -25,7 +10,6 @@ import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDepen
 import type { SimulateHypothesisRequestDto } from '../../../http/dto/simulate-hypothesis.dto.js';
 import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
 
-/** One manifest entry pinning a hypothesis-revision, mirroring simulate-case.controller.spec.ts's own heldManifestEntry exactly. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -39,7 +23,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A case version as case-query would already hold it, overridable per test — mirrors simulate-case.controller.spec.ts's own heldCase. */
 function heldCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -63,7 +46,6 @@ const REQUEST_BODY: SimulateHypothesisRequestDto = {
   hypothesis: 'hypothesis-a',
 };
 
-/** SimulateHypothesisPipelineResult's own complete record: evidence, one evaluation and durations — never resolved or assessment, since this operation never produces either. */
 function completeRecord(): SimulateHypothesisPipelineResult {
   return {
     evidence: [
@@ -91,7 +73,6 @@ type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => P
 type ReadVocabularyTermMock = ReturnType<typeof vi.fn<IGlossaryQuery['readVocabularyTerm']>>;
 type RunSimulateHypothesisMock = ReturnType<typeof vi.fn<(call: ProductionHypothesisSimulationCall) => Promise<SimulateHypothesisPipelineResult>>>;
 
-/** Wires SimulateHypothesisControllerDependencies with a readCase stand-in that always answers the given case, a glossary stand-in that holds every attribute by default, and a runSimulateHypothesis stand-in the test configures per case (TST-03). */
 function buildDependencies(
   readCaseResult: ReadCaseResult,
 ): { dependencies: SimulateHypothesisControllerDependencies; readCase: ReadCaseMock; readVocabularyTerm: ReadVocabularyTermMock; runSimulateHypothesis: RunSimulateHypothesisMock } {
@@ -116,8 +97,6 @@ function buildDependencies(
   const dependencies: SimulateHypothesisControllerDependencies = { caseQuery, glossary, runSimulateHypothesis };
   return { dependencies, readCase, readVocabularyTerm, runSimulateHypothesis };
 }
-
-// ------------------------------------------------------------------ criterion 3
 
 it('returns exactly evidence, evaluation and durations, unchanged from what runSimulateHypothesis resolved', async () => {
   const { dependencies, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
@@ -162,8 +141,6 @@ it('answers exactly what runSimulateHypothesis resolved, calling neither a store
   expect(runSimulateHypothesis).toHaveBeenCalledTimes(1);
 });
 
-// ------------------------------------------------------------------ criterion 4
-
 it('propagates a HypothesisNotInManifestError raised by runSimulateHypothesis unchanged, never re-decided or swallowed by the controller', async () => {
   const { dependencies, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
   const notInManifest = new HypothesisNotInManifestError('a-slug', 1, 'an-absent-hypothesis');
@@ -174,8 +151,6 @@ it('propagates a HypothesisNotInManifestError raised by runSimulateHypothesis un
   await expect(rejection).rejects.toBe(notInManifest);
 });
 
-// ------------------------------------------------------------------ criterion 5
-
 it('refuses a request whose subject carries no attribute-value at all, throwing exactly a SubjectCarriesNoAttributeError, before runSimulateHypothesis is ever called', async () => {
   const { dependencies, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
   const bodyWithNoAttributes: SimulateHypothesisRequestDto = { ...REQUEST_BODY, subject: { type: 'a-subject-type', attributes: [] } };
@@ -185,8 +160,6 @@ it('refuses a request whose subject carries no attribute-value at all, throwing 
   await expect(rejection).rejects.toBeInstanceOf(SubjectCarriesNoAttributeError);
   expect(runSimulateHypothesis).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 6
 
 it('refuses a request naming a subject attribute the glossary does not hold, throwing exactly a SubjectAttributeNotInGlossaryError, before runSimulateHypothesis is ever called', async () => {
   const { dependencies, readVocabularyTerm, runSimulateHypothesis } = buildDependencies({ case: heldCase() });

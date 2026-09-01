@@ -1,159 +1,3 @@
-// The relational adapter behind the case module's rebuilt store port
-// (task/case-lifecycle-persistence/relational-case-store-for-lifecycle),
-// rewritten in place against the schema
-// task/case-lifecycle-persistence/case-version-lifecycle-schema added: a
-// case's own durable version counter (cases.next_version), a case version's
-// draft/released state and released_at (case_versions), a hypothesis split
-// into its own identity (hypotheses, now identity-only) and its numbered
-// content (hypothesis_revisions, hypothesis_revision_collects), and the
-// manifest a case version composes them through
-// (case_version_hypotheses). It replaces this same file's previous
-// implementation, which targeted the flat, per-version hypotheses table
-// migrations/0004-case-and-hypothesis.sql declared and migrations/0009
-// dropped — every statement below is written against the new tables only.
-//
-// assembleVersion answers a case version whole: its own attributes, its
-// manifest in declared-position order and each manifest entry's own
-// adopted hypothesis-revision and its collects, all through the one
-// connection runInTransaction checks out (constraints/a-case-is-read-whole,
-// criterion 1) — an unstored slug/version answers undefined before any
-// manifest entry is ever read, never a partial assembly (criterion 2).
-//
-// Every refusal below is what a schema constraint from the sibling
-// migration task maps to, the same unique-violation-to-typed-error
-// convention this file already kept for CaseVersionAlreadyStoredError: a
-// second draft is refused through CaseAlreadyHasDraftError, mapped from the
-// case_versions_one_draft_per_case partial unique index (criterion 5), and
-// placing a revision at an occupied position is refused through
-// ManifestPositionOccupiedError, mapped from the
-// case_version_hypotheses_position_unique constraint (criterion 8). No
-// other business rule is re-decided here: release() and discard() write
-// exactly what their own criteria state (criterion 10, criterion 11) and
-// rely on the schema's own release-conditioned rules
-// (case_versions_no_update, case_versions_no_delete_when_released,
-// case_version_hypotheses_no_update_when_released,
-// case_version_hypotheses_no_delete_when_released) to make a write against
-// an already-released version's row or manifest take no effect — discard()
-// deletes a case version's own row and its manifest entries by identifier
-// alone, with no check of the version's own state field, the same judgment
-// the sibling schema task's own migration comments already apply to this
-// exact gap (this task's own UNDERDETERMINED note): the declarative rule is
-// what refuses removing a released version, not application logic
-// re-checking what the schema already decides.
-//
-// findDraftVersion is this file's one later addition
-// (work/revise-hypothesis-draft-gate/task/revise-hypothesis-draft-gate/refuse-without-draft):
-// one read against case_versions, run directly against the pool rather than
-// through runInTransaction, the same convention placeHypothesis, release and
-// removeManifestEntry already keep for a single statement that needs no
-// unit-of-work boundary.
-//
-// listCases is this file's next later addition
-// (task/case-query-http/list-cases-store-extension): every row of "cases" —
-// which, per this file's own long-standing header comment, holds one row
-// per slug and nothing else — by slug alone, in one transaction the same
-// way assembleVersion already runs its own two related reads (the page and
-// its total) so the two never disagree about what was held at the instant
-// either ran. total, limit, offset and pageCount answer exactly what
-// src/types/pagination.ts's own PaginatedResponse<T> declares (API-03); an
-// empty "cases" table answers total: 0 and data: [], never an error or
-// undefined.
-//
-// listCaseVersions is this file's next later addition
-// (task/case-query-http/list-case-versions-store-extension): every row of
-// "case_versions" for one named slug, by its own version and state alone
-// (CaseVersionListItem), paginated the same way listCasesPage already is —
-// one transaction running the case-identity check, the total and the page
-// together so none of the three can disagree about what was held at the
-// instant any of them ran. The case-identity check is what tells an unknown
-// slug (refused, through CaseNotFoundError) apart from a known one currently
-// holding no version (answered as an empty page, never a refusal) — a case
-// row survives the discarding of every version it ever held, since
-// cases.next_version is a durable counter, not a fact derived from
-// case_versions' own rows. CaseNotFoundError's constructor requires a
-// version number that has no referent here — no particular version is ever
-// named by this refusal — so NO_VERSION_NAMED below stands in for it, this
-// task's own inference, disclosed in its delivery record, since 0 is a
-// version cases.next_version's own DEFAULT 1 (migrations/0009-case-version-
-// lifecycle-schema.sql) guarantees no case version is ever assigned.
-//
-// listHypotheses is this file's next later addition
-// (task/case-query-http/list-hypotheses-store-extension): every row of
-// "hypotheses" for one named case_slug, by its own bare name alone
-// (HypothesisIdentity), paginated the same way listCaseVersionsPage already
-// is — one transaction running the case-identity check, the total and the
-// page together, and the same CaseNotFoundError/empty-page split
-// listCaseVersionsPage already keeps. "hypotheses" is queried directly and
-// never joined through case_version_hypotheses or any manifest: this task's
-// own UNDERDETERMINED note disclosed that a reading scoped to only the
-// hypotheses one version's current manifest happens to reference would
-// satisfy the task's criteria as literally worded but contradicts
-// domain/knowledge/hypothesis's own "named uniquely within its case across
-// every version the case ever holds — past, current or future", so a
-// hypothesis's case membership is exactly the identity row migrations/0009
-// made "identity-only" — no content column, and no version column either.
-//
-// listHypothesisRevisions is this file's next later addition
-// (task/case-query-http/list-hypothesis-revisions-store-extension): every
-// row of "hypothesis_revisions" for one named (case_slug, hypothesis_name),
-// by its own full content (HypothesisRevisionListItem), paginated the same
-// way listHypothesesPage already is — one transaction running the
-// hypothesis-identity check, the total, the page and its own collects
-// together. "hypothesis_revisions" is queried directly by (case_slug,
-// hypothesis_name) and never joined through case_version_hypotheses or any
-// manifest, the same case-scoped-not-version-scoped principle
-// listHypothesesPage already keeps one level up, carried down from
-// domain/knowledge/hypothesis to domain/knowledge/hypothesis-revision: a
-// revision belongs to the hypothesis identity it references directly, not
-// to whichever version's manifest happens to have adopted it. The identity
-// check queries "hypotheses" — never "hypothesis_revisions" — for
-// (case_slug, name): a row there can exist only for a case_slug "cases"
-// already holds (its own foreign key), so its absence answers both an
-// unknown slug and an unknown hypothesis name with the same CaseNotFoundError,
-// exactly this task's own criterion 2. Collects are read for every revision
-// of the hypothesis, grouped by revision the same way collectsByHypothesisName
-// already groups a version's manifest collects by hypothesis name, rather
-// than scoped to just the current page's revisions: this task's own
-// inference, disclosed in its delivery record, following the existing
-// convention of fetching a hypothesis's own related rows unscoped by page
-// rather than introducing an array-parameter query this file names nowhere
-// else.
-//
-// updateDraft is this file's next later addition
-// (task/case-lifecycle-http/update-draft-store-extension): unlike
-// release() and discard() above, whose own state guard sits one level up
-// in a separate operation file while these two store primitives write
-// unconditionally, updateDraft carries its own guard directly here — no
-// separate operation file exists yet for this write
-// (task/case-lifecycle-http/update-draft-route is what consumes it
-// directly) — so it runs the same read-whole-then-guard-then-write pattern
-// discard.operation.ts's own header already argues for, inside its own
-// transaction: reads case_versions' own state column for the named
-// (slug, version) first, refuses through CaseNotFoundError where no such
-// row exists, refuses through CaseVersionNotDraftError where the state is
-// not draft (rules/knowledge/a-case-version-is-written-once), and only then
-// runs the UPDATE against exactly the five named columns this task scopes
-// it to — never case_version_hypotheses, and never a second row. This
-// task's own inference, disclosed in its delivery record, since this port's
-// own header comment states no other operation re-decides a business rule
-// the schema does not already decide; this one does, for the same reason
-// discard.operation.ts's own header gives for not leaving its own refusal
-// to a silent database no-op — and there is nowhere else for that
-// discipline to sit while no operation file exists yet for this write.
-//
-// Names no import of 'pg': DatabaseConnection and the
-// runStatement/queryOneOrAbsent/runInTransaction helpers database-access.ts
-// already declares are the only things this file names for the pool it is
-// given (STK-05). Every statement below names its table unqualified, so it
-// resolves against whatever schema the connecting role's own server-side
-// default names (persistence/migration-runner.ts's own header describes why
-// that default is safe to trust under this project's transaction-pooling
-// DATABASE_URL) — true of a single statement run directly against the pool
-// (placeHypothesis, removeManifestEntry, release) exactly as it is of one
-// run inside a transaction this module opens itself. An earlier
-// implementation schema-qualified every name as public.<table> instead,
-// against a single fixed schema this project's own database swap now
-// varies per role.
 import type {
   AssembledCaseVersion,
   CaseIdentity,
@@ -188,24 +32,20 @@ import {
 } from './database-access.js';
 import type { DatabaseConnection } from './database-connection.js';
 
-/** slug and version together, the pair every case_versions/case_version_hypotheses statement below is built from — bundled once so no helper needs more than the standard's own three-positional-parameter limit (MNT-01). */
 interface ICaseVersionKey {
   readonly slug: string;
   readonly version: number;
 }
 
-/** A case slug and a hypothesis name together, the pair every hypotheses/hypothesis_revisions statement not yet numbered by a revision is built from. */
 interface IHypothesisKey {
   readonly slug: string;
   readonly hypothesis_name: string;
 }
 
-/** An IHypothesisKey narrowed to one numbered revision, the triple hypothesis_revision_collects' own key is built from. */
 interface IRevisionKey extends IHypothesisKey {
   readonly revision: number;
 }
 
-/** One row of "case_versions", exactly the columns beyond its own key: the flattened fallback, the optional consolidation register, and the lifecycle pair this schema added. */
 interface ICaseVersionRow {
   readonly title: string;
   readonly when_to_use: string;
@@ -219,7 +59,6 @@ interface ICaseVersionRow {
   readonly released_at: Date | null;
 }
 
-/** One row of one version's manifest, joined to its adopted hypothesis-revision's own content. */
 interface IManifestRow {
   readonly position: number;
   readonly hypothesis_name: string;
@@ -230,16 +69,13 @@ interface IManifestRow {
   readonly resolution_recipient: string;
 }
 
-/** One row of one manifest entry's own adopted revision's collects. */
 interface ICollectRow {
   readonly hypothesis_name: string;
   readonly concept_name: string;
 }
 
-/** Every value domain/knowledge/consolidation-register declares, reused rather than re-listed (MNT-03), the same convention this file's previous implementation already kept. */
 const CONSOLIDATION_REGISTER_VALUES: ReadonlySet<string> = new Set<string>(CONSOLIDATION_REGISTERS);
 
-/** Schema-qualified table names, named once and reused across every statement below rather than repeated as literals (TYP-04). */
 const CASES_TABLE = 'cases';
 const CASE_VERSIONS_TABLE = 'case_versions';
 const HYPOTHESES_TABLE = 'hypotheses';
@@ -247,28 +83,16 @@ const HYPOTHESIS_REVISIONS_TABLE = 'hypothesis_revisions';
 const HYPOTHESIS_REVISION_COLLECTS_TABLE = 'hypothesis_revision_collects';
 const CASE_VERSION_HYPOTHESES_TABLE = 'case_version_hypotheses';
 
-/** The two values domain/knowledge/case-version-state declares (TYP-04), named once rather than spelled at each write. */
 const DRAFT_STATE: CaseVersionState = 'draft';
 const RELEASED_STATE: CaseVersionState = 'released';
 
-/** Postgres' own error code for a unique-constraint violation, the signal every refusal below is decided by (TYP-04), the same convention this file's previous implementation already kept. */
 const UNIQUE_VIOLATION_CODE = '23505';
 
-/** The two constraint names a unique violation is disambiguated by (TYP-04): which schema rule fired decides which typed error this store raises. */
 const ONE_DRAFT_PER_CASE_CONSTRAINT = 'case_versions_one_draft_per_case';
 const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
-/** Stands in for CaseNotFoundError's own required version number where listCaseVersions refuses a slug naming no case at all (TYP-04) — no particular version is ever named by that refusal, and 0 is one cases.next_version's own DEFAULT 1 guarantees no case version is ever assigned (migrations/0009-case-version-lifecycle-schema.sql), so it can never be mistaken for a real one. This task's own inference, disclosed in its delivery record. */
 const NO_VERSION_NAMED = 0;
 
-/**
- * The relational adapter of the case module's rebuilt store port: assembles
- * one version whole (criterion 1, criterion 2), originates a draft
- * (criterion 3, criterion 4, criterion 5), originates a hypothesis-revision
- * (criterion 6, criterion 7), places and removes manifest entries
- * (criterion 8, criterion 9), and transitions a version to released or
- * discards a draft (criterion 10, criterion 11).
- */
 export class RelationalCaseStore implements ICaseStore {
   public constructor(private readonly connection: DatabaseConnection) {}
 
@@ -332,9 +156,6 @@ export class RelationalCaseStore implements ICaseStore {
   }
 }
 
-// ---------------------------------------------------------------- assembleVersion
-
-/** Reads one whole version through the caller's own transaction: an absent version answers undefined before any manifest entry is ever read (criterion 2), never a partial assembly. */
 async function assembleWholeVersion(tx: IQueryable, key: ICaseVersionKey): Promise<AssembledCaseVersion | undefined> {
   const versionRow = await queryOneOrAbsent<ICaseVersionRow>(tx, caseVersionSelect(key), raiseReadFailure);
   if (versionRow === undefined) {
@@ -344,14 +165,12 @@ async function assembleWholeVersion(tx: IQueryable, key: ICaseVersionKey): Promi
   return assembledCaseVersionOf(key, versionRow, manifest);
 }
 
-/** One version's own manifest, in declared-position order, each entry joined to its adopted hypothesis-revision's own content and collects (criterion 1). */
 async function readManifest(tx: IQueryable, key: ICaseVersionKey): Promise<readonly ManifestEntry[]> {
   const rows = await runStatement<IManifestRow>(tx, manifestSelect(key), raiseReadFailure);
   const collects = await collectsByHypothesisName(tx, key);
   return rows.map((row) => manifestEntryOf(row, collects.get(row.hypothesis_name) ?? []));
 }
 
-/** Every concept each manifest entry's own adopted revision collects, grouped by the hypothesis's own name — one row per hypothesis within one version's manifest, so grouping by name alone is unambiguous here. */
 async function collectsByHypothesisName(tx: IQueryable, key: ICaseVersionKey): Promise<ReadonlyMap<string, readonly string[]>> {
   const rows = await runStatement<ICollectRow>(tx, manifestCollectsSelect(key), raiseReadFailure);
   const grouped = new Map<string, string[]>();
@@ -363,7 +182,6 @@ async function collectsByHypothesisName(tx: IQueryable, key: ICaseVersionKey): P
   return grouped;
 }
 
-/** One manifest row plus its already-grouped collects, assembled into the shape domain/knowledge/manifest-entry and domain/knowledge/hypothesis-revision together declare. */
 function manifestEntryOf(row: IManifestRow, collects: readonly string[]): ManifestEntry {
   const hypothesisRevision: HypothesisRevisionContent = {
     hypothesis_name: row.hypothesis_name,
@@ -375,7 +193,6 @@ function manifestEntryOf(row: IManifestRow, collects: readonly string[]): Manife
   return { position: row.position, hypothesis_revision: hypothesisRevision };
 }
 
-/** The whole case version these rows together answer, in the shape domain/knowledge/case-version declares — slug and version come from the given key, never from a column of their own. */
 function assembledCaseVersionOf(key: ICaseVersionKey, row: ICaseVersionRow, manifest: readonly ManifestEntry[]): AssembledCaseVersion {
   const consolidationRegister = consolidationRegisterOf(row.consolidation_register);
   return {
@@ -404,7 +221,6 @@ function caseVersionSelect(key: ICaseVersionKey): IStatement {
   };
 }
 
-/** The version currently in draft state for the given slug, if any (rules/knowledge/a-case-has-at-most-one-draft guarantees at most one row can ever match). */
 function draftVersionSelect(slug: string): IStatement {
   return {
     text: `SELECT version FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND state = $2`,
@@ -412,9 +228,6 @@ function draftVersionSelect(slug: string): IStatement {
   };
 }
 
-// ---------------------------------------------------------------- listCases
-
-/** Every case currently held, by slug alone, paginated: the total count and this page's own rows, read through the same transaction so the two never disagree about what "cases" held at that instant — an empty table answers total: 0 and data: [], never an error or undefined. */
 async function listCasesPage(tx: IQueryable, pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
   const total = await countCases(tx);
   const rows = await runStatement<{ slug: string }>(tx, casesPageSelect(pagination), raiseReadFailure);
@@ -427,7 +240,6 @@ async function listCasesPage(tx: IQueryable, pagination: PaginationRequest): Pro
   };
 }
 
-/** How many rows "cases" holds in total, across every page — 0 where it holds none. */
 async function countCases(tx: IQueryable): Promise<number> {
   const row = await queryOneOrAbsent<{ count: string }>(tx, casesCountSelect(), raiseReadFailure);
   return row === undefined ? 0 : Number(row.count);
@@ -437,7 +249,6 @@ function casesCountSelect(): IStatement {
   return { text: `SELECT COUNT(*) AS count FROM ${CASES_TABLE}` };
 }
 
-/** One page of "cases", ordered by slug so a stable page boundary means the same rows on a repeated call between two writes. */
 function casesPageSelect(pagination: PaginationRequest): IStatement {
   return {
     text: `SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2`,
@@ -445,7 +256,6 @@ function casesPageSelect(pagination: PaginationRequest): IStatement {
   };
 }
 
-/** The page count this limit divides total into (API-03) — 0 for a non-positive limit, since dividing by it would answer no page count at all rather than one a caller could page through; neither this task's own criteria nor src/types/pagination.ts states what a non-positive limit answers, so this is this store's own defensive floor rather than a documented behavior. */
 function pageCountOf(total: number, limit: number): number {
   return limit > 0 ? Math.ceil(total / limit) : 0;
 }
@@ -475,9 +285,6 @@ function manifestCollectsSelect(key: ICaseVersionKey): IStatement {
   };
 }
 
-// ---------------------------------------------------------------- listCaseVersions
-
-/** Every version the named case currently holds, by its own number and state alone, paginated — refused through CaseNotFoundError where the slug names no case at all (criterion 2), the identity check, the total and the page all read through the same transaction so none of the three can disagree about what "case_versions" held at the instant any of them ran. */
 async function listCaseVersionsPage(tx: IQueryable, slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
   await requireCaseIdentity(tx, slug);
   const total = await countCaseVersions(tx, slug);
@@ -491,7 +298,6 @@ async function listCaseVersionsPage(tx: IQueryable, slug: string, pagination: Pa
   };
 }
 
-/** Refuses, through CaseNotFoundError, a slug the "cases" table holds no row for at all (criterion 2) — the one check that tells an unknown case apart from a known one currently holding no version. */
 async function requireCaseIdentity(tx: IQueryable, slug: string): Promise<void> {
   const row = await queryOneOrAbsent<{ slug: string }>(tx, caseIdentitySelect(slug), raiseReadFailure);
   if (row === undefined) {
@@ -503,7 +309,6 @@ function caseIdentitySelect(slug: string): IStatement {
   return { text: `SELECT slug FROM ${CASES_TABLE} WHERE slug = $1`, params: [slug] };
 }
 
-/** How many versions the named case holds in total, across every page — 0 where it currently holds none (every one discarded, or none yet drafted or released). */
 async function countCaseVersions(tx: IQueryable, slug: string): Promise<number> {
   const row = await queryOneOrAbsent<{ count: string }>(tx, caseVersionsCountSelect(slug), raiseReadFailure);
   return row === undefined ? 0 : Number(row.count);
@@ -513,7 +318,6 @@ function caseVersionsCountSelect(slug: string): IStatement {
   return { text: `SELECT COUNT(*) AS count FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1`, params: [slug] };
 }
 
-/** One page of the named case's own versions, ordered by version so a stable page boundary means the same rows on a repeated call between two writes. */
 function caseVersionsPageSelect(slug: string, pagination: PaginationRequest): IStatement {
   return {
     text: `SELECT version, state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 ORDER BY version LIMIT $2 OFFSET $3`,
@@ -521,9 +325,6 @@ function caseVersionsPageSelect(slug: string, pagination: PaginationRequest): IS
   };
 }
 
-// ---------------------------------------------------------------- listHypotheses
-
-/** Every hypothesis the named case has ever originated, by its own bare name alone, paginated — refused through CaseNotFoundError where the slug names no case at all, the identity check, the total and the page all read through the same transaction so none of the three can disagree about what "hypotheses" held at the instant any of them ran. Reads "hypotheses" directly by case_slug, never through case_version_hypotheses or any manifest, so a hypothesis already originated but not currently adopted by any version's manifest is still answered. */
 async function listHypothesesPage(tx: IQueryable, slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
   await requireCaseIdentity(tx, slug);
   const total = await countHypotheses(tx, slug);
@@ -537,7 +338,6 @@ async function listHypothesesPage(tx: IQueryable, slug: string, pagination: Pagi
   };
 }
 
-/** How many hypotheses the named case has originated in total, across every page — 0 where it has originated none yet. */
 async function countHypotheses(tx: IQueryable, slug: string): Promise<number> {
   const row = await queryOneOrAbsent<{ count: string }>(tx, hypothesesCountSelect(slug), raiseReadFailure);
   return row === undefined ? 0 : Number(row.count);
@@ -547,7 +347,6 @@ function hypothesesCountSelect(slug: string): IStatement {
   return { text: `SELECT COUNT(*) AS count FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1`, params: [slug] };
 }
 
-/** One page of the named case's own hypotheses, ordered by name so a stable page boundary means the same rows on a repeated call between two writes. */
 function hypothesesPageSelect(slug: string, pagination: PaginationRequest): IStatement {
   return {
     text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 ORDER BY name LIMIT $2 OFFSET $3`,
@@ -555,9 +354,6 @@ function hypothesesPageSelect(slug: string, pagination: PaginationRequest): ISta
   };
 }
 
-// ---------------------------------------------------------------- listHypothesisRevisions
-
-/** One row of "hypothesis_revisions", exactly the columns beyond its own key. */
 interface IHypothesisRevisionRow {
   readonly revision: number;
   readonly criterion: string;
@@ -566,7 +362,6 @@ interface IHypothesisRevisionRow {
   readonly resolution_recipient: string;
 }
 
-/** Every revision the named hypothesis currently holds, by its own full content, paginated — refused through CaseNotFoundError where the slug or the hypothesis name (or both) names nothing this case has originated (criterion 2), the identity check, the total, the page and its own collects all read through the same transaction so none can disagree about what "hypothesis_revisions" held at the instant any of them ran. */
 async function listHypothesisRevisionsPage(
   tx: IQueryable,
   key: IHypothesisKey,
@@ -585,7 +380,6 @@ async function listHypothesisRevisionsPage(
   };
 }
 
-/** Refuses, through CaseNotFoundError, a (case_slug, name) pair "hypotheses" holds no row for at all (criterion 2) — a row there can exist only for a case_slug "cases" already holds (its own foreign key), so this one check answers an unknown slug and an unknown hypothesis name alike. */
 async function requireHypothesisIdentity(tx: IQueryable, key: IHypothesisKey): Promise<void> {
   const row = await queryOneOrAbsent<{ name: string }>(tx, hypothesisIdentitySelect(key), raiseReadFailure);
   if (row === undefined) {
@@ -597,7 +391,6 @@ function hypothesisIdentitySelect(key: IHypothesisKey): IStatement {
   return { text: `SELECT name FROM ${HYPOTHESES_TABLE} WHERE case_slug = $1 AND name = $2`, params: [key.slug, key.hypothesis_name] };
 }
 
-/** How many revisions the named hypothesis holds in total, across every page. */
 async function countHypothesisRevisions(tx: IQueryable, key: IHypothesisKey): Promise<number> {
   const row = await queryOneOrAbsent<{ count: string }>(tx, hypothesisRevisionsCountSelect(key), raiseReadFailure);
   return row === undefined ? 0 : Number(row.count);
@@ -610,7 +403,6 @@ function hypothesisRevisionsCountSelect(key: IHypothesisKey): IStatement {
   };
 }
 
-/** One page of the named hypothesis's own revisions, ordered by revision so a stable page boundary means the same rows on a repeated call between two writes. */
 function hypothesisRevisionsPageSelect(key: IHypothesisKey, pagination: PaginationRequest): IStatement {
   return {
     text: `SELECT revision, criterion, resolution_outcome, resolution_action, resolution_recipient
@@ -622,7 +414,6 @@ function hypothesisRevisionsPageSelect(key: IHypothesisKey, pagination: Paginati
   };
 }
 
-/** Every concept every revision of the named hypothesis collects, grouped by revision — read unscoped by page, the same convention collectsByHypothesisName already keeps for a version's manifest collects. */
 async function collectsByRevision(tx: IQueryable, key: IHypothesisKey): Promise<ReadonlyMap<number, readonly string[]>> {
   const rows = await runStatement<{ revision: number; concept_name: string }>(tx, hypothesisRevisionCollectsSelect(key), raiseReadFailure);
   const grouped = new Map<number, string[]>();
@@ -644,7 +435,6 @@ function hypothesisRevisionCollectsSelect(key: IHypothesisKey): IStatement {
   };
 }
 
-/** One revision row plus its already-grouped collects, assembled into the shape domain/knowledge/hypothesis-revision declares. */
 function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: readonly string[]): HypothesisRevisionListItem {
   return {
     revision: row.revision,
@@ -654,9 +444,6 @@ function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: rea
   };
 }
 
-// ---------------------------------------------------------------- createDraft
-
-/** Originates one new draft: claims the case identity, assigns the next version off its own durable counter, resolves which version's manifest to copy, inserts the draft's own row (refused where a draft already exists), and copies the resolved source's manifest entry for entry. */
 async function createDraftVersion(tx: IQueryable, input: CreateDraftInput): Promise<number> {
   await runStatement(tx, caseIdentityStatement(input.slug), raiseWriteFailure);
   const version = await assignNextVersion(tx, input.slug);
@@ -668,12 +455,10 @@ async function createDraftVersion(tx: IQueryable, input: CreateDraftInput): Prom
   return version;
 }
 
-/** Idempotently claims the case's own identity row, never refusing an already-held slug — a second draft under it is not a second case. */
 function caseIdentityStatement(slug: string): IStatement {
   return { text: `INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`, params: [slug] };
 }
 
-/** The case's next version number, assigned by incrementing its own durable counter and answering the value it held before the increment — never MAX(version) over existing rows (criterion 3, rules/knowledge/a-case-version-number-is-never-reused). */
 async function assignNextVersion(tx: IQueryable, slug: string): Promise<number> {
   const row = await queryOneOrAbsent<{ version: number }>(tx, nextVersionUpdateStatement(slug), raiseWriteFailure);
   if (row === undefined) {
@@ -691,7 +476,6 @@ function nextVersionUpdateStatement(slug: string): IStatement {
   };
 }
 
-/** The version whose manifest the new draft copies: the one named, or, naming none, the case's own latest released version — undefined where the case holds no released version yet (criterion 4, rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version). */
 async function resolveSourceVersion(tx: IQueryable, input: CreateDraftInput): Promise<number | undefined> {
   if (input.source_version !== undefined) {
     return input.source_version;
@@ -707,7 +491,6 @@ function latestReleasedVersionSelect(slug: string): IStatement {
   };
 }
 
-/** Inserts the new draft's own row — refused, through the schema's own partial unique index, where this case already holds a version in draft state (criterion 5). */
 function draftInsertStatement(input: CreateDraftInput, version: number): IStatement {
   const [fallbackOutcome, fallbackAction, fallbackRecipient] = referralColumns(input.fallback);
   return {
@@ -731,7 +514,6 @@ function draftInsertStatement(input: CreateDraftInput, version: number): IStatem
   };
 }
 
-/** Copies the source version's manifest into the new draft's own manifest, entry for entry (criterion 4) — one INSERT/SELECT rather than a read followed by N inserts. */
 function manifestCopyStatement(slug: string, version: number, sourceVersion: number): IStatement {
   return {
     text: `INSERT INTO ${CASE_VERSION_HYPOTHESES_TABLE} (case_slug, case_version, hypothesis_name, revision, position)
@@ -742,14 +524,10 @@ function manifestCopyStatement(slug: string, version: number, sourceVersion: num
   };
 }
 
-/** Builds the raise callback the draft's own insert runs through: a unique-violation on the one-draft-per-case partial index is this case already holding a draft (criterion 5), answered through CaseAlreadyHasDraftError rather than the generic write failure; anything else is wrapped the same way every other statement's own failure is. */
 function raiseCreateDraftFailure(slug: string): RaiseStoreError {
   return (cause) => (isConstraintViolation(cause, ONE_DRAFT_PER_CASE_CONSTRAINT) ? new CaseAlreadyHasDraftError(slug) : raiseWriteFailure(cause));
 }
 
-// ---------------------------------------------------------------- insertHypothesisRevision
-
-/** Originates one new hypothesis-revision: claims the hypothesis's own identity row only the first time its name is used (criterion 6), inserts the revision numbered one past its own highest existing revision or 1 (criterion 7), and inserts its own collects. */
 async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
   const key: IHypothesisKey = { slug: input.slug, hypothesis_name: input.hypothesis_name };
   await runStatement(tx, hypothesisIdentityStatement(key), raiseWriteFailure);
@@ -761,7 +539,6 @@ async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): P
   return revision;
 }
 
-/** Idempotently claims the hypothesis's own identity row, never a second one for a name already held (criterion 6, rules/knowledge/a-hypothesis-name-is-unique-within-its-case). */
 function hypothesisIdentityStatement(key: IHypothesisKey): IStatement {
   return {
     text: `INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING`,
@@ -769,7 +546,6 @@ function hypothesisIdentityStatement(key: IHypothesisKey): IStatement {
   };
 }
 
-/** Inserts the revision row, computed and inserted as one statement: one past the hypothesis's own highest existing revision, or 1 where none exists yet (criterion 7). */
 async function insertRevisionRow(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {
   const columns = referralColumns(input.resolution);
   const row = await queryOneOrAbsent<{ revision: number }>(tx, revisionInsertStatement(input, columns), raiseWriteFailure);
@@ -800,9 +576,6 @@ function revisionCollectStatement(key: IRevisionKey, conceptName: string): IStat
   };
 }
 
-// ---------------------------------------------------------------- placeHypothesis / removeManifestEntry
-
-/** Places one hypothesis-revision at one manifest position — refused, through the schema's own position-unique constraint, where that position already holds a different hypothesis in the same version (criterion 8). */
 function placeHypothesisStatement(input: PlaceHypothesisInput): IStatement {
   return {
     text: `INSERT INTO ${CASE_VERSION_HYPOTHESES_TABLE} (case_slug, case_version, hypothesis_name, revision, position)
@@ -811,7 +584,6 @@ function placeHypothesisStatement(input: PlaceHypothesisInput): IStatement {
   };
 }
 
-/** Builds the raise callback place-hypothesis's own insert runs through: a unique-violation on the position-unique constraint is that position already occupied (criterion 8), answered through ManifestPositionOccupiedError rather than the generic write failure. */
 function raisePlaceHypothesisFailure(input: PlaceHypothesisInput): RaiseStoreError {
   return (cause) =>
     isConstraintViolation(cause, POSITION_UNIQUE_CONSTRAINT)
@@ -819,7 +591,6 @@ function raisePlaceHypothesisFailure(input: PlaceHypothesisInput): RaiseStoreErr
       : raiseWriteFailure(cause);
 }
 
-/** Deletes only the named manifest entry, never the hypothesis-revision it referenced (criterion 9). */
 function removeManifestEntryStatement(slug: string, version: number, hypothesisName: string): IStatement {
   return {
     text: `DELETE FROM ${CASE_VERSION_HYPOTHESES_TABLE} WHERE case_slug = $1 AND case_version = $2 AND hypothesis_name = $3`,
@@ -827,9 +598,6 @@ function removeManifestEntryStatement(slug: string, version: number, hypothesisN
   };
 }
 
-// ---------------------------------------------------------------- release / discard
-
-/** Transitions the version to released, recording the instant of release (criterion 10). A version already released is left as-is by the schema's own release-conditioned rule rather than re-checked here. */
 function releaseStatement(slug: string, version: number): IStatement {
   return {
     text: `UPDATE ${CASE_VERSIONS_TABLE} SET state = $3, released_at = NOW() WHERE slug = $1 AND version = $2`,
@@ -837,7 +605,6 @@ function releaseStatement(slug: string, version: number): IStatement {
   };
 }
 
-/** Removes a draft version and its own manifest entries, never any hypothesis-revision they referenced (criterion 11) — manifest entries first, so the version row's own foreign key from case_version_hypotheses is never left dangling. A released version's row and manifest entries are left in place by the schema's own release-conditioned delete rules rather than re-checked here. */
 async function discardDraft(tx: IQueryable, key: ICaseVersionKey): Promise<void> {
   await runStatement(tx, deleteManifestEntriesStatement(key), raiseWriteFailure);
   await runStatement(tx, deleteCaseVersionStatement(key), raiseWriteFailure);
@@ -854,18 +621,6 @@ function deleteCaseVersionStatement(key: ICaseVersionKey): IStatement {
   return { text: `DELETE FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND version = $2`, params: [key.slug, key.version] };
 }
 
-// ---------------------------------------------------------------- updateDraft
-
-/**
- * Corrects a draft version's own five declared attributes, guarded the same
- * read-whole-then-guard-then-write way discard.operation.ts's own pattern
- * already applies: reads the version's own current state first, refuses
- * through CaseNotFoundError where no such row exists and through
- * CaseVersionNotDraftError where its state is not draft
- * (rules/knowledge/a-case-version-is-written-once), and only then runs the
- * UPDATE — before any write is attempted, rather than leaving it to the
- * schema's own case_versions_no_update trigger to silently take no effect.
- */
 async function updateDraftVersion(tx: IQueryable, key: ICaseVersionKey, attributes: UpdateDraftInput): Promise<void> {
   const row = await queryOneOrAbsent<{ state: string }>(tx, caseVersionStateSelect(key), raiseReadFailure);
   if (row === undefined) {
@@ -878,12 +633,10 @@ async function updateDraftVersion(tx: IQueryable, key: ICaseVersionKey, attribut
   await runStatement(tx, updateDraftStatement(key, attributes), raiseWriteFailure);
 }
 
-/** The one column this task's guard reads before any write is attempted. */
 function caseVersionStateSelect(key: ICaseVersionKey): IStatement {
   return { text: `SELECT state FROM ${CASE_VERSIONS_TABLE} WHERE slug = $1 AND version = $2`, params: [key.slug, key.version] };
 }
 
-/** Writes exactly the five attributes this task scopes updateDraft to — never the manifest, never any other version's own row. */
 function updateDraftStatement(key: ICaseVersionKey, attributes: UpdateDraftInput): IStatement {
   const [fallbackOutcome, fallbackAction, fallbackRecipient] = referralColumns(attributes.fallback);
   return {
@@ -906,19 +659,14 @@ function updateDraftStatement(key: ICaseVersionKey, attributes: UpdateDraftInput
   };
 }
 
-// ---------------------------------------------------------------- shared helpers
-
-/** The one outcome/action/recipient triple every resolution flattens to, whether it is a case version's fallback or a hypothesis-revision's own (domain/knowledge/resolution, domain/knowledge/referral) — read once here rather than at each call site (MNT-03). */
 function referralColumns(resolution: Resolution): readonly [string, string, string] {
   return [resolution.outcome, resolution.referral.action, resolution.referral.recipient];
 }
 
-/** One stored outcome/action/recipient triple, assembled back into the shape domain/knowledge/resolution and domain/knowledge/referral together declare. */
 function resolutionOf(outcome: string, action: string, recipient: string): Resolution {
   return { outcome, referral: { action, recipient } };
 }
 
-/** Narrows a stored consolidation_register (or its absence) to the enumeration's own two declared values, raising this store's own typed error where a row somehow holds a value the enumeration does not (TYP-02) — the same defensive-narrow convention this file's previous implementation already kept. */
 function consolidationRegisterOf(value: string | null): ConsolidationRegister | undefined {
   if (value === null) {
     return undefined;
@@ -929,12 +677,10 @@ function consolidationRegisterOf(value: string | null): ConsolidationRegister | 
   return value;
 }
 
-/** Whether one stored value is one of the enumeration's own two declared values (TYP-02). */
 function isConsolidationRegister(value: string): value is ConsolidationRegister {
   return CONSOLIDATION_REGISTER_VALUES.has(value);
 }
 
-/** Narrows a stored state to domain/knowledge/case-version-state's own two declared values, raising this store's own typed error where a row somehow holds a value the enumeration does not (TYP-02). */
 function caseVersionStateOf(value: string): CaseVersionState {
   if (!isCaseVersionState(value)) {
     throw raiseReadFailure(new Error(`case_versions holds an unrecognized state "${value}"`));
@@ -942,12 +688,10 @@ function caseVersionStateOf(value: string): CaseVersionState {
   return value;
 }
 
-/** Whether one stored value is one of the enumeration's own two declared values (TYP-02's guard). */
 function isCaseVersionState(value: string): value is CaseVersionState {
   return value === DRAFT_STATE || value === RELEASED_STATE;
 }
 
-/** Whether a failure the driver raised is Postgres' own unique-violation code against the named constraint (TYP-02's guard) — disambiguating which schema rule fired, since this adapter now maps more than one unique constraint to its own typed error. */
 function isConstraintViolation(cause: unknown, constraintName: string): boolean {
   return (
     cause instanceof Error &&
@@ -958,12 +702,10 @@ function isConstraintViolation(cause: unknown, constraintName: string): boolean 
   );
 }
 
-/** Builds this store's own typed error for a failed read, carrying the driver failure as its cause. */
 function raiseReadFailure(cause: unknown): Error {
   return new CaseStoreError('a read against the case store failed', { operation: 'read' }, { cause });
 }
 
-/** Builds this store's own typed error for a failed write, carrying the driver failure as its cause. */
 function raiseWriteFailure(cause: unknown): Error {
   return new CaseStoreError('a write against the case store failed', { operation: 'write' }, { cause });
 }

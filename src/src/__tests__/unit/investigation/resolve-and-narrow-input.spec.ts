@@ -1,19 +1,3 @@
-// Proof for
-// task/assessment-consolidation/resolve-and-narrow-input-unconditional-breadth:
-// resolveAndNarrow still answers the outcome, referral and determining
-// hypothesis exactly as the case's own resolveOutcome does, following the
-// case's declared precedence rather than the given evaluations' own array
-// order (rules/investigation/the-outcome-comes-from-the-case), but the
-// narrowed input it assembles is unconditional now — every required
-// hypothesis's own evaluation and the evidence its citations name, the same
-// shape whether or not a hypothesis confirmed
-// (rules/investigation/the-writing-input-is-narrowed). The confirmed/fallback
-// branch this module once carried is gone: this file supersedes the proof
-// written for that earlier shape rather than extending it. Never surfacing a
-// hypothesis's own criterion or the case's when_to_use text either way
-// (domain/knowledge/hypothesis, domain/knowledge/case), and never carrying a
-// hypothesis the case does not require evaluation of. Pure and synchronous
-// throughout, so no fake timers or async handling is needed here.
 import { readFile } from 'node:fs/promises';
 import { builtinModules } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +10,6 @@ import type { Evaluation } from '../../../investigation/evaluation.js';
 import type { Evidence } from '../../../investigation/evidence.js';
 import { resolveAndNarrow } from '../../../investigation/resolve-and-narrow-input.js';
 
-/** A minimally valid Hypothesis, defaulted so a test states only what distinguishes it. */
 function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string }): Hypothesis {
   return {
     criterion: `${overrides.name} criterion`,
@@ -36,7 +19,6 @@ function aHypothesis(overrides: Partial<Hypothesis> & { readonly name: string })
   };
 }
 
-/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — resolveOutcome and requiresEvaluationOf both read theCase.manifest exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation). */
 function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
   return {
     position,
@@ -50,16 +32,6 @@ function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntr
   };
 }
 
-/**
- * A minimally valid Case around the given hypotheses, in the order given —
- * the precedence resolve-outcome consults is each manifest entry's own
- * declared position (task/case-and-investigation-model/precedence-from-position),
- * assigned here from the given array's own index, matching that order
- * exactly, since no test in this file is about the position field itself.
- * hypotheses is carried through unchanged alongside the manifest built from
- * it, the same relationship parse-case-document.ts's own heldCase keeps
- * between the two.
- */
 function aCase(hypotheses: readonly Hypothesis[], overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-case',
@@ -76,27 +48,22 @@ function aCase(hypotheses: readonly Hypothesis[], overrides: Partial<Case> = {})
   };
 }
 
-/** One citation naming the given concept, defaulted to a field none of these tests are about. */
 function citationFor(concept: string, field = 'a-field'): Citation {
   return { concept, field };
 }
 
-/** A confirmed evaluation for the given hypothesis, carrying the given citations (at least one, as the type requires). */
 function confirmed(hypothesis: string, citations: readonly [Citation, ...Citation[]] = [citationFor('a-concept')]): Evaluation {
   return { hypothesis, verdict: 'confirmed', citations };
 }
 
-/** A refuted evaluation for the given hypothesis, carrying the given citations (at least one, as the type requires). */
 function refuted(hypothesis: string, citations: readonly [Citation, ...Citation[]] = [citationFor('a-concept')]): Evaluation {
   return { hypothesis, verdict: 'refuted', citations };
 }
 
-/** An inconclusive evaluation for the given hypothesis, carrying the given reason and, where given, citations. */
 function inconclusive(hypothesis: string, reason: EvaluationReason, citations: readonly Citation[] = []): Evaluation {
   return { hypothesis, verdict: 'inconclusive', reason, citations };
 }
 
-/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. */
 function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
   return {
     inputs: 'an-input',
@@ -113,8 +80,6 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
     ...overrides,
   };
 }
-
-// ------------------------------------------------------------- criterion 1
 
 it("carries every required hypothesis's own evaluation, not only the one that confirmed, when one hypothesis confirms", () => {
   const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' }), aHypothesis({ name: 'h3' })]);
@@ -140,8 +105,6 @@ it("carries every required hypothesis's own evaluation, not only the one that co
     { hypothesis: 'h3', verdict: 'inconclusive', reason: 'no-data', citations: [] },
   ]);
 });
-
-// ------------------------------------------------------------- criterion 2
 
 it("carries every required hypothesis's own evaluation when none confirms", () => {
   const theCase = aCase([aHypothesis({ name: 'h1' }), aHypothesis({ name: 'h2' })]);
@@ -178,8 +141,6 @@ it('gives the narrowed input the same shape whether or not a hypothesis confirme
   expect(Object.keys(fallbackResult.narrowedInput).sort()).toEqual(['evaluations', 'evidence']);
 });
 
-// ------------------------------------------------------------- criterion 3
-
 it("never carries a hypothesis's own criterion or the case's when_to_use text", () => {
   const theCase = aCase([aHypothesis({ name: 'h1', criterion: 'UNIQUE_CRITERION_MARKER_ABC123' })], {
     when_to_use: 'UNIQUE_WHEN_TO_USE_MARKER_XYZ789',
@@ -207,8 +168,6 @@ it('excludes an evaluation for a hypothesis the case does not require evaluation
 
   expect(result.narrowedInput.evaluations).toEqual([{ hypothesis: 'h1', verdict: 'confirmed', citations: [citationFor('a-concept')] }]);
 });
-
-// ------------------------------------------------------------- criterion 4
 
 it('excludes evidence from evidenceByHypothesis that no included citation names', () => {
   const theCase = aCase([aHypothesis({ name: 'h1' })]);
@@ -241,14 +200,9 @@ it('carries a concept once, in first-cited order, when more than one required ev
   expect(result.narrowedInput.evidence).toEqual([evidenceFromFirst]);
 });
 
-// ------------------------------------------- resolveOutcome's preserved behavior
-
 it("resolves the outcome, referral and determining hypothesis exactly as the case's own resolve-outcome answers, following the case's declared precedence rather than the evaluations' own order", () => {
   const theCase = aCase([aHypothesis({ name: 'h-first' }), aHypothesis({ name: 'h-second' }), aHypothesis({ name: 'h-third' })]);
-  // Deliberately lists the two confirmed evaluations in reverse of the
-  // case's own declared order, so a resolver that followed the evaluations'
-  // own array order instead of the case's declared precedence would pick
-  // h-third here, while the case's own resolve-outcome always picks h-second.
+
   const evaluations: readonly Evaluation[] = [refuted('h-first'), confirmed('h-third'), confirmed('h-second')];
 
   const result = resolveAndNarrow({
@@ -299,8 +253,6 @@ it("keeps the required evaluations in the given evaluations' own order, never re
   expect(result.narrowedInput.evaluations.map((evaluation) => evaluation.hypothesis)).toEqual(['h3', 'h1', 'h2']);
 });
 
-// ------------------------------------------------------------- edge cases
-
 it('answers empty evaluations and empty evidence, rather than throwing or defaulting to something else, when given no evaluations at all', () => {
   const theCase = aCase([aHypothesis({ name: 'h1' })]);
 
@@ -343,11 +295,8 @@ it("throws naming the concept when a required hypothesis's own evidence entry do
   ).toThrow(/missing-concept/);
 });
 
-// ------------------------------------------------------------- module purity
-
 const MODULE_PATH = fileURLToPath(new URL('../../../investigation/resolve-and-narrow-input.ts', import.meta.url));
 
-/** LLM and provider clients, and the frameworks and drivers beside them — what the no-infrastructure constraint forbids this module to import. */
 const FORBIDDEN_PACKAGES = [
   'fastify',
   'express',
@@ -380,21 +329,17 @@ const FORBIDDEN_PACKAGES = [
   '@modelcontextprotocol/sdk',
 ];
 
-/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
-/** Every module specifier resolve-and-narrow-input.ts itself imports. */
 async function resolveAndNarrowInputImports(): Promise<readonly string[]> {
   const source = await readFile(MODULE_PATH, 'utf8');
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
 
-/** Whether a specifier names a Node standard-library module, prefixed or bare. */
 function isStandardLibrary(specifier: string): boolean {
   return specifier.startsWith('node:') || builtinModules.includes(specifier);
 }
 
-/** Whether a specifier names one of the forbidden packages, or a path inside one. */
 function isForbiddenPackage(specifier: string): boolean {
   return FORBIDDEN_PACKAGES.some((name) => specifier === name || specifier.startsWith(`${name}/`));
 }
@@ -417,15 +362,11 @@ it('imports no port file, since a port models an infrastructure boundary this mo
   expect(specifiers.filter((specifier) => specifier.includes('.port.'))).toEqual([]);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
-
-/** This module's leading `//` header comment, everything before its first import — reuses this file's own MODULE_PATH rather than resolving the path a second way. */
 async function moduleHeader(): Promise<string> {
   const source = await readFile(MODULE_PATH, 'utf8');
   return source.slice(0, source.indexOf('\nimport'));
 }
 
-/** A comment block's prose, its `//` markers stripped and its wrapped lines joined with single spaces, so a citation the source wraps across lines is still matched as one continuous string. */
 function normalizedProse(commentBlock: string): string {
   return commentBlock
     .split('\n')
@@ -447,8 +388,6 @@ it("the module header's citation for NarrowedInput's own shape cites domain/know
   expect(header).toContain('domain/knowledge/case-version');
   expect(header).not.toMatch(/domain\/knowledge\/case(?!-version)/);
 });
-
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution: historical scenario citation
 
 it("the module header attributes the removed confirmed/fallback split, illustrated by scenarios/knowledge/no-confirmation-falls-back and scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome, to an earlier version of rules/investigation/the-writing-input-is-narrowed, not the-outcome-comes-from-the-case", async () => {
   const header = normalizedProse(await moduleHeader());

@@ -1,46 +1,15 @@
-// Proof for task/case-lifecycle-domain-model/aggregate-types-and-structural-validation:
-// the case document's own manifest-based structural validator — a hypothesis's
-// stable identity (its name) and its revisioned content (revision, criterion,
-// collects, resolution) declared as two distinct facts on the document, held
-// together only by one manifest entry's own position plus its one nested
-// adopted hypothesis-revision (never inlined) — and the three refusals this
-// task's own criteria name: a manifest holding no entry at all (whether the
-// version is draft or released), an adopted hypothesis-revision collecting no
-// concept, and one declaring an empty criterion. The specification's own
-// worked example (cliente-sem-internet) parses whole — every manifest entry's
-// own hypothesis-revision, resolution and referral read from the one document,
-// in the document's declared order — and a document violating any structural
-// rule is refused once, with every violation named. The fixture is spelled
-// here rather than read from the source, so a drift in what the parser
-// accepts fails against what the specification shows.
-//
-// The position-uniqueness and hypothesis-name-uniqueness checks this module
-// kept over the old flat hypotheses array are preserved here over the
-// manifest instead (this module's own `preserved` inference,
-// sharedHypothesisProblems/sharedPositionProblems in parse-case-document.ts).
 import { expect, it } from 'vitest';
 import { parseCaseDocument } from '../../../case/parse-case-document.js';
 import { InvalidCaseDocumentError } from '../../../errors/invalid-case-document.error.js';
 
-/** One case document as parsed JSON: the shape the parser receives. */
 type Document = Record<string, unknown>;
 
-/** The worked example's own slug, passed as parseCaseDocument's second argument — used only to identify a refusal, never checked against any file name. */
 const SLUG = 'cliente-sem-internet';
 
-/** One resolution as a document declares it: an outcome paired with a referral. */
 function resolutionOf(outcome: string, action: string, recipient: string): Document {
   return { outcome, referral: { action, recipient } };
 }
 
-/**
- * One worked manifest entry's own fields, less position — pulled out into
- * its own function only so workedManifestEntrySpecs' own body stays inside
- * the standard's max-lines-per-function rule; the fields and behavior are
- * exactly what each of workedManifestEntrySpecs' own four object literals
- * declared before this split (this delivery's own inference — the
- * extraction changes nothing but where the lines are counted).
- */
 function manifestEntrySpec(spec: {
   hypothesisName: string;
   criterion: string;
@@ -58,11 +27,6 @@ function manifestEntrySpec(spec: {
   };
 }
 
-/**
- * The worked example's four manifest entries' own fields, less position —
- * workedManifest() below assigns each one's position from its own index
- * here, matching this declared order.
- */
 function workedManifestEntrySpecs(): Document[] {
   return [
     manifestEntrySpec({ hypothesisName: 'incidente-regional', criterion: 'há incidente aberto cobrindo a localidade do cliente', collects: ['incidentes-na-regiao'], resolutionOutcome: 'incidente-regional', resolutionAction: 'informar-prazo', resolutionRecipient: 'atendimento' }),
@@ -72,12 +36,10 @@ function workedManifestEntrySpecs(): Document[] {
   ];
 }
 
-/** The worked example's four manifest entries, in their declared precedence, each at its own declared position matching that order. */
 function workedManifest(): Document[] {
   return workedManifestEntrySpecs().map((spec, index) => ({ ...spec, position: index + 1 }));
 }
 
-/** A document declaring every attribute, for tests to depart from one attribute at a time. Declares no hash at all — the case aggregate no longer admits one. */
 function completeDocument(overrides: Document = {}): Document {
   return {
     slug: 'cliente-sem-internet',
@@ -93,7 +55,6 @@ function completeDocument(overrides: Document = {}): Document {
   };
 }
 
-/** A complete manifest entry, for tests to depart from one attribute at a time. */
 function completeManifestEntry(overrides: Document = {}): Document {
   return {
     position: 1,
@@ -106,12 +67,10 @@ function completeManifestEntry(overrides: Document = {}): Document {
   };
 }
 
-/** The complete document with its manifest replaced by one departing entry. */
 function documentWithManifestEntry(overrides: Document): Document {
   return completeDocument({ manifest: [completeManifestEntry(overrides)] });
 }
 
-/** One manifest entry document spec reshaped into the aggregate's own nested ManifestEntry shape parseCaseDocument produces: position alongside one hypothesis_revision, never the revision's own content inlined. */
 function expectedManifestEntry(spec: Document, position: number): Document {
   return {
     position,
@@ -125,12 +84,10 @@ function expectedManifestEntry(spec: Document, position: number): Document {
   };
 }
 
-/** The worked example's manifest, reshaped as parseCaseDocument is expected to hold it. */
 function expectedWorkedManifest(): Document[] {
   return workedManifestEntrySpecs().map((spec, index) => expectedManifestEntry(spec, index + 1));
 }
 
-/** One manifest entry spec flattened into the shape this aggregate's own out-of-scope consumers read off Case.hypotheses. */
 function expectedHypothesis(spec: Document): Document {
   return {
     name: spec['hypothesis_name'],
@@ -140,7 +97,6 @@ function expectedHypothesis(spec: Document): Document {
   };
 }
 
-/** The whole parsed aggregate the worked example is expected to produce, for a test to depart from one attribute at a time. */
 function expectedCase(overrides: Document = {}): Document {
   return {
     slug: 'cliente-sem-internet',
@@ -157,7 +113,6 @@ function expectedCase(overrides: Document = {}): Document {
   };
 }
 
-/** Every violation one document is refused with; fails the test where the document parses instead. */
 function problemsOf(document: unknown, slug: string = SLUG): readonly string[] {
   let refusal: unknown;
   try {
@@ -170,8 +125,6 @@ function problemsOf(document: unknown, slug: string = SLUG): readonly string[] {
   }
   return refusal.context.problems;
 }
-
-// ---------------------------------------------------------------- what parses
 
 it('parses a document declaring every attribute into the one case aggregate, splitting each manifest entry into its own position and nested hypothesis-revision', () => {
   const document = completeDocument();
@@ -213,8 +166,6 @@ it('carries the document\'s declared authored_at unchanged, as the case\'s own d
 
   expect(parsed.authored_at).toBe('2030-12-25T18:30:00.000Z');
 });
-
-// ---------------------------------------------------- domain/knowledge/case-version-state
 
 it('parses a document declaring state draft, carrying no released_at at all', () => {
   const document = completeDocument({ state: 'draft' });
@@ -272,8 +223,6 @@ it('refuses an empty released_at', () => {
   expect(problems).toEqual(['released_at is empty']);
 });
 
-// ---------------------------------------- criterion: a case declaring no hypothesis is refused
-
 it('refuses a released case whose manifest holds no entry, naming that the case declares no hypothesis', () => {
   const document = completeDocument({ state: 'released', manifest: [] });
 
@@ -305,8 +254,6 @@ it('refuses a manifest that is not an array of manifest entries', () => {
 
   expect(problems).toEqual([expect.stringContaining('manifest is not an array of manifest entries')]);
 });
-
-// ------------------------------------------- criterion: a revision collecting no concept is refused
 
 it('refuses a manifest entry whose adopted hypothesis-revision declares no collects at all', () => {
   const document = documentWithManifestEntry({ collects: undefined });
@@ -340,8 +287,6 @@ it('refuses a manifest entry whose collects holds an entry naming no concept', (
   expect(problems).toEqual([expect.stringContaining('names no concept')]);
 });
 
-// ---------------------------------------------- criterion: a revision with an empty criterion is refused
-
 it('refuses a manifest entry whose adopted hypothesis-revision carries an empty criterion', () => {
   const document = documentWithManifestEntry({ criterion: '' });
 
@@ -357,8 +302,6 @@ it('refuses a manifest entry that declares no criterion at all', () => {
 
   expect(problems).toEqual([expect.stringContaining("criterion is undeclared")]);
 });
-
-// ------------------------------------------------------------- the resolution a revision adopts
 
 it('refuses a manifest entry whose resolution misses its outcome', () => {
   const document = documentWithManifestEntry({
@@ -404,11 +347,8 @@ it('refuses a fallback missing its referral', () => {
   expect(problems).toEqual([expect.stringContaining("the fallback's referral is undeclared")]);
 });
 
-// ---------------------------------------------- the two uniqueness rules, preserved over the manifest
-
 it('refuses a case whose two manifest entries share a hypothesis', () => {
-  // Distinct positions (2 for the second), isolating this rule's own
-  // violation from the position-uniqueness rule proved separately below.
+
   const document = completeDocument({
     manifest: [
       completeManifestEntry(),
@@ -425,8 +365,7 @@ it('refuses a case whose two manifest entries share a hypothesis', () => {
 });
 
 it('refuses a case whose two manifest entries share a position, naming both', () => {
-  // Distinct hypothesis names, isolating this rule's own violation from the
-  // hypothesis-uniqueness rule proved separately above.
+
   const document = completeDocument({
     manifest: [
       completeManifestEntry(),
@@ -464,8 +403,6 @@ it(
     expect(problems).toHaveLength(2);
   },
 );
-
-// ------------------------------------------------- the required attributes beyond the enumeration
 
 it.each(['slug', 'title', 'when_to_use', 'authored_at', 'subject'])(
   'refuses a document that leaves %s undeclared',
@@ -586,8 +523,6 @@ it('refuses an empty slug with exactly one problem', () => {
   expect(problems).toEqual([expect.stringContaining('slug is empty')]);
 });
 
-// ---------------------------------------------------------------- documents with no shape at all
-
 it('refuses a document that is not one JSON object', () => {
   const problems = problemsOf(null);
 
@@ -599,8 +534,6 @@ it('refuses a document that is a JSON array', () => {
 
   expect(problems).toEqual([expect.stringContaining('not one JSON object')]);
 });
-
-// ---------------------------------------------------------------- the optional consolidation register
 
 it('parses a document declaring consolidation_register formal into a case carrying it', () => {
   const document = completeDocument({ consolidation_register: 'formal' });
@@ -654,11 +587,8 @@ it('collects a consolidation_register violation together with another structural
   );
 });
 
-// ---------------------------------------------------------------- several violations, one refusal
-
 it('refuses a document violating several structural rules once, naming every violation', () => {
-  // Distinct positions (1 and 2), so the shared-hypothesis violation below is
-  // the only manifest-level uniqueness problem this fixture carries.
+
   const document = completeDocument({
     title: undefined,
     fallback: { referral: { action: 'escalar', recipient: 'suporte-n2' } },

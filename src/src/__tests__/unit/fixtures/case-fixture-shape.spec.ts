@@ -1,19 +1,3 @@
-// Proof that the fixture case authored for task/case-fixture/author-diagnose-fixture-case holds the
-// shape its own criteria state — at least one hypothesis, each with a single-sentence non-empty
-// criterion, at least one collected concept and a complete resolution
-// (rules/knowledge/a-case-has-at-least-one-hypothesis, rules/knowledge/a-hypothesis-declares-a-criterion,
-// rules/knowledge/one-falsifiable-claim-per-criterion, rules/knowledge/a-hypothesis-collects-at-least-one-concept,
-// rules/knowledge/every-position-declares-a-resolution); no two hypothesis names alike
-// (rules/knowledge/a-hypothesis-name-is-unique-within-its-case); the declared array order functioning as
-// the case's own precedence (rules/knowledge/hypotheses-are-ordered-by-precedence); a fallback resolution
-// distinct from every hypothesis's own (domain/knowledge/case); an explicit consolidation register
-// (domain/knowledge/consolidation-register). The fixture also sits as exactly one file, named 1.json,
-// under a directory named for its own slug — the test suite's own fixture-layout convention, not a
-// citation against any specification node: the constraint and rule this once cited
-// (constraints/a-case-is-stored-as-one-json-document, rules/knowledge/the-slug-matches-the-file-name)
-// are retired, and no node states a slug-to-file-name relationship any longer. Every check runs the
-// real parseCaseDocument and case-resolution modules over the fixture's own JSON, never a value this
-// test derives on its own.
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,10 +11,8 @@ import { CONSOLIDATION_REGISTERS } from '../../../investigation/consolidation-re
 const FIXTURES_ROOT = fileURLToPath(new URL('../../../fixtures/', import.meta.url));
 const SLUG = 'intermittent-connection-outage';
 
-/** A criterion stating exactly one sentence: no terminal punctuation before its very end. */
 const SINGLE_SENTENCE = /^[^.!?]+[.!?]$/;
 
-/** Reads and parses the fixture case exactly as the knowledge context's own read-case composes it. */
 async function loadFixtureCase(): Promise<Case> {
   const file = join(FIXTURES_ROOT, 'case', SLUG, '1.json');
   const raw = JSON.parse(await readFile(file, 'utf8')) as unknown;

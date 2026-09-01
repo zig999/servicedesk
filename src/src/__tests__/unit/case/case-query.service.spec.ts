@@ -1,30 +1,3 @@
-// Proof for the knowledge context's one published read (task/case-store/read-case): read-case
-// answers a case whole and validated only while every structural and coherence rule holds for it
-// right now, refusing otherwise with every violated rule of the half that produced them named
-// together in the one CaseNotValidError; a case that validated once is refused again once the
-// glossary or the capability registry it depends on stops satisfying it; replay-case answers a
-// pinned version's exact content without running the coherence checks at all; and no publication
-// gate exists anywhere in this composition — a version a store holds is a case at its very next
-// read. All three ports this task composes — ICaseStore, IGlossaryQuery and ICapabilityQuery — are
-// stood in for by small mutable in-memory fakes (contracts/knowledge/case-query,
-// contracts/glossary/glossary-query, contracts/integration/capability-registry), never the
-// file-backed or relational services, so the composition is proven against the published reads
-// alone.
-//
-// Rewritten against ICaseStore's own rebuilt shape (task/case-lifecycle-persistence/
-// relational-case-store-for-lifecycle): readVersion/writeVersion/listVersions and StoredCaseVersion
-// are gone, replaced below by assembleVersion, createDraft, insertHypothesisRevision,
-// placeHypothesis, removeManifestEntry, release and discard. FakeCaseStore now implements every one
-// of the seven, backed by mutable maps rather than a single (document, hash) pair; seedCase()
-// replaces this file's own previous store.seed(slug, version, {document, hash}) call, originating
-// one case version through the same lifecycle primitives a real author would call — createDraft,
-// one insertHypothesisRevision plus one placeHypothesis per hypothesis, and (by default) release —
-// since the new port has no single write call and no store-level content-identity hash left to
-// seed at all (case-store.port.ts's own header comment: "the aggregate they answered for ... is no
-// longer what this store persists or reads"). Every assertion this file's own previous version made
-// about readCase/replayCase's structural refusal, coherence refusal and replay-without-revalidation
-// is kept exactly as strict; two, whose own premise no longer exists under the new shape, are
-// dropped rather than adapted, and are explained where they sat.
 import { expect, it } from 'vitest';
 import type {
   CapabilityResolution,
@@ -62,16 +35,12 @@ import type {
 import type { Concept, TermVocabulary } from '../../../glossary/terms.js';
 import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
 
-/** The fixture case's identity, unless a test names another slug of its own. */
 const SLUG = 'a-case';
 
-/** The fixture's subject type, accepted by the one concept the fixture case collects. */
 const SUBJECT = 'contract';
 
-/** The one concept the fixture case's one hypothesis collects. */
 const CONCEPT = 'equipment-state';
 
-/** The vocabulary terms the fixture names, each distinct from its fallback counterpart. */
 const OUTCOME = 'issue-resolved';
 const FALLBACK_OUTCOME = 'inconclusive';
 const ACTION = 'notify-customer';
@@ -79,7 +48,6 @@ const FALLBACK_ACTION = 'escalate';
 const RECIPIENT = 'support-queue';
 const FALLBACK_RECIPIENT = 'escalation-queue';
 
-/** The one nature that registers, spelled here rather than imported so a drift in the source fails. */
 const READ_ONLY = 'read-only';
 
 interface IStoredVersion {
@@ -99,13 +67,6 @@ interface ICaseRecord {
   readonly versions: Map<number, IStoredVersion>;
 }
 
-/**
- * Stands in for the case-store boundary (contracts/knowledge/case-query), implementing every one
- * of ICaseStore's own seven storage primitives over mutable maps: a per-case version counter and
- * draft flag, a hypothesis's own identity per case, and its revisions numbered independently of any
- * other hypothesis's own — the same facts the relational adapter this store stands in for keeps,
- * just held in memory instead of a real database (TST-03).
- */
 class FakeCaseStore implements ICaseStore {
   private readonly cases = new Map<string, ICaseRecord>();
   private readonly revisionsByHypothesis = new Map<string, Map<number, HypothesisRevisionContent>>();
@@ -133,13 +94,6 @@ class FakeCaseStore implements ICaseStore {
     return this.cases.get(slug)?.draftVersion;
   }
 
-  /**
-   * A minimal stand-in for listCases: every slug this fake currently tracks, paginated the same way
-   * the real store's own pageCountOf computes a page count — sufficient because no test in this file
-   * exercises listCases at all; it exists only so this class keeps satisfying ICaseStore in full
-   * (this delivery's own inference — the task that adds listCases did not touch this file's own
-   * fixture).
-   */
   public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
     const slugs = [...this.cases.keys()].sort();
     const total = slugs.length;
@@ -153,35 +107,14 @@ class FakeCaseStore implements ICaseStore {
     };
   }
 
-  /**
-   * A minimal stand-in for listCaseVersions: no test in this file exercises it at all, so this
-   * fake answers an empty page unconditionally — sufficient only to keep FakeCaseStore satisfying
-   * ICaseStore in full, the same reason the listCases stub just above already gives (this
-   * delivery's own inference — the task that adds listCaseVersions did not touch this file's own
-   * fixture).
-   */
   public async listCaseVersions(_slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>> {
     return { data: [], total: 0, limit: pagination.limit, offset: pagination.offset, pageCount: 0 };
   }
 
-  /**
-   * A minimal stand-in for listHypotheses: no test in this file exercises it at all, so this fake
-   * answers an empty page unconditionally — sufficient only to keep FakeCaseStore satisfying
-   * ICaseStore in full, the same reason the listCaseVersions stub just above already gives (this
-   * delivery's own inference — the task that adds listHypotheses did not touch this file's own
-   * fixture).
-   */
   public async listHypotheses(_slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<HypothesisIdentity>> {
     return { data: [], total: 0, limit: pagination.limit, offset: pagination.offset, pageCount: 0 };
   }
 
-  /**
-   * A minimal stand-in for listHypothesisRevisions: no test in this file exercises it at all, so this
-   * fake answers an empty page unconditionally — sufficient only to keep FakeCaseStore satisfying
-   * ICaseStore in full, the same reason the listHypotheses stub just above already gives (this
-   * delivery's own inference — the task that adds listHypothesisRevisions did not touch this file's
-   * own fixture).
-   */
   public async listHypothesisRevisions(
     _slug: string,
     _hypothesisName: string,
@@ -285,12 +218,6 @@ class FakeCaseStore implements ICaseStore {
     }
   }
 
-  /**
-   * A minimal stand-in for updateDraft: no test in this file exercises it at all, so this fake
-   * takes no action — sufficient only to keep FakeCaseStore satisfying ICaseStore in full, the same
-   * reason every list* stub above already gives (this delivery's own inference — the task that adds
-   * updateDraft did not touch this file's own fixture).
-   */
   public async updateDraft(_slug: string, _version: number, _attributes: UpdateDraftInput): Promise<void> {
     return;
   }
@@ -304,7 +231,6 @@ interface IHypothesisFixture {
   readonly resolution: Resolution;
 }
 
-/** The one hypothesis every seedCase() call places unless a test names its own — exactly the shape this file's own previous validCaseDocument() default hypothesis held. */
 function defaultHypothesis(): IHypothesisFixture {
   return {
     name: 'h1',
@@ -315,7 +241,6 @@ function defaultHypothesis(): IHypothesisFixture {
   };
 }
 
-/** The manifest read-case/replay-case answer for exactly one defaultHypothesis() placed at revision 1 — the shape a full-equality assertion below compares its own answer's manifest against. */
 function expectedDefaultManifest(revision = 1): unknown[] {
   const hypothesis = defaultHypothesis();
   return [
@@ -336,17 +261,10 @@ interface ISeedOptions {
   readonly slug?: string;
   readonly title?: string;
   readonly hypotheses?: readonly IHypothesisFixture[];
-  /** Defaults to true. A test proving criterion 5's "no separate publish step" seeds a draft on purpose. */
+
   readonly release?: boolean;
 }
 
-/**
- * Originates one case version through the store's own lifecycle primitives — createDraft, one
- * insertHypothesisRevision plus one placeHypothesis per hypothesis, and (unless told not to)
- * release — answering the version number the store assigned. Replaces this file's own previous
- * store.seed(slug, version, {document, hash}): the new ICaseStore has no single write call and no
- * store-level hash to seed, so a fixture is built the same way a real author would build one.
- */
 async function seedCase(store: FakeCaseStore, options: ISeedOptions = {}): Promise<number> {
   const slug = options.slug ?? SLUG;
   const hypotheses = options.hypotheses ?? [defaultHypothesis()];
@@ -374,7 +292,6 @@ async function seedCase(store: FakeCaseStore, options: ISeedOptions = {}): Promi
   return version;
 }
 
-/** Stands in for the glossary boundary, the same fake shape validate-case-coherence.spec.ts already uses. */
 class FakeGlossaryQuery implements IGlossaryQuery {
   private readonly terms = new Set<string>();
   private readonly concepts = new Map<string, Concept>();
@@ -406,10 +323,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
     return concept === undefined ? { held: false, name } : { held: true, concept };
   }
 
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-  // task/glossary-query-http/list-concepts-query-extension): this file's own
-  // scenarios never call either.
   public async listVocabularyTerms(): Promise<never> {
     throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
   }
@@ -423,7 +336,6 @@ function termKey(vocabulary: TermVocabulary, name: string): string {
   return `${vocabulary}:${name}`;
 }
 
-/** Stands in for the capability-registry boundary, with an injectable failure for the propagation edge case. */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly capabilities = new Map<string, Capability>();
   private readonly failures = new Map<string, Error>();
@@ -449,15 +361,6 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
 
-  /**
-   * Answers from the same held-capabilities map hold()/forget() already maintain — the same map
-   * readCapability already reads from — windowed and paginated the same way the real
-   * CapabilityRegistryService.listCapabilities computes it in memory over its own store's full
-   * read (capability-registry.service.ts): slice by offset/limit, total the full held count, and
-   * a page count of 0 for a non-positive limit rather than dividing by it. Read fresh from the map
-   * on every call, never remembered, since readCaseInputRequirements (task/case-input-requirements
-   * -and-diagnose-gate/derive-case-input-requirements) depends on exactly that freshness.
-   */
   public async listCapabilities(pagination: PaginationRequest): Promise<PaginatedResponse<Capability>> {
     const held = [...this.capabilities.values()];
     const total = held.length;
@@ -472,7 +375,6 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
-/** A glossary holding every term and the one concept the fixture case names, accepting only contract. */
 function coherentGlossary(): FakeGlossaryQuery {
   const glossary = new FakeGlossaryQuery();
   glossary.holdTerm('subject-type', SUBJECT);
@@ -486,7 +388,6 @@ function coherentGlossary(): FakeGlossaryQuery {
   return glossary;
 }
 
-/** A capability answering the fixture concept, declaring its whole contract. */
 function coherentCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'equipment-state-reader',
@@ -501,19 +402,15 @@ function coherentCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A registry answering the fixture concept with a complete, current, read-only capability. */
 function coherentCapabilities(): FakeCapabilityQuery {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(coherentCapability());
   return capabilities;
 }
 
-/** Reads a rejected promise's reason as an ordinary value, for asserting on a refusal's type and context. */
 function readAsError(promise: Promise<unknown>): Promise<unknown> {
   return promise.catch((error: unknown) => error);
 }
-
-// -------------------------------------------------------------------------------- criterion 1
 
 it('answers the case whole, matching exactly what the document holds, when every structural and coherence rule holds for it', async () => {
   const store = new FakeCaseStore();
@@ -573,8 +470,6 @@ it('refuses with CaseNotFoundError, naming the slug and version, when no version
   expect(refusal).toBeInstanceOf(CaseNotFoundError);
   expect((refusal as CaseNotFoundError).context).toEqual({ slug: 'never-authored', version: 7 });
 });
-
-// -------------------------------------------------------------------------------- criterion 2
 
 it('refuses a case failing one structural rule, naming the violation in a CaseNotValidError', async () => {
   const store = new FakeCaseStore();
@@ -644,8 +539,7 @@ it(
     'coherence checks',
   async () => {
     const store = new FakeCaseStore();
-    // Still collects CONCEPT through its one hypothesis, so a coherence
-    // violation exists to be missed if the composition ever reached it.
+
     const version = await seedCase(store, { title: '' });
     const glossary = coherentGlossary();
     glossary.forgetConcept(CONCEPT);
@@ -671,8 +565,6 @@ it('lets a capability-registry integrity failure reach the caller rather than be
 
   await expect(service.readCase(SLUG, version)).rejects.toBe(failure);
 });
-
-// -------------------------------------------------------------------------------- criterion 3
 
 it('refuses at a later read a case that validated earlier, once the glossary no longer holds a concept it depends on', async () => {
   const store = new FakeCaseStore();
@@ -700,8 +592,6 @@ it('refuses at a later read a case that validated earlier, once the capability r
   expect(refusal).toBeInstanceOf(CaseNotValidError);
 });
 
-// -------------------------------------------------------------------------------- criterion 4
-
 it('answers replayCase with exactly the case readCase answers for the same pinned version, minus the content-identity pin read-case alone carries', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store);
@@ -716,8 +606,8 @@ it('answers replayCase with exactly the case readCase answers for the same pinne
 it('replays a pinned version without running the coherence checks at all, answering the case even though the same content would refuse at read-case', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store);
-  const glossary = new FakeGlossaryQuery(); // holds nothing at all
-  const capabilities = new FakeCapabilityQuery(); // answers nothing at all
+  const glossary = new FakeGlossaryQuery();
+  const capabilities = new FakeCapabilityQuery();
   const service = new CaseQueryService(store, glossary, capabilities);
   await expect(service.readCase(SLUG, version)).rejects.toBeInstanceOf(CaseNotValidError);
 
@@ -742,8 +632,6 @@ it('answers a document that would fail read-case structurally, rather than refus
 
   expect(replayed.hypotheses).toEqual([]);
 });
-
-// -------------------------------------------------- task/case-and-investigation-model/replay-by-slug-and-version
 
 it('answers the replay whole, matching exactly what the document holds, including its hypotheses and their resolutions and referrals', async () => {
   const store = new FakeCaseStore();
@@ -794,12 +682,9 @@ it('answers the version a replay names, unaffected by a later version stored aft
   expect(replayed).toMatchObject({ version: firstVersion, title: 'the first version' });
 });
 
-// -------------------------------------------------------------------------------- criterion 5
-
 it('answers a version written directly to the store as its very next read, with no separate publish step anywhere in this composition', async () => {
   const store = new FakeCaseStore();
-  // A draft, never released: read-case still answers it, since assembleVersion never filters by
-  // state and this composition gates on nothing but the version existing at all.
+
   const version = await seedCase(store, { release: false });
 
   const service = new CaseQueryService(store, coherentGlossary(), coherentCapabilities());
@@ -809,14 +694,9 @@ it('answers a version written directly to the store as its very next read, with 
   expect(result.case.state).toBe('draft');
 });
 
-// -------------------------------------------------------------------------------- task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements
-
-/** A capability answering the fixture concept with one declared subject attribute, carrying syntactically valid JSON in its own input_schema — unlike coherentCapability()'s own 'an-input-schema' placeholder, which readCaseInputRequirements's own hasWellFormedInputSchema would fail to JSON.parse. */
 function inputSchemaCapability(overrides: Partial<Capability> = {}): Capability {
   return coherentCapability({ input_schema: '{"properties":{"an-attribute":{}}}', ...overrides });
 }
-
-// ---------------------------------------------------------------- criterion 6
 
 it('answers identical input requirements for a draft version and the same version once released', async () => {
   const store = new FakeCaseStore();
@@ -833,8 +713,6 @@ it('answers identical input requirements for a draft version and the same versio
   expect(releasedResult).toEqual(draftResult);
 });
 
-// ---------------------------------------------------------------- contracts/knowledge/case-input-requirements, rules/knowledge/a-case-versions-input-requirements-are-derived
-
 it("answers a draft version's input requirements even though the same content currently fails read-case's own coherence check", async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store, { release: false });
@@ -850,12 +728,10 @@ it("answers a draft version's input requirements even though the same content cu
   expect(result.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
 });
 
-// ---------------------------------------------------------------- criterion 7
-
 it('derives from the currently registered capabilities read fresh at every call, answering differently once a capability is registered between two calls for the same version', async () => {
   const store = new FakeCaseStore();
   const version = await seedCase(store);
-  const capabilities = new FakeCapabilityQuery(); // answers nothing yet
+  const capabilities = new FakeCapabilityQuery();
   const service = new CaseQueryService(store, coherentGlossary(), capabilities);
 
   const before = await service.readCaseInputRequirements(SLUG, version);
@@ -865,8 +741,6 @@ it('derives from the currently registered capabilities read fresh at every call,
   expect(before.requirements).toEqual([]);
   expect(after.requirements.map((requirement) => requirement.attribute)).toEqual(['an-attribute']);
 });
-
-// ---------------------------------------------------------------- inference: reuses read-case's own not-found/not-valid refusals
 
 it('refuses with CaseNotFoundError, naming the slug and version, when no version is stored at all', async () => {
   const service = new CaseQueryService(new FakeCaseStore(), coherentGlossary(), coherentCapabilities());

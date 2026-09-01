@@ -1,16 +1,3 @@
-// Proof for task/evidence-collection/evidence-collection-stage: collectEvidence
-// produces exactly one Evidence per concept in the case's collection plan, in
-// parallel, within the smaller of the collection stage's own seven-second
-// ceiling and whatever the propagated deadline still allows, always in the
-// requester's own scope, turning every one of the four evidence-result
-// endings — plus the stage's own timeout mark and the no-capability-held case
-// — into data rather than a thrown failure. A genuine rejection from
-// observe-concept is the one thing this stage lets through unmodified.
-// Fake timers stand in for wall-clock time throughout, since
-// raceObservation races a real setTimeout internally
-// (idempotency-lease-store.spec.ts and idempotency-resolution.spec.ts already
-// establish the sibling discipline of passing `now` explicitly; this module
-// additionally owns a live timer this proof has to control).
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -40,11 +27,9 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-/** The subject and requester most tests reuse; neither is what any test is about. */
 const A_SUBJECT: Subject = { type: 'ont', attributes: [{ attribute: 'id', value: 'a-subject-id' }] };
 const A_REQUESTER = 'a-requester';
 
-/** A subject carrying several attribute-value pairs, pulled out only so its own test stays inside the standard's max-lines-per-function rule. */
 const MULTI_ATTRIBUTE_SUBJECT: Subject = {
   type: 'person',
   attributes: [
@@ -54,18 +39,6 @@ const MULTI_ATTRIBUTE_SUBJECT: Subject = {
   ],
 };
 
-/**
- * A minimally valid Case whose collection plan is exactly the given
- * hypotheses' collects, deduplicated in declared order — the same rule
- * case-resolution.spec.ts already proves collectionPlan itself follows.
- * collectEvidence reads theCase.manifest exclusively
- * (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation),
- * so this fixture builds a manifest entry per given hypothesis, its own
- * declared position matching that array's own order, and derives the flat
- * .hypotheses projection from the same declared entries — never
- * independently, the same convention parse-case-document.ts's own heldCase
- * keeps.
- */
 function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly collects: readonly string[] }>): Case {
   const declared = hypotheses.map((hypothesis) => ({
     name: hypothesis.name,
@@ -96,7 +69,6 @@ function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly colle
   };
 }
 
-/** A capability registered for exactly one concept, every other attribute defaulted so a test states only what it is about. */
 function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability {
   return {
     name: `capability-for-${overrides.concept}`,
@@ -110,7 +82,6 @@ function aCapability(overrides: Partial<Capability> & { readonly concept: string
   };
 }
 
-/** Holds whatever capabilities a test registers, resolving every other concept as unheld — the collection stage's own upstream, standing in for the capability registry. */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly held = new Map<string, Capability>();
 
@@ -123,22 +94,11 @@ class FakeCapabilityQuery implements ICapabilityQuery {
     return capability === undefined ? { held: false, concept } : { held: true, capability };
   }
 
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
-  // (task/capability-registry-http/list-capabilities-query-extension): this
-  // file's own scenarios never call listCapabilities.
   public async listCapabilities(): Promise<never> {
     throw new Error('FakeCapabilityQuery.listCapabilities is not scripted for this file');
   }
 }
 
-/**
- * Holds a description for whatever concept a test registers, resolving every other concept as
- * unheld — the collection stage's own glossary upstream, standing in for the published
- * glossary-query port. hold() takes the description directly, including the empty string, so a test
- * can register a concept the glossary holds with no description (GlossaryService's own
- * honest-empty-description reading for a legacy concept — task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics's
- * own criterion 3) distinctly from a concept the glossary never held at all (nothing registered).
- */
 class FakeGlossaryQuery implements IGlossaryQuery {
   private readonly descriptions = new Map<string, string>();
 
@@ -151,10 +111,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
     return description === undefined ? { held: false, name } : { held: true, concept: { name, accepts: [], ttl: 60, description } };
   }
 
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-  // task/glossary-query-http/list-concepts-query-extension): this file's own
-  // scenarios never call any of the three.
   public async readVocabularyTerm(): Promise<never> {
     throw new Error('FakeGlossaryQuery.readVocabularyTerm is not scripted for this file');
   }
@@ -166,7 +122,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   }
 }
 
-/** An IGlossaryQuery whose readConcept always rejects with the given failure — for the one test proving a genuine glossary rejection propagates rather than being swallowed as an empty description. */
 function rejectingGlossaryQuery(failure: Error): IGlossaryQuery {
   return {
     readConcept: () => Promise.reject(failure),
@@ -182,7 +137,6 @@ function rejectingGlossaryQuery(failure: Error): IGlossaryQuery {
   };
 }
 
-/** Holds every capability in the map and seeds the fake observation source to answer ok with `observed-${concept}` for each — for a test whose whole plan is expected to succeed. */
 function holdAndSeedOk(
   capabilities: FakeCapabilityQuery,
   observationSource: FakeObservationSource,
@@ -194,7 +148,6 @@ function holdAndSeedOk(
   }
 }
 
-/** Resolves the one capability it is given, but only after the given delay under fake timers — proving the collection ceiling is fixed at the stage's own start rather than re-derived from however long this read itself took. */
 class DelayedCapabilityQuery implements ICapabilityQuery {
   public constructor(
     private readonly capability: Capability,
@@ -206,22 +159,11 @@ class DelayedCapabilityQuery implements ICapabilityQuery {
     return { held: true, capability: this.capability };
   }
 
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface
-  // (task/capability-registry-http/list-capabilities-query-extension): this
-  // file's own scenarios never call listCapabilities.
   public async listCapabilities(): Promise<never> {
     throw new Error('DelayedCapabilityQuery.listCapabilities is not scripted for this file');
   }
 }
 
-/**
- * Answers "no capability held" for whatever concept it is asked about, but
- * only after the given delay under fake timers — for a proof that elapsed_ms
- * on the unavailable-because-nothing-answers ending counts the capability
- * read itself, since that read is the whole of this concept's own attempt
- * where nothing is held to observe with
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- */
 class DelayedUnheldCapabilityQuery implements ICapabilityQuery {
   public constructor(private readonly delayMs: number) {}
 
@@ -230,20 +172,11 @@ class DelayedUnheldCapabilityQuery implements ICapabilityQuery {
     return { held: false, concept };
   }
 
-  // Minimal stub kept only to satisfy the widened ICapabilityQuery interface,
-  // the same convention DelayedCapabilityQuery's own stub above keeps: this
-  // file's own scenarios never call listCapabilities.
   public async listCapabilities(): Promise<never> {
     throw new Error('DelayedUnheldCapabilityQuery.listCapabilities is not scripted for this file');
   }
 }
 
-/**
- * Answers "concept not held" for whatever concept it is asked about, but only after the given delay
- * under fake timers — the glossary-side counterpart to DelayedUnheldCapabilityQuery above, for a
- * proof that the capability read and the glossary-concept read settle together rather than one
- * strictly before the other (this task's own recorded inference).
- */
 class DelayedGlossaryQuery implements IGlossaryQuery {
   public constructor(private readonly delayMs: number) {}
 
@@ -252,8 +185,6 @@ class DelayedGlossaryQuery implements IGlossaryQuery {
     return { held: false, name };
   }
 
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface: this file's own
-  // scenarios never call any of the three.
   public async readVocabularyTerm(): Promise<never> {
     throw new Error('DelayedGlossaryQuery.readVocabularyTerm is not scripted for this file');
   }
@@ -265,7 +196,6 @@ class DelayedGlossaryQuery implements IGlossaryQuery {
   }
 }
 
-/** Answers whatever handler a test scripted for the concept, recording every call it received — a stand-in for the observation-source port whose per-concept timing a test controls directly, rather than through a real delay. */
 class ScriptedObservationSource implements IObservationSource {
   public readonly calls: Array<{ readonly concept: string; readonly requester: string }> = [];
 
@@ -281,28 +211,18 @@ class ScriptedObservationSource implements IObservationSource {
   }
 }
 
-/** A ScriptedObservationSource handler answering ok with the given observation after delayMs — for a concept whose own settling a test controls precisely. */
 function resolvesAfter(delayMs: number, observation: string): () => Promise<ObservationOutcome> {
   return () => new Promise((resolve) => setTimeout(() => resolve({ result: 'ok', observation }), delayMs));
 }
 
-/**
- * A ScriptedObservationSource handler answering the given outcome — of any
- * of the four evidence-result endings observe-concept itself may answer —
- * after delayMs, for a proof that elapsed_ms on that ending is the real time
- * this took, not a default or the stage's own ceiling
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- */
 function answersAfter(delayMs: number, outcome: ObservationOutcome): () => Promise<ObservationOutcome> {
   return () => new Promise((resolve) => setTimeout(() => resolve(outcome), delayMs));
 }
 
-/** A ScriptedObservationSource handler that never settles — for a concept a test forces to reach the stage's own race timeout. */
 function neverSettles(): Promise<ObservationOutcome> {
   return new Promise(() => {});
 }
 
-/** Captures the exact subject reference each observe-concept call received, keyed by concept — a stand-in for the observation-source port that answers ok unconditionally, since which ending settles is not what this fake is for; only what reached it. */
 class RecordingObservationSource implements IObservationSource {
   public readonly subjectReceivedByConcept = new Map<string, Subject>();
 
@@ -312,7 +232,6 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
-/** Captures the exact remainingBudgetMs each observe-concept call received, keyed by concept, and answers ok unconditionally — a stand-in for the observation-source port that lets a test see the one value this stage's own propagation actually sends across that boundary, rather than what any implementer does with it once received (task/observation-endings-and-collection-budget/observation-port-budget-clamp's own proof already covers the latter, invoking the port directly). */
 class BudgetRecordingObservationSource implements IObservationSource {
   public readonly remainingBudgetMsByConcept = new Map<string, number | undefined>();
 
@@ -322,13 +241,6 @@ class BudgetRecordingObservationSource implements IObservationSource {
   }
 }
 
-/**
- * A stand-in for the connector-configuration registry HttpDeclarativeObservationSource's own
- * constructor requires but this file's own cross-path parity scenario never reaches: the
- * capability-resolution failure it exercises short-circuits observeConcept before the connector
- * configuration is ever read. Throws if it is ever called, so a change that made the adapter reach
- * past that short-circuit would fail this test loudly rather than answering with data nobody seeded.
- */
 class UnreachableConnectorConfigurationQuery implements IConnectorConfigurationQuery {
   public async readConnectorConfiguration(): Promise<never> {
     throw new Error(
@@ -337,7 +249,6 @@ class UnreachableConnectorConfigurationQuery implements IConnectorConfigurationQ
   }
 }
 
-/** What every expected Evidence shares except its result: which concept, subject and requester it was called with, and the instant the stage recorded as observed_at. */
 type EvidenceContext = {
   readonly concept: string;
   readonly subject: Subject;
@@ -345,28 +256,10 @@ type EvidenceContext = {
   readonly observedAt: string;
 };
 
-/** The exact call this stage makes to observe-concept, serialized as evidence.inputs pins it. */
 function expectedInputs(context: EvidenceContext): string {
   return JSON.stringify({ concept: context.concept, subject: context.subject, requester: context.requester });
 }
 
-/**
- * The full Evidence a held capability's ok observation assembles.
- * elapsed_ms defaults to 0: every call site in this file that reaches this
- * ending settles through a plain microtask chain (FakeCapabilityQuery,
- * FakeObservationSource) with no vi.advanceTimersByTimeAsync between the
- * stage's own attemptStartedAt and this ending being determined, so under
- * this file's own vi.useFakeTimers() discipline Date.now() reads the same
- * frozen instant twice (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- * fields defaults to [] and concept_description to '': every aCapability()
- * fixture below defaults output_schema to the non-JSON literal 'output-schema'
- * (fieldSemanticsOf answers [] for it) and every call site below defaults its
- * glossary to a fresh FakeGlossaryQuery holding no concept at all — neither
- * default is what this file's own snapshot-specific tests are about
- * (task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics),
- * so those tests build their own expectation directly instead of overloading
- * this shared helper with a fourth positional concern.
- */
 function expectedOkEvidence(
   context: EvidenceContext & { readonly capability: Capability },
   observation: string,
@@ -388,16 +281,6 @@ function expectedOkEvidence(
   };
 }
 
-/**
- * The full Evidence a held capability's denied, timed-out or
- * observation-reported-unavailable ending assembles: an empty observation,
- * and a result_detail only where one was given. options.elapsedMs defaults
- * to 0 for the same reason expectedOkEvidence's does; the one call site that
- * races the stage's own timeout across a real fake-timer advance passes its
- * own elapsed figure explicitly. Both trail in one object, keeping this
- * helper at three positional parameters
- * (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- */
 function expectedNonOkEvidence(
   context: EvidenceContext & { readonly capability: Capability },
   result: 'denied' | 'timeout' | 'unavailable',
@@ -421,13 +304,6 @@ function expectedNonOkEvidence(
   };
 }
 
-/**
- * The full Evidence this stage assembles for a concept nothing currently
- * answers. elapsed_ms is always 0 here: every call site reaches this ending
- * through FakeCapabilityQuery's own plain microtask resolution, with no
- * fake-timer advance between attemptStartedAt and this ending being
- * determined (task/investigation-telemetry/evidence-collection-measures-elapsed-ms).
- */
 function expectedUnavailableEvidence(context: EvidenceContext, resultDetail: string) {
   return {
     concept: context.concept,
@@ -552,8 +428,6 @@ it("reports the same result_detail, character for character, whichever of the tw
   expect(stageResult[0].result_detail).toBe(adapterOutcome.result_detail);
 });
 
-// ---------------------------- an observation-reported unavailable ending carries its own cause
-
 it.each([
   'CapabilityNotResolvedForObservationError',
   'DuplicateConceptAnswerError',
@@ -608,8 +482,6 @@ it('carries no result_detail for an unavailable ending the observation reported 
   expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'unavailable')]);
 });
 
-// ---------------------------- denied and observation-reported timeout stay unchanged by this task
-
 it('drops a result_detail the observation reported on a denied ending, leaving evidence for denied unchanged from before this task', async () => {
   const capabilities = new FakeCapabilityQuery();
   const capability = aCapability({ concept: 'a-concept' });
@@ -656,14 +528,6 @@ it("drops a result_detail the observation reported on its own timeout ending, di
   expect(result).toEqual([expectedNonOkEvidence({ ...context, capability }, 'timeout')]);
 });
 
-/**
- * Runs collectEvidence for a single capability declaring a ten-second timeout whose observation
- * never settles, advancing fake time by the stage's own budget so the race resolves at the
- * stage's own ceiling rather than the capability's declared one — pulled into its own function
- * only so the test below stays inside the standard's max-lines-per-function rule; the setup and
- * behavior are exactly what that test's own body ran before this split (this delivery's own
- * inference — the extraction changes nothing but where the lines are counted).
- */
 async function collectEvidenceAtTheStageBudget(
   concept: string,
 ): Promise<{ readonly result: Awaited<ReturnType<typeof collectEvidence>>; readonly capability: Capability }> {
@@ -983,9 +847,6 @@ it("keeps the effective observation bound at the stage's own fixed seven-second 
   });
 });
 
-// ------------ task/evidence-semantics-snapshot/evidence-collection-snapshots-concept-and-field-semantics
-
-/** An output schema declaring two top-level fields, one with a description, one without — pulled out only so its own test stays inside the standard's max-lines-per-function rule. */
 const TWO_FIELD_OUTPUT_SCHEMA = JSON.stringify({
   type: 'object',
   properties: {
@@ -1047,7 +908,7 @@ it('records concept_description as the empty string, never a refusal, for a conc
   const observationSource = new FakeObservationSource();
   observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
   const glossary = new FakeGlossaryQuery();
-  glossary.hold('a-concept', ''); // held, but with no description — GlossaryService's own honest-empty reading for a legacy row
+  glossary.hold('a-concept', '');
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
 
   const result = await collectEvidence({
@@ -1119,7 +980,7 @@ it("records concept_description as the empty string for a concept the glossary h
   capabilities.hold(aCapability({ concept: 'a-concept' }));
   const observationSource = new FakeObservationSource();
   observationSource.seed('a-concept', A_SUBJECT, { result: 'ok', observation: 'observed' });
-  const glossary = new FakeGlossaryQuery(); // holds nothing at all — never registered, distinct from registered-with-none
+  const glossary = new FakeGlossaryQuery();
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
 
   const result = await collectEvidence({
@@ -1155,8 +1016,6 @@ it("settles the capability read and the glossary-concept read together, so a con
   await vi.advanceTimersByTimeAsync(300);
   const result = await resultPromise;
 
-  // Had the two reads settled one strictly after the other rather than together, this concept's
-  // own elapsed_ms would be 400 (300 + 100), not 300 (the larger of the two alone).
   expect(result[0]).toMatchObject({ result: 'unavailable', elapsed_ms: 300 });
 });
 
@@ -1184,7 +1043,7 @@ it('propagates a genuine rejection from the glossary-concept read rather than sw
 });
 
 it('records fields as an empty array for a concept whose capability never resolved, there being no output schema to read', async () => {
-  const capabilities = new FakeCapabilityQuery(); // holds nothing at all
+  const capabilities = new FakeCapabilityQuery();
   const observationSource = new FakeObservationSource();
   const theCase = aCase([{ name: 'h1', collects: ['unregistered-concept'] }]);
 
@@ -1202,14 +1061,6 @@ it('records fields as an empty array for a concept whose capability never resolv
   expect(result[0]?.result).toBe('unavailable');
   expect(result[0]?.fields).toEqual([]);
 });
-
-// --------------------------------------------------------------- elapsed_ms
-// (task/investigation-telemetry/evidence-collection-measures-elapsed-ms):
-// evidenceOf()/EvidenceEnding carries a per-concept elapsed_ms on every one
-// of the four evidence-result endings, measured as real wall-clock duration
-// from this concept's own attemptStartedAt (before the capability read) to
-// the moment its own ending is determined — no part of the deadline/budget
-// computation above, which the tests above already exercise on their own.
 
 it('carries a defined, non-negative integer elapsed_ms on every Evidence item, whatever its result (ok, unavailable, denied, timeout)', async () => {
   const capabilities = new FakeCapabilityQuery();
@@ -1324,14 +1175,10 @@ it('measures elapsed_ms for an observation-reported unavailable ending as the re
   expect(result[0]).toMatchObject({ result: 'unavailable', result_detail: 'a-cause', elapsed_ms: 800 });
 });
 
-// ------------------------------------------------------------- module purity
-
 const MODULE_PATH = fileURLToPath(new URL('../../../investigation/evidence-collection-stage.ts', import.meta.url));
 
-/** Matches static imports, re-exports and dynamic imports, capturing the module specifier. */
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
-/** Every module specifier evidence-collection-stage.ts itself imports. */
 async function evidenceCollectionStageImports(): Promise<readonly string[]> {
   const source = await readFile(MODULE_PATH, 'utf8');
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);

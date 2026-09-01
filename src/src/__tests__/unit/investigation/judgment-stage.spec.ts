@@ -1,24 +1,3 @@
-// Proof for task/hypothesis-judgment/judgment-stage, widened by
-// task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry:
-// judgeHypotheses answers exactly one Evaluation per requiresEvaluationOf(theCase)
-// name, in that order — an immediate no-data for a hypothesis whose evidence
-// is not all ok, otherwise one isolated evaluate() call under a
-// caller-configured in-process pool, racing the one shared deadline signal
-// timed once from now/deadline, retrying exactly once on a structurally
-// invalid citation set where that deadline still admits it, and degrading
-// every other path to deadline-exceeded or judgment-failure. Every citation
-// check and every evaluate() call is now built straight from each
-// hypothesis's own (already-collected) Evidence[] — its own already-
-// snapshotted `fields` and `concept_description` — never from a live
-// capability-registry read: this file constructs no capability-registry
-// fake at all, only Evidence values carrying their own fields directly
-// (rules/investigation/judgment-reads-the-evidence-snapshot). Fake timers
-// stand in for wall-clock time throughout, since the stage races both a pool
-// acquisition and an evaluate() call against a real setTimeout-based
-// deadline internally — the same discipline evidence-collection-stage.spec.ts
-// already establishes for its own race, including its
-// settled-flag-between-advances technique for observing an in-flight state
-// before a later advance resolves it.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -38,7 +17,6 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-/** One hypothesis, defaulted so a test states only its name and what it collects. */
 function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
@@ -48,7 +26,6 @@ function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   };
 }
 
-/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order — requiresEvaluationOf reads theCase.manifest exclusively (task/case-lifecycle-domain-model/aggregate-types-and-structural-validation), while hypothesisNamed still reads theCase.hypotheses to find the named one. */
 function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
   return {
     position,
@@ -62,7 +39,6 @@ function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntr
   };
 }
 
-/** A minimally valid Case holding exactly the given hypotheses, in the order given — each one's own manifest position set to match that order, and its flat .hypotheses projection built from the same declared hypotheses, never independently. */
 function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly collects: readonly string[] }>): Case {
   const declared = hypotheses.map((h) => aHypothesis(h.name, h.collects));
   return {
@@ -79,24 +55,6 @@ function aCase(hypotheses: ReadonlyArray<{ readonly name: string; readonly colle
   };
 }
 
-/**
- * A Case whose manifest names a required hypothesis its own flat
- * .hypotheses projection does not carry — a hostile double, never something
- * a real case parse produces (parse-case-document.ts's own heldCase always
- * derives .hypotheses from .manifest, so the two never disagree there),
- * built only to exercise hypothesisNamed's own caller-contract fault:
- * requiresEvaluationOf(theCase) names a required hypothesis from the
- * manifest alone, and hypothesisNamed then searches .hypotheses for it — a
- * case whose two fields disagree is the only way to make a name
- * requiresEvaluationOf just named absent from what hypothesisNamed then
- * finds. (Fixture rework, task/case-lifecycle-domain-model/aggregate-types-and-structural-validation:
- * requiresEvaluationOf moved from reading .hypotheses to reading .manifest,
- * so the volatile-getter-on-.hypotheses trick this fixture previously used
- * to fake that same disagreement across two reads of one field no longer
- * applies — only hypothesisNamed still reads .hypotheses at all, so a case
- * whose manifest and .hypotheses simply disagree from the start reaches
- * the same fault deterministically.)
- */
 function aCaseWithMismatchedHypotheses(
   requiredHypotheses: readonly Hypothesis[],
   actualHypotheses: readonly Hypothesis[],
@@ -115,7 +73,6 @@ function aCaseWithMismatchedHypotheses(
   };
 }
 
-/** One collected concept's whole Evidence record, defaulted so a test states only what it is about. fields/concept_description default empty: most of this file's own tests are about judgeHypotheses's own control flow, never about the snapshot's own content (evidence-collection-stage.spec.ts and field-semantics.spec.ts are) — the tests that are about a citation's field checking set fields explicitly. */
 function anEvidence(overrides: Partial<Evidence> & { readonly concept: string }): Evidence {
   return {
     inputs: 'an-input',
@@ -133,31 +90,18 @@ function anEvidence(overrides: Partial<Evidence> & { readonly concept: string })
   };
 }
 
-/** The field names given, each as a bare FieldSemantics entry (no type or description) — exactly the shape an evidence item's own `fields` snapshot carries, never a JSON-Schema-shaped output_schema string resolved live from a capability registry. */
 function fieldsDeclaring(...names: readonly string[]): readonly FieldSemantics[] {
   return names.map((name) => ({ name }));
 }
 
-/** One call ScriptedHypothesisEvaluator answered, recorded exactly as evaluate() received it. */
 type RecordedCall = {
   readonly criterion: string;
   readonly evidence: readonly EvidenceItem[];
   readonly caseContext: CaseContext;
 };
 
-/** One scripted answer for one evaluate() call. */
 type ScriptedAnswer = () => Promise<EvaluationOutcome>;
 
-/**
- * Answers, for each criterion, the next scripted answer in that criterion's
- * own queue — first the first call's, then the retry's, in order — never
- * inventing one of its own, and recording every call it received so a test
- * can assert exactly which hypotheses' own criterion and evidence reached
- * it, and how many times. Asking for a criterion with an empty or unscripted
- * queue is a test setup fault, not one of the three verdicts, so it throws
- * rather than answering a default — the same convention FakeHypothesisEvaluator
- * already keeps for a criterion nothing seeded.
- */
 class ScriptedHypothesisEvaluator implements IHypothesisEvaluator {
   public readonly calls: RecordedCall[] = [];
   private readonly queues = new Map<string, ScriptedAnswer[]>();
@@ -177,17 +121,14 @@ class ScriptedHypothesisEvaluator implements IHypothesisEvaluator {
   }
 }
 
-/** A ScriptedHypothesisEvaluator answer resolving immediately with the given outcome. */
 function immediately(outcome: EvaluationOutcome): ScriptedAnswer {
   return () => Promise.resolve(outcome);
 }
 
-/** A ScriptedHypothesisEvaluator answer resolving with the given outcome after delayMs — for a call whose own settling a test controls precisely. */
 function resolvesAfter(delayMs: number, outcome: EvaluationOutcome): ScriptedAnswer {
   return () => new Promise((resolve) => setTimeout(() => resolve(outcome), delayMs));
 }
 
-/** A ScriptedHypothesisEvaluator answer that never settles — for a call a test forces to reach the stage's own deadline. */
 function neverSettles(): Promise<EvaluationOutcome> {
   return new Promise(() => {});
 }
@@ -303,10 +244,10 @@ it('never starts more evaluate() calls at once than the configured pool size, gr
   await vi.advanceTimersByTimeAsync(1);
   expect(evaluator.calls.map((call) => call.criterion).sort()).toEqual(['h1 criterion', 'h2 criterion']);
 
-  await vi.advanceTimersByTimeAsync(9); // total 10ms: h1 resolves, frees a slot for h3
+  await vi.advanceTimersByTimeAsync(9);
   expect(evaluator.calls.map((call) => call.criterion).sort()).toEqual(['h1 criterion', 'h2 criterion', 'h3 criterion']);
 
-  await vi.advanceTimersByTimeAsync(1_000); // total 1010ms: h3 (due at 20ms) and h2 (due at 1000ms) both resolve
+  await vi.advanceTimersByTimeAsync(1_000);
   const result = await resultPromise;
   expect(result.map((evaluation) => evaluation.hypothesis)).toEqual(['h1', 'h2', 'h3']);
 });
@@ -474,11 +415,6 @@ it('never returns confirmed or refuted for a decided answer carrying zero citati
   expect(evaluator.calls).toHaveLength(2);
 });
 
-/**
- * The scripted evaluator, case and evidence for the retry-same-slot test
- * below: h1 holds the only pool slot, its first call is a structurally
- * invalid citation forcing a slower retry, and h2 queues behind it.
- */
 function retrySameSlotFixture(): {
   readonly evaluator: ScriptedHypothesisEvaluator;
   readonly theCase: Case;
@@ -509,10 +445,10 @@ it("keeps a hypothesis's retry under the same pool slot it already holds, never 
     case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 100_000,
   });
 
-  await vi.advanceTimersByTimeAsync(2); // past h1's first (1ms), which starts the retry immediately
+  await vi.advanceTimersByTimeAsync(2);
   expect(evaluator.calls.map((call) => call.criterion)).toEqual(['h1 criterion', 'h1 criterion']);
 
-  await vi.advanceTimersByTimeAsync(60); // total 62ms, past h1's retry (due at ~51ms) — only then does the slot free
+  await vi.advanceTimersByTimeAsync(60);
   expect(evaluator.calls.map((call) => call.criterion)).toEqual(['h1 criterion', 'h1 criterion', 'h2 criterion']);
 
   await vi.advanceTimersByTimeAsync(10);
@@ -544,19 +480,14 @@ it('passes an inconclusive first answer through unchanged, with no retry attempt
   expect(evaluator.calls).toHaveLength(1);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-stale-citations: doc-comment citations
-
-/** This module's own raw source, read fresh per test so a citation test reads exactly what ships. */
 async function moduleSource(): Promise<string> {
   return readFile(fileURLToPath(new URL('../../../investigation/judgment-stage.ts', import.meta.url)), 'utf8');
 }
 
-/** This module's leading `//` header comment, everything before its first import. */
 function moduleHeaderOf(source: string): string {
   return source.slice(0, source.indexOf('\nimport'));
 }
 
-/** The JSDoc block immediately preceding the given marker in source — never the whole file. */
 function docCommentBefore(source: string, marker: string): string {
   const markerIndex = source.indexOf(marker);
   if (markerIndex === -1) {
@@ -568,7 +499,6 @@ function docCommentBefore(source: string, marker: string): string {
   return before.slice(commentStart, commentEnd + 2);
 }
 
-/** A comment block's prose, its comment markers stripped and its wrapped lines joined with single spaces, so a phrase the source wraps across lines is still matched as one continuous string. */
 function normalizedProse(commentBlock: string): string {
   return commentBlock
     .split('\n')
@@ -628,8 +558,6 @@ it('passes an inconclusive retry answer through unchanged', async () => {
   }]);
   expect(evaluator.calls).toHaveLength(2);
 });
-
-// ---------- task/investigation-telemetry/widen-judgment-and-consolidation-ports: criteria 3 and 4, and the inference over which discarded calls carry no call record
 
 it("attaches the usage, elapsed_ms and prompt a first call's own decided, structurally valid answer returned, onto the resulting Evaluation", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
@@ -751,18 +679,11 @@ it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even t
   expect(result[0]).not.toHaveProperty('prompt');
 });
 
-// ---------- task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry: criterion 3 —
-// scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
-
 it("accepts a citation naming a field the evidence item's own snapshot declared at collection, even though a capability now re-registered at that same name and version would declare a different set of fields entirely", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script('h1 criterion', immediately({ verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'field-collected' }] }));
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
-  // Snapshotted at collection time, against the capability as it stood then: only 'field-collected'.
-  // A capability later re-registered at this same capability_name/capability_version — this stage
-  // never reads any registry at all any more, so there is nothing here even standing in for one —
-  // could now declare an entirely different set (e.g. only 'field-after-reregistration'); this
-  // already-collected evidence item's own fields never change to reflect that.
+
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
     ['h1', [anEvidence({ concept: 'a-concept', capability_name: 'cap-x', capability_version: '1.0.0', fields: fieldsDeclaring('field-collected') })]],
   ]);
@@ -783,8 +704,7 @@ it("refuses a citation naming a field only a capability re-registered after coll
     immediately({ verdict: 'confirmed', citations: wouldOnlyExistAfterReregistration }),
   );
   const theCase = aCase([{ name: 'h1', collects: ['a-concept'] }]);
-  // This evidence item's own snapshot, fixed at collection, declares only 'field-collected' —
-  // never 'field-after-reregistration', the field a later re-registration would add.
+
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
     ['h1', [anEvidence({ concept: 'a-concept', capability_name: 'cap-x', capability_version: '1.0.0', fields: fieldsDeclaring('field-collected') })]],
   ]);
@@ -800,7 +720,7 @@ it("refuses a citation naming a field only a capability re-registered after coll
 it('throws naming the missing hypothesis when evidenceByHypothesis carries no entry for a required hypothesis', async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
-  const evidenceByHypothesis = new Map<string, readonly Evidence[]>(); // no entry for h1 at all
+  const evidenceByHypothesis = new Map<string, readonly Evidence[]>();
 
   await expect(
     judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
@@ -817,8 +737,6 @@ it("throws naming the hypothesis when a required name is not found among the cas
   ).rejects.toThrow(/h1/);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-misquoted-constraint: doc-comment citation
-
 it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing consequence in its own voice, citing constraints/hypotheses-are-judged-in-isolated-parallel-calls plainly rather than quoting it for text the node does not hold", async () => {
   const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function judgeOneHypothesis'));
 
@@ -828,8 +746,6 @@ it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing conseq
   expect(comment).not.toMatch(/hypotheses-are-judged-in-isolated-parallel-calls'\s+own\s+"/);
 });
 
-// ---------- task/fix-post-case-lifecycle-stale-citations/fix-prompt-ordinal-and-scenario-misattribution: doc-comment ordinal
-
 it("runIsolatedCall()'s doc comment states field names as constraints/the-judgment-prompt-is-closed's own third permitted entry, not its fifth", async () => {
   const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
 
@@ -838,9 +754,6 @@ it("runIsolatedCall()'s doc comment states field names as constraints/the-judgme
   );
   expect(comment).not.toMatch(/the-judgment-prompt-is-closed's own fifth permitted entry/);
 });
-
-// ---------- task/judgment-reads-the-snapshot/judgment-stops-re-reading-the-registry: criterion 2 —
-// judgeHypotheses judges a hypothesis without taking a capability-registry dependency
 
 it('imports no ICapabilityQuery and reads no capability-registry port at all — judgeHypotheses takes only evidence already collected, never a registry to resolve live', async () => {
   const source = await moduleSource();

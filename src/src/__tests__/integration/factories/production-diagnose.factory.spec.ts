@@ -1,50 +1,6 @@
-// Proof for task/diagnose-composition-root/wire-diagnose-runner: the real, end-to-end wiring
-// createProductionDiagnoseRunner assembles — the real relational investigation store over a real,
-// externally provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned),
-// the real glossary and capability registry reads, and one AnthropicHypothesisEvaluator plus one
-// AnthropicAssessmentConsolidator actually reaching the provider boundary. Only @anthropic-ai/sdk
-// is a stand-in (TST-03 — a stand-in replaces the network boundary, never business logic), mocked
-// the same way anthropic-hypothesis-evaluator.adapter.spec.ts and
-// anthropic-assessment-consolidator.adapter.spec.ts already do, so this suite exercises
-// production-diagnose.factory.ts's own composition genuinely without ever reaching the live
-// Anthropic API. The model's own answer is deliberately never valid JSON, so every hypothesis
-// judged here falls through to inconclusive/judgment-failure and citation validation is never
-// exercised — that path already belongs to judgment-stage.spec.ts and citation-validation.spec.ts,
-// and this suite's own objective is this factory's wiring, not the pipeline's judgment semantics.
-//
-// Sibling fix, disclosed in this task's own proof record: this file used to seed three fresh temp
-// directories per test; ProductionDiagnoseDependencies now carries the one shared DatabaseConnection
-// this task's own cutover wires everywhere (task/service-on-the-database/store-wiring), so this
-// file seeds the glossary, capability and pinned-case rows the real investigation write needs
-// directly against the real tables instead, each under freshly generated names.
-//
-// insertVocabulary below inserts its own case_versions row directly, which defaults to
-// state = 'released' (migrations/0009's own header comment explains why), so migrations/0009's own
-// release-conditioned rules now make that row permanent — an ordinary DELETE against it is a silent
-// no-op, and a DELETE against a glossary row it still references fails on that surviving row's own
-// foreign key. deleteTolerantly below runs every cleanup statement expecting exactly that — the same
-// tolerance create-draft.operation.spec.ts's own deleteTolerantly already establishes for this
-// migration's consequence.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
 
-/**
- * Every call this suite's mocked @anthropic-ai/sdk answers now carries a realistic, non-zero
- * usage field (task/investigation-telemetry/anthropic-adapters-report-real-usage-and-timing):
- * both AnthropicHypothesisEvaluator and AnthropicAssessmentConsolidator read this exact field
- * (message.usage/response.usage) rather than discarding it or falling back to a placeholder, and
- * investigation-pipeline.ts's own costOf() reads consolidation.usage.input_tokens
- * unconditionally — a mocked response carrying no usage field at all left that read undefined,
- * throwing before any of this file's own assertions could run. Mirrors the same fix
- * diagnose-server.factory.spec.ts's own hoisted mock already carries for this same task; no test
- * in this file reads cost or duration values, so no delay is added here the way that file's own
- * mock adds one for its own duration assertions.
- */
 const { createMock, anthropicConstructorMock } = vi.hoisted(() => {
   const createMock = vi.fn().mockResolvedValue({
     content: [{ type: 'text', text: 'the drafted assessment write-up' }],
@@ -94,7 +50,6 @@ interface IVocabulary {
   readonly capabilityName: string;
 }
 
-/** Records every observe-concept call it receives, in order, and always answers ok — the observation-source boundary this factory's caller supplies directly, so this suite never touches a real connector. */
 class RecordingObservationSource implements IObservationSource {
   public readonly calls: Array<{ concept: string; subject: Subject; requester: string }> = [];
 
@@ -104,7 +59,6 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
-/** h1's own criterion/collects/resolution, shared between the manifest entry and its flattened hypotheses projection below (case.ts's own header comment: hypotheses is derived from manifest, never independently declared). */
 function h1Content(vocabulary: IVocabulary) {
   return {
     criterion: 'h1 criterion',
@@ -113,7 +67,6 @@ function h1Content(vocabulary: IVocabulary) {
   };
 }
 
-/** A minimally valid, single-hypothesis Case naming exactly the given vocabulary's own concept and subject-attribute — the pinned case this suite's own investigation writes reference. */
 function aCase(vocabulary: IVocabulary): Case {
   return {
     slug: vocabulary.caseSlug,
@@ -134,7 +87,6 @@ interface ICallFixture {
   readonly subjectAttribute: string;
 }
 
-/** Everything one call needs beyond the id and requester a test varies. */
 function callFor(id: string, requester: string, fixture: ICallFixture): ProductionDiagnoseCall {
   return {
     id,
@@ -151,12 +103,10 @@ function callFor(id: string, requester: string, fixture: ICallFixture): Producti
 
 let pool: DatabaseConnection;
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -173,7 +123,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every distinct, freshly generated name one test's own case, glossary and capability need — nothing here shared with any other test or any other suite file. */
 function freshVocabulary(): IVocabulary {
   const id = randomUUID();
   return {
@@ -188,7 +137,6 @@ function freshVocabulary(): IVocabulary {
   };
 }
 
-/** Every row one test's own vocabulary needs, inserted directly against the real tables — the glossary terms, the concept, its capability (a JSON-Schema output_schema, never read for its own field names since every judged hypothesis here falls back to inconclusive before citation validation ever runs), and the case_versions row the investigation write's own foreign key requires. */
 async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [vocabulary.subjectType]);
   await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [vocabulary.subjectAttribute]);
@@ -210,7 +158,6 @@ async function insertVocabulary(vocabulary: IVocabulary): Promise<void> {
   );
 }
 
-/** Every row this file's own tests wrote for one vocabulary and its investigations, deleted in an order that always satisfies their own foreign keys. */
 async function cleanupVocabulary(vocabulary: IVocabulary, investigationIds: readonly string[]): Promise<void> {
   if (investigationIds.length > 0) {
     await deleteTolerantly('DELETE FROM investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIds]);
@@ -259,8 +206,6 @@ function dependenciesFor(observationSource: IObservationSource): ProductionDiagn
   };
 }
 
-// ------------------------------------------------- criterion 3: no caching, no joining
-
 it('writes two independent investigation records for two calls sharing the same case, subject, narrative and requester', async () => {
   const theCase = await freshCase();
   const runner = createProductionDiagnoseRunner(dependenciesFor(new RecordingObservationSource()));
@@ -296,8 +241,6 @@ it("collects evidence again for the second of two calls with identical inputs, r
   expect(observationSource.calls).toHaveLength(2);
 });
 
-// ------------------------------------------------------ criterion 5: requester passthrough
-
 it('passes the given requester straight through to the observation source, substituting none of its own', async () => {
   const theCase = await freshCase();
   const observationSource = new RecordingObservationSource();
@@ -312,8 +255,6 @@ it('passes the given requester straight through to the observation source, subst
   expect(observationSource.calls[0]?.requester).toBe(distinctiveRequester);
 });
 
-// ------------------------------------------- criterion 1: real adapters, not swappable fakes
-
 it('reaches the mocked Anthropic client when a call runs, confirming the real adapters are wired rather than a swappable fake', async () => {
   const theCase = await freshCase();
   const runner = createProductionDiagnoseRunner(dependenciesFor(new RecordingObservationSource()));
@@ -324,8 +265,6 @@ it('reaches the mocked Anthropic client when a call runs, confirming the real ad
 
   expect(createMock).toHaveBeenCalled();
 });
-
-// ---------------------------- inference: caller's own evaluator/consolidator models reach the provider
 
 it('sends the caller-configured evaluator and consolidator models to the provider, never a value fixed in source', async () => {
   const theCase = await freshCase();

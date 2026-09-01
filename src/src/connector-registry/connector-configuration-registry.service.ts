@@ -14,45 +14,10 @@ import type {
 } from './connector-configuration.js';
 import type { IConnectorConfigurationStore } from './connector-configuration-store.port.js';
 
-/**
- * What readConnectorConfiguration below answers when called directly: the
- * configuration exactly as registered, or its absence stated as data —
- * never an invented configuration, and never a thrown error from this
- * method itself, since a connector no registration has yet reached is an
- * ordinary answer of a resolution, the same shape
- * capability-query.port.ts's own CapabilityResolution already holds for the
- * capability registry. The published read-connector-configuration route
- * does not stop at this resolution: a name nothing has registered is
- * refused there, through readConnectorConfigurationOrThrow below
- * (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused).
- */
 export type ConnectorConfigurationResolution =
   | { readonly held: true; readonly configuration: ConnectorConfiguration }
   | { readonly held: false; readonly connector: string };
 
-/**
- * The connector-configuration registry's two operations: register-connector
- * holds one connector's own call configuration — refusing a registration
- * that declares neither a connector identity nor a well-formed
- * configuration payload before anything is written — and
- * read-connector-configuration is the one lookup from a connector identity
- * to the configuration currently registered for it. Persistence reaches it
- * only through the store port
- * (constraints/the-domain-depends-on-no-infrastructure), so this module
- * stays importable without any infrastructure. Mirrors
- * capability-registry.service.ts's own shape — validate before write,
- * replace by identity — per the inventory's own must_not_duplicate entry
- * for that pattern.
- */
-/**
- * The default capabilities reader a construction naming none answers with —
- * every one of this codebase's own pre-existing single-argument
- * constructions of this class among them (both its own test suite and every
- * other composition root that has no use for this capacity yet): the empty
- * list, never a thrown error, since none of those callers exercises
- * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
- * own reconciliation at all.
- */
 const NO_REGISTERED_CAPABILITIES: ICapabilitiesReader = {
   readCapabilities: () => Promise.resolve([]),
 };
@@ -63,24 +28,6 @@ export class ConnectorConfigurationRegistryService {
     private readonly capabilitiesReader: ICapabilitiesReader = NO_REGISTERED_CAPABILITIES,
   ) {}
 
-  /**
-   * register-connector: refuses a registration that departs from the
-   * minimum shape this registry requires, or whose configuration text is
-   * not well-formed
-   * (rules/integration/a-connector-configuration-holds-a-well-formed-object,
-   * task/connector-configuration-authoring/register-connector-route), or
-   * whose own call text embeds a Subject-attribute placeholder that no
-   * capability currently registered against this connector's name declares
-   * in its input schema properties
-   * (rules/integration/a-connector-placeholder-is-declared-by-its-capability,
-   * task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
-   * — before any write, and held to the same refusal whether the connector
-   * name is new or already registered, since editing replaces the row
-   * whole rather than merging into it. The rest is held — a re-registration
-   * under an already-held connector identity replaces the row it holds,
-   * since one connector configuration is identified by its connector value
-   * alone.
-   */
   public async registerConnector(
     registration: ConnectorConfigurationRegistration,
   ): Promise<ConnectorConfiguration> {
@@ -92,36 +39,12 @@ export class ConnectorConfigurationRegistryService {
     return configuration;
   }
 
-  /**
-   * read-connector-configuration: resolves one connector identity to the
-   * configuration currently registered for it — read through the store on
-   * every call, never remembered — answering the absence as data where no
-   * held configuration answers that connector.
-   */
   public async readConnectorConfiguration(connector: string): Promise<ConnectorConfigurationResolution> {
     const held = await this.store.readConnectorConfigurations();
     const configuration = held.find((candidate) => candidate.connector === connector);
     return configuration === undefined ? { held: false, connector } : { held: true, configuration };
   }
 
-  /**
-   * read-connector-configuration's own service-level wrapper
-   * (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused,
-   * task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation):
-   * resolves through readConnectorConfiguration above and raises
-   * ConnectorConfigurationNotFoundError once it has read that method's own
-   * `held: false` answer, rather than leaving that held-check-and-throw to
-   * read-connector-configuration.controller.ts's own
-   * handleReadConnectorConfigurationRequest. Called only from that one
-   * route's own dependencies wiring (build-app.factory.ts's own
-   * composeResources); readConnectorConfiguration above is unchanged in
-   * signature and keeps answering the miss as ordinary data for every other
-   * consumer that reads it directly — test-connector.controller.ts's own
-   * resolveTestedConnectorConfiguration and
-   * http-declarative-observation-source.adapter.ts's own
-   * resolveConnectorConfiguration among them — so neither is forced through
-   * this class.
-   */
   public async readConnectorConfigurationOrThrow(connector: string): Promise<ConnectorConfiguration> {
     const resolution = await this.readConnectorConfiguration(connector);
     if (!resolution.held) {
@@ -130,24 +53,6 @@ export class ConnectorConfigurationRegistryService {
     return resolution.configuration;
   }
 
-  /**
-   * list-connector-configurations
-   * (contracts/integration/connector-configuration-registry): every
-   * connector configuration currently registered, whole — read through the
-   * store on every call, never remembered — paginated per
-   * src/types/pagination.ts. The store answers every registration it holds
-   * in one read with no pagination of its own
-   * (connector-configuration-store.port.ts's own readConnectorConfigurations,
-   * the same operation registerConnector and readConnectorConfiguration
-   * already call above), so the offset/limit window and the total are both
-   * computed here, in memory, over that full array — mirroring
-   * capability-registry.service.ts's own listCapabilities exactly, which
-   * takes the identical approach over its own store's identical
-   * read-everything method rather than adding a second store-port method
-   * that would answer the same question. A registry holding no
-   * configurations answers the same way: slicing an empty array yields an
-   * empty page (data: [], total: 0), never an error.
-   */
   public async listConnectorConfigurations(
     pagination: PaginationRequest,
   ): Promise<PaginatedResponse<ConnectorConfiguration>> {
@@ -163,40 +68,10 @@ export class ConnectorConfigurationRegistryService {
     };
   }
 
-  /**
-   * The narrow read capacity
-   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
-   * own reconciliation needs from the other side: every capability currently
-   * registered, through the narrow port the composition root supplies
-   * (factories/capability-registry.factory.ts's own createCapabilitiesReader,
-   * backed by the same RelationalCapabilityStore the capability registry
-   * itself reads and writes through). registerConnector's own
-   * refuseOrphanedPlaceholders below is what actually runs the shared
-   * orphaned-placeholder check against this read and raises the refusal
-   * over what it names
-   * (task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder)
-   * — this method stays the plain read for any other consumer that needs it
-   * (a future test-connector-style diagnostic among them).
-   */
   public async readRegisteredCapabilities(): Promise<readonly RegisteredCapabilityForPlaceholderCheck[]> {
     return this.capabilitiesReader.readCapabilities();
   }
 
-  /**
-   * rules/integration/a-connector-placeholder-is-declared-by-its-capability's
-   * own connector-configuration-registration direction: refuses a
-   * registration or edit whose own call text embeds a Subject-attribute
-   * placeholder that no capability currently registered against this same
-   * connector's name declares in its input schema properties — "a
-   * placeholder must be declared by at least one of them to not be
-   * orphaned", so a capability registered against a different connector is
-   * never consulted (the filter below), and a connector no capability
-   * currently names is never refused over this at all
-   * (orphanedAcrossEveryCapability's own empty-list answer). Runs after
-   * heldConfiguration has already confirmed the configuration's own shape,
-   * since this refusal reads the other registry's current state rather than
-   * this registration's own well-formedness.
-   */
   private async refuseOrphanedPlaceholders(configuration: ConnectorConfiguration): Promise<void> {
     const capabilities = (await this.capabilitiesReader.readCapabilities()).filter(
       (capability) => capability.connector === configuration.connector,
@@ -208,21 +83,6 @@ export class ConnectorConfigurationRegistryService {
   }
 }
 
-/**
- * Every Subject-attribute placeholder configurationText embeds that not one
- * of the given capabilities declares in its own input schema properties —
- * the intersection of each capability's own orphanedPlaceholders answer
- * (connector-placeholder-declaration-check.ts), paired with the full list of
- * capabilities, since a placeholder surviving that intersection is, by
- * construction, one none of them declares
- * (task/connector-configuration-and-placeholder-contract/refuse-connector-registration-with-orphaned-placeholder's
- * own "a placeholder must be declared by at least one of them to not be
- * orphaned"). An empty capabilities list answers no orphaned placeholder at
- * all — a connector no capability currently names has nothing this
- * reconciliation checks it against, the same "not forcing an order" the
- * rule's own Description already states for a connector configured before
- * any capability names it.
- */
 function orphanedAcrossEveryCapability(
   configurationText: string,
   capabilities: readonly RegisteredCapabilityForPlaceholderCheck[],
@@ -238,47 +98,15 @@ function orphanedAcrossEveryCapability(
   return orphanedEverywhere.map((placeholder) => ({ placeholder, capabilities }));
 }
 
-/**
- * The page count this limit divides total into (API-03) — 0 for a
- * non-positive limit, since dividing by it would answer no page count a
- * caller could page through at all. constraints/listings-are-paged now
- * states this branch is never reached by a request this system answers: "no
- * request with a non-positive limit reaches the count, because
- * a-malformed-request-is-refused-with-a-validation-error refuses it first"
- * — so the 0 this function answers for that case is this service's own
- * defensive floor for a call the constraint says never happens, the same
- * inference capability-registry.service.ts's own pageCountOf already made
- * for its identical listing shape.
- *
- * Restated here rather than imported (MNT-03 divergence, disclosed):
- * capability-registry.service.ts's own pageCountOf is a private, unexported
- * function of a sibling registry service, and that module's own header
- * comment already discloses making the identical choice for the identical
- * reason — exporting it across a service-to-service boundary, or lifting it
- * into a new shared module, is a change this task's own file set does not
- * reach and would widen it beyond what list-connector-configurations-route
- * was cut to do.
- */
 function pageCountOf(total: number, limit: number): number {
   return limit > 0 ? Math.ceil(total / limit) : 0;
 }
 
-/** A registration that declared the minimum required shape, as the type then knows it. */
 type DeclaredRegistration = ConnectorConfigurationRegistration & {
   readonly connector: string;
   readonly configuration: string;
 };
 
-/**
- * Holds one registration to the minimum shape this registry requires,
- * refusing what departs from it, and answers the configuration as the
- * registry will hold it — JSON object text
- * (domain/integration/connector-configuration), never the parsed object.
- * The well-formedness check runs first (wellFormedConfiguration), since it
- * is what resolves this registration's own configuration — supplied as
- * that text or as the object it parses to — to the text form the
- * completeness check below, and the registry itself, both now expect.
- */
 function heldConfiguration(registration: ConnectorConfigurationRegistration): ConnectorConfiguration {
   const resolved: ConnectorConfigurationRegistration = {
     connector: registration.connector,
@@ -288,33 +116,6 @@ function heldConfiguration(registration: ConnectorConfigurationRegistration): Co
   return { connector: resolved.connector, configuration: resolved.configuration };
 }
 
-/**
- * Resolves a registration's configuration to the JSON object text the
- * completeness check below and the registry both now hold and answer it as
- * (domain/integration/connector-configuration, rules/integration/a-connector-configuration-holds-a-well-formed-object
- * — "a registration may supply the configuration as that text or as the
- * object it parses to, and the registry holds and answers it as text either
- * way"). A value given as a string is held exactly as supplied once it is
- * confirmed to parse to a plain object — not an array, not a primitive —
- * refusing it before any write where it fails JSON.parse or parses to
- * anything else. A value given as a genuine plain object is re-serialized to
- * that same text form (JSON.stringify) before being held. A value given
- * already as null or an array is refused here too
- * (task/connector-configuration-registration-conformance/malformed-object-classification):
- * the node's own statement that the configuration "must be ... a well-formed
- * JSON object" makes null and an array not-well-formed exactly as an
- * unparsable text is, never merely incomplete — and unlike text, JSON.parse
- * never runs over either to raise that refusal on its own, so this function
- * raises it directly. Undeclared and every other primitive (a number, a
- * boolean, a bare string once it has already failed the string branch above)
- * pass through unchanged for the completeness check below to catch, exactly
- * as this registry always did for a registration missing this shape — the
- * node decides that classification explicitly: a registration whose
- * configuration is entirely absent is refused as incomplete
- * (IncompleteConnectorConfigurationError), distinct from a present value
- * that fails the well-formedness check above, the same distinction the node
- * draws for the connector name.
- */
 function wellFormedConfiguration(configuration: unknown): unknown {
   if (typeof configuration === 'string') {
     return textConfigurationOrThrow(configuration);
@@ -328,7 +129,6 @@ function wellFormedConfiguration(configuration: unknown): unknown {
   return configuration;
 }
 
-/** Parses one candidate configuration text to confirm it is syntactically valid JSON that parses to a plain object, refusing it otherwise, and answers the text itself unchanged once confirmed — never the parsed value, since the registry holds text (rules/integration/a-connector-configuration-holds-a-well-formed-object). */
 function textConfigurationOrThrow(configuration: string): string {
   let parsed: unknown;
   try {
@@ -342,27 +142,6 @@ function textConfigurationOrThrow(configuration: string): string {
   return configuration;
 }
 
-/**
- * Parses one held connector configuration's own JSON object text back into
- * the plain object a connector's own call needs to derive its request — the
- * one seam between this registry's own text representation
- * (domain/integration/connector-configuration,
- * rules/integration/a-connector-configuration-holds-a-well-formed-object)
- * and every consumer that must derive an HTTP call from it rather than read
- * it back as is. Exported so http-declarative-observation-source.adapter.ts's
- * own resolveConnectorConfiguration and test-connector.controller.ts's own
- * resolveTestedConnectorConfiguration both call this rather than each
- * JSON.parse-ing the held text a second time (MNT-03). Never throws for a
- * configuration this registry itself holds: the text was already confirmed
- * to parse to a plain object before it was ever written
- * (textConfigurationOrThrow above). The isPlainObject guard below is a
- * defensive floor for a value this method's own invariant says can never
- * fail it (TYP-02's own narrowing-guard rule for the type assertion this
- * parse would otherwise be) — no specification node states what a corrupted
- * persisted row answers, so raising the same well-formedness error the write
- * side already raises is this function's own inference over that silence,
- * never a path a passing registration reaches.
- */
 export function parsedConnectorConfiguration(
   configuration: ConnectorConfiguration,
 ): Readonly<Record<string, unknown>> {
@@ -373,20 +152,6 @@ export function parsedConnectorConfiguration(
   return parsed;
 }
 
-/**
- * Refuses a registration that departs from the minimum shape this registry
- * requires: an undeclared connector identity, or a configuration payload
- * that did not resolve to held JSON object text (wellFormedConfiguration
- * above — a value given as a string or a genuine plain object resolves to
- * that text; null and an array are already refused there as
- * ConnectorConfigurationNotWellFormedError and never reach this check;
- * undeclared and every other primitive reach this check unchanged and are
- * refused here as incomplete). What that payload itself must contain to
- * reach any particular external system is left entirely to the connector it
- * names — domain/investigation/subject states a connector "resolves
- * internally ... which of the attributes it needs" — so nothing here reads
- * or constrains a key inside it.
- */
 function refuseRegistrationDepartures(
   registration: ConnectorConfigurationRegistration,
 ): asserts registration is DeclaredRegistration {
@@ -396,7 +161,6 @@ function refuseRegistrationDepartures(
   }
 }
 
-/** Every way one registration departs from the minimum required shape, in terms a reader of the refusal can act on. */
 function registrationProblems(registration: ConnectorConfigurationRegistration): string[] {
   const problems: string[] = [];
   if (isUndeclared(registration.connector)) {
@@ -408,12 +172,10 @@ function registrationProblems(registration: ConnectorConfigurationRegistration):
   return problems;
 }
 
-/** Whether the connector identity was left undeclared — absent and empty alike, since an empty identity names nothing. */
 function isUndeclared(value: string | undefined): boolean {
   return value === undefined || value === '';
 }
 
-/** Whether a value is a plain, non-null, non-array object — the one shape a configuration payload must take (TYP-02's own narrowing-guard rule for the type assertion refuseRegistrationDepartures makes). */
 function isPlainObject(value: unknown): value is Readonly<Record<string, unknown>> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

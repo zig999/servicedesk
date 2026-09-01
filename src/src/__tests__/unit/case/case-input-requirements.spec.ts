@@ -1,15 +1,3 @@
-// Proof for task/case-input-requirements-and-diagnose-gate/derive-case-input-requirements: the pure
-// fold deriveCaseInputRequirements answers the union of subject attributes any sole, well-formed
-// answering capability declares over a case version's own collection plan, marks an attribute
-// required when any such capability's own required names it, names every such capability an
-// attribute's own entry, contributes nothing for a concept nothing (or more than one thing)
-// currently answers, and names a sole answerer whose own stored input schema does not currently
-// hold a well-formed shape apart from the attribute entries
-// (scenarios/integration/a-legacy-capability-declares-no-input-attributes). Every capability here
-// carries syntactically valid JSON in its own input_schema, unlike case-query.service.spec.ts's own
-// coherentCapability() placeholder — this module's own hasWellFormedInputSchema parses it directly
-// (this task's own disclosed inference), so a fixture reusing that placeholder would throw before
-// any assertion ran.
 import { expect, it } from 'vitest';
 import type {
   CapabilityResolution,
@@ -20,10 +8,8 @@ import { deriveCaseInputRequirements, everyRegisteredCapability } from '../../..
 import type { Case } from '../../../case/case.js';
 import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
 
-/** The one nature that registers, spelled here rather than imported so a drift in the source fails (the same convention case-query.service.spec.ts already keeps). */
 const READ_ONLY = 'read-only';
 
-/** A case version whose one hypothesis collects exactly the given concepts, in the order given — sufficient for collectionPlan (case-resolution.ts, unmodified by this task) to answer them back as this fixture's own plan, since a single manifest entry's own collects array is read in its own declared order with duplicates removed. */
 function caseWithCollects(concepts: readonly string[]): Case {
   return {
     slug: 'a-case',
@@ -50,7 +36,6 @@ function caseWithCollects(concepts: readonly string[]): Case {
   };
 }
 
-/** One registered capability, declaring a well-formed, syntactically valid input_schema unless a test overrides it. */
 function capability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -64,8 +49,6 @@ function capability(overrides: Partial<Capability> = {}): Capability {
     ...overrides,
   };
 }
-
-// -------------------------------------------------------------------------------- criterion 1
 
 it('returns one entry per distinct subject attribute the sole answering capability declares in its own input schema properties', () => {
   const capA = capability({ name: 'cap-a', concept: 'concept-a', input_schema: '{"properties":{"x":{},"y":{}}}' });
@@ -90,8 +73,6 @@ it("dedupes an attribute two different concepts' own sole answerers both declare
   ]);
 });
 
-// -------------------------------------------------------------------------------- criterion 2
-
 it("marks an attribute required when any answering capability's own input schema names it in required, and not required when none do", () => {
   const capA = capability({ name: 'cap-a', concept: 'concept-a', input_schema: '{"properties":{"x":{},"y":{}},"required":["x"]}' });
   const capB = capability({ name: 'cap-b', concept: 'concept-b', input_schema: '{"properties":{"y":{},"w":{}},"required":["y"]}' });
@@ -102,8 +83,6 @@ it("marks an attribute required when any answering capability's own input schema
   const requiredByAttribute = Object.fromEntries(result.requirements.map((requirement) => [requirement.attribute, requirement.required]));
   expect(requiredByAttribute).toEqual({ x: true, y: true, w: false });
 });
-
-// -------------------------------------------------------------------------------- criterion 3
 
 it('names every currently registered capability that answers a plan concept and declares the attribute, not only the first one seen', () => {
   const capA = capability({ name: 'cap-a', concept: 'concept-a', input_schema: '{"properties":{"shared":{}}}' });
@@ -116,8 +95,6 @@ it('names every currently registered capability that answers a plan concept and 
     { attribute: 'shared', required: false, capabilities: [{ name: 'cap-a', version: '1.0.0' }, { name: 'cap-b', version: '1.0.0' }] },
   ]);
 });
-
-// -------------------------------------------------------------------------------- criterion 4
 
 it('contributes no attribute for a concept the collection plan holds that no registered capability currently answers', () => {
   const capA = capability({ name: 'cap-a', concept: 'concept-a', input_schema: '{"properties":{"x":{}}}' });
@@ -138,8 +115,6 @@ it('contributes no attribute for a concept more than one registered capability c
   expect(result.requirements).toEqual([]);
   expect(result.capabilities_with_malformed_input_schema).toEqual([]);
 });
-
-// -------------------------------------------------------------------------------- criterion 5, scenarios/integration/a-legacy-capability-declares-no-input-attributes
 
 it('contributes no attribute and names the capability apart, for a sole answerer whose stored input schema does not currently hold a well-formed properties object', () => {
   const legacy = capability({ name: 'legacy-cap', concept: 'concept-legacy', input_schema: '{"properties":"not-an-object"}' });
@@ -172,8 +147,6 @@ it('contributes no attribute, and does not name the capability as malformed, for
   expect(result.capabilities_with_malformed_input_schema).toEqual([]);
 });
 
-// -------------------------------------------------------------------------------- edge case: an empty collection plan
-
 it('answers no requirements and no malformed capability for a case version whose collection plan holds no concept at all', () => {
   const theCase = caseWithCollects([]);
 
@@ -181,8 +154,6 @@ it('answers no requirements and no malformed capability for a case version whose
 
   expect(result).toEqual({ requirements: [], capabilities_with_malformed_input_schema: [] });
 });
-
-// -------------------------------------------------------------------------------- criterion 6
 
 it('answers identically regardless of the case version state, since nothing here reads it at all', () => {
   const capA = capability({ name: 'cap-a', concept: 'concept-a', input_schema: '{"properties":{"x":{}},"required":["x"]}' });
@@ -195,8 +166,6 @@ it('answers identically regardless of the case version state, since nothing here
   expect(releasedResult).toEqual(draftResult);
 });
 
-// -------------------------------------------------------------------------------- inference: no defense against a JSON.parse failure
-
 it('throws when a sole answering capability\'s own stored input_schema is not syntactically valid JSON at all, since this derivation trusts the registration invariant rather than guarding the parse itself', () => {
   const brokenJson = capability({ name: 'broken-cap', concept: 'concept-broken', input_schema: 'not valid json at all' });
   const theCase = caseWithCollects(['concept-broken']);
@@ -204,9 +173,6 @@ it('throws when a sole answering capability\'s own stored input_schema is not sy
   expect(() => deriveCaseInputRequirements(theCase, [brokenJson])).toThrow(SyntaxError);
 });
 
-// -------------------------------------------------------------------------------- inference: reads every registered capability, not one caller-facing page
-
-/** A capability-query stand-in that actually respects the offset/limit it is asked with, the way the real relational store would — unlike case-query.service.spec.ts's own FakeCapabilityQuery, whose readCapability alone this task's fixture needs no analogue of. */
 class PaginatedFakeCapabilityQuery implements ICapabilityQuery {
   public constructor(private readonly all: readonly Capability[]) {}
 

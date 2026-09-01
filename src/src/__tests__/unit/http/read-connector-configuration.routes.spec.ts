@@ -1,13 +1,3 @@
-// Proof for task/connector-configuration-authoring/read-connector-configuration-route:
-// GET /v1/connectors/{connector}, exercised through Fastify's own app.inject()
-// against a local instance registering createReadConnectorConfigurationRoutesPlugin()
-// and error-handler.middleware.ts's own handleUnexpectedError directly — the same
-// shape read-capability.routes.spec.ts exercises its own sibling route through. The
-// registry's own readConnectorConfiguration is a stand-in here (TST-03 — a stand-in
-// replaces a boundary, never business logic): ConnectorConfigurationRegistryService's
-// own read is exactly the seam ReadConnectorConfigurationControllerDependencies
-// declares, stood in for by a vi.fn(); the domain resolution behind that seam is the
-// already-delivered service's own concern, not this route's.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { ConnectorConfiguration } from '../../../connector-registry/connector-configuration.js';
@@ -21,7 +11,6 @@ type ReadConnectorConfigurationMock = ReturnType<
   typeof vi.fn<(connector: string) => Promise<ConnectorConfiguration>>
 >;
 
-/** A connector configuration exactly as the registry would already hold it, for seeding the stand-in read. */
 function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
@@ -30,7 +19,6 @@ function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> =
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler. */
 function buildTestApp(): { app: FastifyInstance; readConnectorConfiguration: ReadConnectorConfigurationMock } {
   const readConnectorConfiguration: ReadConnectorConfigurationMock = vi.fn();
   const dependencies: ReadConnectorConfigurationControllerDependencies = { readConnectorConfiguration };
@@ -46,8 +34,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the connector and configuration fields exactly as currently held under the named connector', async () => {
   const built = buildTestApp();
@@ -69,8 +55,6 @@ it('answers 200 with the connector and configuration fields exactly as currently
     Object.keys(readConnectorConfigurationResponseSchema.shape).sort(),
   );
 });
-
-// ------------------------------------------------------------------ registry-reads/connector-configuration-response-wire-type
 
 it('returns configuration as a JSON string, never a parsed object', async () => {
   const built = buildTestApp();
@@ -125,8 +109,6 @@ it('answers a configuration string that parses back to an empty object when the 
   expect(JSON.parse(body.configuration)).toEqual({});
 });
 
-// ------------------------------------------------------------------ inference: configuration schema is z.string().min(1)
-
 it('readConnectorConfigurationResponseSchema accepts the smallest string JSON.stringify() ever produces for an object, "{}"', () => {
   const result = readConnectorConfigurationResponseSchema.safeParse({ connector: 'a-connector', configuration: '{}' });
 
@@ -139,8 +121,6 @@ it('readConnectorConfigurationResponseSchema rejects an empty string as configur
   expect(result.success).toBe(false);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('does not refuse a request carrying no authentication credential', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -150,8 +130,6 @@ it('does not refuse a request carrying no authentication credential', async () =
 
   expect(response.statusCode).toBe(200);
 });
-
-// ------------------------------------------------------------------ not-found mapping
 
 it('answers 404 with ConnectorConfigurationNotFoundError when no connector configuration is currently registered under the named connector', async () => {
   const built = buildTestApp();
@@ -165,8 +143,6 @@ it('answers 404 with ConnectorConfigurationNotFoundError when no connector confi
   expect(body.error.code).toBe('ConnectorConfigurationNotFoundError');
   expect(body.error.details).toEqual({ connector: 'an-absent-connector' });
 });
-
-// ------------------------------------------------------------------ edge case
 
 it('answers 400 via validation for a request with an empty connector segment, never reaching the read', async () => {
   const built = buildTestApp();

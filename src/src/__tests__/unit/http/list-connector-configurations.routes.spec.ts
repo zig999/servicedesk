@@ -1,15 +1,3 @@
-// Proof for task/connector-configuration-authoring/list-connector-configurations-route:
-// GET /v1/connectors exercised through Fastify's own app.inject() against a local
-// instance registering createListConnectorConfigurationsRoutesPlugin() directly — the
-// same shape list-capabilities.routes.spec.ts already establishes. The published
-// connector-configuration-registry read is a stand-in here (TST-03 — a stand-in
-// replaces a boundary, never business logic): listConnectorConfigurations is exactly
-// the seam ListConnectorConfigurationsControllerDependencies declares, stood in for by
-// a vi.fn(); the registry's own resolution behind that seam is proved separately in
-// __tests__/unit/connector-registry. This file proves only that the route, controller
-// and DTO carry that contract's promise onto the wire unchanged, that no authentication
-// guard sits in front of it, and basic pagination resolution at the level
-// list-capabilities.routes.spec.ts itself settled for.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { ConnectorConfiguration } from '../../../connector-registry/connector-configuration.js';
@@ -21,7 +9,6 @@ type ListConnectorConfigurationsMock = ReturnType<
   typeof vi.fn<(pagination: PaginationRequest) => Promise<PaginatedResponse<ConnectorConfiguration>>>
 >;
 
-/** A connector configuration as the registry would already hold it, both declared attributes present, overridable per test. */
 function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
@@ -30,7 +17,6 @@ function heldConnectorConfiguration(overrides: Partial<ConnectorConfiguration> =
   };
 }
 
-/** A page of two connector configurations, every PaginatedResponse<ConnectorConfiguration> field present, overridable per test. */
 function heldPage(overrides: Partial<PaginatedResponse<ConnectorConfiguration>> = {}): PaginatedResponse<ConnectorConfiguration> {
   return {
     data: [
@@ -45,13 +31,6 @@ function heldPage(overrides: Partial<PaginatedResponse<ConnectorConfiguration>> 
   };
 }
 
-/**
- * One Fastify instance registering exactly this route plugin — no authentication
- * guard, no error handler of its own, mirroring what list-capabilities.routes.spec.ts
- * builds for its own sibling route. defaultLimit and maxLimit default to two distinct,
- * deliberately non-coincidental figures so a test asserting one is never satisfied by
- * mistaking it for the other.
- */
 function buildTestApp(bounds: { defaultLimit?: number; maxLimit?: number } = {}): {
   app: FastifyInstance;
   listConnectorConfigurations: ListConnectorConfigurationsMock;
@@ -73,8 +52,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1: every registered connector configuration, with its fields
 
 it('answers 200 with every connector configuration the registry read resolved, each carrying its connector and configuration fields unchanged', async () => {
   const built = buildTestApp();
@@ -108,8 +85,6 @@ it("answers a data array whose single entry carries exactly the connector and co
   ]);
   expect(Object.keys(body.data[0] as object).sort()).toEqual(['configuration', 'connector']);
 });
-
-// ------------------------------------------------------------------ registry-reads/connector-configuration-response-wire-type
 
 it("answers every entry's configuration as a JSON string, never a parsed object", async () => {
   const built = buildTestApp();
@@ -170,8 +145,6 @@ it('answers the paginated envelope with an empty data array and a total of zero,
   expect(response.json()).toEqual(emptyPage);
 });
 
-// ------------------------------------------------------------------ criterion 2: no authentication credential required
-
 it('answers 200 for a request carrying no authentication credential of any kind, rather than refusing it for lacking one', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -181,8 +154,6 @@ it('answers 200 for a request carrying no authentication credential of any kind,
 
   expect(response.statusCode).toBe(200);
 });
-
-// ------------------------------------------------------------------ pagination behavior
 
 it("passes the request's own offset and limit through to the connector-configuration read unchanged, when both are given and within bounds", async () => {
   const built = buildTestApp();
@@ -224,8 +195,6 @@ it('clamps a limit above the configured maxLimit down to maxLimit rather than re
   expect(response.statusCode).toBe(200);
   expect(built.listConnectorConfigurations).toHaveBeenCalledWith({ offset: 0, limit: 50 });
 });
-
-// ------------------------------------------------------------------ edge cases: malformed query
 
 it('answers 400 for a non-numeric offset, without ever reaching the connector-configuration read', async () => {
   const built = buildTestApp();

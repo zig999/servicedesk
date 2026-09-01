@@ -1,16 +1,3 @@
-// Proof for task/case-query-http/read-case-route: GET /v1/cases/{slug}/versions/{version}
-// exercised through Fastify's own app.inject() against a local instance registering
-// createReadCaseRoutesPlugin() and error-handler.middleware.ts's own handleUnexpectedError
-// directly — the same shape read-capability.routes.spec.ts already establishes, adapted because
-// build-app.ts does not yet register this route (that wiring is
-// task/case-lifecycle-http/register-routes-in-build-app, still outstanding at the time of this
-// proof). The published case-query read is a stand-in here (TST-03 — a stand-in replaces a
-// boundary, never business logic): ICaseQuery.readCase is exactly the seam
-// ReadCaseControllerDependencies declares, stood in for by a vi.fn(); case-query.service.ts's own
-// readCase — which never answers a partial result, throwing CaseNotFoundError or CaseNotValidError
-// instead — is proved separately in __tests__/unit/case/case-query.service.spec.ts. This file
-// proves only that the route, controller and DTO carry that contract's promise onto the wire
-// unchanged.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
@@ -24,12 +11,10 @@ import { createReadCaseRoutesPlugin } from '../../../http/read-case.routes.js';
 
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -43,7 +28,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A case version as case-query would already hold it, both optional attributes present, manifest carrying two whole entries — so criterion 1's "its manifest and every manifest entry's own hypothesis-revision" has more than one to assert against. */
 function heldCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -62,7 +46,6 @@ function heldCase(overrides: Partial<Case> = {}): Case {
   };
 }
 
-/** A draft case version carrying neither optional attribute at all — never the same case with those fields set to undefined. */
 function heldDraftCase(): Case {
   return {
     slug: 'a-draft-slug',
@@ -78,14 +61,9 @@ function heldDraftCase(): Case {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors what build-app.ts wires for diagnose, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; readCase: ReadCaseMock } {
   const readCase: ReadCaseMock = vi.fn();
-  // listCases, listCaseVersions, listHypotheses and listHypothesisRevisions are no part of what
-  // this file proves (read-case-route's own ICaseQuery seam is readCase alone) — stubbed only so
-  // this fake keeps satisfying ICaseQuery now that task/case-query-http/list-cases-route,
-  // list-case-versions-route, list-hypotheses-route and list-hypothesis-revisions-route added them
-  // to it.
+
   const caseQuery: ICaseQuery = {
     readCase,
     listCases: vi.fn(),
@@ -106,8 +84,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it("answers 200 with the named case version assembled whole — its own attributes, its manifest and every manifest entry's own hypothesis-revision", async () => {
   const built = buildTestApp();
@@ -184,8 +160,6 @@ it("answers each of two requests naming different slug/version pairs with that r
   expect((second.json() as { slug: string }).slug).toBe('a-draft-slug');
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('refuses with the status the status map assigns CaseNotFoundError, when no version answers the named slug and version', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -199,8 +173,6 @@ it('refuses with the status the status map assigns CaseNotFoundError, when no ve
   expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('answers the unchanged generic envelope, never a partial body, when the named version cannot be assembled whole', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -211,8 +183,6 @@ it('answers the unchanged generic envelope, never a partial body, when the named
   expect(response.statusCode).toBe(500);
   expect(response.json()).toEqual({ error: { code: 'INTERNAL_ERROR', message: 'an unexpected error occurred' } });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers 400 for a non-numeric version segment, without ever reaching the case query', async () => {
   const built = buildTestApp();

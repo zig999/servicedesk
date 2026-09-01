@@ -1,10 +1,3 @@
-// Proof for task/stale-specification-citations-round-two/citations-corrected-again, criterion 6:
-// the header comment's masking paragraph in test-connector.controller.ts cites
-// rules/integration/a-diagnostic-response-masks-a-resolved-credential by identity for the
-// credential-masking behavior it describes, rather than framing that behavior as this
-// controller's own unattributed inference. handleTestConnectorRequest's own masking behavior is
-// proven separately, on the wire, in test-connector.routes.spec.ts — this file proves only the
-// citation.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
@@ -18,9 +11,6 @@ import type { TestConnectorRequestDto } from '../../../http/dto/test-connector.d
 
 const MODULE_PATH = fileURLToPath(new URL('../../../http/test-connector.controller.ts', import.meta.url));
 
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')
@@ -42,13 +32,6 @@ it("the header comment's masking paragraph cites rules/integration/a-diagnostic-
   expect(header).toContain("this project's own standard (SEC-03, SEC-04) independently forbids a credential reaching a client response too");
 });
 
-// Added for task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute,
-// whose own criterion 5 states: "test-connector's own diagnostic call is not held to this gate."
-// This module's TestConnectorControllerDependencies declares no case-input-requirements read at
-// all, and handleTestConnectorRequest above calls neither refuseSubjectMissingRequiredCaseInputs
-// nor handleDiagnoseRequest — proved here by scanning this module's own import specifiers, the same
-// convention diagnose-e2e.spec.ts already keeps for proving one composition cannot reach a named
-// module it never imports.
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
 it('imports neither the new required-case-inputs gate function nor the diagnose controller, so its own diagnostic call has no path into the gate', async () => {
@@ -59,19 +42,6 @@ it('imports neither the new required-case-inputs gate function nor the diagnose 
   expect(specifiers).not.toContain('./diagnose.controller.js');
 });
 
-// ------------------------------------------------------------------ task/connector-configuration-and-placeholder-contract/degrade-unresolved-connector-call-to-unavailable, criterion 6
-//
-// The sibling adapter (http-declarative-observation-source.adapter.ts) now
-// catches both typed assembly failures connector-request-resolver.ts's own
-// resolveConnectorRequest can throw and degrades each to an unavailable
-// evidence outcome. This controller's own two direct calls to the same
-// resolveConnectorRequest sit entirely outside that adapter and are left
-// untouched by that fix: each test below drives handleTestConnectorRequest
-// into exactly one of the two typed failures and asserts the returned
-// promise rejects with it, uncaught — never resolving into a response DTO of
-// any shape, and never reaching the injected httpClient at all.
-
-/** A capability as readCapabilityByIdentity would resolve it, held — every field defaulted so a test states only what it is about. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-name',
@@ -86,7 +56,6 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A connector configuration resolution whose stored text parses to the minimum HTTP shape this controller requires, overridable per test. */
 function heldConnectorConfigurationResolution(
   configurationOverrides: Readonly<Record<string, unknown>> = {},
 ): ConnectorConfigurationResolution {
@@ -106,7 +75,6 @@ function heldConnectorConfigurationResolution(
   };
 }
 
-/** A valid request body, every field defaulted so a test states only what it is about — the subject carries exactly one attribute, "id". */
 function aRequestBody(overrides: Record<string, unknown> = {}): TestConnectorRequestDto {
   return {
     capability: { name: 'a-name', version: '1.0.0' },
@@ -117,7 +85,6 @@ function aRequestBody(overrides: Record<string, unknown> = {}): TestConnectorReq
   } as TestConnectorRequestDto;
 }
 
-/** One dependency set resolving a held capability and a held connector configuration by default, so a test overrides only what it is about. */
 function aDependencies(overrides: Partial<TestConnectorControllerDependencies> = {}): TestConnectorControllerDependencies {
   return {
     readCapabilityByIdentity: vi
@@ -161,21 +128,6 @@ it("propagates IncompleteConnectorCallDescriptorError uncaught, issuing no HTTP 
   expect(httpClient).not.toHaveBeenCalled();
 });
 
-// ------------------------------------------------------------------ task/case-input-requirements-and-diagnose-gate/refuse-diagnose-missing-required-attribute, criterion 5
-//
-// The prior proof for this criterion only scanned test-connector.controller.ts's own import
-// specifiers for the gate function and the diagnose controller — an absence of an import, not a
-// behavior. This test drives handleTestConnectorRequest itself: aDependencies() below builds a
-// TestConnectorControllerDependencies value using only the three fields that type declares
-// (readCapabilityByIdentity, readConnectorConfiguration, httpClient) — there is no fourth field to
-// fill with a case-input-requirements read, because the type carries no such capacity at all. The
-// request body's subject carries only "id", the same attribute subject-covers-case-input-requirements.spec.ts's
-// own sibling suite uses when proving refuseSubjectMissingRequiredCaseInputs throws for a subject
-// that leaves "contract-number" uncovered where a requirement marks it required — exactly the
-// subject shape that would refuse a diagnose 422 before collection, were this call held to that
-// gate. handleTestConnectorRequest here still issues its one HTTP call and returns its ordinary
-// response outcome, proving behaviorally that this controller's own call path never reaches the
-// gate, rather than merely that its source never names the gate's module.
 it('still issues its call and returns its ordinary response outcome for a subject missing "contract-number" — an attribute-value a case-input requirement would mark required and that would refuse a diagnose before collection were this call held to that gate', async () => {
   const httpClient = vi
     .fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>()

@@ -1,15 +1,3 @@
-// Proof for task/case-simulation-pipeline/simulate-hypothesis-operation:
-// runSimulateHypothesisPipeline narrows collectEvidence and judgeHypotheses to
-// exactly the named hypothesis's own manifest entry — collecting only what
-// that entry's own revision collects, never a concept only the case's other
-// hypothesis collects — answers exactly one Evaluation for that hypothesis,
-// resolves no outcome and drafts no assessment, refuses a hypothesis name the
-// pinned case version's manifest holds no entry for before either stage ever
-// runs, and reports durations carrying only collection and judgment, never a
-// writing field, since this operation never consolidates. Mirrors
-// investigation-pipeline.spec.ts's own fixture and import-scan conventions
-// (aHypothesis, manifestEntryOf, aCase, FakeCapabilityQuery, fake timers),
-// narrowed to this operation's own two-hypothesis fixture.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, expectTypeOf, it, vi } from 'vitest';
@@ -37,12 +25,9 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// --------------------------------------------------------------- fixtures
-
 const A_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];
 const A_REQUESTER = 'requester-1';
 
-/** One hypothesis, defaulted so a test states only its name and what it collects — mirrors investigation-pipeline.spec.ts's own fixture convention. */
 function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
@@ -52,7 +37,6 @@ function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   };
 }
 
-/** One manifest entry mirroring one flat Hypothesis fixture, position assigned by the caller. */
 function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
   return {
     position,
@@ -66,7 +50,6 @@ function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntr
   };
 }
 
-/** A two-hypothesis Case: h1 collects concept-a, h2 collects concept-b — distinct concepts, so a test can tell which hypothesis's own collection ran. */
 function twoHypothesisCase(): Case {
   const hypotheses = [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])];
   return {
@@ -87,7 +70,6 @@ function schemaDeclaring(...fields: readonly string[]): string {
   return JSON.stringify({ type: 'object', properties: Object.fromEntries(fields.map((field) => [field, { type: 'string' }])) });
 }
 
-/** A capability registered for exactly one concept, its output schema declaring the "a-field" every citation in this file names. */
 function aCapability(concept: string): Capability {
   return {
     name: `capability-for-${concept}`,
@@ -101,7 +83,6 @@ function aCapability(concept: string): Capability {
   };
 }
 
-/** Holds a capability for every concept a test registers, resolving every other concept as unheld. */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly held = new Map<string, Capability>();
   public hold(capability: Capability): void {
@@ -116,7 +97,6 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
-/** Stands in for the published glossary-query port, holding no concept at all — this file's own tests are about the narrowing, never about the description snapshot itself (evidence-collection-stage.spec.ts is). */
 class FakeGlossaryQuery implements IGlossaryQuery {
   public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
     return { held: false, vocabulary, name };
@@ -124,10 +104,7 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   public async readConcept(name: string): Promise<ConceptResolution> {
     return { held: false, name };
   }
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-  // task/glossary-query-http/list-concepts-query-extension): this file's own
-  // scenarios never call either.
+
   public async listVocabularyTerms(): Promise<never> {
     throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
   }
@@ -136,7 +113,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   }
 }
 
-/** Records every concept it was asked to observe, answering ok unconditionally — the spy criterion 1 reads to prove which concept(s) were ever collected. */
 class RecordingObservationSource implements IObservationSource {
   public readonly observedConcepts: string[] = [];
   public async observeConcept(options: ObserveConceptOptions): Promise<ObservationOutcome> {
@@ -145,7 +121,6 @@ class RecordingObservationSource implements IObservationSource {
   }
 }
 
-/** Records every hypothesis-criterion it was asked to judge, answering one fixed confirmed outcome — the spy criterion 2 reads to prove exactly one judgment call happened. */
 class RecordingHypothesisEvaluator implements IHypothesisEvaluator {
   public readonly judgedCriteria: string[] = [];
   public async evaluate(criterion: string): Promise<EvaluationOutcome> {
@@ -154,7 +129,6 @@ class RecordingHypothesisEvaluator implements IHypothesisEvaluator {
   }
 }
 
-/** The whole SimulateHypothesisPipelineOptions, valid and resolving by default: the two-hypothesis case, narrowed to h1. */
 function baseOptions(overrides: Partial<SimulateHypothesisPipelineOptions> = {}): SimulateHypothesisPipelineOptions {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(aCapability('concept-a'));
@@ -176,8 +150,6 @@ function baseOptions(overrides: Partial<SimulateHypothesisPipelineOptions> = {})
   };
 }
 
-// ------------------------------------------------------------------ criterion 1
-
 it("collects only the named hypothesis's own revision's concepts, never a concept only the case's other hypothesis collects", async () => {
   const observationSource = new RecordingObservationSource();
   const options = baseOptions({ hypothesis: 'h1', observationSource });
@@ -198,8 +170,6 @@ it("collects the other hypothesis's own concept instead when that one is named, 
   expect(result.evidence.map((item) => item.concept)).toEqual(['concept-b']);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('answers exactly one evaluation, for the named hypothesis, judging its criterion exactly once', async () => {
   const evaluator = new RecordingHypothesisEvaluator();
   const options = baseOptions({ hypothesis: 'h1', evaluator });
@@ -209,8 +179,6 @@ it('answers exactly one evaluation, for the named hypothesis, judging its criter
   expect(result.evaluation.hypothesis).toBe('h1');
   expect(evaluator.judgedCriteria).toEqual(['h1 criterion']);
 });
-
-// ------------------------------------------------------------------ criterion 3
 
 it('carries exactly evidence, evaluation and durations — no resolved outcome and no assessment field, at the type level and on the actual answer', async () => {
   expectTypeOf<SimulateHypothesisPipelineResult>().toEqualTypeOf<{
@@ -242,8 +210,6 @@ it('never consolidates: SimulateHypothesisPipelineOptions declares no consolidat
   }>();
 });
 
-// ------------------------------------------------------------------ criterion 4
-
 it("refuses with HypothesisNotInManifestError a hypothesis name absent from the case version's manifest, before collecting or judging anything", async () => {
   const observationSource = new RecordingObservationSource();
   const evaluator = new RecordingHypothesisEvaluator();
@@ -254,8 +220,6 @@ it("refuses with HypothesisNotInManifestError a hypothesis name absent from the 
   expect(observationSource.observedConcepts).toEqual([]);
   expect(evaluator.judgedCriteria).toEqual([]);
 });
-
-// ------------------------------------------------------------------ criterion 8
 
 it('carries durations with collection and judgment only, real non-zero measured values, and no writing field at all — neither in the type nor on the answer', async () => {
   expectTypeOf<SimulateHypothesisDurations>().toEqualTypeOf<{
@@ -283,20 +247,9 @@ it('answers a judgment duration of zero when no-data means the evaluator was nev
   expect(result.durations.judgment).toBe(0);
 });
 
-// ------------------------------------------------------------- structural: never writes, never consolidates
-
 const MODULE_PATH = fileURLToPath(new URL('../../../investigation/simulate-hypothesis-pipeline.ts', import.meta.url));
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
-/**
- * Exact compiled basenames of the resolving, consolidating or write-capable modules this narrower
- * pipeline never reaches — matched by the whole final path segment, mirroring
- * investigation-pipeline.spec.ts's own import-scan discipline. investigation-pipeline.js itself is
- * deliberately not in this list: the implementation record discloses reusing its exported
- * maxElapsedMs and JUDGMENT_STAGE_BUDGET_MS (MNT-03), so importing that module is expected —
- * runInvestigationPipeline is the one export of it this pipeline must never call, which an
- * import-scan over the whole module cannot distinguish, so criterion 3's "no resolved outcome and
- * no assessment" is instead proven above by the type-level and runtime shape of the actual answer.
- */
+
 const FORBIDDEN_BASENAMES = [
   'resolve-and-narrow-input.js',
   'draft-assessment-text.js',

@@ -1,20 +1,3 @@
-// Proof for task/connector-registration/connector-configuration-persistence, over a stand-in for
-// DatabaseConnection — the driver boundary TST-03 permits a stand-in for — so
-// RelationalConnectorConfigurationStore's own mechanics are observed independently of any real
-// database: which statement text and params reach the connection, how a read row maps onto a
-// ConnectorConfiguration, exactly when BEGIN/SET LOCAL/COMMIT/ROLLBACK happen relative to
-// writeConnectorConfigurations' own per-identity upsert, and how a driver failure reaches the
-// caller as this store's own typed error. The real-effect half — that a write actually persists
-// and that a batch really rolls back together against a real constraint — is proven separately,
-// against a real database, in this file's own integration-level sibling.
-//
-// The two write-mechanics tests below were rewritten for
-// task/connector-configuration-write-upsert-hotfix: writeConnectorConfigurations no longer issues
-// a table-wide DELETE followed by one INSERT per kept-and-incoming configuration; it now issues
-// one INSERT ... ON CONFLICT (connector) DO UPDATE per given configuration, and no DELETE
-// statement at all, ever — the same reconciliation
-// relational-capability-store.repository.spec.ts's own unit sibling already carries for
-// task/capability-registry-write-upsert-hotfix's identical shape.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
@@ -23,7 +6,6 @@ import { ConnectorConfigurationStoreError } from '../../../errors/connector-conf
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalConnectorConfigurationStore } from '../../../persistence/relational-connector-configuration-store.repository.js';
 
-/** One connector configuration as the registry holds it, for writing through the store. */
 function connectorConfigurationRecord(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
@@ -32,7 +14,6 @@ function connectorConfigurationRecord(overrides: Partial<ConnectorConfiguration>
   };
 }
 
-/** A bare connection whose own query() is backed by the given implementation — the shape readConnectorConfigurations calls directly, with no transaction opened. */
 function fakeBareConnection(query: DatabaseConnection['query']): DatabaseConnection {
   return { query } as unknown as DatabaseConnection;
 }
@@ -42,7 +23,6 @@ interface IFakeClient {
   readonly release: ReturnType<typeof vi.fn>;
 }
 
-/** A fake DatabaseConnection whose connect() checks out one fake client backed by handleQuery, tracking every call to release() — the shape writeConnectorConfigurations' own transaction runs through (database-access.spec.ts's own established convention). */
 function fakeTransactionConnection(
   handleQuery: (text: string, params?: readonly unknown[]) => Promise<{ rows: unknown[] }>,
 ): { connection: DatabaseConnection; client: IFakeClient } {
@@ -51,12 +31,9 @@ function fakeTransactionConnection(
   return { connection: { connect } as unknown as DatabaseConnection, client };
 }
 
-/** Every statement text a fake transaction connection recorded, whitespace-collapsed so a multi-line SQL template compares the same as its single-line equivalent. */
 function collapsedTexts(recorded: readonly { text: string }[]): string[] {
   return recorded.map((entry) => entry.text.replace(/\s+/g, ' ').trim());
 }
-
-// ---------------------------------------------------------------- criterion 1: read
 
 it('answers a read with the connector identity and its configuration exactly as the row holds them', async () => {
   const row = { connector: 'a-connector', configuration: { method: 'GET', address: 'https://example.test' } };
@@ -71,10 +48,7 @@ it('answers a read with the connector identity and its configuration exactly as 
 it("answers the second call's own rows, never a value the first call already answered", async () => {
   const firstRow = connectorConfigurationRecord({ connector: 'first' });
   const secondRow = connectorConfigurationRecord({ connector: 'second' });
-  // The mocked query answers what the real jsonb-column driver hands back — the parsed object
-  // (see this store's own header comment) — never the JSON text form connectorConfigurationRecord()
-  // itself now holds, since that text form is the domain's own representation, resolved by
-  // toConnectorConfiguration only after this row is read.
+
   const query = vi.fn()
     .mockResolvedValueOnce({ rows: [{ ...firstRow, configuration: JSON.parse(firstRow.configuration) }] })
     .mockResolvedValueOnce({ rows: [{ ...secondRow, configuration: JSON.parse(secondRow.configuration) }] });
@@ -103,8 +77,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(caught).toBeInstanceOf(ConnectorConfigurationStoreError);
   expect((caught as Error).cause).toBe(driverFailure);
 });
-
-// ---------------------------------------------------------------- write mechanics: per-identity upsert inside one transaction, task/connector-configuration-write-upsert-hotfix criteria 1-3
 
 it('upserts each given configuration by its own connector identity, inside one transaction, and never sends a DELETE', async () => {
   const recorded: { text: string; params?: readonly unknown[] }[] = [];
@@ -169,8 +141,6 @@ it("raises this store's own typed error, carrying the driver failure as its caus
   expect(client.query).toHaveBeenCalledWith('ROLLBACK');
   expect(client.release).toHaveBeenCalledTimes(1);
 });
-
-// ---------------------------------------------------------------- criterion 1: never a file
 
 it('this store and the connector-registry module it implements open no file on disk', async () => {
   const paths = [

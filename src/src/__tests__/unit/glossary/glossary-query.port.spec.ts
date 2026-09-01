@@ -1,19 +1,9 @@
-// Proof for the published glossary-query contract: a resolution answers a
-// vocabulary term or a concept exactly as the glossary currently holds it,
-// states an absence as data naming what was asked, and reads through the
-// store on every call, so nothing survives the holding changing. The store
-// boundary is an in-memory stand-in; no test here touches a file.
 import { expect, it } from 'vitest';
 import type { IGlossaryQuery } from '../../../glossary/glossary-query.port.js';
 import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
 import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
 
-/**
- * Stands in for the store boundary: a holding a test can change between two
- * reads, and an injectable failure, so the query is exercised without any
- * filesystem while its resolution logic stays real.
- */
 class MutableGlossaryStore implements IGlossaryStore {
   private readonly vocabularies = new Map<TermVocabulary, readonly GlossaryTerm[]>();
   private concepts: readonly ConceptRegistration[] = [];
@@ -42,12 +32,6 @@ class MutableGlossaryStore implements IGlossaryStore {
     this.vocabularies.set(vocabulary, terms);
   }
 
-  /**
-   * Adds exactly the given terms this vocabulary does not already hold by
-   * name, and touches nothing else — the same additive, no-delete semantics
-   * RelationalGlossaryStore.insertMissingTerms has
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
-   */
   public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
     const held = this.vocabularies.get(vocabulary) ?? [];
     const names = new Set(held.map((term) => term.name));
@@ -69,7 +53,6 @@ class MutableGlossaryStore implements IGlossaryStore {
   }
 }
 
-/** The subject under test, held as the published contract rather than as the class behind it. */
 function queryOver(store: MutableGlossaryStore): IGlossaryQuery {
   return new GlossaryService(store);
 }
@@ -123,7 +106,7 @@ it('no longer answers a term the holding no longer carries, even after answering
   const store = new MutableGlossaryStore();
   store.holdTerms('action', [{ name: 'a-replaced-term' }]);
   const query = queryOver(store);
-  await query.readVocabularyTerm('action', 'a-replaced-term'); // arranged to bait a remembered holding
+  await query.readVocabularyTerm('action', 'a-replaced-term');
   store.holdTerms('action', [{ name: 'a-new-term' }]);
 
   const resolution = await query.readVocabularyTerm('action', 'a-replaced-term');

@@ -1,8 +1,3 @@
-// Proof for the glossary's holding: every vocabulary answers each name exactly
-// once, a concept declares its name, accepted subject types and ttl in seconds
-// with sixty as the default where its registration states none, and the two
-// non-conclusion outcomes are held from the first outcome read on. The store
-// boundary is an in-memory stand-in, so no test here touches a file.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -12,14 +7,8 @@ import type { IGlossaryStore } from '../../../glossary/glossary-store.port.js';
 import { GlossaryService } from '../../../glossary/glossary.service.js';
 import type { Concept, ConceptRegistration, GlossaryTerm, TermVocabulary } from '../../../glossary/terms.js';
 
-/**
- * The default the criterion states in its own words — sixty seconds — spelled
- * here rather than imported from the source, so the test fails if the source's
- * constant drifts from what the task states.
- */
 const SIXTY_SECONDS = 60;
 
-/** Stands in for the store boundary, so the service is exercised without any filesystem. */
 class InMemoryGlossaryStore implements IGlossaryStore {
   private readonly records = new Map<TermVocabulary, readonly GlossaryTerm[]>();
   private readonly writeTermsBlocked = new Set<TermVocabulary>();
@@ -40,12 +29,6 @@ class InMemoryGlossaryStore implements IGlossaryStore {
     this.records.set(vocabulary, terms);
   }
 
-  /**
-   * Adds exactly the given terms this vocabulary does not already hold by
-   * name, and touches nothing else — the same additive, no-delete semantics
-   * RelationalGlossaryStore.insertMissingTerms has
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
-   */
   public async insertMissingTerms(vocabulary: TermVocabulary, terms: readonly GlossaryTerm[]): Promise<void> {
     const held = this.held(vocabulary);
     const names = new Set(held.map((term) => term.name));
@@ -59,36 +42,19 @@ class InMemoryGlossaryStore implements IGlossaryStore {
     return this.concepts;
   }
 
-  /**
-   * Replaces the whole held set of concept registrations with exactly the
-   * given concepts, the same whole-replace effect
-   * RelationalGlossaryStore.writeConcepts has for its own two tables —
-   * lets registerConcept's create-or-replace-in-place behavior be observed
-   * through a later readConcepts()/concepts() call, without any filesystem.
-   */
   public async writeConcepts(concepts: readonly Concept[]): Promise<void> {
     this.concepts = concepts;
   }
 
-  /** What the store now holds for one vocabulary, for asserting what a read persisted. */
   public held(vocabulary: TermVocabulary): readonly GlossaryTerm[] {
     return this.records.get(vocabulary) ?? [];
   }
 
-  /**
-   * Simulates a vocabulary where a whole-table replace (writeTerms) now
-   * fails because a row it already holds is permanently referenced
-   * elsewhere in the database — a released case version's fallback_outcome
-   * or a released hypothesis-revision's resolution_outcome
-   * (task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome).
-   * insertMissingTerms, which never deletes, stays unaffected.
-   */
   public blockWriteTerms(vocabulary: TermVocabulary): void {
     this.writeTermsBlocked.add(vocabulary);
   }
 }
 
-/** Captures a promise's rejection, failing where it resolves instead. */
 async function rejectionOf(promise: Promise<unknown>): Promise<unknown> {
   try {
     await promise;
@@ -172,8 +138,6 @@ it('holds the default of sixty seconds for a concept whose registration states n
   ]);
 });
 
-// -------------------- task/concept-authoring/glossary-store-concept-write
-
 it('creates a concept with its accepted subject types and its ttl, at a name the glossary does not yet hold', async () => {
   const store = new InMemoryGlossaryStore();
   const glossary = new GlossaryService(store);
@@ -250,8 +214,6 @@ it('replaces a concept in place at a name the glossary already holds, rather tha
     ]),
   );
 });
-
-// -------------------- task/concept-description/concept-registration-requires-a-description
 
 it('refuses a concept registration naming no description, with a typed ConceptDescriptionRequiredError (criterion 1)', async () => {
   const store = new InMemoryGlossaryStore();
@@ -400,19 +362,12 @@ it('seeds only the absent non-conclusion outcome beside what the store already h
   ]);
 });
 
-// -------------------- task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome
-
 it(
   'resolves a non-conclusion outcome without throwing even though some other outcome is now permanently referenced elsewhere, and leaves that other outcome held unchanged',
   async () => {
     const store = new InMemoryGlossaryStore();
     await store.writeTerms('outcome', [{ name: 'a-permanently-referenced-outcome' }]);
-    // Simulates release-immutability elsewhere in the database having made this
-    // row permanent: a whole-table replace (writeTerms) of 'outcome' can no
-    // longer succeed, exactly as a real DELETE against a permanently
-    // referenced row raises Postgres' own foreign-key violation. Before this
-    // task's fix, withNonConclusionOutcomes topped up through writeTerms and
-    // this call would reject with that store failure instead of resolving.
+
     store.blockWriteTerms('outcome');
     const glossary = new GlossaryService(store);
 
@@ -469,8 +424,6 @@ it('leaves a vocabulary other than outcome unseeded and answers it empty', async
   expect(answered).toEqual([]);
   expect(store.held('recipient')).toEqual([]);
 });
-
-// -------------------- task/glossary-query-http/list-vocabulary-terms-query-extension
 
 it('answers a page of a vocabulary with the full pagination envelope, its page count computed from the total and the limit (API-03)', async () => {
   const store = new InMemoryGlossaryStore();
@@ -569,11 +522,6 @@ it('answers a page count of zero for a non-positive limit, rather than dividing 
   expect(page.pageCount).toBe(0);
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected
-
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')

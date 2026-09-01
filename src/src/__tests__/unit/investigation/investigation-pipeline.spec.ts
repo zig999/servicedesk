@@ -1,18 +1,3 @@
-// Proof for task/case-simulation-pipeline/extract-shared-investigation-pipeline:
-// runInvestigationPipeline is investigation-pipeline.ts's own new exported
-// boundary, callable directly rather than only through run-diagnosis.ts's own
-// composition. Two of this record's own fields — resolved and prompts — never
-// reach a diagnose caller: run-diagnosis.ts's own runDiagnosis destructures
-// only evidence/evaluations/assessment/cost/durations off this call's answer,
-// so run-diagnosis.spec.ts's own already-delivered, still-passing suite
-// proves this task's own criteria 2, 4 and 5 (diagnose's composition calling
-// this function, an identical response, write-before-respond ordering) but
-// cannot exercise this record's own complete shape, or this file's own
-// stage-sequencing guarantee, since neither ever surfaces through diagnose's
-// own written Investigation. Both are exercised here instead, directly
-// against the exported function. Fake timers stand in for wall-clock time
-// throughout, the same discipline run-diagnosis.spec.ts already keeps, since
-// evidence-collection-stage.ts measures elapsed_ms via Date.now().
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -36,13 +21,10 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-// --------------------------------------------------------------- fixtures
-
 const A_SUBJECT_ATTRIBUTES: readonly SubjectAttributeValue[] = [{ attribute: 'id', value: 'subject-1' }];
 const A_SUBJECT: Subject = { type: 'ont', attributes: A_SUBJECT_ATTRIBUTES };
 const A_REQUESTER = 'requester-1';
 
-/** One hypothesis, defaulted so a test states only its name and what it collects — mirrors run-diagnosis.spec.ts's own fixture convention. */
 function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   return {
     name,
@@ -52,7 +34,6 @@ function aHypothesis(name: string, collects: readonly string[]): Hypothesis {
   };
 }
 
-/** One manifest entry mirroring one flat Hypothesis fixture, position assigned from array order. */
 function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntry {
   return {
     position,
@@ -66,7 +47,6 @@ function manifestEntryOf(hypothesis: Hypothesis, position: number): ManifestEntr
   };
 }
 
-/** A minimally valid, single-hypothesis Case, so a test states only what it departs from. */
 function aCase(overrides: Partial<Case> = {}): Case {
   const hypotheses = overrides.hypotheses ?? [aHypothesis('h1', ['concept-a'])];
   return {
@@ -88,7 +68,6 @@ function schemaDeclaring(...fields: readonly string[]): string {
   return JSON.stringify({ type: 'object', properties: Object.fromEntries(fields.map((field) => [field, { type: 'string' }])) });
 }
 
-/** A capability registered for exactly one concept, its output schema declaring the "a-field" every citation in this file names. */
 function aCapability(overrides: Partial<Capability> & { readonly concept: string }): Capability {
   return {
     name: `capability-for-${overrides.concept}`,
@@ -102,7 +81,6 @@ function aCapability(overrides: Partial<Capability> & { readonly concept: string
   };
 }
 
-/** Holds whatever capabilities a test registers, resolving every other concept as unheld. */
 class FakeCapabilityQuery implements ICapabilityQuery {
   private readonly held = new Map<string, Capability>();
   public hold(capability: Capability): void {
@@ -117,7 +95,6 @@ class FakeCapabilityQuery implements ICapabilityQuery {
   }
 }
 
-/** Stands in for the published glossary-query port, holding no concept at all — this file's own tests are about pipeline sequencing, never about the description snapshot itself (evidence-collection-stage.spec.ts is). */
 class FakeGlossaryQuery implements IGlossaryQuery {
   public async readVocabularyTerm(vocabulary: TermVocabulary, name: string): Promise<TermResolution> {
     return { held: false, vocabulary, name };
@@ -125,10 +102,7 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   public async readConcept(name: string): Promise<ConceptResolution> {
     return { held: false, name };
   }
-  // Minimal stubs kept only to satisfy the widened IGlossaryQuery interface
-  // (task/glossary-query-http/list-vocabulary-terms-query-extension,
-  // task/glossary-query-http/list-concepts-query-extension): this file's own
-  // scenarios never call either.
+
   public async listVocabularyTerms(): Promise<never> {
     throw new Error('FakeGlossaryQuery.listVocabularyTerms is not scripted for this file');
   }
@@ -137,7 +111,6 @@ class FakeGlossaryQuery implements IGlossaryQuery {
   }
 }
 
-/** Answers the given fixed outcome for every criterion, immediately — a stand-in for a fast, always-decided evaluator. */
 class ImmediateHypothesisEvaluator implements IHypothesisEvaluator {
   public constructor(private readonly outcome: EvaluationOutcome) {}
   public async evaluate(): Promise<EvaluationOutcome> {
@@ -145,7 +118,6 @@ class ImmediateHypothesisEvaluator implements IHypothesisEvaluator {
   }
 }
 
-/** Counts how many times it was ever called, answering a fixed confirmed outcome — a spy on whether judgment was reached at all. */
 class CountingHypothesisEvaluator implements IHypothesisEvaluator {
   public calls = 0;
   public async evaluate(): Promise<EvaluationOutcome> {
@@ -154,7 +126,6 @@ class CountingHypothesisEvaluator implements IHypothesisEvaluator {
   }
 }
 
-/** Counts how many times it was ever called, answering ok unconditionally — a spy on whether collection was reached at all. */
 class CountingObservationSource implements IObservationSource {
   public calls = 0;
   public async observeConcept(): Promise<ObservationOutcome> {
@@ -163,7 +134,6 @@ class CountingObservationSource implements IObservationSource {
   }
 }
 
-/** Answers one fixed ConsolidationOutcome regardless of input — carrying real, non-zero usage/elapsed_ms/prompt, unlike FakeAssessmentConsolidator's own zero-valued placeholder. */
 class ScriptedAssessmentConsolidator implements IAssessmentConsolidator {
   public constructor(private readonly outcome: ConsolidationOutcome) {}
   public async consolidate(): Promise<ConsolidationOutcome> {
@@ -171,12 +141,6 @@ class ScriptedAssessmentConsolidator implements IAssessmentConsolidator {
   }
 }
 
-/**
- * The Evidence a held capability's ok observation assembles for `concept`, at now=0 under frozen
- * fake timers. fields is always [{ name: 'a-field', type: 'string' }]: every aCapability() fixture
- * in this file declares that exact output schema. concept_description is always '': FakeGlossaryQuery
- * above holds no concept at all.
- */
 function expectedOkEvidence(concept: string, observation: string): Evidence {
   return {
     concept,
@@ -194,7 +158,6 @@ function expectedOkEvidence(concept: string, observation: string): Evidence {
   };
 }
 
-/** The base fixture's own judgment call: confirmed, with real, non-zero usage/elapsed_ms so cost and durations are never a coincidental zero. */
 const BASE_EVALUATOR_OUTCOME: EvaluationOutcome = {
   verdict: 'confirmed',
   citations: [{ concept: 'concept-a', field: 'a-field' }],
@@ -202,7 +165,6 @@ const BASE_EVALUATOR_OUTCOME: EvaluationOutcome = {
   elapsed_ms: 50,
 };
 
-/** The base fixture's own consolidation call, for the same reason. */
 const BASE_CONSOLIDATION_OUTCOME: ConsolidationOutcome = {
   text: 'the drafted assessment text',
   usage: { input_tokens: 1, output_tokens: 2 },
@@ -210,7 +172,6 @@ const BASE_CONSOLIDATION_OUTCOME: ConsolidationOutcome = {
   prompt: 'the consolidation prompt',
 };
 
-/** The whole InvestigationPipelineOptions, valid and resolving by default: one hypothesis, one concept, confirmed. */
 function baseOptions(overrides: Partial<InvestigationPipelineOptions> = {}): InvestigationPipelineOptions {
   const capabilities = new FakeCapabilityQuery();
   capabilities.hold(aCapability({ concept: 'concept-a' }));
@@ -240,8 +201,6 @@ async function runDiagnosisImportSpecifiers(): Promise<readonly string[]> {
   const source = await readFile(RUN_DIAGNOSIS_MODULE_PATH, 'utf8');
   return [...source.matchAll(IMPORT_SPECIFIER_PATTERN)].map((match) => match[1]);
 }
-
-// ------------------------------------------------ criterion 1: the complete record
 
 it('answers one record carrying evidence, evaluations, resolved, assessment, cost, durations and prompts together, for one confirmed hypothesis', async () => {
   const options = baseOptions();
@@ -283,8 +242,6 @@ it('runs buildSubject before collecting any evidence or judging any hypothesis, 
   expect(evaluator.calls).toBe(0);
 });
 
-// ------------------------------------------------------------------ inference
-
 it("carries only the consolidation call's own prompt under prompts.writing, never merging in a judged hypothesis's own distinct judgment prompt", async () => {
   const options = baseOptions({
     evaluator: new ImmediateHypothesisEvaluator({
@@ -304,8 +261,6 @@ it("carries only the consolidation call's own prompt under prompts.writing, neve
 
   expect(result.prompts).toEqual({ writing: 'the consolidation prompt' });
 });
-
-// ------------------------------------------------------------------- criterion 3
 
 it('imports none of the five stage-owning modules into run-diagnosis.ts, since its only route to any of the five stages is through investigation-pipeline.ts', async () => {
   const specifiers = await runDiagnosisImportSpecifiers();

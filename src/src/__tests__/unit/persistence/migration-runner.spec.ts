@@ -1,7 +1,3 @@
-// Proof for task/relational-substrate/migration-step, criterion 1's ordering clause and criterion
-// 3's "applies no script twice": applyPendingMigrations, over a stand-in for the filesystem and for
-// the driver connection — both boundaries TST-03 permits a stand-in for — so ordering and the
-// pending-file filter are observed independently of any real database or real migration file.
 import { afterEach, expect, it, vi } from 'vitest';
 
 const { readdirMock, readFileMock } = vi.hoisted(() => ({
@@ -22,10 +18,8 @@ import { applyPendingMigrations } from '../../../persistence/migration-runner.js
 
 const MIGRATIONS_DIRECTORY = 'a-migrations-directory';
 
-/** The one substring the bookkeeping-existence check's own statement carries, distinguishing it from every other statement this module ever sends. */
 const BOOKKEEPING_EXISTENCE_QUERY_MARKER = 'to_regclass';
 
-/** The marker every fake migration file's own "SQL" carries, so a test can tell which statements were the migration files' own text rather than the bookkeeping check or its recording INSERT. */
 const RAN_MARKER_PREFIX = "SELECT 'ran ";
 
 afterEach(() => {
@@ -75,12 +69,6 @@ it('sends no further statement once every migration file is already recorded as 
 
   expect(readFileMock).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------------------------------
-// Proof for task/migration-runner-comment-hang-corrective/strip-leading-comments-before-applying:
-// applyMigrationFile strips a migration file's own `--` comment lines and blank lines before its
-// text ever reaches connection.query, over the same filesystem/connection stand-ins as above
-// (TST-03), so what actually reaches the connection is observed without a real database.
 
 it('executes the real statement in a file whose text is entirely comment lines and blank lines above it, never sending any comment line to the connection', async () => {
   readdirMock.mockResolvedValue(['0001-a.sql']);
@@ -139,14 +127,6 @@ it('drops only the whole comment line inside a multi-line statement, leaving eve
   expect(executedTexts).toContain('SELECT\n  id,\n  name\nFROM t;');
 });
 
-/**
- * Pins the implementation's own recorded inference: stripping reaches a comment block sitting
- * between two statements, not only a block leading the whole file. An implementation that
- * stripped only a leading comment block would still send this migration's second statement
- * prefixed by its own untouched "-- comment for the second statement" line — this project's own
- * migration scripts place a comment block ahead of nearly every individual statement, not only at
- * the top of the file (see migration-runner.ts's own header comment on stripCommentsAndBlankLines).
- */
 it('strips a comment block sitting between two statements, not only a comment block leading the whole file', async () => {
   readdirMock.mockResolvedValue(['0001-a.sql']);
   readFileMock.mockResolvedValue(

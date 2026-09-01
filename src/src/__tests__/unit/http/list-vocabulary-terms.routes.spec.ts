@@ -1,16 +1,3 @@
-// Proof for task/glossary-query-http/list-vocabulary-terms-route: GET /v1/glossary/{vocabulary}
-// exercised through Fastify's own app.inject() against a local instance registering
-// createListVocabularyTermsRoutesPlugin() and error-handler.middleware.ts's own
-// handleUnexpectedError directly — the same shape list-cases.routes.spec.ts and
-// read-vocabulary-term.routes.spec.ts already establish. The published glossary-query read is a
-// stand-in here (TST-03 — a stand-in replaces a boundary, never business logic):
-// IGlossaryQuery.listVocabularyTerms is exactly the seam ListVocabularyTermsControllerDependencies
-// declares, stood in for by a vi.fn(); the domain behavior behind that seam is proved separately in
-// glossary.service.spec.ts and glossary-query.port.spec.ts. This file proves only that the route,
-// controller and DTO carry that contract's promise onto the wire unchanged, that the closed
-// vocabulary enum is enforced before the query is ever reached, and that the controller's own
-// pagination-bound resolution (defaultLimit, maxLimit, offset defaulting to 0) behaves exactly as
-// list-cases.controller.ts's own already does.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import { TERM_VOCABULARIES, type GlossaryTerm, type TermVocabulary } from '../../../glossary/terms.js';
@@ -24,7 +11,6 @@ type ListVocabularyTermsMock = ReturnType<
   typeof vi.fn<(vocabulary: TermVocabulary, pagination: PaginationRequest) => Promise<PaginatedResponse<GlossaryTerm>>>
 >;
 
-/** A page of two terms of one vocabulary, every PaginatedResponse<GlossaryTerm> field present, overridable per test. */
 function heldPage(overrides: Partial<PaginatedResponse<GlossaryTerm>> = {}): PaginatedResponse<GlossaryTerm> {
   return {
     data: [{ name: 'term-a' }, { name: 'term-b' }],
@@ -36,21 +22,13 @@ function heldPage(overrides: Partial<PaginatedResponse<GlossaryTerm>> = {}): Pag
   };
 }
 
-/**
- * One Fastify instance registering exactly this route plugin plus the shared error handler —
- * mirrors list-cases.routes.spec.ts's own buildTestApp(). defaultLimit and maxLimit default to two
- * distinct, deliberately non-coincidental figures so a test asserting one is never satisfied by
- * mistaking it for the other.
- */
 function buildTestApp(bounds: { defaultLimit?: number; maxLimit?: number } = {}): {
   app: FastifyInstance;
   listVocabularyTerms: ListVocabularyTermsMock;
 } {
   const listVocabularyTerms: ListVocabularyTermsMock = vi.fn();
   const glossaryQuery: IGlossaryQuery = {
-    // readVocabularyTerm, readConcept and listConcepts are no part of what this file proves
-    // (this route's own IGlossaryQuery seam is listVocabularyTerms alone) — stubbed only so this
-    // fake keeps satisfying IGlossaryQuery; this route under test never calls any of them.
+
     readVocabularyTerm: () => Promise.reject(new Error('readVocabularyTerm is not scripted for this file')),
     readConcept: () => Promise.reject(new Error('readConcept is not scripted for this file')),
     listVocabularyTerms,
@@ -73,8 +51,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it("answers 200 with the paginated page of every term the named vocabulary currently holds, for a request naming its own offset and limit", async () => {
   const built = buildTestApp();
@@ -128,8 +104,6 @@ it("answers each of two requests against different vocabularies with that reques
   expect((second.json() as PaginatedResponse<GlossaryTerm>).data).toEqual([{ name: 'an-action-term' }]);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('answers 400 for a :vocabulary segment naming none of the five term vocabularies, never reaching listVocabularyTerms', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -141,8 +115,6 @@ it('answers 400 for a :vocabulary segment naming none of the five term vocabular
   expect(body.error.code).toBe('VALIDATION_ERROR');
   expect(built.listVocabularyTerms).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ inferred pagination resolution
 
 it('defaults offset to 0 when the request names none', async () => {
   const built = buildTestApp();
@@ -184,8 +156,6 @@ it('passes a limit exactly equal to the configured maxLimit through unclamped', 
 
   expect(built.listVocabularyTerms).toHaveBeenCalledWith('recipient', { offset: 0, limit: 50 });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers the paginated envelope with an empty data array and a total of zero, unchanged, when a recognized vocabulary currently holds no term', async () => {
   const built = buildTestApp();

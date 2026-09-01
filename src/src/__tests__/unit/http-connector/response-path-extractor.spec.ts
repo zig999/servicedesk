@@ -1,8 +1,3 @@
-// Proof for task/http-observation-runtime/response-path-extractor: the pure translation that
-// reads a field-name-to-path mapping over an arbitrary parsed HTTP response body and returns a
-// flat object keyed exactly by that mapping's own field names. No stand-in is used anywhere below
-// (TST-03): extractResponseFields is a pure function of its own arguments, and every body below is
-// a plain literal exercising the function directly.
 import { expect, it } from 'vitest';
 import { extractResponseFields } from '../../../http-connector/response-path-extractor.js';
 

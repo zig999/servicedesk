@@ -1,31 +1,3 @@
-// Proof for task/connector-diagnostics/test-connector-route: POST
-// /v1/test-connector exercised through Fastify's own app.inject() against a
-// local instance registering createTestConnectorRoutesPlugin() and
-// error-handler.middleware.ts's own handleUnexpectedError directly — the
-// same shape register-capability.routes.spec.ts already establishes.
-//
-// Three boundaries are stood in for (TST-03), never business logic:
-// readCapabilityByIdentity, readConnectorConfiguration, and the network
-// itself — the controller's own injectable httpClient, a vi.fn() never
-// wired to a real fetch. No test below makes a real network call or reaches
-// a real store. resolveConnectorRequest and issueConnectorHttpCall are
-// pre-existing, separately proven modules (connector-request-resolver.spec.ts,
-// connector-http-issuer's own coverage through
-// http-declarative-observation-source.adapter.spec.ts); this file proves
-// only that the route, controller and DTO carry their behavior onto the
-// wire for this new use case — including, for criterion 2, that the request
-// actually sent embeds a subject-attribute and a requester value that only
-// resolveConnectorRequest's own placeholder substitution could have
-// produced from the connector configuration's own '${subject:id}' and
-// '${requester}' templates.
-//
-// Criterion 6 (no evidence and no citation is written) cannot be proven by
-// asserting an absence of calls to a store or module the mocked dependency
-// set has no reference to at all — a mock cannot demonstrate that a side
-// effect it has no capacity to produce did not happen. What is asserted
-// instead is structural: TestConnectorControllerDependencies' own shape
-// carries only two reads and an HTTP client, so there is nothing else for
-// the controller to call even if it wanted to.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Capability } from '../../../capability-registry/capability.js';
@@ -44,7 +16,6 @@ type ReadConnectorConfigurationMock = ReturnType<
 >;
 type HttpClientMock = ReturnType<typeof vi.fn<(input: RequestInfo | URL, init?: RequestInit) => Promise<Response>>>;
 
-/** Every attribute testConnectorRequestSchema requires, overridable per test — the same "state only what a test is about" convention register-capability.routes.spec.ts's own validBody keeps. */
 function validBody(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     capability: { name: 'a-name', version: '1.0.0' },
@@ -55,7 +26,6 @@ function validBody(overrides: Record<string, unknown> = {}): Record<string, unkn
   };
 }
 
-/** A capability as readCapabilityByIdentity would resolve it, held. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-name',
@@ -70,7 +40,6 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A connector configuration resolution whose own address and headers each embed one placeholder — '${subject:id}' and '${requester}' — so a test can tell whether resolveConnectorRequest's own substitution actually ran over the given subject and requester. */
 function heldConnectorConfigurationResolution(
   configurationOverrides: Readonly<Record<string, unknown>> = {},
 ): ConnectorConfigurationResolution {
@@ -90,7 +59,6 @@ function heldConnectorConfigurationResolution(
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors register-capability.routes.spec.ts's own buildTestApp. */
 function buildTestApp(): {
   app: FastifyInstance;
   readCapabilityByIdentity: ReadCapabilityByIdentityMock;
@@ -119,8 +87,6 @@ afterEach(async () => {
   app = undefined;
 });
 
-// ------------------------------------------------------------------ criterion 1
-
 it('returns the raw HTTP status, headers, body and elapsed time of the call actually made, distinct from the route\'s own 200 wrapper', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -145,8 +111,6 @@ it('returns the raw HTTP status, headers, body and elapsed time of the call actu
   expect(body.response.elapsedMs).toBeGreaterThanOrEqual(0);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('issues the exact request resolveConnectorRequest assembles from the given subject and the connector configuration — the subject-attribute and requester placeholders resolved, not left as literal template text', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -166,22 +130,6 @@ it('issues the exact request resolveConnectorRequest assembles from the given su
   expect(body.request.headers['x-requester']).toBe('a-requester');
 });
 
-// -------------------------------- task/connector-configuration-registration-conformance/test-connector-parses-stored-configuration
-//
-// The criterion's own "issues the call the configuration declares, deriving
-// method, responseMap and statusMap from the parsed object" is proven for
-// `method` by the two criterion-2 tests above: heldConnectorConfigurationResolution()
-// stores configuration as JSON *text* (JSON.stringify), and the outbound
-// httpClient call above is only ever reached once that text has been parsed
-// back into an object and its own 'GET' read from it — an unparsed or
-// wrongly-parsed configuration would leave `configuration.method` undefined
-// and the request would never be issued at all (see below). What those two
-// tests do not observe is `responseMap` and `statusMap`: this route never
-// surfaces either in its own response, so the only way to tell they were
-// actually read from the parsed text — rather than replaced with an
-// always-valid default — is to store a stored text whose own responseMap or
-// statusMap, once parsed, is not well-formed, and confirm the call is
-// refused for exactly that reason rather than issued anyway.
 it("refuses a test-connector request whose stored connector configuration text parses to a responseMap holding a non-string value, proving responseMap is read from the parsed stored text rather than defaulted past", async () => {
   const built = buildTestApp();
   app = built.app;
@@ -214,8 +162,6 @@ it("refuses a test-connector request whose stored connector configuration text p
   expect(built.httpClient).not.toHaveBeenCalled();
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('refuses a request naming a capability that is not registered at all, with the status the status map assigns CapabilityNotRegisteredForTestError', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -229,8 +175,6 @@ it('refuses a request naming a capability that is not registered at all, with th
   expect(built.readConnectorConfiguration).not.toHaveBeenCalled();
   expect(built.httpClient).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 4
 
 it("refuses a request naming a connector configuration the capability's own connector does not match, with the status the status map assigns CapabilityConnectorMismatchError", async () => {
   const built = buildTestApp();
@@ -249,8 +193,6 @@ it("refuses a request naming a connector configuration the capability's own conn
   expect(built.readConnectorConfiguration).not.toHaveBeenCalled();
   expect(built.httpClient).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ criterion 5
 
 it("assembles the subject examined from each request's own subject type and attribute-values alone — two requests at the same capability and connector each address the outbound call with their own request's own subject, never a shared or cached one", async () => {
   const built = buildTestApp();
@@ -274,26 +216,13 @@ it("assembles the subject examined from each request's own subject type and attr
   expect(built.httpClient.mock.calls[1]?.[0]).toBe('https://api.example.com/subjects/subject-value-B');
 });
 
-// ------------------------------------------------------------------ criterion 6
-
 it('demonstrates structurally, not by observing an absent side effect, that TestConnectorControllerDependencies exposes only two reads and an HTTP client — no evidence-writing or citation-writing function exists in this shape for the controller to call, since a mocked dependency set has no capacity to prove the absence of a side effect it cannot produce', () => {
   const built = buildTestApp();
   app = built.app;
 
-  // buildTestApp() above typed its own dependencies object literal as
-  // TestConnectorControllerDependencies (`const dependencies:
-  // TestConnectorControllerDependencies = { readCapabilityByIdentity,
-  // readConnectorConfiguration, httpClient }`). If that type ever gained a
-  // fourth member — an evidence-writer or a citation-writer — that literal
-  // would fail the project's own strict compiler configuration (STK-01)
-  // before this test ever ran, missing the newly required member. What
-  // follows is the runtime half: the exact key set the controller was
-  // actually constructed with, today.
   const dependencyKeys = Object.keys(built.dependencies).sort();
   expect(dependencyKeys).toEqual(['httpClient', 'readCapabilityByIdentity', 'readConnectorConfiguration']);
 });
-
-// ------------------------------------------------------------------ criterion 7
 
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
@@ -324,8 +253,6 @@ it('answers 200 for a request carrying an authorization header naming no credent
   expect(response.statusCode).toBe(200);
 });
 
-// ------------------------------------------------------------------ edge cases — basic request-body validation
-
 it('answers 400 for a request whose body omits subject entirely, without reaching any dependency', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -351,15 +278,6 @@ it('answers 400 for a request whose body omits the capability identity entirely,
   expect(built.readCapabilityByIdentity).not.toHaveBeenCalled();
   expect(built.httpClient).not.toHaveBeenCalled();
 });
-
-// -------------------------------- task/connector-configuration-and-placeholder-contract/report-placeholder-declaration-in-connector-test
-//
-// The tested capability's own input_schema declares properties distinct from
-// "id" for the first two tests below, so a reader can tell the reported gap
-// comes from a schema that actually declares something rather than from the
-// shared check's own defensive "malformed reads as declaring nothing"
-// posture (already proven separately in
-// connector-placeholder-declaration-check.spec.ts).
 
 it("names, in its own orphaned_placeholders, a Subject-attribute placeholder the tested connector configuration's call text embeds that the tested capability's own input schema does not declare", async () => {
   const built = buildTestApp();

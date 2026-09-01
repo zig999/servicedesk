@@ -1,49 +1,3 @@
-// Proof for task/relational-stores/investigation-store, against a real, externally provisioned
-// PostgreSQL database (constraints/the-database-is-externally-provisioned) reached through
-// DATABASE_URL — RelationalInvestigationStore is what is under test, so nothing here stands in for it
-// (TST-03); the mechanics (which statement text and params are sent, exactly when
-// BEGIN/SET LOCAL/COMMIT/ROLLBACK/release happen) are proven independently of a real database in this
-// file's own unit-level sibling instead.
-//
-// This is also where the rest of this task's own UNDERDETERMINED note is excluded, beyond what the
-// unit-level sibling already proves over params and assembled shape: "leaves nothing behind ... when
-// an evidence item's own capability/version violates a real foreign key" below writes an evidence item
-// naming a capability the real capabilities table does not hold, and confirms the real foreign key —
-// not only this store's own shape — refuses it, and that nothing from that write survives.
-//
-// Every statement below names its table unqualified, resolving against whatever schema the
-// connecting role's own server-side default names, the same convention database-access.spec.ts's,
-// relational-case-store.repository.spec.ts's and relational-capability-store.repository.spec.ts's
-// own integration proofs already document at length.
-//
-// Every row this file writes carries an investigation-store-prefixed marker plus a fresh randomUUID(),
-// so no test here can collide with a row another suite file wrote, and every row a test actually
-// commits is deleted again in this file's own afterEach; the atomicity and write-once tests below
-// register no investigation id for that cleanup where nothing survives the rollback, or clean up the
-// original stored record explicitly, the same convention relational-case-store.repository.spec.ts's
-// own tests already follow.
-//
-// Every case_versions row insertFixtureRows below writes names no "state" column, so
-// migrations/0009-case-version-lifecycle-schema.sql's own DEFAULT 'released' applies to it — meaning
-// the row is permanently undeletable the moment it is written (rules/knowledge/a-case-version-is-
-// written-once), and so, transitively through its own foreign keys, are the cases row it names, and
-// the fixture's own subject_types/outcomes/actions/recipients rows its subject/fallback_* columns
-// reference. cleanupWrittenFixtures below therefore runs every one of its own DELETEs through
-// deleteTolerantly, the same foreign-key-violation-only tolerance
-// create-draft.operation.spec.ts's own deleteTolerantly already establishes for exactly this
-// migration's own consequence — a real failure (any code but 23503) still surfaces.
-//
-// Several tests below write and then read back a whole investigation across five tables in one
-// transaction each — many sequential statements against Neon's own real network latency — which can
-// exceed vitest's 5000ms default per-test timeout under ordinary latency, not under any fault the test
-// is trying to provoke; every such test below passes an explicit 15000ms timeout as its own third
-// argument, the same fix relational-glossary-store.repository.spec.ts's own integration file already
-// made for the identical reason.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses it:
-// (STK-08) DATABASE_URL is read directly from process.env below rather than through config/env.ts's
-// loadEnv, because loadEnv refuses unless every other application variable is configured too, which
-// this file has no use for.
 import { createHash, randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import { InvestigationAlreadyStoredError } from '../../../errors/investigation-already-stored.error.js';
@@ -52,16 +6,13 @@ import type { Investigation } from '../../../investigation/investigation.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
 import { RelationalInvestigationStore } from '../../../persistence/relational-investigation-store.repository.js';
 
-/** The Postgres SQLSTATE codes this suite's refusal assertions match against (TYP-04). */
 const UNIQUE_VIOLATION = '23505';
 const FOREIGN_KEY_VIOLATION = '23503';
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug, once a fixture's own case_versions row defaults to released. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -104,7 +55,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every name one fresh fixture bundle needs, generated with no database call of its own — split out of freshFixtures() below so that function stays within a function's own line budget (MNT-01). */
 function freshFixtureNames(): IFixtures {
   return {
     subjectType: `investigation-store-subject-${randomUUID()}`,
@@ -120,7 +70,6 @@ function freshFixtureNames(): IFixtures {
   };
 }
 
-/** Every row one fresh fixture bundle's own foreign keys need, inserted under the given, already-generated names. */
 async function insertFixtureRows(names: IFixtures): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1)', [names.subjectType]);
   await pool.query('INSERT INTO subject_attributes (name) VALUES ($1)', [names.subjectAttribute]);
@@ -140,7 +89,6 @@ async function insertFixtureRows(names: IFixtures): Promise<void> {
   );
 }
 
-/** Every glossary row, capability and pinned case one investigation's own foreign keys need — subject_types, subject_attributes, outcomes, actions, recipients, a concept, a capability registered under that concept, and a case_versions row referencing all of the above — freshly and uniquely named, tracked for this file's own afterEach cleanup. */
 async function freshFixtures(): Promise<IFixtures> {
   const names = freshFixtureNames();
   await insertFixtureRows(names);
@@ -148,7 +96,6 @@ async function freshFixtures(): Promise<IFixtures> {
   return names;
 }
 
-/** One extra glossary concept a test may reference beyond its own fixture bundle's own concept, tracked for this file's own afterEach cleanup. */
 async function freshConcept(): Promise<string> {
   const name = `investigation-store-concept-${randomUUID()}`;
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
@@ -161,17 +108,6 @@ interface IInvestigationOptions {
   readonly fixtures: IFixtures;
 }
 
-/**
- * One evidence item as a caller of this store would submit it, referencing exactly the capability
- * freshFixtures() just registered — split out of anIntegrationInvestigation below so that function
- * stays within a function's own line budget (MNT-01). fields/concept_description carry real,
- * non-empty values on purpose: every test below that writes and reads this item back through the
- * real database compares the written and read documents directly
- * (task/evidence-semantics-snapshot/investigation-store-persists-the-snapshot), so a non-empty pair
- * is what actually exercises fields' own real JSONB round trip through node-postgres — an empty
- * array would round-trip identically whether or not the driver's own serialize/parse pair ran at
- * all (migrations/0013-investigation-evidence-semantics-snapshot.sql).
- */
 function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][number] {
   return {
     concept: fixtures.concept,
@@ -189,7 +125,6 @@ function anIntegrationEvidence(fixtures: IFixtures): Investigation['evidence'][n
   };
 }
 
-/** A whole Investigation as a caller of this store would submit it, referencing exactly the fixtures freshFixtures() just created. */
 function anIntegrationInvestigation(options: IInvestigationOptions): Investigation {
   const { id, fixtures } = options;
   return {
@@ -210,7 +145,6 @@ function anIntegrationInvestigation(options: IInvestigationOptions): Investigati
   };
 }
 
-/** Every row this file's own tests wrote under an investigation id — citations, then evaluations, then evidence, then subject attribute-values, then the root row, in the order their own foreign keys require. */
 async function cleanupWrittenInvestigations(): Promise<void> {
   if (investigationIdsWrittenByThisTest.length === 0) return;
   await pool.query('DELETE FROM investigation_evaluation_citations WHERE investigation_id = ANY($1)', [investigationIdsWrittenByThisTest]);
@@ -221,7 +155,6 @@ async function cleanupWrittenInvestigations(): Promise<void> {
   investigationIdsWrittenByThisTest = [];
 }
 
-/** Every fixture bundle freshFixtures() wrote for this file's own tests that can still be removed, attempted in an order that always satisfies their own foreign keys — a permanently released case_versions row (this file's header comment explains why every one of them is) leaves the cases row, and the subject_types/outcomes/actions/recipients rows it names, behind, exactly as a real curator's released case would. */
 async function cleanupWrittenFixtures(): Promise<void> {
   for (const fixtures of fixtureBundlesWrittenByThisTest) {
     await deleteTolerantly('DELETE FROM case_versions WHERE slug = $1', [fixtures.caseSlug]);
@@ -246,8 +179,6 @@ afterEach(async () => {
   await cleanupWrittenFixtures();
 });
 
-// ---------------------------------------------------------------- criterion 1, criterion 5, criterion 6, criterion 7, criterion 8
-
 it(
   'reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction',
   async () => {
@@ -266,13 +197,6 @@ it(
   15000,
 );
 
-// ---------------------------------------------------------------- inference: node-postgres serializes an absent ticket_ref to NULL
-// (task/case-and-investigation-model/ticket-ref-is-optional's own recorded inference: leaving
-// write()/read() untouched here still works once Investigation.ticket_ref is optional, because
-// node-postgres converts an undefined bound parameter to SQL NULL the same way it already
-// converts an explicit null — against the real database, not the fake connection this file's own
-// unit-level sibling stands in for it with (TST-03).)
-
 it(
   "writes and reads back an investigation whose ticket_ref is undefined, storing it as a real SQL NULL and reading it back as the empty string this store's own read() already synthesizes for a null column",
   async () => {
@@ -289,8 +213,6 @@ it(
   },
   15000,
 );
-
-// ---------------------------------------------------------------- criterion 3, criterion 9
 
 it(
   "refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged",
@@ -330,8 +252,6 @@ it(
   15000,
 );
 
-// ---------------------------------------------------------------- criterion 4
-
 it('does not refuse a write for an id not already stored', async () => {
   const fixtures = await freshFixtures();
   const id = `investigation-store-new-${randomUUID()}`;
@@ -341,8 +261,6 @@ it('does not refuse a write for an id not already stored', async () => {
   await expect(store.write(anIntegrationInvestigation({ id, fixtures }))).resolves.toBeUndefined();
 });
 
-// ---------------------------------------------------------------- read of an id nothing was ever written under
-
 it('answers undefined, not a rejection, for an id nothing was ever written under', async () => {
   const store = new RelationalInvestigationStore(pool);
 
@@ -350,8 +268,6 @@ it('answers undefined, not a rejection, for an id nothing was ever written under
 
   expect(answered).toBeUndefined();
 });
-
-// ---------------------------------------------------------------- criterion 5 (multiple evidence items and evaluations)
 
 it(
   'reads back one evidence item for each concept and one evaluation for each hypothesis the investigation was written with',
@@ -371,10 +287,6 @@ it(
     await store.write(investigation);
     const answered = (await store.read(id))?.document as Investigation;
 
-    // The store reads evidence back ordered by its own concept and evaluations by their own
-    // hypothesis (this task's own delivery-record ordering inference), not by insertion order —
-    // sorting both sides the same way proves completeness (one per concept, one per hypothesis)
-    // without asserting an insertion order this criterion never claims.
     const byConcept = (a: { concept: string }, b: { concept: string }): number => a.concept.localeCompare(b.concept);
     const byHypothesis = (a: { hypothesis: string }, b: { hypothesis: string }): number => a.hypothesis.localeCompare(b.hypothesis);
     expect([...answered.evidence].sort(byConcept)).toEqual(
@@ -386,8 +298,6 @@ it(
   },
   15000,
 );
-
-// ---------------------------------------------------------------- criterion 6 (an evidence item that carries a result detail)
 
 it(
   'reads back an evidence item exactly as written when its result is not ok and it carries a result detail',
@@ -410,8 +320,6 @@ it(
   15000,
 );
 
-// ---------------------------------------------------------------- criterion 8 (no determining hypothesis named)
-
 it(
   'reads back an assessment with no determining_hypothesis when the fallback answered and none was named',
   async () => {
@@ -429,8 +337,6 @@ it(
   },
   15000,
 );
-
-// ---------------------------------------------------------------- criterion 2 (excludes a non-atomic write)
 
 it(
   'leaves nothing behind — no root row, no subject attribute-value row, no evidence row, no evaluation row, no citation row — when a second evaluation in the same write collides with an earlier one\'s own hypothesis',
@@ -461,8 +367,6 @@ it(
   },
   15000,
 );
-
-// ---------------------------------------------------------------- UNDERDETERMINED: the capability pin is a real foreign key, not only this store's own shape
 
 it(
   "refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored",

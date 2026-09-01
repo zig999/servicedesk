@@ -1,20 +1,3 @@
-// Proof for task/case-lifecycle-http/update-draft-route: PATCH
-// /v1/cases/{slug}/versions/{version} exercised through Fastify's own
-// app.inject() against a local instance registering
-// createUpdateDraftRoutesPlugin() and error-handler.middleware.ts's own
-// handleUnexpectedError directly — the same shape read-case.routes.spec.ts
-// already establishes, adapted for a write route carrying two dependencies.
-// Both ICaseStore.updateDraft and ICaseQuery.readCase are stand-ins here
-// (TST-03 — a stand-in replaces a boundary, never business logic):
-// relational-case-store.repository.ts's own updateDraft — which reads the
-// named version's own current state first and refuses through
-// CaseNotFoundError or CaseVersionNotDraftError before any write, never
-// answering a partial result — is proved separately in its own repository
-// spec; case-query.service.ts's own readCase is proved separately in
-// case-query.service.spec.ts. This file proves only that the route,
-// controller and DTO carry that pair of contracts' promises onto the wire
-// unchanged, in the write-then-read-back order update-draft.controller.ts's
-// own header comment states.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { Case, ManifestEntry, Resolution } from '../../../case/case.js';
@@ -30,12 +13,10 @@ import { createUpdateDraftRoutesPlugin } from '../../../http/update-draft.routes
 type UpdateDraftMock = ReturnType<typeof vi.fn<(slug: string, version: number, attributes: UpdateDraftBodyDto) => Promise<void>>>;
 type ReadCaseMock = ReturnType<typeof vi.fn<(slug: string, version: number) => Promise<ReadCaseResult>>>;
 
-/** domain/knowledge/resolution, whole: an outcome paired with its referral. */
 function heldResolution(outcome = 'an-outcome'): Resolution {
   return { outcome, referral: { action: 'an-action', recipient: 'a-recipient' } };
 }
 
-/** domain/knowledge/manifest-entry: one precedence position pinning one whole hypothesis-revision. */
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -49,7 +30,6 @@ function heldManifestEntry(position: number, hypothesisName: string): ManifestEn
   };
 }
 
-/** A draft case version, as case-query would read it back once updateDraft has corrected its five declared attributes — carrying neither optional attribute, the same convention read-case.routes.spec.ts's own heldDraftCase keeps. */
 function heldDraftCase(overrides: Partial<Case> = {}): Case {
   return {
     slug: 'a-slug',
@@ -66,7 +46,6 @@ function heldDraftCase(overrides: Partial<Case> = {}): Case {
   };
 }
 
-/** A full-replacement request body, every one of updateDraftBodySchema's five attributes present. */
 function validUpdateBody(): UpdateDraftBodyDto {
   return {
     title: 'an-updated-title',
@@ -77,7 +56,6 @@ function validUpdateBody(): UpdateDraftBodyDto {
   };
 }
 
-/** ICaseStore stood in whole: updateDraft alone is this file's own seam, every other operation stubbed only so this fake keeps satisfying the interface. */
 function stubCaseStore(updateDraft: UpdateDraftMock): ICaseStore {
   return {
     assembleVersion: vi.fn(),
@@ -96,7 +74,6 @@ function stubCaseStore(updateDraft: UpdateDraftMock): ICaseStore {
   };
 }
 
-/** ICaseQuery stood in whole: readCase alone is this file's own seam, the same convention read-case.routes.spec.ts's own caseQuery stub keeps for its listing siblings. */
 function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   return {
     readCase,
@@ -107,7 +84,6 @@ function stubCaseQuery(readCase: ReadCaseMock): ICaseQuery {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors read-case.routes.spec.ts's own buildTestApp, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; updateDraft: UpdateDraftMock; readCase: ReadCaseMock } {
   const updateDraft: UpdateDraftMock = vi.fn();
   const readCase: ReadCaseMock = vi.fn();
@@ -127,8 +103,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the version updateDraft corrected, read back whole through the published case-query and projected the same way read-case-route already is', async () => {
   const built = buildTestApp();
@@ -173,8 +147,6 @@ it('calls updateDraft before readCase, so the response reflects the write just m
   expect(callOrder).toEqual(['updateDraft', 'readCase']);
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('refuses with the status the status map assigns CaseVersionNotDraftError, and never reads the version back, when the named version is not draft', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -189,8 +161,6 @@ it('refuses with the status the status map assigns CaseVersionNotDraftError, and
   expect(built.readCase).not.toHaveBeenCalled();
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it('refuses with the status the status map assigns CaseNotFoundError, and never reads the version back, when no version answers the named slug and version', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -204,8 +174,6 @@ it('refuses with the status the status map assigns CaseNotFoundError, and never 
   expect(body.error.details).toEqual({ slug: 'an-absent-slug', version: 9 });
   expect(built.readCase).not.toHaveBeenCalled();
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers 400 for a body missing a required attribute, without ever reaching caseStore.updateDraft', async () => {
   const built = buildTestApp();

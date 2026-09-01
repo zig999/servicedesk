@@ -1,39 +1,3 @@
-// Proof for task/case-lifecycle-operations/release-operation, against a real, externally
-// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned) reached
-// through DATABASE_URL — ReleaseOperation is what is under test, so nothing here stands in for it
-// (TST-03): the real RelationalCaseStore, the real glossary-query and capability-query factories
-// compose it exactly the way case-lifecycle.factory.ts wires it in production.
-//
-// Every fixture below is built through the real store's own already-delivered primitives
-// (createDraft, insertHypothesisRevision, placeHypothesis, removeManifestEntry) rather than
-// hand-written SQL, the same way author-case-version.factory.spec.ts and
-// case-query.factory.spec.ts build their own fixtures through real wiring one layer down from the
-// thing under test. The vocabulary-seeding shape (subject_types, outcomes, actions, recipients,
-// concepts, concept_accepts, capabilities) mirrors the established pattern those two files and
-// relational-case-store.repository.spec.ts already keep.
-//
-// A coherence violation naming "the concept ... does not exist in the glossary" cannot be
-// constructed through this real store: hypothesis_revision_collects.concept_name is a real foreign
-// key into concepts, so a collected concept absent from the glossary refuses the fixture's own
-// setup write before release is ever reached — the same fact case-query.factory.spec.ts's own
-// header comment already discloses for the read side. This suite's own coherence-violation fixture
-// therefore registers the concept but has it accept a different subject type than the case
-// declares, and registers no capability for it at all, so both remaining coherence rules are
-// violated together, exactly the way this task's criterion 1 asks refusal to name every violation
-// together.
-//
-// This suite's own point is to release drafts for real, repeatedly — so migrations/0009's own
-// release-conditioned rules now make every released case_versions row (and its own
-// case_version_hypotheses entry) permanent: an ordinary DELETE against one is a silent no-op, and a
-// DELETE against whatever it still references (a hypothesis-revision, a glossary row) fails on that
-// surviving row's own foreign key. deleteTolerantly below runs every cleanup statement expecting
-// exactly that — the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already
-// establishes for this migration's consequence.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { Resolution } from '../../../case/case.js';
@@ -74,12 +38,10 @@ let recipientsWrittenByThisTest: string[] = [];
 let conceptsWrittenByThisTest: string[] = [];
 let capabilityNamesWrittenByThisTest: string[] = [];
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -96,7 +58,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every distinct, freshly generated glossary/capability name one test's own case needs — nothing here shared with any other test or any other suite file. */
 function freshVocabulary(): IVocabulary {
   const id = randomUUID();
   return {
@@ -110,12 +71,10 @@ function freshVocabulary(): IVocabulary {
   };
 }
 
-/** The outcome/action/recipient triple every fallback and every hypothesis-revision's own resolution below reuses, since nothing here varies the two independently. */
 function resolutionOf(vocabulary: IVocabulary): Resolution {
   return { outcome: vocabulary.outcome, referral: { action: vocabulary.action, recipient: vocabulary.recipient } };
 }
 
-/** Writes every glossary row a case_versions/hypothesis_revisions row's own foreign keys require: both subject types, the outcome, the action and the recipient — tracked for this file's own afterEach cleanup. */
 async function persistGlossary(vocabulary: IVocabulary): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [vocabulary.subjectType, vocabulary.otherSubjectType]);
   await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [vocabulary.outcome]);
@@ -127,14 +86,12 @@ async function persistGlossary(vocabulary: IVocabulary): Promise<void> {
   recipientsWrittenByThisTest.push(vocabulary.recipient);
 }
 
-/** Writes the concept row plus one concept_accepts row naming the given subject type, tracked for this file's own afterEach cleanup. */
 async function registerConceptAccepting(vocabulary: IVocabulary, subjectType: string): Promise<void> {
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [vocabulary.concept]);
   await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [vocabulary.concept, subjectType]);
   conceptsWrittenByThisTest.push(vocabulary.concept);
 }
 
-/** Registers, through the real registry, a complete read-only capability answering the vocabulary's own concept. */
 async function registerCoherentCapability(vocabulary: IVocabulary): Promise<void> {
   await createCapabilityRegistry(pool).registerCapability({
     name: vocabulary.capabilityName,
@@ -156,7 +113,6 @@ interface IDraftDescription {
   readonly resolution: Resolution;
 }
 
-/** Originates one draft version through the real store, holding when_to_use/authored_at fixed since no test here varies either. */
 async function createDraftVersion(store: RelationalCaseStore, description: IDraftDescription): Promise<number> {
   return store.createDraft({
     slug: description.slug,
@@ -181,7 +137,6 @@ interface IHypothesisDescription {
   readonly position: number;
 }
 
-/** Originates one hypothesis-revision through the real store and adopts it into the named version's manifest at the given position, answering the assigned revision number. */
 async function placeNewHypothesis(store: RelationalCaseStore, key: ICaseVersionKey, hypothesis: IHypothesisDescription): Promise<number> {
   const revision = await store.insertHypothesisRevision({
     slug: key.slug,
@@ -194,12 +149,10 @@ async function placeNewHypothesis(store: RelationalCaseStore, key: ICaseVersionK
   return revision;
 }
 
-/** Wires ReleaseOperation exactly the way case-lifecycle.factory.ts wires it in production, over the real glossary-query and capability-query. */
 function wireRelease(store: RelationalCaseStore): ReleaseOperation {
   return new ReleaseOperation(store, createGlossaryQuery(pool), createCapabilityQuery(pool));
 }
 
-/** Every row this file's own tests wrote under a case slug — collects, then the manifest, then the hypothesis-revisions, the hypothesis identities, the versions, then the case identity, in the order their own foreign keys require. */
 async function cleanupCaseRows(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
   await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
@@ -210,7 +163,6 @@ async function cleanupCaseRows(): Promise<void> {
   await deleteTolerantly('DELETE FROM cases WHERE slug = ANY($1)', [slugsWrittenByThisTest]);
 }
 
-/** Every glossary/capability row persistGlossary/registerConceptAccepting/registerCoherentCapability wrote for this file's own tests, in the order their own foreign keys require, tolerating a foreign-key violation from a row a released fixture still references. */
 async function cleanupGlossaryRows(): Promise<void> {
   if (capabilityNamesWrittenByThisTest.length > 0) {
     await deleteTolerantly('DELETE FROM capabilities WHERE name = ANY($1)', [capabilityNamesWrittenByThisTest]);
@@ -245,8 +197,6 @@ afterEach(async () => {
   capabilityNamesWrittenByThisTest = [];
 });
 
-// -------------------------------------------------------------------------------- criterion 1 (structural)
-
 it(
   'refuses releasing a draft whose manifest holds two hypothesis-revisions collecting no concept at all, ' +
     'naming both structural violations together, leaving the version in draft state with no release recorded',
@@ -275,8 +225,6 @@ it(
   },
 );
 
-// -------------------------------------------------------------------------------- criterion 1 (coherence)
-
 it(
   'refuses releasing a draft whose collected concept both rejects the declared subject type and answers no ' +
     'capability, naming both coherence violations together, leaving the version in draft state with no release recorded',
@@ -285,8 +233,8 @@ it(
     const slug = `release-operation-coherence-${randomUUID()}`;
     slugsWrittenByThisTest.push(slug);
     await persistGlossary(vocabulary);
-    await registerConceptAccepting(vocabulary, vocabulary.otherSubjectType); // accepts a subject type other than the case's own declared one
-    // Deliberately no capability registered for this concept.
+    await registerConceptAccepting(vocabulary, vocabulary.otherSubjectType);
+
     const store = new RelationalCaseStore(pool);
     const resolution = resolutionOf(vocabulary);
     const version = await createDraftVersion(store, { slug, title: 'A case', subjectType: vocabulary.subjectType, resolution });
@@ -305,8 +253,6 @@ it(
     expect(stillStored?.released_at).toBeUndefined();
   },
 );
-
-// -------------------------------------------------------------------------------- criterion 2
 
 it('marks a draft that holds against every rule released, recording the instant of release', async () => {
   const vocabulary = freshVocabulary();
@@ -329,8 +275,6 @@ it('marks a draft that holds against every rule released, recording the instant 
   expect(released?.released_at).toBeDefined();
   expect(new Date(released?.released_at as string).getTime()).toBeGreaterThanOrEqual(beforeRelease.getTime());
 });
-
-// -------------------------------------------------------------------------------- criterion 3
 
 it(
   "refuses releasing a version that is not in draft state, through this operation's own " +
@@ -359,8 +303,6 @@ it(
   },
 );
 
-// -------------------------------------------------------------------------------- criterion 4
-
 it(
   "releasing version 2 with a new hypothesis-revision leaves version 1's own manifest and adopted " +
     'revision reading exactly as they read before version 2 ever existed',
@@ -380,7 +322,6 @@ it(
     await releaseOperation.release(slug, version1);
     const version1AfterItsOwnRelease = await store.assembleVersion(slug, version1);
 
-    // Originates version 2 (copying version 1's own manifest), then revises the same hypothesis and adopts the new revision in version 2's own manifest alone.
     const version2 = await createDraftVersion(store, { slug, title: 'Version two', subjectType: vocabulary.subjectType, resolution });
     await store.removeManifestEntry(slug, version2, 'h');
     const revision2 = await placeNewHypothesis(store, { slug, version: version2 }, { name: 'h', criterion: 'the second criterion', collects: [vocabulary.concept], resolution, position: 1 });

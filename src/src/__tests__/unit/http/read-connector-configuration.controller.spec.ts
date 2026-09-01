@@ -1,15 +1,3 @@
-// Proof for task/registry-read-not-found-relocation-and-rate-limit/connector-configuration-not-found-relocation:
-// handleReadConnectorConfigurationRequest itself, exercised directly as a plain function call rather
-// than through Fastify — the one seam this task's own relocation touches. Proves the controller now
-// performs no held-check-and-throw of its own (criterion 2): it projects onto the wire whatever its
-// one injected readConnectorConfiguration dependency resolves, and propagates exactly whatever it
-// rejects with, unaltered — never branching on a resolution shape of its own. The dependency itself
-// is a stand-in (TST-03 — a stand-in replaces a boundary, never business logic): the real
-// service-level wrapper it is wired to in production,
-// ConnectorConfigurationRegistryService.readConnectorConfigurationOrThrow, is proved separately in
-// connector-configuration-registry.service.spec.ts. Mirrors
-// read-capability-by-identity.controller.spec.ts's own shape for the sibling relocation
-// (task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation).
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -20,7 +8,6 @@ import {
   type ReadConnectorConfigurationControllerDependencies,
 } from '../../../http/read-connector-configuration.controller.js';
 
-/** A connector configuration exactly as the service-level wrapper's held branch would resolve it. */
 function heldConfiguration(overrides: Partial<ConnectorConfiguration> = {}): ConnectorConfiguration {
   return {
     connector: 'a-connector',
@@ -28,8 +15,6 @@ function heldConfiguration(overrides: Partial<ConnectorConfiguration> = {}): Con
     ...overrides,
   };
 }
-
-// ------------------------------------------------------------------ criterion 2
 
 it('answers the wire projection of exactly the configuration its readConnectorConfiguration dependency resolves, performing no held-check of its own', async () => {
   const configuration = heldConfiguration({
@@ -75,11 +60,6 @@ it('calls its readConnectorConfiguration dependency with exactly the given conne
   expect(received).toBe('Mixed-Case-Connector');
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected, criterion 4
-
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')

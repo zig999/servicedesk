@@ -1,13 +1,5 @@
-/** The identity of a capability, by name and version, as the refusal names it. */
 type CapabilityIdentity = Readonly<{ name: string; version: string }>;
 
-/**
- * A business error of the capability registry: the registration names a
- * concept a different capability already answers, and each concept resolves
- * to exactly one capability — one to one, with no fallback chain until a
- * second source of the same concept exists
- * (rules/integration/one-capability-answers-one-concept).
- */
 export class ConceptAlreadyAnsweredError extends Error {
   public readonly context: Readonly<{
     concept: string;

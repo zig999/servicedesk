@@ -1,8 +1,3 @@
-// Proof that a canned observation outcome exists for every concept the fixture case's hypotheses
-// collect, and that the real stand-in observation source can be seeded from it and read back
-// unchanged — so the diagnose pipeline can run against this case without a live corporate-records
-// connection (contracts/investigation/observation-source, domain/investigation/evidence-result,
-// contracts/integration/corporate-records-source).
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,7 +30,6 @@ async function loadCannedObservations(): Promise<readonly CannedObservation[]> {
   return JSON.parse(text) as readonly CannedObservation[];
 }
 
-/** The canned entry's data as one of the four evidence-result endings the observation-source port declares. */
 function outcomeOf(canned: CannedObservation): ObservationOutcome {
   return canned.result === 'ok'
     ? { result: 'ok', observation: canned.observation ?? '' }
@@ -81,7 +75,6 @@ it(
   },
 );
 
-/** The canned entry for one concept, or a setup failure naming which concept the fixture left uncanned. */
 function cannedFor(observations: readonly CannedObservation[], concept: string): CannedObservation {
   const canned = observations.find((entry) => entry.concept === concept);
   if (canned === undefined) {

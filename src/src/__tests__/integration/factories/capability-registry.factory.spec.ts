@@ -1,21 +1,3 @@
-// Proof through the module's real wiring, against a real, externally provisioned PostgreSQL
-// database (constraints/the-database-is-externally-provisioned) reached through DATABASE_URL and
-// threaded into createCapabilityRegistry as one DatabaseConnection
-// (task/service-on-the-database/store-wiring): a capability registered through the real factory
-// lands as a row RelationalCapabilityStore reads back, and a re-registration under the same name
-// and version replaces it in that same row rather than the plain JSON file this module used to
-// write (constraints/the-system-persists-to-one-relational-database).
-//
-// Sibling fix, disclosed in this task's own proof record: this file used to seed a fresh temp
-// directory per test and assert against capability.json on disk; createCapabilityRegistry now
-// takes the one shared DatabaseConnection this task's own cutover wires everywhere, so this file
-// seeds a fresh concept through the real database instead and reads the registration back through
-// RelationalCapabilityStore, never through a file.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { afterEach, beforeAll, afterAll, expect, it } from 'vitest';
 import type { CapabilityRegistration } from '../../../capability-registry/capability.js';
@@ -35,7 +17,6 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** A registration declaring the whole contract, as a caller would submit it, for the given concept. */
 function completeRegistration(concept: string, overrides: CapabilityRegistration = {}): CapabilityRegistration {
   return {
     name: 'a-capability',
@@ -70,7 +51,6 @@ afterEach(async () => {
   await pool.query("DELETE FROM connector_configurations WHERE connector LIKE 'capability-registry-factory-connector-%'");
 });
 
-/** A fresh concept row this test owns, tracked for this file's own afterEach cleanup. */
 async function aFreshConcept(): Promise<string> {
   const name = `capability-registry-factory-concept-${randomUUID()}`;
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [name]);
@@ -98,13 +78,6 @@ it('replaces the persisted record when the same name and version register again 
   const answered = (await new RelationalCapabilityStore(pool).readCapabilities()).filter((capability) => capability.concept === concept);
   expect(answered).toEqual([replaced]);
 });
-
-// ------------------------------------------------------------------ readRegisteredConnectorConfigurations
-// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
-// (criterion 4): the capability registry can read every currently registered connector
-// configuration through the narrow port the composition root supplies, backed by the same
-// connector-configuration store the connector-configuration registry itself reads and writes
-// through — createConnectorConfigurationsReader, over the same pool.
 
 it("reads a connector configuration registered through the connector-configuration registry's own real wiring, through readRegisteredConnectorConfigurations backed by the same store", async () => {
   const connector = `capability-registry-factory-connector-${randomUUID()}`;

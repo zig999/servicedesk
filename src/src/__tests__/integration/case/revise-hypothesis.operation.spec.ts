@@ -1,51 +1,3 @@
-// Proof for task/case-lifecycle-operations/revise-hypothesis-operation, against a real, externally
-// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned) reached
-// through DATABASE_URL, the real RelationalCaseStore (persistence/relational-case-store.repository.ts)
-// and the real glossary read (factories/glossary.factory.ts) — ReviseHypothesisOperation is what is
-// under test, so nothing here stands in for the store or the glossary it depends on (TST-03).
-//
-// Every case, hypothesis and glossary row this file writes carries a
-// revise-hypothesis-operation-prefixed marker plus a fresh randomUUID(), so no test here can
-// collide with a row another suite file wrote, and every row a test actually commits is deleted
-// again in this file's own afterEach.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
-//
-// This file's own last test answers this task's own UNDERDETERMINED note: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
-// requires a hypothesis to be revised only while its case holds a draft version, and no criterion
-// 1 through 6 refuses revising for a case that currently holds none at all — only the
-// subject-type-anchoring half of that same rule is answered, by criterion 5. The implementation's
-// own header comment discloses that it never reads a case version or checks one exists in draft
-// state, deferring that whole gate to "a broader check this task does not close" — so the test
-// below, exercised directly against ReviseHypothesisOperation exactly as every other test here
-// does, is expected to fail against the delivered implementation: it asserts the refusal the
-// specification's rule requires and the implementation's own disclosed scope does not provide.
-//
-// task/revise-hypothesis-draft-gate/refuse-without-draft closes exactly that gap: reviseHypothesis
-// now refuses through CaseHoldsNoDraftError before writing anything where the named case holds no
-// draft version, so the test just described now passes against the delivered implementation rather
-// than merely excluding an implementation that ignores it. That gate runs before every check
-// criteria 1 through 5 below exercise, so each of those tests now seeds a draft case_versions row
-// through seedDraftCaseVersion before calling reviseHypothesis — the same helper criterion 6's own
-// test already used — so each keeps exercising the one behavior its own name describes rather than
-// tripping the new gate first. Three further tests, filed under this task's own criterion 1 below,
-// exercise that new gate directly against the three situations the criterion itself names: a case
-// that never held any version, a case whose only version was already released, and a case whose
-// only version was discarded through the real ICaseStore.discard() rather than merely never
-// inserted. A fourth, filed under this task's own criterion 2, exercises the gate's success side
-// against a case that holds both an already-released earlier version and a currently open draft —
-// the realistic shape of a case revised for a second time, and the one this task's criterion 2
-// actually names ("succeeds ... unchanged"), never exercised by criteria 1 through 6's own
-// single-version fixtures. seedReleasedCaseVersion and deleteTolerantly exist for the "already
-// released" case above: migrations/0009's own release-conditioned rules make a released
-// case_versions row permanent, so cleaning it up (and whatever glossary row it still references) the
-// same way every other fixture is cleaned up would fail on that surviving row's own foreign key —
-// deleteTolerantly tolerates exactly that one code, the same convention
-// relational-case-store.repository.spec.ts's own deleteTolerantly already establishes for this
-// migration's consequence.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { Resolution } from '../../../case/case.js';
@@ -61,12 +13,10 @@ import { createDatabaseConnection, type DatabaseConnection } from '../../../pers
 
 const FOREIGN_KEY_VIOLATION = '23503';
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same convention relational-case-store.repository.spec.ts's own isForeignKeyViolation already establishes). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — a released case_versions row this file's own seedReleasedCaseVersion writes is left permanently in place by migrations/0009's own release-conditioned rules, so the DELETE against it silently no-ops and a DELETE against whatever it still references fails on that surviving row's own foreign key; every other cleanup DELETE here still surfaces a real failure. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -105,7 +55,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every distinct, freshly generated name one test's own case and glossary need — nothing here shared with any other test or any other suite file. */
 function freshFixture(): IFixture {
   const id = randomUUID();
   return {
@@ -120,13 +69,11 @@ function freshFixture(): IFixture {
   };
 }
 
-/** Claims the case's own identity row — hypotheses.case_slug foreign-keys into cases (slug), so insertHypothesisRevision needs this row to exist before it ever runs. */
 async function persistCase(fixture: IFixture): Promise<void> {
   await pool.query('INSERT INTO cases (slug) VALUES ($1)', [fixture.slug]);
   fixturesWrittenByThisTest.push(fixture);
 }
 
-/** Every glossary row a hypothesis-revision's own resolution and the case version's declared subject type need, under fresh, uniquely named rows. Both subject types this fixture carries are seeded, so a test can register a concept accepting either one. */
 async function persistGlossaryVocabulary(fixture: IFixture): Promise<void> {
   await pool.query('INSERT INTO subject_types (name) VALUES ($1), ($2)', [fixture.subjectType, fixture.otherSubjectType]);
   await pool.query('INSERT INTO outcomes (name) VALUES ($1)', [fixture.outcome]);
@@ -134,13 +81,11 @@ async function persistGlossaryVocabulary(fixture: IFixture): Promise<void> {
   await pool.query('INSERT INTO recipients (name) VALUES ($1)', [fixture.recipient]);
 }
 
-/** Registers the fixture's own concept, accepting exactly the given subject type — split out so a test can register it accepting a subject type other than the one it later declares, or not register it at all. */
 async function registerConceptAccepting(fixture: IFixture, subjectType: string): Promise<void> {
   await pool.query('INSERT INTO concepts (name, ttl) VALUES ($1, 60)', [fixture.concept]);
   await pool.query('INSERT INTO concept_accepts (concept_name, subject_type_name) VALUES ($1, $2)', [fixture.concept, subjectType]);
 }
 
-/** Seeds one case_versions row directly against the table, at the given version and state — seedDraftCaseVersion and seedReleasedCaseVersion below are its two commonly used shapes, so neither duplicates this insert's own text a second time (MNT-03). */
 async function seedCaseVersion(fixture: IFixture, version: number, state: 'draft' | 'released'): Promise<void> {
   const releasedAt = state === 'released' ? new Date().toISOString() : null;
   await pool.query(
@@ -151,17 +96,14 @@ async function seedCaseVersion(fixture: IFixture, version: number, state: 'draft
   );
 }
 
-/** Seeds one draft case_versions row at version 1 — criterion 6's own test needs a real version to check the manifest of, and every test below now needs one too, so reviseHypothesis's own draft gate (rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft) finds a draft to pass rather than refusing before the behavior each test actually names ever runs. */
 async function seedDraftCaseVersion(fixture: IFixture): Promise<void> {
   await seedCaseVersion(fixture, 1, 'draft');
 }
 
-/** Seeds one already-released case_versions row at version 1 — this task's own "already released" test needs a case whose only version has already left draft state, distinct from a case that never held one at all. */
 async function seedReleasedCaseVersion(fixture: IFixture): Promise<void> {
   await seedCaseVersion(fixture, 1, 'released');
 }
 
-/** Seeds one already-manifested hypothesis-revision directly against the tables, at position 1 of the fixture's own draft version — the entry criterion 6's own test holds fixed to prove revise-hypothesis moves nothing here. */
 async function seedAlreadyPlacedManifestEntry(fixture: IFixture): Promise<void> {
   await pool.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2)', [fixture.slug, 'an-already-placed-hypothesis']);
   await pool.query(
@@ -177,12 +119,10 @@ async function seedAlreadyPlacedManifestEntry(fixture: IFixture): Promise<void> 
   );
 }
 
-/** The resolution every revision below uses, reusing the one glossary triple a fixture seeds. */
 function aResolution(fixture: IFixture): Resolution {
   return { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } };
 }
 
-/** A revise-hypothesis input naming the fixture's own concept and declared subject type, departed from one field at a time by a test's own overrides. */
 function reviseInput(fixture: IFixture, overrides: Partial<ReviseHypothesisInput> = {}): ReviseHypothesisInput {
   return {
     slug: fixture.slug,
@@ -195,7 +135,6 @@ function reviseInput(fixture: IFixture, overrides: Partial<ReviseHypothesisInput
   };
 }
 
-/** Every row this file's own tests wrote for one fixture, deleted in an order that always satisfies their own foreign keys. concepts that were never registered (the "unregistered" one) need no cleanup, since nothing was ever inserted for them. */
 async function cleanupFixture(fixture: IFixture): Promise<void> {
   await deleteTolerantly('DELETE FROM hypothesis_revision_collects WHERE case_slug = $1', [fixture.slug]);
   await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = $1', [fixture.slug]);
@@ -217,8 +156,6 @@ afterEach(async () => {
   }
   fixturesWrittenByThisTest = [];
 });
-
-// ---------------------------------------------------------------------- criterion 1
 
 it("originates a never-named hypothesis's own identity and its first revision, numbered 1", async () => {
   const fixture = freshFixture();
@@ -243,8 +180,6 @@ it("originates a never-named hypothesis's own identity and its first revision, n
   expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);
 });
 
-// ---------------------------------------------------------------------- criterion 2
-
 it("numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered", async () => {
   const fixture = freshFixture();
   await persistCase(fixture);
@@ -268,8 +203,6 @@ it("numbers a new revision of an already-named hypothesis one past its own highe
   ]);
 });
 
-// ---------------------------------------------------------------------- criterion 3
-
 it('refuses revising with an empty collects list, naming that the revision collects no concept, and never reaches the store', async () => {
   const fixture = freshFixture();
   await persistCase(fixture);
@@ -285,13 +218,11 @@ it('refuses revising with an empty collects list, naming that the revision colle
   expect(rows).toEqual([]);
 });
 
-// ---------------------------------------------------------------------- criterion 4
-
 it('refuses revising with a collected concept the glossary does not currently hold, naming the concept, and never reaches the store', async () => {
   const fixture = freshFixture();
   await persistCase(fixture);
   await persistGlossaryVocabulary(fixture);
-  // fixture.unregisteredConcept is deliberately never inserted into concepts.
+
   await seedDraftCaseVersion(fixture);
   const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
 
@@ -305,13 +236,11 @@ it('refuses revising with a collected concept the glossary does not currently ho
   expect(rows).toEqual([]);
 });
 
-// ---------------------------------------------------------------------- criterion 5
-
 it('refuses revising with a collected concept that does not accept the declared subject type, naming both the concept and the subject type, and never reaches the store', async () => {
   const fixture = freshFixture();
   await persistCase(fixture);
   await persistGlossaryVocabulary(fixture);
-  await registerConceptAccepting(fixture, fixture.otherSubjectType); // accepts a different subject type than the one declared below
+  await registerConceptAccepting(fixture, fixture.otherSubjectType);
   await seedDraftCaseVersion(fixture);
   const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
 
@@ -329,8 +258,6 @@ it('refuses revising with a collected concept that does not accept the declared 
   const { rows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
   expect(rows).toEqual([]);
 });
-
-// ---------------------------------------------------------------------- criterion 6
 
 it("changes no version's manifest on its own — an existing manifest entry stays exactly as it was, and the newly originated revision is placed nowhere", async () => {
   const fixture = freshFixture();
@@ -350,14 +277,12 @@ it("changes no version's manifest on its own — an existing manifest entry stay
   expect(rows).toEqual([{ hypothesis_name: 'an-already-placed-hypothesis', revision: 1, position: 1 }]);
 });
 
-// ---------------------------------------------------------------------- this task's own criterion 1
-
 it(
   'refuses reviseHypothesis with the typed CaseHoldsNoDraftError, naming the slug, for a case ' +
     'that has never held any version at all, writing no hypothesis or revision row',
   async () => {
     const fixture = freshFixture();
-    await persistCase(fixture); // the case exists, but no case_versions row — draft or otherwise — is ever inserted for it
+    await persistCase(fixture);
     await persistGlossaryVocabulary(fixture);
     await registerConceptAccepting(fixture, fixture.subjectType);
     const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
@@ -385,7 +310,7 @@ it(
     await persistCase(fixture);
     await persistGlossaryVocabulary(fixture);
     await registerConceptAccepting(fixture, fixture.subjectType);
-    await seedReleasedCaseVersion(fixture); // the case holds a version, but it already left draft state
+    await seedReleasedCaseVersion(fixture);
     const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
 
     const rejection = operation.reviseHypothesis(reviseInput(fixture));
@@ -412,7 +337,7 @@ it(
     await registerConceptAccepting(fixture, fixture.subjectType);
     await seedDraftCaseVersion(fixture);
     const store = createCaseStore(pool);
-    await store.discard(fixture.slug, 1); // the case held a draft, but it is discarded before reviseHypothesis is ever called
+    await store.discard(fixture.slug, 1);
     const operation = new ReviseHypothesisOperation(store, createGlossaryQuery(pool));
 
     const rejection = operation.reviseHypothesis(reviseInput(fixture));
@@ -423,8 +348,6 @@ it(
     expect(hypothesisRows).toEqual([]);
   },
 );
-
-// ---------------------------------------------------------------------- this task's own criterion 2
 
 it(
   "succeeds for a case that holds both an already-released earlier version and a currently open " +
@@ -447,14 +370,12 @@ it(
   },
 );
 
-// ---------------------------------------------------------------------- this task's own UNDERDETERMINED note
-
 it(
   'excludes an implementation that originates a hypothesis identity and revision for a case ' +
     'holding no draft version at all, without refusing',
   async () => {
     const fixture = freshFixture();
-    await persistCase(fixture); // the case exists, but no case_versions row — draft or otherwise — is ever inserted for it
+    await persistCase(fixture);
     await persistGlossaryVocabulary(fixture);
     await registerConceptAccepting(fixture, fixture.subjectType);
     const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));

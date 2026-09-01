@@ -1,10 +1,3 @@
-// Proof for the published capability-registry contract: read-capability
-// answers the one capability currently answering a concept, whole and as
-// registered, states an unanswered concept as data naming what was asked,
-// and refuses — at registration and at read alike — anything that would let
-// one concept resolve to more than one capability, so no priority chain has
-// anywhere to live. The store boundary is an in-memory stand-in; no test
-// here touches a file.
 import { expect, it } from 'vitest';
 import type { ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
@@ -13,17 +6,10 @@ import type { Capability, CapabilityRegistration } from '../../../capability-reg
 import { ConceptAlreadyAnsweredError } from '../../../errors/concept-already-answered.error.js';
 import { DuplicateConceptAnswerError } from '../../../errors/duplicate-concept-answer.error.js';
 
-/** The one nature that registers, spelled here rather than imported so a drift in the source fails. */
 const READ_ONLY = 'read-only';
 
-/** A stated timeout, so the answered contract carries a value the test chose rather than a default. */
 const STATED_TIMEOUT_MS = 5_000;
 
-/**
- * Stands in for the store boundary: a holding a test can change between two
- * reads, and an injectable failure, so the resolution is exercised without
- * any filesystem while its one-to-one logic stays real.
- */
 class MutableCapabilityStore implements ICapabilityStore {
   private records: readonly Capability[] = [];
   private failure: Error | undefined;
@@ -48,12 +34,10 @@ class MutableCapabilityStore implements ICapabilityStore {
   }
 }
 
-/** The subject under test, held as the published contract rather than as the class behind it. */
 function queryOver(store: MutableCapabilityStore): ICapabilityQuery {
   return new CapabilityRegistryService(store);
 }
 
-/** A capability as the registry would already hold it, for seeding the stand-in store. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -68,7 +52,6 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A registration declaring the whole contract, as a caller would submit it. */
 function completeRegistration(overrides: CapabilityRegistration = {}): CapabilityRegistration {
   return { ...heldCapability(), ...overrides };
 }
@@ -164,7 +147,7 @@ it('no longer answers a concept the holding no longer carries, even after answer
   const store = new MutableCapabilityStore();
   store.hold([heldCapability()]);
   const query = queryOver(store);
-  await query.readCapability('a-concept'); // arranged to bait a remembered holding
+  await query.readCapability('a-concept');
   store.hold([]);
 
   const resolution = await query.readCapability('a-concept');

@@ -1,22 +1,3 @@
-// Proof for task/case-simulation-pipeline/simulate-hypothesis-operation: the composition logic of
-// createProductionHypothesisSimulationRunner itself, isolated from
-// simulate-hypothesis-pipeline.ts's own already-proven narrower pipeline (proven separately at
-// __tests__/unit/investigation/simulate-hypothesis-pipeline.spec.ts) by mocking
-// runSimulateHypothesisPipeline — the boundary this factory composes against — the identical shape
-// production-simulate.factory.spec.ts already establishes for its own sibling factory.
-// @anthropic-ai/sdk is mocked too, since the Anthropic-backed evaluator this factory always
-// constructs would otherwise call the real SDK's own constructor, which throws synchronously with
-// no credential in this environment.
-//
-// The import-scan tests below are this factory's own share of excluding a simulate-case
-// implementation whose collection stage reused diagnose's own cache or write path — the same
-// structural guarantee production-simulate.factory.spec.ts's own header comment already establishes
-// for its sibling, narrowed here to this file's own imports (rules/investigation/a-simulation-writes-no-investigation,
-// scenarios/investigation/a-simulation-never-enters-the-cache). Unlike production-simulate.factory.ts,
-// this factory does construct its own HttpDeclarativeObservationSource internally (it has no shared
-// no-cache composition to delegate to) — so the guarantee that nothing a caller supplies could ever
-// be a cache is proven instead by the type-level test below: ProductionHypothesisSimulationDependencies
-// declares no observationSource field of its own for a caller to substitute.
 import { afterEach, beforeEach, expect, expectTypeOf, it, vi } from 'vitest';
 
 const { anthropicConstructorMock } = vi.hoisted(() => {
@@ -52,10 +33,8 @@ import { AnthropicHypothesisEvaluator } from '../../../investigation/anthropic-h
 import type { SubjectAttributeValue } from '../../../investigation/subject-attribute-value.js';
 import type { DatabaseConnection } from '../../../persistence/database-connection.js';
 
-/** The specification's own declared total deadline budget, restated here as the value this suite expects the factory to compute — never read from the factory's own source, so a change to the constant there is exactly what would fail this suite. */
 const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
 
-/** A minimally valid, single-hypothesis Case — never read for its content in this file, only carried through as an opaque value. */
 function aCase(): Case {
   return {
     slug: 'a-case',
@@ -71,10 +50,8 @@ function aCase(): Case {
   };
 }
 
-/** A bare stand-in for DatabaseConnection, never queried in this file since createCapabilityQuery/createConnectorConfigurationRegistry construct their own store objects without touching it eagerly, and runSimulateHypothesisPipeline is mocked. */
 const FAKE_CONNECTION = {} as unknown as DatabaseConnection;
 
-/** Every field ProductionHypothesisSimulationDependencies declares, all arbitrary except where a test reads one back. */
 function baseDependencies(overrides: Partial<ProductionHypothesisSimulationDependencies> = {}): ProductionHypothesisSimulationDependencies {
   return {
     connection: FAKE_CONNECTION,
@@ -84,7 +61,6 @@ function baseDependencies(overrides: Partial<ProductionHypothesisSimulationDepen
   };
 }
 
-/** Every field ProductionHypothesisSimulationCall declares, all arbitrary — nothing in this file's tests reads their content. */
 function baseCall(): ProductionHypothesisSimulationCall {
   return {
     subjectType: 'a-subject-type',
@@ -111,8 +87,6 @@ afterEach(() => {
   }
 });
 
-// ------------------------------------------------------- pass-through wiring
-
 it('passes the caller-given poolSize through to runSimulateHypothesisPipeline, unchanged', async () => {
   const dependencies = baseDependencies({ poolSize: 7 });
   const runner = createProductionHypothesisSimulationRunner(dependencies);
@@ -132,8 +106,6 @@ it('always wires a real AnthropicHypothesisEvaluator, never a caller-substituted
   const wired = capturedPipelineCalls[0] as { evaluator: unknown };
   expect(wired.evaluator).toBeInstanceOf(AnthropicHypothesisEvaluator);
 });
-
-// --------------------------- the (now, deadline) pair reaching the wired call
 
 it('computes the deadline as its own start instant plus the specification-declared twenty-second budget, and propagates that exact pair to the wired call', async () => {
   const runner = createProductionHypothesisSimulationRunner(baseDependencies());
@@ -164,8 +136,6 @@ it("stamps a fresh (now, deadline) pair on a second call, never the first call's
   expect(secondDeadline).toBe(secondNow + EXPECTED_DEADLINE_BUDGET_MS);
 });
 
-// --------------------------------------- adapter built once, not once per call
-
 it('constructs the Anthropic client once when the runner is created, never again on either of two later calls', async () => {
   const runner = createProductionHypothesisSimulationRunner(baseDependencies());
   const countAfterCreation = anthropicConstructorMock.mock.calls.length;
@@ -177,8 +147,6 @@ it('constructs the Anthropic client once when the runner is created, never again
   expect(anthropicConstructorMock.mock.calls.length).toBe(countAfterCreation);
 });
 
-// ---------------------------------- no apiKey parameter, credential from environment
-
 it('constructs the Anthropic-backed evaluator with the credential resolved from the environment alone, since ProductionHypothesisSimulationDependencies exposes no apiKey field of its own', () => {
   process.env.ANTHROPIC_API_KEY = 'an-env-test-key';
 
@@ -188,13 +156,11 @@ it('constructs the Anthropic-backed evaluator with the credential resolved from 
   expect(anthropicConstructorMock.mock.calls[0]?.[0]).toEqual({ apiKey: 'an-env-test-key' });
 });
 
-// ---------- rules/investigation/a-simulation-writes-no-investigation, scenarios/investigation/a-simulation-never-enters-the-cache
-
 const MODULE_PATH = fileURLToPath(new URL('../../../factories/production-simulate-hypothesis.factory.ts', import.meta.url));
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
-/** Exact compiled basenames of the write-capable production composition's own modules — matched by the whole final path segment, never a substring. */
+
 const FORBIDDEN_WRITE_PATH_BASENAMES = ['diagnose.factory.js', 'production-diagnose.factory.js', 'run-diagnosis.js', 'investigation-factory.js', 'production-simulate.factory.js', 'simulate.factory.js'];
-/** Nothing resembling a caching layer exists anywhere in this tree today (production-simulate.factory.spec.ts's own header comment); this scan is this factory's own share of the same structural guarantee. */
+
 const FORBIDDEN_CACHE_LIKE_BASENAMES = ['cache.js', 'caching-observation-source.adapter.js', 'observation-cache.js'];
 
 async function productionSimulateHypothesisFactoryImports(): Promise<readonly string[]> {
@@ -220,8 +186,6 @@ it('imports no module resembling a cache or a caching observation-source decorat
   expect(forbidden).toEqual([]);
 });
 
-// ----------------------- type-level: no field a caller could ever substitute a cache or a store through
-
 it('ProductionHypothesisSimulationDependencies carries exactly connection, poolSize, evaluatorModel and evaluatorMaxTokens — no observationSource, consolidator or store field of its own', () => {
   expectTypeOf<ProductionHypothesisSimulationDependencies>().toEqualTypeOf<{
     readonly connection: DatabaseConnection;
@@ -240,8 +204,6 @@ it('ProductionHypothesisSimulationCall carries exactly subjectType, subjectAttri
     readonly hypothesis: string;
   }>();
 });
-
-// ---------------------------------------------- edge case: the wired pipeline call rejects
 
 it("propagates a rejection from the wired pipeline call to this factory's own caller, unchanged", async () => {
   const failure = new Error('a pipeline failure');

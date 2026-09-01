@@ -1,30 +1,3 @@
-// Proof for task/case-lifecycle-operations/discard-operation, against a real, externally
-// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned) reached
-// through DATABASE_URL — discardCaseVersion is what is under test, and RelationalCaseStore is a
-// real collaborator standing in for nothing (TST-03): every fixture below is built by calling the
-// store's own createDraft/insertHypothesisRevision/placeHypothesis/release, never by hand-inserted
-// SQL, so the only thing this file writes by hand is the read that checks a table the store itself
-// exposes no read for (hypothesis_revisions, case_version_hypotheses).
-//
-// Every case this file writes carries a discard-op-prefixed marker plus a fresh randomUUID(), so no
-// test here can collide with a row another suite file wrote, and every row a test actually commits
-// is deleted again in this file's own afterEach — the same convention
-// relational-case-store.repository.spec.ts and case-version-lifecycle-schema.spec.ts already keep.
-// The one test naming an unstored slug (CaseNotFoundError) registers nothing for that cleanup,
-// because nothing is ever written under it.
-//
-// Two tests below (criterion 2) call store.release() for real, so migrations/0009's own
-// release-conditioned rules now make that released case_versions row (and its own
-// case_version_hypotheses entry) permanent — an ordinary DELETE against one is a silent no-op, and a
-// DELETE against whatever it still references (a hypothesis-revision, a glossary row) fails on that
-// surviving row's own foreign key. deleteTolerantly below runs every cleanup statement expecting
-// exactly that — the same tolerance create-draft.operation.spec.ts's own deleteTolerantly already
-// establishes for this migration's consequence.
-//
-// Divergence disclosed here for the same reason every sibling integration proof already discloses
-// it: (STK-08) DATABASE_URL is read directly from process.env below rather than through
-// config/env.ts's loadEnv, because loadEnv refuses unless every other application variable is
-// configured too, which this file has no use for.
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { CreateDraftInput, HypothesisRevisionInput } from '../../../case/case-store.port.js';
@@ -50,12 +23,10 @@ interface IGlossary {
   readonly recipient: string;
 }
 
-/** One resolution built from one glossary triple, reused for both a draft's own fallback and a hypothesis-revision's own resolution — nothing here varies the two independently. */
 function aResolution(glossary: IGlossary): Resolution {
   return { outcome: glossary.outcome, referral: { action: glossary.action, recipient: glossary.recipient } };
 }
 
-/** What createDraft needs to originate one new draft version, held fixed since no test here varies title/when_to_use/authored_at. */
 function aCreateDraftInput(slug: string, glossary: IGlossary): CreateDraftInput {
   return {
     slug,
@@ -67,19 +38,16 @@ function aCreateDraftInput(slug: string, glossary: IGlossary): CreateDraftInput 
   };
 }
 
-/** What insertHypothesisRevision needs to originate one new hypothesis-revision, its collects left empty since no test here needs a concept fixture to exercise discard. */
 function aHypothesisRevisionInput(slug: string, hypothesisName: string, glossary: IGlossary): HypothesisRevisionInput {
   return { slug, hypothesis_name: hypothesisName, criterion: 'A representative criterion.', collects: [], resolution: aResolution(glossary) };
 }
 
 const FOREIGN_KEY_VIOLATION = '23503';
 
-/** Whether a failure the driver raised is Postgres' own foreign-key-violation code (the same instanceof-plus-'in' guard create-draft.operation.spec.ts's own isForeignKeyViolation already establishes for this codebase). */
 function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
-/** Runs one cleanup DELETE, tolerating a foreign-key violation — this file's header comment explains why that one code, and only that one, is expected rather than a bug. */
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -103,7 +71,6 @@ afterAll(async () => {
   await pool.end();
 });
 
-/** Every glossary row one draft's own fallback and its hypothesis-revisions' own resolutions reference, under fresh, uniquely named rows tracked for this file's own afterEach cleanup. */
 async function freshGlossary(): Promise<IGlossary> {
   const subjectType = `discard-op-subject-${randomUUID()}`;
   const outcome = `discard-op-outcome-${randomUUID()}`;
@@ -120,7 +87,6 @@ async function freshGlossary(): Promise<IGlossary> {
   return { subjectType, outcome, action, recipient };
 }
 
-/** Every row this file's own tests wrote under a case slug, in the order their own foreign keys require. */
 async function cleanupWrittenCases(): Promise<void> {
   if (slugsWrittenByThisTest.length === 0) return;
   await deleteTolerantly('DELETE FROM case_version_hypotheses WHERE case_slug = ANY($1)', [slugsWrittenByThisTest]);
@@ -132,7 +98,6 @@ async function cleanupWrittenCases(): Promise<void> {
   slugsWrittenByThisTest = [];
 }
 
-/** Every glossary row freshGlossary() wrote for this file's own tests that can still be removed. */
 async function cleanupWrittenGlossary(): Promise<void> {
   if (subjectTypesWrittenByThisTest.length > 0) {
     await deleteTolerantly('DELETE FROM subject_types WHERE name = ANY($1)', [subjectTypesWrittenByThisTest]);
@@ -156,8 +121,6 @@ afterEach(async () => {
   await cleanupWrittenCases();
   await cleanupWrittenGlossary();
 });
-
-// ---------------------------------------------------------------- criterion 1
 
 it('removes the discarded draft version itself, so no later read answers it at all', async () => {
   const slug = `discard-op-basic-${randomUUID()}`;
@@ -192,8 +155,6 @@ it("removes the discarded draft's own manifest entries", async () => {
   expect(rows).toEqual([]);
 });
 
-// ---------------------------------------------------------------- criterion 2
-
 it('refuses to discard a version that is not in draft state, naming the state it actually holds', async () => {
   const slug = `discard-op-released-refusal-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
@@ -226,8 +187,6 @@ it('leaves a released version and its manifest entry in place after refusing to 
   ]);
 });
 
-// ---------------------------------------------------------------- criterion 3
-
 it("never removes a hypothesis-revision the discarded draft's manifest referenced, even though no other version ever adopted it", async () => {
   const slug = `discard-op-revision-survives-${randomUUID()}`;
   slugsWrittenByThisTest.push(slug);
@@ -245,8 +204,6 @@ it("never removes a hypothesis-revision the discarded draft's manifest reference
   );
   expect(rows).toHaveLength(1);
 });
-
-// ---------------------------------------------------------------- disclosed inference: CaseNotFoundError
 
 it('refuses to discard a slug/version nothing stores, through CaseNotFoundError', async () => {
   const store = new RelationalCaseStore(pool);

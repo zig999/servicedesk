@@ -1,28 +1,3 @@
-// Proof for task/case-lifecycle-persistence/case-version-lifecycle-schema, against a real,
-// externally provisioned PostgreSQL database reached through DATABASE_URL — the schema this task
-// ships is the thing under test, so nothing here stands in for the store itself (TST-03).
-//
-// Follows the established pattern of schema-migrations.spec.ts and migration-runner.spec.ts: one
-// disposable schema, created and dropped by this file alone, holding every migration script this
-// project ships applied in the order their own file names number them (MIG-01). Every ordinary test
-// runs inside its own transaction (BEGIN in beforeEach, ROLLBACK in afterEach) against that one
-// schema, seeded once in beforeAll with the glossary rows the new tables' foreign keys need; nothing
-// a test writes outlives it, and no test depends on another having run first. Two tests — the ones
-// proving the backfill inference below — apply a subset of the migrations to their own private,
-// self-contained schema instead, because observing a backfill requires inserting a row before the
-// migration that adds the backfilled column runs; each creates and drops that schema entirely within
-// its own body.
-//
-// Divergences from the project's standard, disclosed here for the same reason schema-migrations.spec.ts
-// already discloses them:
-//   - STK-08 ("boundary input ... is parsed by a Zod schema") is departed from below: DATABASE_URL is
-//     read directly from process.env rather than through config/env.ts's loadEnv, because loadEnv
-//     refuses unless every other application variable is also configured, which would couple this
-//     schema-only suite to the whole application's environment for a value it uses once, verbatim.
-//   - TST-04 ("mirrors the path of the unit under test") is departed from below: the unit under test
-//     is migrations/0009-case-version-lifecycle-schema.sql, a file sitting outside src/src entirely,
-//     so there is no single TypeScript path for this file to mirror; it is named for the migration
-//     artifact instead, exactly as schema-migrations.spec.ts already is.
 import { randomUUID } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -45,13 +20,11 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** Every migration file's own name, in the order their zero-padded prefix numbers them. */
 async function migrationFilesInOrder(): Promise<string[]> {
   const entries = await readdir(MIGRATIONS_DIR);
   return entries.filter((name) => name.endsWith('.sql')).sort();
 }
 
-/** Applies exactly the given migration files' text, verbatim, in the order given. */
 async function applyMigrationFiles(client: Client, files: readonly string[]): Promise<void> {
   for (const file of files) {
     const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
@@ -189,8 +162,6 @@ afterEach(async () => {
   await client.query('ROLLBACK');
 });
 
-// ---------------------------------------------------------------- criterion 1: state / released_at
-
 it('stores a draft case_versions row with released_at absent', async () => {
   const slug = 'a-draft-case';
   await insertCase(client, slug);
@@ -223,8 +194,6 @@ it('refuses a case_versions row whose state names a value outside draft or relea
   ).rejects.toMatchObject({ code: CHECK_VIOLATION });
 });
 
-// ---------------------------------------------------------------- criterion 2: durable version counter
-
 it("keeps cases.next_version writable to a value independent of any stored case_versions row, proving it is a stored counter rather than one computed from MAX(version)", async () => {
   const slug = 'a-case-with-an-independent-counter';
   await insertCase(client, slug);
@@ -236,8 +205,6 @@ it("keeps cases.next_version writable to a value independent of any stored case_
   expect(rows[0]?.next_version).toBe(99);
 });
 
-// ---------------------------------------------------------------- inference: DEFAULT 1 kept for a genuinely new case
-
 it('defaults a newly created case row (no case_versions row at all) to next_version 1', async () => {
   const slug = 'a-brand-new-case';
   await insertCase(client, slug);
@@ -245,8 +212,6 @@ it('defaults a newly created case row (no case_versions row at all) to next_vers
   const { rows } = await client.query<{ next_version: number }>('SELECT next_version FROM cases WHERE slug = $1', [slug]);
   expect(rows[0]?.next_version).toBe(1);
 });
-
-// ---------------------------------------------------------------- criterion 3: at most one draft per case
 
 it('refuses inserting a second draft case_versions row for a case that already has one', async () => {
   const slug = 'a-case-with-a-draft-already';
@@ -267,8 +232,6 @@ it('permits two released case_versions rows to coexist for the same case, since 
     insertCaseVersion(client, glossary, { slug, version: 2, state: 'released', releasedAt: '2026-01-02T00:00:00Z' }),
   ).resolves.toBeUndefined();
 });
-
-// ---------------------------------------------------------------- criterion 4: hypotheses, identity-only
 
 it('shapes hypotheses as exactly case_slug and name, carrying no content column', async () => {
   const { rows } = await client.query<{ column_name: string }>(
@@ -296,8 +259,6 @@ it('refuses a second hypothesis stored under an already-used (case_slug, name) k
     insertHypothesis(client, { slug, name: 'the-hypothesis' }),
   ).rejects.toMatchObject({ code: UNIQUE_VIOLATION });
 });
-
-// ---------------------------------------------------------------- criterion 5: hypothesis_revisions
 
 it("stores and reads back a hypothesis revision's own criterion and resolution", async () => {
   const slug = 'a-case-with-a-revised-hypothesis';
@@ -345,8 +306,6 @@ it("leaves an already-stored hypothesis revision's own columns unchanged after a
   expect(rows[0]?.criterion).toBe('Original.');
 });
 
-// ---------------------------------------------------------------- criterion 6: hypothesis_revision_collects
-
 it('stores and reads back the concepts one hypothesis revision collects, referencing that exact revision', async () => {
   const slug = 'a-case-with-a-collecting-revision';
   await insertCase(client, slug);
@@ -370,8 +329,6 @@ it('refuses a collect row naming a revision that was never stored', async () => 
     insertRevisionCollect(client, { slug, hypothesisName: 'the-hypothesis', revision: 7, conceptName: glossary.concept }),
   ).rejects.toMatchObject({ code: FOREIGN_KEY_VIOLATION });
 });
-
-// ---------------------------------------------------------------- criterion 7: case_version_hypotheses (manifest)
 
 it("stores and reads back a manifest entry's hypothesis, revision and position", async () => {
   const slug = 'a-case-with-a-manifest-entry';
@@ -416,8 +373,6 @@ it("permits the same position to be reused across two different case versions of
   ).resolves.toBeUndefined();
 });
 
-// ---------------------------------------------------------------- criterion 8: UPDATE refused once released
-
 it("leaves a released case_versions row's own columns unchanged after an ordinary UPDATE attempts to alter them", async () => {
   const slug = 'a-released-immutable-case';
   await insertCase(client, slug);
@@ -433,8 +388,6 @@ it("leaves a released case_versions row's own columns unchanged after an ordinar
   const { rows } = await client.query<{ title: string }>('SELECT title FROM case_versions WHERE slug = $1 AND version = 1', [slug]);
   expect(rows[0]?.title).toBe('Original title');
 });
-
-// ---------------------------------------------------------------- criterion 9: draft UPDATE not blocked
 
 it('changes an ordinary column of a still-draft case_versions row on UPDATE', async () => {
   const slug = 'a-still-draft-case';
@@ -458,14 +411,10 @@ it('lets an UPDATE transition a draft case_versions row to released', async () =
   expect(rows[0]?.state).toBe('released');
 });
 
-// ---------------------------------------------------------------- criterion 10: old tables dropped
-
 it('drops hypothesis_collects (migration 0004) entirely, leaving no table for any old row to have been carried into', async () => {
   const { rows } = await client.query<{ exists: boolean }>("SELECT to_regclass('hypothesis_collects') IS NOT NULL AS exists");
   expect(rows[0]?.exists).toBe(false);
 });
-
-// ---------------------------------------------------------------- criterion 11: numbered next, 0006 untouched
 
 it("arrives as the next-numbered script after 0008, with 0006's own file still holding its original, unconditional rule text", async () => {
   const files = await migrationFilesInOrder();
@@ -480,8 +429,6 @@ it("arrives as the next-numbered script after 0008, with 0006's own file still h
   const zeroSixText = await readFile(join(MIGRATIONS_DIR, zeroSix), 'utf8');
   expect(zeroSixText).not.toContain('WHERE');
 });
-
-// ---------------------------------------------------------------- UNDERDETERMINED: manifest immutability on release
 
 it('refuses to alter a manifest entry belonging to a released case version', async () => {
   const slug = 'a-released-case-with-a-manifest-entry';
@@ -563,8 +510,6 @@ it("deletes a draft case version's own manifest entry ordinarily", async () => {
   expect(rows).toHaveLength(0);
 });
 
-// ---------------------------------------------------------------- UNDERDETERMINED: DELETE refused on a released case_versions row
-
 it('refuses to delete a released case_versions row', async () => {
   const slug = 'a-released-case-that-cannot-be-discarded';
   await insertCase(client, slug);
@@ -595,8 +540,6 @@ it('permits deleting a draft case_versions row that carries no manifest entries'
   );
   expect(rows).toHaveLength(0);
 });
-
-// ---------------------------------------------------------------- inference: backfill value and dropped default
 
 it("backfills every pre-existing case_versions row's state to 'released' when migration 0009 adds the column", async () => {
   const priorSchema = `case_version_lifecycle_backfill_${randomUUID().replace(/-/g, '_')}`;

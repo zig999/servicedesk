@@ -1,14 +1,3 @@
-// Proof for task/capability-registry-http/read-capability-route: GET /v1/capabilities/{concept}
-// exercised through Fastify's own app.inject() against a local instance registering
-// createReadCapabilityRoutesPlugin() and error-handler.middleware.ts's own handleUnexpectedError
-// directly — the same shape build-app.spec.ts exercises diagnose.routes.ts through, adapted
-// because build-app.ts does not yet register this route (that wiring is
-// task/case-lifecycle-http/register-routes-in-build-app, still outstanding at the time of this
-// proof). The published capability-registry read is a stand-in here (TST-03 — a stand-in replaces
-// a boundary, never business logic): ICapabilityQuery.readCapability is exactly the seam
-// ReadCapabilityControllerDependencies declares, stood in for by a vi.fn(); the domain behavior
-// behind that seam — one-capability-answers-one-concept, the registry's own resolution — is proved
-// separately in __tests__/unit/capability-registry/capability-query.port.spec.ts.
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { CapabilityResolution, ICapabilityQuery } from '../../../capability-registry/capability-query.port.js';
@@ -20,7 +9,6 @@ import { createReadCapabilityRoutesPlugin } from '../../../http/read-capability.
 
 type ReadCapabilityMock = ReturnType<typeof vi.fn<(concept: string) => Promise<CapabilityResolution>>>;
 
-/** A capability as the registry would already hold it, for seeding the stand-in query — every one of the eight declared attributes, so criterion 1's "with its declared contract" has something whole to assert against. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -35,12 +23,9 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** One Fastify instance registering exactly this route plugin plus the shared error handler — mirrors what build-app.ts wires for diagnose, ahead of the still-outstanding task that wires this route into build-app.ts itself. */
 function buildTestApp(): { app: FastifyInstance; readCapability: ReadCapabilityMock } {
   const readCapability: ReadCapabilityMock = vi.fn();
-  // listCapabilities is a minimal stub kept only to satisfy the widened
-  // ICapabilityQuery interface (task/capability-registry-http/list-capabilities-query-extension):
-  // this route under test never calls it.
+
   const capabilityQuery: ICapabilityQuery = {
     readCapability,
     listCapabilities: () => {
@@ -60,8 +45,6 @@ afterEach(async () => {
   await app?.close();
   app = undefined;
 });
-
-// ------------------------------------------------------------------ criterion 1
 
 it('answers 200 with the capability currently answering the named concept, carrying its whole declared contract', async () => {
   const built = buildTestApp();
@@ -100,8 +83,6 @@ it("answers each of two requests naming different concepts with that request's o
   expect((second.json() as Capability).name).toBe('capability-b');
 });
 
-// ------------------------------------------------------------------ criterion 2
-
 it('refuses with the status the status map assigns ConceptNotAnsweredError, when no capability currently answers the named concept', async () => {
   const built = buildTestApp();
   app = built.app;
@@ -114,8 +95,6 @@ it('refuses with the status the status map assigns ConceptNotAnsweredError, when
   expect(body.error.code).toBe('ConceptNotAnsweredError');
   expect(body.error.details).toEqual({ concept: 'an-absent-concept' });
 });
-
-// ------------------------------------------------------------------ edge cases
 
 it('answers 400 via validation for a request with an empty concept segment, never reaching the capability query', async () => {
   const built = buildTestApp();

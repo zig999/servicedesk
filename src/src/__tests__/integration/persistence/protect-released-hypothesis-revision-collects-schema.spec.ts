@@ -1,41 +1,3 @@
-// Proof for task/manifest-collects-hotfix/fix-collects-readback's own schema migration
-// (migrations/0010-protect-released-hypothesis-revision-collects.sql), against a real, externally
-// provisioned PostgreSQL database (constraints/the-database-is-externally-provisioned) — the two
-// CREATE RULE statements this script adds are what is under test, so nothing here stands in for
-// the schema itself (TST-03).
-//
-// REWRITTEN for this task's own second delivery pass: migration 0010 no longer performs a data
-// backfill (its original version did, and this file used to prove that through three tests of its
-// own — see git history). The backfill moved to src/vitest-global-setup.ts's own
-// repairFixtureManifestCollects, because a schema migration runs once, at global-setup time, before
-// any test file's own beforeAll has seeded the concepts that backfill's own foreign keys depend on;
-// that moved logic's own idempotency is now proven at src/__tests__/integration/vitest-global-setup.spec.ts
-// instead, the file that already mirrors the module it now lives in (TST-04). This file keeps
-// exactly the three tests that still describe migration 0010's own unchanged behavior: the two
-// CREATE RULE statements, and the still-draft case where neither rule fires at all.
-//
-// Follows case-version-lifecycle-schema.spec.ts's own established pattern: one disposable schema,
-// created and dropped by this file alone, holding every migration script this project ships applied
-// in the order their own file names number them (MIG-01). Every test below runs inside its own
-// transaction (BEGIN in beforeEach, ROLLBACK in afterEach) against that one shared schema, seeded
-// once in beforeAll with the glossary rows the new tables' foreign keys need.
-//
-// Both new rules answer with a silent no-op (DO INSTEAD NOTHING) rather than a raised error, so
-// unlike an ordinary unique or foreign-key violation, no SAVEPOINT/try-catch is needed around the
-// DELETE or UPDATE attempts below — the statement itself never throws, and the proof is entirely in
-// the row's own state afterward.
-//
-// Divergences from the project's standard, disclosed here for the same reason
-// case-version-lifecycle-schema.spec.ts and schema-migrations.spec.ts already disclose them:
-//   - STK-08 ("boundary input ... is parsed by a Zod schema") is departed from below: DATABASE_URL
-//     is read directly from process.env rather than through config/env.ts's loadEnv, because loadEnv
-//     refuses unless every other application variable is also configured, which this schema-only
-//     suite has no use for.
-//   - TST-04 ("mirrors the path of the unit under test") is departed from below: the unit under test
-//     is migrations/0010-protect-released-hypothesis-revision-collects.sql, a file sitting outside
-//     src/src entirely, so there is no single TypeScript path for this file to mirror; it is named
-//     for the migration artifact instead, exactly as schema-migrations.spec.ts and
-//     case-version-lifecycle-schema.spec.ts already are.
 import { randomUUID } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -53,13 +15,11 @@ function requireDatabaseUrl(): string {
   return url;
 }
 
-/** Every migration file's own name, in the order their zero-padded prefix numbers them. */
 async function migrationFilesInOrder(): Promise<string[]> {
   const entries = await readdir(MIGRATIONS_DIR);
   return entries.filter((name) => name.endsWith('.sql')).sort();
 }
 
-/** Applies exactly the given migration files' text, verbatim, in the order given. */
 async function applyMigrationFiles(client: Client, files: readonly string[]): Promise<void> {
   for (const file of files) {
     const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
@@ -196,8 +156,6 @@ afterEach(async () => {
   await client.query('ROLLBACK');
 });
 
-// ---------------------------------------------------------------- DELETE, still-draft revision
-
 it(
   "removes a hypothesis-revision's own collects row on an ordinary DELETE where its revision belongs only to a still-draft case version's manifest",
   async () => {
@@ -222,8 +180,6 @@ it(
   },
 );
 
-// ---------------------------------------------------------------- DELETE, released revision (no-op)
-
 it(
   "leaves a hypothesis-revision's own collects row present after an ordinary DELETE attempts to remove it, where its revision belongs to a released case version's manifest",
   async () => {
@@ -247,8 +203,6 @@ it(
     expect(rows).toEqual([{ concept_name: glossary.conceptA }]);
   },
 );
-
-// ---------------------------------------------------------------- UPDATE, unconditional
 
 it(
   "leaves a hypothesis-revision's own collects row naming its original concept after an ordinary UPDATE attempts to change which concept it names",

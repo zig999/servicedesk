@@ -1,33 +1,3 @@
-// Proof for task/relational-substrate/migration-step, criterion 4's first half, criterion 2, and
-// this task's own UNDERDETERMINED note: vitest's own global setup applies every pending migration
-// before any test in the suite starts, and reads DATABASE_URL from process.env with no default of
-// its own — the one place this task's own new code could have introduced the default candidate the
-// task's Notes name.
-//
-// The expected migration set below is derived from migrations/'s own directory listing — the same
-// open set criterion 1 scopes the step to, "every script under migrations/" — never from a closed
-// enumeration written into this file. An enumeration here claimed a totality over ground other
-// tasks legitimately land in, and a sibling delivery's correctly numbered 0008 falsified it while
-// applyPendingMigrations behaved exactly as this task's criteria require. One anchor keeps the
-// derivation from passing vacuously: the listing must still hold 0001-schema-migrations.sql — the
-// bookkeeping script this task's own dependency shipped, which MIG-02 forbids editing away — so an
-// empty or misdirected directory read fails here rather than agreeing with an empty table.
-//
-// The first test below also carries criterion 2 — "running that step against an empty database
-// leaves it holding the schema" — because it is the one real empty-database → populated-schema
-// transition this shared-database suite can still observe against this project's actual environment
-// schema: migration-runner.ts's own bookkeeping is schema-qualified (a real fix for Neon's pooler
-// leaking search_path between unrelated pooled connections), scoped to whichever schema a caller
-// names — this suite's own global setup names the connecting role's own resolvedSchema(), the same
-// schema this file's own unqualified read below then resolves against too — and by the time any
-// test file starts, the suite's own global setup has already consumed the only moment this schema
-// was ever empty. See migration-runner.spec.ts's own header for what a disposable schema can still
-// demonstrate about a schema explicitly named.
-//
-// Divergence disclosed here for the same reason src/vitest-global-setup.ts itself discloses it
-// (STK-08): DATABASE_URL is read directly from process.env below — exactly as the module under test
-// reads it — rather than through config/env.ts's loadEnv, so excluding a default is proven against
-// the real path this task's own code takes rather than against a second, defaulting one.
 import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { Client } from 'pg';
@@ -37,10 +7,8 @@ import setup from '../../vitest-global-setup.js';
 
 const MIGRATIONS_DIRECTORY = fileURLToPath(new URL('../../../migrations', import.meta.url));
 
-/** The bookkeeping script this task's own dependency shipped, which MIG-02 forbids removing — the anchor that keeps a derived-from-disk expectation from ever agreeing vacuously with an empty table over a wrong or empty directory read. */
 const ANCHOR_MIGRATION_FILENAME = '0001-schema-migrations.sql';
 
-/** Every migration file's own name as migrations/ holds it today, in the order MIG-01's own numbering fixes — read from the directory itself, so a sibling task's correctly numbered script extends this expectation instead of falsifying it. */
 async function migrationFilenamesOnDisk(): Promise<string[]> {
   const entries = await readdir(MIGRATIONS_DIRECTORY);
   return entries.filter((name) => name.endsWith('.sql')).sort();
@@ -68,9 +36,6 @@ afterEach(() => {
   }
 });
 
-// ---------------------------------------------------------------- criteria 2 and 4: runs before any
-// test, and left the database holding the schema
-
 it("has already recorded every script migrations/ holds as applied, exactly once each, and left the database holding the schema those scripts describe by the time this spec's own first test runs, proving the suite's own setup ran before any test", async () => {
   const expectedFilenames = await migrationFilenamesOnDisk();
   const client = new Client({ connectionString: requireDatabaseUrl() });
@@ -87,8 +52,6 @@ it("has already recorded every script migrations/ holds as applied, exactly once
     await client.end();
   }
 });
-
-// ---------------------------------------------------------------- UNDERDETERMINED: excludes a default
 
 it('refuses with a typed error naming DATABASE_URL, never substituting a default, when the environment names no connection', async () => {
   delete process.env.DATABASE_URL;
@@ -118,24 +81,6 @@ it("keeps naming DATABASE_URL rather than substituting a default even when it is
   expect((caught as MigrationStepError).context).toEqual({ variable: 'DATABASE_URL' });
 });
 
-// ---------------------------------------------------------------- task/manifest-collects-hotfix/fix-collects-readback:
-// repairFixtureManifestCollects' own idempotency
-//
-// setup()'s own last step (repairFixtureManifestCollects, added by this sibling task) ensures the
-// fixture's own reference data exists and backfills its two known-missing hypothesis_revision_collects
-// rows, both guarded by WHERE NOT EXISTS/ON CONFLICT DO NOTHING rather than by running once and never
-// again — the same real, unexported sequence the two tests above already reach through this file's
-// own default export, run a second time here against a database its own first invocation (this
-// suite's real globalSetup, already run before this spec's own first test) has already migrated,
-// seeded and repaired. This is exactly the shape of the two real failures this task's own delivery
-// record discloses correcting: an INSERT ... ON CONFLICT DO NOTHING issued against
-// hypothesis_revision_collects once it carries any rule at all is rejected outright by Postgres
-// (error 0A000, "ON CONFLICT clause is not supported with a table that has associated rules"), and a
-// bare second INSERT of an already-present row without a WHERE NOT EXISTS guard is a duplicate-key
-// violation against that table's own PRIMARY KEY (case_slug, hypothesis_name, revision, concept_name).
-// Neither is stood in for: this calls the real setup(), against the real database, exactly the
-// technique seed.spec.ts's own "resolves without rejecting" rerun test already establishes for that
-// sibling top-level script.
 it(
   "resolves without rejecting when the suite's own global setup runs a second time, proving its own repair step guards its insert rather than relying on running exactly once",
   async () => {

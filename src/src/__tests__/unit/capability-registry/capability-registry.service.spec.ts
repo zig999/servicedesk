@@ -1,9 +1,3 @@
-// Proof for the registry's refusing half: only a complete read-only contract
-// registers — a nature that is not read-only is refused, an undeclared
-// required attribute is refused by name, an unstated timeout takes the
-// default of sixty seconds held as 60000 milliseconds, and a re-registration
-// under a held name and version replaces the record it holds. The store
-// boundary is an in-memory stand-in, so no test here touches a file.
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
@@ -22,21 +16,12 @@ import { ConnectorPlaceholderOutsideInputSchemaError } from '../../../errors/con
 import { IncompleteCapabilityContractError } from '../../../errors/incomplete-capability-contract.error.js';
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 
-/**
- * The default the criterion states as sixty seconds, spelled here in the
- * specification's own unit — the capability element declares its timeout in
- * milliseconds — rather than imported from the source, so the test fails if
- * the source's constant drifts from what the task states.
- */
 const SIXTY_SECONDS_IN_MILLISECONDS = 60_000;
 
-/** A stated timeout for registrations that declare one, so the default is visible where it applies. */
 const STATED_TIMEOUT_MS = 5_000;
 
-/** The one nature that registers, spelled here rather than imported so a drift in the source fails. */
 const READ_ONLY = 'read-only';
 
-/** Stands in for the store boundary, so the service is exercised without any filesystem. */
 class InMemoryCapabilityStore implements ICapabilityStore {
   public constructor(private records: readonly Capability[] = []) {}
 
@@ -48,13 +33,11 @@ class InMemoryCapabilityStore implements ICapabilityStore {
     this.records = capabilities;
   }
 
-  /** What the store now holds, for asserting what a registration persisted. */
   public held(): readonly Capability[] {
     return this.records;
   }
 }
 
-/** A capability as the registry would already hold it, for seeding the stand-in store. */
 function heldCapability(overrides: Partial<Capability> = {}): Capability {
   return {
     name: 'a-capability',
@@ -69,12 +52,10 @@ function heldCapability(overrides: Partial<Capability> = {}): Capability {
   };
 }
 
-/** A registration declaring the whole contract, for tests to depart from one attribute at a time. */
 function completeRegistration(overrides: CapabilityRegistration = {}): CapabilityRegistration {
   return { ...heldCapability(), ...overrides };
 }
 
-/** Which attributes an incomplete-contract refusal names, read from the refusal's own problems. */
 function namedAttributes(refusal: unknown): string[] {
   if (!(refusal instanceof IncompleteCapabilityContractError)) {
     throw new Error('expected the incomplete-contract refusal, got something else');
@@ -205,15 +186,6 @@ it('passes a stated timeout through unchanged', async () => {
   expect(registered.timeout).toBe(STATED_TIMEOUT_MS);
 });
 
-// A stated, non-integer timeout is no longer refused at this level
-// (task/capability-timeout-contract-refusal/non-integer-timeout-refusal):
-// rules/integration/a-capability-declares-its-contract's own wording limits
-// "undeclared" — the only case this service's contract-completeness refusal
-// covers — to an absent or empty-string value, and a present, non-integer
-// value is neither. The refusal for it now lives at the route's own
-// validation layer (register-capability.dto.ts's timeout:z.number().int()),
-// which a call straight into the service, as this test makes, never passes
-// through — so this direct call now succeeds.
 it('accepts a stated timeout that is not an integer count of milliseconds, holding it through unchanged, since a present value is never "undeclared"', async () => {
   const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
 
@@ -258,10 +230,7 @@ it('replaces the held record when a held name and version register again', async
 });
 
 it('holds two versions of one capability name as two registrations', async () => {
-  // Human-settled amendment: the versions answer different concepts, because
-  // rules/integration/one-capability-answers-one-concept refuses one concept
-  // resolving to two capabilities — what this test proves (identity is name
-  // and version together) is untouched by the fixture change.
+
   const store = new InMemoryCapabilityStore([heldCapability({ version: '1.0.0' })]);
   const registry = new CapabilityRegistryService(store);
 
@@ -272,18 +241,6 @@ it('holds two versions of one capability name as two registrations', async () =>
   expect(store.held().map((held) => held.version).sort()).toEqual(['1.0.0', '2.0.0']);
 });
 
-// ------------------------------------------------------------------ schema well-formedness
-// Proof for task/capability-authoring/register-capability-route (criterion 3,
-// rules/integration/a-capability-declares-well-formed-schemas): the registry
-// now refuses a registration whose input_schema or output_schema is not
-// syntactically valid JSON, before the concept-answered check and before any
-// write — added alongside the three refusals above. This fixture file's own
-// completeRegistration()/heldCapability() default input_schema and
-// output_schema to '{}', syntactically valid but semantically empty, so every
-// test below overrides both attributes explicitly to exercise the
-// well-formed/malformed distinction rather than relying on that default.
-
-/** A syntactically valid JSON document, minimal on purpose — well-formedness is JSON.parse succeeding, never a JSON Schema shape. */
 const WELL_FORMED_SCHEMA = '{"type":"object"}';
 
 it('refuses a registration whose input_schema is not syntactically valid JSON, naming the attribute', async () => {
@@ -347,15 +304,6 @@ it('accepts a registration whose input_schema and output_schema are syntacticall
   expect(registered.input_schema).toBe(WELL_FORMED_SCHEMA);
   expect(registered.output_schema).toBe('{"type":"string"}');
 });
-
-// ------------------------------------------------------------------ input schema shape
-// Proof for task/capability-input-schema-contract/refuse-malformed-capability-input-schema:
-// registerCapability now refuses an input_schema that parses as valid JSON but does not hold
-// the declared shape — a top-level properties object, and, where declared, a required array
-// that is a subset of properties' own keys — reporting MalformedCapabilityInputSchemaError
-// naming every departure together, run before the nature check and before any write. An
-// input_schema declaring no properties key at all, or an empty properties object and no
-// required array, is not a departure at all.
 
 it('refuses a registration whose input_schema declares properties as something other than an object, reporting MalformedCapabilityInputSchemaError', async () => {
   const registry = new CapabilityRegistryService(new InMemoryCapabilityStore());
@@ -432,14 +380,6 @@ it('accepts a registration whose input_schema declares no properties key at all,
 
   expect(registered.input_schema).toBe('{}');
 });
-
-// ------------------------------------------------------------------ list-capabilities
-// Proof for task/capability-registry-http/list-capabilities-query-extension:
-// every capability currently registered, whole with its full declared
-// contract, paginated per src/types/pagination.ts and
-// standards/backend-node-service.yaml's API-01 through API-03 — the store's
-// own readCapabilities answers no pagination of its own, so the offset/limit
-// window, the total and the page count are all computed here, in memory.
 
 it('returns every capability currently registered, whole with its full declared contract, in one page', async () => {
   const first = heldCapability();
@@ -531,7 +471,7 @@ it('answers a page count of zero for a non-positive limit rather than dividing b
 it('reads the store on every call, answering a capability registered since the previous list rather than a remembered one', async () => {
   const store = new InMemoryCapabilityStore([heldCapability()]);
   const registry = new CapabilityRegistryService(store);
-  await registry.listCapabilities({ offset: 0, limit: 10 }); // answers one capability, baiting a memory
+  await registry.listCapabilities({ offset: 0, limit: 10 });
   await store.writeCapabilities([
     heldCapability(),
     heldCapability({ name: 'another-capability', concept: 'another-concept' }),
@@ -541,13 +481,6 @@ it('reads the store on every call, answering a capability registered since the p
 
   expect(page.total).toBe(2);
 });
-
-// ------------------------------------------------------------------ read-capability-by-identity's own service-level wrapper
-// Proof for task/registry-read-not-found-relocation-and-rate-limit/capability-not-found-relocation:
-// readCapabilityByIdentityOrThrow's own two branches, plus proof that the raw readCapabilityByIdentity
-// it wraps keeps answering a miss — and a hit — as ordinary data rather than ever throwing itself
-// (criterion 3): its existing signature and held-false data-returning resolution are untouched by
-// the relocation.
 
 it('answers the held capability directly, with no resolution wrapper, when one is currently registered under the named identity', async () => {
   const capability = heldCapability({ name: 'a-known-capability', version: '2.0.0' });
@@ -604,11 +537,6 @@ it('readCapabilityByIdentity itself still answers a currently held identity as {
   expect(resolution).toEqual({ held: true, capability });
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations/citations-corrected
-
-// Strips every line's own leading comment marker (a line-comment slash pair, or a block-comment
-// opener, closer or continuation star) and collapses what remains to one line of prose, so a
-// comment wrapped across several source lines compares the same as its own single-line paraphrase.
 function proseOf(source: string): string {
   return source
     .split('\n')
@@ -639,8 +567,6 @@ it("pageCountOf's own comment cites constraints/listings-are-paged's own stateme
   );
 });
 
-// ------------------------------------------------------------------ task/stale-specification-citations-round-two/citations-corrected-again, criterion 4
-
 it("refuseContractDepartures' own doc comment describes both the non-integer and the non-positive timeout boundaries, and cites the schema's actual shape rather than z.number().int() alone", async () => {
   const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
   const prose = proseOf(source);
@@ -650,13 +576,6 @@ it("refuseContractDepartures' own doc comment describes both the non-integer and
   expect(prose).toContain('a timeout of zero or less bounds nothing');
   expect(prose).toContain("registerCapabilityBodySchema's own timeout: z.number().int().positive()");
 });
-
-// ------------------------------------------------------------------ readRegisteredConnectorConfigurations
-// Proof for task/connector-configuration-and-placeholder-contract/build-placeholder-declaration-check
-// (criterion 4): the capability registry can read every currently registered connector
-// configuration through a narrow port the composition root supplies. The port is exercised here
-// as a stand-in for the boundary it declares (TST-03) — the real, store-backed implementation is
-// proven separately, against a real database, in __tests__/integration/factories/capability-registry.factory.spec.ts.
 
 it('answers every connector configuration the injected reader currently holds, exactly as that reader answers it', async () => {
   const registeredConfigurations = [
@@ -695,14 +614,6 @@ it('propagates a failure the injected connector-configurations reader itself rai
   expect((outcome as Error).message).toBe('the connector-configuration store is unavailable');
 });
 
-// ------------------------------------------------------------------ refuseOrphanedPlaceholders (registerCapability)
-// Proof for task/connector-configuration-and-placeholder-contract/refuse-capability-registration-with-orphaned-placeholder:
-// registerCapability refuses a registration naming a connector that already holds a registered
-// configuration whose own call text embeds a Subject-attribute placeholder this registration's own
-// input_schema properties does not declare, naming every such orphaned placeholder together with the
-// capability being registered, and never refusing a connector holding no registered configuration at all.
-
-/** A connector configuration as this registry's own narrow reader would answer it, for seeding refuseOrphanedPlaceholders — defaults to embedding no placeholder at all, so a test only has to state what it does embed. */
 function registeredConfiguration(
   overrides: Partial<RegisteredConnectorConfigurationForPlaceholderCheck> = {},
 ): RegisteredConnectorConfigurationForPlaceholderCheck {
@@ -712,8 +623,6 @@ function registeredConfiguration(
     ...overrides,
   };
 }
-
-// ------------------------------------------------------------------ criterion 1
 
 it('refuses a registration naming a connector that already holds a registered configuration embedding a Subject-attribute placeholder its own input_schema properties does not declare, as ConnectorPlaceholderOutsideInputSchemaError', async () => {
   const configuration = registeredConfiguration({
@@ -744,8 +653,6 @@ it('writes nothing to the store when it refuses a registration for an orphaned p
 
   expect(store.held()).toEqual([alreadyHeld]);
 });
-
-// ------------------------------------------------------------------ criterion 2
 
 it('names the orphaned placeholder together with the capability being registered', async () => {
   const configuration = registeredConfiguration({
@@ -837,8 +744,6 @@ it('names the registering capability by exactly its connector and input_schema, 
   expect(Object.keys(entry.capabilities[0]).sort()).toEqual(['connector', 'input_schema']);
 });
 
-// ------------------------------------------------------------------ criterion 3
-
 it("succeeds when the registration's own input_schema properties declares the placeholder's attribute, even though the connector already holds a configuration embedding it", async () => {
   const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
   const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
@@ -850,8 +755,6 @@ it("succeeds when the registration's own input_schema properties declares the pl
 
   expect(registered.input_schema).toBe('{"properties":{"customer_document":{}}}');
 });
-
-// ------------------------------------------------------------------ criterion 4
 
 it('is not refused by this check when the connector it names holds no registered configuration at all', async () => {
   const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [] };
@@ -886,8 +789,6 @@ it('succeeds when constructed with the default (no) connector-configurations rea
 
   expect(registered.connector).toBe('a-connector');
 });
-
-// ------------------------------------------------------------------ ordering: this check runs after the sync contract/well-formedness checks and before the concept-uniqueness refusal
 
 it('refuses a registration missing a required attribute as IncompleteCapabilityContractError, even though the named connector already holds a configuration that would also embed an orphaned placeholder', async () => {
   const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
@@ -924,8 +825,6 @@ it('refuses a registration whose connector holds an orphaning configuration as C
   expect(refusal).not.toBeInstanceOf(ConceptAlreadyAnsweredError);
 });
 
-// ------------------------------------------------------------------ edge case: a malformed/absent input_schema reads as declaring nothing
-
 it("treats a registration whose own input_schema declares no properties key at all as declaring nothing, so every placeholder the connector's registered configuration embeds is orphaned", async () => {
   const configuration = registeredConfiguration({ configuration: '{"address":"${subject:customer_document}"}' });
   const reader: IConnectorConfigurationsReader = { readConnectorConfigurations: async () => [configuration] };
@@ -940,8 +839,6 @@ it("treats a registration whose own input_schema declares no properties key at a
     { placeholder: 'customer_document', capabilities: [{ connector: 'erp-http', input_schema: '{}' }] },
   ]);
 });
-
-// ------------------------------------------------------------------ edge case: no placeholder embedded at all
 
 it("succeeds without any orphaned-placeholder refusal when the connector's registered configuration embeds no placeholder at all", async () => {
   const configuration = registeredConfiguration({ configuration: '{"address":"https://api.example.test/records"}' });
