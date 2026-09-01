@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/investigation-ticket-ref-absence-hotfix-ticket-ref-round-trips-absence-build",
+  "cwd": "/home/siegfriedneto/projects/wt-investigation-ticket-ref-absence-hotfix/src",
+  "timeout_seconds": 600,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T15:29:04.846+00:00",
+      "ended_at": "2026-09-01T15:29:09.294+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T15:29:09.294+00:00",
+      "ended_at": "2026-09-01T15:29:14.327+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T15:29:14.327+00:00",
+      "ended_at": "2026-09-01T15:29:20.467+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T15:29:20.467+00:00",
+      "ended_at": "2026-09-01T15:29:21.216+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

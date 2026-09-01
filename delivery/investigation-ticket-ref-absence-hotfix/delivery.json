@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "implementation",
+      "file": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence.md",
+      "title": "ticket_ref round-trips absence as absence in the investigation store",
+      "summary": "relational-investigation-store.repository.ts now writes an absent-or-empty ticket_ref as a real SQL NULL and reads a NULL column back as an absent attribute, never coalescing it to the empty string on either side.",
+      "task": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence"
+    },
+    {
+      "id": "proof/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "proof",
+      "file": "proof/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence.md",
+      "title": "ticket_ref round-trips absence, never the empty string",
+      "summary": "Tests over relational-investigation-store.repository.ts proving that an absent or empty-string ticket_ref is written and read back as absence, and that a given non-empty ticket_ref is written and read back exactly unchanged, replacing the two pre-existing tests that had pinned the coalesce-to-empty-string bug this task fixes.",
+      "task": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "domain/investigation/investigation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "rules/investigation/an-empty-ticket-reference-is-no-ticket-reference",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "task/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "to": "implementation/investigation-ticket-ref-absence-hotfix/ticket-ref-round-trips-absence",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
