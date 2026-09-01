@@ -640,6 +640,50 @@ it('bounds persistence by the time actually remaining once collection has alread
   expect((error as InvestigationWriteDeadlineExceededError).context.remainingMs).toBe(300);
 });
 
+it('computes persistence\'s own bound from the actual wall-clock time elapsed before persistence begins, never from durations.collection + durations.judgment + durations.writing — a write still proceeds even where those reported durations would sum to more than the whole deadline', async () => {
+  const store = new InMemoryInvestigationStore();
+  const consolidator = new ScriptedAssessmentConsolidator({
+    text: HAPPY_PATH_TEXT,
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 1_000,
+    prompt: 'a-prompt',
+  });
+  const options = baseOptions({
+    store,
+    evaluator: new ImmediateHypothesisEvaluator({
+      verdict: 'confirmed',
+      citations: [{ concept: 'concept-a', field: 'a-field' }],
+      elapsed_ms: 20_000,
+    }),
+    consolidator,
+    now: 0,
+    deadline: 20_000,
+  });
+
+  await runDiagnosis(options);
+
+  expect(store.writeCount).toBe(1);
+});
+
+it('issues no write attempt when persistence begins after the propagated deadline has already been consumed by real wall-clock time inside judgment, even though a deadline-exceeded judgment carries no elapsed_ms of its own and so durations.collection + durations.judgment + durations.writing reads as zero', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options = baseOptions({
+    store,
+    evaluator: new HangingHypothesisEvaluator(),
+    consolidator: deadlineExceededConsolidator('deadline-exceeded text'),
+    now: 0,
+    deadline: 5_000,
+  });
+
+  const resultPromise = runDiagnosis(options).catch((caught: unknown) => caught);
+  await vi.runAllTimersAsync();
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect((error as InvestigationWriteDeadlineExceededError).context).toEqual({ id: 'investigation-1', remainingMs: 0 });
+  expect(store.writeCount).toBe(0);
+});
+
 it('holds the first write attempt to the whole of the persistence stage bound — its own unchanged 2000ms nominal budget — rather than capping it below to reserve time for a retry', async () => {
 
   const store = new DelayedInvestigationStore(1_999);
@@ -727,14 +771,16 @@ it('tightens judgment\'s own deadline to no more than what remains of the declar
     deadline: 1_500,
   });
 
-  const resultPromise = runDiagnosis(options);
+  const resultPromise = runDiagnosis(options).catch((error: unknown) => error);
   const tracker = trackSettlement(resultPromise);
   await vi.advanceTimersByTimeAsync(1_499);
   expect(tracker.settled()).toBe(false);
 
   await vi.advanceTimersByTimeAsync(1);
-  const assessment = await resultPromise;
-  expect(assessment.text).toBe('deadline-exceeded text');
+  const error = await resultPromise;
+
+  expect(error).toBeInstanceOf(InvestigationWriteDeadlineExceededError);
+  expect((error as InvestigationWriteDeadlineExceededError).context).toEqual({ id: 'investigation-1', remainingMs: 0 });
 });
 
 it('forwards its own (now, deadline) pair into collection unmodified, letting a call finish just under a tight propagated deadline', async () => {

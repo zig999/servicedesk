@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "kind": "implementation",
+      "file": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline.md",
+      "title": "Stage bounds read the clock against the propagated deadline",
+      "summary": "run-diagnosis.ts's persistence stage and simulate-hypothesis-pipeline.ts's judgment stage now compute their own bound from a fresh clock read at the moment each stage begins, via a shared readClockMs() helper, instead of reconstructing remaining time from recorded stage durations or anchoring to the request's entry instant.",
+      "task": "task/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline"
+    },
+    {
+      "id": "proof/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "kind": "proof",
+      "file": "proof/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline.md",
+      "title": "Stage bounds read the clock against the propagated deadline — proof",
+      "summary": "Three new tests, added into the two pre-existing spec files that already cover run-diagnosis.ts and simulate-hypothesis-pipeline.ts, each constructed to fail against the pre-fix (durations-summing / entry-instant-anchored) implementation and pass only against the delivered clock-read fix; plus one pre-existing test corrected to expect the now-correct refusal instead of the old buggy pass-through.",
+      "task": "task/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "to": "constraints/the-deadline-is-an-absolute-propagated-instant",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "to": "rules/investigation/no-stage-aborts-on-its-deadline",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "to": "task/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "to": "implementation/deadline-arithmetic-clock-read-hotfix/stage-bounds-read-the-clock-against-the-propagated-deadline",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
