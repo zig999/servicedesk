@@ -167,6 +167,7 @@ const BASE_EVALUATOR_OUTCOME: EvaluationOutcome = {
 
 const BASE_CONSOLIDATION_OUTCOME: ConsolidationOutcome = {
   text: 'the drafted assessment text',
+  register: 'plain',
   usage: { input_tokens: 1, output_tokens: 2 },
   elapsed_ms: 7,
   prompt: 'the consolidation prompt',
@@ -224,6 +225,10 @@ it('answers one record carrying evidence, evaluations, resolved, assessment, cos
       referral: { action: 'refer', recipient: 'a-queue' },
       determining_hypothesis: 'h1',
       text: 'the drafted assessment text',
+      register: 'plain',
+      usage: { input_tokens: 1, output_tokens: 2 },
+      elapsed_ms: 7,
+      prompt: 'the consolidation prompt',
     },
     cost: { calls: 2, input_tokens: 11, output_tokens: 7 },
     durations: { collection: 0, judgment: 50, writing: 7, total: 57 },
@@ -242,7 +247,7 @@ it('runs buildSubject before collecting any evidence or judging any hypothesis, 
   expect(evaluator.calls).toBe(0);
 });
 
-it("carries only the consolidation call's own prompt under prompts.writing, never merging in a judged hypothesis's own distinct judgment prompt", async () => {
+it("carries only the consolidation call's own prompt under prompts.writing and on the assessment's own prompt field, never merging in a judged hypothesis's own distinct judgment prompt", async () => {
   const options = baseOptions({
     evaluator: new ImmediateHypothesisEvaluator({
       verdict: 'confirmed',
@@ -251,6 +256,7 @@ it("carries only the consolidation call's own prompt under prompts.writing, neve
     }),
     consolidator: new ScriptedAssessmentConsolidator({
       text: 'the drafted assessment text',
+      register: 'plain',
       usage: { input_tokens: 0, output_tokens: 0 },
       elapsed_ms: 0,
       prompt: 'the consolidation prompt',
@@ -260,6 +266,7 @@ it("carries only the consolidation call's own prompt under prompts.writing, neve
   const result = await runInvestigationPipeline(options);
 
   expect(result.prompts).toEqual({ writing: 'the consolidation prompt' });
+  expect(result.assessment.prompt).toBe('the consolidation prompt');
 });
 
 it('imports none of the five stage-owning modules into run-diagnosis.ts, since its only route to any of the five stages is through investigation-pipeline.ts', async () => {

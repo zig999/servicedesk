@@ -1,0 +1,65 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "implementation",
+      "file": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment.md",
+      "title": "Consolidation call-record chain carries register, usage, elapsed_ms and prompt to the assessment",
+      "summary": "The consolidation port's answer now states the register it used, and draftAssessment/investigation-pipeline/relational-investigation-store carry that register together with usage, elapsed_ms and prompt onto every returned and persisted Assessment instead of dropping them before the assessment is built or stored.",
+      "task": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment"
+    },
+    {
+      "id": "proof/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "proof",
+      "file": "proof/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment.md",
+      "title": "Proof for register/usage/elapsed_ms/prompt reaching the assessment",
+      "summary": "Proves the consolidation call's register, usage, elapsed_ms and prompt now reach the Assessment an investigation-pipeline run returns and a diagnosis persists and reads back, with register always exactly what consolidate() answered rather than what the caller requested, and that the HTTP wire response stays narrowed to the four legacy DiagnoseResponseDto fields.",
+      "task": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/assessment-consolidator",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/knowledge/consolidation-register",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "domain/investigation/usage",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "rules/investigation/the-consolidation-answer-states-its-register",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "task/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "to": "implementation/consolidation-call-record-chain-hotfix/register-usage-elapsed-ms-and-prompt-reach-the-assessment",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

@@ -138,7 +138,16 @@ function anIntegrationInvestigation(options: IInvestigationOptions): Investigati
     model: 'a-model',
     evidence: [anIntegrationEvidence(fixtures)],
     evaluations: [{ hypothesis: 'a-hypothesis', verdict: 'confirmed', citations: [{ concept: fixtures.concept, field: 'a-field' }] }],
-    assessment: { outcome: fixtures.outcome, referral: { action: fixtures.action, recipient: fixtures.recipient }, determining_hypothesis: 'a-hypothesis', text: 'assessment text' },
+    assessment: {
+      outcome: fixtures.outcome,
+      referral: { action: fixtures.action, recipient: fixtures.recipient },
+      determining_hypothesis: 'a-hypothesis',
+      text: 'assessment text',
+      register: 'formal',
+      usage: { input_tokens: 77, output_tokens: 41 },
+      elapsed_ms: 1234,
+      prompt: 'the consolidation prompt supplied for this fixture',
+    },
     cost: { calls: 3, input_tokens: 100, output_tokens: 50 },
     durations: { collection: 10, judgment: 20, writing: 5, total: 35 },
     written_at: '2024-01-01T00:00:00.000Z',
@@ -327,13 +336,42 @@ it(
     const id = `investigation-store-no-determining-hypothesis-${randomUUID()}`;
     investigationIdsWrittenByThisTest.push(id);
     const base = anIntegrationInvestigation({ id, fixtures });
-    const investigation: Investigation = { ...base, assessment: { outcome: base.assessment.outcome, referral: base.assessment.referral, text: base.assessment.text } };
+    const investigation: Investigation = {
+      ...base,
+      assessment: {
+        outcome: base.assessment.outcome,
+        referral: base.assessment.referral,
+        text: base.assessment.text,
+        register: base.assessment.register,
+        usage: base.assessment.usage,
+        elapsed_ms: base.assessment.elapsed_ms,
+        prompt: base.assessment.prompt,
+      },
+    };
     const store = new RelationalInvestigationStore(pool);
 
     await store.write(investigation);
     const answered = (await store.read(id))?.document as Investigation;
 
     expect(answered.assessment).not.toHaveProperty('determining_hypothesis');
+  },
+  15000,
+);
+
+it(
+  "reads back the assessment's own register as 'plain' when that is what was written, rather than the column's own 'formal' default surviving from another row or the migration's DEFAULT clause",
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-plain-register-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const base = anIntegrationInvestigation({ id, fixtures });
+    const investigation: Investigation = { ...base, assessment: { ...base.assessment, register: 'plain' } };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(investigation);
+    const answered = (await store.read(id))?.document as Investigation;
+
+    expect(answered.assessment.register).toBe('plain');
   },
   15000,
 );

@@ -366,6 +366,10 @@ const HAPPY_PATH_ASSESSMENT = {
   referral: { action: 'refer', recipient: 'a-queue' },
   determining_hypothesis: 'h1',
   text: HAPPY_PATH_TEXT,
+  register: 'plain',
+  usage: { input_tokens: 0, output_tokens: 0 },
+  elapsed_ms: 0,
+  prompt: '',
 };
 
 function baseConsolidator(register: 'formal' | 'plain' = 'plain'): FakeAssessmentConsolidator {
@@ -838,7 +842,7 @@ it('counts cost.calls as one per hypothesis whose Evaluation actually carries us
     citations: [{ concept: 'concept-a', field: 'a-field' }],
     usage: { input_tokens: 10, output_tokens: 5 },
   });
-  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 1, output_tokens: 2 }, elapsed_ms: 7, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', register: 'plain', usage: { input_tokens: 1, output_tokens: 2 }, elapsed_ms: 7, prompt: 'a-prompt' });
   const options = baseOptions({
     case: aCase({ hypotheses: [aHypothesis('h1', ['concept-a']), aHypothesis('h2', ['concept-b'])] }),
     capabilities,
@@ -856,7 +860,7 @@ it('counts cost.calls as one per hypothesis whose Evaluation actually carries us
 
 it("excludes a hypothesis from cost.calls when its evaluator's own answer carries no usage, even though evaluate() genuinely ran for it — a call this recorded cost never charges for", async () => {
   const store = new InMemoryInvestigationStore();
-  const consolidator = new ScriptedAssessmentConsolidator({ text: HAPPY_PATH_TEXT, usage: { input_tokens: 4, output_tokens: 2 }, elapsed_ms: 3, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: HAPPY_PATH_TEXT, register: 'plain', usage: { input_tokens: 4, output_tokens: 2 }, elapsed_ms: 3, prompt: 'a-prompt' });
 
   const options = baseOptions({ store, consolidator });
 
@@ -870,7 +874,7 @@ it('counts cost.calls as exactly one — the consolidation call alone — when e
   const store = new InMemoryInvestigationStore();
   const capabilities = new FakeCapabilityQuery();
   const evaluator = new CountingHypothesisEvaluator();
-  const consolidator = new ScriptedAssessmentConsolidator({ text: 'fallback text', usage: { input_tokens: 9, output_tokens: 6 }, elapsed_ms: 11, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'fallback text', register: 'plain', usage: { input_tokens: 9, output_tokens: 6 }, elapsed_ms: 11, prompt: 'a-prompt' });
   const options = baseOptions({ capabilities, evaluator, consolidator, store });
 
   await runDiagnosis(options);
@@ -905,7 +909,7 @@ it('counts cost.calls as one per hypothesis when every required hypothesis is ac
   const evaluator = new ScriptedByCriterionHypothesisEvaluator();
   evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], usage: { input_tokens: 1, output_tokens: 1 } });
   evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], usage: { input_tokens: 1, output_tokens: 1 } });
-  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 1, output_tokens: 1 }, elapsed_ms: 0, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', register: 'plain', usage: { input_tokens: 1, output_tokens: 1 }, elapsed_ms: 0, prompt: 'a-prompt' });
   const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
 
   await runDiagnosis(options);
@@ -922,7 +926,7 @@ it("sums cost.input_tokens and cost.output_tokens across every judgment call's o
   const evaluator = new ScriptedByCriterionHypothesisEvaluator();
   evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], usage: { input_tokens: 10, output_tokens: 5 } });
   evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], usage: { input_tokens: 20, output_tokens: 8 } });
-  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 7, output_tokens: 3 }, elapsed_ms: 0, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', register: 'plain', usage: { input_tokens: 7, output_tokens: 3 }, elapsed_ms: 0, prompt: 'a-prompt' });
   const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
 
   await runDiagnosis(options);
@@ -940,7 +944,7 @@ it("computes durations.collection and durations.judgment as the largest of their
   const evaluator = new ScriptedByCriterionHypothesisEvaluator();
   evaluator.script('h1 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], elapsed_ms: 50 });
   evaluator.script('h2 criterion', { verdict: 'confirmed', citations: [{ concept: 'concept-b', field: 'a-field' }], elapsed_ms: 200 });
-  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 400, prompt: 'a-prompt' });
+  const consolidator = new ScriptedAssessmentConsolidator({ text: 'consolidated text', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 400, prompt: 'a-prompt' });
   const options = { ...twoHypothesisTelemetryOptions(observationSource, evaluator, consolidator), store };
 
   const resultPromise = runDiagnosis(options);
@@ -963,19 +967,15 @@ async function durationsForOneRun(runTiming: {
 }): Promise<Durations> {
   const store = new InMemoryInvestigationStore();
   const consolidator = new ScriptedAssessmentConsolidator({
-    text: `text-${runTiming.id}`,
-    usage: { input_tokens: 0, output_tokens: 0 },
-    elapsed_ms: runTiming.writingElapsedMs,
-    prompt: 'a-prompt',
+    text: `text-${runTiming.id}`, register: 'plain', usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: runTiming.writingElapsedMs, prompt: 'a-prompt',
   });
   const options = baseOptions({
     id: runTiming.id,
     store,
     observationSource: new DelayedObservationSource(runTiming.collectionDelayMs, { result: 'ok', observation: 'observed-concept-a' }),
     evaluator: new ImmediateHypothesisEvaluator({
-      verdict: 'confirmed',
-      citations: [{ concept: 'concept-a', field: 'a-field' }],
-      elapsed_ms: runTiming.judgmentElapsedMs,
+      verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'a-field' }], elapsed_ms: runTiming.judgmentElapsedMs,
     }),
     consolidator,
   });
@@ -997,23 +997,32 @@ it('writes measured, non-constant durations across two diagnose calls whose evid
   expect(durationsA.total).not.toBe(durationsB.total);
 });
 
-it('writes an assessment carrying no usage, elapsed_ms or prompt, even though the wrapped consolidation call answered all three — capturingConsolidator captures them for cost and durations without exposing them through Assessment', async () => {
+it("writes an assessment carrying exactly the register, usage, elapsed_ms and prompt the consolidation call itself answered with — never the register the caller requested, when the two differ", async () => {
   const store = new InMemoryInvestigationStore();
   const consolidator = new ScriptedAssessmentConsolidator({
     text: HAPPY_PATH_TEXT,
+    register: 'formal',
     usage: { input_tokens: 3, output_tokens: 4 },
     elapsed_ms: 15,
     prompt: 'a consolidation prompt',
   });
-  const options = baseOptions({ store, consolidator });
+  const options = baseOptions({ store, consolidator, defaultConsolidationRegister: 'plain' });
 
   await runDiagnosis(options);
   const document = await writtenDocument(store, 'investigation-1');
 
   const assessment = (document as Investigation).assessment;
-  expect(assessment).not.toHaveProperty('usage');
-  expect(assessment).not.toHaveProperty('elapsed_ms');
-  expect(assessment).not.toHaveProperty('prompt');
+  expect({
+    register: assessment.register,
+    usage: assessment.usage,
+    elapsed_ms: assessment.elapsed_ms,
+    prompt: assessment.prompt,
+  }).toEqual({
+    register: 'formal',
+    usage: { input_tokens: 3, output_tokens: 4 },
+    elapsed_ms: 15,
+    prompt: 'a consolidation prompt',
+  });
 });
 
 it('exports exactly RunDiagnosisOptions and runDiagnosis, keeping every internal helper — including its own evidence-by-hypothesis matching — private to this module', async () => {

@@ -54,25 +54,20 @@ function completeRecord(): InvestigationPipelineResult {
   return {
     evidence: [
       {
-        concept: 'a-concept',
-        inputs: '{}',
-        observation: 'an-observation',
-        observed_at: '2024-01-01T00:00:00.000Z',
-        ttl: 60,
-        origin: 'a-connector',
-        result: 'ok',
-        capability_name: 'a-capability',
-        capability_version: '1.0.0',
-        elapsed_ms: 10,
-        fields: [],
-        concept_description: '',
+        concept: 'a-concept', inputs: '{}', observation: 'an-observation', observed_at: '2024-01-01T00:00:00.000Z',
+        ttl: 60, origin: 'a-connector', result: 'ok', capability_name: 'a-capability', capability_version: '1.0.0',
+        elapsed_ms: 10, fields: [], concept_description: '',
       },
     ],
     evaluations: [
       { hypothesis: 'hypothesis-a', verdict: 'confirmed', citations: [{ concept: 'a-concept', field: 'a-field' }] },
     ],
     resolved: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, determining: 'hypothesis-a' },
-    assessment: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, determining_hypothesis: 'hypothesis-a', text: 'a drafted text' },
+    assessment: {
+      outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, determining_hypothesis: 'hypothesis-a',
+      text: 'a drafted text', register: 'formal', usage: { input_tokens: 7, output_tokens: 3 }, elapsed_ms: 25,
+      prompt: 'the consolidation prompt this task never publishes',
+    },
     cost: { calls: 3, input_tokens: 300, output_tokens: 100 },
     durations: { collection: 10, judgment: 20, writing: 30, total: 60 },
     prompts: { writing: 'the consolidation prompt this task never publishes' },

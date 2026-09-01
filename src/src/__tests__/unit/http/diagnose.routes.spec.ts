@@ -108,16 +108,28 @@ it('never calls the wired diagnose runner for a draft-state pinned version at th
   expect(built.runDiagnose).not.toHaveBeenCalled();
 });
 
-it('answers 200 with the resolved assessment, unchanged, for a released-state pinned version', async () => {
+it('answers 200 with the resolved assessment narrowed to the response DTO\'s four fields, for a released-state pinned version', async () => {
   const built = buildTestApp(heldCase({ state: 'released' }));
   app = built.app;
-  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
-  built.runDiagnose.mockResolvedValueOnce(expectedAssessment);
+  const resolvedAssessment: Assessment = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  };
+  built.runDiagnose.mockResolvedValueOnce(resolvedAssessment);
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
 
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual(expectedAssessment);
+  expect(response.json()).toEqual({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+  });
 });
 
 const A_REQUIRED_CAPABILITY = { name: 'equipment-status-lookup', version: '1.0.0' };
@@ -155,18 +167,30 @@ it('never calls the wired diagnose runner when the subject fails to cover a requ
   expect(built.runDiagnose).not.toHaveBeenCalled();
 });
 
-it('answers 200 with the resolved assessment when the subject covers every required attribute the derived requirements name', async () => {
+it('answers 200 with the resolved assessment narrowed to the response DTO\'s four fields, when the subject covers every required attribute the derived requirements name', async () => {
   const requirements: CaseInputRequirementsResult = {
     requirements: [{ attribute: 'an-attribute', required: true, capabilities: [A_REQUIRED_CAPABILITY] }],
     capabilities_with_malformed_input_schema: [],
   };
   const built = buildTestApp(heldCase({ state: 'released' }), requirements);
   app = built.app;
-  const expectedAssessment: Assessment = { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' };
-  built.runDiagnose.mockResolvedValueOnce(expectedAssessment);
+  const resolvedAssessment: Assessment = {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  };
+  built.runDiagnose.mockResolvedValueOnce(resolvedAssessment);
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: REQUEST_BODY });
 
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual(expectedAssessment);
+  expect(response.json()).toEqual({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+  });
 });

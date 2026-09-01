@@ -5,6 +5,7 @@ import type { Usage } from './usage.js';
 
 export type ConsolidationOutcome = {
   readonly text: string;
+  readonly register: ConsolidationRegister;
   readonly usage: Usage;
   readonly elapsed_ms: number;
   readonly prompt: string;

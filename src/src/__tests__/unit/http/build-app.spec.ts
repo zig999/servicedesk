@@ -180,7 +180,15 @@ const MINIMAL_SIMULATION_RESULT: InvestigationPipelineResult = {
   evidence: [],
   evaluations: [],
   resolved: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' } },
-  assessment: { outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a text' },
+  assessment: {
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a prompt',
+  },
   cost: { calls: 0, input_tokens: 0, output_tokens: 0 },
   durations: { collection: 0, judgment: 0, writing: 0, total: 0 },
   prompts: { writing: 'a prompt' },
@@ -291,23 +299,31 @@ afterEach(async () => {
   app = undefined;
 });
 
-it('answers 200 with the assessment the diagnose call produced, for a request naming an existing case, subject, narrative and requester', async () => {
+it('answers 200 with the diagnose call\'s resolved assessment narrowed to the response DTO\'s four fields, for a request naming an existing case, subject, narrative and requester', async () => {
   const built = buildTestApp();
   app = built.app;
-  const expectedAssessment: Assessment = {
+  const resolvedAssessment: Assessment = {
     outcome: 'an-outcome',
     referral: { action: 'an-action', recipient: 'a-recipient' },
     text: 'a drafted assessment text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'a drafted assessment prompt',
   };
-  built.runDiagnose.mockResolvedValueOnce(expectedAssessment);
+  built.runDiagnose.mockResolvedValueOnce(resolvedAssessment);
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
 
   expect(response.statusCode).toBe(200);
-  expect(response.json()).toEqual(expectedAssessment);
+  expect(response.json()).toEqual({
+    outcome: 'an-outcome',
+    referral: { action: 'an-action', recipient: 'a-recipient' },
+    text: 'a drafted assessment text',
+  });
 });
 
-it('carries exactly outcome, referral, determining_hypothesis and text when the resolved outcome names a determining hypothesis', async () => {
+it('carries exactly outcome, referral, determining_hypothesis and text on the wire — never register, usage, elapsed_ms or prompt — when the resolved outcome names a determining hypothesis', async () => {
   const built = buildTestApp();
   app = built.app;
   built.runDiagnose.mockResolvedValueOnce({
@@ -315,37 +331,68 @@ it('carries exactly outcome, referral, determining_hypothesis and text when the 
     referral: { action: 'schedule-technician-visit', recipient: 'field-service-queue' },
     determining_hypothesis: 'customer-equipment-fault',
     text: 'a drafted assessment text',
+    register: 'formal',
+    usage: { input_tokens: 3, output_tokens: 5 },
+    elapsed_ms: 40,
+    prompt: 'a drafted assessment prompt',
   });
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
 
-  expect(Object.keys(response.json() as object).sort()).toEqual(['determining_hypothesis', 'outcome', 'referral', 'text']);
+  expect(response.json()).toEqual({
+    outcome: 'issue-equipment-fault',
+    referral: { action: 'schedule-technician-visit', recipient: 'field-service-queue' },
+    determining_hypothesis: 'customer-equipment-fault',
+    text: 'a drafted assessment text',
+  });
 });
 
-it('omits determining_hypothesis and carries no verdict, citation or evidence field when the resolved outcome names none', async () => {
+it('omits determining_hypothesis, register, usage, elapsed_ms and prompt on the wire, and carries no verdict, citation or evidence field, when the resolved outcome names no determining hypothesis', async () => {
   const built = buildTestApp();
   app = built.app;
   built.runDiagnose.mockResolvedValueOnce({
     outcome: 'a-fallback-outcome',
     referral: { action: 'refer', recipient: 'a-queue' },
     text: 'a drafted assessment text',
+    register: 'plain',
+    usage: { input_tokens: 3, output_tokens: 5 },
+    elapsed_ms: 40,
+    prompt: 'a drafted assessment prompt',
   });
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
 
-  const body = response.json() as Record<string, unknown>;
-  expect(Object.keys(body).sort()).toEqual(['outcome', 'referral', 'text']);
-  expect(body).not.toHaveProperty('verdict');
-  expect(body).not.toHaveProperty('citations');
-  expect(body).not.toHaveProperty('evidence');
+  expect(response.json()).toEqual({
+    outcome: 'a-fallback-outcome',
+    referral: { action: 'refer', recipient: 'a-queue' },
+    text: 'a drafted assessment text',
+  });
 });
 
-it("answers each of two requests naming the same case, subject, narrative and requester with that call's own resolved assessment, never a cached or joined value", async () => {
+it("answers each of two requests naming the same case, subject, narrative and requester with that call's own resolved assessment narrowed to the response DTO's four fields, never a cached or joined value", async () => {
   const built = buildTestApp();
   app = built.app;
+  const firstAssessment: Assessment = {
+    outcome: 'first-outcome',
+    referral: { action: 'a', recipient: 'r' },
+    text: 'first-text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'first-prompt',
+  };
+  const secondAssessment: Assessment = {
+    outcome: 'second-outcome',
+    referral: { action: 'a', recipient: 'r' },
+    text: 'second-text',
+    register: 'plain',
+    usage: { input_tokens: 0, output_tokens: 0 },
+    elapsed_ms: 0,
+    prompt: 'second-prompt',
+  };
   built.runDiagnose
-    .mockResolvedValueOnce({ outcome: 'first-outcome', referral: { action: 'a', recipient: 'r' }, text: 'first-text' })
-    .mockResolvedValueOnce({ outcome: 'second-outcome', referral: { action: 'a', recipient: 'r' }, text: 'second-text' });
+    .mockResolvedValueOnce(firstAssessment)
+    .mockResolvedValueOnce(secondAssessment);
   const body = validRequestBody();
 
   const firstResponse = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: body });
@@ -358,7 +405,7 @@ it("answers each of two requests naming the same case, subject, narrative and re
 it('invokes the diagnose call under a fresh id for each of two requests naming the same case, subject, narrative and requester', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.runDiagnose.mockResolvedValue({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
+  built.runDiagnose.mockResolvedValue({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
   const body = validRequestBody();
 
   await app.inject({ method: 'POST', url: '/v1/diagnose', payload: body });
@@ -373,7 +420,7 @@ it('invokes the diagnose call under a fresh id for each of two requests naming t
 it('passes ticket_ref through as undefined to the diagnose call when the request names none, inventing no placeholder', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
+  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody() });
 
@@ -384,7 +431,7 @@ it('passes ticket_ref through as undefined to the diagnose call when the request
 it('passes a given ticket_ref straight through to the diagnose call, unchanged', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
+  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody({ ticket_ref: 'TCK-42' }) });
 
@@ -395,7 +442,7 @@ it('passes a given ticket_ref straight through to the diagnose call, unchanged',
 it('answers 200 for a request carrying no headers at all, reading no authentication or authorization header', async () => {
   const built = buildTestApp();
   app = built.app;
-  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
+  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
 
   const response = await app.inject({ method: 'POST', url: '/v1/diagnose', payload: validRequestBody(), headers: {} });
 
@@ -405,7 +452,7 @@ it('answers 200 for a request carrying no headers at all, reading no authenticat
 it("runs the diagnose call under exactly the body's own requester, even when the request carries an authorization header naming a different identity", async () => {
   const built = buildTestApp();
   app = built.app;
-  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't' });
+  built.runDiagnose.mockResolvedValueOnce({ outcome: 'o', referral: { action: 'a', recipient: 'r' }, text: 't', register: 'plain', usage: { input_tokens: 0, output_tokens: 0 }, elapsed_ms: 0, prompt: 'p' });
 
   const response = await app.inject({
     method: 'POST',

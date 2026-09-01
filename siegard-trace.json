@@ -2334,6 +2334,10 @@
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
         {
+          "path": "src/migrations/0014-assessment-consolidation-call-record.sql",
+          "digest": "sha256:07d450525030785b728f3b6c76a459f5e3c72713cfbbff0607e5c5712cf8cca4"
+        },
+        {
           "path": "src/src/http/dto/diagnose.dto.ts",
           "digest": "sha256:0fc7550e137185aaf85d192ed364052829e828436a3d41401f8fc1d60d16fffa"
         },
@@ -2351,11 +2355,11 @@
         },
         {
           "path": "src/src/investigation/assessment.ts",
-          "digest": "sha256:8aecd978a8553fe5c0e57b1de8c8909d183b3e55d9f9119b221dc9f15c7b3c2e"
+          "digest": "sha256:e3773cd0df1c708f2a05bae94bedeef51829ffbc6f16af3d69feb91de1e80a26"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:a76d73fffcb480de69287745fc2b9903cbc572a587acbe32ade59a8dc11fb79c"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -2371,21 +2375,21 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:5893bbb1f939b2f0370b9a82a5c39c3ce737cce968015c20278288f6fe0c8dcb"
+          "digest": "sha256:6645063ccde1b7f22642e9b632cdea24184ae78b01de5492ca05da5ee99ee2df"
         }
       ]
     },
     {
       "node": "domain/investigation/assessment-consolidator",
-      "digest": "sha256:1f9d722fd9676eb856d45dd13cab3cc4f850b47d53842a9b7ff57bac6c51abec",
+      "digest": "sha256:33d72274f7428f285f5398b31a898669b64eed68ede1970de9c4f30880db1f22",
       "files": [
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
@@ -2393,7 +2397,7 @@
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         }
       ]
     },
@@ -3062,6 +3066,10 @@
           "digest": "sha256:59f0279c725716efffe545d64b677233198ff1a7031d2b86692d924f1e69de53"
         },
         {
+          "path": "src/migrations/0014-assessment-consolidation-call-record.sql",
+          "digest": "sha256:07d450525030785b728f3b6c76a459f5e3c72713cfbbff0607e5c5712cf8cca4"
+        },
+        {
           "path": "src/src/http/dto/simulate-case.dto.ts",
           "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
         },
@@ -3078,6 +3086,14 @@
           "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
         },
         {
+          "path": "src/src/investigation/assessment-consolidator.port.ts",
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
+        },
+        {
+          "path": "src/src/investigation/assessment.ts",
+          "digest": "sha256:e3773cd0df1c708f2a05bae94bedeef51829ffbc6f16af3d69feb91de1e80a26"
+        },
+        {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
           "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
         },
@@ -3088,6 +3104,10 @@
         {
           "path": "src/src/investigation/usage.ts",
           "digest": "sha256:93dbd934a8961d4afee9d62d5f243326bafdf1c4e7e93cb191b700499464478d"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:6645063ccde1b7f22642e9b632cdea24184ae78b01de5492ca05da5ee99ee2df"
         }
       ]
     },
@@ -3596,6 +3616,10 @@
           "digest": "sha256:b619c73d363a757fdac637434fcf6af2a360f9d525d2f2493bf20dba83d825e3"
         },
         {
+          "path": "src/migrations/0014-assessment-consolidation-call-record.sql",
+          "digest": "sha256:07d450525030785b728f3b6c76a459f5e3c72713cfbbff0607e5c5712cf8cca4"
+        },
+        {
           "path": "src/src/case/case.ts",
           "digest": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296"
         },
@@ -3612,12 +3636,24 @@
           "digest": "sha256:b09e0fd91ef6c6e39a21845c702741262bdb9b33a8f8285482c828507ce8a8f8"
         },
         {
+          "path": "src/src/investigation/assessment-consolidator.port.ts",
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
+        },
+        {
+          "path": "src/src/investigation/assessment.ts",
+          "digest": "sha256:e3773cd0df1c708f2a05bae94bedeef51829ffbc6f16af3d69feb91de1e80a26"
+        },
+        {
           "path": "src/src/investigation/consolidation-register.ts",
           "digest": "sha256:84f7e620674b018b07921cb02ecb4c15b35fa57029e7e78171f128820af7c559"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
           "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:6645063ccde1b7f22642e9b632cdea24184ae78b01de5492ca05da5ee99ee2df"
         }
       ]
     },
@@ -5068,6 +5104,28 @@
         {
           "path": "src/src/investigation/run-diagnosis.ts",
           "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/the-consolidation-answer-states-its-register",
+      "digest": "sha256:ceb5b1df0e605c53a9a9011ba70723d1b1ad4fb969f5f060d08365c4b251aaef",
+      "files": [
+        {
+          "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
+        },
+        {
+          "path": "src/src/investigation/assessment-consolidator.port.ts",
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
+        },
+        {
+          "path": "src/src/investigation/draft-assessment-text.ts",
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
+        },
+        {
+          "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         }
       ]
     },

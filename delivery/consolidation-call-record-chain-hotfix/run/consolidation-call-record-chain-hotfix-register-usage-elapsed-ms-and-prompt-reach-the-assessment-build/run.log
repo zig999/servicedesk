@@ -1,0 +1,78 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 7s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/integration/factories/store-wiring.spec.ts(173,5): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/integration/http/diagnose-e2e.spec.ts(61,7): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts(141,5): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; determining_hypothesis: string; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts(330,53): error TS2739: Type '{ outcome: string; referral: Referral; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/factories/simulate.factory.spec.ts(66,5): error TS2741: Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/http/build-app.spec.ts(183,3): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(297,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(313,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; determining_hypothesis: string; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; determining_hypothesis: string; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(328,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(347,28): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(348,28): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(361,39): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(376,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(387,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(398,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/build-app.spec.ts(408,43): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.controller.spec.ts(183,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.controller.spec.ts(189,100): error TS2345: Argument of type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; determining_hypothesis?: string | undefined; }' is not assignable to parameter of type 'Assessment'.
+  Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; determining_hypothesis?: string | undefined; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.controller.spec.ts(263,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.controller.spec.ts(274,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.routes.spec.ts(114,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/diagnose.routes.spec.ts(165,9): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/http/simulate-case.controller.spec.ts(75,5): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; determining_hypothesis: string; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+src/__tests__/unit/investigation/investigation-factory.spec.ts(123,3): error TS2322: Type '{ outcome: string; referral: Referral; determining_hypothesis: string; text: string; register?: "formal" | "plain" | undefined; usage?: Usage | undefined; elapsed_ms?: number | undefined; prompt?: string | undefined; }' is not assignable to type 'Assessment'.
+  Types of property 'register' are incompatible.
+    Type '"formal" | "plain" | undefined' is not assignable to type '"formal" | "plain"'.
+      Type 'undefined' is not assignable to type '"formal" | "plain"'.
+src/__tests__/unit/investigation/investigation-pipeline.spec.ts(168,7): error TS2741: Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/investigation-pipeline.spec.ts(252,54): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(841,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(859,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(873,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(908,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(925,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(943,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(965,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/investigation/run-diagnosis.spec.ts(1002,59): error TS2345: Argument of type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' is not assignable to parameter of type 'ConsolidationOutcome'.
+  Property 'register' is missing in type '{ text: string; usage: { input_tokens: number; output_tokens: number; }; elapsed_ms: number; prompt: string; }' but required in type 'ConsolidationOutcome'.
+src/__tests__/unit/persistence/relational-investigation-store.repository.spec.ts(170,5): error TS2739: Type '{ outcome: string; referral: { action: string; recipient: string; }; determining_hypothesis: string; text: string; }' is missing the following properties from type 'Assessment': register, usage, elapsed_ms, prompt
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

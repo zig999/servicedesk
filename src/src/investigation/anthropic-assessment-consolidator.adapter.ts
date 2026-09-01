@@ -43,7 +43,7 @@ export class AnthropicAssessmentConsolidator implements IAssessmentConsolidator 
       messages: [{ role: 'user', content: prompt }],
     });
     const elapsedMs = Date.now() - startedAt;
-    return { text: textOf(response.content).trim(), usage: response.usage, elapsed_ms: elapsedMs, prompt };
+    return { text: textOf(response.content).trim(), register: consolidationRegister, usage: response.usage, elapsed_ms: elapsedMs, prompt };
   }
 }
 

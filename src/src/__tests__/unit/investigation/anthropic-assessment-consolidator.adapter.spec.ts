@@ -149,6 +149,18 @@ it("returns exactly the model's own text content, trimmed of surrounding whitesp
   expect(outcome.text).toBe('The consolidated assessment.');
 });
 
+it('answers register as exactly the register the call itself carried, for each of the two declared registers', async () => {
+  create.mockResolvedValueOnce(textResponse('a formal write-up'));
+  create.mockResolvedValueOnce(textResponse('a plain write-up'));
+  const consolidator = new AnthropicAssessmentConsolidator(A_CONFIG);
+
+  const formalOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'formal');
+  const plainOutcome = await consolidator.consolidate(SOME_EVALUATIONS, SOME_EVIDENCE, 'plain');
+
+  expect(formalOutcome.register).toBe('formal');
+  expect(plainOutcome.register).toBe('plain');
+});
+
 it("answers usage read exactly from the provider response's own usage on a successful call", async () => {
   create.mockResolvedValueOnce({ content: [{ type: 'text', text: 'the write-up' }], usage: { input_tokens: 200, output_tokens: 80 } });
   const consolidator = new AnthropicAssessmentConsolidator(A_CONFIG);
