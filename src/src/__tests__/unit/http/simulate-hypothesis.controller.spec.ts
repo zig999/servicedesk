@@ -10,6 +10,8 @@ import { handleSimulateHypothesisRequest, type SimulateHypothesisControllerDepen
 import type { SimulateHypothesisRequestDto } from '../../../http/dto/simulate-hypothesis.dto.js';
 import type { SimulateHypothesisPipelineResult } from '../../../investigation/simulate-hypothesis-pipeline.js';
 
+const EXPECTED_DEADLINE_BUDGET_MS = 20_000;
+
 function heldManifestEntry(position: number, hypothesisName: string): ManifestEntry {
   return {
     position,
@@ -189,4 +191,37 @@ it('names the offending attribute on the thrown refusal, applying the same rule 
   });
 
   await expect(rejection).rejects.toMatchObject({ context: { attributes: ['an-ungoverned-attribute'] } });
+});
+
+it('computes now and a deadline the specification-declared twenty seconds later, immediately before calling runSimulateHypothesis, and includes both in the call it sends', async () => {
+  const { dependencies, runSimulateHypothesis } = buildDependencies({ case: heldCase() });
+  runSimulateHypothesis.mockResolvedValueOnce(completeRecord());
+  const before = Date.now();
+
+  await handleSimulateHypothesisRequest(dependencies, REQUEST_BODY);
+  const after = Date.now();
+
+  expect(runSimulateHypothesis).toHaveBeenCalledTimes(1);
+  const call = runSimulateHypothesis.mock.calls[0]?.[0];
+  expect(call?.now).toBeGreaterThanOrEqual(before);
+  expect(call?.now).toBeLessThanOrEqual(after);
+  expect(call?.deadline).toBe((call?.now ?? 0) + EXPECTED_DEADLINE_BUDGET_MS);
+});
+
+it("passes the request's own subjectType, subjectAttributes, case, requester and hypothesis to runSimulateHypothesis, alongside the now and deadline it computes", async () => {
+  const heldPinnedCase = heldCase();
+  const { dependencies, runSimulateHypothesis } = buildDependencies({ case: heldPinnedCase });
+  runSimulateHypothesis.mockResolvedValueOnce(completeRecord());
+
+  await handleSimulateHypothesisRequest(dependencies, REQUEST_BODY);
+
+  expect(runSimulateHypothesis).toHaveBeenCalledTimes(1);
+  const call = runSimulateHypothesis.mock.calls[0]?.[0];
+  expect(call).toMatchObject({
+    subjectType: REQUEST_BODY.subject.type,
+    subjectAttributes: REQUEST_BODY.subject.attributes,
+    case: heldPinnedCase,
+    requester: REQUEST_BODY.requester,
+    hypothesis: REQUEST_BODY.hypothesis,
+  });
 });

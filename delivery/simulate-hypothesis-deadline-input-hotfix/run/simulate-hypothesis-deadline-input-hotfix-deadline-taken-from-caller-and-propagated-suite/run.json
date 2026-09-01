@@ -1,0 +1,56 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/simulate-hypothesis-deadline-input-hotfix-deadline-taken-from-caller-and-propagated-suite",
+  "cwd": "/home/siegfriedneto/projects/wt-simulate-hypothesis-deadline-input-hotfix/src",
+  "timeout_seconds": 2400,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-01T16:11:31.466+00:00",
+      "ended_at": "2026-09-01T16:11:34.505+00:00"
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "typecheck.log",
+      "started_at": "2026-09-01T16:11:34.505+00:00",
+      "ended_at": "2026-09-01T16:11:40.649+00:00"
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "lint.log",
+      "started_at": "2026-09-01T16:11:40.649+00:00",
+      "ended_at": "2026-09-01T16:11:45.134+00:00"
+    },
+    {
+      "name": "secret-scan",
+      "command": "npm run secret-scan",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "secret-scan.log",
+      "started_at": "2026-09-01T16:11:45.134+00:00",
+      "ended_at": "2026-09-01T16:11:45.617+00:00"
+    },
+    {
+      "name": "test",
+      "command": "npm test",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "test.log",
+      "started_at": "2026-09-01T16:11:45.617+00:00",
+      "ended_at": "2026-09-01T16:14:02.155+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

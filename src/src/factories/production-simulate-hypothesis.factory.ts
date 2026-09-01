@@ -10,8 +10,6 @@ import { createCapabilityQuery } from './capability-registry.factory.js';
 import { createConnectorConfigurationRegistry } from './connector-configuration-registry.factory.js';
 import { createGlossaryQuery } from './glossary.factory.js';
 
-const TOTAL_DEADLINE_BUDGET_MS = 20_000;
-
 export type ProductionHypothesisSimulationDependencies = {
   readonly connection: DatabaseConnection;
   readonly poolSize: number;
@@ -23,7 +21,7 @@ export type ProductionHypothesisSimulationDependencies = {
 
 export type ProductionHypothesisSimulationCall = Omit<
   SimulateHypothesisPipelineOptions,
-  'capabilities' | 'glossary' | 'observationSource' | 'evaluator' | 'poolSize' | 'now' | 'deadline'
+  'capabilities' | 'glossary' | 'observationSource' | 'evaluator' | 'poolSize'
 >;
 
 export function createProductionHypothesisSimulationRunner(
@@ -37,17 +35,13 @@ export function createProductionHypothesisSimulationRunner(
     model: dependencies.evaluatorModel,
     maxTokens: dependencies.evaluatorMaxTokens,
   });
-  return (call: ProductionHypothesisSimulationCall): Promise<SimulateHypothesisPipelineResult> => {
-    const now = Date.now();
-    return runSimulateHypothesisPipeline({
+  return (call: ProductionHypothesisSimulationCall): Promise<SimulateHypothesisPipelineResult> =>
+    runSimulateHypothesisPipeline({
       ...call,
       capabilities,
       glossary,
       observationSource,
       evaluator,
       poolSize: dependencies.poolSize,
-      now,
-      deadline: now + TOTAL_DEADLINE_BUDGET_MS,
     });
-  };
 }

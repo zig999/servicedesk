@@ -6,6 +6,8 @@ import type { SimulateHypothesisPipelineResult } from '../investigation/simulate
 import { buildSubject } from '../investigation/subject.js';
 import type { SimulateHypothesisRequestDto, SimulateHypothesisResponseDto } from './dto/simulate-hypothesis.dto.js';
 
+const TOTAL_DEADLINE_BUDGET_MS = 20_000;
+
 export type SimulateHypothesisControllerDependencies = {
   readonly caseQuery: ICaseQuery;
   readonly glossary: IGlossaryQuery;
@@ -19,12 +21,15 @@ export async function handleSimulateHypothesisRequest(
   const { case: pinnedCase } = await dependencies.caseQuery.readCase(body.case.slug, body.case.version);
   const subject = buildSubject(body.subject.type, body.subject.attributes);
   await refuseAttributesNotInGlossary(subject, dependencies.glossary);
+  const now = Date.now();
   const { evidence, evaluation, durations } = await dependencies.runSimulateHypothesis({
     subjectType: body.subject.type,
     subjectAttributes: body.subject.attributes,
     case: pinnedCase,
     requester: body.requester,
     hypothesis: body.hypothesis,
+    now,
+    deadline: now + TOTAL_DEADLINE_BUDGET_MS,
   });
   return { evidence, evaluation, durations };
 }
