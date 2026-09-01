@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it, vi } from 'vitest';
 import { GlossaryStoreError } from '../../../errors/glossary-store.error.js';
 import type { IConnectableQueryable } from '../../../persistence/database-access.js';
@@ -295,14 +293,6 @@ it('inserts one concept_accepts row per subject type the given concept accepts, 
     ['a-concept', 'a-subject-type'],
     ['a-concept', 'another-subject-type'],
   ]);
-});
-
-it("no longer cites the discarded ensure-non-conclusion-outcomes-hotfix task path anywhere — the file header, the class doc comment and insertMissingTerms' own doc comment all cite rules/glossary/the-non-conclusion-outcomes-precede-the-first-case instead", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../persistence/relational-glossary-store.repository.ts', import.meta.url)), 'utf8');
-
-  expect(source).not.toContain('task/ensure-non-conclusion-outcomes-hotfix/tolerate-permanent-outcome');
-  const citationCount = source.split('rules/glossary/the-non-conclusion-outcomes-precede-the-first-case').length - 1;
-  expect(citationCount).toBeGreaterThanOrEqual(3);
 });
 
 it(

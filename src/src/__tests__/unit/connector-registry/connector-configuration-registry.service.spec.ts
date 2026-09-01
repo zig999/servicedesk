@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type {
   ICapabilitiesReader,
@@ -426,57 +424,6 @@ it('parsedConnectorConfiguration throws ConnectorConfigurationNotWellFormedError
 
   expect(refusal).toBeInstanceOf(ConnectorConfigurationNotWellFormedError);
   expect(refusal).toMatchObject({ context: { reason: 'configuration does not parse to a JSON object' } });
-});
-
-function proseOf(source: string): string {
-  return source
-    .split('\n')
-    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-it("ConnectorConfigurationResolution's own comment scopes its 'never an error' claim to readConnectorConfiguration called directly, and states the published route does refuse an unregistered name (criterion 5)", async () => {
-  const source = await readFile(
-    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
-    'utf8',
-  );
-  const prose = proseOf(source);
-
-  expect(prose).toContain('never a thrown error from this method itself');
-  expect(prose).toContain(
-    'The published read-connector-configuration route does not stop at this resolution: a name nothing has registered is refused there, through readConnectorConfigurationOrThrow below (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)',
-  );
-});
-
-it("pageCountOf's own comment cites constraints/listings-are-paged's own statement that a non-positive limit never reaches this count, rather than claiming no source states the answer (criterion 6)", async () => {
-  const source = await readFile(
-    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
-    'utf8',
-  );
-  const prose = proseOf(source);
-
-  expect(prose).not.toMatch(/no source states/i);
-  expect(prose).toContain('constraints/listings-are-paged now states this branch is never reached by a request this system answers');
-  expect(prose).toContain(
-    'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
-  );
-});
-
-it("wellFormedConfiguration's own doc comment states the node's own decided classification for an entirely absent configuration, rather than claiming the specification leaves it undecided", async () => {
-  const source = await readFile(
-    fileURLToPath(new URL('../../../connector-registry/connector-configuration-registry.service.ts', import.meta.url)),
-    'utf8',
-  );
-  const prose = proseOf(source);
-
-  expect(prose).not.toContain('the node does not clearly decide');
-  expect(prose).toContain('the node decides that classification explicitly');
-  expect(prose).toContain(
-    'a registration whose configuration is entirely absent is refused as incomplete (IncompleteConnectorConfigurationError)',
-  );
-  expect(prose).toContain('distinct from a present value that fails the well-formedness check above');
 });
 
 it('answers every capability the injected reader currently holds, exactly as that reader answers it', async () => {

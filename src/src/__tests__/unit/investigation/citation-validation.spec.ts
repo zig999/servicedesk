@@ -123,39 +123,6 @@ it('declares no outputSchemas field, no capabilityOutputSchemaKey helper and no 
   expect(source).not.toMatch(/CapabilityOutputSchemas/);
 });
 
-function docCommentBefore(source: string, marker: string): string {
-  const markerIndex = source.indexOf(marker);
-  if (markerIndex === -1) {
-    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
-  }
-  const before = source.slice(0, markerIndex);
-  const commentEnd = before.lastIndexOf('*/');
-  const commentStart = before.lastIndexOf('/**', commentEnd);
-  return before.slice(commentStart, commentEnd + 2);
-}
-
-function normalizedProse(commentBlock: string): string {
-  return commentBlock
-    .split('\n')
-    .map((line) =>
-      line
-        .replace(/^\s*\/\*\*\s?/, '')
-        .replace(/^\s*\*\/\s*$/, '')
-        .replace(/^\s*\*\s?/, '')
-        .replace(/\s*\*\/\s*$/, '')
-        .trim(),
-    )
-    .filter((line) => line.length > 0)
-    .join(' ');
-}
-
-it("HypothesisCitationContext's doc comment cites domain/knowledge/hypothesis-revision for collects, not domain/knowledge/hypothesis", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'export type HypothesisCitationContext'));
-
-  expect(comment).toContain('domain/knowledge/hypothesis-revision');
-  expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
-});
-
 it('parseJsonOrUndefined, imported directly from citation-validation.ts, parses valid JSON text into its value', () => {
   const parsed = parseJsonOrUndefined('{"a":1}');
 

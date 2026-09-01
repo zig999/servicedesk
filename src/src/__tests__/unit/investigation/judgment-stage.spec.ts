@@ -484,58 +484,6 @@ async function moduleSource(): Promise<string> {
   return readFile(fileURLToPath(new URL('../../../investigation/judgment-stage.ts', import.meta.url)), 'utf8');
 }
 
-function moduleHeaderOf(source: string): string {
-  return source.slice(0, source.indexOf('\nimport'));
-}
-
-function docCommentBefore(source: string, marker: string): string {
-  const markerIndex = source.indexOf(marker);
-  if (markerIndex === -1) {
-    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
-  }
-  const before = source.slice(0, markerIndex);
-  const commentEnd = before.lastIndexOf('*/');
-  const commentStart = before.lastIndexOf('/**', commentEnd);
-  return before.slice(commentStart, commentEnd + 2);
-}
-
-function normalizedProse(commentBlock: string): string {
-  return commentBlock
-    .split('\n')
-    .map((line) =>
-      line
-        .replace(/^\s*\/\*\*\s?/, '')
-        .replace(/^\s*\*\/\s*$/, '')
-        .replace(/^\s*\*\s?/, '')
-        .replace(/^\s*\/\/\s?/, '')
-        .replace(/\s*\*\/\s*$/, '')
-        .trim(),
-    )
-    .filter((line) => line.length > 0)
-    .join(' ');
-}
-
-it("the module header attributes the CaseContext's title and when_to_use to the pinned case version, never to the case identity", async () => {
-  const header = normalizedProse(moduleHeaderOf(await moduleSource()));
-
-  expect(header).toContain("The pinned case version's own CaseContext");
-  expect(header).not.toMatch(/pinned case's own CaseContext/i);
-});
-
-it("runIsolatedCall()'s doc comment attributes the caseContext that rides along unchanged to the pinned case version, not the case identity", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
-
-  expect(comment).toContain("The pinned case version's own caseContext");
-  expect(comment).not.toMatch(/pinned case's own caseContext/i);
-});
-
-it("hypothesisNamed()'s doc comment attributes the lookup to the pinned case version, not the case identity", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function hypothesisNamed'));
-
-  expect(comment).toContain('the pinned case version');
-  expect(comment).not.toMatch(/the pinned case(?! version)/i);
-});
-
 it('passes an inconclusive retry answer through unchanged', async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   evaluator.script(
@@ -735,24 +683,6 @@ it("throws naming the hypothesis when a required name is not found among the cas
   await expect(
     judgeHypotheses({ case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000 }),
   ).rejects.toThrow(/h1/);
-});
-
-it("judgeOneHypothesis's doc comment states the denied-slot-costs-nothing consequence in its own voice, citing constraints/hypotheses-are-judged-in-isolated-parallel-calls plainly rather than quoting it for text the node does not hold", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function judgeOneHypothesis'));
-
-  expect(comment).toContain(
-    'a hypothesis denied a slot makes no call, so it costs nothing (constraints/hypotheses-are-judged-in-isolated-parallel-calls)',
-  );
-  expect(comment).not.toMatch(/hypotheses-are-judged-in-isolated-parallel-calls'\s+own\s+"/);
-});
-
-it("runIsolatedCall()'s doc comment states field names as constraints/the-judgment-prompt-is-closed's own third permitted entry, not its fifth", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function runIsolatedCall'));
-
-  expect(comment).toContain(
-    "constraints/the-judgment-prompt-is-closed's own third permitted entry puts those same snapshotted field names inside the very prompt this call sends",
-  );
-  expect(comment).not.toMatch(/the-judgment-prompt-is-closed's own fifth permitted entry/);
 });
 
 it('imports no ICapabilityQuery and reads no capability-registry port at all — judgeHypotheses takes only evidence already collected, never a registry to resolve live', async () => {

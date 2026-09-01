@@ -11,27 +11,6 @@ import type { TestConnectorRequestDto } from '../../../http/dto/test-connector.d
 
 const MODULE_PATH = fileURLToPath(new URL('../../../http/test-connector.controller.ts', import.meta.url));
 
-function proseOf(source: string): string {
-  return source
-    .split('\n')
-    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-it("the header comment's masking paragraph cites rules/integration/a-diagnostic-response-masks-a-resolved-credential, rather than framing the masking as this controller's own unattributed inference", async () => {
-  const source = await readFile(MODULE_PATH, 'utf8');
-  const header = proseOf(source.slice(0, source.indexOf('import type')));
-
-  expect(header).not.toContain("this controller's own inference");
-  expect(header).toContain('rules/integration/a-diagnostic-response-masks-a-resolved-credential');
-  expect(header).toContain(
-    "a connector configuration's diagnostic call masks whatever value a credential placeholder in its own call resolves to, so the response echoing that call back never carries a credential's real value",
-  );
-  expect(header).toContain("this project's own standard (SEC-03, SEC-04) independently forbids a credential reaching a client response too");
-});
-
 const IMPORT_SPECIFIER_PATTERN = /(?:from|import)\s*\(?\s*['"]([^'"]+)['"]/g;
 
 it('imports neither the new required-case-inputs gate function nor the diagnose controller, so its own diagnostic call has no path into the gate', async () => {

@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { ConnectorConfiguration } from '../../../connector-registry/connector-configuration.js';
 import { ConnectorConfigurationNotFoundError } from '../../../errors/connector-configuration-not-found.error.js';
@@ -60,22 +58,3 @@ it('calls its readConnectorConfiguration dependency with exactly the given conne
   expect(received).toBe('Mixed-Case-Connector');
 });
 
-function proseOf(source: string): string {
-  return source
-    .split('\n')
-    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-it("the transport-status comment cites rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused as the specification's own HTTP 404 decision, rather than claiming it undecided", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../http/read-connector-configuration.controller.ts', import.meta.url)), 'utf8');
-  const prose = proseOf(source);
-
-  expect(prose).not.toMatch(/undecided by the specification/i);
-  expect(prose).toContain(
-    "specification's own decision (rules/integration/a-connector-configuration-read-by-an-unregistered-name-is-refused)",
-  );
-  expect(prose).toContain('is where that decision is enacted rather than chosen inline');
-});

@@ -761,20 +761,3 @@ it('treats a response body that is not valid JSON as nothing extracted, rather t
 
   expect(outcome).toEqual({ result: 'ok', observation: JSON.stringify({}) });
 });
-
-it("DEFAULT_STATUS_ENDING's own comment cites rules/integration/an-unclassified-status-ends-unavailable as the specification's own decided default, quoting its 'claims the least' rationale, rather than claiming no node states one", async () => {
-  const source = await readFile(
-    fileURLToPath(new URL('../../../investigation/http-declarative-observation-source.adapter.ts', import.meta.url)),
-    'utf8',
-  );
-  const prose = source
-    .split('\n')
-    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  expect(prose).not.toMatch(/no specification node states/i);
-  expect(prose).toContain('rules/integration/an-unclassified-status-ends-unavailable');
-  expect(prose).toContain('claims the least');
-});

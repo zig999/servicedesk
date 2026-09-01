@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type { ResolvedOutcome } from '../../../case/case-resolution.js';
 import type { ConsolidationRegister } from '../../../investigation/consolidation-register.js';
@@ -174,25 +172,3 @@ it("propagates the consolidator's rejection rather than swallowing it into a def
   ).rejects.toThrow(/no fixture seeded/);
 });
 
-async function moduleSource(): Promise<string> {
-  return readFile(fileURLToPath(new URL('../../../investigation/draft-assessment-text.ts', import.meta.url)), 'utf8');
-}
-
-function moduleHeaderOf(source: string): string {
-  return source.slice(0, source.indexOf('\nimport'));
-}
-
-function normalizedProse(commentBlock: string): string {
-  return commentBlock
-    .split('\n')
-    .map((line) => line.replace(/^\s*\/\/\s?/, '').trim())
-    .filter((line) => line.length > 0)
-    .join(' ');
-}
-
-it("the module header attributes consolidationRegister's own consolidation_register to the pinned case version, not the case identity", async () => {
-  const header = normalizedProse(moduleHeaderOf(await moduleSource()));
-
-  expect(header).toContain("own consolidation_register (domain/knowledge/case-version) by whoever calls draftAssessment");
-  expect(header).not.toMatch(/domain\/knowledge\/case(?!-version)/);
-});

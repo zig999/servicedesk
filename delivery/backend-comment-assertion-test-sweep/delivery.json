@@ -1,0 +1,35 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "kind": "implementation",
+      "file": "implementation/backend-comment-assertion-test-sweep/remove-comment-assertion-tests.md",
+      "title": "Remove backend tests asserting production-comment prose",
+      "summary": "Deletes the 37 comment-assertion tests across 17 test files (with dead helpers/imports cleaned up) and removes three whole test files named for removal, touching no production source.",
+      "task": "task/backend-comment-assertion-test-sweep/remove-comment-assertion-tests"
+    },
+    {
+      "id": "proof/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "kind": "proof",
+      "file": "proof/backend-comment-assertion-test-sweep/remove-comment-assertion-tests.md",
+      "title": "Existing behavioral tests continuing to pass over the comment-assertion removals",
+      "summary": "Cites, per edited-in-place file with at least one surviving test, one pre-existing behavioral test that already runs unmodified and would fail on any regression the removal could have caused; this removal-only task authorizes no new test.",
+      "task": "task/backend-comment-assertion-test-sweep/remove-comment-assertion-tests"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "to": "task/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "to": "implementation/backend-comment-assertion-test-sweep/remove-comment-assertion-tests",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

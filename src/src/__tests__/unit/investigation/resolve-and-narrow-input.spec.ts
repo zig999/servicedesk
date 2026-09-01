@@ -362,38 +362,3 @@ it('imports no port file, since a port models an infrastructure boundary this mo
   expect(specifiers.filter((specifier) => specifier.includes('.port.'))).toEqual([]);
 });
 
-async function moduleHeader(): Promise<string> {
-  const source = await readFile(MODULE_PATH, 'utf8');
-  return source.slice(0, source.indexOf('\nimport'));
-}
-
-function normalizedProse(commentBlock: string): string {
-  return commentBlock
-    .split('\n')
-    .map((line) => line.replace(/^\s*\/\/\s?/, '').trim())
-    .filter((line) => line.length > 0)
-    .join(' ');
-}
-
-it("the module header's citation for NarrowedInput's own shape cites domain/knowledge/hypothesis-revision for a hypothesis's own criterion, not domain/knowledge/hypothesis", async () => {
-  const header = normalizedProse(await moduleHeader());
-
-  expect(header).toContain('domain/knowledge/hypothesis-revision');
-  expect(header).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
-});
-
-it("the module header's citation for NarrowedInput's own shape cites domain/knowledge/case-version for the case version's when_to_use, not domain/knowledge/case", async () => {
-  const header = normalizedProse(await moduleHeader());
-
-  expect(header).toContain('domain/knowledge/case-version');
-  expect(header).not.toMatch(/domain\/knowledge\/case(?!-version)/);
-});
-
-it("the module header attributes the removed confirmed/fallback split, illustrated by scenarios/knowledge/no-confirmation-falls-back and scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome, to an earlier version of rules/investigation/the-writing-input-is-narrowed, not the-outcome-comes-from-the-case", async () => {
-  const header = normalizedProse(await moduleHeader());
-
-  expect(header).toContain('scenarios/knowledge/no-confirmation-falls-back');
-  expect(header).toContain('scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome');
-  expect(header).toContain('implemented an earlier version of rules/investigation/the-writing-input-is-narrowed and is removed');
-  expect(header).not.toMatch(/implemented an earlier version of\s+rules\/investigation\/the-outcome-comes-from-the-case/);
-});

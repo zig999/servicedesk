@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import type {
   CapabilityResolution,
@@ -409,53 +407,3 @@ it('lets a duplicate-concept-answer failure from the capability port reach the c
   await expect(caseCoherenceViolations(theCase, glossary, capabilities)).rejects.toBe(failure);
 });
 
-async function moduleSource(): Promise<string> {
-  return readFile(fileURLToPath(new URL('../../../case/validate-case-coherence.ts', import.meta.url)), 'utf8');
-}
-
-function docCommentBefore(source: string, marker: string): string {
-  const markerIndex = source.indexOf(marker);
-  if (markerIndex === -1) {
-    throw new Error(`marker ${JSON.stringify(marker)} not found in source`);
-  }
-  const before = source.slice(0, markerIndex);
-  const commentEnd = before.lastIndexOf('*/');
-  const commentStart = before.lastIndexOf('/**', commentEnd);
-  return before.slice(commentStart, commentEnd + 2);
-}
-
-function normalizedProse(commentBlock: string): string {
-  return commentBlock
-    .split('\n')
-    .map((line) =>
-      line
-        .replace(/^\s*\/\*\*\s?/, '')
-        .replace(/^\s*\*\/\s*$/, '')
-        .replace(/^\s*\*\s?/, '')
-        .replace(/\s*\*\/\s*$/, '')
-        .trim(),
-    )
-    .filter((line) => line.length > 0)
-    .join(' ');
-}
-
-it("namedVocabularyTerms()'s doc comment cites domain/knowledge/case-version for the declared subject and the fallback's own resolution, not domain/knowledge/case", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function namedVocabularyTerms'));
-
-  expect(comment).toContain('domain/knowledge/case-version');
-  expect(comment).not.toMatch(/domain\/knowledge\/case(?!-version)/);
-});
-
-it("namedVocabularyTerms()'s doc comment cites domain/knowledge/hypothesis-revision for every hypothesis's own resolution, not domain/knowledge/hypothesis", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'function namedVocabularyTerms'));
-
-  expect(comment).toContain('domain/knowledge/hypothesis-revision');
-  expect(comment).not.toMatch(/domain\/knowledge\/hypothesis(?!-revision)/);
-});
-
-it("conceptViolations()'s doc comment cites domain/knowledge/case-version for the case's own collection plan, not domain/knowledge/case", async () => {
-  const comment = normalizedProse(docCommentBefore(await moduleSource(), 'async function conceptViolations'));
-
-  expect(comment).toContain('domain/knowledge/case-version');
-  expect(comment).not.toMatch(/domain\/knowledge\/case(?!-version)/);
-});

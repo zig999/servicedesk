@@ -1,5 +1,3 @@
-import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { expect, it } from 'vitest';
 import { CapabilityRegistryService } from '../../../capability-registry/capability-registry.service.js';
 import type { ICapabilityStore } from '../../../capability-registry/capability-store.port.js';
@@ -535,46 +533,6 @@ it('readCapabilityByIdentity itself still answers a currently held identity as {
   const resolution = await registry.readCapabilityByIdentity('a-known-capability', '2.0.0');
 
   expect(resolution).toEqual({ held: true, capability });
-});
-
-function proseOf(source: string): string {
-  return source
-    .split('\n')
-    .map((line) => line.replace(/^\s*(\/\*\*|\*\/|\*|\/\/)\s?/, ''))
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-it("readCapabilityByIdentity's own comment states the operation is part of the published capability-registry contract, not outside it (criterion 2)", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
-  const prose = proseOf(source);
-
-  expect(prose).not.toMatch(/outside (?:the|this) (?:published )?capability-registry contract/i);
-  expect(prose).toContain(
-    'Part of the published capability-registry contract alongside read-capability, by concept, list-capabilities and register-capability',
-  );
-});
-
-it("pageCountOf's own comment cites constraints/listings-are-paged's own statement that a non-positive limit never reaches this count, rather than claiming no source states the answer (criterion 6)", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
-  const prose = proseOf(source);
-
-  expect(prose).not.toMatch(/no source states/i);
-  expect(prose).toContain('constraints/listings-are-paged now states this branch is never reached by a request this system answers');
-  expect(prose).toContain(
-    'no request with a non-positive limit reaches the count, because a-malformed-request-is-refused-with-a-validation-error refuses it first',
-  );
-});
-
-it("refuseContractDepartures' own doc comment describes both the non-integer and the non-positive timeout boundaries, and cites the schema's actual shape rather than z.number().int() alone", async () => {
-  const source = await readFile(fileURLToPath(new URL('../../../capability-registry/capability-registry.service.ts', import.meta.url)), 'utf8');
-  const prose = proseOf(source);
-
-  expect(prose).not.toContain('z.number().int() alone');
-  expect(prose).toContain('not an integer count of milliseconds, or an integer that is zero or less');
-  expect(prose).toContain('a timeout of zero or less bounds nothing');
-  expect(prose).toContain("registerCapabilityBodySchema's own timeout: z.number().int().positive()");
 });
 
 it('answers every connector configuration the injected reader currently holds, exactly as that reader answers it', async () => {
