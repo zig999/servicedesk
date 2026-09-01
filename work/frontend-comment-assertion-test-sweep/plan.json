@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/frontend-comment-assertion-test-sweep",
+      "kind": "epic",
+      "file": "epic/frontend-comment-assertion-test-sweep.md",
+      "title": "Frontend comment-assertion test sweep",
+      "summary": "The one corrective task removing every frontend test asserting a production comment's literal prose, now that source comments are forbidden."
+    },
+    {
+      "id": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests",
+      "kind": "task",
+      "file": "task/frontend-comment-assertion-test-sweep/remove-comment-cites-current-nodes-tests.md",
+      "title": "Remove the two frontend tests asserting a source comment's literal prose",
+      "summary": "Deletes cases-list-screen-comment-cites-the-current-nodes.spec.ts and case-simulation-detail-panel-comment-cites-the-current-nodes.spec.ts in full, whose assertions read removed production comments and now fail against an empty string.",
+      "epic": "frontend-comment-assertion-test-sweep"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/frontend-comment-assertion-test-sweep",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/frontend-comment-assertion-test-sweep",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/frontend-comment-assertion-test-sweep",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/frontend-comment-assertion-test-sweep",
+      "to": "domain/investigation/investigation",
+      "kind": "covers",
+      "at": "covers[3]"
+    }
+  ]
+}
