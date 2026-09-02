@@ -5,7 +5,6 @@ import {
   createFetchStub,
   entry,
   findRow,
-  getCallCount,
   jsonResponse,
   manifestPath,
   mountManifestScreen,
@@ -22,6 +21,13 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+function manifestGetCallCount(fetchMock: ReturnType<typeof createFetchStub>): number {
+  return fetchMock.mock.calls.filter(([input, init]) => {
+    const url = typeof input === "string" ? input : input.toString();
+    return url === VERSION_PATH && (init?.method ?? "GET").toUpperCase() === "GET";
+  }).length;
+}
+
 describe("VersionManifestScreen — reordering (criterion 3)", () => {
   it("issues one PUT naming the neighbor's own current position when an enabled up control is clicked, and a 204 re-renders the list in the new order", async () => {
     const fetchMock = createFetchStub({
@@ -32,7 +38,7 @@ describe("VersionManifestScreen — reordering (criterion 3)", () => {
       [`PUT ${manifestPath("H2")}`]: () => noContentResponse(),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
@@ -41,11 +47,10 @@ describe("VersionManifestScreen — reordering (criterion 3)", () => {
     expect(parsedPutBody(fetchMock)).toEqual({ revision: 5, position: 1 });
 
     await waitFor(() => {
-      expect(screen.getAllByText(/· rev/).map((el) => el.textContent)).toEqual([
-        "H2 · rev 5",
-        "H1 · rev 2",
-        "H3 · rev 9",
-      ]);
+      const rows = screen.getAllByRole("row").slice(1);
+      expect(
+        rows.map((row, i) => within(row).getByLabelText(["H2", "H1", "H3"][i]).textContent),
+      ).toEqual(["5", "2", "9"]);
     });
   });
 });
@@ -61,18 +66,17 @@ describe("VersionManifestScreen — free-position moves are never a client-side 
       [`PUT ${manifestPath("H3")}`]: () => noContentResponse(),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H3")).getByRole("button", { name: "Move H3 up" }));
 
     await waitFor(() => expect(putCallCount(fetchMock)).toBe(1));
     expect(parsedPutBody(fetchMock)).toEqual({ revision: 9, position: 2 });
     await waitFor(() => {
-      expect(screen.getAllByText(/· rev/).map((el) => el.textContent)).toEqual([
-        "H1 · rev 2",
-        "H3 · rev 9",
-        "H2 · rev 5",
-      ]);
+      const rows = screen.getAllByRole("row").slice(1);
+      expect(
+        rows.map((row, i) => within(row).getByLabelText(["H1", "H3", "H2"][i]).textContent),
+      ).toEqual(["2", "9", "5"]);
     });
     expect(screen.queryByText(/holds that position/)).toBeNull();
   });
@@ -86,7 +90,7 @@ describe("VersionManifestScreen — a blocked swap (criterion 5)", () => {
         apiErrorResponse("ManifestPositionOccupiedError", 409, "position already occupied"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
@@ -99,10 +103,11 @@ describe("VersionManifestScreen — a blocked swap (criterion 5)", () => {
       within(findRow("H1")).queryByText("Another hypothesis already holds that position. Try again."),
     ).toBeNull();
 
-    expect(getCallCount(fetchMock)).toBe(1);
-    expect(screen.getAllByText(/· rev/).map((el) => el.textContent)).toEqual([
-      "H1 · rev 2",
-      "H2 · rev 5",
+    expect(manifestGetCallCount(fetchMock)).toBe(1);
+    const rows = screen.getAllByRole("row").slice(1);
+    expect(rows.map((row, i) => within(row).getByLabelText(["H1", "H2"][i]).textContent)).toEqual([
+      "2",
+      "5",
     ]);
 
     expect(
@@ -119,7 +124,7 @@ describe("VersionManifestScreen — the reorder-error message is announced (ACC-
         apiErrorResponse("ManifestPositionOccupiedError", 409, "position already occupied"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
@@ -139,7 +144,7 @@ describe("VersionManifestScreen — a move in flight (this hook's own isBusy inf
       [`PUT ${manifestPath("H2")}`]: () => putPromise,
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
@@ -175,7 +180,7 @@ describe("VersionManifestScreen — a move failing for an unnamed reason", () =>
         apiErrorResponse("SomeUnexpectedError", 500, "internal error"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 

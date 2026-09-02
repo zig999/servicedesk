@@ -8,7 +8,6 @@ import {
   dialogCancelButton,
   dialogConfirmRemoveButton,
   findRow,
-  getCallCount,
   jsonResponse,
   manifestPath,
   mountManifestScreen,
@@ -23,13 +22,20 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+function manifestGetCallCount(fetchMock: ReturnType<typeof createFetchStub>): number {
+  return fetchMock.mock.calls.filter(([input, init]) => {
+    const url = typeof input === "string" ? input : input.toString();
+    return url === VERSION_PATH && (init?.method ?? "GET").toUpperCase() === "GET";
+  }).length;
+}
+
 describe("VersionManifestScreen — the Remove control's tooltip and disabled state (criterion 6)", () => {
   it("disables Remove and carries the stated tooltip when the manifest holds exactly one entry", async () => {
     const fetchMock = createFetchStub({
       [`GET ${VERSION_PATH}`]: () => jsonResponse(ONE_ENTRY_MANIFEST),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("Solo");
 
     const removeButton = within(findRow("Solo")).getByRole("button", { name: "Remove" });
     expect(removeButton.hasAttribute("disabled")).toBe(true);
@@ -50,7 +56,7 @@ describe("VersionManifestScreen — the Remove control's tooltip and disabled st
       [`GET ${VERSION_PATH}`]: () => jsonResponse(TWO_ENTRY_MANIFEST),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     const removeButton = within(findRow("H1")).getByRole("button", { name: "Remove" });
     expect(removeButton.hasAttribute("disabled")).toBe(false);
@@ -69,7 +75,7 @@ describe("VersionManifestScreen — the confirmation dialog (this task's own EDG
       [`GET ${VERSION_PATH}`]: () => jsonResponse(TWO_ENTRY_MANIFEST),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     clickRemoveTrigger("H1");
     expect(await screen.findByRole("dialog")).toBeTruthy();
@@ -79,7 +85,7 @@ describe("VersionManifestScreen — the confirmation dialog (this task's own EDG
 
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(deleteCallCount(fetchMock)).toBe(0);
-    expect(screen.getByText("H1 · rev 2")).toBeTruthy();
+    expect(screen.getByLabelText("H1").textContent).toBe("2");
   });
 });
 
@@ -92,15 +98,15 @@ describe("VersionManifestScreen — removing an entry (criterion 7)", () => {
       [`DELETE ${manifestPath("H1")}`]: () => noContentResponse(),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     clickRemoveTrigger("H1");
     await screen.findByRole("dialog");
     fireEvent.click(dialogConfirmRemoveButton());
 
     await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
-    await waitFor(() => expect(screen.queryByText("H1 · rev 2")).toBeNull());
-    expect(screen.getByText("H2 · rev 5")).toBeTruthy();
+    await waitFor(() => expect(screen.queryByLabelText("H1")).toBeNull());
+    expect(screen.getByLabelText("H2").textContent).toBe("5");
   });
 });
 
@@ -112,8 +118,8 @@ describe("VersionManifestScreen — a removal that would empty the manifest (cri
         apiErrorResponse("ManifestWouldHoldNoHypothesisError", 422, "would hold no hypothesis"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
-    expect(getCallCount(fetchMock)).toBe(1);
+    await screen.findByLabelText("H1");
+    expect(manifestGetCallCount(fetchMock)).toBe(1);
 
     clickRemoveTrigger("H1");
     await screen.findByRole("dialog");
@@ -121,7 +127,7 @@ describe("VersionManifestScreen — a removal that would empty the manifest (cri
 
     await waitFor(() => expect(deleteCallCount(fetchMock)).toBe(1));
 
-    await waitFor(() => expect(getCallCount(fetchMock)).toBe(2));
-    expect(screen.getByText("H1 · rev 2")).toBeTruthy();
+    await waitFor(() => expect(manifestGetCallCount(fetchMock)).toBe(2));
+    expect(screen.getByLabelText("H1").textContent).toBe("2");
   });
 });

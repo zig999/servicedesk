@@ -45,8 +45,12 @@ describe("VersionManifestScreen — manifest ordering (criterion 1)", () => {
     });
     await mountManifestScreen(fetchMock);
 
-    const rowTexts = (await screen.findAllByText(/· rev/)).map((el) => el.textContent);
-    expect(rowTexts).toEqual(["H1 · rev 2", "H2 · rev 5", "H3 · rev 9"]);
+    await screen.findByLabelText("H1");
+    const rows = screen.getAllByRole("row").slice(1);
+    const revisionsByRow = rows.map(
+      (row, i) => within(row).getByLabelText(["H1", "H2", "H3"][i]).textContent,
+    );
+    expect(revisionsByRow).toEqual(["2", "5", "9"]);
   });
 });
 
@@ -57,7 +61,7 @@ describe("VersionManifestScreen — up/down boundary controls (criterion 2)", ()
         jsonResponse({ manifest: [entry(1, "H1", 2), entry(2, "H2", 5), entry(3, "H3", 9)] }),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     const h1 = findRow("H1");
     expect(within(h1).getByRole("button", { name: "Move H1 up" }).hasAttribute("disabled")).toBe(

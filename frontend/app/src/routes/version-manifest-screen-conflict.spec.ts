@@ -40,7 +40,7 @@ describe("VersionManifestScreen — a version no longer in draft (criterion 9)",
         apiErrorResponse("CaseVersionNotDraftError", 409, "the version is no longer a draft"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     fireEvent.click(within(findRow("H2")).getByRole("button", { name: "Move H2 up" }));
 
@@ -60,7 +60,7 @@ describe("VersionManifestScreen — a version no longer in draft (criterion 9)",
         apiErrorResponse("CaseVersionNotDraftError", 409, "the version is no longer a draft"),
     });
     await mountManifestScreen(fetchMock);
-    await screen.findAllByText(/· rev/);
+    await screen.findByLabelText("H1");
 
     clickRemoveTrigger("H1");
     await screen.findByRole("dialog");
