@@ -1667,7 +1667,7 @@
         },
         {
           "path": "src/src/http/dto/register-concept.dto.ts",
-          "digest": "sha256:2f4c4a06c9b9963aa38235bf6e6953a6b5cafcd7f26e640c79c2cd8d52ea50c2"
+          "digest": "sha256:076ee1820943a5684939c155540836893928f75b28931a0a6ed09de99b93cef1"
         },
         {
           "path": "src/src/http/list-concepts.controller.ts",

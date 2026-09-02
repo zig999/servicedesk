@@ -196,3 +196,16 @@ it('answers 422 reporting a ConceptDescriptionRequiredError when a request repla
   expect(response.statusCode).toBe(422);
   expect(response.json()).toMatchObject({ error: { code: 'ConceptDescriptionRequiredError' } });
 });
+
+it('answers 422 reporting a ConceptDescriptionRequiredError for a request whose body carries an explicit empty-string description, exactly as one naming no description at all', async () => {
+  app = buildRealServiceApp();
+
+  const response = await app.inject({
+    method: 'PUT',
+    url: '/v1/glossary/concepts/an-empty-description-name',
+    payload: validBody({ description: '' }),
+  });
+
+  expect(response.statusCode).toBe(422);
+  expect(response.json()).toMatchObject({ error: { code: 'ConceptDescriptionRequiredError' } });
+});

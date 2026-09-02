@@ -3,7 +3,11 @@ import {
   handleRegisterConceptRequest,
   type RegisterConceptControllerDependencies,
 } from './register-concept.controller.js';
-import { registerConceptBodySchema, registerConceptParamsSchema } from './dto/register-concept.dto.js';
+import {
+  registerConceptBodySchema,
+  registerConceptParamsSchema,
+  type RegisterConceptBodyDto,
+} from './dto/register-concept.dto.js';
 
 const API_PREFIX = '/v1';
 
@@ -32,6 +36,6 @@ async function registerConceptHandler(
     const issues = parsedBody.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`);
     return reply.code(400).send({ error: { code: 'VALIDATION_ERROR', message: 'the request body failed validation', details: issues } });
   }
-  const concept = await handleRegisterConceptRequest(dependencies, parsedParams.data, parsedBody.data);
+  const concept = await handleRegisterConceptRequest(dependencies, parsedParams.data, parsedBody.data as RegisterConceptBodyDto);
   return reply.code(200).send(concept);
 }

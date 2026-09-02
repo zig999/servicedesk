@@ -12,4 +12,6 @@ export const registerConceptBodySchema = z.object({
   description: z.string().optional(),
 });
 
-export type RegisterConceptBodyDto = z.infer<typeof registerConceptBodySchema>;
+export type RegisterConceptBodyDto = Omit<z.infer<typeof registerConceptBodySchema>, 'description'> & {
+  description: string;
+};
