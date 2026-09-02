@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "kind": "implementation",
+      "file": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions.md",
+      "title": "Loosen two real-timer test assertions to tolerate 1ms-resolution near-misses",
+      "summary": "Loosens diagnose-server.factory.spec.ts's durations_total-vs-stage-sum assertion from strict greater-than to greater-than-or-equal, and anthropic-hypothesis-evaluator.adapter.spec.ts's rejected-call elapsed_ms floor from 15 to 14, with no other line in either file and no production file touched.",
+      "task": "task/durations-total-test-threshold-too-strict/loosen-real-timer-assertions"
+    },
+    {
+      "id": "proof/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "kind": "proof",
+      "file": "proof/durations-total-test-threshold-too-strict/loosen-real-timer-assertions.md",
+      "title": "Loosened real-timer assertions cited as their own proof",
+      "summary": "Cites the two already-modified assertions in diagnose-server.factory.spec.ts and anthropic-hypothesis-evaluator.adapter.spec.ts as what proves each criterion, since the task's entire deliverable is those two assertion edits and no new production or test code exists to test independently.",
+      "task": "task/durations-total-test-threshold-too-strict/loosen-real-timer-assertions"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "to": "domain/investigation/durations",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "to": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "to": "task/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "to": "implementation/durations-total-test-threshold-too-strict/loosen-real-timer-assertions",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

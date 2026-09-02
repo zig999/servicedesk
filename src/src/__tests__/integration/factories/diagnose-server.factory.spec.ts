@@ -370,7 +370,7 @@ it(
     expect(written?.durations_judgment).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
     expect(written?.durations_writing).toBeGreaterThanOrEqual(MOCK_RESPONSE_DELAY_MS);
     expect(written?.durations_collection).toBeGreaterThan(0);
-    expect(written?.durations_total).toBeGreaterThan(
+    expect(written?.durations_total).toBeGreaterThanOrEqual(
       (written?.durations_collection ?? 0) + (written?.durations_judgment ?? 0) + (written?.durations_writing ?? 0),
     );
   },

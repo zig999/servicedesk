@@ -2530,6 +2530,10 @@
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
         {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:e96441a90940e20e8f8f457d3d4ce8f1aaeb1d2b7813aaad1de1ffc644b4cadf"
+        },
+        {
           "path": "src/src/http/dto/simulate-case.dto.ts",
           "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
@@ -2606,6 +2610,10 @@
         {
           "path": "src/migrations/0005-investigation.sql",
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
+        },
+        {
+          "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
+          "digest": "sha256:6371e5db1b72e3f816e32b81b3ec1dd86a5275ce9a5abfce1d0017fa32821e2c"
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
@@ -4718,6 +4726,20 @@
         {
           "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
           "digest": "sha256:91a54c80c51ac99fe7751c585335d0afefb0ccaf5dcf7d0297e5576d8255b58b"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-measured-duration-below-one-millisecond-is-zero",
+      "digest": "sha256:aed8b72d04ef33d28de0be99aade8681bf57aa6c9420c6b70295368152107ab4",
+      "files": [
+        {
+          "path": "src/src/__tests__/integration/factories/diagnose-server.factory.spec.ts",
+          "digest": "sha256:e96441a90940e20e8f8f457d3d4ce8f1aaeb1d2b7813aaad1de1ffc644b4cadf"
+        },
+        {
+          "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
+          "digest": "sha256:6371e5db1b72e3f816e32b81b3ec1dd86a5275ce9a5abfce1d0017fa32821e2c"
         }
       ]
     },

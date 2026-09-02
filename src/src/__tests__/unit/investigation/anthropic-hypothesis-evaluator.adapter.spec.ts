@@ -593,7 +593,7 @@ it("reports elapsed_ms and the exact prompt sent, but never invents a usage fiel
   const outcome = await evaluator.evaluate(A_CRITERION, SOME_OK_EVIDENCE, A_CASE_CONTEXT);
 
   expect(outcome).toMatchObject({ verdict: 'inconclusive', reason: 'judgment-failure' });
-  expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(15);
+  expect(outcome.elapsed_ms).toBeGreaterThanOrEqual(14);
   expect(outcome.prompt).toContain('<judgment_input>');
   expect(outcome).not.toHaveProperty('usage');
 });
