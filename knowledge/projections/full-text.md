@@ -2377,6 +2377,31 @@ entries:
       admits only name, type, required and many, and an operative claim living only in body prose has no
       addressable home -- the same home and reasoning this specification used for an-empty-ticket-reference-is-no-ticket-reference
       and the-consolidation-answer-states-its-register.'
+  - location: rules/investigation/a-measured-duration-below-one-millisecond-is-zero.md
+    field: statement
+    unstated: Nothing states whether a duration measured for a span that actually ran may be recorded as
+      0 milliseconds when that span was shorter than one millisecond, or whether such a measurement is always
+      at least one millisecond. domain/investigation/durations declares collection, judgment, writing and
+      total as integers with no floor, domain/investigation/evaluation and domain/investigation/evidence
+      declare elapsed_ms the same way, and the only zero the specification speaks to is domain/investigation/evidence's
+      legacy reading (an item collected before elapsed_ms existed reads 0, meaning not measured) -- a backfill
+      condition, not a measurement of a span that really ran.
+    decided: A millisecond duration measured for a span that actually ran is the whole number of milliseconds
+      observed for that span and is recorded as 0 where the span settled in under one millisecond; it is
+      never raised to one millisecond, so a stage figure, a durations total or an elapsed_ms may legitimately
+      read 0 for work that really happened.
+    why: 'The clock resolves whole milliseconds, so raising a sub-millisecond span to one would record a
+      duration nothing observed -- precisely the invented duration domain/investigation/evidence already
+      refuses for its own zero, and against this specification''s repeated reading that an unrecordable
+      fact degrades to an honest value rather than a manufactured one (evidence''s fields and concept_description,
+      decided the same way). A floor would additionally inflate every figure held against the declared total
+      budget, defeating the one question durations exists to answer, and it would be an invention production
+      code must perform. The apparent precedent the other way is not on point: a timeout of zero and a ttl
+      of zero are refused because a declared bound of zero bounds nothing, whereas a measured zero bounds
+      nothing and asserts nothing -- it reports the limit of the instrument. The legacy-absence zero on
+      evidence is a distinct case and stays true as written; that 0 now also reads as a genuine sub-millisecond
+      collection is accepted rather than resolved by a sentinel, because both readings say the same thing
+      (no measurable time attributable) and a sentinel would be the invented value the element refuses.'
 ---
 
 === domain/glossary/_context
@@ -3865,6 +3890,24 @@ domain/investigation/evaluation holds the three as one call's own record — wha
 Which of two attempts a record names is a question this specification has already answered once, and this answers it the same way: written-at-records-when-the-write-settled dates an investigation by the write that settled it rather than by the first attempt issued, and the call that settles a judgment-failure is the last one made, after which no further attempt follows.
 A per-hypothesis record naming one call is not a total and was never meant to be one — what an investigation spent across every call it made is domain/investigation/cost's own to carry.
 Where the remaining deadline admitted no retry, the first call is the last call made, so one reading serves the retried and unretried paths alike, and a-foreign-citation-is-refused's two outcomes need no separate answer.
+
+=== rules/investigation/a-measured-duration-below-one-millisecond-is-zero
+---
+type: invariant
+statement: A millisecond duration recorded for a span that actually ran — a durations stage figure, a durations total, an evaluation's elapsed_ms for a judgment call that happened, an evidence item's elapsed_ms for a collection that ran — is the whole number of milliseconds observed for that span, and is 0 where the span settled in under one millisecond; no measured duration is ever raised to one millisecond to avoid recording a zero.
+constrains:
+  - domain/investigation/durations
+  - domain/investigation/evaluation
+  - domain/investigation/evidence
+---
+
+## Description
+
+The clock these figures are read from resolves whole milliseconds, so a span shorter than one is not a span in which nothing happened -- it is a span the instrument cannot resolve, and recording one millisecond for it would state a duration nothing observed, the invented duration domain/investigation/evidence already refuses when it reads a pre-existing item's elapsed_ms as 0 rather than as a made-up number.
+A floor of one millisecond would also corrupt the one question domain/investigation/durations exists to answer -- who is exceeding the declared total budget, per stage and per capability -- by adding to every figure a millisecond the run never spent, and by doing so most where the runs are fastest and the figures smallest.
+A measurement is not a bound: rules/integration/a-capability-declares-its-contract refuses a timeout of zero and rules/knowledge/a-collected-concept-declares-a-ttl refuses a ttl of zero because a bound of zero bounds no call and no freshness at all, but a measured zero bounds nothing and only reports what the clock could see, so the reasoning that refuses a declared zero does not reach a measured one.
+On domain/investigation/evidence, 0 therefore carries two honest readings -- an item collected before the attribute existed was never measured, and an item collected since resolved in under a millisecond -- and the record separates them by nothing, which costs nothing: both say the same thing to every reader an elapsed_ms has, that no measurable time is attributable to that collection, and neither invents one.
+Conditional presence is untouched: an elapsed_ms absent because no call happened at all -- an evaluation whose reason is no-data, a durations writing for a run that never reaches consolidation -- stays absent, and is never recorded as 0 instead.
 
 === rules/investigation/a-pending-simulation-call-is-not-dispatched-again
 ---

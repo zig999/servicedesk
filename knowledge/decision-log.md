@@ -1817,4 +1817,29 @@ entries:
       admits only name, type, required and many, and an operative claim living only in body prose has no
       addressable home -- the same home and reasoning this specification used for an-empty-ticket-reference-is-no-ticket-reference
       and the-consolidation-answer-states-its-register.'
+  - location: rules/investigation/a-measured-duration-below-one-millisecond-is-zero.md
+    field: statement
+    unstated: Nothing states whether a duration measured for a span that actually ran may be recorded as
+      0 milliseconds when that span was shorter than one millisecond, or whether such a measurement is always
+      at least one millisecond. domain/investigation/durations declares collection, judgment, writing and
+      total as integers with no floor, domain/investigation/evaluation and domain/investigation/evidence
+      declare elapsed_ms the same way, and the only zero the specification speaks to is domain/investigation/evidence's
+      legacy reading (an item collected before elapsed_ms existed reads 0, meaning not measured) -- a backfill
+      condition, not a measurement of a span that really ran.
+    decided: A millisecond duration measured for a span that actually ran is the whole number of milliseconds
+      observed for that span and is recorded as 0 where the span settled in under one millisecond; it is
+      never raised to one millisecond, so a stage figure, a durations total or an elapsed_ms may legitimately
+      read 0 for work that really happened.
+    why: 'The clock resolves whole milliseconds, so raising a sub-millisecond span to one would record a
+      duration nothing observed -- precisely the invented duration domain/investigation/evidence already
+      refuses for its own zero, and against this specification''s repeated reading that an unrecordable
+      fact degrades to an honest value rather than a manufactured one (evidence''s fields and concept_description,
+      decided the same way). A floor would additionally inflate every figure held against the declared total
+      budget, defeating the one question durations exists to answer, and it would be an invention production
+      code must perform. The apparent precedent the other way is not on point: a timeout of zero and a ttl
+      of zero are refused because a declared bound of zero bounds nothing, whereas a measured zero bounds
+      nothing and asserts nothing -- it reports the limit of the instrument. The legacy-absence zero on
+      evidence is a distinct case and stays true as written; that 0 now also reads as a genuine sub-millisecond
+      collection is accepted rather than resolved by a sentinel, because both readings say the same thing
+      (no measurable time attributable) and a sentinel would be the invented value the element refuses.'
 ---
