@@ -15,6 +15,7 @@ type ManifestEntryDto = {
 
 type ManifestVersionRecord = {
   readonly manifest: readonly ManifestEntryDto[];
+  readonly state?: "draft" | "released";
 };
 
 export type ManifestRow = {
@@ -48,6 +49,8 @@ export type ManifestBuilderState =
       readonly isBlocked: boolean;
 
       readonly isBusy: boolean;
+
+      readonly isReleased: boolean;
     };
 
 const MOVE_BLOCKED_MESSAGE = "Another hypothesis already holds that position. Try again.";
@@ -166,6 +169,7 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
   const sorted = sortByPosition(versionQuery.data.manifest);
   const lastIndex = sorted.length - 1;
   const isBusy = placeMutation.isPending || removeMutation.isPending;
+  const isReleased = versionQuery.data.state === "released";
 
   const rows: ManifestRow[] = sorted.map((entry, index) => {
     const hypothesisName = entry.hypothesis_revision.hypothesis.name;
@@ -212,5 +216,5 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     };
   });
 
-  return { phase: "ready", rows, isBlocked, isBusy };
+  return { phase: "ready", rows, isBlocked, isBusy, isReleased };
 }

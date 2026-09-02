@@ -4,6 +4,7 @@ import { latestRevisionOf } from "./use-hypothesis-revision-form";
 export type ManifestRowRevisions = {
   readonly revisions: readonly HypothesisRevisionListItem[];
   readonly highestRevision: number | undefined;
+  readonly isLoading: boolean;
 };
 
 export function useManifestRowRevisions(
@@ -16,5 +17,6 @@ export function useManifestRowRevisions(
   return {
     revisions,
     highestRevision: latestRevisionOf(revisions)?.revision,
+    isLoading: revisionsQuery.isLoading,
   };
 }

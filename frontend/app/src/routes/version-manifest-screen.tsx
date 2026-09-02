@@ -1,7 +1,9 @@
-import type { JSX } from "react";
+import { useEffect, useRef, type JSX, type RefObject } from "react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@tui/ui/button";
 import { Tooltip, TooltipProvider } from "@tui/ui/tooltip";
+import { Label } from "@tui/ui/label";
+import { Select, type SelectOption } from "@tui/ui/select";
 import {
   Dialog,
   DialogClose,
@@ -19,6 +21,7 @@ import {
 } from "../shared/components/status-table";
 import { ConflictBanner } from "../shared/components/conflict-banner";
 import { useManifestBuilder, type ManifestRow } from "../hooks/use-manifest-builder";
+import { useManifestRowRevisions } from "../hooks/use-manifest-row-revisions";
 
 const REMOVE_DISABLED_TOOLTIP = "A case must keep at least one hypothesis";
 
@@ -98,11 +101,100 @@ function RowActions({ row, disabled }: RowActionsProps): JSX.Element {
   );
 }
 
-function toStatusRow(row: ManifestRow, disabled: boolean): StatusTableRow {
+export type RevisionSelectProps = {
+  readonly slug: string;
+  readonly row: ManifestRow;
+  readonly disabled: boolean;
+};
+
+function optionsWithPinnedRevision(
+  revisions: readonly { readonly revision: number }[],
+  pinnedRevision: number,
+): SelectOption[] {
+  const options = revisions.map((item) => ({
+    value: String(item.revision),
+    label: String(item.revision),
+  }));
+  const pinnedValue = String(pinnedRevision);
+  if (options.some((option) => option.value === pinnedValue)) {
+    return options;
+  }
+
+  return [...options, { value: pinnedValue, label: pinnedValue }];
+}
+
+function useTriggerAriaLinkage(
+  containerRef: RefObject<HTMLDivElement | null>,
+  isInvalid: boolean,
+  describedById: string | undefined,
+): void {
+  useEffect(() => {
+    const trigger = containerRef.current?.querySelector<HTMLButtonElement>(
+      'button[role="combobox"]',
+    );
+    if (!trigger) {
+      return;
+    }
+    if (isInvalid) {
+      trigger.setAttribute("aria-invalid", "true");
+    } else {
+      trigger.removeAttribute("aria-invalid");
+    }
+    if (describedById !== undefined) {
+      trigger.setAttribute("aria-describedby", describedById);
+    } else {
+      trigger.removeAttribute("aria-describedby");
+    }
+  }, [containerRef, isInvalid, describedById]);
+}
+
+function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Element {
+  const { revisions, isLoading } = useManifestRowRevisions(slug, row.hypothesisName);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const errorId = `revision-error-${row.hypothesisName}`;
+  const isInvalid = row.revisionErrorMessage !== null;
+  useTriggerAriaLinkage(containerRef, isInvalid, isInvalid ? errorId : undefined);
+
+  if (isLoading) {
+    return <span>{row.hypothesisName}</span>;
+  }
+
+  const options = optionsWithPinnedRevision(revisions, row.revision);
+
+  function repinIfChanged(value: string): void {
+    const chosenRevision = Number(value);
+    if (chosenRevision !== row.revision) {
+      row.onRepin(chosenRevision);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <Label className="flex flex-col gap-1">
+        {row.hypothesisName}
+        <Select
+          ref={containerRef}
+          value={String(row.revision)}
+          onChange={repinIfChanged}
+          options={options}
+          disabled={disabled}
+          placeholder="Select a revision"
+        />
+      </Label>
+      {row.revisionErrorMessage !== null && (
+        <p id={errorId} role="alert" className="text-sm text-destructive">
+          {row.revisionErrorMessage}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function toStatusRow(row: ManifestRow, disabled: boolean, slug: string): StatusTableRow {
   return {
     id: row.hypothesisName,
     position: row.position,
-    hypothesis: `${row.hypothesisName} · rev ${row.revision}`,
+    hypothesis: <RevisionSelect slug={slug} row={row} disabled={disabled} />,
     actions: <RowActions row={row} disabled={disabled} />,
   };
 }
@@ -128,8 +220,8 @@ export function VersionManifestScreen(): JSX.Element {
     );
   }
 
-  const rowsDisabled = state.isBlocked || state.isBusy;
-  const rows = state.rows.map((row) => toStatusRow(row, rowsDisabled));
+  const rowsDisabled = state.isBlocked || state.isBusy || state.isReleased;
+  const rows = state.rows.map((row) => toStatusRow(row, rowsDisabled, slug));
 
   return (
     <TooltipProvider>
