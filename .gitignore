@@ -6,3 +6,6 @@ credentials.md
 .env.test
 .mcp.json
 .claude/worktrees/
+graphify-out/
+src/graphify-out/
+frontend/graphify-out/

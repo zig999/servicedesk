@@ -1,0 +1,34 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/register-concept-description-required",
+      "kind": "epic",
+      "file": "epic/register-concept-description-required.md",
+      "title": "Register-concept body types description as optional though the specification requires it",
+      "summary": "The single corrective task that makes RegisterConceptBodyDto's exported type require description, matching domain/glossary/concept's own attribute, without changing the runtime schema's behavior or the HTTP response the registry already gives for a missing description."
+    },
+    {
+      "id": "task/register-concept-description-required/require-description",
+      "kind": "task",
+      "file": "task/register-concept-description-required/require-description.md",
+      "title": "RegisterConceptBodyDto's exported type requires description",
+      "summary": "Widens RegisterConceptBodyDto's exported TypeScript type to require description, matching domain/glossary/concept's own required attribute, without touching registerConceptBodySchema's runtime parsing behavior.",
+      "epic": "register-concept-description-required"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/register-concept-description-required",
+      "to": "domain/glossary/concept",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/register-concept-description-required/require-description",
+      "to": "domain/glossary/concept",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulate-hypothesis-dto-verdict-evidence-fields",
+      "kind": "epic",
+      "file": "epic/simulate-hypothesis-dto-verdict-evidence-fields.md",
+      "title": "Simulate-hypothesis response drifts from the verdict vocabulary and omits evidence-snapshot fields",
+      "summary": "The single corrective task that derives SimulateHypothesisResponseDto's verdict literals from the shared VERDICTS vocabulary and widens evidenceSchema to state the evidence item's own snapshotted semantics."
+    },
+    {
+      "id": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "task",
+      "file": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema.md",
+      "title": "simulate-hypothesis response derives verdict from the shared vocabulary and states the evidence snapshot",
+      "summary": "Derives evaluationSchema's three verdict branch discriminators from src/investigation/verdict.ts's exported VERDICTS instead of inline literals, and widens evidenceSchema to require fields and concept_description.",
+      "epic": "simulate-hypothesis-dto-verdict-evidence-fields"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulate-hypothesis-dto-verdict-evidence-fields",
+      "to": "domain/investigation/verdict",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulate-hypothesis-dto-verdict-evidence-fields",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "domain/investigation/verdict",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

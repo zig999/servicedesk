@@ -1,0 +1,34 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/run-diagnosis-written-at-settle-instant",
+      "kind": "epic",
+      "file": "epic/run-diagnosis-written-at-settle-instant.md",
+      "title": "run-diagnosis stamps written_at before the write settles",
+      "summary": "The single corrective task that stamps an investigation's written_at from the instant the write that actually persists it settles, never from a pre-dispatch or pre-persistence clock read."
+    },
+    {
+      "id": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "task",
+      "file": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle.md",
+      "title": "written_at is stamped from the settle instant, not from a pre-write clock read",
+      "summary": "Stops buildInvestigationOptions and investigationForRetry from stamping written_at before the write is issued, and stamps it instead from the instant the write that actually persists the record settles.",
+      "epic": "run-diagnosis-written-at-settle-instant"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/run-diagnosis-written-at-settle-instant",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "implements",
+      "at": "implements[0]"
+    }
+  ]
+}

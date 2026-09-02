@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/simulate-case-assessment-evidence-fields-omitted",
+      "kind": "epic",
+      "file": "epic/simulate-case-assessment-evidence-fields-omitted.md",
+      "title": "Simulate-case response omits assessment call-record and evidence-snapshot fields",
+      "summary": "The single corrective task that widens SimulateCaseResponseDto to state the assessment call-record fields and the evidence item's own snapshotted semantics, now that domain/investigation/assessment and domain/investigation/evidence already require them."
+    },
+    {
+      "id": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "task",
+      "file": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema.md",
+      "title": "simulate-case response states the assessment call-record and the evidence snapshot",
+      "summary": "Widens SimulateCaseResponseDto's assessmentSchema and evidenceSchema to require the fields domain/investigation/assessment and domain/investigation/evidence already declare, so a caller typed against the response can read them.",
+      "epic": "simulate-case-assessment-evidence-fields-omitted"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/simulate-case-assessment-evidence-fields-omitted",
+      "to": "domain/investigation/assessment",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/simulate-case-assessment-evidence-fields-omitted",
+      "to": "domain/investigation/evidence",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "domain/investigation/assessment",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "domain/investigation/evidence",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

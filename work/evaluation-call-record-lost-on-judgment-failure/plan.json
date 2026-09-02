@@ -1,0 +1,46 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/evaluation-call-record-lost-on-judgment-failure",
+      "kind": "epic",
+      "file": "epic/evaluation-call-record-lost-on-judgment-failure.md",
+      "title": "An evaluation's call record is lost end-to-end for the judgment-failure outcome",
+      "summary": "The single corrective task that carries usage, elapsed_ms and prompt from a completed evaluator call through judgmentFailureEvaluation and into the persisted and read-back evaluation record."
+    },
+    {
+      "id": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "kind": "task",
+      "file": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through.md",
+      "title": "A judgment-failure evaluation carries its own call record, in memory and persisted",
+      "summary": "Makes judgmentFailureEvaluation fold the completed (rejected) call's usage/elapsed_ms/prompt into the returned evaluation, and widens the investigation_evaluations table plus its read/write mapping to carry those same three fields for any evaluation, present exactly when a call ran.",
+      "epic": "evaluation-call-record-lost-on-judgment-failure"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/evaluation-call-record-lost-on-judgment-failure",
+      "to": "domain/investigation/evaluation",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/evaluation-call-record-lost-on-judgment-failure",
+      "to": "rules/investigation/a-judgment-failure-records-the-last-call-made",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "domain/investigation/evaluation",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "rules/investigation/a-judgment-failure-records-the-last-call-made",
+      "kind": "implements",
+      "at": "implements[1]"
+    }
+  ]
+}

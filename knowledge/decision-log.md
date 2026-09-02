@@ -1790,4 +1790,31 @@ entries:
       and inventing a further refusal for the violation half would state a behavior nothing can
       reach, the same reasoning already used in refusing to issue a write into a non-positive
       bound and in fixing durations.total at an instant the record can actually be measured to.
+  - location: rules/investigation/a-judgment-failure-records-the-last-call-made.md
+    field: statement
+    unstated: Which call's record a judgment-failure evaluation carries when a refused response was followed
+      by a retry that also failed. domain/investigation/evaluation states that usage, elapsed_ms and prompt
+      are present exactly when a call happened and absent only for reason no-data, and scenarios/investigation/a-foreign-citation-is-refused
+      states that one retry runs before the fallback to judgment-failure -- but no node says whether the
+      surviving record is the first call's, the retry's, or a usage summed across both with an elapsed_ms
+      and prompt named for one of them, leaving it to whichever call an implementation happened to keep.
+    decided: The evaluation carries the usage, elapsed_ms and prompt of the last judgment call actually
+      made for that hypothesis -- the retry's own record where a retry ran, the first call's where the remaining
+      deadline admitted no retry -- never a superseded first call's record, and never a usage summed across
+      both attempts. Held as a new invariant constraining domain/investigation/evaluation.
+    why: 'domain/investigation/evaluation already defines the three as one call''s own record, singular,
+      naming the prompt "as the call actually materialized it"; a usage summed across two attempts beside
+      one attempt''s elapsed_ms and prompt would be a record no call ever produced, and would cost a reader
+      the one check the trio supports -- reading the tokens against the prompt that earned them. Between
+      the two determinate calls, the last one made is the one this specification''s own idiom already picks:
+      written-at-records-when-the-write-settled dates the record by the attempt that settled the outcome
+      rather than by the first attempt issued, and the attempt that settles a judgment-failure is the one
+      after which the system gives up. It also collapses to a single reading over both branches of a-foreign-citation-is-refused,
+      since where the deadline admits no retry the first call is the last call made. Undercounting total
+      provider spend is not an objection to naming one call, because the total across every call an investigation
+      made is domain/investigation/cost''s own attribute and not this per-hypothesis record''s. Stated as
+      a rule rather than added to the element''s Description, because the element schema''s attribute declaration
+      admits only name, type, required and many, and an operative claim living only in body prose has no
+      addressable home -- the same home and reasoning this specification used for an-empty-ticket-reference-is-no-ticket-reference
+      and the-consolidation-answer-states-its-register.'
 ---
