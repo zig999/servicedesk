@@ -48,6 +48,10 @@ export default defineConfig({
   },
   server: {
 
+    fs: {
+      allow: [fileURLToPath(new URL("..", import.meta.url))],
+    },
+
     proxy: {
       "/v1": {
         target: "http://localhost:3000",

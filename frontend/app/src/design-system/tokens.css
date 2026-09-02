@@ -35,3 +35,24 @@
   font-size: 87.5%;
   font-weight: 200;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+.brand-logo-mask {
+  aspect-ratio: 355 / 114;
+  background-color: currentColor;
+  mask-image: url("../../../assets/logo_unifique.svg");
+  -webkit-mask-image: url("../../../assets/logo_unifique.svg");
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+}

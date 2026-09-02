@@ -68,7 +68,17 @@ function Topbar(): JSX.Element {
   const items = useBreadcrumbItems();
   return (
     <StatusBar
-      className="border-t-0 border-b border-border"
+      className="min-h-20 border-t-0 border-b border-border"
+      left={
+        <span className="flex items-center gap-[2.6429rem]">
+          <span
+            role="img"
+            aria-label="Unifique"
+            className="brand-logo-mask h-12 w-auto text-foreground"
+          />
+          <span className="text-base font-semibold text-foreground">servicedeskN1</span>
+        </span>
+      }
       center={<Breadcrumb items={items} />}
       right={<span>No auth in this build</span>}
     />
