@@ -177,7 +177,7 @@ function anInvestigation(overrides: Partial<Investigation> = {}): Investigation 
   };
 }
 
-it("sends every declared attribute of the root row — identity, subject type, prompt version, model, pinned case, assessment, cost, durations and written_at — as the root insert's own params, in order", async () => {
+it("sends every declared attribute of the root row — identity, subject type, prompt version, model, pinned case, assessment, cost and durations — as the root insert's own params, in order, with written_at never among them", async () => {
   const { handleQuery, recorded } = recordingQuery({});
   const { connection } = fakeTransactionConnection(handleQuery);
   const store = new RelationalInvestigationStore(connection);
@@ -192,7 +192,6 @@ it("sends every declared attribute of the root row — identity, subject type, p
     'formal', 8, 4, 99, 'assessment prompt',
     3, 100, 50,
     10, 20, 5, 35,
-    '2024-01-01T00:00:00.000Z',
   ]);
 });
 
@@ -768,7 +767,6 @@ it("sends durations.writing as undefined in the root insert's own params, never 
     'formal', 8, 4, 99, 'assessment prompt',
     3, 100, 50,
     10, 20, undefined, 35,
-    '2024-01-01T00:00:00.000Z',
   ]);
 });
 

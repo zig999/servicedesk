@@ -411,10 +411,12 @@ it('carries written_at from the given options, unchanged', async () => {
   expect(investigation.written_at).toBe('2025-01-02T03:04:05.000Z');
 });
 
-it('refuses to build when written_at is missing entirely, rather than building a record with no datetime of its own write', async () => {
+it('builds an Investigation carrying no written_at, rather than refusing, when written_at is missing entirely from the given options — the store decides that value later, at settle', async () => {
   const options = validOptionsWithout('written_at');
 
-  await expect(buildInvestigation(options)).rejects.toThrow();
+  const investigation = await buildInvestigation(options);
+
+  expect(investigation.written_at).toBeUndefined();
 });
 
 it('does not refuse to build when ticket_ref is absent, since domain/investigation/investigation declares it optional', async () => {

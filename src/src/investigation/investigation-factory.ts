@@ -2,7 +2,6 @@ import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js
 import type { Case } from '../case/case.js';
 import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
 import { SubjectAttributeNotInGlossaryError } from '../errors/subject-attribute-not-in-glossary.error.js';
-import { WrittenAtRequiredError } from '../errors/written-at-required.error.js';
 import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
 import type { Assessment } from './assessment.js';
 import type { Cost } from './cost.js';
@@ -33,14 +32,13 @@ export type BuildInvestigationOptions = {
   readonly cost: Cost;
   readonly durations: Durations;
 
-  readonly written_at: string;
+  readonly written_at?: string;
 
   readonly glossary: IGlossaryQuery;
 };
 
 export async function buildInvestigation(options: BuildInvestigationOptions): Promise<Investigation> {
   const { case: theCase, evidence, evaluations, subjectType, subjectAttributes, glossary } = options;
-  refuseMissingWrittenAt(options.written_at);
   const subject = buildSubject(subjectType, subjectAttributes);
   await refuseAttributesNotInGlossary(subject, glossary);
   refuseTotalityViolations(theCase, evidence, evaluations);
@@ -72,12 +70,6 @@ export async function refuseAttributesNotInGlossary(subject: Subject, glossary: 
   }
   if (missing.length > 0) {
     throw new SubjectAttributeNotInGlossaryError(subject.type, missing);
-  }
-}
-
-function refuseMissingWrittenAt(writtenAt: string | undefined): void {
-  if (writtenAt === undefined) {
-    throw new WrittenAtRequiredError(writtenAt);
   }
 }
 

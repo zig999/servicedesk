@@ -108,8 +108,8 @@ const INVESTIGATION_INSERT_TEXT = `INSERT INTO ${INVESTIGATIONS_TABLE}
      pinned_case_slug, pinned_case_version, assessment_outcome, assessment_action, assessment_recipient,
      assessment_determining_hypothesis, assessment_text, assessment_register, assessment_usage_input_tokens,
      assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens,
-     cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total, written_at)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27)`;
+     cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)`;
 
 export class RelationalInvestigationStore implements IInvestigationStore {
   public constructor(private readonly connection: IConnectableQueryable) {}
@@ -148,7 +148,6 @@ function investigationParams(investigation: Investigation): readonly unknown[] {
     ...assessmentParams(investigation.assessment),
     ...costParams(investigation.cost),
     ...durationsParams(investigation.durations),
-    investigation.written_at,
   ];
 }
 

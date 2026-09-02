@@ -5258,8 +5258,24 @@
       "digest": "sha256:6d2e7677e33b1c16cb94d4c8b2f1245b05126d68789a17910dfab7455174e2c3",
       "files": [
         {
+          "path": "src/migrations/0018-investigations-written-at-default.sql",
+          "digest": "sha256:02f95b3df45b6bce22da8e16d57df4171a9163c020d1d487da2934cad6b6fb8e"
+        },
+        {
+          "path": "src/src/investigation/investigation-factory.ts",
+          "digest": "sha256:9bfe0345153a259143a4f2f85c91685ebcfa2a6226fe6eb29d0f9c6202b75dc2"
+        },
+        {
+          "path": "src/src/investigation/investigation.ts",
+          "digest": "sha256:00a38839493e28e6a09ea6b4b7d88f8e4bf5bae8a7b488c239c38ce168f3c983"
+        },
+        {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
+          "digest": "sha256:f793964914f9048645c6b40c7d41a146db9104e996d954b4cd85406bf3a79181"
+        },
+        {
+          "path": "src/src/persistence/relational-investigation-store.repository.ts",
+          "digest": "sha256:1f74bc028aedb353476b8924c74c4f89cfd8b0318737514e5580c00a47a8e320"
         }
       ]
     },

@@ -26,5 +26,5 @@ export type Investigation = {
   readonly cost: Cost;
   readonly durations: Durations;
 
-  readonly written_at: string;
+  readonly written_at?: string;
 };

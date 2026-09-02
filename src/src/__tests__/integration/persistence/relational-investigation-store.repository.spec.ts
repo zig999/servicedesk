@@ -13,6 +13,20 @@ function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
+function omittingWrittenAt(document: Investigation): Omit<Investigation, 'written_at'> {
+  const { written_at: writtenAt, ...rest } = document;
+  void writtenAt;
+  return rest;
+}
+
+function expectWrittenAtAssignedByTheStore(actual: unknown, literalTheFixtureSupplied: string): void {
+  expect(typeof actual).toBe('string');
+  expect(actual).not.toBe(literalTheFixtureSupplied);
+  const asMs = Date.parse(actual as string);
+  expect(Number.isNaN(asMs)).toBe(false);
+  expect(Math.abs(Date.now() - asMs)).toBeLessThan(60_000);
+}
+
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await pool.query(text, params);
@@ -189,7 +203,7 @@ afterEach(async () => {
 });
 
 it(
-  'reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction',
+  'reads back a whole investigation exactly as written — root, subject attribute-values, evidence with its capability pin, evaluations with their citations, assessment, cost and durations — through one transaction, with written_at assigned by the store itself at settle rather than the literal the fixture supplied',
   async () => {
     const fixtures = await freshFixtures();
     const id = `investigation-store-roundtrip-${randomUUID()}`;
@@ -199,9 +213,11 @@ it(
 
     await store.write(investigation);
     const answered = await store.read(id);
+    const document = answered?.document as Investigation;
 
-    expect(answered?.document).toEqual(investigation);
-    expect(answered?.hash).toBe(createHash('sha256').update(JSON.stringify(investigation), 'utf8').digest('hex'));
+    expect(omittingWrittenAt(document)).toEqual(omittingWrittenAt(investigation));
+    expectWrittenAtAssignedByTheStore(document.written_at, investigation.written_at as string);
+    expect(answered?.hash).toBe(createHash('sha256').update(JSON.stringify(document), 'utf8').digest('hex'));
   },
   15000,
 );
@@ -217,9 +233,10 @@ it(
 
     await store.write(investigation);
     const answered = await store.read(id);
+    const document = answered?.document as Investigation;
 
-    expect(answered?.document).toEqual(investigation);
-    expect(answered?.document).not.toHaveProperty('ticket_ref');
+    expect(omittingWrittenAt(document)).toEqual(omittingWrittenAt(investigation));
+    expect(document).not.toHaveProperty('ticket_ref');
   },
   15000,
 );
@@ -253,15 +270,16 @@ it(
 
     await store.write(investigation);
     const answered = await store.read(id);
+    const document = answered?.document as Investigation;
 
-    expect(answered?.document).toEqual(investigation);
-    expect(answered?.document).not.toHaveProperty('durations.writing');
+    expect(omittingWrittenAt(document)).toEqual(omittingWrittenAt(investigation));
+    expect(document).not.toHaveProperty('durations.writing');
   },
   15000,
 );
 
 it(
-  "refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record completely unchanged",
+  "refuses a second write of an id already stored through InvestigationAlreadyStoredError, and leaves the already-stored record's own written_at, and everything else about it, completely unchanged",
   async () => {
     const fixtures = await freshFixtures();
     const id = `investigation-store-write-once-${randomUUID()}`;
@@ -269,13 +287,14 @@ it(
     const original = anIntegrationInvestigation({ id, fixtures });
     const store = new RelationalInvestigationStore(pool);
     await store.write(original);
+    const firstRead = await store.read(id);
     const conflicting: Investigation = { ...original, narrative: 'a completely different narrative' };
 
     const rejection = store.write(conflicting);
 
     await expect(rejection).rejects.toBeInstanceOf(InvestigationAlreadyStoredError);
     const stillStored = await store.read(id);
-    expect(stillStored?.document).toEqual(original);
+    expect(stillStored?.document).toEqual(firstRead?.document);
   },
   15000,
 );
@@ -461,7 +480,7 @@ it(
     await store.write(withNoDataCitationMissingField);
     const answered = (await store.read(id))?.document as Investigation;
 
-    expect(answered).toEqual(withNoDataCitationMissingField);
+    expect(omittingWrittenAt(answered)).toEqual(omittingWrittenAt(withNoDataCitationMissingField));
     expect(answered.evaluations[0]?.citations[0]).not.toHaveProperty('field');
   },
   15000,

@@ -1,0 +1,41 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "implementation",
+      "file": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle.md",
+      "title": "written_at decided by the store's own write() at settle, never precomputed in run-diagnosis.ts",
+      "summary": "Stops run-diagnosis.ts from stamping written_at before dispatching a write, and makes the store's own write() (the relational adapter's DB-level DEFAULT, evaluated at the moment its INSERT actually runs inside the transaction it commits) the sole authority for the value, so a fake store built the same way can no longer be defeated by a value the caller already fixed.",
+      "task": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle"
+    },
+    {
+      "id": "proof/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "proof",
+      "file": "proof/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle.md",
+      "title": "written_at stamped at settle, not at issue -- run-diagnosis, the factory, the relational store, and store-wiring",
+      "summary": "Proves run-diagnosis.ts never assigns written_at before or after a write settles, that the relational store alone decides the value at settle for both the first attempt and a retry, and that every collateral pre-fix test this change broke (investigation-factory, the unit and integration relational store specs, and store-wiring) now asserts the corrected contract.",
+      "task": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "to": "rules/investigation/written-at-records-when-the-write-settled",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "to": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "to": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

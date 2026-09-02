@@ -331,22 +331,81 @@ class FailOnceThenAlreadyStoredInvestigationStore implements IInvestigationStore
   }
 }
 
-class DelayedRejectThenSucceedInvestigationStore implements IInvestigationStore {
-  private readonly inner = new InMemoryInvestigationStore();
+class DelayedSettlingInvestigationStore implements IInvestigationStore {
+  private readonly documents = new Map<string, Investigation>();
+  public constructor(private readonly delayMs: number) {}
+  public write(investigation: Investigation): Promise<void> {
+    if (this.documents.has(investigation.id)) {
+      return Promise.reject(new InvestigationAlreadyStoredError(investigation.id));
+    }
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.documents.set(investigation.id, { ...investigation, written_at: new Date().toISOString() });
+        resolve();
+      }, this.delayMs);
+    });
+  }
+  public async read(id: string): Promise<StoredInvestigation | undefined> {
+    const document = this.documents.get(id);
+    return document === undefined ? undefined : { document, hash: 'fake-hash' };
+  }
+}
+
+class RejectThenDelayedSettlingInvestigationStore implements IInvestigationStore {
+  private readonly documents = new Map<string, Investigation>();
   private calls = 0;
   public constructor(
-    private readonly delayMs: number,
     private readonly firstError: Error,
+    private readonly retryDelayMs: number,
   ) {}
   public write(investigation: Investigation): Promise<void> {
     this.calls += 1;
     if (this.calls === 1) {
-      return new Promise((_resolve, reject) => setTimeout(() => reject(this.firstError), this.delayMs));
+      return Promise.reject(this.firstError);
     }
-    return this.inner.write(investigation);
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.documents.set(investigation.id, { ...investigation, written_at: new Date().toISOString() });
+        resolve();
+      }, this.retryDelayMs);
+    });
   }
   public async read(id: string): Promise<StoredInvestigation | undefined> {
-    return this.inner.read(id);
+    const document = this.documents.get(id);
+    return document === undefined ? undefined : { document, hash: 'fake-hash' };
+  }
+}
+
+class FailOnceAgainstPreexistingInvestigationStore implements IInvestigationStore {
+  private readonly documents = new Map<string, unknown>();
+  private calls = 0;
+  public constructor(private readonly firstError: Error) {}
+  public preoccupy(id: string, document: unknown): void {
+    this.documents.set(id, document);
+  }
+  public write(investigation: Investigation): Promise<void> {
+    this.calls += 1;
+    return Promise.reject(this.calls === 1 ? this.firstError : new InvestigationAlreadyStoredError(investigation.id));
+  }
+  public async read(id: string): Promise<StoredInvestigation | undefined> {
+    const document = this.documents.get(id);
+    return document === undefined ? undefined : { document, hash: 'fake-hash' };
+  }
+}
+
+class RecordingFailOnceThenSucceedInvestigationStore implements IInvestigationStore {
+  public readonly dispatched: Investigation[] = [];
+  private calls = 0;
+  public constructor(private readonly firstError: Error) {}
+  public async write(investigation: Investigation): Promise<void> {
+    this.dispatched.push(investigation);
+    this.calls += 1;
+    if (this.calls === 1) {
+      throw this.firstError;
+    }
+  }
+  public async read(): Promise<StoredInvestigation | undefined> {
+    return undefined;
   }
 }
 
@@ -769,10 +828,20 @@ it('settles successfully without raising the deadline error when the retry — n
   expect(assessment).toEqual(HAPPY_PATH_ASSESSMENT);
 });
 
-it("reads written_at from the clock at persistence time, distinctly later than the request's own entry instant once collection has consumed real wall-clock time", async () => {
+it('dispatches a write whose investigation carries no written_at of its own, leaving the store alone to decide that value later, at settle', async () => {
+  const store = new InMemoryInvestigationStore();
+  const options = baseOptions({ store });
+
+  await runDiagnosis(options);
+  const document = await writtenDocument(store, 'investigation-1');
+
+  expect((document as Investigation).written_at).toBeUndefined();
+});
+
+it("persists written_at equal to the store's own settle instant for the first attempt — never the instant the write was issued, even once collection has already consumed real wall-clock time before that issue", async () => {
   const REQUEST_ENTRY_INSTANT = 1_700_000_000_000;
   vi.setSystemTime(REQUEST_ENTRY_INSTANT);
-  const store = new InMemoryInvestigationStore();
+  const store = new DelayedSettlingInvestigationStore(300);
   const consolidator = new FakeAssessmentConsolidator();
   consolidator.seed(
     { evaluations: [CONFIRMED_H1_EVALUATION], evidence: [{ ...expectedOkEvidence('concept-a', 'observed-concept-a'), elapsed_ms: 500 }], consolidationRegister: 'plain' },
@@ -788,16 +857,17 @@ it("reads written_at from the clock at persistence time, distinctly later than t
 
   const resultPromise = runDiagnosis(options);
   await vi.advanceTimersByTimeAsync(500);
+  await vi.advanceTimersByTimeAsync(300);
   await resultPromise;
-  const document = await writtenDocument(store, 'investigation-1');
+  const stored = await store.read('investigation-1');
 
-  expect((document as Investigation).written_at).toBe(new Date(REQUEST_ENTRY_INSTANT + 500).toISOString());
+  expect((stored?.document as Investigation).written_at).toBe(new Date(REQUEST_ENTRY_INSTANT + 800).toISOString());
 });
 
-it("records written_at from the retry's own fresh clock reading when the retry — not the first attempt — is the one that settles, never from the first attempt's own start", async () => {
+it("persists written_at equal to the retry's own settle instant when the first attempt fails outright and the retry settles only after its own delay — never the first attempt's own start instant", async () => {
   const START_INSTANT = 1_700_000_000_000;
   vi.setSystemTime(START_INSTANT);
-  const store = new DelayedRejectThenSucceedInvestigationStore(500, new Error('a transient write failure'));
+  const store = new RejectThenDelayedSettlingInvestigationStore(new Error('a transient write failure'), 500);
   const options = baseOptions({ store, now: 0, deadline: 50_000 });
 
   const resultPromise = runDiagnosis(options);
@@ -806,6 +876,16 @@ it("records written_at from the retry's own fresh clock reading when the retry �
   const stored = await store.read('investigation-1');
 
   expect((stored?.document as Investigation).written_at).toBe(new Date(START_INSTANT + 500).toISOString());
+});
+
+it('dispatches the retry with the exact same investigation object the first attempt used, so no second clock reading — for written_at or anything else — could precede it', async () => {
+  const store = new RecordingFailOnceThenSucceedInvestigationStore(new Error('a transient write failure'));
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
+
+  await runDiagnosis(options);
+
+  expect(store.dispatched).toHaveLength(2);
+  expect(store.dispatched[1]).toBe(store.dispatched[0]);
 });
 
 it('leaves the already-present record\'s own written_at untouched, never restamping it, when the first write attempt finds the investigation already stored', async () => {
@@ -819,18 +899,16 @@ it('leaves the already-present record\'s own written_at untouched, never restamp
   expect(stored?.document).toEqual({ id: 'investigation-1' });
 });
 
-it('reads written_at from the clock immediately before dispatching a write attempt, not from a reading taken after the store confirms that attempt has settled', async () => {
-  const START_INSTANT = 1_700_000_000_000;
-  vi.setSystemTime(START_INSTANT);
-  const store = new DelayedInvestigationStore(500);
-  const options = baseOptions({ store, now: 0, deadline: 20_000 });
+it("leaves a preexisting record's own written_at unchanged when this run's first attempt fails outright and its retry settles by finding the record already stored", async () => {
+  const PREEXISTING_WRITTEN_AT = '2020-01-01T00:00:00.000Z';
+  const store = new FailOnceAgainstPreexistingInvestigationStore(new Error('a transient write failure'));
+  store.preoccupy('investigation-1', { id: 'investigation-1', written_at: PREEXISTING_WRITTEN_AT });
+  const options = baseOptions({ store, now: 0, deadline: 50_000 });
 
-  const resultPromise = runDiagnosis(options);
-  await vi.advanceTimersByTimeAsync(500);
-  await resultPromise;
+  await runDiagnosis(options);
   const stored = await store.read('investigation-1');
 
-  expect((stored?.document as Investigation).written_at).toBe(new Date(START_INSTANT).toISOString());
+  expect((stored?.document as { written_at: string }).written_at).toBe(PREEXISTING_WRITTEN_AT);
 });
 
 it('tightens judgment\'s own deadline to no more than the nominal five-second budget, even where the declared deadline leaves far more room', async () => {

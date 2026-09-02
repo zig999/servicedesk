@@ -69,7 +69,6 @@ function buildInvestigationOptions(args: BuildInvestigationArgs): BuildInvestiga
     assessment,
     cost,
     durations,
-    written_at: new Date(readClockMs()).toISOString(),
     glossary: options.glossary,
   };
 }
@@ -103,15 +102,11 @@ async function persistWithinBound(store: IInvestigationStore, investigation: Inv
     if (first !== 'failed') {
       return first === 'settled';
     }
-    const retry = await raceWriteAttempt(store.write(investigationForRetry(investigation)), timeout.promise);
+    const retry = await raceWriteAttempt(store.write(investigation), timeout.promise);
     return retry === 'settled';
   } finally {
     timeout.cancel();
   }
-}
-
-function investigationForRetry(investigation: Investigation): Investigation {
-  return { ...investigation, written_at: new Date(readClockMs()).toISOString() };
 }
 
 type WriteAttemptOutcome = 'settled' | 'failed' | typeof WRITE_TIMED_OUT;

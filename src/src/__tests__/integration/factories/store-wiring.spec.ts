@@ -23,6 +23,20 @@ function isForeignKeyViolation(error: unknown): boolean {
   return error instanceof Error && 'code' in error && error.code === FOREIGN_KEY_VIOLATION;
 }
 
+function omittingWrittenAt(document: Investigation): Omit<Investigation, 'written_at'> {
+  const { written_at: writtenAt, ...rest } = document;
+  void writtenAt;
+  return rest;
+}
+
+function expectWrittenAtAssignedByTheStore(actual: unknown, literalTheFixtureSupplied: string): void {
+  expect(typeof actual).toBe('string');
+  expect(actual).not.toBe(literalTheFixtureSupplied);
+  const asMs = Date.parse(actual as string);
+  expect(Number.isNaN(asMs)).toBe(false);
+  expect(Math.abs(Date.now() - asMs)).toBeLessThan(60_000);
+}
+
 async function deleteTolerantly(text: string, params: readonly unknown[]): Promise<void> {
   try {
     await connection.query(text, params);
@@ -199,7 +213,9 @@ it(
     await createInvestigationStore(connection).write(investigation);
 
     const answered = await createInvestigationStore(connection).read(id);
+    const document = answered?.document as Investigation;
 
-    expect(answered?.document).toEqual(investigation);
+    expect(omittingWrittenAt(document)).toEqual(omittingWrittenAt(investigation));
+    expectWrittenAtAssignedByTheStore(document.written_at, investigation.written_at as string);
   },
 );
