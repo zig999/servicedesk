@@ -61,10 +61,10 @@ export type HypothesisRevisionFormState =
       readonly onOpenManifestBuilder: () => void;
     };
 
-function latestRevisionOf(
-  revisions: readonly HypothesisRevisionListItem[],
-): HypothesisRevisionListItem | undefined {
-  return revisions.reduce<HypothesisRevisionListItem | undefined>(
+export function latestRevisionOf<T extends { readonly revision: number }>(
+  revisions: readonly T[],
+): T | undefined {
+  return revisions.reduce<T | undefined>(
     (latest, item) => (latest === undefined || item.revision > latest.revision ? item : latest),
     undefined,
   );

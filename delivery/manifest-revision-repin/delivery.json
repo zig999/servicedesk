@@ -1,0 +1,53 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/manifest-revision-repin/row-revision-options",
+      "kind": "implementation",
+      "file": "implementation/manifest-revision-repin/row-revision-options.md",
+      "title": "A manifest row's own revisions and highest revision, read once",
+      "summary": "A new hook composes the already-shared hypothesis-revisions cache entry and the existing latest-revision reduction so a manifest row can read its own hypothesis's revisions and their highest number without a second implementation of either.",
+      "task": "task/manifest-revision-repin/row-revision-options"
+    },
+    {
+      "id": "proof/manifest-revision-repin/row-revision-options",
+      "kind": "proof",
+      "file": "proof/manifest-revision-repin/row-revision-options.md",
+      "title": "A manifest row's own revisions and highest revision, proven over useManifestRowRevisions",
+      "summary": "Behavioral tests over useManifestRowRevisions establish that a row obtains exactly its own hypothesis's revisions verbatim from the shared cache entry, isolated per hypothesis, each carrying its own revision number, its highest answered by the existing reduction, and empty before the listing has actually answered — whether pending or failed.",
+      "task": "task/manifest-revision-repin/row-revision-options"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-options",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-options",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-options",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-options",
+      "to": "task/manifest-revision-repin/row-revision-options",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-revision-repin/row-revision-options",
+      "to": "implementation/manifest-revision-repin/row-revision-options",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
