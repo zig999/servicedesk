@@ -3409,7 +3409,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
+          "digest": "sha256:b8b7146f305eb126b03e593ff81e3f63c3af8b2d14a852d2b54774fe0bab73bd"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -3446,6 +3446,10 @@
         {
           "path": "frontend/app/src/routes/case-version-editor-ready-view.tsx",
           "digest": "sha256:8f116ab7041eddf321fe6f11a6aa94313caf2c253c5abf159a5af1cff0aadb53"
+        },
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:89418dabaf7e907fcbd0721f51679ac2f531f08540008a1d5f30fab5f3693e80"
         },
         {
           "path": "frontend/app/src/services/case-version-form-schema.ts",
@@ -3849,7 +3853,7 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:0f7806b9edfa55697ec3af0b32457b7b255de9cd0bec22523fb3d436df46b83e"
+          "digest": "sha256:89418dabaf7e907fcbd0721f51679ac2f531f08540008a1d5f30fab5f3693e80"
         },
         {
           "path": "frontend/app/src/services/hypothesis-revision-form-schema.ts",
@@ -3951,7 +3955,7 @@
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
-          "digest": "sha256:0f7806b9edfa55697ec3af0b32457b7b255de9cd0bec22523fb3d436df46b83e"
+          "digest": "sha256:89418dabaf7e907fcbd0721f51679ac2f531f08540008a1d5f30fab5f3693e80"
         },
         {
           "path": "frontend/app/src/services/case-version-record.ts",
@@ -5750,6 +5754,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "digest": "sha256:8922dfc6a9ca18819bc4b633df07f2f431e6da685d79e0c286af10b68da50596",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/version-manifest-screen.tsx",
+          "digest": "sha256:89418dabaf7e907fcbd0721f51679ac2f531f08540008a1d5f30fab5f3693e80"
         }
       ]
     },

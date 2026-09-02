@@ -18,6 +18,14 @@
       "task": "task/manifest-revision-repin/row-revision-options"
     },
     {
+      "id": "implementation/manifest-revision-repin/row-revision-select",
+      "kind": "implementation",
+      "file": "implementation/manifest-revision-repin/row-revision-select.md",
+      "title": "The revision Select on the manifest row's Hypothesis cell",
+      "summary": "Replaces the manifest row's plain \"hypothesisName · rev N\" text with a controlled @tui/ui/select over that hypothesis's revisions, always showing the row's own pinned revision, disabling proactively on a released version, and linking a repin failure's message to the actual focusable trigger.",
+      "task": "task/manifest-revision-repin/row-revision-select"
+    },
+    {
       "id": "proof/manifest-revision-repin/repin-through-place",
       "kind": "proof",
       "file": "proof/manifest-revision-repin/repin-through-place.md",
@@ -32,6 +40,14 @@
       "title": "A manifest row's own revisions and highest revision, proven over useManifestRowRevisions",
       "summary": "Behavioral tests over useManifestRowRevisions establish that a row obtains exactly its own hypothesis's revisions verbatim from the shared cache entry, isolated per hypothesis, each carrying its own revision number, its highest answered by the existing reduction, and empty before the listing has actually answered — whether pending or failed.",
       "task": "task/manifest-revision-repin/row-revision-options"
+    },
+    {
+      "id": "proof/manifest-revision-repin/row-revision-select",
+      "kind": "proof",
+      "file": "proof/manifest-revision-repin/row-revision-select.md",
+      "title": "The manifest row's revision Select",
+      "summary": "Proves the seven criteria of row-revision-select plus its own disclosed inferences and both UNDERDETERMINED gaps its Notes named, against the revised implementation.",
+      "task": "task/manifest-revision-repin/row-revision-select"
     }
   ],
   "edges": [
@@ -120,6 +136,36 @@
       "at": "the path"
     },
     {
+      "from": "implementation/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-select",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/row-revision-select",
+      "to": "task/manifest-revision-repin/row-revision-select",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/manifest-revision-repin/repin-through-place",
       "to": "implementation/manifest-revision-repin/repin-through-place",
       "kind": "proves",
@@ -128,6 +174,12 @@
     {
       "from": "proof/manifest-revision-repin/row-revision-options",
       "to": "implementation/manifest-revision-repin/row-revision-options",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-revision-repin/row-revision-select",
+      "to": "implementation/manifest-revision-repin/row-revision-select",
       "kind": "proves",
       "at": "the path"
     }
