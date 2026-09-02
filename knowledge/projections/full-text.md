@@ -497,6 +497,7 @@ operations:
 ## Description
 
 The curator's entrance now that no file is the medium: start a draft, revise a hypothesis, place it in (or remove it from) the draft's own manifest, correct the draft's own declared attributes, as many times as curation needs, then release — every validator rule answering together at that one moment, before the version stands immutable — or discard the draft instead, with nothing ever having been usable in its place.
+Revising a hypothesis writes into that hypothesis's own highest existing revision, in place, for as long as no released case version has adopted it; once one has, revising instead creates the next revision — `rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased` holds the target, `rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft` still holds the draft it is checked against.
 Written once is what makes release the one act that turns editing into a version nothing may still merge into — a release naming a slug and version that already exist is refused rather than merged, and revising a released case always starts the next draft.
 
 === contracts/knowledge/case-query
@@ -3334,11 +3335,11 @@ operations:
 ## Description
 
 One falsifiable claim's own stable identity within its case, named uniquely across every version the case ever holds — past, current or future.
-Its content — the criterion it states, what it collects and the resolution that follows its confirmation — belongs to its revisions, never to this identity directly: revising a hypothesis never changes this name, it only adds a new revision for a case version's manifest to adopt.
+Its content — the criterion it states, what it collects and the resolution that follows its confirmation — belongs to its revisions, never to this identity directly: revising a hypothesis never changes this name. While its own highest existing revision is not yet frozen by a released case version, revising replaces that revision's content in place; once one has frozen it, revising instead adds a new revision for a case version's manifest to adopt.
 
 ## Responsibility
 
-Name one falsifiable claim for as long as the case exists, and originate a new revision when its content changes.
+Name one falsifiable claim for as long as the case exists, and either replace its own highest revision's content in place or originate the next revision, whichever its frozen state calls for, when its content changes.
 
 === domain/knowledge/hypothesis-revision
 ---
@@ -3367,7 +3368,7 @@ relationships:
 
 One numbered state of a hypothesis's own content, referencing the hypothesis it belongs to.
 Its investigation is the pair collects plus criterion; the criterion is short business prose — one to three sentences — and it is the one field where the expert's nuance is the value, refactorable only by curation.
-Once any case version in released state manifests it, this content never changes again — a further edit always creates the next revision instead, leaving every version that already adopted this one reading exactly what it always read.
+Once any case version in released state manifests it, this content never changes again — a further edit always creates the next revision instead, leaving every version that already adopted this one reading exactly what it always read. Before that point, this revision is not yet frozen: a further edit replaces its content in place, and its number stays exactly what it already was.
 
 ## Responsibility
 
@@ -4557,6 +4558,27 @@ constrains:
 Precedence has to be a total order or resolve-outcome has no first confirmed hypothesis to find, only a tie it would settle by whatever it read first.
 Position is declared on the manifest entry, not on the hypothesis-revision it references, precisely so that reordering two hypotheses between one version and the next never forces either one's content to gain a new revision.
 
+=== rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+---
+type: policy
+statement: Revising a hypothesis that already holds a revision writes into that hypothesis's own
+  highest existing revision, replacing its content in place and leaving its number unchanged,
+  unless that revision is referenced by any case version in released state, in which case revising
+  instead creates the hypothesis's next revision; a hypothesis holding no revision yet always
+  creates revision 1.
+constrains:
+  - domain/knowledge/hypothesis
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+A curator adjusting a criterion's wording before ever publishing it does not want a new number for every keystroke's worth of saving — the "draft" a revision passes through is not a state it declares, it is derived from whether a released version has adopted it yet, the same way a case version's own draft state already governs whether its manifest may still be composed.
+`a-released-hypothesis-revision-is-never-altered` is what makes this safe: it already refuses to let this rule's own overwrite reach a revision any released version has adopted, so the two rules decide between them exactly once, over the same fact — whether a released case version references the hypothesis's highest revision — and never disagree, because this rule's "unless" clause is that rule's own condition read the other way.
+This is a policy rather than an invariant because the fact it turns on belongs to a different aggregate than the one it writes to: whether the highest revision is frozen is answered by reading every case version that might reference it, not by anything the hypothesis or the revision itself declares.
+
 === rules/knowledge/a-hypothesis-revision-number-is-never-reused
 ---
 type: policy
@@ -4571,6 +4593,7 @@ consistency: eventual
 
 A hypothesis-revision's own number is what a manifest entry, and a released version's pin through it, address that content by — the same role a case version's own number plays for a released version. Reusing a number for a later revision would let two different pieces of content, authored at different times, answer to the same reference, which is exactly what a-released-hypothesis-revision-is-never-altered depends on staying impossible.
 Unlike a case version, a hypothesis-revision is never discarded, so the guarantee holds without needing a counter that survives past a deleted row: the highest revision a hypothesis has ever held is always still on hand to number the next one from.
+Replacing an existing, not-yet-frozen revision's own content in place, as `a-hypothesis-revision-is-overwritten-while-unreleased` allows, is not a reuse of its number: the content changes, but the number named never stopped naming that one revision, so nothing has been assigned twice.
 
 === rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
 ---
@@ -5225,6 +5248,29 @@ involves:
 
 A capability's own timeout bounds one call; it is never the reason the collection stage waits longer than its own seven-second budget allows.
 
+=== scenarios/investigation/an-in-place-revision-edit-stales-the-shown-result
+---
+subject: rules/investigation/a-simulation-result-is-stale-once-its-source-changes
+given:
+  - a case-simulation result is shown from a prior run of a draft case version
+  - the draft's manifest pins hypothesis customer-equipment-fault at revision 2, not yet
+    referenced by any case version in released state
+when:
+  - the curator revises customer-equipment-fault, overwriting revision 2's content in place, and
+    returns to the cockpit
+then:
+  - the shown result is marked stale
+  - the curator is told the result may no longer reflect the version's current content
+involves:
+  - domain/knowledge/case-version
+  - domain/knowledge/hypothesis-revision
+  - contracts/investigation/case-simulation
+---
+
+## Description
+
+The revision number staying at 2 throughout is exactly what rules out a number comparison as the detection mechanism: `a-simulation-result-is-stale-once-its-source-changes` already commits to no named mechanism for this reason, and an in-place overwrite is the case where that choice is load-bearing rather than incidental.
+
 === scenarios/investigation/no-response-without-a-record
 ---
 subject: rules/investigation/the-response-follows-the-record
@@ -5262,6 +5308,29 @@ involves:
 ## Description
 
 only-a-draft-case-version-may-be-discarded lets a case's one and only draft be discarded, and a-case-version-number-is-never-reused confirms the case survives that with its slug and its next_version counter intact — so the case a curator names still exists while list-case-versions has nothing left to return for it. An empty listing reads the same whether the case never held a version, held one now discarded, or the curator named a slug list-case-versions cannot resolve at all; only an explicit statement that this case currently holds no version tells the difference, instead of leaving the curator to guess whether the read is still pending or something failed unannounced.
+
+=== scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves
+---
+subject: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+given:
+  - hypothesis customer-equipment-fault holds one revision, revision 2, referenced by no case
+    version in released state
+  - the case's draft manifest pins revision 2 of customer-equipment-fault
+when:
+  - the curator revises customer-equipment-fault three times, each time changing its criterion
+then:
+  - customer-equipment-fault's highest revision is still numbered 2
+  - revision 2's content is the content of the third, most recent revise
+  - the draft's manifest entry still pins revision 2
+  - the entry does not disclose a higher revision of customer-equipment-fault
+involves:
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/manifest-entry
+---
+
+## Description
+
+The ordinary curation loop the rule exists for: adjusting a criterion's wording before publishing never grows the revision history, and the draft's own pin never falls behind what it already points at.
 
 === scenarios/knowledge/a-released-version-keeps-its-original-revision
 ---
@@ -5320,6 +5389,27 @@ involves:
 ## Description
 
 The fallback is a disguised default hypothesis, explicit because a fallback claims nothing about the world.
+
+=== scenarios/knowledge/revising-a-released-revision-creates-the-next
+---
+subject: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
+given:
+  - case version 1 of a case is released, its manifest referencing revision 2 of hypothesis
+    customer-equipment-fault
+when:
+  - the curator revises customer-equipment-fault
+then:
+  - revision 3 of customer-equipment-fault is created
+  - revision 2's own content is unchanged
+  - version 1's manifest still references revision 2, unchanged
+involves:
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+---
+
+## Description
+
+Complements `a-released-version-keeps-its-original-revision`: the same released reference that keeps version 1 reading revision 2 forever is what turns this revise into a create instead of an overwrite — the two rules read one fact from opposite ends.
 
 === scenarios/knowledge/the-first-confirmed-hypothesis-determines-the-outcome
 ---
