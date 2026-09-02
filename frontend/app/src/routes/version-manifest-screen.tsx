@@ -149,7 +149,10 @@ function useTriggerAriaLinkage(
 }
 
 function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Element {
-  const { revisions, isLoading } = useManifestRowRevisions(slug, row.hypothesisName);
+  const { revisions, highestRevision, isLoading } = useManifestRowRevisions(
+    slug,
+    row.hypothesisName,
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const errorId = `revision-error-${row.hypothesisName}`;
   const isInvalid = row.revisionErrorMessage !== null;
@@ -160,6 +163,7 @@ function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Eleme
   }
 
   const options = optionsWithPinnedRevision(revisions, row.revision);
+  const hasNewerRevision = highestRevision !== undefined && row.revision < highestRevision;
 
   function repinIfChanged(value: string): void {
     const chosenRevision = Number(value);
@@ -170,17 +174,22 @@ function RevisionSelect({ slug, row, disabled }: RevisionSelectProps): JSX.Eleme
 
   return (
     <div className="flex flex-col gap-1">
-      <Label className="flex flex-col gap-1">
-        {row.hypothesisName}
-        <Select
-          ref={containerRef}
-          value={String(row.revision)}
-          onChange={repinIfChanged}
-          options={options}
-          disabled={disabled}
-          placeholder="Select a revision"
-        />
-      </Label>
+      <div className="flex items-center gap-2">
+        <Label className="flex min-w-0 flex-1 flex-col gap-1">
+          {row.hypothesisName}
+          <Select
+            ref={containerRef}
+            value={String(row.revision)}
+            onChange={repinIfChanged}
+            options={options}
+            disabled={disabled}
+            placeholder="Select a revision"
+          />
+        </Label>
+        {hasNewerRevision && (
+          <span className="shrink-0 text-sm text-warning">Newer revision available</span>
+        )}
+      </div>
       {row.revisionErrorMessage !== null && (
         <p id={errorId} role="alert" className="text-sm text-destructive">
           {row.revisionErrorMessage}

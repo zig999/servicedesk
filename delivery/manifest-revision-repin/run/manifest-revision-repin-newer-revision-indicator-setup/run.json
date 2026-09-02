@@ -1,0 +1,20 @@
+{
+  "contract_version": "siegard-run/2",
+  "run": "run/manifest-revision-repin-newer-revision-indicator-setup",
+  "cwd": "/home/siegfriedneto/projects/servicedeskn1/frontend/app",
+  "timeout_seconds": 300,
+  "outcome": "passed",
+  "failed_step": null,
+  "steps": [
+    {
+      "name": "install",
+      "command": "npm ci",
+      "outcome": "passed",
+      "exit_code": 0,
+      "output": "install.log",
+      "started_at": "2026-09-02T20:03:39.496+00:00",
+      "ended_at": "2026-09-02T20:03:45.387+00:00"
+    }
+  ],
+  "combined_output": "run.log"
+}

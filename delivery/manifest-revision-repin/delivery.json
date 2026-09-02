@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/manifest-revision-repin/newer-revision-indicator",
+      "kind": "implementation",
+      "file": "implementation/manifest-revision-repin/newer-revision-indicator.md",
+      "title": "The newer-revision-available marker on a pinned manifest row",
+      "summary": "RevisionSelect now renders a text-only marker as a sibling of its own Label (not inside it) whenever the row's pinned revision is below the highest revision useManifestRowRevisions answered for that hypothesis, visible whether the Select stands open or closed and regardless of the row's disabled/released state.",
+      "task": "task/manifest-revision-repin/newer-revision-indicator"
+    },
+    {
       "id": "implementation/manifest-revision-repin/repin-through-place",
       "kind": "implementation",
       "file": "implementation/manifest-revision-repin/repin-through-place.md",
@@ -24,6 +32,14 @@
       "title": "The revision Select on the manifest row's Hypothesis cell",
       "summary": "Replaces the manifest row's plain \"hypothesisName · rev N\" text with a controlled @tui/ui/select over that hypothesis's revisions, always showing the row's own pinned revision, disabling proactively on a released version, and linking a repin failure's message to the actual focusable trigger.",
       "task": "task/manifest-revision-repin/row-revision-select"
+    },
+    {
+      "id": "proof/manifest-revision-repin/newer-revision-indicator",
+      "kind": "proof",
+      "file": "proof/manifest-revision-repin/newer-revision-indicator.md",
+      "title": "The newer-revision marker on a manifest row's pinned revision",
+      "summary": "Tests that RevisionSelect's newer-revision marker appears exactly when a row's pinned revision trails the highest revision its own hypothesis's revisions listing answered, stays readable with the Select closed, tracks each row's own comparison basis, and never becomes an adoption control.",
+      "task": "task/manifest-revision-repin/newer-revision-indicator"
     },
     {
       "id": "proof/manifest-revision-repin/repin-through-place",
@@ -51,6 +67,24 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/manifest-revision-repin/newer-revision-indicator",
+      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/newer-revision-indicator",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/newer-revision-indicator",
+      "to": "task/manifest-revision-repin/newer-revision-indicator",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/manifest-revision-repin/repin-through-place",
       "to": "contracts/knowledge/case-lifecycle",
@@ -163,6 +197,12 @@
       "from": "implementation/manifest-revision-repin/row-revision-select",
       "to": "task/manifest-revision-repin/row-revision-select",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-revision-repin/newer-revision-indicator",
+      "to": "implementation/manifest-revision-repin/newer-revision-indicator",
+      "kind": "proves",
       "at": "the path"
     },
     {
