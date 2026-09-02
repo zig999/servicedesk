@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/manifest-revision-repin/repin-through-place",
+      "kind": "implementation",
+      "file": "implementation/manifest-revision-repin/repin-through-place.md",
+      "title": "Repinning a manifest entry through the existing place-hypothesis mutation",
+      "summary": "useManifestBuilder now exposes a per-row repin action that reuses placeMutation with the row's own unchanged position, reports its success without signalling a move, and reports its own failure against the row it was attempted on rather than through the move error path.",
+      "task": "task/manifest-revision-repin/repin-through-place"
+    },
+    {
       "id": "implementation/manifest-revision-repin/row-revision-options",
       "kind": "implementation",
       "file": "implementation/manifest-revision-repin/row-revision-options.md",
       "title": "A manifest row's own revisions and highest revision, read once",
       "summary": "A new hook composes the already-shared hypothesis-revisions cache entry and the existing latest-revision reduction so a manifest row can read its own hypothesis's revisions and their highest number without a second implementation of either.",
       "task": "task/manifest-revision-repin/row-revision-options"
+    },
+    {
+      "id": "proof/manifest-revision-repin/repin-through-place",
+      "kind": "proof",
+      "file": "proof/manifest-revision-repin/repin-through-place.md",
+      "title": "Proof for repinning a manifest entry through the existing place-hypothesis mutation",
+      "summary": "Twelve tests drive useManifestBuilder's new onRepin action directly through renderHook, proving the exact PUT it sends, the state a successful and a refused repin leave behind, and that its telemetry and failure reporting never read as a move.",
+      "task": "task/manifest-revision-repin/repin-through-place"
     },
     {
       "id": "proof/manifest-revision-repin/row-revision-options",
@@ -19,6 +35,66 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "contracts/knowledge/case-query",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "encodes",
+      "at": "nodes[7]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "encodes",
+      "at": "nodes[8]"
+    },
+    {
+      "from": "implementation/manifest-revision-repin/repin-through-place",
+      "to": "task/manifest-revision-repin/repin-through-place",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/manifest-revision-repin/row-revision-options",
       "to": "contracts/knowledge/case-query",
@@ -41,6 +117,12 @@
       "from": "implementation/manifest-revision-repin/row-revision-options",
       "to": "task/manifest-revision-repin/row-revision-options",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-revision-repin/repin-through-place",
+      "to": "implementation/manifest-revision-repin/repin-through-place",
+      "kind": "proves",
       "at": "the path"
     },
     {

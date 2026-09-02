@@ -29,9 +29,13 @@ export type ManifestRow = {
   readonly isOnlyEntry: boolean;
 
   readonly moveErrorMessage: string | null;
+
+  readonly revisionErrorMessage: string | null;
   readonly onMoveUp: () => void;
   readonly onMoveDown: () => void;
   readonly onRemove: () => void;
+
+  readonly onRepin: (revision: number) => void;
 };
 
 export type ManifestBuilderState =
@@ -48,6 +52,7 @@ export type ManifestBuilderState =
 
 const MOVE_BLOCKED_MESSAGE = "Another hypothesis already holds that position. Try again.";
 const GENERIC_FAILURE_MESSAGE = "Something went wrong while saving. Try again.";
+const REVISION_FAILURE_MESSAGE = "Could not switch to that revision. Try again.";
 
 function sortByPosition(manifest: readonly ManifestEntryDto[]): readonly ManifestEntryDto[] {
   return [...manifest].sort((a, b) => a.position - b.position);
@@ -58,6 +63,10 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
   const telemetry = useTelemetry();
   const [isBlocked, setIsBlocked] = useState(false);
   const [moveError, setMoveError] = useState<{
+    hypothesisName: string;
+    message: string;
+  } | null>(null);
+  const [revisionError, setRevisionError] = useState<{
     hypothesisName: string;
     message: string;
   } | null>(null);
@@ -73,7 +82,12 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
   }
 
   const placeMutation = useMutation({
-    mutationFn: (vars: { hypothesisName: string; revision: number; position: number }) =>
+    mutationFn: (vars: {
+      hypothesisName: string;
+      revision: number;
+      position: number;
+      kind: "move" | "repin";
+    }) =>
       apiFetch<void>(
         `/v1/cases/${encodeURIComponent(slug)}/versions/${version}/manifest/${encodeURIComponent(vars.hypothesisName)}`,
         {
@@ -85,12 +99,13 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
     onSuccess: (_data, vars) => {
 
       setMoveError(null);
+      setRevisionError(null);
       telemetry.manifestHypothesisPlaced({
         slug,
         version,
         hypothesis_name: vars.hypothesisName,
         position: vars.position,
-        moved: true,
+        moved: vars.kind === "move",
       });
       invalidateManifest();
     },
@@ -105,6 +120,10 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
 
         setMoveError({ hypothesisName: vars.hypothesisName, message: MOVE_BLOCKED_MESSAGE });
         return;
+      }
+      if (vars.kind === "repin") {
+
+        setRevisionError({ hypothesisName: vars.hypothesisName, message: REVISION_FAILURE_MESSAGE });
       }
       toast.error(GENERIC_FAILURE_MESSAGE);
     },
@@ -159,7 +178,19 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
         return;
       }
       setMoveError(null);
-      placeMutation.mutate({ hypothesisName, revision, position: target.position });
+      setRevisionError(null);
+      placeMutation.mutate({ hypothesisName, revision, position: target.position, kind: "move" });
+    }
+
+    function repinTo(chosenRevision: number): void {
+      setMoveError(null);
+      setRevisionError(null);
+      placeMutation.mutate({
+        hypothesisName,
+        revision: chosenRevision,
+        position: entry.position,
+        kind: "repin",
+      });
     }
 
     return {
@@ -170,9 +201,14 @@ export function useManifestBuilder(slug: string, version: number): ManifestBuild
       canMoveDown: index < lastIndex,
       isOnlyEntry: sorted.length === 1,
       moveErrorMessage: moveError?.hypothesisName === hypothesisName ? moveError.message : null,
+
+      revisionErrorMessage:
+        revisionError?.hypothesisName === hypothesisName ? revisionError.message : null,
       onMoveUp: () => moveTo(previous),
       onMoveDown: () => moveTo(next),
       onRemove: () => removeMutation.mutate({ hypothesisName }),
+
+      onRepin: repinTo,
     };
   });
 

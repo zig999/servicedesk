@@ -1185,7 +1185,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -1339,7 +1339,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-row-revisions.ts",
@@ -3409,7 +3409,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/hooks/use-new-draft-version-form.ts",
@@ -3817,7 +3817,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-row-revisions.ts",
@@ -3935,7 +3935,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-hypotheses-table-row.ts",
@@ -5379,7 +5379,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/routes/case-version-editor-form-fields.tsx",
@@ -5454,6 +5454,10 @@
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:aa2c5baf5556ed65db4353bd51d45f3fa0f0dba28309e143377ddc715e53d4ec"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-manifest-builder.ts",
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
@@ -5695,7 +5699,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "src/migrations/0004-case-and-hypothesis.sql",
@@ -5951,7 +5955,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
-          "digest": "sha256:80e8c29adf0297405883cd4f9abe8b1d2d9b756afd7a09fa954ff3fe514adc5c"
+          "digest": "sha256:d09cbfe8895aface3732bbeb9a094d405e80e6c912680e8de38af2b3ae5b5e22"
         },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
