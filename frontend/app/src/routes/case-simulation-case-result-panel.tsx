@@ -49,7 +49,13 @@ export function CaseSimulationCaseResultPanel({
         <p className="text-sm text-muted-foreground">
           Customer-facing text ({lastRun.register})
         </p>
-        <p>{lastRun.text}</p>
+        <div className="flex flex-col gap-2">
+          {lastRun.text.split(/\n{2,}/).map((paragraph, index) => (
+            <p key={index} className="whitespace-pre-wrap">
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">

@@ -112,7 +112,7 @@ export function CaseSimulationDetailEvidenceTab({
       {judgmentCall.called && (
         <p className="text-sm text-muted-foreground">
           Judgment {judgmentCall.model} · prompt {judgmentCall.promptVersion} ·{" "}
-          {judgmentCall.usage.inputTokens} in / {judgmentCall.usage.outputTokens} out ·{" "}
+          {judgmentCall.usage.inputTokens} tokens in / {judgmentCall.usage.outputTokens} tokens out ·{" "}
           {judgmentCall.elapsedMs} ms
         </p>
       )}
