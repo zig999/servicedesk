@@ -90,7 +90,7 @@ async function runIsolatedCall(options: RunIsolatedCallOptions): Promise<Evaluat
   if (citationsAreAcceptable(context, first)) {
     return asEvaluation(name, first);
   }
-  return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext });
+  return retryOrFail({ name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext, first });
 }
 
 type RetryOrFailOptions = {
@@ -101,18 +101,19 @@ type RetryOrFailOptions = {
   readonly deadlineGuard: DeadlineGuard;
   readonly context: HypothesisCitationContext;
   readonly caseContext: CaseContext;
+  readonly first: EvaluationOutcome;
 };
 
 async function retryOrFail(options: RetryOrFailOptions): Promise<Evaluation> {
-  const { name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext } = options;
+  const { name, hypothesis, evidenceItems, evaluator, deadlineGuard, context, caseContext, first } = options;
   if (deadlineGuard.elapsed()) {
-    return judgmentFailureEvaluation(name);
+    return judgmentFailureEvaluation(name, first);
   }
   const retry = await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard);
   if (retry === DEADLINE_ELAPSED) {
     return deadlineExceededEvaluation(name);
   }
-  return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name);
+  return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name, retry);
 }
 
 async function acquireSlotOrDeadline(pool: CallPool, deadlineGuard: DeadlineGuard): Promise<boolean> {
@@ -230,8 +231,9 @@ function deadlineExceededEvaluation(name: string): Evaluation {
   return { hypothesis: name, verdict: 'inconclusive', reason: 'deadline-exceeded', citations: [] };
 }
 
-function judgmentFailureEvaluation(name: string): Evaluation {
-  return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [] };
+function judgmentFailureEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {
+  const callRecord = callRecordOf(outcome);
+  return { hypothesis: name, verdict: 'inconclusive', reason: 'judgment-failure', citations: [], ...callRecord };
 }
 
 function asEvaluation(name: string, outcome: EvaluationOutcome): Evaluation {

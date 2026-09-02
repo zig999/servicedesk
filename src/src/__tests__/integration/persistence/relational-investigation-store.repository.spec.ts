@@ -468,6 +468,37 @@ it(
 );
 
 it(
+  "reads back a judgment-failure evaluation's own usage, elapsed_ms and prompt exactly as written, alongside its reason and empty citations",
+  async () => {
+    const fixtures = await freshFixtures();
+    const id = `investigation-store-judgment-failure-call-record-${randomUUID()}`;
+    investigationIdsWrittenByThisTest.push(id);
+    const base = anIntegrationInvestigation({ id, fixtures });
+    const investigation: Investigation = {
+      ...base,
+      evaluations: [
+        {
+          hypothesis: 'a-hypothesis',
+          verdict: 'inconclusive',
+          reason: 'judgment-failure',
+          citations: [],
+          usage: { input_tokens: 12, output_tokens: 34 },
+          elapsed_ms: 567,
+          prompt: 'the judgment-failure prompt',
+        },
+      ],
+    };
+    const store = new RelationalInvestigationStore(pool);
+
+    await store.write(investigation);
+    const answered = (await store.read(id))?.document as Investigation;
+
+    expect(answered.evaluations).toEqual(investigation.evaluations);
+  },
+  15000,
+);
+
+it(
   "refuses a write, through a real foreign key violation, when an evidence item names a capability name and version the capabilities table does not hold — and leaves nothing stored",
   async () => {
     const fixtures = await freshFixtures();

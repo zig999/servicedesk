@@ -379,7 +379,7 @@ it('persists and reads back concept, subject-type, subject-attribute, action, ou
   expect(capabilityRows).toEqual([{ nature: 'read-only', timeout: 1000, connector: 'a-connector' }]);
 });
 
-it('holds every domain column NOT NULL except exactly the eight columns the model declares optional', async () => {
+it('holds every domain column NOT NULL except exactly the twelve columns the model declares optional', async () => {
   const { rows } = await client.query<{ table_name: string; column_name: string }>(
     `SELECT table_name, column_name FROM information_schema.columns
      WHERE table_schema = $1 AND table_name <> 'schema_migrations' AND is_nullable = 'YES'
@@ -391,6 +391,10 @@ it('holds every domain column NOT NULL except exactly the eight columns the mode
     { table_name: 'case_versions', column_name: 'consolidation_register' },
     { table_name: 'case_versions', column_name: 'released_at' },
     { table_name: 'investigation_evaluation_citations', column_name: 'field' },
+    { table_name: 'investigation_evaluations', column_name: 'elapsed_ms' },
+    { table_name: 'investigation_evaluations', column_name: 'input_tokens' },
+    { table_name: 'investigation_evaluations', column_name: 'output_tokens' },
+    { table_name: 'investigation_evaluations', column_name: 'prompt' },
     { table_name: 'investigation_evaluations', column_name: 'reason' },
     { table_name: 'investigation_evidence', column_name: 'result_detail' },
     { table_name: 'investigations', column_name: 'assessment_determining_hypothesis' },

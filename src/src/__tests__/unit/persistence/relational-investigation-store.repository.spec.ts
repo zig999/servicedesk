@@ -92,7 +92,11 @@ function evidenceRow(overrides: Record<string, unknown> = {}): Record<string, un
 }
 
 function evaluationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
-  return { hypothesis: 'a-hypothesis', verdict: 'confirmed', reason: null, ...overrides };
+  return {
+    hypothesis: 'a-hypothesis', verdict: 'confirmed', reason: null,
+    input_tokens: null, output_tokens: null, elapsed_ms: null, prompt: null,
+    ...overrides,
+  };
 }
 
 function citationRow(overrides: Record<string, unknown> = {}): Record<string, unknown> {
@@ -435,6 +439,102 @@ it("raises this store's own typed error rather than answering an inconclusive ev
   const store = new RelationalInvestigationStore(connection);
 
   await expect(store.read('an-investigation-id')).rejects.toBeInstanceOf(InvestigationStoreError);
+});
+
+it("sends a judgment-failure evaluation's own usage, elapsed_ms and prompt as the evaluation insert's own additional params, present exactly when the evaluation carries them", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const judgmentFailure: Evaluation = {
+    hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'judgment-failure', citations: [],
+    usage: { input_tokens: 12, output_tokens: 34 }, elapsed_ms: 567, prompt: 'the judgment-failure prompt',
+  };
+  const investigation = anInvestigation({ evaluations: [judgmentFailure] });
+
+  await store.write(investigation);
+
+  const evaluationInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evaluations'));
+  expect(evaluationInsert?.params).toEqual([
+    investigation.id, 'a-hypothesis', 'inconclusive', 'judgment-failure', 12, 34, 567, 'the judgment-failure prompt',
+  ]);
+});
+
+it("sends null for usage's two columns, elapsed_ms and prompt on the evaluation insert when the evaluation given carries none of them", async () => {
+  const { handleQuery, recorded } = recordingQuery({});
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+  const investigation = anInvestigation({ evaluations: [aDecidedEvaluation()] });
+
+  await store.write(investigation);
+
+  const evaluationInsert = recorded.find((entry) => entry.text.includes('INSERT INTO investigation_evaluations'));
+  expect(evaluationInsert?.params).toEqual([investigation.id, 'a-hypothesis', 'confirmed', null, null, null, null, null]);
+});
+
+it("reconstructs usage, elapsed_ms and prompt onto a read-back inconclusive evaluation exactly as the row's own four columns hold them, for the judgment-failure reason", async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evaluations: [evaluationRow({
+      hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'judgment-failure',
+      input_tokens: 12, output_tokens: 34, elapsed_ms: 567, prompt: 'the judgment-failure prompt',
+    })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evaluations).toEqual([{
+    hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'judgment-failure', citations: [],
+    usage: { input_tokens: 12, output_tokens: 34 }, elapsed_ms: 567, prompt: 'the judgment-failure prompt',
+  }]);
+});
+
+it("reconstructs usage, elapsed_ms and prompt onto a read-back confirmed evaluation too, not only onto an inconclusive one", async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evaluations: [evaluationRow({
+      hypothesis: 'a-hypothesis', verdict: 'confirmed',
+      input_tokens: 5, output_tokens: 6, elapsed_ms: 78, prompt: 'the confirmed-call prompt',
+    })],
+    citations: [citationRow({ hypothesis: 'a-hypothesis' })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evaluations[0]).toMatchObject({
+    usage: { input_tokens: 5, output_tokens: 6 }, elapsed_ms: 78, prompt: 'the confirmed-call prompt',
+  });
+});
+
+it("leaves usage, elapsed_ms and prompt off a read-back no-data evaluation, unchanged by this fix, when the row's own four call-record columns are all null", async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evaluations: [evaluationRow({ hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data' })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evaluations[0]).not.toHaveProperty('usage');
+  expect(answered.evaluations[0]).not.toHaveProperty('elapsed_ms');
+  expect(answered.evaluations[0]).not.toHaveProperty('prompt');
+});
+
+it('omits usage entirely when only one of input_tokens or output_tokens is present on the row, never constructing a usage object with a missing token count', async () => {
+  const { handleQuery } = recordingQuery({
+    investigation: investigationRow(),
+    evaluations: [evaluationRow({ hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'no-data', input_tokens: 12, output_tokens: null })],
+  });
+  const { connection } = fakeTransactionConnection(handleQuery);
+  const store = new RelationalInvestigationStore(connection);
+
+  const answered = (await store.read('an-investigation-id'))?.document as Investigation;
+
+  expect(answered.evaluations[0]).not.toHaveProperty('usage');
 });
 
 it('assembles the assessment with its outcome, referral, determining_hypothesis, text, register, usage, elapsed_ms and prompt, when a hypothesis was named', async () => {

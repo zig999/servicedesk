@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "kind": "implementation",
+      "file": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through.md",
+      "title": "Judgment-failure evaluations carry their own call record, in memory and in the store",
+      "summary": "judgmentFailureEvaluation now folds the outcome that produced it into usage/elapsed_ms/prompt exactly as asEvaluation does, and the investigation_evaluations table plus its write/read mapping carry those same three fields for any evaluation.",
+      "task": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through"
+    },
+    {
+      "id": "proof/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "kind": "proof",
+      "file": "proof/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through.md",
+      "title": "Judgment-failure evaluations carry their call record, in memory and through the store",
+      "summary": "Proves judgmentFailureEvaluation folds the retry's own call record (never the discarded first call's, never summed) when a retry ran and also failed, proves the store's INSERT/SELECT round trip preserves usage/elapsed_ms/prompt for every verdict including judgment-failure, and proves the widened schema declares exactly the four new nullable columns. The one obsolete test that asserted the pre-fix behavior (a judgment-failure evaluation carries no call record even though a retry ran) was rewritten to assert the corrected behavior the task's own criteria 1 and 2 require, and the unit persistence fixture's default row was widened with explicit nulls for the four new columns so pre-existing read-back tests keep asserting what they always asserted rather than picking up a fixture artifact the new reconstruction logic would otherwise expose.",
+      "task": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "domain/investigation/evaluation",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "rules/investigation/a-judgment-failure-records-the-last-call-made",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "task/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "to": "implementation/evaluation-call-record-lost-on-judgment-failure/carry-the-call-record-through",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

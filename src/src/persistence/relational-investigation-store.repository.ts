@@ -14,6 +14,7 @@ import type { FieldSemantics } from '../investigation/field-semantics.js';
 import type { IInvestigationStore, StoredInvestigation } from '../investigation/investigation-store.port.js';
 import type { Investigation } from '../investigation/investigation.js';
 import type { SubjectAttributeValue } from '../investigation/subject-attribute-value.js';
+import type { Usage } from '../investigation/usage.js';
 import { VERDICTS, type Verdict } from '../investigation/verdict.js';
 import {
   queryOneOrAbsent,
@@ -74,6 +75,10 @@ interface IEvaluationRow {
   readonly hypothesis: string;
   readonly verdict: string;
   readonly reason: string | null;
+  readonly input_tokens: number | null;
+  readonly output_tokens: number | null;
+  readonly elapsed_ms: number | null;
+  readonly prompt: string | null;
 }
 
 interface ICitationRow {
@@ -233,8 +238,19 @@ function evaluationStatements(investigationId: string, evaluation: Evaluation): 
 function evaluationStatement(investigationId: string, evaluation: Evaluation): IStatement {
   const reason = evaluation.verdict === 'inconclusive' ? evaluation.reason : null;
   return {
-    text: `INSERT INTO ${INVESTIGATION_EVALUATIONS_TABLE} (investigation_id, hypothesis, verdict, reason) VALUES ($1, $2, $3, $4)`,
-    params: [investigationId, evaluation.hypothesis, evaluation.verdict, reason],
+    text: `INSERT INTO ${INVESTIGATION_EVALUATIONS_TABLE}
+             (investigation_id, hypothesis, verdict, reason, input_tokens, output_tokens, elapsed_ms, prompt)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+    params: [
+      investigationId,
+      evaluation.hypothesis,
+      evaluation.verdict,
+      reason,
+      evaluation.usage?.input_tokens ?? null,
+      evaluation.usage?.output_tokens ?? null,
+      evaluation.elapsed_ms ?? null,
+      evaluation.prompt ?? null,
+    ],
   };
 }
 
@@ -340,7 +356,8 @@ async function readEvaluations(tx: IQueryable, id: string): Promise<readonly Eva
   const rows = await runStatement<IEvaluationRow>(
     tx,
     {
-      text: `SELECT hypothesis, verdict, reason FROM ${INVESTIGATION_EVALUATIONS_TABLE}
+      text: `SELECT hypothesis, verdict, reason, input_tokens, output_tokens, elapsed_ms, prompt
+             FROM ${INVESTIGATION_EVALUATIONS_TABLE}
              WHERE investigation_id = $1 ORDER BY hypothesis`,
       params: [id],
     },
@@ -375,13 +392,28 @@ function citationOf(row: ICitationRow): Citation {
 
 function evaluationOf(row: IEvaluationRow, citations: readonly Citation[]): Evaluation {
   const verdict = verdictOf(row);
+  const callRecord = callRecordOf(row);
   if (verdict === 'confirmed') {
-    return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis) };
+    return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis), ...callRecord };
   }
   if (verdict === 'refuted') {
-    return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis) };
+    return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis), ...callRecord };
   }
-  return { hypothesis: row.hypothesis, verdict, reason: reasonOf(row), citations };
+  return { hypothesis: row.hypothesis, verdict, reason: reasonOf(row), citations, ...callRecord };
+}
+
+function callRecordOf(row: IEvaluationRow): { readonly usage?: Usage; readonly elapsed_ms?: number; readonly prompt?: string } {
+  const record: { usage?: Usage; elapsed_ms?: number; prompt?: string } = {};
+  if (row.input_tokens !== null && row.output_tokens !== null) {
+    record.usage = { input_tokens: row.input_tokens, output_tokens: row.output_tokens };
+  }
+  if (row.elapsed_ms !== null) {
+    record.elapsed_ms = row.elapsed_ms;
+  }
+  if (row.prompt !== null) {
+    record.prompt = row.prompt;
+  }
+  return record;
 }
 
 function verdictOf(row: IEvaluationRow): Verdict {

@@ -2612,6 +2612,10 @@
           "digest": "sha256:211d9384935e7ea803d4898ca5867ce67f94b98ca523485b64509a98d3c9c0b4"
         },
         {
+          "path": "src/migrations/0017-evaluation-call-record.sql",
+          "digest": "sha256:5851baa985c35a8e8698d5ace480ee68b0edc5dc9bf69fe7e2351d554d40b81a"
+        },
+        {
           "path": "src/src/__tests__/unit/investigation/anthropic-hypothesis-evaluator.adapter.spec.ts",
           "digest": "sha256:6371e5db1b72e3f816e32b81b3ec1dd86a5275ce9a5abfce1d0017fa32821e2c"
         },
@@ -2649,7 +2653,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -2661,7 +2665,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:5893bbb1f939b2f0370b9a82a5c39c3ce737cce968015c20278288f6fe0c8dcb"
+          "digest": "sha256:37508272a827e59e19559bac29afe9f99627a4ac92eb6a2d0caad96cd0f0e0ef"
         }
       ]
     },
@@ -4726,6 +4730,16 @@
         {
           "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
           "digest": "sha256:91a54c80c51ac99fe7751c585335d0afefb0ccaf5dcf7d0297e5576d8255b58b"
+        }
+      ]
+    },
+    {
+      "node": "rules/investigation/a-judgment-failure-records-the-last-call-made",
+      "digest": "sha256:93111c5b0cfeec7e7cb10e9f98b818920ec4e56f4eec674fd553fe7fdd0cdc51",
+      "files": [
+        {
+          "path": "src/src/investigation/judgment-stage.ts",
+          "digest": "sha256:d549d162a4b4a709604347ba312642b2359b5068fd16a467c4128da79cbcc26d"
         }
       ]
     },

@@ -699,14 +699,15 @@ it('a deadline-exceeded evaluation carries no usage, elapsed_ms or prompt key, f
   expect(result[0]).not.toHaveProperty('prompt');
 });
 
-it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even though the discarded retry's own decided answer carried all three — a call that happened but whose citations this stage itself invalidates is not a call this Evaluation records", async () => {
+it("attaches the retry's own usage, elapsed_ms and prompt — never the discarded first call's, and never a usage summed across both attempts — onto a judgment-failure evaluation when the retry also fails citation validation", async () => {
   const evaluator = new ScriptedHypothesisEvaluator();
   const invalidCitation: readonly [Citation, ...Citation[]] = [{ concept: 'concept-foreign', field: 'field-a' }];
-  const someUsage: Usage = { input_tokens: 3, output_tokens: 4 };
+  const firstCallUsage: Usage = { input_tokens: 1, output_tokens: 2 };
+  const retryUsage: Usage = { input_tokens: 999, output_tokens: 888 };
   evaluator.script(
     'h1 criterion',
-    immediately({ verdict: 'confirmed', citations: invalidCitation, usage: someUsage, elapsed_ms: 12, prompt: 'the first-call prompt' }),
-    immediately({ verdict: 'refuted', citations: invalidCitation, usage: someUsage, elapsed_ms: 34, prompt: 'the retry prompt' }),
+    immediately({ verdict: 'confirmed', citations: invalidCitation, usage: firstCallUsage, elapsed_ms: 12, prompt: 'the discarded first-call prompt' }),
+    immediately({ verdict: 'refuted', citations: invalidCitation, usage: retryUsage, elapsed_ms: 34, prompt: 'the retry prompt' }),
   );
   const theCase = aCase([{ name: 'h1', collects: ['concept-a'] }]);
   const evidenceByHypothesis = new Map<string, readonly Evidence[]>([
@@ -717,10 +718,15 @@ it("a judgment-failure evaluation carries no usage, elapsed_ms or prompt, even t
     case: theCase, evidenceByHypothesis, evaluator, poolSize: 1, now: 0, deadline: 10_000,
   });
 
-  expect(result).toEqual([{ hypothesis: 'h1', verdict: 'inconclusive', reason: 'judgment-failure', citations: [] }]);
-  expect(result[0]).not.toHaveProperty('usage');
-  expect(result[0]).not.toHaveProperty('elapsed_ms');
-  expect(result[0]).not.toHaveProperty('prompt');
+  expect(result).toEqual([{
+    hypothesis: 'h1',
+    verdict: 'inconclusive',
+    reason: 'judgment-failure',
+    citations: [],
+    usage: retryUsage,
+    elapsed_ms: 34,
+    prompt: 'the retry prompt',
+  }]);
 });
 
 it("accepts a citation naming a field the evidence item's own snapshot declared at collection, even though a capability now re-registered at that same name and version would declare a different set of fields entirely", async () => {
