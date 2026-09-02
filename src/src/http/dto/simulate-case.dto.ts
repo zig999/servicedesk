@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CONSOLIDATION_REGISTERS } from '../../investigation/consolidation-register.js';
 import { EVALUATION_REASONS } from '../../investigation/evaluation-reason.js';
 import { EVIDENCE_RESULTS } from '../../investigation/evidence-result.js';
 
@@ -63,6 +64,12 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
   }),
 ]);
 
+const fieldSemanticsSchema = z.object({
+  name: z.string(),
+  type: z.string().optional(),
+  description: z.string().optional(),
+});
+
 const evidenceSchema = z.object({
   concept: z.string().min(1),
   inputs: z.string(),
@@ -75,6 +82,8 @@ const evidenceSchema = z.object({
   capability_name: z.string(),
   capability_version: z.string(),
   elapsed_ms: z.number(),
+  fields: z.array(fieldSemanticsSchema).readonly(),
+  concept_description: z.string(),
 });
 
 const referralSchema = z.object({
@@ -93,6 +102,10 @@ const assessmentSchema = z.object({
   referral: referralSchema,
   determining_hypothesis: z.string().min(1).optional(),
   text: z.string().min(1),
+  register: z.enum(CONSOLIDATION_REGISTERS),
+  usage: usageSchema,
+  elapsed_ms: z.int(),
+  prompt: z.string(),
 });
 
 const costSchema = z.object({

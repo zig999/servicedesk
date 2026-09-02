@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "implementation",
+      "file": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema.md",
+      "title": "Widen simulate-case response schema for assessment and evidence",
+      "summary": "Adds register, usage, elapsed_ms and prompt to assessmentSchema and fields, concept_description to evidenceSchema in simulate-case.dto.ts, reusing existing shared shapes for the enum, the usage record and field semantics.",
+      "task": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema"
+    },
+    {
+      "id": "proof/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "proof",
+      "file": "proof/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema.md",
+      "title": "Widened simulate-case response schema — assessment call-record and evidence snapshot",
+      "summary": "Proves assessmentSchema now requires register, usage, elapsed_ms and prompt and evidenceSchema now requires fields and concept_description, each typed as stated, while both admit the honest-empty evidence readings the specification's Description states, and that a production-shaped value validates intact.",
+      "task": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "domain/investigation/assessment",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "to": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

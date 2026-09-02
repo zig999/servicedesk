@@ -35,19 +35,19 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         }
       ]
     },
@@ -65,7 +65,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -89,11 +89,11 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -103,7 +103,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
@@ -115,7 +115,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -217,7 +217,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         }
       ]
     },
@@ -257,19 +257,19 @@
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
-          "digest": "sha256:c646957c4e71d2d2fd67e78809ed941977ba2b0a01f1e6a8de60611dd7dcf79e"
+          "digest": "sha256:a4e391cd3786eb83c0c8051d1dab289da766ba34bb71511478dbd2396e3ab90a"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:f353c9e4c6704c98a8f8b664ef4e6749bbd93413a82019a248a1b8f93c6832d4"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:7aabf2f4110fcbd8695083994b3fff288956f9616d06fa996f5dd0c63f2a68b2"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:c91b571b03ff49a6fe27b06ce46fac08d6bd573f9eb3da54dd07f8a2fbfee858"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         }
       ]
     },
@@ -287,7 +287,7 @@
         },
         {
           "path": "src/src/connector-registry/connector-configuration-store.port.ts",
-          "digest": "sha256:fb5ec53cd80f50e931b76d34701ada1f8d6be7a470930c379ab7cc87e778493a"
+          "digest": "sha256:0feeb0c19f7e679b944ea213839009f342cb8be01bd74dd536c34635c7541f14"
         },
         {
           "path": "src/src/errors/investigation-not-buildable.error.ts",
@@ -307,11 +307,11 @@
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/consolidation-register.ts",
@@ -323,7 +323,7 @@
         },
         {
           "path": "src/src/investigation/durations.ts",
-          "digest": "sha256:d3fa7017ff9041175a8cb8eb79a8c16d3502d22b6c875938a7d78de4a891424b"
+          "digest": "sha256:63efa5dae0adaf40f8de652236c3846862b45d1b24dde8fe7d3f4354c969d10a"
         },
         {
           "path": "src/src/investigation/evidence-result.ts",
@@ -331,7 +331,7 @@
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
@@ -367,7 +367,7 @@
         },
         {
           "path": "src/src/persistence/relational-connector-configuration-store.repository.ts",
-          "digest": "sha256:95e94695c135f381c55192f058535747b2a06902bc6c9e30924d5a5879a094ce"
+          "digest": "sha256:ecaca164d5a27e2012a85f97ec921db18a952669c96e286107aa4348acbee6f8"
         }
       ]
     },
@@ -377,7 +377,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -385,7 +385,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -469,7 +469,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:f46887cc00cc56c5e0d18516756270baba9def87961018434e3e2c7ce166e8fc"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -539,7 +539,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -829,7 +829,7 @@
         },
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:ff522e80c7afda5a464c51d3013372620977d3b1318d2876c3260abb502c4623"
+          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
         },
         {
           "path": "src/src/factories/build-app.factory.ts",
@@ -991,7 +991,7 @@
         },
         {
           "path": "src/src/factories/production-simulate-hypothesis.factory.ts",
-          "digest": "sha256:f1a401fe56e6474497c0a02fc5d9074bde9850de41de117ca365b617226398a0"
+          "digest": "sha256:eed88ca8cd893777bde8372359fb6c45fe8adaa3c7c09942dd3072ae3ee1baf1"
         },
         {
           "path": "src/src/factories/production-simulate.factory.ts",
@@ -1003,11 +1003,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -1019,7 +1019,7 @@
         },
         {
           "path": "src/src/http/simulate-hypothesis.controller.ts",
-          "digest": "sha256:47395760c00daf932c747e221ef97330e6dd27c88dc24e307a3796d06bc0863c"
+          "digest": "sha256:a3f9c29d3a10f8852d61720fcf4743ee31b1de37e74431f62b19c112ca473b63"
         },
         {
           "path": "src/src/http/simulate-hypothesis.routes.ts",
@@ -1027,7 +1027,7 @@
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         }
       ]
     },
@@ -1037,7 +1037,7 @@
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -1047,7 +1047,7 @@
       "files": [
         {
           "path": "src/src/errors/status-map.ts",
-          "digest": "sha256:ff522e80c7afda5a464c51d3013372620977d3b1318d2876c3260abb502c4623"
+          "digest": "sha256:c8e2a13db5d67edaa68a738953bf8410f3314f2cd7d2faa4e67a60f5006e56f2"
         },
         {
           "path": "src/src/factories/production-diagnose.factory.ts",
@@ -1055,7 +1055,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -1067,7 +1067,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -1159,7 +1159,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/http/dto/case-input-requirements.dto.ts",
@@ -1503,7 +1503,7 @@
       "files": [
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/http/diagnose.routes.ts",
@@ -2351,7 +2351,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
@@ -2401,7 +2401,7 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
@@ -2439,11 +2439,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
@@ -2485,7 +2485,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/investigation/cost.ts",
@@ -2493,15 +2493,15 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:4ac8035751f1a30dd7217b180bf359f3e5979a1c45919303b1a205164b414179"
+          "digest": "sha256:f17b158e4b788ec81e756f1b9f1cc0800cd2e38e09e93d609b92dca7d4941cb0"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2531,11 +2531,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:6e59f4edbc00f40d272f1472c7a9d46b0c27f0b6fe7c5993efe332bdfa5ff54f"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/durations.ts",
@@ -2547,7 +2547,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:92312d4cd4c7de6ad1f4a0939d0948de199adf2ef97c57b5e96994645317f098"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
@@ -2555,7 +2555,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:f46887cc00cc56c5e0d18516756270baba9def87961018434e3e2c7ce166e8fc"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2683,11 +2683,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/evaluation-reason.ts",
@@ -2695,11 +2695,11 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2741,7 +2741,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:241e46639a440dcec085d38a1b04f6c3b5459bc7de162a9f0ab91887e9cf6568"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
@@ -2811,11 +2811,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -2839,7 +2839,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2881,7 +2881,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2891,7 +2891,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
@@ -2899,7 +2899,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -2945,7 +2945,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:76413fc4e9debf9dde5c2af2cce6af764f0bf5fb58a46d350d16b601853fc3c8"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -2975,11 +2975,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/http/simulate-case.controller.ts",
@@ -2987,7 +2987,7 @@
         },
         {
           "path": "src/src/http/simulate-hypothesis.controller.ts",
-          "digest": "sha256:47395760c00daf932c747e221ef97330e6dd27c88dc24e307a3796d06bc0863c"
+          "digest": "sha256:a3f9c29d3a10f8852d61720fcf4743ee31b1de37e74431f62b19c112ca473b63"
         },
         {
           "path": "src/src/investigation/evidence-collection-stage.ts",
@@ -3003,11 +3003,11 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:4ac8035751f1a30dd7217b180bf359f3e5979a1c45919303b1a205164b414179"
+          "digest": "sha256:f17b158e4b788ec81e756f1b9f1cc0800cd2e38e09e93d609b92dca7d4941cb0"
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         },
         {
           "path": "src/src/investigation/subject.ts",
@@ -3015,7 +3015,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -3041,11 +3041,11 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/fake-observation-source.adapter.ts",
@@ -3061,7 +3061,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -3095,19 +3095,19 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/simulate-hypothesis.dto.ts",
-          "digest": "sha256:fe1f0d1725e60648a32f08a84e83f555fa432eaa9b2380af1073a1e53f53baeb"
+          "digest": "sha256:f1e0eb4c45beabd4ea797950088ab8e2ad093a4b2d69b83a991546adb214a7f9"
         },
         {
           "path": "src/src/investigation/anthropic-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f1f24e1ae698571a85687efc330cb5b522f7bd693f66fce816e9a39a10f1bbe2"
+          "digest": "sha256:33591bd09966d0a20727849693ed8c07100c7dd663bd8bab887ae59d9d54ceaf"
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
@@ -3119,7 +3119,7 @@
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         },
         {
           "path": "src/src/investigation/fake-hypothesis-evaluator.adapter.ts",
@@ -3131,7 +3131,7 @@
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:6645063ccde1b7f22642e9b632cdea24184ae78b01de5492ca05da5ee99ee2df"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -3525,15 +3525,15 @@
         },
         {
           "path": "src/src/http/simulate-hypothesis.controller.ts",
-          "digest": "sha256:47395760c00daf932c747e221ef97330e6dd27c88dc24e307a3796d06bc0863c"
+          "digest": "sha256:a3f9c29d3a10f8852d61720fcf4743ee31b1de37e74431f62b19c112ca473b63"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -3673,11 +3673,11 @@
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:6645063ccde1b7f22642e9b632cdea24184ae78b01de5492ca05da5ee99ee2df"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -3889,7 +3889,7 @@
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -4049,7 +4049,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         }
       ]
     },
@@ -4127,7 +4127,7 @@
         },
         {
           "path": "src/src/http/dto/simulate-case.dto.ts",
-          "digest": "sha256:7012b586293fe728b00c80eadece19ce888c1079bf4646927814673ba7204c99"
+          "digest": "sha256:d33e9ca457a22b5c497b6f2513f084248fd75e76f7b2baa41c961d79a160109d"
         },
         {
           "path": "src/src/http/dto/update-draft.dto.ts",
@@ -4135,7 +4135,7 @@
         },
         {
           "path": "src/src/investigation/investigation-pipeline.ts",
-          "digest": "sha256:4ac8035751f1a30dd7217b180bf359f3e5979a1c45919303b1a205164b414179"
+          "digest": "sha256:f17b158e4b788ec81e756f1b9f1cc0800cd2e38e09e93d609b92dca7d4941cb0"
         }
       ]
     },
@@ -4623,11 +4623,11 @@
       "files": [
         {
           "path": "src/src/investigation/citation-validation.ts",
-          "digest": "sha256:5d367f5c24cba4b0ddd73cbd47b525bda4f7168bb40c0363e112e07edc7a4400"
+          "digest": "sha256:88ac565001ceb592e20e456c9477bafb30a073176abcb1af2202ee0b27997c00"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:988c12102360022831f1043c100017a9bce8db56ddc6fae4385c77609ae43ca4"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -4683,7 +4683,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/evaluation.ts",
@@ -4695,7 +4695,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -4713,7 +4713,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
@@ -4811,7 +4811,7 @@
         },
         {
           "path": "src/src/factories/production-simulate-hypothesis.factory.ts",
-          "digest": "sha256:f1a401fe56e6474497c0a02fc5d9074bde9850de41de117ca365b617226398a0"
+          "digest": "sha256:eed88ca8cd893777bde8372359fb6c45fe8adaa3c7c09942dd3072ae3ee1baf1"
         },
         {
           "path": "src/src/factories/simulate.factory.ts",
@@ -4819,7 +4819,7 @@
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         }
       ]
     },
@@ -4845,7 +4845,7 @@
         },
         {
           "path": "src/src/http/simulate-hypothesis.controller.ts",
-          "digest": "sha256:47395760c00daf932c747e221ef97330e6dd27c88dc24e307a3796d06bc0863c"
+          "digest": "sha256:a3f9c29d3a10f8852d61720fcf4743ee31b1de37e74431f62b19c112ca473b63"
         },
         {
           "path": "src/src/investigation/investigation-factory.ts",
@@ -4915,7 +4915,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:a33385901a779312330ffae2a4ee59a737ef3185d422865ef0896a66f5d6e96d"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -4925,7 +4925,7 @@
       "files": [
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:76413fc4e9debf9dde5c2af2cce6af764f0bf5fb58a46d350d16b601853fc3c8"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -4935,15 +4935,15 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:b340b2965596bbe12b6ef8fe3e60fadefed2ba433f4673a9e89711ff91bfa38d"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/hypothesis-evaluator.port.ts",
-          "digest": "sha256:2b6dd371ad422c155aa2102741952013dfd2308137f67d76daf003902751c13d"
+          "digest": "sha256:ae5e3e8fb8f7e51247624b7dab9a55d83e4197208a83d26c8ae36ee81c1a1552"
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -4961,11 +4961,11 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         },
         {
           "path": "src/src/persistence/relational-investigation-store.repository.ts",
-          "digest": "sha256:ae8a4043a2bbcd33c446ba3d3039174457308fd15f2f3fb0453740cc05c62695"
+          "digest": "sha256:e72551cdeae87cb0c412fc2b712f77f717bb821cc6fb703d6358a80854813bf7"
         }
       ]
     },
@@ -5015,7 +5015,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         }
       ]
     },
@@ -5025,7 +5025,7 @@
       "files": [
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/investigation/citation-validation.ts",
@@ -5037,7 +5037,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -5059,11 +5059,11 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:7aabf2f4110fcbd8695083994b3fff288956f9616d06fa996f5dd0c63f2a68b2"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -5077,7 +5077,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -5105,7 +5105,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         }
       ]
     },
@@ -5141,7 +5141,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -5173,15 +5173,15 @@
       "files": [
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/fake-assessment-consolidator.adapter.ts",
-          "digest": "sha256:f6f95d65ce4d77236d6de4f3e63617995bbafcbe0c1c2dc87c8e5dfef155c86e"
+          "digest": "sha256:314ee085d8eff3ac6aef5c43ece207780de84cd28196e756bd4cf1bfa74bea0d"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -5195,7 +5195,7 @@
       "files": [
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
@@ -5205,11 +5205,11 @@
       "files": [
         {
           "path": "src/src/investigation/assessment-consolidator.port.ts",
-          "digest": "sha256:c0eb149ee4381bedb8428d42d51d066ada617df2bf56abe44870bce4638e8104"
+          "digest": "sha256:ab177702c538b82d9f5c5b8e450a3a542742e3b7b32290fa2ca38cb6c1f33804"
         },
         {
           "path": "src/src/investigation/draft-assessment-text.ts",
-          "digest": "sha256:18250e6bb1a3dd5390fef4300b6aaa8a5e8033ad52fb96f4f9516d90d34ebae9"
+          "digest": "sha256:9270cb0d2537783ad44cbf20722254b725fad1f2d4c09b838ca3dd777b602a76"
         },
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
@@ -5983,7 +5983,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/persistence/relational-capability-store.repository.ts",
@@ -6087,7 +6087,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -6105,7 +6105,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         },
         {
           "path": "src/src/investigation/subject-covers-case-input-requirements.ts",
@@ -6153,7 +6153,7 @@
         },
         {
           "path": "src/src/http/diagnose.controller.ts",
-          "digest": "sha256:3b0c69d503c9573b5a0e42872920ee540eed78728e9a3840e85b730ade759851"
+          "digest": "sha256:fd369a73cf4ace909a49c8fe544c6c5ccadc4a810ae4b280e0f50bad40602032"
         }
       ]
     },
@@ -6163,7 +6163,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:988c12102360022831f1043c100017a9bce8db56ddc6fae4385c77609ae43ca4"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -6185,7 +6185,7 @@
         },
         {
           "path": "src/src/investigation/anthropic-hypothesis-evaluator.adapter.ts",
-          "digest": "sha256:65e7bd0457cceea7486f555b2ff9426ff12e98e88102e80e4a678aa60799c876"
+          "digest": "sha256:ce641ef7052918c3dad713ad92d3903eb1f7ce351ef1fd8c90dcb8f35211bbb1"
         },
         {
           "path": "src/src/persistence/relational-glossary-store.repository.ts",
@@ -6209,7 +6209,7 @@
       "files": [
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -6223,7 +6223,7 @@
         },
         {
           "path": "src/src/investigation/judgment-stage.ts",
-          "digest": "sha256:7221d9e85b6206eea1159aa173baf6329e8bff24fcc0a26f9562623ef949280f"
+          "digest": "sha256:327baa82ad027f3bd9104834909e2944f5f0b083769f8f47b470b739e124c5f8"
         }
       ]
     },
@@ -6269,7 +6269,7 @@
       "files": [
         {
           "path": "src/src/factories/production-simulate-hypothesis.factory.ts",
-          "digest": "sha256:f1a401fe56e6474497c0a02fc5d9074bde9850de41de117ca365b617226398a0"
+          "digest": "sha256:eed88ca8cd893777bde8372359fb6c45fe8adaa3c7c09942dd3072ae3ee1baf1"
         },
         {
           "path": "src/src/factories/simulate.factory.ts",
@@ -6307,7 +6307,7 @@
         },
         {
           "path": "src/src/investigation/simulate-hypothesis-pipeline.ts",
-          "digest": "sha256:840321bb53a3e37f13a032115c0ba2ee910e58f689d677dffa3f618b1a51d4ff"
+          "digest": "sha256:11e3050d80e3c9c17e0e462765267e124dfbe5ab6eeb886e46b96d084c10853a"
         }
       ]
     },
@@ -6335,7 +6335,7 @@
         },
         {
           "path": "src/src/investigation/run-diagnosis.ts",
-          "digest": "sha256:c062fb41723fac4d6b5b7ecd4b07d2ca2665b27e1e94e46b5aa2987dda458815"
+          "digest": "sha256:ea198c69e42d56317f7d145add6c5772ef4b0c0825646211f12deac8cb98eb90"
         }
       ]
     },
