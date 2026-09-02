@@ -1857,5 +1857,41 @@ entries:
     unstated: 'In what order a listing of one hypothesis''s revisions answers those revisions, and therefore whether a given page of that listing carries the hypothesis''s highest existing revision. contracts/knowledge/case-query declares list-hypothesis-revisions and constraints/listings-are-paged makes its answer one page selected by an offset and a limit, but no node states the order the page is cut from, so which revisions a reader reaches without paging would follow from however rows came back.'
     decided: 'A listing of one hypothesis''s revisions answers them ordered by revision number descending, highest first, so the first page of that listing carries that hypothesis''s highest existing revision.'
     why: 'The revision number is the only ordering fact available — hypothesis-revision declares no timestamp — and a-hypothesis-revision-number-is-never-reused makes it a total order per hypothesis, starting at 1, never reused and never discarded, so it needs no tiebreak and no second aggregate read. The direction is decided by which revision a reader came for: the highest existing revision is the one a curator adopts into a draft and the one a reader auditing a pin compares against, and ascending order would place it on the last page, one page further away with every revision the hypothesis gains — the same accumulation a-manifest-entrys-pinned-revision-is-always-shown already identifies as what pushes an old pin off a page. Declaring the order rather than leaving it is the substitution hypotheses-are-ordered-by-precedence already refuses for a manifest, where an order left to the storage''s arrangement replaces a decided fact. It is an invariant over hypothesis-revision alone because both the sort key and the grouping are that element''s own declared revision attribute and its cardinality-1 reference to its hypothesis, so the condition is decidable from the answer itself and holds immediately; it adds no field, changes no listing''s paging, refuses no call, and leaves the two presentation rules untouched, since each compares against the hypothesis''s highest existing revision rather than against a page''s contents.'
-
+  - location: rules/knowledge/a-released-hypothesis-revision-is-never-altered.md
+    field: statement
+    unstated: >-
+      What an attempt to alter the stored content of a hypothesis-revision that a case version in
+      released state references produces at the point of the attempt. The rule states that such a
+      revision "is never altered again" and a-hypothesis-revision-is-overwritten-while-unreleased
+      routes a revise-hypothesis away from it, but neither says what answers an attempt that
+      reaches the revision anyway — an error carrying its own identity, or the attempt simply
+      having no effect. The routing turns on a cross-aggregate reading this rule itself declares
+      eventual, so the attempt is reachable and the answer is not derivable from either rule as
+      written.
+    decided: >-
+      Refused at the point of the attempt with an HTTP 409 response reporting a
+      ReleasedHypothesisRevisionNotAlterableError, rather than accepted and left with no effect.
+    why: >-
+      This specification has already decided the structurally identical question for the sibling
+      immutability guarantee and decided it as a refusal: a case version released is likewise
+      "never altered again" (a-case-version-is-written-once), and a write into one is answered
+      with HTTP 409 reporting CaseVersionNotDraftError rather than silently dropped. Silence is
+      the branch this specification repeatedly refuses — a-release-refusal-with-no-named-violation-says-so
+      holds that a curator is always told why rather than left with an unexplained answer, and
+      a-case-holding-no-versions-is-told-explicitly refuses an outcome in which a real state and a
+      broken read are indistinguishable to the reader; an alteration that returns as though it
+      succeeded is exactly that indistinguishability applied to the one content replay-is-pinned
+      depends on never having moved. 409 rather than 422 follows this log's own settled split: 422
+      is a well-formed request whose content would violate an invariant
+      (ManifestWouldHoldNoHypothesisError, HypothesisRevisionCollectsNoConceptError,
+      CaseVersionNotReleasableError), while 409 is an operation the target's current standing
+      forbids whatever the content is (CaseVersionNotDraftError, CaseAlreadyHasDraftError,
+      ManifestPositionOccupiedError) — here the content is beside the point and the adoption by a
+      released version is the whole of the bar, the same reading its sibling CaseHoldsNoDraftError
+      on a-hypothesis-is-revised-only-against-its-cases-draft already took for this same
+      operation. The name states the rule's own condition in the specification's own words (its
+      slug is a-released-hypothesis-revision-is-never-altered) and follows the
+      CaseVersionNotReleasableError idiom; it deliberately avoids naming the revision itself
+      "released", because a revision declares no such state — being adopted by a released version
+      is a fact read from the other aggregate.
 ---
