@@ -1,0 +1,341 @@
+{
+  "contract_version": "siegard-plan/3",
+  "nodes": [
+    {
+      "id": "epic/manifest-revision-repin",
+      "kind": "epic",
+      "file": "epic/manifest-revision-repin.md",
+      "title": "Repinning a manifested hypothesis to another revision",
+      "summary": "The manifest screen's per-row revision control, the write path that repins one manifest entry through the existing place operation, and the disclosure that a newer revision of a pinned hypothesis exists."
+    },
+    {
+      "id": "inventory/manifest-revision-repin",
+      "kind": "inventory",
+      "file": "inventory/manifest-revision-repin.md",
+      "title": "Manifest revision repin — existing hooks, screen and select component",
+      "summary": "The manifest screen, its builder hook, the hypothesis-revisions query and the reusable Select component the repin control must build on."
+    },
+    {
+      "id": "task/manifest-revision-repin/newer-revision-indicator",
+      "kind": "task",
+      "file": "task/manifest-revision-repin/newer-revision-indicator.md",
+      "title": "The newer-revision-available marker on a pinned row",
+      "summary": "A visible marker on a manifest row whose pinned revision is below the highest the hypothesis's revisions listing answered.",
+      "epic": "manifest-revision-repin"
+    },
+    {
+      "id": "task/manifest-revision-repin/repin-through-place",
+      "kind": "task",
+      "file": "task/manifest-revision-repin/repin-through-place.md",
+      "title": "Repinning one manifest entry to a chosen revision",
+      "summary": "The write path that sends a chosen revision and the row's unchanged position to the existing manifest place endpoint, and how its success and its refusals are answered.",
+      "epic": "manifest-revision-repin"
+    },
+    {
+      "id": "task/manifest-revision-repin/row-revision-options",
+      "kind": "task",
+      "file": "task/manifest-revision-repin/row-revision-options.md",
+      "title": "A manifest row's own revision list and highest revision",
+      "summary": "For any manifest row, the revisions of that row's hypothesis and the highest revision among them, read through the listing and the reduction already in the tree.",
+      "epic": "manifest-revision-repin"
+    },
+    {
+      "id": "task/manifest-revision-repin/row-revision-select",
+      "kind": "task",
+      "file": "task/manifest-revision-repin/row-revision-select.md",
+      "title": "The revision Select on the manifest row",
+      "summary": "The Hypothesis cell's Select over that row's revisions, showing the pinned one and invoking the repin action on a different choice.",
+      "epic": "manifest-revision-repin"
+    }
+  ],
+  "edges": [
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "contracts/system/case-authoring",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "scenarios/investigation/a-returned-edit-stales-the-shown-simulation-result",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "constraints/listings-are-paged",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "constraints/a-malformed-request-is-refused-with-a-validation-error",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/manifest-revision-repin",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
+      "from": "task/manifest-revision-repin/newer-revision-indicator",
+      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-revision-repin/newer-revision-indicator",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-revision-repin/newer-revision-indicator",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-revision-repin/newer-revision-indicator",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[6]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "implements",
+      "at": "implements[7]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "implements",
+      "at": "implements[8]"
+    },
+    {
+      "from": "task/manifest-revision-repin/repin-through-place",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "implements",
+      "at": "implements[9]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-options",
+      "to": "contracts/knowledge/case-query",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-options",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-options",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-options",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-select",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-select",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/manifest-revision-repin/row-revision-select",
+      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
+      "kind": "implements",
+      "at": "implements[4]"
+    }
+  ]
+}

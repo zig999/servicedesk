@@ -2402,6 +2402,22 @@ entries:
       evidence is a distinct case and stays true as written; that 0 now also reads as a genuine sub-millisecond
       collection is accepted rather than resolved by a sentinel, because both readings say the same thing
       (no measurable time attributable) and a sentinel would be the invented value the element refuses.'
+  - location: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown.md
+    field: statement
+    unstated: What a curator reading a case version's manifest entry is shown for its pinned hypothesis-revision when that revision is absent from the page of revisions answered for that hypothesis — whether the pinned revision is stated regardless of the page, or not shown at all. manifest-entry declares that the entry references exactly one hypothesis-revision and listings-are-paged makes any listing of a hypothesis's revisions one page of a larger set, but no node says what the curator is shown where the two do not overlap.
+    decided: The pinned revision is stated regardless of the page — a curator reading a case version's manifest is shown, for every entry, the hypothesis-revision that entry itself pins, whatever page of that hypothesis's own revisions was answered alongside it; an entry whose pinned revision is absent from the revisions answered still states that pinned revision, and is never shown as pinning no revision at all.
+    why: 'The pinned revision is the manifest entry''s own declared reference, so a revisions listing is a second, independently paged read that can only ever corroborate it, never supply it; letting a page''s contents decide what is shown would make the entry''s reference disappear from view while the version keeps resolving through it. The omission is worst exactly where it matters most — a released version''s pin, which a-released-version-keeps-its-original-revision guarantees never moves, is the revision that later revisions push furthest off a first page, so the guarantee a curator most needs to verify is the one an omission would hide. And this specification has already decided the structurally identical question in this direction twice: a-case-holding-no-versions-is-told-explicitly refuses an unexplained emptiness over a stored set because absence, breakage and an unfinished load then read alike, and the same reasoning recorded for a-composed-subject-presents-every-case-input-requirement holds that what a person is shown at an outcome is the business''s own decision rather than a consequence of how the data happened to arrive. Nothing beyond the shown-or-not question is settled here: no field is added to any element, no listing''s paging changes, and no call is refused for it.'
+  - location: rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis.md
+    field: statement
+    unstated: 'Whether the presentation of a released case version''s manifest entry states that a higher revision of its hypothesis exists, given that entry can never adopt it, or states this only for an entry of a version still in draft — no node says which manifest entries disclose a higher revision, and a released version''s entry is the one where the disclosure names something that entry can never take up.'
+    decided: 'A surface presenting a case version''s manifest entry states that a higher revision of that entry''s hypothesis exists whenever one does, for a version in either state, draft or released; on a released version''s entry it states that existence alone and offers no adoption of it.'
+    why: 'Two standing decisions in this specification already refuse to narrow a read of a case version by that version''s state — a-case-versions-input-requirements-are-derived is available "for a case version in either state, draft or released," and validation-runs-at-every-read holds every read to every rule "draft or released alike" — so state governs what may be composed and what may be diagnosed against, never how much of what is true about a version a reader is shown. The inability to adopt bounds what the presentation may offer, not what it may state: the existence of a higher revision is precisely what tells a reader auditing a released version that its pinned content has since moved on, and what tells a curator the case warrants a new draft. Withholding it would reproduce the ambiguous silence a-case-holding-no-versions-is-told-explicitly already rejects, since a bare "revision 1" reads identically whether it is the hypothesis''s only revision or its oldest.'
+  - location: rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first.md
+    field: statement
+    unstated: 'In what order a listing of one hypothesis''s revisions answers those revisions, and therefore whether a given page of that listing carries the hypothesis''s highest existing revision. contracts/knowledge/case-query declares list-hypothesis-revisions and constraints/listings-are-paged makes its answer one page selected by an offset and a limit, but no node states the order the page is cut from, so which revisions a reader reaches without paging would follow from however rows came back.'
+    decided: 'A listing of one hypothesis''s revisions answers them ordered by revision number descending, highest first, so the first page of that listing carries that hypothesis''s highest existing revision.'
+    why: 'The revision number is the only ordering fact available — hypothesis-revision declares no timestamp — and a-hypothesis-revision-number-is-never-reused makes it a total order per hypothesis, starting at 1, never reused and never discarded, so it needs no tiebreak and no second aggregate read. The direction is decided by which revision a reader came for: the highest existing revision is the one a curator adopts into a draft and the one a reader auditing a pin compares against, and ascending order would place it on the last page, one page further away with every revision the hypothesis gains — the same accumulation a-manifest-entrys-pinned-revision-is-always-shown already identifies as what pushes an old pin off a page. Declaring the order rather than leaving it is the substitution hypotheses-are-ordered-by-precedence already refuses for a manifest, where an order left to the storage''s arrangement replaces a decided fact. It is an invariant over hypothesis-revision alone because both the sort key and the grouping are that element''s own declared revision attribute and its cardinality-1 reference to its hypothesis, so the condition is decidable from the answer itself and holds immediately; it adds no field, changes no listing''s paging, refuses no call, and leaves the two presentation rules untouched, since each compares against the hypothesis''s highest existing revision rather than against a page''s contents.'
+
 ---
 
 === domain/glossary/_context
@@ -4556,6 +4572,65 @@ consistency: eventual
 A hypothesis-revision's own number is what a manifest entry, and a released version's pin through it, address that content by — the same role a case version's own number plays for a released version. Reusing a number for a later revision would let two different pieces of content, authored at different times, answer to the same reference, which is exactly what a-released-hypothesis-revision-is-never-altered depends on staying impossible.
 Unlike a case version, a hypothesis-revision is never discarded, so the guarantee holds without needing a counter that survives past a deleted row: the highest revision a hypothesis has ever held is always still on hand to number the next one from.
 
+=== rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first
+---
+type: invariant
+statement: A listing of one hypothesis's revisions answers them ordered by revision number descending, highest first, so the first page of that listing carries that hypothesis's highest existing revision.
+expression: For a listing of the revisions of one hypothesis answering r1..rn in answer order, r_i.revision > r_i+1.revision for every i in 1..n-1; and where the total answered is not zero, the page at offset 0 carries the revision whose number is the highest any revision of that hypothesis currently holds.
+constrains:
+  - domain/knowledge/hypothesis-revision
+---
+
+## Description
+
+Both facts this order rests on are the revision's own: the number it is identified by, and the hypothesis it references.
+A hypothesis's first revision is numbered 1 and each later one is exactly one past its highest existing revision, never reused and, unlike a case version, never discarded (`a-hypothesis-revision-number-is-never-reused`), so ordering by that number is a total order over the answered set — no tie to break, and no second fact to read to establish it.
+
+`listings-are-paged` makes any listing of a hypothesis's revisions one page selected by an offset and a limit, and says nothing about which revisions a given page carries.
+Left undeclared, the order would be whatever the storage's own arrangement returned, and which revisions a curator can reach without paging would follow from that arrangement rather than from a decision — the same substitution `hypotheses-are-ordered-by-precedence` already refuses for a manifest's precedence.
+
+Descending is the direction that keeps the newest content reachable.
+The highest existing revision is what a curator adopts into a draft's manifest and what a reader auditing a pin compares against; ascending order would place exactly that revision on the last page, one page further out of reach with every revision the hypothesis gains.
+It is the same asymmetry `a-manifest-entrys-pinned-revision-is-always-shown` reads from the other end — later revisions accumulate past an old pin — answered here so that the ordinary first page corroborates the comparison instead of burying it.
+
+This makes no presentation depend on a page, and changes none.
+`a-manifest-entrys-pinned-revision-is-always-shown` states an entry's pinned revision whatever page of revisions arrived beside it, and `a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest` compares the pin against the hypothesis's highest existing revision rather than against the highest one a page answered; both hold word for word whether or not any page carries the pin or the highest.
+The rule decides the order of this one listing and nothing about the other listings `listings-are-paged` governs, and nothing about which revisions a pin may be moved to, which stays case-version's own.
+
+=== rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis
+---
+type: policy
+statement: A surface presenting a case version's manifest entry states that a higher revision of that entry's hypothesis exists whenever one does, for a version in either state, draft or released; on a released version's entry it states that existence alone and offers no adoption of it.
+constrains:
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+  - domain/knowledge/case-version
+consistency: eventual
+---
+
+## Description
+
+A released version's entry can never adopt the higher revision, and this states nothing suggesting it could: what it discloses is that the hypothesis's content has moved on since this version pinned it — the one fact a reader auditing a past investigation, or judging whether the case warrants a new draft, has no other way to learn from the entry in front of them. Adoption stays exactly where `a-case-version-is-written-once` already put it, in the next draft.
+Two standing decisions already refuse to narrow a read of a case version by that version's state, and neither leaves room for a third answer here: `a-case-versions-input-requirements-are-derived` is available "for a case version in either state, draft or released," and `validation-runs-at-every-read` holds a version's reading to every rule "draft or released alike." A version's state answers whether it may still be composed and whether it may be diagnosed against (`only-a-released-case-version-is-diagnosed`) — never how much of what is true about it a reader is shown.
+Withholding it on a released entry would be the silence `a-case-holding-no-versions-is-told-explicitly` already rejects: an entry reading revision 1 with nothing said beside it tells the same story whether revision 1 is the hypothesis's only revision or the oldest of five, and the reader is left to guess which.
+
+=== rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+---
+type: policy
+statement: A curator reading a case version's manifest is shown, for every entry, the hypothesis-revision that entry itself pins, whatever page of that hypothesis's own revisions was answered alongside it; an entry whose pinned revision is absent from the revisions answered still states that pinned revision, and is never shown as pinning no revision at all.
+constrains:
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+A manifest entry's pinned revision is the entry's own reference, not a fact recovered from any listing of that hypothesis's revisions — `manifest-entry` carries exactly which revision of that hypothesis's content this version uses, and `hypotheses-are-ordered-by-precedence` already says nothing about how a case version is read back may change what the entry declares.
+`listings-are-paged` makes a listing of one hypothesis's revisions one page of a larger set, so the revisions answered beside a manifest entry are a subset that can omit the pinned one; presenting only what that page carried would let the reference the version actually uses vanish from the curator's view while the version keeps using it.
+What that omission would cost is the same cost this specification has already refused twice: `a-case-holding-no-versions-is-told-explicitly` refuses an unexplained emptiness over a stored set because absence, a failed read and a pending read then read alike, and `a-released-version-keeps-its-original-revision` is the very guarantee a curator would be unable to verify — the released version's own revision is exactly the one an older page is most likely not to carry, since later revisions accumulate past it.
+The rule is a policy over two aggregates read separately, so it holds eventually: the manifest and the revisions arrive as two answers, and the entry's own reference is what governs where they disagree.
+
 === rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
 ---
 type: policy
@@ -4571,6 +4646,29 @@ consistency: eventual
 Creating a draft is never a second decision about what the draft starts holding: its one starting move, before any place-hypothesis or remove-hypothesis ever touches the new manifest, is copying the manifest of whichever existing version of the case it is asked to continue from. `a-case-version-number-is-never-reused` already says that reverting to an earlier version composes the new, higher-numbered draft "with that earlier version's manifest," never reactivating the old number; and `a-released-version-keeps-its-original-revision` narrates the ordinary path the same way — its new draft's revision 2 "replaces revision 1" in version 2's own manifest, which only reads true if version 2's manifest already held revision 1 the moment the draft began.
 A case with no version yet has no existing manifest to copy — its first-ever draft starts with none, which is the one case this rule names no source for, not an exception to it.
 Naming a source version is the exception, not the default: ordinary draft creation names none, and its copy source is then the case's own latest released version, empty only where the case holds none yet. Naming one explicitly is what a rollback does, to continue from an earlier version instead of the latest released one.
+
+=== rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
+---
+type: policy
+statement: A presented manifest entry states whether the hypothesis-revision it pins is that hypothesis's highest existing revision, and where a higher revision exists it states that a higher revision exists — both readable on the entry as presented, without the reader opening that entry's revision selector.
+expression: For a presented manifest entry e, latest(e) = the highest revision number the hypothesis e's revision belongs to currently holds; the presentation of e states whether e.revision == latest(e), and where e.revision < latest(e) it states that a higher revision exists, with neither statement conditional on e's revision selector being opened.
+constrains:
+  - domain/knowledge/manifest-entry
+  - domain/knowledge/hypothesis-revision
+consistency: eventual
+---
+
+## Description
+
+A manifest entry pins one revision deliberately, and nothing moves that pin on its own: a released version's entry keeps the revision it adopted however many later revisions of that same hypothesis exist, which is what lets slug and version name one content without a digest over it.
+The consequence is that a pin standing behind the hypothesis's highest existing revision is never an error and never announces itself — the entry reads exactly as it would if its revision were the only one — so a reader comparing the two has no way to tell them apart from the entry alone.
+This rule is what closes that: the entry itself carries the comparison, so being behind is something the reader learns rather than something the reader has to go looking for.
+
+Both statements are the entry's own, not a selector's: a reader who never opens the revision selector still learns whether the pin is the hypothesis's highest existing revision and, where it is not, that a higher one exists.
+Consistency is eventual because the comparison spans two aggregates — the manifest entry inside its case version, and the hypothesis whose revisions are counted — and a hypothesis gaining a revision does not reach into any version's manifest to change it.
+
+The rule states what a presented entry says, and nothing about what may then be done: whether the pin may be moved at all, and to which revisions, stays case-version's own — its manifest is freely composed while draft state holds and never altered once released.
+Which control carries the statement, and its wording, are form and belong to the interface, not here.
 
 === rules/knowledge/a-release-refusal-with-no-named-violation-says-so
 ---
