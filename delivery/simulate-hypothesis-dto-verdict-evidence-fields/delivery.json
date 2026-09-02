@@ -1,0 +1,47 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "implementation",
+      "file": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema.md",
+      "title": "simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema",
+      "summary": "evaluationSchema's three verdict branch discriminators now derive from the imported VERDICTS array, and evidenceSchema requires fields and concept_description typed against the shared field-semantics shape.",
+      "task": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema"
+    },
+    {
+      "id": "proof/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "proof",
+      "file": "proof/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema.md",
+      "title": "simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema",
+      "summary": "Proves the discriminated-union verdict branches still validate each of the three VERDICTS entries and reject an unknown one, and that the widened evidenceSchema requires fields and concept_description while admitting the honest-empty readings and the field-semantics shape domain/investigation/field-semantics actually declares.",
+      "task": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "domain/investigation/verdict",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "domain/investigation/evidence",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "to": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

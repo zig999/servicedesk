@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { EVALUATION_REASONS } from '../../investigation/evaluation-reason.js';
 import { EVIDENCE_RESULTS } from '../../investigation/evidence-result.js';
+import { VERDICTS } from '../../investigation/verdict.js';
 
 const subjectAttributeValueSchema = z.object({
   attribute: z.string().min(1),
@@ -36,10 +37,12 @@ const usageSchema = z.object({
   output_tokens: z.number(),
 });
 
+const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS;
+
 const evaluationSchema = z.discriminatedUnion('verdict', [
   z.object({
     hypothesis: z.string().min(1),
-    verdict: z.literal('confirmed'),
+    verdict: z.literal(CONFIRMED_VERDICT),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
     elapsed_ms: z.number().optional(),
@@ -47,7 +50,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
   }),
   z.object({
     hypothesis: z.string().min(1),
-    verdict: z.literal('refuted'),
+    verdict: z.literal(REFUTED_VERDICT),
     citations: z.array(citationSchema).min(1).readonly(),
     usage: usageSchema.optional(),
     elapsed_ms: z.number().optional(),
@@ -55,7 +58,7 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
   }),
   z.object({
     hypothesis: z.string().min(1),
-    verdict: z.literal('inconclusive'),
+    verdict: z.literal(INCONCLUSIVE_VERDICT),
     reason: z.enum(EVALUATION_REASONS),
     citations: z.array(citationSchema).readonly(),
     usage: usageSchema.optional(),
@@ -63,6 +66,12 @@ const evaluationSchema = z.discriminatedUnion('verdict', [
     prompt: z.string().optional(),
   }),
 ]);
+
+const fieldSemanticsSchema = z.object({
+  name: z.string(),
+  type: z.string().optional(),
+  description: z.string().optional(),
+});
 
 const evidenceSchema = z.object({
   concept: z.string().min(1),
@@ -76,6 +85,8 @@ const evidenceSchema = z.object({
   capability_name: z.string(),
   capability_version: z.string(),
   elapsed_ms: z.number(),
+  fields: z.array(fieldSemanticsSchema).readonly(),
+  concept_description: z.string(),
 });
 
 const durationsSchema = z.object({
