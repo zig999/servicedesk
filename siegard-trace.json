@@ -3409,7 +3409,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:0cb8112cbd83654da89ce83bff21ada7f8fa84b401616b96286d9c7355a29f65"
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -3711,7 +3711,7 @@
     },
     {
       "node": "domain/knowledge/hypothesis",
-      "digest": "sha256:a0aa9b68560af13f233a92017e710a828aceffe717d7fb6d26b2526c89c7d1c6",
+      "digest": "sha256:eedd452728e9ad4cf0a2a464a6ac9da328fe08eda43dec499e447aac955f6c2e",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-hypotheses.ts",
@@ -3719,7 +3719,7 @@
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:0cb8112cbd83654da89ce83bff21ada7f8fa84b401616b96286d9c7355a29f65"
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -3821,7 +3821,7 @@
       "files": [
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
-          "digest": "sha256:1ee07c69057b864011410b047e74cb8cd24d86b0000d0f82ff7844c758f13912"
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
         },
         {
           "path": "frontend/app/src/hooks/use-hypothesis-revisions.ts",
@@ -3948,6 +3948,10 @@
         {
           "path": "frontend/app/src/hooks/use-edit-draft-version-form.ts",
           "digest": "sha256:aa2c5baf5556ed65db4353bd51d45f3fa0f0dba28309e143377ddc715e53d4ec"
+        },
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
         },
         {
           "path": "frontend/app/src/hooks/use-manifest-builder.ts",
@@ -5658,6 +5662,16 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
+      "digest": "sha256:ceffc227c5df39d436c0de7a573daef167688fff15411f9d11ed3ff24fceb61f",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
       "digest": "sha256:a74c143df28cbdc0a1809ef611db13ea8b93655a8ecaf91a21ce276aa7e412eb",
       "files": [
@@ -5787,6 +5801,10 @@
       "node": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
       "digest": "sha256:8922dfc6a9ca18819bc4b633df07f2f431e6da685d79e0c286af10b68da50596",
       "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:2c6e55faee50bef13a3baa2c9655384a4d7b65af84d28c1b8f29b0c46dad5c1f"
+        },
         {
           "path": "frontend/app/src/routes/version-manifest-screen.tsx",
           "digest": "sha256:89418dabaf7e907fcbd0721f51679ac2f531f08540008a1d5f30fab5f3693e80"

@@ -50,8 +50,8 @@ export function CaseSimulationCaseResultPanel({
           Customer-facing text ({lastRun.register})
         </p>
         <div className="flex flex-col gap-2">
-          {lastRun.text.split(/\n{2,}/).map((paragraph, index) => (
-            <p key={index} className="whitespace-pre-wrap">
+          {lastRun.text.split(/\n{2,}/).map((paragraph) => (
+            <p key={paragraph} className="whitespace-pre-wrap">
               {paragraph}
             </p>
           ))}
