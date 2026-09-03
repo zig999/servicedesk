@@ -122,6 +122,14 @@
       "epic": "obsolete-protection-basis-tests"
     },
     {
+      "id": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion.md",
+      "title": "Retire the case-version-lifecycle spec's manifest-basis immutability assertion",
+      "summary": "The one test in case-version-lifecycle-schema.spec.ts asserting a hypothesis-revision's immutability from a released case version's manifest reference, restated against the revision's own state.",
+      "epic": "obsolete-protection-basis-tests"
+    },
+    {
       "id": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
       "kind": "task",
       "file": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
@@ -738,6 +746,36 @@
       "to": "domain/knowledge/hypothesis-revision-state",
       "kind": "implements",
       "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-case-version-lifecycle-manifest-basis-assertion",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[3]"
     },
     {
       "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
