@@ -63,6 +63,8 @@ export type HypothesisRevisionFormState =
       readonly recipientOptions: GlossaryVocabularyOptions;
       readonly isSubmitting: boolean;
       readonly onSubmit: (event?: BaseSyntheticEvent) => void;
+
+      readonly onOpenManifest: () => void;
     }
   | {
       readonly phase: "success";
@@ -105,6 +107,13 @@ export function useHypothesisRevisionForm(
   const telemetry = useTelemetry();
   const isSubmittingRef = useRef(false);
   const pinnedRevisionBeforeSaveRef = useRef<number | null>(null);
+
+  const openManifest = (): void => {
+    void navigate({
+      to: "/cases/$slug/versions/$version/manifest",
+      params: { slug, version: String(version) },
+    });
+  };
 
   const versionQuery = useQuery({
     queryKey: ["case-version", slug, version],
@@ -214,12 +223,7 @@ export function useHypothesisRevisionForm(
       hypothesisName: revisedHypothesisName,
       revision,
       offerManifestBuilder: pinnedBeforeSave === null || revision > pinnedBeforeSave,
-      onOpenManifestBuilder: () => {
-        void navigate({
-          to: "/cases/$slug/versions/$version/manifest",
-          params: { slug, version: String(version) },
-        });
-      },
+      onOpenManifestBuilder: openManifest,
     };
   }
 
@@ -268,5 +272,6 @@ export function useHypothesisRevisionForm(
     recipientOptions,
     isSubmitting: reviseMutation.isPending,
     onSubmit: submit,
+    onOpenManifest: openManifest,
   };
 }

@@ -26,6 +26,14 @@
       "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
     },
     {
+      "id": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "implementation",
+      "file": "implementation/manifest-shortcuts/always-visible-manifest-shortcut.md",
+      "title": "Always-visible manifest shortcut on the hypothesis-editing screen",
+      "summary": "The hypothesis-editing screen's ready phase now renders a control that navigates to the manifest of the case version it was opened on, reusing the hook's existing navigate-to-manifest call, while the save-success phase's conditional offer is left exactly as delivered.",
+      "task": "task/manifest-shortcuts/always-visible-manifest-shortcut"
+    },
+    {
       "id": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "kind": "proof",
       "file": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin.md",
@@ -48,6 +56,14 @@
       "title": "Repin offer conditioned on the pin actually falling behind",
       "summary": "Screen-level tests over the hypothesis-editing success surface proving the manifest-builder step is offered exactly where a save's answered revision differs from the draft's pin, plus a hook-level test proving the pin used in that comparison is the one captured before the save rather than re-read afterwards.",
       "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
+    },
+    {
+      "id": "proof/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "proof",
+      "file": "proof/manifest-shortcuts/always-visible-manifest-shortcut.md",
+      "title": "Always-visible manifest shortcut on the hypothesis-editing screen",
+      "summary": "Proof that the ready-phase manifest shortcut renders before any save for both entry points, targets the exact case version the screen was opened on, adds no request, sits ahead of the form, disappears once a save resolves rather than surviving into the branch the repin rule says offers no route, and never duplicates the post-save offer.",
+      "task": "task/manifest-shortcuts/always-visible-manifest-shortcut"
     },
     {
       "id": "review/hypothesis-revision-editable-until-published-frontend",
@@ -172,6 +188,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "task/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "to": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "kind": "proves",
@@ -186,6 +220,12 @@
     {
       "from": "proof/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "to": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
       "kind": "proves",
       "at": "the path"
     },
