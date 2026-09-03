@@ -16,6 +16,23 @@
       "title": "Description-required DTO widening — compile-time proof plus the runtime gap it left uncovered",
       "summary": "A new compile-time type-test file falsifies criterion 1 (and the ttl half of criterion 5) directly against RegisterConceptBodyDto, one new HTTP-level test closes the one runtime gap (an explicit empty-string description) no existing test exercised, and the rest of criteria 2-5 are already fully proven by pre-existing tests this delivery did not need to duplicate.",
       "task": "task/register-concept-description-required/require-description"
+    },
+    {
+      "id": "review/register-concept-description-required",
+      "kind": "review",
+      "file": "review/register-concept-description-required.md",
+      "title": "Review: RegisterConceptBodyDto's exported type requires description",
+      "summary": "Coverage, specification conformance, standard conformance and failure diagnosis over require-description's delivered change against the current main tree.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A registration request carrying a non-empty description continues to validate and register exactly as it does today.",
+        "registerConceptBodySchema's runtime parsing of description is unchanged: a request body with the key absent, or with an empty-string value, still passes safeParse and reaches the controller and service exactly as it does today."
+      ],
+      "findings": 4
     }
   ],
   "edges": [
@@ -36,6 +53,12 @@
       "to": "implementation/register-concept-description-required/require-description",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/register-concept-description-required",
+      "to": "task/register-concept-description-required/require-description",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

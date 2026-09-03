@@ -1,0 +1,24 @@
+read:
+  - node: contracts/glossary/glossary-authoring
+    held_at: "registerConceptParamsSchema and registerConceptBodySchema, which shape the register-concept operation's request"
+    evidence: |
+      export const registerConceptParamsSchema = z.object({
+        name: z.string().min(1),
+      });
+
+      export const registerConceptBodySchema = z.object({
+        accepts: z.array(z.string().min(1)),
+        ttl: z.number().int().positive().optional(),
+        description: z.string().optional(),
+      });
+  - node: domain/glossary/concept
+    held_at: "registerConceptParamsSchema (name) together with registerConceptBodySchema (accepts, ttl, description) declare the value object's four attributes for the register operation"
+    evidence: "name: z.string().min(1)"
+  - node: rules/glossary/a-concept-declares-its-description
+    held_at: nowhere
+    evidence: "description: z.string().optional()"
+looked_past: "The exported type RegisterConceptBodyDto forces description to a non-optional string via `Omit<z.infer<typeof registerConceptBodySchema>, 'description'> & { description: string }` even though the zod schema itself infers it as optional — an unsound type assertion rather than a domain-fact issue, so it is left to a standard-conformance reading rather than reported here; the actual refusal (422 ConceptDescriptionRequiredError) that rules/glossary/a-concept-declares-its-description requires is not established by this file and would sit in the controller this file does not include."
+candidates_opened:
+  - rules/knowledge/a-collected-concept-declares-a-ttl
+  - rules/glossary/a-concept-with-an-empty-description-is-read-as-awaiting-one
+  - scenarios/glossary/a-concept-with-no-description-is-refused

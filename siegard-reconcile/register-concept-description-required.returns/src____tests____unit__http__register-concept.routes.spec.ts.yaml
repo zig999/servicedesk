@@ -1,0 +1,22 @@
+findings:
+  - file: src/__tests__/unit/http/register-concept.routes.spec.ts
+    where: "the third 422 test, lines 200-211 (\"answers 422 reporting a ConceptDescriptionRequiredError for a request whose body carries an explicit empty-string description, exactly as one naming no description at all\")"
+    evidence: |
+      payload: validBody({ description: '' }),
+
+      expect(response.statusCode).toBe(422);
+      expect(response.json()).toMatchObject({ error: { code: 'ConceptDescriptionRequiredError' } });
+    cost: "the rule that an empty-string description is treated exactly as an absent one lives only in this test and the code it exercises; the next reader looks for it in rules/glossary/a-concept-declares-its-description, finds only \"refuses ... a concept with no description\", and cannot tell from the specification whether an explicit empty string is covered — even though the specification already gives this exact idiom (absent-or-empty-string is undeclared) to a capability's contract attributes, a connector's name and an investigation's ticket_ref"
+    kind: unstated
+    node: rules/glossary/a-concept-declares-its-description
+    correction: "extend rules/glossary/a-concept-declares-its-description's statement to say a description that is absent or an empty string is undeclared, mirroring rules/integration/a-capability-declares-its-contract (\"an attribute that is absent or an empty string is undeclared\") and rules/integration/a-connector-configuration-names-its-connector (\"an empty string is no name at all\")"
+read:
+  - node: domain/glossary/concept
+    held_at: "the heldConcept() fixture, lines 19-27"
+    evidence: "{ name: 'a-name', accepts: ['a-subject-type'], ttl: 60, description: 'a fixture concept', ...overrides }"
+looked_past: "the mock-based test asserting two same-name requests each resolve from their own registerConcept call rather than a cached/joined value (lines 66-83), and the file's own doubled path on disk (src/src/__tests__/...), are implementation-correctness and tooling matters rather than domain facts, so they are left to another pass."
+candidates_opened:
+  - constraints/no-route-enforces-authentication
+  - contracts/glossary/glossary-authoring
+  - rules/glossary/a-concept-declares-its-description
+  - constraints/a-malformed-request-is-refused-with-a-validation-error

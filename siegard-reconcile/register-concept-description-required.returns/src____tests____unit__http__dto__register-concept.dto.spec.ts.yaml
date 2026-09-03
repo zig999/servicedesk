@@ -1,0 +1,10 @@
+read:
+  - node: domain/glossary/concept
+    held_at: "lines 4-13 of the test file — expectTypeOf<RegisterConceptBodyDto['description']>().toEqualTypeOf<string>() and the @ts-expect-error case asserting a value naming no description is refused"
+    evidence: "expectTypeOf<RegisterConceptBodyDto['description']>().toEqualTypeOf<string>();"
+looked_past: "the test file never exercises the node's other required attributes (name, accepts) — whether the DTO type also enforces those as required — which is a coverage question over this file rather than a conformance one."
+candidates_opened:
+  - contracts/glossary/glossary-authoring
+  - rules/glossary/a-concept-declares-its-description
+  - constraints/no-route-enforces-authentication
+  - rules/knowledge/a-collected-concept-declares-a-ttl

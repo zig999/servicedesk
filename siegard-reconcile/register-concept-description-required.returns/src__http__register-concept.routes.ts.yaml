@@ -1,0 +1,19 @@
+read:
+  - node: constraints/no-route-enforces-authentication
+    held_at: "the route registration in registerConceptRoutesPlugin — no authentication middleware, guard or check runs before dispatch"
+    evidence: |
+      app.put(`${API_PREFIX}/glossary/concepts/:name`, (request, reply) =>
+            registerConceptHandler(dependencies, request, reply),
+          );
+  - node: contracts/glossary/glossary-authoring
+    held_at: "the PUT handler that validates the named path segment and the body, then calls handleRegisterConceptRequest and returns its result — the register-concept operation this contract publishes"
+    evidence: |
+      const concept = await handleRegisterConceptRequest(dependencies, parsedParams.data, parsedBody.data as RegisterConceptBodyDto);
+        return reply.code(200).send(concept);
+  - node: domain/glossary/concept
+    held_at: "the body-validation call, which enforces registerConceptBodySchema (the concept's declared attributes) before the request reaches the domain"
+    evidence: "const parsedBody = registerConceptBodySchema.safeParse(request.body);"
+looked_past: "the handler has no try/catch or error mapping around handleRegisterConceptRequest, so how a domain refusal (e.g. a missing description) reaches an HTTP status is not settled in this file — that is a coverage question over the controller/scenario pairing, not a conformance question over this routing file."
+candidates_opened:
+  - constraints/a-malformed-request-is-refused-with-a-validation-error
+  - scenarios/glossary/a-concept-with-no-description-is-refused
