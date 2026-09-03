@@ -2449,6 +2449,39 @@ entries:
     why: >-
       Same material and reasoning as the case-summary.md entry above.
 
+  - location: rules/knowledge/a-case-listing-answers-cases-in-slug-order.md
+    field: statement
+    unstated: >-
+      In what order a paged listing of every case answers those cases, and therefore which cases
+      a reader reaches without paging. contracts/knowledge/case-query declares list-cases and
+      constraints/listings-are-paged makes its answer one page selected by an offset and a limit,
+      but no node states the order the page is cut from, so which cases a reader reaches without
+      paging would follow from however rows came back.
+    decided: >-
+      A listing of every case answers those cases ordered by slug ascending, compared character
+      by character, so which cases a page carries follows from their slugs alone.
+    why: >-
+      The slug is the only ordering fact a case declares — its identity carries slug and
+      next_version alone, and next_version counts drafts issued rather than ordering anything a
+      catalog reader asked for — and a-slug-identifies-one-case makes it a total order needing no
+      tiebreak and no second read. The derived summary cannot be the sort key:
+      a-case-summary-is-derived-from-its-existing-versions leaves last_updated absent for a case
+      holding no version, so it does not order the whole set, and it moves as curation proceeds,
+      which would make a fixed offset answer one case twice or skip it while a reader pages
+      through; a slug never changes. The direction is decided by there being no distinguished
+      case: unlike a hypothesis's revisions, where
+      a-hypothesis-revisions-listing-answers-highest-revision-first answers highest first because
+      the newest is the revision a curator adopts and an auditor compares against, both readers
+      case-query serves come for the whole catalog — the curator browsing what exists and an
+      automated consumer comparing every when_to_use before choosing — so ascending order over the
+      name each reader already addresses a case by is the neutral choice, and it lets a reader
+      holding a known slug predict its page. Declaring the order at all is the same substitution
+      hypotheses-are-ordered-by-precedence refuses for a manifest, where an order left to the
+      storage's arrangement replaces a decided fact. It is an invariant over domain/knowledge/case
+      because the sort key is that element's own declared attribute and the condition is
+      decidable from the answer itself; it adds no field, changes no listing's paging, refuses no
+      call, and decides nothing about the other listings listings-are-paged governs.
+
 ---
 
 === domain/glossary/_context
@@ -4400,6 +4433,30 @@ consistency: eventual
 
 A case's next version number is assigned the moment its draft is created, not at release; two drafts open at once would have nothing to decide which claims that number.
 Revising a case is therefore always one working copy at a time, resolved to released or discarded before another draft may begin.
+
+=== rules/knowledge/a-case-listing-answers-cases-in-slug-order
+---
+type: invariant
+statement: A listing of every case answers those cases ordered by slug ascending, compared character by character, so which cases a page carries follows from their slugs alone.
+expression: For a listing of cases answering c1..cn in answer order, c_i.slug precedes c_i+1.slug in ascending character order for every i in 1..n-1; and the page selected by offset k carries the (k+1)-th through (k+limit)-th cases of that same ascending-slug ordering over every case currently held.
+constrains:
+  - domain/knowledge/case
+---
+
+## Description
+
+The slug is the only ordering fact a case itself declares. A case's identity declares slug and next_version alone, and next_version names the number the case's next draft will be assigned rather than anything a reader of the catalog asked to order by; every other fact a catalog entry shows — current_state, version_count, last_updated, title, when_to_use, released_version — belongs to domain/knowledge/case-summary, derived per case from its own versions.
+
+a-slug-identifies-one-case makes that fact a total order over the answered set: no two cases share a slug, so there is no tie to break and no second read to establish the order.
+The derived summary cannot serve as the sort key. a-case-summary-is-derived-from-its-existing-versions leaves last_updated absent for a case that currently holds no version, so it does not order the whole set at all, and it moves as curation proceeds — a reader walking the catalog page by page with a fixed offset would meet a case twice, or never, because the order shifted underneath the offset. A slug never changes and a case never loses it.
+
+listings-are-paged makes any listing of cases one page selected by an offset and a limit, and says nothing about which cases a given page carries.
+Left undeclared, the order would be whatever the storage's own arrangement returned, and which cases a reader reaches without paging would follow from that arrangement rather than from a decision — the same substitution hypotheses-are-ordered-by-precedence refuses for a manifest's precedence and a-hypothesis-revisions-listing-answers-highest-revision-first already answered for one hypothesis's revisions.
+
+The direction carries no preference, because no case is the one a reader came for.
+A hypothesis's revisions have a newest that a curator adopts and an auditor compares against, which is why that listing answers highest first; the cases of the catalog have no such distinguished member — both readers contracts/knowledge/case-query serves reach for the whole set, the curator browsing what exists and an automated consumer comparing each entry's when_to_use before it chooses. So the order is the one over the name each reader already addresses a case by, read in the direction a name-ordered catalog is read, which also lets a reader holding a known slug predict which page it falls on.
+
+The rule decides the order of this one listing and nothing about the other listings listings-are-paged governs. It adds no attribute to domain/knowledge/case or domain/knowledge/case-summary, changes no listing's paging, and refuses no call. It is an invariant over the case alone, because the sort key is that element's own declared slug and the condition is decidable from the answer itself.
 
 === rules/knowledge/a-case-read-by-an-unknown-slug-or-version-is-refused
 ---
