@@ -9,6 +9,13 @@
       "summary": "The list-cases read answers each case with the summary derived from that case's own versions, instead of its slug alone."
     },
     {
+      "id": "epic/released-version-write-guards",
+      "kind": "epic",
+      "file": "epic/released-version-write-guards.md",
+      "title": "Released versions are guarded against being altered or discarded through the store",
+      "summary": "A corrective epic over relational-case-store.repository.ts: five write paths that never check a version is still draft before writing."
+    },
+    {
       "id": "inventory/case-catalog-when-to-use",
       "kind": "inventory",
       "file": "inventory/case-catalog-when-to-use.md",
@@ -30,6 +37,14 @@
       "title": "The store derives each listed case's summary from its own versions",
       "summary": "The case listing in the persistence store answers, per case in the requested page, the six-attribute summary derived from that case's existing versions.",
       "epic": "case-catalog"
+    },
+    {
+      "id": "task/released-version-write-guards/refuse-writes-against-a-non-draft-version",
+      "kind": "task",
+      "file": "task/released-version-write-guards/refuse-writes-against-a-non-draft-version.md",
+      "title": "The store refuses a write against a version that is not draft",
+      "summary": "placeHypothesis, removeManifestEntry, release, discard and insertRevision each refuse when the version they act on is not in the state the operation requires, the same way updateDraftVersion already does.",
+      "epic": "released-version-write-guards"
     }
   ],
   "edges": [
@@ -196,6 +211,162 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/released-version-write-guards",
+      "to": "constraints/a-case-is-read-whole",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-has-at-most-one-draft",
+      "kind": "covers",
+      "at": "covers[10]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-listing-answers-cases-in-slug-order",
+      "kind": "covers",
+      "at": "covers[11]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "covers",
+      "at": "covers[12]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-version-is-written-once",
+      "kind": "covers",
+      "at": "covers[13]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "covers",
+      "at": "covers[14]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-case-version-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[15]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "covers",
+      "at": "covers[16]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-hypothesis-name-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[17]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-hypothesis-position-is-unique-within-its-case",
+      "kind": "covers",
+      "at": "covers[18]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "covers",
+      "at": "covers[19]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version",
+      "kind": "covers",
+      "at": "covers[20]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/a-slug-identifies-one-case",
+      "kind": "covers",
+      "at": "covers[21]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/every-case-version-remains-readable",
+      "kind": "covers",
+      "at": "covers[22]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/hypotheses-are-ordered-by-precedence",
+      "kind": "covers",
+      "at": "covers[23]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "scenarios/knowledge/a-catalog-entry-follows-the-released-version",
+      "kind": "covers",
+      "at": "covers[24]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "covers",
+      "at": "covers[25]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "contracts/knowledge/case-query",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/case",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/case-summary",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/case-version-state",
+      "kind": "covers",
+      "at": "covers[6]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "covers",
+      "at": "covers[7]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[8]"
+    },
+    {
+      "from": "epic/released-version-write-guards",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[9]"
+    },
+    {
       "from": "task/case-catalog/list-cases-answers-the-summary",
       "to": "task/case-catalog/store-derives-the-case-summary",
       "kind": "depends_on",
@@ -254,6 +425,24 @@
       "to": "constraints/listings-are-paged",
       "kind": "implements",
       "at": "implements[4]"
+    },
+    {
+      "from": "task/released-version-write-guards/refuse-writes-against-a-non-draft-version",
+      "to": "rules/knowledge/a-case-version-moves-through-its-declared-lifecycle",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/released-version-write-guards/refuse-writes-against-a-non-draft-version",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/released-version-write-guards/refuse-writes-against-a-non-draft-version",
+      "to": "rules/knowledge/only-a-draft-case-version-may-be-discarded",
+      "kind": "implements",
+      "at": "implements[2]"
     }
   ]
 }
