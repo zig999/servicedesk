@@ -1,0 +1,116 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "reviseMutation's mutationFn, invoking the revise-hypothesis operation"
+    evidence: |-
+      return apiFetch<RevisedHypothesis>(`/v1/cases/${encodeURIComponent(slug)}/hypotheses`, {
+              method: "POST",
+  - node: contracts/knowledge/case-query
+    held_at: "revisionsQuery's queryFn, invoking the list-hypothesis-revisions operation"
+    evidence: |-
+      apiFetch<HypothesisRevisionsPage>(
+              `/v1/cases/${encodeURIComponent(slug)}/hypotheses/${encodeURIComponent(hypothesisName ?? "")}/revisions`,
+            ),
+  - node: domain/glossary/action
+    held_at: "actionOptions hook and the resolution.referral.action form field"
+    evidence: |-
+      const actionOptions = useGlossaryVocabularyOptions("action");
+  - node: domain/glossary/concept
+    held_at: "availableConcepts filter and the collects field"
+    evidence: |-
+      const availableConcepts = conceptOptions.concepts.filter((concept) =>
+        concept.accepts.includes(subjectType),
+      );
+  - node: domain/glossary/outcome
+    held_at: "outcomeOptions hook and the resolution.outcome form field"
+    evidence: |-
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+  - node: domain/glossary/recipient
+    held_at: "recipientOptions hook and the resolution.referral.recipient form field"
+    evidence: |-
+      const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  - node: domain/glossary/subject-type
+    held_at: "subjectType read from the case version and used to filter concepts"
+    evidence: |-
+      const subjectType = versionQuery.data.subject;
+  - node: domain/knowledge/case-version
+    held_at: "CaseVersionSubject type and versionQuery fetching the version by slug and number"
+    evidence: |-
+      type CaseVersionSubject = {
+        readonly subject: string;
+        readonly manifest: readonly ManifestEntryDto[];
+      };
+  - node: domain/knowledge/hypothesis
+    held_at: "hypothesisNameEditable, which locks the name once an identity already exists"
+    evidence: |-
+      hypothesisNameEditable: hypothesisName === null,
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "HypothesisRevisionListItem type and the fields sent on revise"
+    evidence: |-
+      type HypothesisRevisionListItem = {
+        readonly revision: number;
+        readonly criterion: string;
+        readonly collects: readonly string[];
+        readonly resolution: HypothesisRevisionFormValues["resolution"];
+      };
+  - node: domain/knowledge/manifest-entry
+    held_at: "ManifestEntryDto type and pinnedRevisionFor's lookup"
+    evidence: |-
+      type ManifestEntryDto = {
+        readonly hypothesis_revision: {
+          readonly hypothesis: { readonly name: string };
+          readonly revision: number;
+        };
+      };
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "this file has no create-draft path and states nothing about how many drafts a case may hold"
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "the availableConcepts filter restricting selectable concepts to the version's subject type"
+    evidence: |-
+      const availableConcepts = conceptOptions.concepts.filter((concept) =>
+        concept.accepts.includes(subjectType),
+      );
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: "pinnedRevisionFor's manifest.find, which trusts at most one entry per hypothesis"
+    evidence: |-
+      const entry = manifest.find(
+        (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,
+      );
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "the revise mutation, which sends the draft version's own subject with the revision request"
+    evidence: |-
+      if (versionQuery.data === undefined) {
+              throw new Error("cannot submit a hypothesis revision before the draft's subject type has loaded");
+            }
+      const body = {
+              hypothesis_name: values.hypothesis_name,
+              criterion: values.criterion,
+              collects: values.collects,
+              resolution: values.resolution,
+              subject: versionQuery.data.subject,
+            };
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: "the ready phase's pinnedRevision, read from the manifest entry rather than the paged revisions list"
+    evidence: |-
+      pinnedRevision: pinnedRevisionFor(versionQuery.data.manifest, hypothesisName),
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the success phase, which surfaces only the revision number with no branch-distinguishing field"
+    evidence: |-
+      const { hypothesis_name: revisedHypothesisName, revision } = reviseMutation.data;
+      const pinnedBeforeSave = pinnedRevisionBeforeSaveRef.current;
+      return {
+              phase: "success",
+              hypothesisName: revisedHypothesisName,
+              revision,
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "offerManifestBuilder, comparing the written revision against the pin captured immediately before the revise"
+    evidence: |-
+      offerManifestBuilder: pinnedBeforeSave === null || revision > pinnedBeforeSave,
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "the glossary-backed option hooks constraining which vocabulary terms the form can select"
+    evidence: |-
+      const conceptOptions = useConceptOptions();
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+      const actionOptions = useGlossaryVocabularyOptions("action");
+      const recipientOptions = useGlossaryVocabularyOptions("recipient");
+looked_past: "the onError handler shows one generic toast (\"Something went wrong while saving. Try again.\") for every failure without distinguishing the refusal reasons the rules name (ConceptRefusesSubjectTypeError, CaseHoldsNoDraftError, ConceptNotInGlossaryError) — none of the 19 nodes govern frontend error-message content, so this is left for whichever pass judges that surface, not this one."

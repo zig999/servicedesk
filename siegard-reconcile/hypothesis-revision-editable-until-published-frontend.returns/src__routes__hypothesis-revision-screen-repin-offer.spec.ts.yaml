@@ -1,0 +1,39 @@
+read:
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: nowhere
+    evidence: "caseVersionWithPin pins revision 2 and the fixture never asserts that a pinned revision absent from H1_REVISIONS is still shown as pinned — every assertion here checks the manifest-builder offer or the saved-revision message, e.g. expect(screen.queryByRole(\"button\", MANIFEST_BUILDER_BUTTON)).toBeNull();, never the display of the pinned entry itself"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "no test in this file constructs or asserts over a manifest holding two entries for one hypothesis"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "no test in this file exercises create-draft or a second-draft refusal"
+  - node: domain/knowledge/case-version
+    held_at: "caseVersionWithPin(), lines 26-33"
+    evidence: |-
+      return { subject: SUBJECT_TYPE, manifest: [ { hypothesis_revision: { hypothesis: { name: hypothesisName }, revision: pinnedRevision } } ] };
+  - node: domain/knowledge/manifest-entry
+    held_at: "caseVersionWithPin(), line 30"
+    evidence: |-
+      { hypothesis_revision: { hypothesis: { name: hypothesisName }, revision: pinnedRevision } }
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the POST ${HYPOTHESES_PATH} handlers, e.g. lines 41-42 and 80-81"
+    evidence: |-
+      jsonResponse({ hypothesis_name: "H1", revision: 2 }, 201)
+  - node: domain/knowledge/hypothesis
+    held_at: 'revisePath("H1") and fillValidForm calls throughout, e.g. lines 45-46'
+    evidence: |-
+      await mountIsolatedRevise(fetchMock, revisePath("H1"));
+          await fillValidForm();
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the manifest-builder-button assertions across the describe blocks, e.g. lines 49-52 and 88"
+    evidence: |-
+      await waitFor(() => {
+            expect(screen.queryByRole("button", SAVE_BUTTON)).toBeNull();
+          });
+          expect(screen.queryByRole("button", MANIFEST_BUILDER_BUTTON)).toBeNull();
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the saved-revision-text assertions, lines 70 and 106"
+    evidence: |-
+      expect(await screen.findByText('Hypothesis "H1" saved as revision 2.')).toBeTruthy();
+looked_past: "The exact JSON field names used in the fetch stubs (hypothesis_name, hypothesis_revision, the absence of a position field on the manifest-entry fixture) are wire-shape details a Contract node would govern, not this pack's domain-model/rule nodes, and no contract node was in scope to check them against."

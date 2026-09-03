@@ -1,0 +1,36 @@
+read:
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: "the criterion 4 test — pinnedRevision computed from the manifest entry even where the revisions page omits that number"
+    evidence: |-
+      [`GET ${revisionsPath("H1")}`]: () => jsonResponse(revisionsPage([1, 2, 3])),
+      ...
+      expect(readyState(result.current).pinnedRevision).toBe(9);
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "every manifest fixture in this file supplies at most one entry per hypothesis name; no test exercises a manifest holding two entries for one hypothesis"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "this file makes no assertion about draft creation or CaseAlreadyHasDraftError"
+  - node: domain/knowledge/case-version
+    held_at: "the manifest attribute, exercised through caseVersionResponse fixtures"
+    evidence: |-
+      jsonResponse(caseVersionResponse([manifestEntry("H1", 2), manifestEntry("H2", 5)]))
+  - node: domain/knowledge/manifest-entry
+    held_at: "the pinnedRevision assertions across criteria 1, 2, 3 and 4"
+    evidence: |-
+      expect(readyState(result.current).pinnedRevision).toBe(2);
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the revisionsPage fixtures returned from the hypothesis-revisions GET handler"
+    evidence: |-
+      [`GET ${revisionsPath("H1")}`]: () => jsonResponse(revisionsPage([1])),
+  - node: domain/knowledge/hypothesis
+    held_at: "the hypothesis name literals passed to manifestEntry and revisionsPath"
+    evidence: |-
+      manifestEntry("H1", 2)
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "this file makes no assertion about offerManifestBuilder or a post-revise offer; only the ready-phase pinnedRevision, load-error phase and request set are asserted"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "this file never invokes the revise mutation or asserts on reviseMutation.data; it only exercises the read side (pinnedRevision) of the hook"
+looked_past: "criterion 5's assertion on the exact set of GET requests and the single call to VERSION_PATH is a technical/architectural claim about request de-duplication rather than a domain fact, so it is left to whatever pass judges the standard rather than reported here."

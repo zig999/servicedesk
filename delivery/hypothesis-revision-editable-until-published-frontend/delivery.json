@@ -32,6 +32,24 @@
       "title": "Repin offer conditioned on the pin actually falling behind",
       "summary": "Screen-level tests over the hypothesis-editing success surface proving the manifest-builder step is offered exactly where a save's answered revision differs from the draft's pin, plus a hook-level test proving the pin used in that comparison is the one captured before the save rather than re-read afterwards.",
       "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
+    },
+    {
+      "id": "review/hypothesis-revision-editable-until-published-frontend",
+      "kind": "review",
+      "file": "review/hypothesis-revision-editable-until-published-frontend.md",
+      "title": "Review of hypothesis-revision-editable-until-published (frontend)",
+      "summary": "Four-pass evidence over the two delivered tasks of the epic hypothesis-revision-repin-affordance — coverage, specification conformance (via reconciliation), standard conformance, and a captured run that passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "The screen decides the offer from the two revision numbers alone, and offers the step where the answered revision is higher even though the save's answer carries no field distinguishing an overwrite from a created revision.",
+        "Three successive saves that each answer the revision number the draft's manifest entry pins leave the screen offering no manifest-builder step after each of them.",
+        "Where the screen is opened for a hypothesis identity that does not exist yet, the form reports no pinned revision."
+      ],
+      "findings": 5
     }
   ],
   "edges": [
@@ -106,6 +124,18 @@
       "to": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published-frontend",
+      "to": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/hypothesis-revision-editable-until-published-frontend",
+      "to": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "reviews",
+      "at": "tasks[1]"
     }
   ]
 }

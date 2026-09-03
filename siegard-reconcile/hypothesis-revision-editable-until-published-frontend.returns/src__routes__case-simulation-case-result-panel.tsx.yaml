@@ -1,0 +1,60 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "the rendering of the curator-facing detail a simulate-case run returns — outcome, referral, determining hypothesis, and the labelled customer-facing text with its register (lines 40-51)"
+    evidence: |-
+      Outcome {lastRun.outcome} · Referral {lastRun.referral.action} /{" "}
+      {lastRun.referral.recipient} · Determining{" "}
+      {lastRun.determiningHypothesis ?? "Fallback"}
+  - node: domain/investigation/assessment
+    held_at: "the display of the assessment's outcome, referral, determining_hypothesis, text and register attributes (lines 40-57)"
+    evidence: "Customer-facing text ({lastRun.register})"
+  - node: domain/knowledge/referral
+    held_at: "the referral action/recipient interpolation (lines 41-42)"
+    evidence: |-
+      Referral {lastRun.referral.action} /{" "}
+      {lastRun.referral.recipient}
+  - node: scenarios/investigation/a-draft-case-version-is-simulated
+    held_at: "the panel's overall rendering of a simulated run's resolved outcome, referral, determining hypothesis and consolidated text (lines 40-57)"
+    evidence: |-
+      Outcome {lastRun.outcome} · Referral {lastRun.referral.action} /{" "}
+      {lastRun.referral.recipient} · Determining{" "}
+      {lastRun.determiningHypothesis ?? "Fallback"}
+  - node: scenarios/investigation/a-single-hypothesis-is-simulated
+    held_at: nowhere
+    evidence: 'Outcome {lastRun.outcome} · Referral {lastRun.referral.action} /{" "} — every rendered run is read for an outcome and a referral unconditionally, so this file has no branch representing a hypothesis-only simulation that resolves neither; that case is not surfaced here'
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: nowhere
+    evidence: |-
+      import {
+        formatRunTime,
+        resolveCompareRuns,
+        toggleCompareSelection,
+        type CaseResultRun,
+      } from "./case-simulation-case-result-types";
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "readonly runs: readonly CaseResultRun[];"
+looked_past: "The per-session 'Compare' feature (selecting exactly two runs, disabled={selectedRunIds.length !== 2}) and the stale label/colour styling are form/workflow constructs with no corresponding domain node in this pack or found by searching the specification root for a comparison concept, and they say nothing that contradicts a held fact, so they are left to a code-quality reading rather than reported here."
+candidates_opened:
+  - rules/investigation/a-simulation-result-is-stale-once-its-source-changes

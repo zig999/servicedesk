@@ -1,0 +1,32 @@
+read:
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: nowhere
+    evidence: "the file never asserts on a revision missing from a paged revisions listing; the mocked revisions response always includes the pinned revision ([VALID_REVISION] with revision: 2, matching manifestEntry(\"H1\", 2))"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "the manifest fixtures used, caseVersionResponse([manifestEntry(\"H1\", 2)]) and caseVersionResponse([manifestEntry(\"H1\", 1)]), each hold a single entry; no assertion in this file concerns duplicate entries"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "no draft-creation call or assertion appears in this file"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "caseVersionResponse([...]) is only fixture data returned from a mocked GET; the file makes no assertion about case-version's own attributes or operations"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "manifestEntry(\"H1\", 2) / manifestEntry(\"H1\", 1) are fixture helpers supplying test data; the file asserts nothing about a manifest entry's position or reference directly"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: nowhere
+    evidence: "VALID_REVISION (revision: 2, criterion: ..., collects: [...], resolution: {...}) is passed through the mocked revisions endpoint but never itself asserted on"
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: 'the hypothesis "H1" appears only as an identifier threaded through fixtures and the hook call useHypothesisRevisionForm(SLUG, VERSION, "H1")'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the assertion expect(result.current.offerManifestBuilder).toBe(false), exercising the written == pinned branch where pinned (2, held immediately before the submit via manifestEntry(\"H1\", 2)) equals written (2, from resolvePost(jsonResponse({ hypothesis_name: \"H1\", revision: 2 }, 201))), and asserting the mid-flight cache change to manifestEntry(\"H1\", 1) does not affect that comparison"
+    evidence: "expect(result.current.offerManifestBuilder).toBe(false);"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the mocked response carries revision: 2, but the file asserts only result.current.phase and result.current.offerManifestBuilder, never a revision-number field of the answer"
+looked_past: "the describe block's title closely paraphrases the rule's own wording (\"held immediately before the revise\" vs. \"held immediately before that save\") — read this as a test description naming the scenario under test, not source claiming domain authority, since nothing here is asserted or branched on that prose."
+candidates_opened:
+  - contracts/knowledge/case-lifecycle
+  - domain/glossary/outcome

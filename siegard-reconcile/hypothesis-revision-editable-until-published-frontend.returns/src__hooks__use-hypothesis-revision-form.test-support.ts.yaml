@@ -1,0 +1,32 @@
+read:
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: nowhere
+    evidence: "the file only builds mock manifest/response shapes (manifestEntry, caseVersionResponse) and never reads or asserts which pinned revision is shown"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "caseVersionResponse(manifest: readonly ManifestEntryFixture[]) accepts and returns whatever array of entries a test passes it, with no check on hypothesis uniqueness"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "no draft-creation or draft-count logic appears anywhere in the file"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      caseVersionResponse returns only { subject, manifest }: return { subject: SUBJECT_TYPE, manifest }; — a partial fixture, not a modeling of the aggregate's attributes
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: |-
+      export function manifestEntry(name: string, revision: number): ManifestEntryFixture { return { hypothesis_revision: { hypothesis: { name }, revision } }; } — the fixture carries no position field at all
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "revisionsPage (lines 34-55)"
+    evidence: |-
+      data: revisions.map((revision) => ({ revision, criterion: "some criterion", collects: [], resolution: { outcome: "", referral: { action: "", recipient: "" } } }))
+  - node: domain/knowledge/hypothesis
+    held_at: nowhere
+    evidence: "only a bare { name } appears nested inside manifestEntry's fixture shape; the hypothesis aggregate itself is not modeled"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file defines no revise-response builder or offer/route logic"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: nowhere
+    evidence: "the file defines no revise-response builder or fixture for a revise's answer"
+looked_past: "the manifest-entry fixture omits position, a required attribute per domain/knowledge/manifest-entry; this is an omission in test data rather than a stated contradicting fact, and if the production hook itself never surfaces position that is a finding against use-hypothesis-revision-form.ts, not this file."

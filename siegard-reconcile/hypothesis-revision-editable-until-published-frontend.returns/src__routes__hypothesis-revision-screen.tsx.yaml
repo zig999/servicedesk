@@ -1,0 +1,33 @@
+read:
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the success-phase paragraph"
+    evidence: 'Hypothesis "{state.hypothesisName}" saved as revision {state.revision}.'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the success-phase conditional button"
+    evidence: |-
+      {state.offerManifestBuilder && (
+                <Button type="button" onClick={state.onOpenManifestBuilder}>
+                  Open Manifest Builder
+                </Button>
+              )}
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: nowhere
+    evidence: "the file renders only a revision form and a save confirmation; no manifest listing or entry display occurs here"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: nowhere
+    evidence: "the file has no manifest-entry logic; it only reflects hook state for a single hypothesis-revision form"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: nowhere
+    evidence: "the file carries no draft-creation or draft-count logic"
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "no case-version attribute or operation is read or rendered in this file"
+  - node: domain/knowledge/manifest-entry
+    held_at: nowhere
+    evidence: "no manifest-entry attribute (position, referenced revision) is read or rendered in this file"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "the success-phase paragraph"
+    evidence: "saved as revision {state.revision}"
+  - node: domain/knowledge/hypothesis
+    held_at: "the heading and success paragraph"
+    evidence: '`Revise hypothesis — ${hypothesisName}`'
