@@ -1,0 +1,23 @@
+read:
+  - node: domain/investigation/verdict
+    held_at: "aConfirmedEvaluation/aRefutedEvaluation/anInconclusiveEvaluation, lines 22-45, and the three branch tests at lines 59-81"
+    evidence: "verdict: VERDICTS[0], ... verdict: VERDICTS[1], ... verdict: VERDICTS[2],"
+  - node: domain/investigation/evidence
+    held_at: "aValidEvidenceItem(), lines 5-20, and the required-field tests at lines 96-181"
+    evidence: |
+      fields: [{ name: 'a-field', type: 'string', description: 'a description' }],
+          concept_description: 'a description of the concept',
+candidates_opened:
+  - domain/investigation/evaluation
+  - domain/investigation/evaluation-reason
+  - domain/investigation/citation
+  - domain/investigation/durations
+  - domain/investigation/evidence-result
+  - domain/investigation/subject
+  - domain/investigation/subject-attribute-value
+  - domain/investigation/usage
+  - rules/investigation/a-subject-carries-at-least-one-attribute
+  - contracts/investigation/case-simulation
+  - domain/investigation/field-semantics
+  - domain/integration/capability
+looked_past: "The confirmed/refuted citation fixtures never carry `field`, which domain/investigation/citation says is present when a citation grounds those verdicts, but the DTO's citationSchema is branch-invariant by the sibling file's own design and this test file states nothing new about it, so it is left to whatever review reaches simulate-hypothesis.dto.ts."

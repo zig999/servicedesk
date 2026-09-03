@@ -16,6 +16,24 @@
       "title": "simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema",
       "summary": "Proves the discriminated-union verdict branches still validate each of the three VERDICTS entries and reject an unknown one, and that the widened evidenceSchema requires fields and concept_description while admitting the honest-empty readings and the field-semantics shape domain/investigation/field-semantics actually declares.",
       "task": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema"
+    },
+    {
+      "id": "review/simulate-hypothesis-dto-verdict-evidence-fields",
+      "kind": "review",
+      "file": "review/simulate-hypothesis-dto-verdict-evidence-fields.md",
+      "title": "Review: simulate-hypothesis DTO derives verdict from VERDICTS and widens evidenceSchema",
+      "summary": "Coverage, specification conformance, standard conformance and failure diagnosis over derive-verdict-and-widen-evidence-schema's delivered change against the current main tree.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A SimulateHypothesisResponseDto value that a validated production simulate-hypothesis call actually produces validates against the widened schema with no field stripped or rejected.",
+        "evaluationSchema's three verdict branches derive their z.literal discriminator from the imported VERDICTS array (the same pattern EVALUATION_REASONS and EVIDENCE_RESULTS already use in this file), not from a literal typed independently in this file.",
+        "evidenceSchema requires fields, typed as an array of the field-semantics shape."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -42,6 +60,12 @@
       "to": "implementation/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/simulate-hypothesis-dto-verdict-evidence-fields",
+      "to": "task/simulate-hypothesis-dto-verdict-evidence-fields/derive-verdict-and-widen-evidence-schema",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

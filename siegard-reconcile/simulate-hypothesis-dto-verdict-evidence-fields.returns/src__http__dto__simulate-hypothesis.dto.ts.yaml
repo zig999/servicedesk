@@ -1,0 +1,105 @@
+findings:
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "usageSchema, lines 35-38"
+    evidence: |
+      const usageSchema = z.object({
+        input_tokens: z.number(),
+        output_tokens: z.number(),
+      });
+    cost: "domain/investigation/usage declares input_tokens and output_tokens as integers, but the schema accepts any number — a fractional token count passes the one boundary meant to validate a provider's own usage record."
+    kind: contradicts
+    correction: "validate input_tokens and output_tokens with z.number().int() (or z.int()), matching the integer type domain/investigation/usage declares."
+    node: domain/investigation/usage
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "evaluationSchema, elapsed_ms in each discriminated-union branch, lines 48, 56, 65"
+    evidence: "elapsed_ms: z.number().optional(),"
+    cost: "domain/investigation/evaluation declares elapsed_ms as an integer (milliseconds); the schema admits any fractional number."
+    kind: contradicts
+    correction: "validate elapsed_ms with z.number().int() in all three branches."
+    node: domain/investigation/evaluation
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "evidenceSchema, ttl and elapsed_ms, lines 81 and 87"
+    evidence: |
+      ttl: z.number(),
+        ...
+        elapsed_ms: z.number(),
+    cost: "domain/investigation/evidence declares both ttl and elapsed_ms as integers; the schema accepts fractional values for either."
+    kind: contradicts
+    correction: "validate ttl and elapsed_ms with z.number().int()."
+    node: domain/investigation/evidence
+  - file: src/http/dto/simulate-hypothesis.dto.ts
+    where: "durationsSchema, lines 92-96"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        total: z.number(),
+      });
+    cost: "domain/investigation/durations declares collection, judgment and total as integers (milliseconds); the schema accepts fractional values for all three."
+    kind: contradicts
+    correction: "validate collection, judgment and total with z.number().int()."
+    node: domain/investigation/durations
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "simulateHypothesisRequestSchema and simulateHypothesisResponseSchema, lines 21-26 and 98-102"
+    evidence: |
+      export const simulateHypothesisResponseSchema = z.object({
+        evidence: z.array(evidenceSchema).readonly(),
+        evaluation: evaluationSchema,
+        durations: durationsSchema,
+      });
+  - node: domain/investigation/citation
+    held_at: "citationSchema, lines 30-33"
+    evidence: |
+      const citationSchema = z.object({
+        concept: z.string().min(1),
+        field: z.string().min(1).optional(),
+      });
+  - node: domain/investigation/durations
+    held_at: "durationsSchema, lines 92-96"
+    evidence: |
+      const durationsSchema = z.object({
+        collection: z.number(),
+        judgment: z.number(),
+        total: z.number(),
+      });
+  - node: domain/investigation/evaluation
+    held_at: "evaluationSchema discriminated union, lines 42-68"
+    evidence: |
+      z.object({
+          hypothesis: z.string().min(1),
+          verdict: z.literal(CONFIRMED_VERDICT),
+          citations: z.array(citationSchema).min(1).readonly(),
+          usage: usageSchema.optional(),
+          elapsed_ms: z.number().optional(),
+          prompt: z.string().optional(),
+        })
+  - node: domain/investigation/evaluation-reason
+    held_at: "line 62, via the EVALUATION_REASONS import"
+    evidence: "reason: z.enum(EVALUATION_REASONS),"
+  - node: domain/investigation/evidence
+    held_at: "evidenceSchema, lines 76-90"
+    evidence: "const evidenceSchema = z.object({ concept: z.string().min(1), inputs: z.string(), observation: z.string(), observed_at: z.string().min(1), ttl: z.number(), origin: z.string(), result: z.enum(EVIDENCE_RESULTS), result_detail: z.string().optional(), capability_name: z.string(), capability_version: z.string(), elapsed_ms: z.number(), fields: z.array(fieldSemanticsSchema).readonly(), concept_description: z.string() });"
+  - node: domain/investigation/evidence-result
+    held_at: "line 83, via the EVIDENCE_RESULTS import"
+    evidence: "result: z.enum(EVIDENCE_RESULTS),"
+  - node: domain/investigation/subject
+    held_at: "subjectSchema, lines 11-14"
+    evidence: "const subjectSchema = z.object({ type: z.string().min(1), attributes: z.array(subjectAttributeValueSchema).min(1) });"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueSchema, lines 6-9"
+    evidence: "const subjectAttributeValueSchema = z.object({ attribute: z.string().min(1), value: z.string().min(1) });"
+  - node: domain/investigation/usage
+    held_at: "usageSchema, lines 35-38"
+    evidence: "const usageSchema = z.object({ input_tokens: z.number(), output_tokens: z.number() });"
+  - node: domain/investigation/verdict
+    held_at: "lines 4 and 40, via the VERDICTS import and destructure"
+    evidence: |
+      import { VERDICTS } from '../../investigation/verdict.js';
+      const [CONFIRMED_VERDICT, REFUTED_VERDICT, INCONCLUSIVE_VERDICT] = VERDICTS;
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "line 13"
+    evidence: "attributes: z.array(subjectAttributeValueSchema).min(1),"
+looked_past: "caseRefSchema (slug, version) and the request's requester field sit outside this batch's node set. domain/knowledge/case-version was not among the candidates actually offered."
+candidates_opened:
+  - domain/investigation/field-semantics
