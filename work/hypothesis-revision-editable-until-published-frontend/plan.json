@@ -16,11 +16,25 @@
       "summary": "The curator's hypothesis-editing screen deciding, from the revision the draft's manifest entry pinned, whether the save it just made left anything to repin."
     },
     {
+      "id": "epic/manifest-shortcuts",
+      "kind": "epic",
+      "file": "epic/manifest-shortcuts.md",
+      "title": "Reaching a case version's manifest from where a curator already is",
+      "summary": "The two navigation shortcuts into an existing case-version manifest screen -- one on the hypothesis-editing screen, one per row of the case-detail Versions panel."
+    },
+    {
       "id": "inventory/hypothesis-revision-repin-affordance",
       "kind": "inventory",
       "file": "inventory/hypothesis-revision-repin-affordance.md",
       "title": "Hypothesis-editing screen and its post-save repin affordance",
       "summary": "The curator's hypothesis-editing screen, its revise-hypothesis mutation, and the existing manifest-builder repin flow it currently always points at."
+    },
+    {
+      "id": "inventory/hypothesis-revision-status-and-manifest-shortcuts",
+      "kind": "inventory",
+      "file": "inventory/hypothesis-revision-status-and-manifest-shortcuts.md",
+      "title": "Hypothesis-revision screen status disclosure and manifest shortcuts",
+      "summary": "The hypothesis-revision screen and its hook show no draft/released status and offer a manifest link only after a successful save; the case-detail Versions panel offers no per-row manifest link. The released_referenced fact the scope wants disclosed is computed only inside the backend's revise operation and is not exposed by any DTO the frontend already reads."
     },
     {
       "id": "task/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
@@ -45,6 +59,22 @@
       "title": "The manifest-builder step is offered only where the save left the pin behind",
       "summary": "The hypothesis-editing screen's success surface offering the manifest-builder step only where the revision the save answered differs from the revision the draft pinned going into it.",
       "epic": "hypothesis-revision-repin-affordance"
+    },
+    {
+      "id": "task/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "task",
+      "file": "task/manifest-shortcuts/always-visible-manifest-shortcut.md",
+      "title": "A manifest shortcut on the hypothesis-editing screen that does not wait for a save",
+      "summary": "The hypothesis-editing screen carrying a control that reaches the manifest of the case version it was opened on at any point while editing.",
+      "epic": "manifest-shortcuts"
+    },
+    {
+      "id": "task/manifest-shortcuts/version-row-manifest-action",
+      "kind": "task",
+      "file": "task/manifest-shortcuts/version-row-manifest-action.md",
+      "title": "A Manifest action on every row of the case-detail Versions panel",
+      "summary": "Each case version the Versions panel lists carrying an action that reaches that version's own manifest.",
+      "epic": "manifest-shortcuts"
     }
   ],
   "edges": [
@@ -373,6 +403,30 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/manifest-shortcuts",
+      "to": "domain/knowledge/case-version",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/manifest-shortcuts",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/manifest-shortcuts",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/manifest-shortcuts",
+      "to": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
       "from": "task/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "to": "rules/knowledge/a-cases-current-pins-come-from-its-highest-numbered-version",
       "kind": "implements",
@@ -465,6 +519,30 @@
     {
       "from": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "domain/knowledge/case-version",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-shortcuts/always-visible-manifest-shortcut",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/manifest-shortcuts/version-row-manifest-action",
+      "to": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/manifest-shortcuts/version-row-manifest-action",
+      "to": "domain/knowledge/case-version",
       "kind": "implements",
       "at": "implements[1]"
     }
