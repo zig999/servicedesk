@@ -97,7 +97,7 @@ export function baseHandlers(
   overrides: Record<string, FetchResponder> = {},
 ): Record<string, FetchResponder> {
   return {
-    [`GET ${VERSION_PATH}`]: () => jsonResponse({ subject: SUBJECT_TYPE }),
+    [`GET ${VERSION_PATH}`]: () => jsonResponse({ subject: SUBJECT_TYPE, manifest: [] }),
     "GET /v1/glossary/concepts": () => jsonResponse(CONCEPT_TERMS),
     "GET /v1/glossary/outcome": () => jsonResponse(OUTCOME_TERMS),
     "GET /v1/glossary/action": () => jsonResponse(ACTION_TERMS),

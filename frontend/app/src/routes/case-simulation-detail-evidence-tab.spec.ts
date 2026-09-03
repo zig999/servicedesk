@@ -249,7 +249,7 @@ describe("CaseSimulationDetailEvidenceTab -- the judgment summary line (criterio
       }),
     );
 
-    expect(screen.getByText("Judgment gpt-4o · prompt v3 · 12 in / 34 out · 567 ms")).toBeTruthy();
+    expect(screen.getByText("Judgment gpt-4o · prompt v3 · 12 tokens in / 34 tokens out · 567 ms")).toBeTruthy();
   });
 
   it("shows no judgment summary line when no call happened", () => {

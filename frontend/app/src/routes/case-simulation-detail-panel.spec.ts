@@ -136,7 +136,7 @@ describe("CaseSimulationDetailPanel -- the judgment summary line sits in the Evi
       }),
     });
 
-    expect(screen.getByText("Judgment gpt-4o · prompt v3 · 12 in / 34 out · 567 ms")).toBeTruthy();
+    expect(screen.getByText("Judgment gpt-4o · prompt v3 · 12 tokens in / 34 tokens out · 567 ms")).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: "Prompt" }));
 
