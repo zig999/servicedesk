@@ -1573,6 +1573,7 @@ it(
     });
     await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision: lowerRevision, position: 1 });
     await store.release(slug, version);
+    await store.createDraft(aCreateDraftInput(slug, glossary, { source_version: version }));
     const highestRevision = await store.insertHypothesisRevision({
       slug,
       hypothesis_name: 'a-hypothesis',

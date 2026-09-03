@@ -3395,11 +3395,19 @@
     },
     {
       "node": "domain/knowledge/case-summary",
-      "digest": "sha256:c2b2d98f97f6607f794e095db5afc5c58e162da0b68ce9c132fccdeacbbd9606",
+      "digest": "sha256:406d610f9e181a2b35618a572d962e39c1ef97faac682241524db80199c2ca27",
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+        },
+        {
+          "path": "src/src/case/case-store.port.ts",
+          "digest": "sha256:677d25de050487dddc814d10868c31c7583dec242599de3c364432dbb3a88e83"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f78c2eb9ea064814011cea1200d4d8ce7ad359019ee64ce9afe4b34341b2dfa4"
         }
       ]
     },
@@ -5412,12 +5420,26 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-case-listing-answers-cases-in-slug-order",
+      "digest": "sha256:3517c4a3a97743e6d19076f4c55d246612dba1448d88dc22c16a2dac774c230a",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f78c2eb9ea064814011cea1200d4d8ce7ad359019ee64ce9afe4b34341b2dfa4"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
-      "digest": "sha256:2928fa945dc17e53a7f201392c051b20554b919cdef78b4052be558b39cb270f",
+      "digest": "sha256:da72dd33d310eff9f2e2d8e48617f00f063b5a14129ff768ac35d607a1631008",
       "files": [
         {
           "path": "frontend/app/src/routes/cases-list-screen.tsx",
           "digest": "sha256:b55ae46319f14f79494cccd1397c48d49df6604c9a9d6ed252f5e69ff5145ea8"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f78c2eb9ea064814011cea1200d4d8ce7ad359019ee64ce9afe4b34341b2dfa4"
         }
       ]
     },
@@ -6580,6 +6602,16 @@
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
           "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/a-catalog-entry-follows-the-released-version",
+      "digest": "sha256:32ece662de2dd2b84eac671588d89dea0afbf6577cd6db33ff2b678330f7acd8",
+      "files": [
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f78c2eb9ea064814011cea1200d4d8ce7ad359019ee64ce9afe4b34341b2dfa4"
         }
       ]
     },

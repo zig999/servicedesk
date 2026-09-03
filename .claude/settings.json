@@ -21,5 +21,7 @@
       }
     ]
   },
-  "enabledPlugins": {}
+  "enabledPlugins": {
+    "siegard@siegard-generator": true
+  }
 }
