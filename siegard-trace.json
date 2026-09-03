@@ -282,6 +282,10 @@
           "digest": "sha256:c8c2beffdd10f6c61791fcede266359ada776369bbe59df16703819aa4cbac8b"
         },
         {
+          "path": "src/src/case/hypothesis-revision-release-state.port.ts",
+          "digest": "sha256:22e00b6b12f9aeeea3f8fa362125aca2829e449f486c6a6372c7ff161e7d5182"
+        },
+        {
           "path": "src/src/connector-registry/connector-configuration-registry.service.ts",
           "digest": "sha256:4458fb32badc6682abdc940dd39fadd441b5c7e1d278c45e4d7e8f06fa2acd35"
         },
@@ -3569,7 +3573,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
         }
       ]
     },
@@ -3896,6 +3900,10 @@
           "digest": "sha256:5d71161a8f764669622f1035727028b68e96e21685e53bdc3d6a022308881296"
         },
         {
+          "path": "src/src/case/hypothesis-revision-release-state.port.ts",
+          "digest": "sha256:22e00b6b12f9aeeea3f8fa362125aca2829e449f486c6a6372c7ff161e7d5182"
+        },
+        {
           "path": "src/src/case/parse-case-document.ts",
           "digest": "sha256:9e3913e4944f5153e372fc0a990560cb32dac72ba94165b4755de32842a27415"
         },
@@ -3933,7 +3941,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -4015,7 +4023,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
         }
       ]
     },
@@ -5762,6 +5770,10 @@
         {
           "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
           "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
+        },
+        {
+          "path": "src/src/persistence/relational-case-store.repository.ts",
+          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
         }
       ]
     },
