@@ -20,6 +20,7 @@ import { InvestigationWriteDeadlineExceededError } from '../../../errors/investi
 import { MalformedCapabilityInputSchemaError } from '../../../errors/malformed-capability-input-schema.error.js';
 import { ManifestPositionOccupiedError } from '../../../errors/manifest-position-occupied.error.js';
 import { ManifestWouldHoldNoHypothesisError } from '../../../errors/manifest-would-hold-no-hypothesis.error.js';
+import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { statusForError } from '../../../errors/status-map.js';
 import { SubjectDoesNotCoverCaseInputsError } from '../../../errors/subject-does-not-cover-case-inputs.error.js';
 
@@ -159,6 +160,14 @@ it('maps CaseAlreadyHasDraftError and ManifestPositionOccupiedError to the same 
 
 it('resolves CaseHoldsNoDraftError to 409', () => {
   const error = new CaseHoldsNoDraftError('a-slug');
+
+  const status = statusForError(error);
+
+  expect(status).toBe(409);
+});
+
+it('resolves ReleasedHypothesisRevisionNotAlterableError to 409', () => {
+  const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);
 
   const status = statusForError(error);
 

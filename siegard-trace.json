@@ -1181,7 +1181,7 @@
     },
     {
       "node": "contracts/knowledge/case-lifecycle",
-      "digest": "sha256:d9b5568ba3e0b6a94006cf81c96647fd003f4cdbfad5e477b874bc7c8af248cd",
+      "digest": "sha256:218df1d28da770a1b48d836115bcc15b9ae221b2dc193eb30f7e6e2e5073c57f",
       "files": [
         {
           "path": "frontend/app/src/hooks/use-case-simulation-version.ts",
@@ -1233,7 +1233,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/factories/case-lifecycle.factory.ts",
@@ -3791,7 +3791,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -3913,7 +3913,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/case/validate-case-coherence.ts",
@@ -5697,7 +5697,7 @@
         },
         {
           "path": "src/src/case/revise-hypothesis.operation.ts",
-          "digest": "sha256:84f3aabf39ce6c22ad74398b0d576cd941dff2aeee342c3166ff3d5f49942d00"
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/errors/case-holds-no-draft.error.ts",
@@ -5790,6 +5790,10 @@
           "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
         },
         {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+        },
+        {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
@@ -5806,6 +5810,10 @@
         {
           "path": "src/migrations/0009-case-version-lifecycle-schema.sql",
           "digest": "sha256:68334233e3663044029965b2c700388396611878a2eb9410d13cfce1b972b9de"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
@@ -5862,6 +5870,14 @@
         {
           "path": "src/migrations/0019-hypothesis-revision-alteration-refused-only-when-released.sql",
           "digest": "sha256:f36862c97244588b1a5fa3523d5b3f4e67658be365519ac1d8d652e2c21d947d"
+        },
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+        },
+        {
+          "path": "src/src/errors/status-map.ts",
+          "digest": "sha256:951547b3c65c62f63f91731c32ca00ed77969d274cb7ea3dbbccc195eaf4e71b"
         }
       ]
     },
@@ -6520,6 +6536,16 @@
       ]
     },
     {
+      "node": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "digest": "sha256:f894aea63a2c8c0dcc3bf747e68322a560cf877720d9bddab9106fc9745982e3",
+      "files": [
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
+        }
+      ]
+    },
+    {
       "node": "scenarios/knowledge/a-released-version-keeps-its-original-revision",
       "digest": "sha256:f58902e7e6a2370afae3cad739520f33e59f1710079558c778927a78fa60941b",
       "files": [
@@ -6550,6 +6576,16 @@
         {
           "path": "src/src/investigation/resolve-and-narrow-input.ts",
           "digest": "sha256:e377ea330c5373f159d0337746dbc1502bbfcf3062bdff616d7ec7a89968d4fa"
+        }
+      ]
+    },
+    {
+      "node": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "digest": "sha256:63d3309bf28154bafc786bf1a4a3c5904e5ea8ac5bf9defc43c24606131e1be0",
+      "files": [
+        {
+          "path": "src/src/case/revise-hypothesis.operation.ts",
+          "digest": "sha256:1cd3156c1e1ee8e13ad6a750230a5ec077496a9cb165f7f4cdebeb45740ac9fb"
         }
       ]
     },

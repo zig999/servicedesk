@@ -1,12 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { Resolution } from '../../../case/case.js';
-import type { ReviseHypothesisInput } from '../../../case/revise-hypothesis.operation.js';
+import type { ReviseHypothesisInput, ReviseHypothesisStore } from '../../../case/revise-hypothesis.operation.js';
 import { ReviseHypothesisOperation } from '../../../case/revise-hypothesis.operation.js';
 import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error.js';
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
+import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { createCaseStore } from '../../../factories/case-store.factory.js';
 import { createGlossaryQuery } from '../../../factories/glossary.factory.js';
 import { createDatabaseConnection, type DatabaseConnection } from '../../../persistence/database-connection.js';
@@ -119,6 +120,47 @@ async function seedAlreadyPlacedManifestEntry(fixture: IFixture): Promise<void> 
   );
 }
 
+interface ISeedHypothesisRevisionInput {
+  readonly hypothesisName: string;
+  readonly revision: number;
+  readonly criterion: string;
+}
+
+async function seedHypothesisRevision(fixture: IFixture, input: ISeedHypothesisRevisionInput): Promise<void> {
+  await pool.query('INSERT INTO hypotheses (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING', [
+    fixture.slug,
+    input.hypothesisName,
+  ]);
+  await pool.query(
+    `INSERT INTO hypothesis_revisions
+       (case_slug, hypothesis_name, revision, criterion, resolution_outcome, resolution_action, resolution_recipient)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [fixture.slug, input.hypothesisName, input.revision, input.criterion, fixture.outcome, fixture.action, fixture.recipient],
+  );
+}
+
+interface ISeedManifestEntryInput {
+  readonly version: number;
+  readonly hypothesisName: string;
+  readonly revision: number;
+  readonly position: number;
+}
+
+async function seedManifestEntry(fixture: IFixture, input: ISeedManifestEntryInput): Promise<void> {
+  await pool.query(
+    `INSERT INTO case_version_hypotheses (case_slug, case_version, hypothesis_name, revision, position)
+     VALUES ($1, $2, $3, $4, $5)`,
+    [fixture.slug, input.version, input.hypothesisName, input.revision, input.position],
+  );
+}
+
+async function seedReleasedReferencedHighestRevision(fixture: IFixture, criterion: string): Promise<void> {
+  await seedHypothesisRevision(fixture, { hypothesisName: 'the-hypothesis', revision: 1, criterion });
+  await seedCaseVersion(fixture, 1, 'released');
+  await seedManifestEntry(fixture, { version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });
+  await seedCaseVersion(fixture, 2, 'draft');
+}
+
 function aResolution(fixture: IFixture): Resolution {
   return { outcome: fixture.outcome, referral: { action: fixture.action, recipient: fixture.recipient } };
 }
@@ -180,28 +222,173 @@ it("originates a never-named hypothesis's own identity and its first revision, n
   expect(revisionRows).toEqual([{ revision: 1, criterion: 'a representative criterion' }]);
 });
 
-it("numbers a new revision of an already-named hypothesis one past its own highest existing revision, and leaves the earlier revision's own row unaltered", async () => {
-  const fixture = freshFixture();
-  await persistCase(fixture);
-  await persistGlossaryVocabulary(fixture);
-  await registerConceptAccepting(fixture, fixture.subjectType);
-  await seedDraftCaseVersion(fixture);
-  const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
-  const first = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the first revision text' }));
-  expect(first.revision).toBe(1);
+it(
+  "overwrites an already-named hypothesis's own highest revision in place, keeping its revision number " +
+    'unchanged, when that revision is referenced by no case version in released state',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+    const first = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the first revision text' }));
+    expect(first.revision).toBe(1);
 
-  const second = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the second revision text' }));
+    const second = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the second revision text' }));
 
-  expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });
-  const { rows } = await pool.query(
-    'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 ORDER BY revision',
-    [fixture.slug, 'the-hypothesis'],
-  );
-  expect(rows).toEqual([
-    { revision: 1, criterion: 'the first revision text' },
-    { revision: 2, criterion: 'the second revision text' },
-  ]);
-});
+    expect(second).toEqual({ hypothesis_name: 'the-hypothesis', revision: 1 });
+    const { rows } = await pool.query(
+      'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 ORDER BY revision',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1, criterion: 'the second revision text' }]);
+  },
+);
+
+it(
+  'leaves exactly the revision it held before three successive revises of an unreleased highest revision, ' +
+    'reading the content of the most recent of them afterward',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+    const initial = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the original text' }));
+    expect(initial.revision).toBe(1);
+
+    const first = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the first successive revise text' }));
+    const second = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the second successive revise text' }));
+    const third = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the third successive revise text' }));
+
+    expect([first.revision, second.revision, third.revision]).toEqual([1, 1, 1]);
+    const { rows } = await pool.query(
+      'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1, criterion: 'the third successive revise text' }]);
+  },
+);
+
+it(
+  'creates a revision numbered exactly one past the highest existing revision when that revision is ' +
+    'referenced by a case version in released state',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedReleasedReferencedHighestRevision(fixture, 'the released revision text');
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+    const revised = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the next revision text' }));
+
+    expect(revised).toEqual({ hypothesis_name: 'the-hypothesis', revision: 2 });
+    const { rows } = await pool.query(
+      'SELECT revision FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 2 }]);
+  },
+);
+
+it(
+  "leaves the released-referenced revision's own content reading exactly as it did before a revise " +
+    'creates the next revision',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedReleasedReferencedHighestRevision(fixture, 'the released revision text');
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+    await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the next revision text' }));
+
+    const { rows } = await pool.query(
+      'SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ criterion: 'the released revision text' }]);
+  },
+);
+
+it(
+  "leaves the released case version's manifest referencing the same revision number it referenced " +
+    'before a revise creates the next revision',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedReleasedReferencedHighestRevision(fixture, 'the released revision text');
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+
+    await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the next revision text' }));
+
+    const { rows } = await pool.query(
+      'SELECT revision FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1 AND hypothesis_name = $2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1 }]);
+  },
+);
+
+it(
+  "rejects with the store's own typed ReleasedHypothesisRevisionNotAlterableError rather than silently " +
+    'succeeding, when the released-reference reading it acted on had already gone stale — the revision ' +
+    'was released for real between that read and the write it drove',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedReleasedReferencedHighestRevision(fixture, 'the released revision text');
+    const realStore = createCaseStore(pool);
+    const staleReadStore = {
+      findDraftVersion: realStore.findDraftVersion.bind(realStore),
+      insertHypothesisRevision: realStore.insertHypothesisRevision.bind(realStore),
+      overwriteHypothesisRevision: realStore.overwriteHypothesisRevision.bind(realStore),
+      readHighestRevisionReleaseState: async () => ({ revision: 1, released_referenced: false }),
+    } as unknown as ReviseHypothesisStore;
+    const operation = new ReviseHypothesisOperation(staleReadStore, createGlossaryQuery(pool));
+
+    const rejection = operation.reviseHypothesis(reviseInput(fixture, { criterion: 'an attempted overwrite text' }));
+
+    await expect(rejection).rejects.toBeInstanceOf(ReleasedHypothesisRevisionNotAlterableError);
+    const { rows } = await pool.query(
+      'SELECT criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = 1',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ criterion: 'the released revision text' }]);
+  },
+);
+
+it(
+  "leaves a draft manifest entry for the hypothesis referencing the same revision number it referenced " +
+    "before a revise that replaced the highest revision's content in place",
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const operation = new ReviseHypothesisOperation(createCaseStore(pool), createGlossaryQuery(pool));
+    const initial = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the original text' }));
+    expect(initial.revision).toBe(1);
+    await seedManifestEntry(fixture, { version: 1, hypothesisName: 'the-hypothesis', revision: 1, position: 1 });
+
+    await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the overwritten text' }));
+
+    const { rows } = await pool.query(
+      'SELECT revision FROM case_version_hypotheses WHERE case_slug = $1 AND case_version = 1 AND hypothesis_name = $2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1 }]);
+  },
+);
 
 it('refuses revising with an empty collects list, naming that the revision collects no concept, and never reaches the store', async () => {
   const fixture = freshFixture();
@@ -346,6 +533,32 @@ it(
     await expect(rejection).rejects.toMatchObject({ context: { slug: fixture.slug } });
     const { rows: hypothesisRows } = await pool.query('SELECT name FROM hypotheses WHERE case_slug = $1', [fixture.slug]);
     expect(hypothesisRows).toEqual([]);
+  },
+);
+
+it(
+  'leaves an already-existing revision of the hypothesis reading exactly as it did, refusing to alter it, ' +
+    'when a later revise is refused for the case holding no draft version',
+  async () => {
+    const fixture = freshFixture();
+    await persistCase(fixture);
+    await persistGlossaryVocabulary(fixture);
+    await registerConceptAccepting(fixture, fixture.subjectType);
+    await seedDraftCaseVersion(fixture);
+    const store = createCaseStore(pool);
+    const operation = new ReviseHypothesisOperation(store, createGlossaryQuery(pool));
+    const initial = await operation.reviseHypothesis(reviseInput(fixture, { criterion: 'the original text' }));
+    expect(initial.revision).toBe(1);
+    await store.discard(fixture.slug, 1);
+
+    const rejection = operation.reviseHypothesis(reviseInput(fixture, { criterion: 'an attempted overwrite text' }));
+
+    await expect(rejection).rejects.toBeInstanceOf(CaseHoldsNoDraftError);
+    const { rows } = await pool.query(
+      'SELECT revision, criterion FROM hypothesis_revisions WHERE case_slug = $1 AND hypothesis_name = $2',
+      [fixture.slug, 'the-hypothesis'],
+    );
+    expect(rows).toEqual([{ revision: 1, criterion: 'the original text' }]);
   },
 );
 

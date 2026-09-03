@@ -18,6 +18,14 @@
       "task": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state"
     },
     {
+      "id": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision.md",
+      "title": "Revise-hypothesis chooses overwrite or next revision by reading released reference state",
+      "summary": "ReviseHypothesisOperation now reads a hypothesis's highest revision and its released-reference state before writing, overwriting that revision in place while unreleased and creating the next revision once released, with the store's own trigger-raised refusal for the stale-read race now mapped to HTTP 409.",
+      "task": "task/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision"
+    },
+    {
       "id": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released.md",
@@ -40,6 +48,14 @@
       "title": "Proof for reading a hypothesis's highest revision and release state",
       "summary": "One unit-level pair proving the port module imports no driver, framework or provider client, and seven integration-level tests against a real PostgreSQL database proving RelationalCaseStore's readHighestRevisionReleaseState answers the highest revision number and the released-reference fact exactly as the task's criteria state, including the two discriminating cases — draft-only reference, and a released version pinning a lower revision — the port's own discriminated-union shape excludes from ever defaulting wrong.",
       "task": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state"
+    },
+    {
+      "id": "proof/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision.md",
+      "title": "Revise-hypothesis overwrite-or-next-revision routing, proven",
+      "summary": "Integration tests over ReviseHypothesisOperation prove the overwrite/insert routing and its manifest side-effects, and unit tests over status-map and the revise-hypothesis route prove the new ReleasedHypothesisRevisionNotAlterableError-to-409 mapping the task's own UNDERDETERMINED note named.",
+      "task": "task/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision"
     },
     {
       "id": "proof/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
@@ -118,6 +134,66 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "contracts/knowledge/case-lifecycle",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
+      "kind": "encodes",
+      "at": "nodes[10]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
+      "kind": "encodes",
+      "at": "nodes[9]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "task/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "to": "constraints/the-schema-replays-from-its-scripts",
       "kind": "encodes",
@@ -168,6 +244,12 @@
     {
       "from": "proof/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
       "to": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
+      "to": "implementation/hypothesis-revision-overwrite/revise-chooses-overwrite-or-next-revision",
       "kind": "proves",
       "at": "the path"
     },

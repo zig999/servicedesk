@@ -6,6 +6,7 @@ import { CaseHoldsNoDraftError } from '../../../errors/case-holds-no-draft.error
 import { ConceptNotInGlossaryError } from '../../../errors/concept-not-in-glossary.error.js';
 import { ConceptRefusesSubjectTypeError } from '../../../errors/concept-refuses-subject-type.error.js';
 import { HypothesisRevisionCollectsNoConceptError } from '../../../errors/hypothesis-revision-collects-no-concept.error.js';
+import { ReleasedHypothesisRevisionNotAlterableError } from '../../../errors/released-hypothesis-revision-not-alterable.error.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { ReviseHypothesisControllerDependencies } from '../../../http/revise-hypothesis.controller.js';
 import { createReviseHypothesisRoutesPlugin } from '../../../http/revise-hypothesis.routes.js';
@@ -176,6 +177,18 @@ it("answers 409 with CaseHoldsNoDraftError's own code, message and context as de
 
   expect(response.statusCode).toBe(409);
   expect(response.json()).toEqual({ error: { code: 'CaseHoldsNoDraftError', message: error.message, details: error.context } });
+});
+
+it("answers 409 with ReleasedHypothesisRevisionNotAlterableError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
+  const built = buildTestApp();
+  app = built.app;
+  const error = new ReleasedHypothesisRevisionNotAlterableError('a-slug', 'a-hypothesis', 3);
+  built.reviseHypothesis.mockRejectedValueOnce(error);
+
+  const response = await app.inject({ method: 'POST', url: '/v1/cases/a-slug/hypotheses', payload: validReviseHypothesisBody() });
+
+  expect(response.statusCode).toBe(409);
+  expect(response.json()).toEqual({ error: { code: 'ReleasedHypothesisRevisionNotAlterableError', message: error.message, details: error.context } });
 });
 
 it("answers 404 with ConceptNotInGlossaryError's own code, message and context as details, never the generic 500, when reviseHypothesis rejects with it", async () => {
