@@ -2167,5 +2167,43 @@ entries:
       both exist for exactly this reason, over the adjacent manifest-entry listing; withholding
       the new fact here would leave a curator to guess at a save's outcome from nothing the
       listing shows.
+  - location: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle.md
+    field: statement
+    unstated: >-
+      Which values a refused release of a hypothesis-revision reports alongside the
+      HypothesisRevisionNotDraftAtReleaseError, and whether the state the revision stood in is
+      among them. The rule's statement, and the decision-log entry that wrote it, settled only
+      the HTTP status and the error identity; constraints/a-malformed-request-is-refused-with-a-
+      validation-error states the carried content (code, message, details) of the shape refusal
+      alone and expressly disclaims every domain condition, so nothing said whether this refusal
+      additionally reports the revision it was asked of or the state that revision stood in.
+    decided: >-
+      The error identity is the whole of what the refusal reports —
+      HypothesisRevisionNotDraftAtReleaseError as the refusal's own condition and message —
+      carrying no further value; the state the revision stood in is not among them, and the
+      statement records that it is released whenever this refusal is raised.
+    why: >-
+      Every refusal this specification states names its HTTP status and its error identity and
+      nothing further; the only two that carry values beyond it — CaseVersionNotReleasableError
+      naming every violated rule and every still-draft hypothesis, and
+      MalformedCapabilityInputSchemaError naming every departure — carry exactly what the caller
+      cannot derive from its own request, which is the whole reason those two enumerate
+      anything. Neither reason reaches here. The revision is what the request itself named, and
+      domain/knowledge/hypothesis-revision-state holds exactly draft and released, with draft as
+      the machine's initial state and released its only other, so "not draft at release" already
+      names released as the state it stood in; reporting it would put one fact in a second home
+      while adding nothing a reader could not read off the error's own name. This is not the
+      silence the specification's disclosure precedents refuse —
+      a-manifest-entrys-pinned-revision-is-always-shown,
+      a-hypothesis-revisions-listing-discloses-each-revisions-own-state and
+      a-case-holding-no-versions-is-told-explicitly each turn on a stored fact the reader has no
+      second way to learn, whereas this one is entailed by the refusal itself. Deciding the
+      negative explicitly, rather than leaving the carried content open, follows the reasoning
+      already logged for a-revise-answers-the-revision-number-it-saved, where "carries no
+      further field distinguishing the branch" was decided as a statement rather than left to
+      whatever the operation happened to return, and it keeps the rule falsifiable in both
+      directions. It also keeps this lifecycle reading identical to
+      a-case-version-moves-through-its-declared-lifecycle's, whose sibling refusals the earlier
+      entry already took as this machine's precedent for status and naming.
 
 ---

@@ -2,7 +2,9 @@
 type: state-machine
 statement: A hypothesis-revision moves only along its declared lifecycle; release asked of a
   revision not in draft state is refused with an HTTP 409 response reporting a
-  HypothesisRevisionNotDraftAtReleaseError.
+  HypothesisRevisionNotDraftAtReleaseError as the whole of what that refusal reports — its own
+  condition and its own message — carrying no further value, and in particular not the state
+  the revision stood in, which is released whenever this refusal is raised.
 subject: domain/knowledge/hypothesis-revision
 status: domain/knowledge/hypothesis-revision-state
 initial: draft
