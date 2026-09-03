@@ -10,12 +10,28 @@
       "task": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save"
     },
     {
+      "id": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind.md",
+      "title": "Repin offer conditioned on whether the save moved the draft's pin",
+      "summary": "The hypothesis-editing screen's success surface now offers the manifest-builder step only where the revision the save answered differs from the revision the draft's manifest entry pinned going into that save.",
+      "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
+    },
+    {
       "id": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
       "kind": "proof",
       "file": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save.md",
       "title": "Proof for the draft manifest entry's pinned revision on the hypothesis-editing form",
       "summary": "What proves task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save, written against its implementation record.",
       "task": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save"
+    },
+    {
+      "id": "proof/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind.md",
+      "title": "Repin offer conditioned on the pin actually falling behind",
+      "summary": "Screen-level tests over the hypothesis-editing success surface proving the manifest-builder step is offered exactly where a save's answered revision differs from the draft's pin, plus a hook-level test proving the pin used in that comparison is the one captured before the save rather than re-read afterwards.",
+      "task": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind"
     }
   ],
   "edges": [
@@ -62,8 +78,32 @@
       "at": "the path"
     },
     {
+      "from": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "to": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
       "to": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "to": "implementation/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
       "kind": "proves",
       "at": "the path"
     }

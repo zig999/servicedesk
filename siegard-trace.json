@@ -5862,6 +5862,30 @@
       ]
     },
     {
+      "node": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
+      "digest": "sha256:e76e254e566dd61f9ecd9f3f1a0345265ce5331aef8755cc95c582417fba8257",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:6aa1f85eaaa9ede2ff343971c4f42c3fd6129453d899ad67608d32a098cabe2e"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
+      "digest": "sha256:58bb3c74375e583ae63db85daeecd345551763e4964d5286fa80b3a9265d4e2e",
+      "files": [
+        {
+          "path": "frontend/app/src/hooks/use-hypothesis-revision-form.ts",
+          "digest": "sha256:d9c72a62c7ca89b6f23c55948bba6a3ec542428092b7cc9cb851f0172b1a508e"
+        },
+        {
+          "path": "frontend/app/src/routes/hypothesis-revision-screen.tsx",
+          "digest": "sha256:6aa1f85eaaa9ede2ff343971c4f42c3fd6129453d899ad67608d32a098cabe2e"
+        }
+      ]
+    },
+    {
       "node": "rules/knowledge/a-slug-identifies-one-case",
       "digest": "sha256:bc6ffc904481c844734fcfa5b6857576ef885ef4049883f030494ac66762c596",
       "files": [

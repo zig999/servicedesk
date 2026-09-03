@@ -93,12 +93,13 @@ export function baseHandlers(
 
 export function createWrapper(): {
   readonly Wrapper: (props: { children: ReactNode }) => ReactElement;
+  readonly queryClient: QueryClient;
 } {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const Wrapper = function Wrapper({ children }: { children: ReactNode }): ReactElement {
     return createElement(QueryClientProvider, { client: queryClient }, children);
   };
-  return { Wrapper };
+  return { Wrapper, queryClient };
 }
 
 export function readyState(

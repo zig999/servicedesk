@@ -68,6 +68,8 @@ export type HypothesisRevisionFormState =
       readonly phase: "success";
       readonly hypothesisName: string;
       readonly revision: number;
+
+      readonly offerManifestBuilder: boolean;
       readonly onOpenManifestBuilder: () => void;
     };
 
@@ -102,6 +104,7 @@ export function useHypothesisRevisionForm(
   const queryClient = useQueryClient();
   const telemetry = useTelemetry();
   const isSubmittingRef = useRef(false);
+  const pinnedRevisionBeforeSaveRef = useRef<number | null>(null);
 
   const versionQuery = useQuery({
     queryKey: ["case-version", slug, version],
@@ -168,6 +171,12 @@ export function useHypothesisRevisionForm(
         body: JSON.stringify(body),
       });
     },
+    onMutate: () => {
+      pinnedRevisionBeforeSaveRef.current =
+        versionQuery.data === undefined
+          ? null
+          : pinnedRevisionFor(versionQuery.data.manifest, hypothesisName);
+    },
     onSuccess: (data) => {
       isSubmittingRef.current = false;
       telemetry.hypothesisRevised({
@@ -199,10 +208,12 @@ export function useHypothesisRevisionForm(
 
   if (reviseMutation.isSuccess && reviseMutation.data) {
     const { hypothesis_name: revisedHypothesisName, revision } = reviseMutation.data;
+    const pinnedBeforeSave = pinnedRevisionBeforeSaveRef.current;
     return {
       phase: "success",
       hypothesisName: revisedHypothesisName,
       revision,
+      offerManifestBuilder: pinnedBeforeSave === null || revision > pinnedBeforeSave,
       onOpenManifestBuilder: () => {
         void navigate({
           to: "/cases/$slug/versions/$version/manifest",

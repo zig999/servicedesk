@@ -1,0 +1,98 @@
+
+> case-authoring-console@0.1.0 typecheck
+> tsc --noEmit
+
+src/app.tsx(2,25): error TS2307: Cannot find module '@tui/ui/divider' or its corresponding type declarations.
+src/hooks/use-glossary-vocabulary.ts(2,35): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/hooks/use-test-connector-panel.ts(3,35): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/capabilities-browser-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/capability-create-screen.tsx(5,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/capability-detail-ready-view.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/capability-detail-ready-view.tsx(12,8): error TS2307: Cannot find module '@tui/ui/dialog' or its corresponding type declarations.
+src/routes/capability-detail-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/capability-form-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/capability-form-fields.tsx(4,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/capability-form-fields.tsx(5,43): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/capability-form-fields.tsx(6,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-attributes-tab.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-detail-screen.tsx(3,58): error TS2307: Cannot find module '@tui/ui/tabs' or its corresponding type declarations.
+src/routes/case-detail-screen.tsx(4,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-hypotheses-tab.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-case-result-panel.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-case-result-panel.tsx(3,26): error TS2307: Cannot find module '@tui/ui/checkbox' or its corresponding type declarations.
+src/routes/case-simulation-detail-panel.tsx(2,58): error TS2307: Cannot find module '@tui/ui/tabs' or its corresponding type declarations.
+src/routes/case-simulation-header.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-header.tsx(4,20): error TS2307: Cannot find module '@tui/lib/cn' or its corresponding type declarations.
+src/routes/case-simulation-hypotheses-table.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-status-dot.tsx(2,20): error TS2307: Cannot find module '@tui/lib/cn' or its corresponding type declarations.
+src/routes/case-simulation-subject-panel.tsx(2,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/case-simulation-subject-panel.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/case-simulation-subject-panel.tsx(4,43): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/case-simulation-subject-panel.tsx(5,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-simulation-subject-panel.tsx(64,24): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(124,32): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(179,28): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/routes/case-simulation-subject-panel.tsx(187,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-version-editor-form-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/case-version-editor-form-fields.tsx(4,26): error TS2307: Cannot find module '@tui/ui/textarea' or its corresponding type declarations.
+src/routes/case-version-editor-form-fields.tsx(5,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/case-version-editor-form-fields.tsx(6,43): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/case-version-editor-form-fields.tsx(7,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-version-editor-ready-view.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/case-version-editor-ready-view.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/case-version-editor-ready-view.tsx(4,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/case-version-editor-ready-view.tsx(14,8): error TS2307: Cannot find module '@tui/ui/dialog' or its corresponding type declarations.
+src/routes/case-version-editor-ready-view.tsx(167,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/case-version-editor-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/cases-list-screen.tsx(5,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/concept-form-dialog.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/concept-form-dialog.tsx(3,66): error TS2307: Cannot find module '@tui/ui/dialog' or its corresponding type declarations.
+src/routes/concept-form-dialog.tsx(18,22): error TS7006: Parameter 'open' implicitly has an 'any' type.
+src/routes/concept-form-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/concept-form-fields.tsx(4,26): error TS2307: Cannot find module '@tui/ui/textarea' or its corresponding type declarations.
+src/routes/concept-form-fields.tsx(5,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/concept-form-fields.tsx(6,26): error TS2307: Cannot find module '@tui/ui/checkbox' or its corresponding type declarations.
+src/routes/concept-form-fields.tsx(7,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/concept-form-fields.tsx(82,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/connector-configuration-detail-ready-view.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/connector-configuration-detail-ready-view.tsx(12,8): error TS2307: Cannot find module '@tui/ui/dialog' or its corresponding type declarations.
+src/routes/connector-configuration-detail-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/connector-configuration-form-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/connector-configuration-form-fields.tsx(4,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/connector-configuration-form-fields.tsx(5,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/connector-configurations-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/connector-test-panel-fields.tsx(2,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/connector-test-panel-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/connector-test-panel-fields.tsx(4,24): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/connector-test-panel-fields.tsx(5,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/connector-test-panel-fields.tsx(39,24): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/connector-test-panel-fields.tsx(68,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/glossary-browser-screen.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/glossary-browser-screen.tsx(3,58): error TS2307: Cannot find module '@tui/ui/tabs' or its corresponding type declarations.
+src/routes/glossary-concepts-panel.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(3,23): error TS2307: Cannot find module '@tui/ui/input' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(4,26): error TS2307: Cannot find module '@tui/ui/textarea' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(5,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(6,24): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(7,26): error TS2307: Cannot find module '@tui/ui/checkbox' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(8,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/hypothesis-revision-form-fields.tsx(134,32): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/routes/hypothesis-revision-history.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/hypothesis-revision-screen.tsx(2,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/new-case-draft-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/version-manifest-screen.tsx(3,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/routes/version-manifest-screen.tsx(4,42): error TS2307: Cannot find module '@tui/ui/tooltip' or its corresponding type declarations.
+src/routes/version-manifest-screen.tsx(5,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/routes/version-manifest-screen.tsx(6,43): error TS2307: Cannot find module '@tui/ui/select' or its corresponding type declarations.
+src/routes/version-manifest-screen.tsx(16,8): error TS2307: Cannot find module '@tui/ui/dialog' or its corresponding type declarations.
+src/shared/components/app-shell.tsx(3,49): error TS2307: Cannot find module '@tui/ui/breadcrumb' or its corresponding type declarations.
+src/shared/components/app-shell.tsx(4,27): error TS2307: Cannot find module '@tui/ui/status-bar' or its corresponding type declarations.
+src/shared/components/conflict-banner.tsx(2,24): error TS2307: Cannot find module '@tui/ui/banner' or its corresponding type declarations.
+src/shared/components/json-textarea-field.tsx(2,26): error TS2307: Cannot find module '@tui/ui/textarea' or its corresponding type declarations.
+src/shared/components/json-textarea-field.tsx(3,23): error TS2307: Cannot find module '@tui/ui/label' or its corresponding type declarations.
+src/shared/components/json-textarea-field.tsx(4,24): error TS2307: Cannot find module '@tui/ui/button' or its corresponding type declarations.
+src/shared/components/json-textarea-field.tsx(5,20): error TS2307: Cannot find module '@tui/lib/cn' or its corresponding type declarations.
+src/shared/components/status-table.tsx(9,8): error TS2307: Cannot find module '@tui/ui/table' or its corresponding type declarations.
+src/shared/components/status-table.tsx(10,20): error TS2307: Cannot find module '@tui/lib/cn' or its corresponding type declarations.
+src/shared/components/status-table.tsx(111,38): error TS7006: Parameter 'event' implicitly has an 'any' type.

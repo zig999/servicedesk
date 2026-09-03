@@ -39,9 +39,11 @@ export function HypothesisRevisionScreen({
         <p>
           Hypothesis &quot;{state.hypothesisName}&quot; saved as revision {state.revision}.
         </p>
-        <Button type="button" onClick={state.onOpenManifestBuilder}>
-          Open Manifest Builder
-        </Button>
+        {state.offerManifestBuilder && (
+          <Button type="button" onClick={state.onOpenManifestBuilder}>
+            Open Manifest Builder
+          </Button>
+        )}
       </section>
     );
   }
