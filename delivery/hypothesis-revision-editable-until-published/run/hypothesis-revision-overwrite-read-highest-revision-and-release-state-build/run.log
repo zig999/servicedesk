@@ -1,0 +1,86 @@
+===== install :: npm ci :: passed =====
+npm warn deprecated try-resolve@1.0.1: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+
+added 358 packages, and audited 359 packages in 14s
+
+98 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+===== typecheck :: npm run typecheck :: failed =====
+
+> servicedeskn1@0.1.0 typecheck
+> tsc --noEmit
+
+src/__tests__/unit/case/case-query.service.spec.ts(70,7): error TS2420: Class 'FakeCaseStore' incorrectly implements interface 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(418,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(447,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(458,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(466,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(477,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(492,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(507,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(526,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(546,42): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(564,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(573,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(586,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(598,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(601,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(611,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(614,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(622,48): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(628,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(631,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(640,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(670,52): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(680,57): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(690,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(706,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(723,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(735,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(746,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/case/case-query.service.spec.ts(757,40): error TS2345: Argument of type 'FakeCaseStore' is not assignable to parameter of type 'ICaseStore'.
+  Property 'readHighestRevisionReleaseState' is missing in type 'FakeCaseStore' but required in type 'ICaseStore'.
+src/__tests__/unit/http/build-app.spec.ts(72,3): error TS2741: Property 'readHighestRevisionReleaseState' is missing in type '{ assembleVersion: () => Promise<undefined>; findDraftVersion: () => Promise<undefined>; listCases: () => Promise<PaginatedResponse<CaseIdentity>>; ... 9 more ...; updateDraft: () => Promise<...>; }' but required in type 'ICaseStore'.
+src/__tests__/unit/http/update-draft.routes.spec.ts(60,3): error TS2741: Property 'readHighestRevisionReleaseState' is missing in type '{ assembleVersion: Mock<Procedure>; findDraftVersion: Mock<Procedure>; listCases: Mock<Procedure>; listCaseVersions: Mock<Procedure>; ... 8 more ...; updateDraft: Mock<...>; }' but required in type 'ICaseStore'.
+
+===== lint :: npm run lint :: not_run =====
+
+===== secret-scan :: npm run secret-scan :: not_run =====
+

@@ -14,6 +14,10 @@ import type {
   UpdateDraftInput,
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
+import type {
+  HighestRevisionReleaseState,
+  IHighestRevisionReleaseStateQuery,
+} from '../case/hypothesis-revision-release-state.port.js';
 import { CaseAlreadyHasDraftError } from '../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
@@ -93,7 +97,7 @@ const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
 const NO_VERSION_NAMED = 0;
 
-export class RelationalCaseStore implements ICaseStore {
+export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseStateQuery {
   public constructor(private readonly connection: DatabaseConnection) {}
 
   public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
@@ -124,6 +128,15 @@ export class RelationalCaseStore implements ICaseStore {
   ): Promise<PaginatedResponse<HypothesisRevisionListItem>> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) =>
       listHypothesisRevisionsPage(tx, { slug, hypothesis_name: hypothesisName }, pagination),
+    );
+  }
+
+  public async readHighestRevisionReleaseState(
+    slug: string,
+    hypothesisName: string,
+  ): Promise<HighestRevisionReleaseState> {
+    return runInTransaction(this.connection, raiseReadFailure, (tx) =>
+      resolveHighestRevisionReleaseState(tx, { slug, hypothesis_name: hypothesisName }),
     );
   }
 
@@ -441,6 +454,55 @@ function hypothesisRevisionListItemOf(row: IHypothesisRevisionRow, collects: rea
     criterion: row.criterion,
     collects,
     resolution: resolutionOf(row.resolution_outcome, row.resolution_action, row.resolution_recipient),
+  };
+}
+
+interface IHighestRevisionReleaseStateRow {
+  readonly revision: number | null;
+  readonly released_referenced: boolean;
+}
+
+async function resolveHighestRevisionReleaseState(
+  tx: IQueryable,
+  key: IHypothesisKey,
+): Promise<HighestRevisionReleaseState> {
+  const row = await queryOneOrAbsent<IHighestRevisionReleaseStateRow>(
+    tx,
+    highestRevisionReleaseStateSelect(key),
+    raiseReadFailure,
+  );
+  if (row === undefined) {
+    throw raiseReadFailure(new Error('reading a hypothesis\'s highest revision returned no row'));
+  }
+  return highestRevisionReleaseStateOf(row);
+}
+
+function highestRevisionReleaseStateOf(row: IHighestRevisionReleaseStateRow): HighestRevisionReleaseState {
+  if (row.revision === null) {
+    return { revision: undefined };
+  }
+  return { revision: row.revision, released_referenced: row.released_referenced };
+}
+
+function highestRevisionReleaseStateSelect(key: IHypothesisKey): IStatement {
+  return {
+    text: `WITH highest AS (
+             SELECT MAX(revision) AS revision
+             FROM ${HYPOTHESIS_REVISIONS_TABLE}
+             WHERE case_slug = $1 AND hypothesis_name = $2
+           )
+           SELECT highest.revision,
+                  EXISTS (
+                    SELECT 1
+                    FROM ${CASE_VERSION_HYPOTHESES_TABLE} cvh
+                    JOIN ${CASE_VERSIONS_TABLE} cv ON cv.slug = cvh.case_slug AND cv.version = cvh.case_version
+                    WHERE cvh.case_slug = $1
+                      AND cvh.hypothesis_name = $2
+                      AND cvh.revision = highest.revision
+                      AND cv.state = $3
+                  ) AS released_referenced
+           FROM highest`,
+    params: [key.slug, key.hypothesis_name, RELEASED_STATE],
   };
 }
 

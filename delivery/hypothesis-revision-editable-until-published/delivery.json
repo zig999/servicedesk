@@ -2,12 +2,28 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state.md",
+      "title": "Read a hypothesis's highest revision and whether a released version references it",
+      "summary": "A new case-store-side port and its relational answer report a hypothesis's highest existing revision number and whether any case version in released state pins it in its manifest.",
+      "task": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state"
+    },
+    {
       "id": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released.md",
       "title": "Release-conditioned refusal on hypothesis_revisions UPDATE",
       "summary": "A new migration replaces the unconditional no-update rule on hypothesis_revisions with a per-row trigger that refuses an UPDATE, raising a distinguishable error, only when a released case version's manifest still references that exact revision.",
       "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    },
+    {
+      "id": "proof/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-overwrite/read-highest-revision-and-release-state.md",
+      "title": "Proof for reading a hypothesis's highest revision and release state",
+      "summary": "One unit-level pair proving the port module imports no driver, framework or provider client, and seven integration-level tests against a real PostgreSQL database proving RelationalCaseStore's readHighestRevisionReleaseState answers the highest revision number and the released-reference fact exactly as the task's criteria state, including the two discriminating cases — draft-only reference, and a released version pinning a lower revision — the port's own discriminated-union shape excludes from ever defaulting wrong.",
+      "task": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state"
     },
     {
       "id": "proof/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
@@ -19,6 +35,42 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "task/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "to": "constraints/the-schema-replays-from-its-scripts",
@@ -59,6 +111,12 @@
       "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "to": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "to": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
+      "kind": "proves",
       "at": "the path"
     },
     {
