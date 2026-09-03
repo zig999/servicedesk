@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { afterAll, afterEach, beforeAll, expect, it } from 'vitest';
 import type { CreateDraftInput } from '../../../case/case-store.port.js';
 import type { Resolution } from '../../../case/case.js';
+import type { IHypothesisRevisionOverwrite } from '../../../case/hypothesis-revision-overwrite.port.js';
 import { CaseAlreadyHasDraftError } from '../../../errors/case-already-has-draft.error.js';
 import { CaseNotFoundError } from '../../../errors/case-not-found.error.js';
 import { CaseStoreError } from '../../../errors/case-store.error.js';
@@ -1209,5 +1210,294 @@ it(
 
     expect(highestRevision).toBeGreaterThan(lowerRevision);
     expect(state).toEqual({ revision: highestRevision, released_referenced: false });
+  },
+);
+
+it("overwrites a revision's content while leaving its own revision number exactly as it was before", async () => {
+  const slug = `case-lifecycle-store-overwrite-number-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data.map((item) => item.revision)).toEqual([revision]);
+});
+
+it("answers the replacement's own criterion and resolution, once that revision is read back after the overwrite", async () => {
+  const slug = `case-lifecycle-store-overwrite-content-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const newGlossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(newGlossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data).toEqual([{ revision, criterion: 'the replaced criterion', collects: [], resolution: aResolution(newGlossary) }]);
+});
+
+it("answers exactly the concepts the replacement carried, once that revision's collects are read back after the overwrite", async () => {
+  const slug = `case-lifecycle-store-overwrite-collects-added-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const [conceptA, conceptB] = await Promise.all([freshConcept(), freshConcept()]);
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [conceptA, conceptB],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data[0]?.collects).toEqual([conceptA, conceptB].sort());
+});
+
+it('answers none of the concepts the revision collected before the replacement, once the replacement drops them all', async () => {
+  const slug = `case-lifecycle-store-overwrite-collects-dropped-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const [conceptA, conceptB] = await Promise.all([freshConcept(), freshConcept()]);
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [conceptA, conceptB],
+    resolution: aResolution(glossary),
+  });
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data[0]?.collects).toEqual([]);
+});
+
+it('leaves the hypothesis holding exactly the revisions it held before the overwrite, no more and no fewer', async () => {
+  const slug = `case-lifecycle-store-overwrite-count-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revisionInput = () => ({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'a criterion',
+    collects: [] as string[],
+    resolution: aResolution(glossary),
+  });
+  const first = await store.insertHypothesisRevision(revisionInput());
+  const second = await store.insertHypothesisRevision(revisionInput());
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision: first,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data.map((item) => item.revision)).toEqual([first, second]);
+  expect(page.total).toBe(2);
+});
+
+it("leaves a different existing revision of the same hypothesis exactly as it was, so the overwrite assigns no revision number the hypothesis had already assigned elsewhere", async () => {
+  const slug = `case-lifecycle-store-overwrite-no-collision-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revisionInput = (criterion: string) => ({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion,
+    collects: [] as string[],
+    resolution: aResolution(glossary),
+  });
+  const first = await store.insertHypothesisRevision(revisionInput('first criterion'));
+  const second = await store.insertHypothesisRevision(revisionInput('second criterion'));
+
+  await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision: first,
+    criterion: 'first criterion replaced',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data).toEqual([
+    { revision: first, criterion: 'first criterion replaced', collects: [], resolution: aResolution(glossary) },
+    { revision: second, criterion: 'second criterion', collects: [], resolution: aResolution(glossary) },
+  ]);
+});
+
+it('resolves the overwrite with undefined rather than echoing back a revision number the way inserting one does', async () => {
+  const slug = `case-lifecycle-store-overwrite-returns-void-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const result = await store.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  expect(result).toBeUndefined();
+});
+
+it('performs the overwrite through the IHypothesisRevisionOverwrite port alone, without needing the rest of ICaseStore', async () => {
+  const slug = `case-lifecycle-store-overwrite-port-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  const overwriter: IHypothesisRevisionOverwrite = store;
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  await overwriter.overwriteHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    revision,
+    criterion: 'the replaced criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data[0]?.criterion).toBe('the replaced criterion');
+});
+
+it('resolves without raising, leaving no new row behind, when the named revision does not exist for that hypothesis', async () => {
+  const slug = `case-lifecycle-store-overwrite-absent-revision-${randomUUID()}`;
+  slugsWrittenByThisTest.push(slug);
+  const glossary = await freshGlossary();
+  const store = new RelationalCaseStore(pool);
+  await store.createDraft(aCreateDraftInput(slug, glossary));
+  const revision = await store.insertHypothesisRevision({
+    slug,
+    hypothesis_name: 'a-hypothesis',
+    criterion: 'the original criterion',
+    collects: [],
+    resolution: aResolution(glossary),
+  });
+  const neverHeldRevision = revision + 1;
+
+  await expect(
+    store.overwriteHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      revision: neverHeldRevision,
+      criterion: 'a criterion nothing should have stored',
+      collects: [],
+      resolution: aResolution(glossary),
+    }),
+  ).resolves.toBeUndefined();
+
+  const page = await store.listHypothesisRevisions(slug, 'a-hypothesis', { offset: 0, limit: 20 });
+  expect(page.data.map((item) => item.revision)).toEqual([revision]);
+});
+
+it(
+  'refuses an overwrite attempt against a revision a released case version still references through a ' +
+    'distinguishable error, rather than surfacing it as an undifferentiated write failure',
+  async () => {
+    const slug = `case-lifecycle-store-overwrite-released-referenced-${randomUUID()}`;
+    slugsWrittenByThisTest.push(slug);
+    const glossary = await freshGlossary();
+    const store = new RelationalCaseStore(pool);
+    const version = await store.createDraft(aCreateDraftInput(slug, glossary));
+    const revision = await store.insertHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      criterion: 'the original criterion',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+    await store.placeHypothesis({ slug, version, hypothesis_name: 'a-hypothesis', revision, position: 1 });
+    await store.release(slug, version);
+
+    const rejection = store.overwriteHypothesisRevision({
+      slug,
+      hypothesis_name: 'a-hypothesis',
+      revision,
+      criterion: 'a criterion the released reference should have refused',
+      collects: [],
+      resolution: aResolution(glossary),
+    });
+
+    await expect(rejection).rejects.not.toHaveProperty('message', 'a write against the case store failed');
   },
 );

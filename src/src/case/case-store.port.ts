@@ -52,6 +52,10 @@ export type HypothesisRevisionInput = {
   readonly resolution: Resolution;
 };
 
+export type OverwriteHypothesisRevisionInput = HypothesisRevisionInput & {
+  readonly revision: number;
+};
+
 export type UpdateDraftInput = {
   readonly title: string;
   readonly when_to_use: string;
