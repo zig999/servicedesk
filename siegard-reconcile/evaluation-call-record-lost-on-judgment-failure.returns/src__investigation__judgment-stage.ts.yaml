@@ -1,0 +1,120 @@
+read:
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: "judgeHypotheses(): one judgeOneHypothesis call per required hypothesis, launched together and gated by a CallPool sized from options.poolSize"
+    evidence: |
+      const pool = new CallPool(poolSize); ... return Promise.all(
+          requiredNames.map((name) =>
+            judgeOneHypothesis({
+  - node: constraints/judgment-runs-behind-a-port
+    held_at: "runIsolatedCall()/retryOrFail(): the only call into a hypothesis judgment is through the injected IHypothesisEvaluator"
+    evidence: "evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext)"
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "judgeHypotheses(): the guard is built from the absolute deadline minus now, clamped at zero, and threaded to every hypothesis's call and retry"
+    evidence: "const deadlineGuard = createDeadlineGuard(Math.max(0, deadline - now));"
+  - node: constraints/the-judgment-prompt-is-closed
+    held_at: "toEvidenceItems() and the caseContext literal built in judgeHypotheses(), passed as the sole inputs to evaluator.evaluate"
+    evidence: |
+      const evidenceItems = toEvidenceItems(evidence); ... const caseContext: CaseContext = { title: theCase.title, whenToUse: theCase.when_to_use };
+  - node: contracts/integration/capability-registry
+    held_at: nowhere
+    evidence: "the import list (lines 1-8) names case-resolution, case, citation, citation-validation, evaluation, evidence, hypothesis-evaluator.port and usage — no capability-registry client is imported or called anywhere in the file"
+  - node: domain/investigation/citation
+    held_at: "noDataEvaluation(): citations built with concept only, field left absent"
+    evidence: "citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept }))"
+  - node: domain/investigation/evaluation
+    held_at: "asEvaluation()/noDataEvaluation()/deadlineExceededEvaluation()/judgmentFailureEvaluation(): the Evaluation object literals returned to the caller"
+    evidence: "return { hypothesis: name, verdict: 'confirmed', citations: outcome.citations, ...callRecord };"
+  - node: domain/investigation/evaluation-reason
+    held_at: "the three reason literals set across noDataEvaluation, deadlineExceededEvaluation and judgmentFailureEvaluation"
+    evidence: "reason: 'no-data' ... reason: 'deadline-exceeded' ... reason: 'judgment-failure'"
+  - node: domain/investigation/hypothesis-evaluator
+    held_at: "runIsolatedCall()/retryOrFail(): evaluator.evaluate is given the hypothesis's criterion, its own evidence items and the case context, and its outcome is what gets turned into an Evaluation"
+    evidence: "await raceEvaluateAgainstDeadline(evaluator.evaluate(hypothesis.criterion, evidenceItems, caseContext), deadlineGuard)"
+  - node: domain/investigation/verdict
+    held_at: "asEvaluation(): branches on outcome.verdict across confirmed, refuted and the remaining (inconclusive) case"
+    evidence: |
+      if (outcome.verdict === 'confirmed') {
+       ... }
+        if (outcome.verdict === 'refuted') {
+  - node: domain/knowledge/case-version
+    held_at: "judgeHypotheses(): requiredNames derived via requiresEvaluationOf(theCase), and title/when_to_use read off theCase for the caseContext"
+    evidence: "const requiredNames = requiresEvaluationOf(theCase);"
+  - node: rules/investigation/a-citation-stays-within-the-hypothesis-collects
+    held_at: "noDataEvaluation() draws citations straight from the hypothesis's own filtered evidence; runIsolatedCall()/retryOrFail() gate every evaluator-produced outcome through citationsAreAcceptable/isStructurallyValid before accepting it"
+    evidence: "const context: HypothesisCitationContext = { collects: hypothesis.collects, evidence }; if (citationsAreAcceptable(context, first)) {"
+  - node: rules/investigation/a-cited-field-exists-in-the-capability-output-schema
+    held_at: "isStructurallyValid(): delegates the check to acceptedCitations(), whose own module enforces field existence; this file only gates on its result"
+    evidence: "const accepted = acceptedCitations({ ...context, citations }); return accepted.length === citations.length;"
+  - node: rules/investigation/a-decided-evaluation-cites-evidence
+    held_at: "isStructurallyValid(): an empty citations array is rejected before a confirmed/refuted outcome can reach asEvaluation()"
+    evidence: |
+      function isStructurallyValid(context: HypothesisCitationContext, citations: readonly Citation[]): boolean {
+        if (citations.length === 0) {
+          return false;
+        }
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: "retryOrFail(): the no-retry branch carries the first call's outcome, the retried branch carries only the retry's outcome"
+    evidence: |
+      if (deadlineGuard.elapsed()) {
+          return judgmentFailureEvaluation(name, first);
+        } ... return citationsAreAcceptable(context, retry) ? asEvaluation(name, retry) : judgmentFailureEvaluation(name, retry);
+  - node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+    held_at: "noDataEvaluation()/deadlineExceededEvaluation()/judgmentFailureEvaluation(): each sets reason explicitly alongside verdict 'inconclusive'"
+    evidence: |
+      return {
+          hypothesis: name,
+          verdict: 'inconclusive',
+          reason: 'no-data',
+          citations: nonOkEvidence.map((item): Citation => ({ concept: item.concept })),
+        };
+  - node: rules/investigation/judgment-reads-the-evidence-snapshot
+    held_at: "toEvidenceItems(): maps each Evidence item's own already-collected concept, observation, fields and concept_description, with no external lookup"
+    evidence: |
+      return evidence.map((item): EvidenceItem => ({
+          concept: item.concept,
+          result: 'ok',
+          observation: item.observation,
+          fields: item.fields,
+          concept_description: item.concept_description,
+        }));
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "acquireSlotOrDeadline()'s caller and runIsolatedCall()/retryOrFail(): a deadline overrun returns a deadlineExceededEvaluation instead of throwing or aborting the stage"
+    evidence: |
+      if (!(await acquireSlotOrDeadline(pool, deadlineGuard))) {
+          return deadlineExceededEvaluation(name);
+        }
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "judgeHypotheses(): one judgeOneHypothesis result per name in requiredNames, none filtered out"
+    evidence: |
+      return Promise.all(
+          requiredNames.map((name) =>
+            judgeOneHypothesis({
+  - node: rules/knowledge/requires-evaluation-of-names-exactly-the-manifested-hypotheses
+    held_at: nowhere
+    evidence: "import { requiresEvaluationOf } from '../case/case-resolution.js'; ... const requiredNames = requiresEvaluationOf(theCase);"
+  - node: scenarios/investigation/a-collection-timeout-degrades-to-no-data
+    held_at: "judgeOneHypothesis(): non-ok evidence short-circuits straight to noDataEvaluation before any call or pool acquisition"
+    evidence: |
+      const nonOkEvidence = evidence.filter((item) => item.result !== 'ok');
+        if (nonOkEvidence.length > 0) {
+          return noDataEvaluation(name, nonOkEvidence);
+        }
+  - node: scenarios/investigation/a-foreign-citation-is-refused
+    held_at: "runIsolatedCall()/retryOrFail(): a rejected citation set routes to retryOrFail, which retries once if time remains and otherwise records judgment-failure"
+    evidence: |
+      if (citationsAreAcceptable(context, first)) {
+          return asEvaluation(name, first);
+        }
+        return retryOrFail({
+  - node: scenarios/investigation/a-queued-judgment-is-deadline-exceeded
+    held_at: "acquireSlotOrDeadline(): a slot lost to the deadline races the pool acquisition against the deadline signal and reports false"
+    evidence: "const acquired = await Promise.race([acquisition.then(() => true), deadlineGuard.signal.then(() => false)]);"
+  - node: scenarios/investigation/a-re-registered-capability-does-not-change-a-past-judgment
+    held_at: "toEvidenceItems(): fields and concept_description are carried unchanged from the already-collected evidence item, never re-fetched"
+    evidence: |
+      fields: item.fields,
+          concept_description: item.concept_description,
+looked_past: "the non-null assertions in hypothesisNamed() (`.find(...)!`) and evidenceFor() (`.get(name)!`), which would throw on a missing hypothesis or evidence entry rather than degrade — a robustness/coverage question, not a domain-fact discrepancy against any node in this set."
+candidates_opened:
+  - domain/investigation/evidence
+  - domain/investigation/evidence-result

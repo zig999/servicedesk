@@ -1,0 +1,10 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the judgment-failure round-trip test, lines 496-515"
+    evidence: |
+      { hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'judgment-failure', citations: [], usage: { input_tokens: 12, output_tokens: 34 }, elapsed_ms: 567, prompt: 'the judgment-failure prompt' }, ... expect(answered.evaluations).toEqual(investigation.evaluations);
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: "the same judgment-failure round-trip test, lines 496-515 — for the atomic-tuple aspect only"
+    evidence: |
+      usage: { input_tokens: 12, output_tokens: 34 }, elapsed_ms: 567, prompt: 'the judgment-failure prompt', ... expect(answered.evaluations).toEqual(investigation.evaluations); — the store is shown to persist and return the three fields as one indivisible bundle for the hypothesis, never decomposing or recombining them; the file does not exercise the retry-vs-first-call selection itself, which belongs to the judgment stage rather than to persistence round-trip
+looked_past: "The file's many other assertions — ticket_ref nulling, durations.writing nullability, write-once/concurrency refusal, the atomic rollback on a colliding hypothesis, the capability foreign-key refusal, the no-data citation's missing field, and the assessment's register/determining_hypothesis handling — touch domain facts governed by other nodes (e.g. an-empty-ticket-reference-is-no-ticket-reference, an-investigation-is-written-once, the-stored-schema-mirrors-the-declared-model, domain/investigation/citation) outside this delegation's two-node set and are left to the delegations scoped to those nodes."

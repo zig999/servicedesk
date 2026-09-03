@@ -1,0 +1,24 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the twelve-column nullability test, lines 382-404 — the investigation_evaluations rows it expects"
+    evidence: |
+      { table_name: 'investigation_evaluations', column_name: 'elapsed_ms' },
+      { table_name: 'investigation_evaluations', column_name: 'input_tokens' },
+      { table_name: 'investigation_evaluations', column_name: 'output_tokens' },
+      { table_name: 'investigation_evaluations', column_name: 'prompt' },
+      { table_name: 'investigation_evaluations', column_name: 'reason' },
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: nowhere
+    evidence: |
+      async function insertEvaluation(client: Client, options: IEvaluationOptions): Promise<void> {
+        const verdict = options.verdict ?? 'confirmed';
+        const reason = options.reason === undefined ? null : options.reason;
+        await client.query(
+          'INSERT INTO investigation_evaluations (investigation_id, hypothesis, verdict, reason) VALUES ($1,$2,$3,$4)',
+          [options.investigationId, options.hypothesis, verdict, reason],
+        );
+      }
+looked_past: "the file's other schema assertions (the full table list, the verdict/evidence-result/capability-nature/consolidation-register enumerations, the foreign-key, uniqueness and immutability checks) state domain facts too, but none of them belong to the two nodes this file's pack names, and they are unaffected by either node's own fact."
+candidates_opened:
+  - domain/investigation/usage
+  - domain/investigation/evaluation-reason

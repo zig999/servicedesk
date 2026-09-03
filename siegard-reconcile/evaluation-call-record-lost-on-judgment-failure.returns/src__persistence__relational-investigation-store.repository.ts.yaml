@@ -1,0 +1,100 @@
+findings:
+  - file: src/persistence/relational-investigation-store.repository.ts
+    where: "raiseRootInsertFailure, lines 267-269, and its use inside writeWholeInvestigation"
+    evidence: "return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));"
+    cost: "write() rejects with InvestigationAlreadyStoredError whenever the id already has a record, rather than resolving the way a write that settled would; a caller that reads only this store's own write() outcome sees the duplicate as something to recover from, not as the already-answered request the rule describes, and nothing in this file makes the second attempt behave as a write that settled."
+    kind: contradicts
+    node: rules/investigation/an-investigation-is-written-once
+    correction: "on a unique-violation of the root insert, write() should resolve without raising, the same as a fresh insert — the attempt found exactly the record it was sent to write."
+  - file: src/persistence/relational-investigation-store.repository.ts
+    where: "reasonOf, lines 429-432"
+    evidence: |
+      if (row.reason === null) {
+          throw raiseReadFailure(new Error(`investigation_evaluations holds an inconclusive verdict with no reason for hypothesis "${row.hypothesis}"`));
+        }
+    cost: "the rule that every inconclusive evaluation declares a reason is re-asserted here as an independent, hard-coded null check carrying its own business-worded message, rather than by reference to the node that states it; a later change to that rule has to be found and re-derived here separately, and until then the two can silently disagree about which stored rows are valid."
+    kind: contradicts
+    node: rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - file: src/persistence/relational-investigation-store.repository.ts
+    where: "nonEmptyCitations, lines 443-448"
+    evidence: |
+      if (citations.length === 0) {
+          throw raiseReadFailure(new Error(`investigation_evaluations holds a decided verdict for hypothesis "${hypothesis}" with no citations`));
+        }
+    cost: "the rule that a confirmed or refuted evaluation carries at least one citation is re-asserted here as an independent, hard-coded length check carrying its own business-worded message, rather than by reference to the node that states it; a later change to that rule has to be carried into this file separately, and disagreement between the two is invisible until a stored evaluation is actually read back."
+    kind: contradicts
+    node: rules/investigation/a-decided-evaluation-cites-evidence
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the INVESTIGATION_INSERT_TEXT column list and the *Params/*Row functions pairing each column to a declared attribute"
+    evidence: "assessment.outcome, assessment.referral.action, assessment.referral.recipient, assessment.determining_hypothesis ?? null, assessment.text, assessment.register, assessment.usage.input_tokens, assessment.usage.output_tokens, assessment.elapsed_ms, assessment.prompt,"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "write() and read(), which only ever call through IConnectableQueryable/IQueryable"
+    evidence: "await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));"
+  - node: domain/investigation/assessment
+    held_at: "assessmentParams and assessmentOf"
+    evidence: "outcome: row.assessment_outcome, referral: { action: row.assessment_action, recipient: row.assessment_recipient }, ...(row.assessment_determining_hypothesis !== null ? { determining_hypothesis: row.assessment_determining_hypothesis } : {}), text: row.assessment_text, register: registerOf(row.assessment_register),"
+  - node: domain/investigation/citation
+    held_at: "citationStatement and citationOf"
+    evidence: "return { concept: row.concept, ...(row.field !== null ? { field: row.field } : {}) };"
+  - node: domain/investigation/cost
+    held_at: "costParams and the cost object in investigationOf"
+    evidence: "return [cost.calls, cost.input_tokens, cost.output_tokens];"
+  - node: domain/investigation/durations
+    held_at: "durationsParams and the durations object in investigationOf"
+    evidence: "return [durations.collection, durations.judgment, durations.writing, durations.total];"
+  - node: domain/investigation/evaluation
+    held_at: "evaluationStatement, evaluationOf and callRecordOf"
+    evidence: |
+      params: [investigationId, evaluation.hypothesis, evaluation.verdict, reason, evaluation.usage?.input_tokens ?? null, evaluation.usage?.output_tokens ?? null, evaluation.elapsed_ms ?? null, evaluation.prompt ?? null,],
+  - node: domain/investigation/evaluation-reason
+    held_at: "EVALUATION_REASON_VALUES and isEvaluationReason"
+    evidence: "const EVALUATION_REASON_VALUES: ReadonlySet<string> = new Set<string>(EVALUATION_REASONS);"
+  - node: domain/investigation/evidence
+    held_at: "evidenceStatement and evidenceOf"
+    evidence: "concept: row.concept, inputs: row.inputs, observation: row.observation, observed_at: row.observed_at.toISOString(), ttl: row.ttl, origin: row.origin, result: resultOf(row.result),"
+  - node: domain/investigation/evidence-result
+    held_at: "EVIDENCE_RESULT_VALUES, resultOf and isEvidenceResult"
+    evidence: "const EVIDENCE_RESULT_VALUES: ReadonlySet<string> = new Set<string>(EVIDENCE_RESULTS);"
+  - node: domain/investigation/field-semantics
+    held_at: "the fields column, written and read as a JSON blob of FieldSemantics"
+    evidence: "JSON.stringify(evidence.fields),"
+  - node: domain/investigation/investigation
+    held_at: "investigationStatement, investigationParams and investigationOf"
+    evidence: |
+      INSERT INTO ${INVESTIGATIONS_TABLE}
+          (id, requester, ticket_ref, narrative, subject_type, prompt_version, model,
+  - node: domain/investigation/subject
+    held_at: "identityParams (subject_type) and investigationOf's subject assembly"
+    evidence: "subject: { type: row.subject_type, attributes },"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueStatement and readSubjectAttributeValues"
+    evidence: "params: [investigationId, attribute.attribute, attribute.value],"
+  - node: domain/investigation/usage
+    held_at: "assessmentParams/assessmentOf and callRecordOf"
+    evidence: "record.usage = { input_tokens: row.input_tokens, output_tokens: row.output_tokens };"
+  - node: domain/investigation/verdict
+    held_at: "VERDICT_VALUES, verdictOf and isVerdict"
+    evidence: "const VERDICT_VALUES: ReadonlySet<string> = new Set<string>(VERDICTS);"
+  - node: domain/knowledge/consolidation-register
+    held_at: "CONSOLIDATION_REGISTER_VALUES, registerOf and isConsolidationRegister"
+    evidence: "register: registerOf(row.assessment_register),"
+  - node: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+    held_at: "ticketRefForWrite and holdsNoTicketReference"
+    evidence: |
+      function holdsNoTicketReference(value: string | undefined): boolean {
+        return value === undefined || value === '';
+      }
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: nowhere
+    evidence: "return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "written_at is absent from INVESTIGATION_INSERT_TEXT's column list (left to the store to fill at settle) and read back in investigationOf"
+    evidence: "written_at: row.written_at.toISOString(),"
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: "the evaluation table's single input_tokens/output_tokens/elapsed_ms/prompt columns per hypothesis, written and read as one call's record"
+    evidence: "return { hypothesis: row.hypothesis, verdict, reason: reasonOf(row), citations, ...callRecord };"
+looked_past: "the ORDER BY clauses used for deterministic reads, the table/column naming, and the generic-vs-specific error class hierarchy (InvestigationStoreError vs. InvestigationAlreadyStoredError) are code-shape choices with no domain fact attached, and are a standard-conformance question rather than this pass's."
+candidates_opened:
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason

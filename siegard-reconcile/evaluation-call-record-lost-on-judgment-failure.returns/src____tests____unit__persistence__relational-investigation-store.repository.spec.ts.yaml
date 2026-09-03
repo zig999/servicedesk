@@ -1,0 +1,15 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the evaluation-insert params and the read-back assembly for usage/elapsed_ms/prompt, lines 443-537"
+    evidence: |
+      expect(answered.evaluations[0]).not.toHaveProperty('usage');
+      expect(answered.evaluations[0]).not.toHaveProperty('elapsed_ms');
+      expect(answered.evaluations[0]).not.toHaveProperty('prompt');
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: nowhere
+    evidence: |
+      const judgmentFailure: Evaluation = {
+        hypothesis: 'a-hypothesis', verdict: 'inconclusive', reason: 'judgment-failure', citations: [],
+        usage: { input_tokens: 12, output_tokens: 34 }, elapsed_ms: 567, prompt: 'the judgment-failure prompt',
+      };
+looked_past: "the confirmed/refuted-must-cite-evidence check (lines 411-425), the ticket_ref empty-string handling, the durations.writing optionality test, and the evidence fields/concept_description and migrations/0013 comment all belong to other nodes already bound to this file and are not this task's two nodes."

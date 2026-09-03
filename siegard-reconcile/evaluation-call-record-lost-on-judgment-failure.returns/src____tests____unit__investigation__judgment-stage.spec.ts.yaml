@@ -1,0 +1,25 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the object shape asserted by judgeHypotheses()'s result throughout the file, e.g. the usage/elapsed_ms/prompt attachment assertions"
+    evidence: |
+      expect(result).toEqual([
+          { hypothesis: 'h1', verdict: 'confirmed', citations: [{ concept: 'concept-a', field: 'field-a' }], usage, elapsed_ms: 321, prompt: 'the first-call prompt' },
+        ]);
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: "the assertion in \"attaches the retry's own usage, elapsed_ms and prompt — never the discarded first call's, and never a usage summed across both attempts — onto a judgment-failure evaluation when the retry also fails citation validation\""
+    evidence: |
+      expect(result).toEqual([{
+          hypothesis: 'h1',
+          verdict: 'inconclusive',
+          reason: 'judgment-failure',
+          citations: [],
+          usage: retryUsage,
+          elapsed_ms: 34,
+          prompt: 'the retry prompt',
+        }]);
+looked_past: "The block of tests on hypothesisNamed/evidenceFor's return-type narrowing, the absence of throws/fallbacks in their bodies, and the assertion that judgment-stage.ts imports no ICapabilityQuery examine internal implementation shape and error-propagation style rather than a domain fact, so they belong to a code-quality or architecture-conformance judgment rather than this one."
+candidates_opened:
+  - domain/investigation/evaluation-reason
+  - rules/investigation/an-inconclusive-evaluation-declares-its-reason
+  - rules/investigation/no-stage-aborts-on-its-deadline
+  - scenarios/investigation/a-queued-judgment-is-deadline-exceeded

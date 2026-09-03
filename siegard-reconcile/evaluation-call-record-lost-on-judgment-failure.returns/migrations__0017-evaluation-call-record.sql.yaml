@@ -1,0 +1,18 @@
+read:
+  - node: domain/investigation/evaluation
+    held_at: "the four ALTER TABLE statements adding input_tokens, output_tokens, elapsed_ms and prompt"
+    evidence: |
+      ALTER TABLE investigation_evaluations
+        ADD COLUMN input_tokens INTEGER;
+      ALTER TABLE investigation_evaluations
+        ADD COLUMN output_tokens INTEGER;
+      ALTER TABLE investigation_evaluations
+        ADD COLUMN elapsed_ms INTEGER;
+      ALTER TABLE investigation_evaluations
+        ADD COLUMN prompt TEXT;
+  - node: rules/investigation/a-judgment-failure-records-the-last-call-made
+    held_at: nowhere
+    evidence: "the migration adds one column each for input_tokens, output_tokens, elapsed_ms and prompt — a single set per row rather than one per attempt — but which call's values get written is application logic this schema-only file does not carry"
+candidates_opened:
+  - domain/investigation/usage
+  - constraints/the-stored-schema-mirrors-the-declared-model
