@@ -1894,4 +1894,145 @@ entries:
       CaseVersionNotReleasableError idiom; it deliberately avoids naming the revision itself
       "released", because a revision declares no such state — being adopted by a released version
       is a fact read from the other aggregate.
+  - location: rules/knowledge/a-revise-answers-the-revision-number-it-saved.md
+    field: statement
+    unstated: >-
+      Whether revising a hypothesis tells the curator the revision number the content was saved
+      as. contracts/knowledge/case-lifecycle publishes revise-hypothesis and
+      a-hypothesis-revision-is-overwritten-while-unreleased decides which revision the write
+      lands on, but no node says what comes back to the curator, so whether the saved number
+      reaches the curator at all would follow from whatever the operation happened to return.
+    decided: >-
+      A curator who revises a hypothesis is told the revision number the content was saved as —
+      the number of the revision that revise wrote — in both branches of the overwrite rule, in
+      place or next.
+    why: >-
+      The branch a revise takes turns on whether a released case version references the
+      hypothesis's highest revision, a fact of an aggregate the curator is not reading while
+      saving, so the saved number cannot be derived from the curator's own input; without it the
+      curator cannot tell whether the number the draft's manifest entry pins still names the
+      content just written. Telling it follows the precedent a-manifest-entrys-pinned-revision-is-always-shown
+      and a-case-holding-no-versions-is-told-explicitly already set, both refusing a silence over
+      a stored fact the reader has no second way to learn, and the sibling
+      a-released-hypothesis-revision-is-never-altered's own reasoning that a curator answered
+      with nothing reads an edit that never landed exactly as one that did. It holds in both
+      branches because the branch is precisely what the curator cannot see, so an answer given in
+      only one would leave the ambiguous case silent. Stated as an invariant over
+      domain/knowledge/hypothesis-revision alone, mirroring
+      a-hypothesis-revisions-listing-answers-highest-revision-first: the number and the
+      hypothesis it references are the revision's own facts, needing no second aggregate read.
+  - location: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move.md
+    field: statement
+    unstated: >-
+      Whether a curator who has just revised a hypothesis is offered a route to the case draft's
+      own manifest, and on which outcomes of the revise. contracts/knowledge/case-lifecycle names
+      revise-hypothesis and place-hypothesis as separate acts and
+      a-hypothesis-revision-is-overwritten-while-unreleased decides which revision the revise
+      writes, but no node states what follows the revise for the draft manifest entry that pins
+      that hypothesis — so whether the offer appears after an in-place overwrite, after a created
+      next revision, or when the draft manifests the hypothesis not at all, was settled nowhere.
+    decided: >-
+      The offer is made on exactly the two outcomes where the draft's manifest does not already
+      carry what the revise wrote — the revise wrote a revision higher than the one that draft
+      version's entry pinned immediately before it, and that draft version's manifest holds no
+      entry for the hypothesis at all — and is made on no other: a revise that wrote into the
+      very revision the entry already pins offers nothing.
+    why: >-
+      The offer's whole content is that the draft is not yet using what was just written, so it
+      is owed exactly where that is true and nowhere else. It is true on the create branch, where
+      a-released-hypothesis-revision-is-never-altered forced a new number and the entry is left
+      pinning a superseded one, and true when the hypothesis is absent from the manifest, where
+      nothing written reaches any version until place-hypothesis puts it there. It is false on
+      the in-place overwrite: a-draft-revision-is-overwritten-by-repeated-saves already states,
+      as the rule's own concrete case, that the entry still pins revision 2 and discloses no
+      higher revision — the draft is already using the new content, and an offer would demand a
+      correction to an entry that is already correct, defeating the loop
+      a-hypothesis-revision-is-overwritten-while-unreleased exists to keep free of per-save
+      ceremony. The condition is the comparison
+      a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest already makes on
+      a presented entry, applied at the revise instead of at the presentation, so the surface
+      offers adoption on the same fact the entry itself discloses rather than on a second,
+      differently-drawn one; the absent entry is that comparison with no pin to be behind,
+      decided toward the offer for the same reason a-case-holding-no-versions-is-told-explicitly
+      refuses a silence a reader cannot tell from a settled state. Scope-frontend states the
+      first and third branches directly ("still offering it ... after a save that did create a
+      new revision", "no longer forcing" it after an overwrite); the absent-entry branch it does
+      not reach is decided here by that same reading. The rule states when the route is offered
+      and nothing about what may be done through it, so no pin moves, no entry gains a
+      disclosure, and no call is refused for it.
+  - location: rules/knowledge/a-revise-answers-the-revision-number-it-saved.md
+    field: statement
+    unstated: >-
+      Whether the answer to a revise of a hypothesis, besides stating the revision number the
+      content was saved as, also carries a field naming which branch of
+      a-hypothesis-revision-is-overwritten-while-unreleased the write took — a replacement of the
+      hypothesis's highest existing revision in place, or a created next revision. The rule
+      already decided the saved number is told in both branches, and
+      a-revise-offers-the-draft-manifest-only-when-the-pin-must-move decided when a route to the
+      draft's manifest is offered, but no node says whether the branch itself is disclosed, so
+      whether a consumer could read it would follow from whatever the operation happened to
+      return.
+    decided: >-
+      The answer states the revision number the content was saved as and carries no further
+      field distinguishing a revise that replaced the hypothesis's highest existing revision in
+      place from a revise that created the hypothesis's next revision.
+    why: >-
+      Nothing the specification decides on this answer rests on the branch. The one rule that
+      reads the revise's outcome, a-revise-offers-the-draft-manifest-only-when-the-pin-must-move,
+      states its condition as a comparison of the written revision against the revision the
+      draft's entry pinned immediately before, and that comparison does not coincide with the
+      branch — an in-place overwrite of a highest revision the draft's entry does not pin stands
+      above that pin exactly as a created next revision does — so a branch field would be a
+      second, differently drawn basis for the same offer, and the two would disagree in exactly
+      that case. Whether the highest revision was frozen is also not the revision's own declared
+      fact but a reading of every case version that might reference it, which
+      a-hypothesis-revision-is-overwritten-while-unreleased makes once to choose where the write
+      lands; disclosing its outcome would carry that cross-aggregate reading into a second home
+      for no consumer that needs it, against this specification's own habit of keeping a fact in
+      the one node that decides it. Deciding the negative rather than leaving it open keeps the
+      rule falsifiable in both directions and follows the reasoning already logged for this rule,
+      where the saved number was decided as the smallest answer that closes the curator's
+      silence.
+  - location: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version.md
+    field: statement
+    unstated: >-
+      Whether one case version's manifest may hold two entries referencing revisions of the same
+      hypothesis. a-hypothesis-position-is-unique-within-its-case makes only positions unique, and
+      expressly refuses a position "the manifest already places a different hypothesis at";
+      a-hypothesis-name-is-unique-within-its-case makes names unique across the case's hypotheses,
+      not across one version's entries; manifest-entry and case-version declare the manifest as
+      many entries with no uniqueness over the hypothesis referenced. Several nodes read a
+      manifest as though the fact held — a-revise-offers-the-draft-manifest-only-when-the-pin-must-move's
+      expression speaks of "d's manifest entry for h" and of a manifest holding "no entry for h",
+      a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest of the entry's own
+      comparison against its hypothesis's highest revision,
+      requires-evaluation-of-names-exactly-the-manifested-hypotheses of the names the entries
+      contribute, and a-released-version-keeps-its-original-revision of revision 2 replacing
+      revision 1 "in version 2's own manifest" — but no node states it, so it held only as a
+      presupposition none of them was held to.
+    decided: >-
+      A case version's manifest holds at most one entry for any one hypothesis: no two entries of
+      one case version reference revisions of the same hypothesis. Stated as an invariant over
+      domain/knowledge/case-version and domain/knowledge/manifest-entry.
+    why: >-
+      The permissive alternative breaks two nodes that already stand. requires-evaluation-of is
+      exactly the hypothesis names the manifest's entries reference, and
+      one-evaluation-per-required-hypothesis holds an investigation to exactly one evaluation per
+      required hypothesis; a hypothesis manifested twice makes that list carry one name twice,
+      which an investigation can satisfy only by holding two evaluations of one hypothesis or by
+      having a name quietly collapse — and evaluations are indexed by hypothesis name, which
+      a-hypothesis-name-is-unique-within-its-case already protects precisely because a collision
+      would overwrite a verdict in silence. It also leaves resolve-outcome without an answer it
+      can defend: the declared order would reach one claim at two positions, at two different
+      revisions of its own content, and the first-confirmed reading would depend on which of the
+      two the version happened to place first. The restrictive alternative costs nothing the
+      material asks for: reordering, repinning to a different revision, and the copy a new draft
+      starts from are all operations over a manifest that carries each hypothesis once, and every
+      node that reads a manifest for a hypothesis is already written against exactly that shape.
+      Stated bare, without a refusal answer, on a-hypothesis-name-is-unique-within-its-case's own
+      precedent — which answer place-hypothesis gives a request naming an already-manifested
+      hypothesis is a fact about that operation, not about what a manifest may hold. Held as an
+      invariant with case-version and manifest-entry alone, mirroring
+      requires-evaluation-of-names-exactly-the-manifested-hypotheses, which likewise reads the
+      hypothesis an entry's revision belongs to without naming a second aggregate in constrains.
 ---
