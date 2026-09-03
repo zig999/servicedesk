@@ -16,6 +16,24 @@
       "title": "Widened simulate-case response schema — assessment call-record and evidence snapshot",
       "summary": "Proves assessmentSchema now requires register, usage, elapsed_ms and prompt and evidenceSchema now requires fields and concept_description, each typed as stated, while both admit the honest-empty evidence readings the specification's Description states, and that a production-shaped value validates intact.",
       "task": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema"
+    },
+    {
+      "id": "review/simulate-case-assessment-evidence-fields-omitted",
+      "kind": "review",
+      "file": "review/simulate-case-assessment-evidence-fields-omitted.md",
+      "title": "Review: simulate-case response states the assessment call-record and the evidence snapshot",
+      "summary": "Coverage, specification conformance, standard conformance and failure diagnosis over widen-simulate-case-response-schema's delivered change against the current main tree.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "A SimulateCaseResponseDto value that a validated production simulate-case call actually produces validates against the widened schema with no field stripped or rejected.",
+        "assessmentSchema requires register, typed as the consolidation-register enum.",
+        "assessmentSchema requires usage, typed as the usage shape (input_tokens, output_tokens)."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -42,6 +60,12 @@
       "to": "implementation/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/simulate-case-assessment-evidence-fields-omitted",
+      "to": "task/simulate-case-assessment-evidence-fields-omitted/widen-simulate-case-response-schema",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

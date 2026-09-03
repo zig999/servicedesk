@@ -1,0 +1,28 @@
+findings:
+  - file: src/__tests__/unit/http/dto/simulate-case.dto.spec.ts
+    where: "the second `it` block, lines 52-63"
+    evidence: "\"validates a confirmed evaluation's citation that carries no field key at all...\" ... { hypothesis: 'a-hypothesis', verdict: 'confirmed', citations: [{ concept: 'a-concept' }] } ... expect(result.success).toBe(true);"
+    cost: "This certifies as correct a simulation response where a confirmed hypothesis's citation carries no field — no machine-checkable pointer into the evidence that grounded the verdict, exactly the traceability domain/investigation/citation exists to guarantee for confirmed and refuted verdicts."
+    kind: contradicts
+    correction: "narrow field's optionality back to the no-data citation alone: keep it required where the citation's own evaluation verdict is confirmed or refuted, per domain/investigation/citation's own Description and its decision-log entry."
+    node: domain/investigation/citation
+read:
+  - node: domain/investigation/assessment
+    held_at: "the `aValidAssessment()` fixture and the assessment-focused `it` blocks (lines 4-14, 78-194) built from it"
+    evidence: "outcome: 'an-outcome', referral: { action: 'an-action', recipient: 'a-recipient' }, text: 'a drafted text', register: 'formal', usage: { input_tokens: 10, output_tokens: 5 }, elapsed_ms: 120, prompt: 'a drafted prompt',"
+  - node: domain/investigation/evidence
+    held_at: "the `aValidEvidenceItem()` fixture and the evidence-focused `it` blocks (lines 16-31, 196-290) built from it"
+    evidence: "concept: 'a-concept', inputs: 'an-input', observation: 'an-observation', observed_at: '2026-01-01T00:00:00.000Z', ttl: 60, origin: 'a-capability', result: 'ok', capability_name: 'a-capability', capability_version: '1.0.0', elapsed_ms: 50, fields: [{ name: 'a-field', type: 'string', description: 'a description' }], concept_description: 'a description of the concept',"
+looked_past: "Whether the suite exercises every branch the DTO's schema admits (a refuted-verdict citation without field, a response with durations.writing present) is a coverage-pass question, not this one."
+candidates_opened:
+  - domain/investigation/citation
+  - domain/investigation/cost
+  - domain/investigation/durations
+  - domain/investigation/evaluation
+  - domain/investigation/evaluation-reason
+  - domain/investigation/evidence-result
+  - domain/investigation/verdict
+  - domain/knowledge/referral
+  - domain/knowledge/resolution
+  - domain/investigation/usage
+  - contracts/investigation/case-simulation
