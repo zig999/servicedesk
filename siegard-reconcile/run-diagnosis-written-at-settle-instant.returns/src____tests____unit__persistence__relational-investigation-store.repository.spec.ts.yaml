@@ -1,0 +1,13 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the assertion in \"sends every declared attribute of the root row ... with written_at never among them\" (lines 180-196)"
+    evidence: |
+      expect(rootInsert?.params).toEqual([
+        'an-investigation-id', 'a-requester', 'a-ticket-ref', 'a narrative', 'a-subject-type', 'a-prompt-version', 'a-model',
+        'a-case-slug', 1,
+        'an-outcome', 'an-action', 'a-recipient', 'a-hypothesis', 'assessment text',
+        'formal', 8, 4, 99, 'assessment prompt',
+        3, 100, 50,
+        10, 20, 5, 35,
+      ]);
+looked_past: "the many other domain facts this file states or names by rule identity — ticket_ref emptiness, evidence-result/verdict/evaluation-reason enumerations, capability pin fields, durations.writing optionality, ordering of read queries — each already names or matches a specification node bound to this same source file per the candidate index, and belongs to that node's own review rather than to written-at-records-when-the-write-settled."

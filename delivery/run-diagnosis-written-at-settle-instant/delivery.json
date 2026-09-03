@@ -16,6 +16,24 @@
       "title": "written_at stamped at settle, not at issue -- run-diagnosis, the factory, the relational store, and store-wiring",
       "summary": "Proves run-diagnosis.ts never assigns written_at before or after a write settles, that the relational store alone decides the value at settle for both the first attempt and a retry, and that every collateral pre-fix test this change broke (investigation-factory, the unit and integration relational store specs, and store-wiring) now asserts the corrected contract.",
       "task": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle"
+    },
+    {
+      "id": "review/run-diagnosis-written-at-settle-instant",
+      "kind": "review",
+      "file": "review/run-diagnosis-written-at-settle-instant.md",
+      "title": "Review: written_at stamped at settle, not at issue",
+      "summary": "Coverage, specification conformance, standard conformance and failure diagnosis over stamp-written-at-at-settle's delivered change against the current main tree.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "For a run whose first attempt times out and whose retry settles, the persisted written_at equals the retry's own settle instant -- neither earlier nor later -- provable by a fake store whose second write() resolves only after an injected delay and whose settle instant the test itself captures for comparison.",
+        "For a run whose first write attempt settles, the persisted written_at equals that attempt's own settle instant -- neither earlier nor later -- provable by a fake store whose write() resolves only after an injected delay and whose settle instant the test itself captures for comparison.",
+        "For a run whose retry settles because the record already exists (InvestigationAlreadyStoredError), the persisted written_at remains the first attempt's own settle instant, unchanged by the retry."
+      ],
+      "findings": 6
     }
   ],
   "edges": [
@@ -36,6 +54,12 @@
       "to": "implementation/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/run-diagnosis-written-at-settle-instant",
+      "to": "task/run-diagnosis-written-at-settle-instant/stamp-written-at-at-settle",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

@@ -1,0 +1,65 @@
+read:
+  - node: constraints/diagnosis-answers-synchronously
+    held_at: "the runDiagnosis function itself, which awaits the whole flow in-line and answers within its own call"
+    evidence: "return investigation.assessment;"
+  - node: constraints/hypotheses-are-judged-in-isolated-parallel-calls
+    held_at: nowhere
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: constraints/the-deadline-is-an-absolute-propagated-instant
+    held_at: "persistenceStageBoundMs, which clamps the persistence stage to the smaller of its nominal budget and what remains of the propagated deadline"
+    evidence: "return Math.min(PERSISTENCE_STAGE_BUDGET_MS, Math.max(0, deadline - now - elapsedBeforePersistenceMs));"
+  - node: contracts/investigation/case-source
+    held_at: "options.case forwarded unchanged into the built investigation's options"
+    evidence: "case: options.case,"
+  - node: contracts/investigation/diagnosis
+    held_at: "runDiagnosis's own signature and return, the synchronous entry taking the call's inputs and answering with the assessment"
+    evidence: "export async function runDiagnosis(options: RunDiagnosisOptions): Promise<Assessment> {"
+  - node: domain/investigation/cost
+    held_at: "destructured from the pipeline result and passed straight through, never recomputed here"
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: domain/investigation/durations
+    held_at: "destructured from the pipeline result and passed straight through, never recomputed here"
+    evidence: "const { evidence, evaluations, assessment, cost, durations } = await runInvestigationPipeline(options);"
+  - node: domain/investigation/investigation
+    held_at: "the object built by buildInvestigation and used as the single record that is persisted and answered from"
+    evidence: |
+      const investigation = await buildInvestigation(
+          buildInvestigationOptions({ options, evidence, evaluations, assessment, cost, durations }),
+        );
+  - node: rules/investigation/an-answer-arrives-within-the-declared-deadline
+    held_at: "the PERSISTENCE_STAGE_BUDGET_MS constant and persistenceStageBoundMs implementing persistence's two-second share of the twenty-second total"
+    evidence: "const PERSISTENCE_STAGE_BUDGET_MS = 2_000;"
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: "raceWriteAttempt's treatment of InvestigationAlreadyStoredError as a settled write"
+    evidence: "(error: unknown): WriteAttemptOutcome => (error instanceof InvestigationAlreadyStoredError ? 'settled' : 'failed'),"
+  - node: rules/investigation/no-stage-aborts-on-its-deadline
+    held_at: "writeWithinDeadline and persistWithinBound: the zero-bound short-circuit, the single shared timeout raced across both attempts, and the throw when neither settles"
+    evidence: "const settled = stageBoundMs > 0 && (await persistWithinBound(store, investigation, stageBoundMs));"
+  - node: rules/investigation/replay-is-pinned
+    held_at: "case, model, prompt_version and evidence forwarded unchanged into buildInvestigationOptions"
+    evidence: |
+      case: options.case,
+        prompt_version: options.prompt_version,
+        model: options.model,
+        evidence,
+  - node: rules/investigation/the-response-follows-the-record
+    held_at: "the write awaited before the return statement in runDiagnosis"
+    evidence: |
+      await writeWithinDeadline({
+          store: options.store,
+          investigation,
+          now: options.now,
+          deadline: options.deadline,
+          elapsedBeforePersistenceMs,
+        });
+        return investigation.assessment;
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: nowhere
+    evidence: "const first = await raceWriteAttempt(store.write(investigation), timeout.promise);"
+  - node: scenarios/investigation/no-response-without-a-record
+    held_at: "the throw on an unsettled write, which prevents the return statement from ever running"
+    evidence: |
+      if (!settled) {
+          throw new InvestigationWriteDeadlineExceededError(investigation.id, stageBoundMs);
+        }
+looked_past: "elapsedBeforePersistenceMs is measured from a fresh readClockMs() call at the top of runDiagnosis rather than from options.now itself, so any gap between the two reads is not counted against the persistence stage bound — a possible correctness gap in realizing the deadline arithmetic, not a stated domain fact this file gets wrong, so it is left for a failure/behavior pass rather than reported here."

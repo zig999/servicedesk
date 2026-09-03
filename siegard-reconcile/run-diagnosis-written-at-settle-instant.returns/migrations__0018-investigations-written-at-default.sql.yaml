@@ -1,0 +1,4 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the column default clause of the ALTER TABLE statement, line 2"
+    evidence: "ALTER COLUMN written_at SET DEFAULT clock_timestamp();"

@@ -1,0 +1,7 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the assertions in `expectWrittenAtAssignedByTheStore` (lines 32-38), invoked at line 219 against the value written and re-read through `createInvestigationStore`"
+    evidence: |
+      expect(actual).not.toBe(literalTheFixtureSupplied); ... expect(Math.abs(Date.now() - asMs)).toBeLessThan(60_000);
+      expectWrittenAtAssignedByTheStore(document.written_at, investigation.written_at as string);
+looked_past: "the first `it(...)` block (lines 133-164) verifies that `createCaseQuery` and `createCaseStore` share one connection's writes, which is an integration-wiring check outside this file's given node and states no value or threshold worth judging here."

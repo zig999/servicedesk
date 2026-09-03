@@ -1,0 +1,5 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the assertion in `builds an Investigation carrying no written_at, rather than refusing, when written_at is missing entirely from the given options — the store decides that value later, at settle` (line 419), together with the passthrough assertion in `carries written_at from the given options, unchanged` (line 411)"
+    evidence: "expect(investigation.written_at).toBe('2025-01-02T03:04:05.000Z'); ... expect(investigation.written_at).toBeUndefined();"
+looked_past: "the file also exercises subject/glossary validation (SubjectCarriesNoAttributeError, SubjectAttributeNotInGlossaryError), evidence/evaluation totality checks, case pinning by slug and version, and ticket_ref optionality, but those facts are governed by nodes outside this delegation's node set, so their conformance is another delegation's to judge."

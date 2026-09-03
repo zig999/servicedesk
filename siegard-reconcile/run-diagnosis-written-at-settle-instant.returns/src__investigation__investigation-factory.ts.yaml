@@ -1,0 +1,85 @@
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import list, lines 1-13"
+    evidence: |
+      import { collectionPlan, requiresEvaluationOf } from '../case/case-resolution.js';
+      import type { Case } from '../case/case.js';
+      import { InvestigationNotBuildableError } from '../errors/investigation-not-buildable.error.js';
+      import { SubjectAttributeNotInGlossaryError } from '../errors/subject-attribute-not-in-glossary.error.js';
+      import type { IGlossaryQuery } from '../glossary/glossary-query.port.js';
+  - node: contracts/investigation/glossary-source
+    held_at: "refuseAttributesNotInGlossary(), line 66"
+    evidence: "const resolution = await glossary.readVocabularyTerm('subject-attribute', name);"
+  - node: domain/glossary/subject-attribute
+    held_at: "the glossary lookup in refuseAttributesNotInGlossary(), line 66"
+    evidence: "await glossary.readVocabularyTerm('subject-attribute', name)"
+  - node: domain/investigation/investigation
+    held_at: "the object literal returned by buildInvestigation(), lines 45-60"
+    evidence: |
+      return {
+          id: options.id,
+          requester: options.requester,
+          ticket_ref: options.ticket_ref,
+          narrative: options.narrative,
+          subject,
+          pinned_case: pinnedCaseOf(theCase),
+          prompt_version: options.prompt_version,
+          model: options.model,
+          evidence: [...evidence],
+          evaluations: [...evaluations],
+          assessment: options.assessment,
+          cost: options.cost,
+          durations: options.durations,
+          written_at: options.written_at,
+        };
+  - node: domain/investigation/subject
+    held_at: "the buildSubject() call, line 42, and its use in refuseAttributesNotInGlossary()"
+    evidence: "const subject = buildSubject(subjectType, subjectAttributes);"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "the attribute-name extraction in refuseAttributesNotInGlossary(), line 65"
+    evidence: "for (const name of new Set(subject.attributes.map((pair) => pair.attribute))) {"
+  - node: rules/investigation/a-subject-attribute-is-drawn-from-the-glossary
+    held_at: "refuseAttributesNotInGlossary(), lines 63-74"
+    evidence: |
+      if (!resolution.held) {
+          missing.push(name);
+        }
+      }
+      if (missing.length > 0) {
+        throw new SubjectAttributeNotInGlossaryError(subject.type, missing);
+      }
+  - node: rules/investigation/a-subject-carries-at-least-one-attribute
+    held_at: "nowhere in this file directly; subject construction is delegated to buildSubject(), called at line 42, whose body sits outside this file"
+    evidence: "const subject = buildSubject(subjectType, subjectAttributes);"
+  - node: rules/investigation/one-evaluation-per-required-hypothesis
+    held_at: "evaluationTotalityViolations(), lines 115-134, invoked from refuseTotalityViolations() at line 87"
+    evidence: |
+      for (const name of required) {
+        const count = counts.get(name) ?? 0;
+        if (count === 0) {
+          violations.push(`the required hypothesis "${name}" has no matching evaluation`);
+        } else if (count > 1) {
+          violations.push(`the required hypothesis "${name}" has ${count} evaluations; exactly one is required`);
+        }
+      }
+  - node: rules/investigation/one-evidence-per-collected-concept
+    held_at: "evidenceTotalityViolations(), lines 94-113, invoked from refuseTotalityViolations() at line 86"
+    evidence: |
+      for (const concept of plan) {
+        const count = counts.get(concept) ?? 0;
+        if (count === 0) {
+          violations.push(`the collection plan's concept "${concept}" has no matching evidence`);
+        } else if (count > 1) {
+          violations.push(`the collection plan's concept "${concept}" has ${count} evidence entries; exactly one is required`);
+        }
+      }
+  - node: rules/investigation/replay-is-pinned
+    held_at: "pinnedCaseOf(), lines 76-78, and the model/prompt_version/evidence fields of the returned object, lines 52-54"
+    evidence: |
+      function pinnedCaseOf(theCase: Case): PinnedCase {
+        return { slug: theCase.slug, version: theCase.version };
+      }
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the written_at field of the returned object, line 59"
+    evidence: "written_at: options.written_at,"
+looked_past: "whether a-subject-carries-at-least-one-attribute is actually enforced sits inside buildSubject() in subject.ts, which this file calls but which is outside this review's file set, so its enforcement could not be confirmed or denied from this file alone; that is a coverage question, not this pass's to answer from this file."

@@ -1,0 +1,80 @@
+read:
+  - node: constraints/the-stored-schema-mirrors-the-declared-model
+    held_at: "the INSERT/SELECT column lists, e.g. INVESTIGATION_INSERT_TEXT and investigationSelect()"
+    evidence: "assessment_usage_input_tokens, assessment_usage_output_tokens, assessment_elapsed_ms, assessment_prompt, cost_calls, cost_input_tokens, cost_output_tokens, durations_collection, durations_judgment, durations_writing, durations_total"
+  - node: constraints/the-system-persists-to-one-relational-database
+    held_at: "write() and read(), both routed through runInTransaction(this.connection, ...)"
+    evidence: "await runInTransaction(this.connection, raiseWriteFailure, (tx) => writeWholeInvestigation(tx, investigation));"
+  - node: domain/investigation/assessment
+    held_at: "assessmentParams() and assessmentOf()"
+    evidence: "assessment.determining_hypothesis ?? null, assessment.text, assessment.register, assessment.usage.input_tokens, assessment.usage.output_tokens, assessment.elapsed_ms, assessment.prompt,"
+  - node: domain/investigation/citation
+    held_at: "citationStatement() and citationOf()"
+    evidence: "return { concept: row.concept, ...(row.field !== null ? { field: row.field } : {}) };"
+  - node: domain/investigation/cost
+    held_at: "costParams() and the cost object assembled in investigationOf()"
+    evidence: "return [cost.calls, cost.input_tokens, cost.output_tokens];"
+  - node: domain/investigation/durations
+    held_at: "durationsParams() and the durations object assembled in investigationOf()"
+    evidence: "...(row.durations_writing !== null ? { writing: row.durations_writing } : {}),"
+  - node: domain/investigation/evaluation
+    held_at: "evaluationStatement(), evaluationOf() and callRecordOf()"
+    evidence: "if (verdict === 'confirmed') { return { hypothesis: row.hypothesis, verdict, citations: nonEmptyCitations(citations, row.hypothesis), ...callRecord }; }"
+  - node: domain/investigation/evaluation-reason
+    held_at: "reasonOf() and isEvaluationReason()"
+    evidence: |
+      function isEvaluationReason(value: string): value is EvaluationReason {
+        return EVALUATION_REASON_VALUES.has(value);
+      }
+  - node: domain/investigation/evidence
+    held_at: "evidenceStatement() and evidenceOf()"
+    evidence: "concept: row.concept, inputs: row.inputs, observation: row.observation, observed_at: row.observed_at.toISOString(), ttl: row.ttl, origin: row.origin,"
+  - node: domain/investigation/evidence-result
+    held_at: "resultOf() and isEvidenceResult()"
+    evidence: |
+      function isEvidenceResult(value: string): value is EvidenceResult {
+        return EVIDENCE_RESULT_VALUES.has(value);
+      }
+  - node: domain/investigation/field-semantics
+    held_at: "the fields column, written and read as one JSON blob per evidence item"
+    evidence: "JSON.stringify(evidence.fields), ... fields: row.fields,"
+  - node: domain/investigation/investigation
+    held_at: "investigationOf(), assembling the full record from the row and its child rows"
+    evidence: "return { id, requester: row.requester, ...(row.ticket_ref !== null ? { ticket_ref: row.ticket_ref } : {}), narrative: row.narrative,"
+  - node: domain/investigation/subject
+    held_at: "identityParams() on write and the subject object built in investigationOf() on read"
+    evidence: "subject: { type: row.subject_type, attributes },"
+  - node: domain/investigation/subject-attribute-value
+    held_at: "subjectAttributeValueStatement() and readSubjectAttributeValues()"
+    evidence: "text: `INSERT INTO ${INVESTIGATION_SUBJECT_ATTRIBUTE_VALUES_TABLE} (investigation_id, attribute, value) VALUES ($1, $2, $3)`,"
+  - node: domain/investigation/usage
+    held_at: "callRecordOf() for an evaluation's usage and assessmentParams()/assessmentOf() for the assessment's usage"
+    evidence: "record.usage = { input_tokens: row.input_tokens, output_tokens: row.output_tokens };"
+  - node: domain/investigation/verdict
+    held_at: "verdictOf() and isVerdict()"
+    evidence: |
+      function isVerdict(value: string): value is Verdict {
+        return VERDICT_VALUES.has(value);
+      }
+  - node: domain/knowledge/consolidation-register
+    held_at: "registerOf() and isConsolidationRegister()"
+    evidence: |
+      function isConsolidationRegister(value: string): value is ConsolidationRegister {
+        return CONSOLIDATION_REGISTER_VALUES.has(value);
+      }
+  - node: rules/investigation/an-empty-ticket-reference-is-no-ticket-reference
+    held_at: "ticketRefForWrite()/holdsNoTicketReference() on write, the ticket_ref spread in investigationOf() on read"
+    evidence: |
+      function holdsNoTicketReference(value: string | undefined): boolean {
+        return value === undefined || value === '';
+      }
+  - node: rules/investigation/an-investigation-is-written-once
+    held_at: "raiseRootInsertFailure()/isUniqueViolation(), guarding the root INSERT"
+    evidence: "return (cause) => (isUniqueViolation(cause) ? new InvestigationAlreadyStoredError(id) : raiseWriteFailure(cause));"
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "written_at is absent from INVESTIGATION_INSERT_TEXT and is only ever read back from the row"
+    evidence: "written_at: row.written_at.toISOString(),"
+looked_past: "whether raising InvestigationAlreadyStoredError from the root insert genuinely implements an-investigation-is-written-once's \"settles rather than failing\" depends on how the caller (src/investigation/run-diagnosis.ts, outside this file) handles that specific error, which is that file's judgment, not this one's."
+candidates_opened:
+  - rules/investigation/a-decided-evaluation-cites-evidence
+  - domain/knowledge/referral

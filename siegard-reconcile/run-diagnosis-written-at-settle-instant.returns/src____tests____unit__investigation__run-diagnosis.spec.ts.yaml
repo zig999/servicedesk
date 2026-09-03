@@ -1,0 +1,5 @@
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the assertions on `written_at` across several `it` blocks — the store-carries-no-written_at-of-its-own case (line 831-839), the settle-instant cases (line 841-865, 867-879) and the unchanged-on-already-present cases (line 891-900, 902-912)"
+    evidence: "expect((stored?.document as Investigation).written_at).toBe(new Date(REQUEST_ENTRY_INSTANT + 800).toISOString());"
+looked_past: "the file also exercises deadline budgets (the nominal two-second persistence bound, the nominal five-second judgment bound, deadline clamping), judgment concurrency, cost.calls/tokens accounting, durations.collection/judgment/writing/total, evidence shape, consolidation register selection and ticket_ref handling — domain facts that answer to specification nodes outside this delegation's one-node set, and this pass did not evaluate them against those nodes."

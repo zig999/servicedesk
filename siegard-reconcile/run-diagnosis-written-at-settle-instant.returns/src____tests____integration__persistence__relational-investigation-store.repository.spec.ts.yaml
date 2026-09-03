@@ -1,0 +1,31 @@
+findings:
+  - file: src/__tests__/integration/persistence/relational-investigation-store.repository.spec.ts
+    where: "line 220, the closing assertion of the round-trip test"
+    evidence: "expect(answered?.hash).toBe(createHash('sha256').update(JSON.stringify(document), 'utf8').digest('hex'));"
+    cost: "The test asserts that RelationalInvestigationStore.read() answers a `hash` alongside `document`, computed as the SHA-256 hex digest of the read-back document's own JSON.stringify with utf8 encoding — an algorithm, an encoding and an input (the read document, not the write payload) fixed nowhere in the specification. domain/investigation/investigation's attribute list stops at written_at and declares no hash; no contract, rule or scenario names such a field anywhere in the specification. A reader auditing what the store's read answers has no page saying this integrity value exists, why it is computed this way, or what depends on it, and a change to the document's serialization or to the hashing scheme could break this test silently, with nothing in the specification for anyone to check the change against."
+    kind: unstated
+    correction: "State the read result's hash field and how it is computed on a specification node (e.g. domain/investigation/investigation or a dedicated rule), disclosing the decision in the decision log — or drop it from the store's contract if it encodes no fact the business decided."
+read:
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "expectWrittenAtAssignedByTheStore (lines 22-28), invoked at line 219 of the round-trip test, and the write-once test's equality check at line 297"
+    evidence: |
+      function expectWrittenAtAssignedByTheStore(actual: unknown, literalTheFixtureSupplied: string): void {
+        expect(typeof actual).toBe('string');
+        expect(actual).not.toBe(literalTheFixtureSupplied);
+      }
+      ...
+      const stillStored = await store.read(id);
+          expect(stillStored?.document).toEqual(firstRead?.document);
+looked_past: "Every other domain fact the test states — ticket_ref's empty-string/undefined handling, durations.writing's conditional presence, evaluation reasons no-data/judgment-failure with their call-record fields, citation's optional field, the register enumeration, the write-once/concurrent-write refusal, and the capability foreign-key refusal — checked against the specification and found already held by other nodes, so none of it is reported; the 60-second wall-clock tolerance is a test-precision allowance, not a stated domain threshold."
+candidates_opened:
+  - domain/investigation/investigation
+  - domain/investigation/assessment
+  - domain/investigation/citation
+  - domain/investigation/evidence
+  - domain/knowledge/consolidation-register
+  - rules/investigation/an-investigation-is-written-once
+  - rules/investigation/one-evaluation-per-required-hypothesis
+  - constraints/the-stored-schema-mirrors-the-declared-model
+  - constraints/the-system-persists-to-one-relational-database
+  - contracts/investigation/diagnosis
+  - scenarios/investigation/no-response-without-a-record

@@ -1,0 +1,50 @@
+findings:
+  - file: src/investigation/investigation.ts
+    where: "line 29, the `written_at` field of the `Investigation` type"
+    evidence: "readonly written_at?: string;"
+    cost: "the domain model declares written_at required on the aggregate — the field the store's own settle instant fills — but the TypeScript type lets any caller construct or hold an Investigation value missing it; a factory or store path can carry an instance the specification treats as an incomplete record, and the compiler gives no signal that the record's dating fact is absent"
+    kind: contradicts
+    correction: "declare the field as `readonly written_at: string;`, matching the node's `required: true`"
+    node: domain/investigation/investigation
+read:
+  - node: constraints/the-domain-depends-on-no-infrastructure
+    held_at: "the import list, lines 1-6"
+    evidence: |
+      import type { Assessment } from './assessment.js';
+      import type { Cost } from './cost.js';
+      import type { Durations } from './durations.js';
+      import type { Evaluation } from './evaluation.js';
+      import type { Evidence } from './evidence.js';
+      import type { Subject } from './subject.js';
+  - node: domain/investigation/investigation
+    held_at: "the `Investigation` and `PinnedCase` type declarations, lines 8-30"
+    evidence: |
+      export type Investigation = {
+        readonly id: string;
+        readonly requester: string;
+
+        readonly ticket_ref?: string;
+        readonly narrative: string;
+        readonly subject: Subject;
+        readonly pinned_case: PinnedCase;
+        readonly prompt_version: string;
+        readonly model: string;
+        readonly evidence: readonly Evidence[];
+        readonly evaluations: readonly Evaluation[];
+        readonly assessment: Assessment;
+        readonly cost: Cost;
+        readonly durations: Durations;
+
+        readonly written_at?: string;
+      };
+  - node: rules/investigation/replay-is-pinned
+    held_at: "the `pinned_case`, `model`, `prompt_version` and `evidence` fields, lines 20-23"
+    evidence: |
+      readonly pinned_case: PinnedCase;
+        readonly prompt_version: string;
+        readonly model: string;
+        readonly evidence: readonly Evidence[];
+  - node: rules/investigation/written-at-records-when-the-write-settled
+    held_at: "the `written_at` field, line 29"
+    evidence: "readonly written_at?: string;"
+looked_past: "the shape of PinnedCase (slug, version) matching the pinned-case relationship's cardinality is consistent and unremarkable, so it is not reported as a separate finding."
