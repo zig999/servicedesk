@@ -10,10 +10,12 @@ import type {
   HypothesisRevisionListItem,
   ICaseStore,
   ManifestEntry,
+  OverwriteHypothesisRevisionInput,
   PlaceHypothesisInput,
   UpdateDraftInput,
 } from '../case/case-store.port.js';
 import type { Resolution } from '../case/case.js';
+import type { IHypothesisRevisionOverwrite } from '../case/hypothesis-revision-overwrite.port.js';
 import type {
   HighestRevisionReleaseState,
   IHighestRevisionReleaseStateQuery,
@@ -23,6 +25,7 @@ import { CaseNotFoundError } from '../errors/case-not-found.error.js';
 import { CaseStoreError } from '../errors/case-store.error.js';
 import { CaseVersionNotDraftError } from '../errors/case-version-not-draft.error.js';
 import { ManifestPositionOccupiedError } from '../errors/manifest-position-occupied.error.js';
+import { ReleasedHypothesisRevisionNotAlterableError } from '../errors/released-hypothesis-revision-not-alterable.error.js';
 import type { ConsolidationRegister } from '../investigation/consolidation-register.js';
 import { CONSOLIDATION_REGISTERS } from '../investigation/consolidation-register.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
@@ -97,7 +100,7 @@ const POSITION_UNIQUE_CONSTRAINT = 'case_version_hypotheses_position_unique';
 
 const NO_VERSION_NAMED = 0;
 
-export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseStateQuery {
+export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseStateQuery, IHypothesisRevisionOverwrite {
   public constructor(private readonly connection: DatabaseConnection) {}
 
   public async assembleVersion(slug: string, version: number): Promise<AssembledCaseVersion | undefined> {
@@ -146,6 +149,10 @@ export class RelationalCaseStore implements ICaseStore, IHighestRevisionReleaseS
 
   public async insertHypothesisRevision(input: HypothesisRevisionInput): Promise<number> {
     return runInTransaction(this.connection, raiseWriteFailure, (tx) => insertRevision(tx, input));
+  }
+
+  public async overwriteHypothesisRevision(input: OverwriteHypothesisRevisionInput): Promise<void> {
+    await runInTransaction(this.connection, raiseWriteFailure, (tx) => overwriteRevision(tx, input));
   }
 
   public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {
@@ -635,6 +642,44 @@ function revisionCollectStatement(key: IRevisionKey, conceptName: string): IStat
     text: `INSERT INTO ${HYPOTHESIS_REVISION_COLLECTS_TABLE} (case_slug, hypothesis_name, revision, concept_name)
            VALUES ($1, $2, $3, $4)`,
     params: [key.slug, key.hypothesis_name, key.revision, conceptName],
+  };
+}
+
+async function overwriteRevision(tx: IQueryable, input: OverwriteHypothesisRevisionInput): Promise<void> {
+  const key: IRevisionKey = { slug: input.slug, hypothesis_name: input.hypothesis_name, revision: input.revision };
+  await runStatement(tx, revisionOverwriteStatement(input), raiseOverwriteFailure(input));
+  await runStatement(tx, revisionCollectsDeleteStatement(key), raiseWriteFailure);
+  for (const conceptName of input.collects) {
+    await runStatement(tx, revisionCollectStatement(key, conceptName), raiseWriteFailure);
+  }
+}
+
+function raiseOverwriteFailure(input: OverwriteHypothesisRevisionInput): RaiseStoreError {
+  return (cause) =>
+    isReleasedRevisionRefusal(cause)
+      ? new ReleasedHypothesisRevisionNotAlterableError(input.slug, input.hypothesis_name, input.revision)
+      : raiseWriteFailure(cause);
+}
+
+function isReleasedRevisionRefusal(cause: unknown): boolean {
+  return cause instanceof Error && cause.message === 'ReleasedHypothesisRevisionNotAlterableError';
+}
+
+function revisionOverwriteStatement(input: OverwriteHypothesisRevisionInput): IStatement {
+  const [outcome, action, recipient] = referralColumns(input.resolution);
+  return {
+    text: `UPDATE ${HYPOTHESIS_REVISIONS_TABLE}
+           SET criterion = $4, resolution_outcome = $5, resolution_action = $6, resolution_recipient = $7
+           WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [input.slug, input.hypothesis_name, input.revision, input.criterion, outcome, action, recipient],
+  };
+}
+
+function revisionCollectsDeleteStatement(key: IRevisionKey): IStatement {
+  return {
+    text: `DELETE FROM ${HYPOTHESIS_REVISION_COLLECTS_TABLE}
+           WHERE case_slug = $1 AND hypothesis_name = $2 AND revision = $3`,
+    params: [key.slug, key.hypothesis_name, key.revision],
   };
 }
 

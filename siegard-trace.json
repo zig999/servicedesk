@@ -282,6 +282,10 @@
           "digest": "sha256:c8c2beffdd10f6c61791fcede266359ada776369bbe59df16703819aa4cbac8b"
         },
         {
+          "path": "src/src/case/hypothesis-revision-overwrite.port.ts",
+          "digest": "sha256:9f71d61ad2572558804665ee7434eaa00cd07f598e3ec24e85d505a7a458e9ba"
+        },
+        {
           "path": "src/src/case/hypothesis-revision-release-state.port.ts",
           "digest": "sha256:22e00b6b12f9aeeea3f8fa362125aca2829e449f486c6a6372c7ff161e7d5182"
         },
@@ -3893,7 +3897,7 @@
         },
         {
           "path": "src/src/case/case-store.port.ts",
-          "digest": "sha256:6755df814360e84420fabd99473b1e2fa4a2f19172ea399fb9a88fb63c1b5a27"
+          "digest": "sha256:1a2466ceda9eb5db6cb393bfdc37824b3588cffd01945b8138a74da8e16952db"
         },
         {
           "path": "src/src/case/case.ts",
@@ -3941,7 +3945,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         },
         {
           "path": "src/src/vitest-global-setup.ts",
@@ -5787,13 +5791,13 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:f36a5a4edb5ff74d41b2dc6c5b1df37a729627710ed1f35687e97c433447dea7"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },
     {
       "node": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
-      "digest": "sha256:f964cd86990f9827145dfb8a9dfb93288de94e0f7774cb398aded320720c45e5",
+      "digest": "sha256:8646fd164baa8ba0bfc786e8aa42c2dad856ef52a56c54785a2bb630c3cee3a8",
       "files": [
         {
           "path": "frontend/app/src/routes/hypothesis-revision-history.tsx",
@@ -5805,7 +5809,7 @@
         },
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
-          "digest": "sha256:a2864de9e10932b009c8d648be9cff71a945494501edd9175680c5b1e5f7c670"
+          "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
         }
       ]
     },

@@ -2,6 +2,14 @@
   "contract_version": "siegard-delivery/2",
   "nodes": [
     {
+      "id": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place.md",
+      "title": "Overwrite a hypothesis revision's content in place",
+      "summary": "A new case-store port capability and its relational write replace an existing hypothesis revision's criterion, collects and resolution wholesale while leaving its own revision number untouched.",
+      "task": "task/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place"
+    },
+    {
       "id": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
       "kind": "implementation",
       "file": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state.md",
@@ -16,6 +24,14 @@
       "title": "Release-conditioned refusal on hypothesis_revisions UPDATE",
       "summary": "A new migration replaces the unconditional no-update rule on hypothesis_revisions with a per-row trigger that refuses an UPDATE, raising a distinguishable error, only when a released case version's manifest still references that exact revision.",
       "task": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released"
+    },
+    {
+      "id": "proof/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place.md",
+      "title": "Overwriting a hypothesis revision's content in place",
+      "summary": "Integration tests against RelationalCaseStore.overwriteHypothesisRevision proving all six task criteria, the record's own inferences, and that the write distinguishes a released-referenced refusal from an ordinary write failure.",
+      "task": "task/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place"
     },
     {
       "id": "proof/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
@@ -35,6 +51,36 @@
     }
   ],
   "edges": [
+    {
+      "from": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "rules/knowledge/a-hypothesis-revision-number-is-never-reused",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "constraints/the-domain-depends-on-no-infrastructure",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "task/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "kind": "implements",
+      "at": "the path"
+    },
     {
       "from": "implementation/hypothesis-revision-overwrite/read-highest-revision-and-release-state",
       "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
@@ -111,6 +157,12 @@
       "from": "implementation/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "to": "task/hypothesis-revision-overwrite/revision-alteration-refused-only-when-released",
       "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "to": "implementation/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
+      "kind": "proves",
       "at": "the path"
     },
     {

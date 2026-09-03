@@ -1,0 +1,10 @@
+
+> servicedeskn1@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/wt-overwrite-a-revisions-content-in-place/src/src/__tests__/integration/persistence/relational-case-store.repository.spec.ts
+  1357:176  error  Async arrow function has too many lines (34). Maximum allowed is 30  max-lines-per-function
+
+✖ 1 problem (1 error, 0 warnings)
+
