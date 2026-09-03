@@ -2115,5 +2115,57 @@ entries:
       because the sort key is that element's own declared attribute and the condition is
       decidable from the answer itself; it adds no field, changes no listing's paging, refuses no
       call, and decides nothing about the other listings listings-are-paged governs.
+  - location: rules/knowledge/a-hypothesis-revision-moves-through-its-declared-lifecycle.md
+    field: statement
+    unstated: >-
+      The read material (temp/hipotese-com-release-proprio-desacoplado-do-manifest.md) states
+      that a hypothesis-revision gains its own draft-to-released state, moved once by the
+      curator's own release action, but it never says what a second release attempt against an
+      already-released revision is met with.
+    decided: >-
+      An HTTP 409 response reporting a HypothesisRevisionNotDraftAtReleaseError.
+    why: >-
+      a-case-version-moves-through-its-declared-lifecycle already gives the case version's own
+      lifecycle the identical shape — one forward transition, one terminal state — and answers
+      the same question with CaseVersionNotDraftAtReleaseError at HTTP 409; a hypothesis-revision's
+      lifecycle is that same shape read over a different aggregate, so the same status and the
+      same naming convention apply rather than inventing a second idiom for one more
+      single-transition state machine.
+  - location: rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions.md
+    field: statement
+    unstated: >-
+      The read material decides that a case version's release must refuse when any manifest
+      entry still points at a draft hypothesis-revision, and that the refusal must list every
+      such hypothesis, but leaves open (its own §6, point D) which refusal shape carries that:
+      a new HTTP status and error code of its own, or the existing release-refusal aggregation.
+    decided: >-
+      No new error code. The violation is one more rule CaseVersionNotReleasableError's existing
+      aggregation names together with whatever else the same release attempt violates, exactly
+      as rules/knowledge/a-release-refusal-with-no-named-violation-says-so already generalizes
+      for every structural or coherence rule constraining case-version.
+    why: >-
+      The material's own point D names this precedent directly — "CaseVersionNotReleasableError
+      já lista violações de coerência de forma parecida... o padrão para 'hipóteses do manifest
+      ainda em draft' deveria seguir esse mesmo formato" — and the release-refusal aggregation
+      mechanism already presupposes exactly this shape: a rule constrains case-version and states
+      its own violation in domain terms, and release names every violated rule together in one
+      HTTP 422 response, never invents a parallel refusal channel per rule.
+  - location: rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state.md
+    field: statement
+    unstated: >-
+      The read material's own §6, point C, asks explicitly whether the hypothesis-revisions
+      listing should disclose each revision's draft-or-released state, leaving it undecided
+      because the product only described the release screen itself, never this listing's.
+    decided: >-
+      Yes — a listing of one hypothesis's revisions states, for every revision answered, that
+      revision's own state.
+    why: >-
+      The state is now the one fact that decides whether a save on that revision overwrites in
+      place or creates the next number, and this specification has already refused every silence
+      of that shape once a fact is addressable at all — a-manifest-entrys-pinned-revision-is-
+      always-shown and a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest
+      both exist for exactly this reason, over the adjacent manifest-entry listing; withholding
+      the new fact here would leave a curator to guess at a save's outcome from nothing the
+      listing shows.
 
 ---

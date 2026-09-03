@@ -1,19 +1,17 @@
 ---
 subject: rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased
 given:
-  - case version 1 of a case is released, its manifest referencing revision 2 of hypothesis
-    customer-equipment-fault
+  - hypothesis customer-equipment-fault holds one revision, revision 2, itself in released
+    state, referenced by no case version at all
 when:
   - the curator revises customer-equipment-fault
 then:
-  - revision 3 of customer-equipment-fault is created
+  - revision 3 of customer-equipment-fault is created, in draft state
   - revision 2's own content is unchanged
-  - version 1's manifest still references revision 2, unchanged
 involves:
   - domain/knowledge/hypothesis-revision
-  - domain/knowledge/case-version
 ---
 
 ## Description
 
-Complements `a-released-version-keeps-its-original-revision`: the same released reference that keeps version 1 reading revision 2 forever is what turns this revise into a create instead of an overwrite — the two rules read one fact from opposite ends.
+Demonstrates the decoupling this specification now holds: revision 2 is released by the hypothesis's own action, whether or not any case version's manifest ever adopted it, and that alone — its own state, read directly — is what turns this revise into a create instead of an overwrite.
