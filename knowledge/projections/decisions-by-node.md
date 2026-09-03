@@ -293,6 +293,9 @@ this groups its entries by the file each one located.
 - attributes — decided: Both are optional, present only where the case currently holds at least one version; a case holding none has neither, the same pattern domain/knowledge/case-version.released_at already uses ("present only once released").
   unstated: What current_state and last_updated answer for a case currently holding no version at all — the node declared both required, but the deriving rule only knows how to compute either from the case's highest-numbered version, which presumes one exists.
   why: The material is siegard-reconcile/frontend-cases-list-screen-drift.md, whose judge over cases-list-screen.tsx reported the frontend already deciding this — treating both fields as absent and stating that absence explicitly in the UI ("No version yet", "—") — with no node backing the decision. A case reaches zero current versions exactly the way a-case-holding-no-versions-is-told-explicitly already describes: its one and only draft discarded before release, leaving nothing behind (rules/knowledge/a-case-version-number-is-never-reused). There being no version, there is nothing to derive either field from, and the frontend's choice to state the absence rather than invent a value is the same discipline released_at's own conditional presence already established in this specification.
+- attributes — decided: Three new optional attributes — title, when_to_use, released_version — present only where the case currently holds at least one released version, and read from that version rather than from current_state's own highest-numbered version.
+  unstated: Whether a catalog listing exposing a case's when_to_use (so an automated consumer can choose the right case without reading version by version) needs a case's own title and the version number a diagnosis may pin to, and if so which of a case's own versions supplies them once its highest-numbered version is a draft still ahead of its last release.
+  why: diagnose() takes a case slug and version, and only-a-released-case-version-is-diagnosed refuses any version that is not released, so a catalog entry a consumer chooses a case by must name a version diagnose() itself would accept. current_state already answers "the case's highest-numbered version, whichever its state," which is exactly the version a draft in progress makes wrong for this purpose, so the three new fields need their own derivation rather than reusing it.
 
 ## domain/knowledge/case-version.md
 - operations — decided: update-draft, added to case-version's own declared operations.
@@ -626,6 +629,9 @@ this groups its entries by the file each one located.
 - statement — decided: version_count is zero and neither current_state nor last_updated is derived; both are absent.
   unstated: What the rule's own derivation answers for a case currently holding no version, since it is stated only in terms of "the case's highest-numbered version."
   why: Same material and reasoning as the case-summary.md entry above — the rule's statement and description now say explicitly what was previously left to be inferred from a node that presumed a version always exists.
+- statement — decided: title, when_to_use and released_version are read from the case's highest-numbered version in released state, distinct from current_state's own highest-numbered version of either state; a case with no released version has none of the three.
+  unstated: Same fact as the case-summary.md entry above — which of a case's own versions supplies title, when_to_use and released_version once its highest-numbered version is a draft still ahead of its last release.
+  why: Same material and reasoning as the case-summary.md entry above.
 
 ## rules/knowledge/a-case-version-is-written-once.md
 - statement — decided: A case version is written once and never altered; revising a case writes a new version.

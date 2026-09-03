@@ -2418,6 +2418,37 @@ entries:
     decided: 'A listing of one hypothesis''s revisions answers them ordered by revision number descending, highest first, so the first page of that listing carries that hypothesis''s highest existing revision.'
     why: 'The revision number is the only ordering fact available — hypothesis-revision declares no timestamp — and a-hypothesis-revision-number-is-never-reused makes it a total order per hypothesis, starting at 1, never reused and never discarded, so it needs no tiebreak and no second aggregate read. The direction is decided by which revision a reader came for: the highest existing revision is the one a curator adopts into a draft and the one a reader auditing a pin compares against, and ascending order would place it on the last page, one page further away with every revision the hypothesis gains — the same accumulation a-manifest-entrys-pinned-revision-is-always-shown already identifies as what pushes an old pin off a page. Declaring the order rather than leaving it is the substitution hypotheses-are-ordered-by-precedence already refuses for a manifest, where an order left to the storage''s arrangement replaces a decided fact. It is an invariant over hypothesis-revision alone because both the sort key and the grouping are that element''s own declared revision attribute and its cardinality-1 reference to its hypothesis, so the condition is decidable from the answer itself and holds immediately; it adds no field, changes no listing''s paging, refuses no call, and leaves the two presentation rules untouched, since each compares against the hypothesis''s highest existing revision rather than against a page''s contents.'
 
+  - location: domain/knowledge/case-summary.md
+    field: attributes
+    unstated: >-
+      Whether a catalog listing exposing a case's when_to_use (so an automated consumer can
+      choose the right case without reading version by version) needs a case's own title and the
+      version number a diagnosis may pin to, and if so which of a case's own versions supplies
+      them once its highest-numbered version is a draft still ahead of its last release.
+    decided: >-
+      Three new optional attributes — title, when_to_use, released_version — present only where
+      the case currently holds at least one released version, and read from that version rather
+      than from current_state's own highest-numbered version.
+    why: >-
+      diagnose() takes a case slug and version, and only-a-released-case-version-is-diagnosed
+      refuses any version that is not released, so a catalog entry a consumer chooses a case by
+      must name a version diagnose() itself would accept. current_state already answers "the
+      case's highest-numbered version, whichever its state," which is exactly the version a draft
+      in progress makes wrong for this purpose, so the three new fields need their own derivation
+      rather than reusing it.
+  - location: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.md
+    field: statement
+    unstated: >-
+      Same fact as the case-summary.md entry above — which of a case's own versions supplies
+      title, when_to_use and released_version once its highest-numbered version is a draft still
+      ahead of its last release.
+    decided: >-
+      title, when_to_use and released_version are read from the case's highest-numbered version
+      in released state, distinct from current_state's own highest-numbered version of either
+      state; a case with no released version has none of the three.
+    why: >-
+      Same material and reasoning as the case-summary.md entry above.
+
 ---
 
 === domain/glossary/_context
@@ -3210,16 +3241,23 @@ attributes:
     required: true
   - name: last_updated
     type: datetime
+  - name: title
+    type: string
+  - name: when_to_use
+    type: string
+  - name: released_version
+    type: integer
 ---
 
 ## Description
 
 A case's own identity declares only its slug and the counter that assigns its next draft's number; everything a curator reads about which state a case is in, how many versions it has accumulated, and when it was last touched is read off its versions, never carried by the identity itself. This is that read: one summary, held by no aggregate and stored nowhere, computed fresh from a case's own case-versions.
 current_state and last_updated are present only where the case currently holds at least one version; a case whose every version was ever discarded before release holds none to derive either from, and both are absent rather than invented.
+title, when_to_use and released_version are present only where the case currently holds at least one released version; a case still only in draft, never yet released, holds none to derive any of the three from, and all three are absent rather than read from a draft.
 
 ## Responsibility
 
-Hold the three facts a listing of cases needs about one case — current_state, version_count and last_updated — each derived from that case's own existing case-versions rather than declared by the case's own identity.
+Hold the facts a listing of cases needs about one case — current_state, version_count and last_updated derived from the case's own most recently authored version, and title, when_to_use and released_version derived from its own most recently released one — each read off the case's existing case-versions rather than declared by the case's own identity.
 
 === domain/knowledge/case-version
 ---
@@ -4381,7 +4419,7 @@ A case that exists and currently holds no version is a different case, answered 
 === rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
 ---
 type: policy
-statement: A case's summary is computed from its own existing versions — current_state is the state of the case's highest-numbered version, version_count is the number of versions the case currently holds, and last_updated is that same highest-numbered version's authored_at; a case currently holding no version has version_count zero and neither current_state nor last_updated, there being no version to derive either from.
+statement: A case's summary is computed from its own existing versions — current_state is the state of the case's highest-numbered version, version_count is the number of versions the case currently holds, and last_updated is that same highest-numbered version's authored_at; a case currently holding no version has version_count zero and neither current_state nor last_updated, there being no version to derive either from. title, when_to_use and released_version are read from the case's highest-numbered version in released state instead — the one a diagnosis may pin to, never a higher-numbered draft still ahead of it — and a case currently holding no released version has none of the three, there being no released version to derive any from.
 constrains:
   - domain/knowledge/case
   - domain/knowledge/case-version
@@ -4394,6 +4432,8 @@ consistency: eventual
 every-case-version-remains-readable keeps every version a case has released, and a-case-version-number-is-never-reused already says a discarded draft leaves no version behind to read — so "the versions a case currently holds" is never anything but the rows still there, with nothing set aside for one discarded along the way, and version_count needs no rule of its own beyond this to say so.
 A case's next_version counter assigns each version's number once, always higher than every number the case has ever held, and a new version is only ever created after every version that came before it — so among the versions a case currently holds, the highest-numbered one is always the most recently authored, whichever of draft or released its own state happens to be. That version's state is current_state, and its own authored_at is last_updated: the same version answers both, because nothing about being released makes a version any less the newest one a case holds.
 A case whose one and only version was discarded before release holds none currently — only-a-draft-case-version-may-be-discarded's own discard leaves nothing behind to read, the same absence a-case-holding-no-versions-is-told-explicitly already tells a curator listing that case's versions. There being no version, there is no state and no authored_at to derive current_state or last_updated from; the summary states that absence rather than answering with either field invented.
+current_state's own highest-numbered version is not always the version title, when_to_use and released_version answer from: a-case-has-at-most-one-draft lets a curator open a new draft over a case that already holds a released version, and only-a-released-case-version-is-diagnosed refuses to pin any investigation to that draft while it stays one — so the version a diagnosis may actually run against is the highest-numbered one whose own state is released, which a draft still being revised on top of it does not change. title, when_to_use and released_version follow that version instead, so a reader choosing a case by what it names is never pointed at a version diagnosis itself would refuse.
+A case that has never once released a version — its one and only version still in draft — holds no released version to derive title, when_to_use or released_version from, whatever version_count and current_state themselves answer; the summary states that absence rather than reading any of the three off the draft.
 
 === rules/knowledge/a-case-version-is-written-once
 ---
@@ -5262,6 +5302,27 @@ involves:
 ## Description
 
 only-a-draft-case-version-may-be-discarded lets a case's one and only draft be discarded, and a-case-version-number-is-never-reused confirms the case survives that with its slug and its next_version counter intact — so the case a curator names still exists while list-case-versions has nothing left to return for it. An empty listing reads the same whether the case never held a version, held one now discarded, or the curator named a slug list-case-versions cannot resolve at all; only an explicit statement that this case currently holds no version tells the difference, instead of leaving the curator to guess whether the read is still pending or something failed unannounced.
+
+=== scenarios/knowledge/a-catalog-entry-follows-the-released-version
+---
+subject: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+given:
+  - a case whose version 1 is released and whose version 2 is a draft still being revised
+when:
+  - the case's summary is read for the catalog
+then:
+  - title, when_to_use and released_version are read from version 1, the released one
+  - current_state still reports draft, read from version 2 — the case's highest-numbered version, not its released one
+  - version 2's own when_to_use never surfaces in the catalog while it remains a draft
+involves:
+  - domain/knowledge/case
+  - domain/knowledge/case-version
+  - domain/knowledge/case-summary
+---
+
+## Description
+
+only-a-released-case-version-is-diagnosed refuses to pin an investigation to version 2 while it stays a draft, so a catalog entry naming version 2's own when_to_use would point a reader at a version diagnosis itself would refuse; released_version names version 1 instead, the one a diagnosis may actually run against, and title and when_to_use follow it rather than the newer draft above it.
 
 === scenarios/knowledge/a-released-version-keeps-its-original-revision
 ---

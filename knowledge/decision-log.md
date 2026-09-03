@@ -1858,4 +1858,35 @@ entries:
     decided: 'A listing of one hypothesis''s revisions answers them ordered by revision number descending, highest first, so the first page of that listing carries that hypothesis''s highest existing revision.'
     why: 'The revision number is the only ordering fact available — hypothesis-revision declares no timestamp — and a-hypothesis-revision-number-is-never-reused makes it a total order per hypothesis, starting at 1, never reused and never discarded, so it needs no tiebreak and no second aggregate read. The direction is decided by which revision a reader came for: the highest existing revision is the one a curator adopts into a draft and the one a reader auditing a pin compares against, and ascending order would place it on the last page, one page further away with every revision the hypothesis gains — the same accumulation a-manifest-entrys-pinned-revision-is-always-shown already identifies as what pushes an old pin off a page. Declaring the order rather than leaving it is the substitution hypotheses-are-ordered-by-precedence already refuses for a manifest, where an order left to the storage''s arrangement replaces a decided fact. It is an invariant over hypothesis-revision alone because both the sort key and the grouping are that element''s own declared revision attribute and its cardinality-1 reference to its hypothesis, so the condition is decidable from the answer itself and holds immediately; it adds no field, changes no listing''s paging, refuses no call, and leaves the two presentation rules untouched, since each compares against the hypothesis''s highest existing revision rather than against a page''s contents.'
 
+  - location: domain/knowledge/case-summary.md
+    field: attributes
+    unstated: >-
+      Whether a catalog listing exposing a case's when_to_use (so an automated consumer can
+      choose the right case without reading version by version) needs a case's own title and the
+      version number a diagnosis may pin to, and if so which of a case's own versions supplies
+      them once its highest-numbered version is a draft still ahead of its last release.
+    decided: >-
+      Three new optional attributes — title, when_to_use, released_version — present only where
+      the case currently holds at least one released version, and read from that version rather
+      than from current_state's own highest-numbered version.
+    why: >-
+      diagnose() takes a case slug and version, and only-a-released-case-version-is-diagnosed
+      refuses any version that is not released, so a catalog entry a consumer chooses a case by
+      must name a version diagnose() itself would accept. current_state already answers "the
+      case's highest-numbered version, whichever its state," which is exactly the version a draft
+      in progress makes wrong for this purpose, so the three new fields need their own derivation
+      rather than reusing it.
+  - location: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions.md
+    field: statement
+    unstated: >-
+      Same fact as the case-summary.md entry above — which of a case's own versions supplies
+      title, when_to_use and released_version once its highest-numbered version is a draft still
+      ahead of its last release.
+    decided: >-
+      title, when_to_use and released_version are read from the case's highest-numbered version
+      in released state, distinct from current_state's own highest-numbered version of either
+      state; a case with no released version has none of the three.
+    why: >-
+      Same material and reasoning as the case-summary.md entry above.
+
 ---
