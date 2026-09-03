@@ -1,0 +1,21 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      export function manifestPinning(
+        hypothesisName: string,
+        revision: number,
+      ): { manifest: { hypothesis_revision: { hypothesis: { name: string }; revision: number } }[] } {
+        return { manifest: [{ hypothesis_revision: { hypothesis: { name: hypothesisName }, revision } }] };
+      }
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: |-
+      export const REVISE_ROUTE_PATTERN = "/cases/$slug/versions/$version/manifest/hypotheses/$hypothesisName";
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: |-
+      export function manifestPath(version: number): string {
+        return `/v1/cases/${SLUG}/versions/${version}`;
+      }
+looked_past: "this file is test-support scaffolding (URL builders, fetch stubs, router-mount helpers) that neither implements nor asserts the offer/route logic the two rules govern — that logic lives in the components it mounts, which are outside this file's own claims."

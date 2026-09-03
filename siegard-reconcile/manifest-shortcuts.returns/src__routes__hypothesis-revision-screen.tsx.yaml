@@ -1,0 +1,22 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: "readonly version: number;"
+  - node: rules/knowledge/a-revise-answers-the-revision-number-it-saved
+    held_at: "the success-phase paragraph, lines 39-41"
+    evidence: 'Hypothesis "{state.hypothesisName}" saved as revision {state.revision}.'
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the conditional render at lines 42-46"
+    evidence: |-
+      {state.offerManifestBuilder && (
+                <Button type="button" onClick={state.onOpenManifestBuilder}>
+                  Open Manifest Builder
+                </Button>
+              )}
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: |-
+      <Button type="button" onClick={state.onOpenManifest}>
+              View Manifest
+            </Button>
+looked_past: "the unconditional \"View Manifest\" button on the ready phase, and whether pinnedRevision is surfaced anywhere, are hook/other-node territory (a-manifest-entrys-pinned-revision-is-always-shown is bound to use-hypothesis-revision-form.ts, not this file) and not this pass's to judge."

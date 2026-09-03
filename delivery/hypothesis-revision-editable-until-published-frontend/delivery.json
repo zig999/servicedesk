@@ -98,6 +98,25 @@
         "Where the screen is opened for a hypothesis identity that does not exist yet, the form reports no pinned revision."
       ],
       "findings": 5
+    },
+    {
+      "id": "review/manifest-shortcuts",
+      "kind": "review",
+      "file": "review/manifest-shortcuts.md",
+      "title": "Review of manifest-shortcuts",
+      "summary": "Four-pass evidence over the two delivered tasks of the epic manifest-shortcuts — coverage, specification conformance (via reconciliation), standard conformance, and a captured run that passed cleanly.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "Rendering the control adds no request beyond the two reads the screen already issues.",
+        "The Manifest action is built from the same shared params object actionsForRow already builds for its existing per-row links, adding no second construction of those params.",
+        "The control reuses the navigate-to-manifest call already built in use-hypothesis-revision-form.ts rather than a second construction of that route.",
+        "The panel's existing Continue-editing, View and Simulate actions keep the route targets they have today."
+      ],
+      "findings": 8
     }
   ],
   "edges": [
@@ -278,6 +297,18 @@
     {
       "from": "review/hypothesis-revision-editable-until-published-frontend",
       "to": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
+      "kind": "reviews",
+      "at": "tasks[1]"
+    },
+    {
+      "from": "review/manifest-shortcuts",
+      "to": "task/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "reviews",
+      "at": "tasks[0]"
+    },
+    {
+      "from": "review/manifest-shortcuts",
+      "to": "task/manifest-shortcuts/version-row-manifest-action",
       "kind": "reviews",
       "at": "tasks[1]"
     }

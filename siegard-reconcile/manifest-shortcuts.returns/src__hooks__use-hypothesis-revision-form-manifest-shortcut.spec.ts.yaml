@@ -1,0 +1,18 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      jsonResponse(caseVersionResponse([manifestEntry("H1", 3)])),
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: |-
+      expect(typeof readyState(result.current).onOpenManifest).toBe("function");
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: |-
+      describe("useHypothesisRevisionForm — the always-visible manifest shortcut adds no request of its own (criterion 4)"
+looked_past: "The test also fixes the exact GET-request set (VERSION_PATH, the revisions path, and the four glossary endpoints) and asserts VERSION_PATH is fetched once; those facts belong to contracts/knowledge/case-query and the domain/glossary/* nodes bound (per the candidate index) to use-hypothesis-revision-form.ts itself, not to this pack's three nodes, so a judgment over them is that file's review rather than this one."
+candidates_opened:
+  - rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+  - contracts/knowledge/case-lifecycle
+  - contracts/knowledge/case-query

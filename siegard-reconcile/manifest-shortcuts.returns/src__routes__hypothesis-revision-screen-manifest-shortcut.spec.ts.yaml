@@ -1,0 +1,19 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: nowhere
+    evidence: |-
+      manifest: [
+        { hypothesis_revision: { hypothesis: { name: hypothesisName }, revision: pinnedRevision } },
+      ],
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: "the two describe blocks at lines 131-167 (\"a save that answers the same revision the draft's manifest entry already pinned\" and \"a save that answers a revision higher than the one pinned\")"
+    evidence: |-
+      expect(await screen.findByText('Hypothesis "H1" saved as revision 2.')).toBeTruthy();
+      expect(screen.queryAllByRole("button")).toHaveLength(0);
+      ...
+      expect(await screen.findByRole("button", MANIFEST_BUILDER_BUTTON)).toBeTruthy();
+      expect(screen.getAllByRole("button")).toHaveLength(1);
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: "the file mounts only NewHypothesisScreen / ReviseHypothesisScreen via mountHypothesisForm / mountIsolatedRevise (imported from \"./hypothesis-revision-screen.test-support\") -- no case-version listing is rendered or asserted anywhere in this file."
+looked_past: "The two revise-outcome scenarios track a-revise-offers-the-draft-manifest-only-when-the-pin-must-move exactly; the always-visible manifest shortcut's own presence/placement/label states nothing either given rule addresses, since both explicitly leave form (which control, wording, placement) to the interface, and the shortcut discloses no domain information beyond the slug/version already opened on."

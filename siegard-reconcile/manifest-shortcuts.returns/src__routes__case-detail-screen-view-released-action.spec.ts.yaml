@@ -1,0 +1,14 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: "the two describe blocks' state-conditioned assertions — a released row (`state: \"released\"`) getting the `View` link and a draft row (`state: \"draft\"`) getting `Continue editing` instead, mirroring the node's own draft-correctable / released-immutable split"
+    evidence: "expect(within(rows[1]).getByRole(\"link\", { name: \"View\" })).toBeTruthy();\n...\nexpect(within(draftRow).getByRole(\"link\", { name: \"Continue editing\" })).toBeTruthy();\nexpect(within(draftRow).queryByRole(\"link\", { name: \"View\" })).toBeNull();"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file's only fixtures are { version: 1, state: \"released\" }, { version: 2, state: \"draft\" } and { version: 5, state: \"released\" } against VERSIONS_PATH; no hypothesis revise, no pinned/written comparison and no offer-of-a-manifest-route assertion appears anywhere in the file"
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: "the released-row assertion checks only within(rows[1]).getByRole(\"link\", { name: \"View\" }) and the draft-row assertion checks only Continue editing and Simulate; neither describe block asserts a route to the version's own manifest, for either state"
+looked_past: "case-detail-screen.tsx's own conformance to the two manifest-route rules (via its separate \"Manifest\" link, exercised by case-detail-screen-manifest-action.spec.ts) is a different file's judgment, as is whether criterion 3's \"no additional request\" assertion is meaningful given the mounted /cases/$slug/versions/$version route is a () => null stub rather than the real screen."
+candidates_opened:
+  - domain/knowledge/case-version-state
+  - rules/knowledge/every-case-version-remains-readable

@@ -1,0 +1,86 @@
+read:
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "reviseMutation (mutationFn), POST /v1/cases/{slug}/hypotheses"
+    evidence: |-
+      return apiFetch<RevisedHypothesis>(`/v1/cases/${encodeURIComponent(slug)}/hypotheses`, {
+              method: "POST",
+  - node: contracts/knowledge/case-query
+    held_at: "versionQuery and revisionsQuery useQuery calls"
+    evidence: |-
+      queryFn: () =>
+            apiFetch<CaseVersionSubject>(`/v1/cases/${encodeURIComponent(slug)}/versions/${version}`),
+  - node: domain/glossary/action
+    held_at: 'actionOptions = useGlossaryVocabularyOptions("action")'
+    evidence: |-
+      const actionOptions = useGlossaryVocabularyOptions("action");
+  - node: domain/glossary/concept
+    held_at: "conceptOptions / collectsOptions filtering"
+    evidence: |-
+      const availableConcepts = conceptOptions.concepts.filter((concept) =>
+        concept.accepts.includes(subjectType),
+      );
+  - node: domain/glossary/outcome
+    held_at: 'outcomeOptions = useGlossaryVocabularyOptions("outcome")'
+    evidence: |-
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+  - node: domain/glossary/recipient
+    held_at: 'recipientOptions = useGlossaryVocabularyOptions("recipient")'
+    evidence: |-
+      const recipientOptions = useGlossaryVocabularyOptions("recipient");
+  - node: domain/glossary/subject-type
+    held_at: "subjectType derived from versionQuery.data.subject, used to filter concepts"
+    evidence: |-
+      const subjectType = versionQuery.data.subject;
+  - node: domain/knowledge/case-version
+    held_at: "CaseVersionSubject type and versionQuery usage (subject, manifest)"
+    evidence: |-
+      type CaseVersionSubject = {
+        readonly subject: string;
+        readonly manifest: readonly ManifestEntryDto[];
+      };
+  - node: domain/knowledge/hypothesis
+    held_at: "hypothesisNameEditable and reviseMutation body's hypothesis_name"
+    evidence: |-
+      hypothesisNameEditable: hypothesisName === null,
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "HypothesisRevisionListItem type and reviseMutation body (criterion, collects, resolution)"
+    evidence: |-
+      const body = {
+              hypothesis_name: values.hypothesis_name,
+              criterion: values.criterion,
+              collects: values.collects,
+              resolution: values.resolution,
+  - node: domain/knowledge/manifest-entry
+    held_at: pinnedRevisionFor
+    evidence: |-
+      const entry = manifest.find(
+        (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,
+      );
+      return entry === undefined ? null : entry.hypothesis_revision.revision;
+  - node: rules/knowledge/a-concept-accepts-the-declared-subject-type
+    held_at: "availableConcepts filter"
+    evidence: "concept.accepts.includes(subjectType)"
+  - node: rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version
+    held_at: "pinnedRevisionFor's single .find lookup"
+    evidence: |-
+      const entry = manifest.find(
+        (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,
+      );
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: "reviseMutation body's subject field, taken from the draft version query"
+    evidence: "subject: versionQuery.data.subject,"
+  - node: rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown
+    held_at: "pinnedRevision field of the \"ready\" phase, computed from versionQuery.data.manifest rather than the paged revisionsQuery"
+    evidence: "pinnedRevision: pinnedRevisionFor(versionQuery.data.manifest, hypothesisName),"
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: 'offerManifestBuilder computation in the "success" phase'
+    evidence: "offerManifestBuilder: pinnedBeforeSave === null || revision > pinnedBeforeSave,"
+  - node: rules/knowledge/case-terms-exist-in-the-glossary
+    held_at: "conceptOptions/outcomeOptions/actionOptions/recipientOptions all sourced dynamically rather than hardcoded"
+    evidence: |-
+      const conceptOptions = useConceptOptions();
+      const outcomeOptions = useGlossaryVocabularyOptions("outcome");
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: nowhere
+    evidence: "this file operates on one named version's hypothesis-revision form; it contains no listing of a case's own versions"
+looked_past: "the generic onError handler (\"Something went wrong while saving. Try again.\") collapses every mutation failure into one message without distinguishing the specific refusals other nodes name (e.g. ConceptRefusesSubjectTypeError, CaseHoldsNoDraftError, ConceptNotInGlossaryError); no node in this set requires the interface to differentiate them, so this is a completeness/UX concern rather than a domain-fact departure."

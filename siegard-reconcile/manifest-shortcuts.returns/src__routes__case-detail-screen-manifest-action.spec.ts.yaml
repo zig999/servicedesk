@@ -1,0 +1,26 @@
+read:
+  - node: domain/knowledge/case-version
+    held_at: "src/routes/case-detail-screen-manifest-action.spec.ts (final describe block, lines 155-213)"
+    evidence: |-
+      expect(
+            within(h1Row).getByRole<HTMLButtonElement>("button", { name: "Remove" }).disabled,
+          ).toBe(true);
+          expect(
+            within(h1Row).getByRole<HTMLButtonElement>("button", { name: "Move H1 down" }).disabled,
+          ).toBe(true);
+          expect(
+            within(h2Row).getByRole<HTMLButtonElement>("button", { name: "Move H2 up" }).disabled,
+          ).toBe(true);
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "the file's fixtures are draft and released case-version rows fed to VersionsPanel via VERSIONS_PATH;
+      no hypothesis revise, no pinned/written comparison and no post-save offer assertion appears anywhere
+      in the file -- every test targets the per-row Manifest link's presence, href and ordering, not a revise's
+      own offer"
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: "src/routes/case-detail-screen-manifest-action.spec.ts (describe blocks at lines 27-75)"
+    evidence: |-
+      const rows = await screen.findAllByRole("row");
+          const link = within(rows[1]).getByRole("link", { name: "Manifest" });
+          expect(link.getAttribute("href")).toBe(`/cases/${SLUG}/versions/3/manifest`);
+looked_past: "The link-vs-button assertion (lines 77-89) and the exact action-ordering assertion (lines 109-135) test UI form the \"a-listed-case-version-offers-a-route-to-its-own-manifest\" node itself disclaims -- \"Which control carries the route, its wording and where it sits are form and belong to the interface, not here\" -- so they say nothing about a domain fact and are outside this pass's scope."

@@ -1,0 +1,61 @@
+read:
+  - node: contracts/investigation/case-simulation
+    held_at: "actionsForRow's Simulate link"
+    evidence: |-
+      <Link to="/cases/$slug/versions/$version/simulate" params={params}>
+              Simulate
+            </Link>
+  - node: contracts/knowledge/case-query
+    held_at: "VersionsPanel's use of useCaseVersions(slug)"
+    evidence: "const { data, isLoading, isError, refetch } = useCaseVersions(slug);"
+  - node: domain/knowledge/case
+    held_at: "slug read from the route and threaded through the panel and its links"
+    evidence: 'const { slug } = useParams({ from: "/cases/$slug" });'
+  - node: domain/knowledge/case-version
+    held_at: "toRow, projecting version and state into a table row"
+    evidence: |-
+      return {
+        id: version.version,
+        version: version.version,
+        state: STATE_CELL[version.state],
+        actions: actionsForRow(slug, version),
+      };
+  - node: domain/knowledge/case-version-state
+    held_at: "STATE_CELL lookup keyed by the two enumeration values"
+    evidence: |-
+      const STATE_CELL: Record<CaseVersionState, { color: string; label: string }> = {
+        draft: { color: "bg-warning", label: "Draft" },
+        released: { color: "bg-success", label: "Released" },
+      };
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: "hasDraft gating the New draft link"
+    evidence: |-
+      const hasDraft = data.data.some((version) => version.state === "draft");
+
+        return (
+          <>
+            {!hasDraft && (
+              <Link to="/cases/$slug/versions/new" params={{ slug }}>
+                New draft
+              </Link>
+            )}
+  - node: rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest
+    held_at: "actionsForRow's unconditional Manifest link, present for both states"
+    evidence: |-
+      <Link to="/cases/$slug/versions/$version/manifest" params={params}>
+              Manifest
+            </Link>
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "rows built from the whole version listing, each carrying a route to view it"
+    evidence: "const rows = data.data.map((version) => toRow(slug, version));"
+  - node: scenarios/knowledge/a-case-holding-no-versions-is-told-explicitly
+    held_at: "the explicit empty-listing branch"
+    evidence: |-
+      {rows.length === 0 ? (
+
+              <p>This case currently holds no version.</p>
+            ) : (
+  - node: rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move
+    held_at: nowhere
+    evidence: "not encoded in this file -- the candidate index binds this rule to src/hooks/use-hypothesis-revision-form.ts and src/routes/hypothesis-revision-screen.tsx instead"
+looked_past: "UI presentation choices with no governing node -- the draft/released color tokens (bg-warning/bg-success), the Continue editing/View label split, and the loading/error copy -- are form, not a domain fact, and were not reported; the imported use-case-versions hook, case-hypotheses-tab.tsx and case-attributes-tab.tsx sit outside this file set and were not opened."
