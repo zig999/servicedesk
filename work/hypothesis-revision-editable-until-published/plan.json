@@ -9,25 +9,11 @@
       "summary": "The write path for revise-hypothesis, from the schema rule that permits an alteration through the store's decision fact to the operation's choice between replacing the highest revision's content and creating the next."
     },
     {
-      "id": "epic/hypothesis-revision-repin-affordance",
-      "kind": "epic",
-      "file": "epic/hypothesis-revision-repin-affordance.md",
-      "title": "The post-save repin affordance on the hypothesis-editing screen",
-      "summary": "The curator's hypothesis-editing screen deciding, from the revision the draft's manifest entry pinned, whether the save it just made left anything to repin."
-    },
-    {
       "id": "inventory/hypothesis-revision-editable-until-published-backend",
       "kind": "inventory",
       "file": "inventory/hypothesis-revision-editable-until-published-backend.md",
       "title": "Case-lifecycle revise-hypothesis module (backend)",
       "summary": "The backend module that implements revise-hypothesis today — operation, HTTP layer, and the relational store's always-insert write path and its unconditional no-update schema rule."
-    },
-    {
-      "id": "inventory/hypothesis-revision-repin-affordance",
-      "kind": "inventory",
-      "file": "inventory/hypothesis-revision-repin-affordance.md",
-      "title": "Hypothesis-editing screen and its post-save repin affordance",
-      "summary": "The curator's hypothesis-editing screen, its revise-hypothesis mutation, and the existing manifest-builder repin flow it currently always points at."
     },
     {
       "id": "task/hypothesis-revision-overwrite/overwrite-a-revisions-content-in-place",
@@ -60,22 +46,6 @@
       "title": "The schema refuses an alteration only for a released revision",
       "summary": "The migration that replaces the unconditional refusal of any change to a hypothesis revision with one conditioned on a released case version referencing it.",
       "epic": "hypothesis-revision-overwrite"
-    },
-    {
-      "id": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "kind": "task",
-      "file": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save.md",
-      "title": "The editing form holds the draft manifest entry's pinned revision",
-      "summary": "The hypothesis-editing form reporting, from the draft case version's own manifest entry, which revision of the hypothesis being revised that draft currently pins.",
-      "epic": "hypothesis-revision-repin-affordance"
-    },
-    {
-      "id": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
-      "kind": "task",
-      "file": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind.md",
-      "title": "The manifest-builder step is offered only where the save left the pin behind",
-      "summary": "The hypothesis-editing screen's success surface offering the manifest-builder step only where the revision the save answered differs from the revision the draft pinned going into it.",
-      "epic": "hypothesis-revision-repin-affordance"
     }
   ],
   "edges": [
@@ -190,120 +160,6 @@
     {
       "from": "epic/hypothesis-revision-overwrite",
       "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
-      "kind": "covers",
-      "at": "covers[9]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-hypothesis-revision-is-overwritten-while-unreleased",
-      "kind": "covers",
-      "at": "covers[0]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "contracts/knowledge/case-lifecycle",
-      "kind": "covers",
-      "at": "covers[10]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "scenarios/knowledge/a-draft-revision-is-overwritten-by-repeated-saves",
-      "kind": "covers",
-      "at": "covers[11]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "scenarios/knowledge/revising-a-released-revision-creates-the-next",
-      "kind": "covers",
-      "at": "covers[12]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "scenarios/investigation/an-in-place-revision-edit-stales-the-shown-result",
-      "kind": "covers",
-      "at": "covers[13]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "constraints/listings-are-paged",
-      "kind": "covers",
-      "at": "covers[14]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
-      "kind": "covers",
-      "at": "covers[15]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
-      "kind": "covers",
-      "at": "covers[16]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
-      "kind": "covers",
-      "at": "covers[17]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-case-has-at-most-one-draft",
-      "kind": "covers",
-      "at": "covers[18]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
-      "kind": "covers",
-      "at": "covers[1]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-manifest-entry-discloses-a-higher-revision-of-its-hypothesis",
-      "kind": "covers",
-      "at": "covers[2]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-presented-manifest-entry-says-whether-its-pinned-revision-is-the-latest",
-      "kind": "covers",
-      "at": "covers[3]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/knowledge/a-hypothesis-revisions-listing-answers-highest-revision-first",
-      "kind": "covers",
-      "at": "covers[4]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "rules/investigation/a-simulation-result-is-stale-once-its-source-changes",
-      "kind": "covers",
-      "at": "covers[5]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "domain/knowledge/manifest-entry",
-      "kind": "covers",
-      "at": "covers[6]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "domain/knowledge/hypothesis-revision",
-      "kind": "covers",
-      "at": "covers[7]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "domain/knowledge/case-version",
-      "kind": "covers",
-      "at": "covers[8]"
-    },
-    {
-      "from": "epic/hypothesis-revision-repin-affordance",
-      "to": "domain/knowledge/hypothesis",
       "kind": "covers",
       "at": "covers[9]"
     },
@@ -498,66 +354,6 @@
       "to": "domain/knowledge/manifest-entry",
       "kind": "implements",
       "at": "implements[5]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
-      "kind": "implements",
-      "at": "implements[0]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
-      "kind": "implements",
-      "at": "implements[1]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "rules/knowledge/a-case-has-at-most-one-draft",
-      "kind": "implements",
-      "at": "implements[2]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "domain/knowledge/case-version",
-      "kind": "implements",
-      "at": "implements[3]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "domain/knowledge/manifest-entry",
-      "kind": "implements",
-      "at": "implements[4]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "domain/knowledge/hypothesis-revision",
-      "kind": "implements",
-      "at": "implements[5]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "to": "domain/knowledge/hypothesis",
-      "kind": "implements",
-      "at": "implements[6]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
-      "to": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
-      "kind": "depends_on",
-      "at": "depends_on[0]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
-      "to": "rules/knowledge/a-revise-offers-the-draft-manifest-only-when-the-pin-must-move",
-      "kind": "implements",
-      "at": "implements[0]"
-    },
-    {
-      "from": "task/hypothesis-revision-repin-affordance/repin-offered-only-when-the-pin-fell-behind",
-      "to": "rules/knowledge/a-revise-answers-the-revision-number-it-saved",
-      "kind": "implements",
-      "at": "implements[1]"
     }
   ]
 }
