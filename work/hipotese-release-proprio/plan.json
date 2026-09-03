@@ -9,6 +9,13 @@
       "summary": "The gate a case version's own release now runs, reading each manifest entry's referenced revision's own state."
     },
     {
+      "id": "epic/fixture-revision-own-state",
+      "kind": "epic",
+      "file": "epic/fixture-revision-own-state.md",
+      "title": "The canonical fixture's manifested revisions carry their own released state",
+      "summary": "The shared fixture and seed data whose hypothesis revisions sit in released case versions while their own state was never moved past draft."
+    },
+    {
       "id": "epic/hypothesis-revision-own-release",
       "kind": "epic",
       "file": "epic/hypothesis-revision-own-release.md",
@@ -21,6 +28,13 @@
       "file": "epic/hypothesis-revision-own-state.md",
       "title": "A hypothesis-revision's own state",
       "summary": "The stored state a hypothesis-revision carries for itself, and the two write paths that now read it instead of reading a case version."
+    },
+    {
+      "id": "epic/obsolete-protection-basis-tests",
+      "kind": "epic",
+      "file": "epic/obsolete-protection-basis-tests.md",
+      "title": "Tests still certifying the revoked protection basis",
+      "summary": "The persistence tests that prove a hypothesis-revision's immutability from a released case version's reference to it, rather than from the revision's own state."
     },
     {
       "id": "epic/revision-listing-state-disclosure",
@@ -37,12 +51,27 @@
       "summary": "The layered src/src/case, src/src/http, src/src/persistence and src/migrations slice where hypothesis-revision currently borrows its release state from any case-version that manifests it, and where the scope's own-state lifecycle, its release-hypothesis endpoint and the manifest-only-released-revisions gate must land."
     },
     {
+      "id": "inventory/persistence-and-fixture-own-state-fallout",
+      "kind": "inventory",
+      "file": "inventory/persistence-and-fixture-own-state-fallout.md",
+      "title": "Persistence schema tests and fixture/seed setup still keyed to the manifest-referenced basis",
+      "summary": "The area the suite-corrections scope lands in — the persistence schema specs, the shared fixture/seed builder, and the tests that read through it — all still assume the pre-0020/0021 manifest-referenced protection of a hypothesis revision."
+    },
+    {
       "id": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "kind": "task",
       "file": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision.md",
       "title": "Refuse a case version's release over a draft revision",
       "summary": "The gate a case version's release runs over every manifest entry's referenced hypothesis-revision state, folded into the existing release refusal.",
       "epic": "case-version-release-gate"
+    },
+    {
+      "id": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "kind": "task",
+      "file": "task/fixture-revision-own-state/release-fixture-manifested-revisions.md",
+      "title": "Give the fixture's manifested revisions their own released state",
+      "summary": "The fixture and seed setup that leaves a released case version's manifested hypothesis revisions in draft in their own column, corrected so the canonical case reads back whole.",
+      "epic": "fixture-revision-own-state"
     },
     {
       "id": "task/hypothesis-revision-own-release/expose-the-release-hypothesis-endpoint",
@@ -83,6 +112,22 @@
       "title": "Store each hypothesis-revision's own state",
       "summary": "The schema and the write path that record a hypothesis-revision's own draft-or-released state on its own row.",
       "epic": "hypothesis-revision-own-state"
+    },
+    {
+      "id": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test.md",
+      "title": "Repoint the repository's overwrite-refusal test onto the revision's own state",
+      "summary": "The relational case store repository spec's test for a distinguishable refusal of an overwrite, keyed on the revision's own released state instead of on a released case version referencing it.",
+      "epic": "obsolete-protection-basis-tests"
+    },
+    {
+      "id": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "kind": "task",
+      "file": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs.md",
+      "title": "Retire the manifest-basis persistence schema specs",
+      "summary": "The two persistence schema specs whose assertions rest on a released case version's reference, restated against the revision's own state or retired into the sibling that already holds them.",
+      "epic": "obsolete-protection-basis-tests"
     },
     {
       "id": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
@@ -127,6 +172,42 @@
     {
       "from": "epic/case-version-release-gate",
       "to": "domain/knowledge/manifest-entry",
+      "kind": "covers",
+      "at": "covers[5]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "covers",
+      "at": "covers[4]"
+    },
+    {
+      "from": "epic/fixture-revision-own-state",
+      "to": "constraints/a-case-is-read-whole",
       "kind": "covers",
       "at": "covers[5]"
     },
@@ -257,6 +338,30 @@
       "at": "covers[9]"
     },
     {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "covers",
+      "at": "covers[0]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "covers",
+      "at": "covers[1]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "covers",
+      "at": "covers[2]"
+    },
+    {
+      "from": "epic/obsolete-protection-basis-tests",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "covers",
+      "at": "covers[3]"
+    },
+    {
       "from": "epic/revision-listing-state-disclosure",
       "to": "rules/knowledge/a-hypothesis-revisions-listing-discloses-each-revisions-own-state",
       "kind": "covers",
@@ -325,6 +430,48 @@
     {
       "from": "task/case-version-release-gate/refuse-a-release-manifesting-a-draft-revision",
       "to": "domain/knowledge/manifest-entry",
+      "kind": "implements",
+      "at": "implements[5]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-released-case-version-manifests-only-released-hypothesis-revisions",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/a-hypothesis-collects-at-least-one-concept",
+      "kind": "implements",
+      "at": "implements[3]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "rules/knowledge/validation-runs-at-every-read",
+      "kind": "implements",
+      "at": "implements[4]"
+    },
+    {
+      "from": "task/fixture-revision-own-state/release-fixture-manifested-revisions",
+      "to": "constraints/a-case-is-read-whole",
       "kind": "implements",
       "at": "implements[5]"
     },
@@ -567,6 +714,60 @@
       "to": "constraints/the-domain-depends-on-no-infrastructure",
       "kind": "implements",
       "at": "implements[4]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/repoint-the-repository-overwrite-refusal-test",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "task/hypothesis-revision-own-state/refuse-altering-a-released-revision",
+      "kind": "depends_on",
+      "at": "depends_on[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "rules/knowledge/a-released-hypothesis-revision-is-never-altered",
+      "kind": "implements",
+      "at": "implements[0]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "implements",
+      "at": "implements[1]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "domain/knowledge/hypothesis-revision-state",
+      "kind": "implements",
+      "at": "implements[2]"
+    },
+    {
+      "from": "task/obsolete-protection-basis-tests/retire-manifest-basis-schema-specs",
+      "to": "constraints/the-schema-replays-from-its-scripts",
+      "kind": "implements",
+      "at": "implements[3]"
     },
     {
       "from": "task/revision-listing-state-disclosure/disclose-each-revisions-own-state",
