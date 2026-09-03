@@ -16,6 +16,23 @@
       "title": "Proof for the relational case store deriving the six-attribute case-catalog summary",
       "summary": "Twelve integration tests against a real Postgres instance prove RelationalCaseStore.listCases derives current_state, version_count, last_updated, title, when_to_use and released_version per the task criteria; two pre-existing unit-test files were repaired to the widened CaseCatalogEntry interface so the target source root typechecks.",
       "task": "task/case-catalog/store-derives-the-case-summary"
+    },
+    {
+      "id": "review/case-catalog-when-to-use",
+      "kind": "review",
+      "file": "review/case-catalog-when-to-use.md",
+      "title": "case-catalog-when-to-use, first review",
+      "summary": "What four passes found over the store-derives-the-case-summary delivery: the case-summary derivation and its tests, and everything else the trace still binds to the five source files touched.",
+      "ran": [
+        "coverage",
+        "conformance",
+        "standard"
+      ],
+      "unproven": [
+        "An entry's current_state and last_updated are read from the case's highest-numbered version, whatever state that version is in.",
+        "The same offset and limit select the same cases, in the same order, as they did before the summary fields were derived."
+      ],
+      "findings": 10
     }
   ],
   "edges": [
@@ -54,6 +71,12 @@
       "to": "implementation/case-catalog/store-derives-the-case-summary",
       "kind": "proves",
       "at": "the path"
+    },
+    {
+      "from": "review/case-catalog-when-to-use",
+      "to": "task/case-catalog/store-derives-the-case-summary",
+      "kind": "reviews",
+      "at": "tasks[0]"
     }
   ]
 }

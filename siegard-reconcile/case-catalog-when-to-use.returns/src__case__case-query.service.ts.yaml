@@ -1,0 +1,47 @@
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "heldVersion() (lines 131-137), called from readCase, readCaseInputRequirements and replayCase"
+    evidence: "const assembled = await store.assembleVersion(slug, version);\n  if (assembled === undefined) {\n    throw new CaseNotFoundError(slug, version);\n  }\n  return assembled;"
+  - node: contracts/knowledge/case-query
+    held_at: "the CaseQueryService methods implementing ICaseQuery (lines 34-72)"
+    evidence: "export class CaseQueryService implements ICaseQuery, ICaseInputRequirementsQuery {"
+  - node: contracts/system/case-authoring
+    held_at: "refuseIncoherence (lines 74-79)"
+    evidence: "const violations = await caseCoherenceViolations(theCase, this.glossary, this.capabilities);\n    if (violations.length > 0) {\n      throw new CaseNotValidError(theCase.slug, version, violations);\n    }"
+  - node: domain/knowledge/case
+    held_at: "readCase and heldVersion, which read and identify a case by slug and version (lines 34-39, 131-137)"
+    evidence: "public async readCase(slug: string, version: number): Promise<ReadCaseResult> {"
+  - node: domain/knowledge/hypothesis
+    held_at: "trustedHypothesisOf (lines 121-129)"
+    evidence: "return {\n    name: revision.hypothesis.name,\n    criterion: revision.criterion,\n    collects: revision.collects,\n    resolution: revision.resolution,\n  };"
+  - node: rules/investigation/replay-is-pinned
+    held_at: "replayCase (lines 82-85)"
+    evidence: "export async function replayCase(slug: string, version: number, caseStore: ICaseStore): Promise<Case> {\n  const assembled = await heldVersion(caseStore, slug, version);\n  return trustedCaseOf(assembled);\n}"
+  - node: rules/knowledge/a-case-versions-input-requirements-are-derived
+    held_at: "readCaseInputRequirements (lines 41-46), delegating to deriveCaseInputRequirements"
+    evidence: "const registeredCapabilities = await everyRegisteredCapability(this.capabilities);\n    return deriveCaseInputRequirements(theCase, registeredCapabilities);"
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: nowhere
+    evidence: "public async readCase(slug: string, version: number): Promise<ReadCaseResult> {"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "readCase / heldVersion, parameterized explicitly by version rather than always the latest (lines 34-39, 131-137)"
+    evidence: "const assembled = await store.assembleVersion(slug, version);"
+  - node: rules/knowledge/the-contract-check-reads-the-current-registration
+    held_at: "readCaseInputRequirements (line 44)"
+    evidence: "const registeredCapabilities = await everyRegisteredCapability(this.capabilities);"
+  - node: rules/knowledge/validation-runs-at-every-read
+    held_at: "readCase runs structuralCase then refuseIncoherence (lines 34-39); replayCase runs neither (lines 82-85)"
+    evidence: "const theCase = structuralCase(assembled, slug, version);\n    await this.refuseIncoherence(theCase, version);\n    return { case: theCase };"
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: "public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {\n    return this.caseStore.listCases(pagination);\n  }"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: nowhere
+    evidence: "return this.caseStore.listCases(pagination);"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: nowhere
+    evidence: "return this.caseStore.listCases(pagination);"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: nowhere
+    evidence: "return this.caseStore.listCases(pagination);"
+looked_past: "this file is a thin delegation layer over ICaseStore for the four listing operations and the summary/ordering nodes' facts are computed elsewhere (relational-case-store.repository.ts, per the candidate index); the choice of free functions versus methods and the error-class mapping in structuralCase are style, not domain facts, and are left for that judgment."

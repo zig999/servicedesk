@@ -1,0 +1,122 @@
+findings:
+  - file: src/persistence/relational-case-store.repository.ts
+    where: "insertRevision(), lines 573-582, called from insertHypothesisRevision() at line 134-136"
+    evidence: "async function insertRevision(tx: IQueryable, input: HypothesisRevisionInput): Promise<number> {\n  const key: IHypothesisKey = { slug: input.slug, hypothesis_name: input.hypothesis_name };\n  await runStatement(tx, hypothesisIdentityStatement(key), raiseWriteFailure);\n  const revision = await insertRevisionRow(tx, input);"
+    cost: "A hypothesis revision can be inserted for a case that currently holds no draft version. The store's own CaseHoldsNoDraftError (imported nowhere in this file) is never raised, so the refusal the rule names never fires here, and a revision can be authored with no draft whose subject type the concept-acceptance step was meant to check it against."
+    kind: contradicts
+    node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    correction: "insertRevision would need to look up the case's current draft version first and raise CaseHoldsNoDraftError when none exists, the same pattern updateDraftVersion already uses for CaseVersionNotDraftError."
+
+  - file: src/persistence/relational-case-store.repository.ts
+    where: "placeHypothesis(), lines 138-140, and raisePlaceHypothesisFailure(), lines 629-634"
+    evidence: "public async placeHypothesis(input: PlaceHypothesisInput): Promise<void> {\n    await runStatement(this.connection, placeHypothesisStatement(input), raisePlaceHypothesisFailure(input));\n  }"
+    cost: "place-hypothesis against a version that is not in draft state succeeds instead of being refused, so a released case version's manifest can be changed after publication — exactly the immutability an investigation's replay depends on."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: "Check the version's state (as updateDraftVersion does) before the insert and raise CaseVersionNotDraftError when it is not draft."
+
+  - file: src/persistence/relational-case-store.repository.ts
+    where: "removeManifestEntry(), lines 142-144"
+    evidence: "public async removeManifestEntry(slug: string, version: number, hypothesisName: string): Promise<void> {\n    await runStatement(this.connection, removeManifestEntryStatement(slug, version, hypothesisName), raiseWriteFailure);\n  }"
+    cost: "A manifest entry can be removed from a released version's manifest with no refusal, letting a published procedure change after release with nothing in this file ever raising CaseVersionNotDraftError for it."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: "Check the version's state before the delete and raise CaseVersionNotDraftError when it is not draft."
+
+  - file: src/persistence/relational-case-store.repository.ts
+    where: "release(), lines 146-148, and releaseStatement(), lines 643-648"
+    evidence: "function releaseStatement(slug: string, version: number): IStatement {\n  return {\n    text: `UPDATE ${CASE_VERSIONS_TABLE} SET state = $3, released_at = NOW() WHERE slug = $1 AND version = $2`,\n    params: [slug, version, RELEASED_STATE],\n  };\n}"
+    cost: "release() can be invoked against a version that is not draft — including one already released — silently rewriting released_at, since the UPDATE carries no state precondition and CaseVersionNotDraftAtReleaseError is never imported or thrown anywhere in this file. A caller relying on the 409 refusal to detect a stale action gets a silent success instead."
+    kind: contradicts
+    node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    correction: "releaseStatement's WHERE clause (or a preceding read, mirroring updateDraftVersion) would need to require state = draft, with a violation raising CaseVersionNotDraftAtReleaseError."
+
+  - file: src/persistence/relational-case-store.repository.ts
+    where: "discard(), lines 150-152, and discardDraft(), lines 650-653"
+    evidence: "async function discardDraft(tx: IQueryable, key: ICaseVersionKey): Promise<void> {\n  await runStatement(tx, deleteManifestEntriesStatement(key), raiseWriteFailure);\n  await runStatement(tx, deleteCaseVersionStatement(key), raiseWriteFailure);\n}"
+    cost: "discardDraft deletes a case_version and its manifest entries regardless of the version's current state, so a released version — and the investigation whose replay depends on it staying readable — can be removed through the same call path meant only for an abandoned draft."
+    kind: contradicts
+    node: rules/knowledge/only-a-draft-case-version-may-be-discarded
+    correction: "discardDraft would need to check the version's state is draft before deleting, and refuse (or no-op with an error) otherwise."
+
+read:
+  - node: constraints/a-case-is-read-whole
+    held_at: "assembleWholeVersion(), lines 159-166, inside assembleVersion()'s runInTransaction call, line 100"
+    evidence: "const manifest = await readManifest(tx, key);\n  return assembledCaseVersionOf(key, versionRow, manifest);"
+  - node: contracts/knowledge/case-lifecycle
+    held_at: "the public methods createDraft, insertHypothesisRevision, placeHypothesis, removeManifestEntry, release, discard, updateDraft, lines 130-156"
+    evidence: "public async createDraft(input: CreateDraftInput): Promise<number> {\n    return runInTransaction(this.connection, raiseWriteFailure, (tx) => createDraftVersion(tx, input));\n  }"
+  - node: contracts/knowledge/case-query
+    held_at: "assembleVersion, listCases, listCaseVersions, listHypotheses, listHypothesisRevisions, lines 99-128"
+    evidence: "public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {\n    return runInTransaction(this.connection, raiseReadFailure, (tx) => listCasesPage(tx, pagination));\n  }"
+  - node: domain/knowledge/case
+    held_at: "caseIdentityStatement(), line 500-502, and nextVersionUpdateStatement(), lines 512-519"
+    evidence: "UPDATE ${CASES_TABLE} SET next_version = next_version + 1\n           WHERE slug = $1\n           RETURNING next_version - 1 AS version"
+  - node: domain/knowledge/case-summary
+    held_at: "caseCatalogEntryOf(), lines 253-263"
+    evidence: "return {\n    slug: row.slug,\n    ...(row.current_state !== null ? { current_state: caseVersionStateOf(row.current_state) } : {}),\n    version_count: Number(row.version_count),"
+  - node: domain/knowledge/case-version
+    held_at: "assembledCaseVersionOf(), lines 196-211"
+    evidence: "...(row.released_at !== null ? { released_at: row.released_at.toISOString() } : {}),\n    manifest,\n  };"
+  - node: domain/knowledge/case-version-state
+    held_at: "DRAFT_STATE/RELEASED_STATE constants (lines 86-87) and isCaseVersionState(), lines 733-735"
+    evidence: "function isCaseVersionState(value: string): value is CaseVersionState {\n  return value === DRAFT_STATE || value === RELEASED_STATE;\n}"
+  - node: domain/knowledge/hypothesis
+    held_at: "hypothesisIdentityStatement(), lines 584-589"
+    evidence: "INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING"
+  - node: domain/knowledge/hypothesis-revision
+    held_at: "revisionInsertStatement(), lines 600-611"
+    evidence: "SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6\n           FROM ${HYPOTHESIS_REVISIONS_TABLE}\n           WHERE case_slug = $1 AND hypothesis_name = $2\n           RETURNING revision"
+  - node: domain/knowledge/manifest-entry
+    held_at: "manifestEntryOf(), lines 185-194"
+    evidence: "return { position: row.position, hypothesis_revision: hypothesisRevision };"
+  - node: rules/knowledge/a-case-has-at-most-one-draft
+    held_at: "raiseCreateDraftFailure(), lines 569-571"
+    evidence: "return (cause) => (isConstraintViolation(cause, ONE_DRAFT_PER_CASE_CONSTRAINT) ? new CaseAlreadyHasDraftError(slug) : raiseWriteFailure(cause));"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: "casesPageSelect(), lines 274-299"
+    evidence: "FROM (SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2) c\n ...\n           ORDER BY c.slug"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: "casesPageSelect(), lines 274-299"
+    evidence: "SELECT DISTINCT ON (slug) slug, state, authored_at,\n                    COUNT(*) OVER (PARTITION BY slug) AS version_count\n             FROM ${CASE_VERSIONS_TABLE}\n             ORDER BY slug, version DESC"
+  - node: rules/knowledge/a-case-version-is-written-once
+    held_at: "held only for a version's own declared attributes, via the draft-state check in updateDraftVersion, lines 671-674; placeHypothesis and removeManifestEntry, which alter its manifest entries, and release, carry no equivalent check (see findings)"
+    evidence: "const state = caseVersionStateOf(row.state);\n  if (state !== DRAFT_STATE) {\n    throw new CaseVersionNotDraftError(key.slug, key.version, state);\n  }"
+  - node: rules/knowledge/a-case-version-moves-through-its-declared-lifecycle
+    held_at: "held only in updateDraftVersion, lines 666-676; placeHypothesis, removeManifestEntry and release carry no equivalent check (see findings)"
+    evidence: "const state = caseVersionStateOf(row.state);\n  if (state !== DRAFT_STATE) {\n    throw new CaseVersionNotDraftError(key.slug, key.version, state);\n  }"
+  - node: rules/knowledge/a-case-version-number-is-never-reused
+    held_at: "assignNextVersion(), lines 504-510, and nextVersionUpdateStatement(), lines 512-519"
+    evidence: "UPDATE ${CASES_TABLE} SET next_version = next_version + 1\n           WHERE slug = $1\n           RETURNING next_version - 1 AS version"
+  - node: rules/knowledge/a-hypothesis-is-revised-only-against-its-cases-draft
+    held_at: nowhere
+    evidence: "insertRevision(), lines 573-582, contains no check of the case's draft version and never raises CaseHoldsNoDraftError, which is not imported anywhere in the file"
+  - node: rules/knowledge/a-hypothesis-name-is-unique-within-its-case
+    held_at: "hypothesisIdentityStatement(), lines 584-589"
+    evidence: "INSERT INTO ${HYPOTHESES_TABLE} (case_slug, name) VALUES ($1, $2) ON CONFLICT (case_slug, name) DO NOTHING"
+  - node: rules/knowledge/a-hypothesis-position-is-unique-within-its-case
+    held_at: "raisePlaceHypothesisFailure(), lines 629-634"
+    evidence: "isConstraintViolation(cause, POSITION_UNIQUE_CONSTRAINT)\n      ? new ManifestPositionOccupiedError(input.slug, input.version, input.position)\n      : raiseWriteFailure(cause);"
+  - node: rules/knowledge/a-hypothesis-revision-number-is-never-reused
+    held_at: "revisionInsertStatement(), lines 600-611"
+    evidence: "SELECT $1, $2, COALESCE(MAX(revision), 0) + 1, $3, $4, $5, $6"
+  - node: rules/knowledge/a-new-drafts-manifest-is-copied-from-an-existing-version
+    held_at: "resolveSourceVersion(), lines 521-527, and manifestCopyStatement(), lines 559-567"
+    evidence: "INSERT INTO ${CASE_VERSION_HYPOTHESES_TABLE} (case_slug, case_version, hypothesis_name, revision, position)\n           SELECT case_slug, $2, hypothesis_name, revision, position\n           FROM ${CASE_VERSION_HYPOTHESES_TABLE}\n           WHERE case_slug = $1 AND case_version = $3"
+  - node: rules/knowledge/a-slug-identifies-one-case
+    held_at: "caseIdentityStatement(), lines 500-502"
+    evidence: "INSERT INTO ${CASES_TABLE} (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING"
+  - node: rules/knowledge/every-case-version-remains-readable
+    held_at: "draftInsertStatement() always inserts a new row (lines 536-557) and caseVersionSelect()/listCaseVersionsPage() read any stored version by key; the guarantee is broken for a released version by discardDraft (see finding)"
+    evidence: "INSERT INTO ${CASE_VERSIONS_TABLE}\n             (slug, version, title, when_to_use, authored_at, subject, ...)\n           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
+  - node: rules/knowledge/hypotheses-are-ordered-by-precedence
+    held_at: "manifestSelect(), lines 305-316"
+    evidence: "WHERE cvh.case_slug = $1 AND cvh.case_version = $2\n           ORDER BY cvh.position"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: "casesPageSelect() and caseCatalogEntryOf(), lines 253-299"
+    evidence: "released.title AS title,\n                  released.when_to_use AS when_to_use,\n                  released.version AS released_version"
+
+candidates_opened:
+  - rules/knowledge/only-a-draft-case-version-may-be-discarded
+
+looked_past: "I did not flag resolveSourceVersion()'s silent no-op when an explicitly named source_version does not exist for the case, or the lack of a compare-and-set guard against a concurrent race on hypothesis-revision numbering, because neither is stated as a required refusal by any node I could locate — flagging either would be reaching for a code-review concern rather than a specification departure."

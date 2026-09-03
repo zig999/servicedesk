@@ -1,0 +1,14 @@
+read:
+  - node: domain/knowledge/case-summary
+    held_at: "the shape assertion in \"answers an entry carrying exactly the slug and the six domain/knowledge/case-summary attributes … nothing more, for a case whose highest-numbered version is released\" (around line 1096)"
+    evidence: "expect(entry && Object.keys(entry).sort()).toEqual(\n      ['current_state', 'last_updated', 'released_version', 'slug', 'title', 'version_count', 'when_to_use'].sort(),\n    );"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: "the derivation assertions across \"reads an entry's title, when_to_use and released_version off the highest-numbered version whose state is released…\", \"carries none of title, when_to_use and released_version… for a case currently holding no released version at all\", \"counts an entry's version_count…\", and \"gives version_count 0 and carries neither current_state nor last_updated for a case currently holding no version at all\" (around lines 1127, 1150-1152, 1225, 1258-1260)"
+    evidence: "expect(entry).toMatchObject({\n      title: 'Second released title',\n      when_to_use: 'Second released use',\n      released_version: secondReleased,\n    });"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: "the paired tests \"carries the released version's own title, when_to_use and released_version, never the higher-numbered draft's…\" and \"reads an entry's current_state and last_updated off the case's highest-numbered version whatever its own state…\" (around lines 1180 and 1206)"
+    evidence: "expect(entry).toMatchObject({\n      title: 'Released title',\n      when_to_use: 'Released use',\n      released_version: releasedVersion,\n    });"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: "\"answers the page in ascending slug order, the same order the offset and limit selected before the summary fields were derived, regardless of the order the cases were created in\" (around line 1320)"
+    evidence: "expect(ours.map((item) => item.slug)).toEqual([slugA, slugB, slugC]);"
+looked_past: "The rest of the file — manifest assembly/copy, hypothesis and revision numbering/uniqueness, draft/discard/release lifecycle, updateDraft, CaseNotFoundError/CaseAlreadyHasDraftError/ManifestPositionOccupiedError/CaseVersionNotDraftError context shapes, and pagination-envelope mechanics — exercises rules and contracts outside this node set (per the candidate index, mostly bound to relational-case-store.repository.ts under other tasks) and is left to whichever review covers those nodes."

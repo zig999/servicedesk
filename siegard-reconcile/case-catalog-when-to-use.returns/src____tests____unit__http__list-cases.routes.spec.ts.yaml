@@ -1,0 +1,21 @@
+findings:
+  - file: src/__tests__/unit/http/list-cases.routes.spec.ts
+    where: "the it block at lines 183-192 (\"answers 500 with the generic envelope...\")"
+    evidence: "built.listCases.mockRejectedValueOnce(new Error('a sensitive internal detail nobody outside the server should see'));\n\n  const response = await app.inject({ method: 'GET', url: '/v1/cases' });\n\n  expect(response.statusCode).toBe(500);\n  expect(response.body).not.toContain('sensitive internal detail');"
+    cost: "the rule that an unexpected downstream failure is answered with a generic envelope that never surfaces the rejected call's own error text lives only in this test (and the middleware it exercises), so the next reader who wants to know what a caller may learn from a failed request will not find that refusal shape in the specification — unlike the parallel 400 case, which constraints/a-malformed-request-is-refused-with-a-validation-error does state"
+    kind: unstated
+    correction: "state, as a system-scope architecture constraint alongside constraints/a-malformed-request-is-refused-with-a-validation-error and constraints/listings-are-paged, that an unexpected error is answered with a generic response whose body never includes the underlying error's own message"
+read:
+  - node: domain/knowledge/case-summary
+    held_at: nowhere
+    evidence: "{ slug: 'case-a', version_count: 0 },\n      { slug: 'case-b', version_count: 0 },"
+  - node: rules/knowledge/a-case-summary-is-derived-from-its-existing-versions
+    held_at: nowhere
+    evidence: "version_count: 0 — a literal fixture value handed straight to the mocked caseQuery.listCases, never derived from any case-version the file constructs"
+  - node: scenarios/knowledge/a-catalog-entry-follows-the-released-version
+    held_at: nowhere
+    evidence: "the heldPage() fixture (lines 12-24) carries only slug and version_count; no title, when_to_use, released_version or current_state field, and no draft-over-released case, is ever constructed in this file"
+  - node: rules/knowledge/a-case-listing-answers-cases-in-slug-order
+    held_at: nowhere
+    evidence: "expect(response.json()).toEqual(page); — the response is checked against whatever heldPage() mock the test supplied, never checked for slug-ascending order"
+looked_past: "this file's own pagination assertions (offset/limit defaults, clamping to maxLimit, the five-field envelope, 400s for malformed offset/limit) match constraints/listings-are-paged and constraints/a-malformed-request-is-refused-with-a-validation-error, both outside the node set given for this file; they are not misattributed here and are not this pass's finding since neither node was flagged as unheld."
