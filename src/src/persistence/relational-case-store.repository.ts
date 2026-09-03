@@ -1,6 +1,6 @@
 import type {
   AssembledCaseVersion,
-  CaseIdentity,
+  CaseCatalogEntry,
   CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
@@ -105,7 +105,7 @@ export class RelationalCaseStore implements ICaseStore {
     return row?.version;
   }
 
-  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
     return runInTransaction(this.connection, raiseReadFailure, (tx) => listCasesPage(tx, pagination));
   }
 
@@ -228,15 +228,37 @@ function draftVersionSelect(slug: string): IStatement {
   };
 }
 
-async function listCasesPage(tx: IQueryable, pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+interface ICasesPageRow {
+  readonly slug: string;
+  readonly current_state: string | null;
+  readonly last_updated: Date | null;
+  readonly version_count: string;
+  readonly title: string | null;
+  readonly when_to_use: string | null;
+  readonly released_version: number | null;
+}
+
+async function listCasesPage(tx: IQueryable, pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
   const total = await countCases(tx);
-  const rows = await runStatement<{ slug: string }>(tx, casesPageSelect(pagination), raiseReadFailure);
+  const rows = await runStatement<ICasesPageRow>(tx, casesPageSelect(pagination), raiseReadFailure);
   return {
-    data: rows.map((row) => ({ slug: row.slug })),
+    data: rows.map(caseCatalogEntryOf),
     total,
     limit: pagination.limit,
     offset: pagination.offset,
     pageCount: pageCountOf(total, pagination.limit),
+  };
+}
+
+function caseCatalogEntryOf(row: ICasesPageRow): CaseCatalogEntry {
+  return {
+    slug: row.slug,
+    ...(row.current_state !== null ? { current_state: caseVersionStateOf(row.current_state) } : {}),
+    version_count: Number(row.version_count),
+    ...(row.last_updated !== null ? { last_updated: row.last_updated.toISOString() } : {}),
+    ...(row.title !== null ? { title: row.title } : {}),
+    ...(row.when_to_use !== null ? { when_to_use: row.when_to_use } : {}),
+    ...(row.released_version !== null ? { released_version: row.released_version } : {}),
   };
 }
 
@@ -251,8 +273,28 @@ function casesCountSelect(): IStatement {
 
 function casesPageSelect(pagination: PaginationRequest): IStatement {
   return {
-    text: `SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2`,
-    params: [pagination.limit, pagination.offset],
+    text: `SELECT c.slug,
+                  latest.state AS current_state,
+                  latest.authored_at AS last_updated,
+                  COALESCE(latest.version_count, 0) AS version_count,
+                  released.title AS title,
+                  released.when_to_use AS when_to_use,
+                  released.version AS released_version
+           FROM (SELECT slug FROM ${CASES_TABLE} ORDER BY slug LIMIT $1 OFFSET $2) c
+           LEFT JOIN (
+             SELECT DISTINCT ON (slug) slug, state, authored_at,
+                    COUNT(*) OVER (PARTITION BY slug) AS version_count
+             FROM ${CASE_VERSIONS_TABLE}
+             ORDER BY slug, version DESC
+           ) latest ON latest.slug = c.slug
+           LEFT JOIN (
+             SELECT DISTINCT ON (slug) slug, version, title, when_to_use
+             FROM ${CASE_VERSIONS_TABLE}
+             WHERE state = $3
+             ORDER BY slug, version DESC
+           ) released ON released.slug = c.slug
+           ORDER BY c.slug`,
+    params: [pagination.limit, pagination.offset, RELEASED_STATE],
   };
 }
 

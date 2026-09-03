@@ -72,6 +72,17 @@ export type CaseIdentity = {
   readonly slug: string;
 };
 
+export type CaseSummary = {
+  readonly current_state?: CaseVersionState;
+  readonly version_count: number;
+  readonly last_updated?: string;
+  readonly title?: string;
+  readonly when_to_use?: string;
+  readonly released_version?: number;
+};
+
+export type CaseCatalogEntry = CaseIdentity & CaseSummary;
+
 export type CaseVersionListItem = {
   readonly version: number;
   readonly state: CaseVersionState;
@@ -94,7 +105,7 @@ export interface ICaseStore {
 
   findDraftVersion(slug: string): Promise<number | undefined>;
 
-  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>>;
+  listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>>;
 
   listCaseVersions(slug: string, pagination: PaginationRequest): Promise<PaginatedResponse<CaseVersionListItem>>;
 

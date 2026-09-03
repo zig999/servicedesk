@@ -1,17 +1,20 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { afterEach, expect, it, vi } from 'vitest';
 import type { ICaseQuery, ReadCaseResult } from '../../../case/case-query.port.js';
-import type { CaseIdentity } from '../../../case/case-store.port.js';
+import type { CaseCatalogEntry } from '../../../case/case-store.port.js';
 import { handleUnexpectedError } from '../../../http/error-handler.middleware.js';
 import type { ListCasesControllerDependencies } from '../../../http/list-cases.controller.js';
 import { createListCasesRoutesPlugin } from '../../../http/list-cases.routes.js';
 import type { PaginatedResponse, PaginationRequest } from '../../../types/pagination.js';
 
-type ListCasesMock = ReturnType<typeof vi.fn<(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseIdentity>>>>;
+type ListCasesMock = ReturnType<typeof vi.fn<(pagination: PaginationRequest) => Promise<PaginatedResponse<CaseCatalogEntry>>>>;
 
-function heldPage(overrides: Partial<PaginatedResponse<CaseIdentity>> = {}): PaginatedResponse<CaseIdentity> {
+function heldPage(overrides: Partial<PaginatedResponse<CaseCatalogEntry>> = {}): PaginatedResponse<CaseCatalogEntry> {
   return {
-    data: [{ slug: 'case-a' }, { slug: 'case-b' }],
+    data: [
+      { slug: 'case-a', version_count: 0 },
+      { slug: 'case-b', version_count: 0 },
+    ],
     total: 2,
     limit: 20,
     offset: 0,
@@ -128,7 +131,7 @@ it('passes a limit exactly equal to the configured maxLimit through unclamped', 
 it('answers the paginated envelope with an empty data array and a total of zero, unchanged, when the case query resolves an empty store', async () => {
   const built = buildTestApp();
   app = built.app;
-  const emptyPage: PaginatedResponse<CaseIdentity> = { data: [], total: 0, limit: 20, offset: 0, pageCount: 0 };
+  const emptyPage: PaginatedResponse<CaseCatalogEntry> = { data: [], total: 0, limit: 20, offset: 0, pageCount: 0 };
   built.listCases.mockResolvedValueOnce(emptyPage);
 
   const response = await app.inject({ method: 'GET', url: '/v1/cases' });

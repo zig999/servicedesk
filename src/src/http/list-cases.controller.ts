@@ -1,5 +1,5 @@
 import type { ICaseQuery } from '../case/case-query.port.js';
-import type { CaseIdentity } from '../case/case-store.port.js';
+import type { CaseCatalogEntry } from '../case/case-store.port.js';
 import type { PaginatedResponse, PaginationRequest } from '../types/pagination.js';
 import type { ListCasesQueryDto } from './dto/list-cases.dto.js';
 
@@ -14,7 +14,7 @@ export type ListCasesControllerDependencies = {
 export async function handleListCasesRequest(
   dependencies: ListCasesControllerDependencies,
   query: ListCasesQueryDto,
-): Promise<PaginatedResponse<CaseIdentity>> {
+): Promise<PaginatedResponse<CaseCatalogEntry>> {
   const pagination = resolvePagination(query, dependencies);
   return dependencies.caseQuery.listCases(pagination);
 }

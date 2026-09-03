@@ -1,0 +1,59 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/case-catalog/store-derives-the-case-summary",
+      "kind": "implementation",
+      "file": "implementation/case-catalog/store-derives-the-case-summary.md",
+      "title": "The persistence store derives each listed case's six-attribute summary",
+      "summary": "RelationalCaseStore.listCases now joins case_versions to derive current_state, version_count, last_updated, title, when_to_use and released_version per case, threaded through ICaseStore, ICaseQuery, CaseQueryService and the list-cases controller via a new CaseCatalogEntry type.",
+      "task": "task/case-catalog/store-derives-the-case-summary"
+    },
+    {
+      "id": "proof/case-catalog/store-derives-the-case-summary",
+      "kind": "proof",
+      "file": "proof/case-catalog/store-derives-the-case-summary.md",
+      "title": "Proof for the relational case store deriving the six-attribute case-catalog summary",
+      "summary": "Twelve integration tests against a real Postgres instance prove RelationalCaseStore.listCases derives current_state, version_count, last_updated, title, when_to_use and released_version per the task criteria; two pre-existing unit-test files were repaired to the widened CaseCatalogEntry interface so the target source root typechecks.",
+      "task": "task/case-catalog/store-derives-the-case-summary"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/case-catalog/store-derives-the-case-summary",
+      "to": "domain/knowledge/case-summary",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/case-catalog/store-derives-the-case-summary",
+      "to": "rules/knowledge/a-case-summary-is-derived-from-its-existing-versions",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/case-catalog/store-derives-the-case-summary",
+      "to": "scenarios/knowledge/a-catalog-entry-follows-the-released-version",
+      "kind": "encodes",
+      "at": "nodes[2]"
+    },
+    {
+      "from": "implementation/case-catalog/store-derives-the-case-summary",
+      "to": "rules/knowledge/a-case-listing-answers-cases-in-slug-order",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/case-catalog/store-derives-the-case-summary",
+      "to": "task/case-catalog/store-derives-the-case-summary",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/case-catalog/store-derives-the-case-summary",
+      "to": "implementation/case-catalog/store-derives-the-case-summary",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}

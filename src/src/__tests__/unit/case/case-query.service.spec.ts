@@ -8,7 +8,7 @@ import type { Resolution } from '../../../case/case.js';
 import { CaseQueryService, replayCase } from '../../../case/case-query.service.js';
 import type {
   AssembledCaseVersion,
-  CaseIdentity,
+  CaseCatalogEntry,
   CaseVersionListItem,
   CaseVersionState,
   CreateDraftInput,
@@ -94,12 +94,12 @@ class FakeCaseStore implements ICaseStore {
     return this.cases.get(slug)?.draftVersion;
   }
 
-  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseIdentity>> {
+  public async listCases(pagination: PaginationRequest): Promise<PaginatedResponse<CaseCatalogEntry>> {
     const slugs = [...this.cases.keys()].sort();
     const total = slugs.length;
     const page = slugs.slice(pagination.offset, pagination.offset + pagination.limit);
     return {
-      data: page.map((slug) => ({ slug })),
+      data: page.map((slug) => ({ slug, version_count: this.cases.get(slug)?.versions.size ?? 0 })),
       total,
       limit: pagination.limit,
       offset: pagination.offset,
