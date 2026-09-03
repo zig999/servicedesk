@@ -16,8 +16,16 @@ import {
   type GlossaryVocabularyOptions,
 } from "./use-glossary-vocabulary";
 
+type ManifestEntryDto = {
+  readonly hypothesis_revision: {
+    readonly hypothesis: { readonly name: string };
+    readonly revision: number;
+  };
+};
+
 type CaseVersionSubject = {
   readonly subject: string;
+  readonly manifest: readonly ManifestEntryDto[];
 };
 
 type HypothesisRevisionListItem = {
@@ -47,6 +55,8 @@ export type HypothesisRevisionFormState =
 
       readonly subjectType: string;
 
+      readonly pinnedRevision: number | null;
+
       readonly collectsOptions: readonly ConceptOption[];
       readonly outcomeOptions: GlossaryVocabularyOptions;
       readonly actionOptions: GlossaryVocabularyOptions;
@@ -60,6 +70,19 @@ export type HypothesisRevisionFormState =
       readonly revision: number;
       readonly onOpenManifestBuilder: () => void;
     };
+
+function pinnedRevisionFor(
+  manifest: readonly ManifestEntryDto[],
+  hypothesisName: string | null,
+): number | null {
+  if (hypothesisName === null) {
+    return null;
+  }
+  const entry = manifest.find(
+    (item) => item.hypothesis_revision.hypothesis.name === hypothesisName,
+  );
+  return entry === undefined ? null : entry.hypothesis_revision.revision;
+}
 
 export function latestRevisionOf<T extends { readonly revision: number }>(
   revisions: readonly T[],
@@ -227,6 +250,7 @@ export function useHypothesisRevisionForm(
     form,
     hypothesisNameEditable: hypothesisName === null,
     subjectType,
+    pinnedRevision: pinnedRevisionFor(versionQuery.data.manifest, hypothesisName),
     collectsOptions: availableConcepts,
     outcomeOptions,
     actionOptions,

@@ -1,0 +1,10 @@
+
+> case-authoring-console@0.1.0 lint
+> eslint .
+
+
+/home/siegfriedneto/projects/wt-pinned-revision-in-hand-before-a-save/frontend/app/src/routes/case-simulation-case-result-panel.tsx
+  54:21  error  Do not use Array index in keys  react/no-array-index-key
+
+✖ 1 problem (1 error, 0 warnings)
+

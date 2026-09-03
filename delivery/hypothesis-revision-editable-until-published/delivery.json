@@ -1,0 +1,71 @@
+{
+  "contract_version": "siegard-delivery/2",
+  "nodes": [
+    {
+      "id": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "implementation",
+      "file": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save.md",
+      "title": "Hypothesis-editing form holds the draft manifest entry's pinned revision",
+      "summary": "use-hypothesis-revision-form.ts widens its existing case-version read to type the manifest and exposes, in its ready phase, the revision the draft manifest entry pins for the hypothesis being revised, or null where none pins it.",
+      "task": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save"
+    },
+    {
+      "id": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "proof",
+      "file": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save.md",
+      "title": "Proof for the draft manifest entry's pinned revision on the hypothesis-editing form",
+      "summary": "What proves task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save, written against its implementation record.",
+      "task": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save"
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "rules/knowledge/a-manifest-entrys-pinned-revision-is-always-shown",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "rules/knowledge/a-hypothesis-is-manifested-at-most-once-in-a-case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[3]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "domain/knowledge/manifest-entry",
+      "kind": "encodes",
+      "at": "nodes[4]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "domain/knowledge/hypothesis-revision",
+      "kind": "encodes",
+      "at": "nodes[5]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "domain/knowledge/hypothesis",
+      "kind": "encodes",
+      "at": "nodes[6]"
+    },
+    {
+      "from": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "task/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
+      "from": "proof/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "to": "implementation/hypothesis-revision-repin-affordance/pinned-revision-in-hand-before-a-save",
+      "kind": "proves",
+      "at": "the path"
+    }
+  ]
+}
