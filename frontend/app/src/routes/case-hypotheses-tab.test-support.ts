@@ -91,11 +91,17 @@ export async function mountCaseDetailScreen(
     path: "/cases/$slug/versions/$version/simulate",
     component: () => createElement("div", null, "Simulation Cockpit Placeholder"),
   });
+  const manifestRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/cases/$slug/versions/$version/manifest",
+    component: () => createElement("div", null, "Version Manifest Placeholder"),
+  });
   const routeTree = rootRoute.addChildren([
     caseDetailRoute,
     caseVersionRoute,
     newDraftRoute,
     simulateRoute,
+    manifestRoute,
   ]);
   const router = createRouter({
     routeTree,

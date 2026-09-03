@@ -42,6 +42,9 @@ function actionsForRow(slug: string, version: CaseVersionListItem): ReactNode {
       <Link to="/cases/$slug/versions/$version/simulate" params={params}>
         Simulate
       </Link>
+      <Link to="/cases/$slug/versions/$version/manifest" params={params}>
+        Manifest
+      </Link>
     </div>
   );
 }

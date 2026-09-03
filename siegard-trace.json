@@ -3445,7 +3445,7 @@
         },
         {
           "path": "frontend/app/src/routes/case-detail-screen.tsx",
-          "digest": "sha256:4820b64f27519dbcb67312bcbb8ba56160ae95337daf1b52b2c9e153cd69e530"
+          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
         },
         {
           "path": "frontend/app/src/routes/case-simulation-header.tsx",
@@ -5852,6 +5852,16 @@
         {
           "path": "src/src/persistence/relational-case-store.repository.ts",
           "digest": "sha256:03b930a0f9461cdfc471beff250e7a31e4daf011b021fcd2b8c6ebcf8e030cf7"
+        }
+      ]
+    },
+    {
+      "node": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "digest": "sha256:f4e448d2721c04db975d403ea3507d0ccbabdc499ecdbce79b05393ca045cc5c",
+      "files": [
+        {
+          "path": "frontend/app/src/routes/case-detail-screen.tsx",
+          "digest": "sha256:f9ed2a49b47d1772d0d481e6086c3a4a9e3c6fffb22a5915f0f2ef14e3fa361f"
         }
       ]
     },

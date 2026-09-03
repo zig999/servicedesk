@@ -42,7 +42,7 @@ describe("CaseDetailScreen's Versions tab actions cell — a draft row's own act
     expect(within(draftRow).queryByRole("link", { name: "View" })).toBeNull();
 
     expect(within(draftRow).getByRole("link", { name: "Simulate" })).toBeTruthy();
-    expect(within(draftRow).getAllByRole("link")).toHaveLength(2);
+    expect(within(draftRow).getAllByRole("link")).toHaveLength(3);
   });
 });
 

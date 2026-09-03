@@ -34,6 +34,14 @@
       "task": "task/manifest-shortcuts/always-visible-manifest-shortcut"
     },
     {
+      "id": "implementation/manifest-shortcuts/version-row-manifest-action",
+      "kind": "implementation",
+      "file": "implementation/manifest-shortcuts/version-row-manifest-action.md",
+      "title": "Manifest action on every Versions-panel row in case-detail-screen",
+      "summary": "actionsForRow now renders a third per-row Link to that row's own manifest route, built from the same shared params object, for both draft and released rows.",
+      "task": "task/manifest-shortcuts/version-row-manifest-action"
+    },
+    {
       "id": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "kind": "proof",
       "file": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin.md",
@@ -64,6 +72,14 @@
       "title": "Always-visible manifest shortcut on the hypothesis-editing screen",
       "summary": "Proof that the ready-phase manifest shortcut renders before any save for both entry points, targets the exact case version the screen was opened on, adds no request, sits ahead of the form, disappears once a save resolves rather than surviving into the branch the repin rule says offers no route, and never duplicates the post-save offer.",
       "task": "task/manifest-shortcuts/always-visible-manifest-shortcut"
+    },
+    {
+      "id": "proof/manifest-shortcuts/version-row-manifest-action",
+      "kind": "proof",
+      "file": "proof/manifest-shortcuts/version-row-manifest-action.md",
+      "title": "Manifest action on every Versions-panel row — proof",
+      "summary": "Proves the case-detail-screen Versions panel's per-row Manifest link exists for both draft and released rows, targets each row's own version, renders as a link, coexists with the existing actions in the inferred trailing position, navigates without an extra request, and -- for the underdetermined finding -- that a released row's Manifest action lands on a manifest whose entries cannot be moved or removed.",
+      "task": "task/manifest-shortcuts/version-row-manifest-action"
     },
     {
       "id": "review/hypothesis-revision-editable-until-published-frontend",
@@ -206,6 +222,24 @@
       "at": "the path"
     },
     {
+      "from": "implementation/manifest-shortcuts/version-row-manifest-action",
+      "to": "rules/knowledge/a-listed-case-version-offers-a-route-to-its-own-manifest",
+      "kind": "encodes",
+      "at": "nodes[0]"
+    },
+    {
+      "from": "implementation/manifest-shortcuts/version-row-manifest-action",
+      "to": "domain/knowledge/case-version",
+      "kind": "encodes",
+      "at": "nodes[1]"
+    },
+    {
+      "from": "implementation/manifest-shortcuts/version-row-manifest-action",
+      "to": "task/manifest-shortcuts/version-row-manifest-action",
+      "kind": "implements",
+      "at": "the path"
+    },
+    {
       "from": "proof/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "to": "implementation/hypothesis-revision-history-reads-the-manifest-pin/read-current-from-the-manifest-pin",
       "kind": "proves",
@@ -226,6 +260,12 @@
     {
       "from": "proof/manifest-shortcuts/always-visible-manifest-shortcut",
       "to": "implementation/manifest-shortcuts/always-visible-manifest-shortcut",
+      "kind": "proves",
+      "at": "the path"
+    },
+    {
+      "from": "proof/manifest-shortcuts/version-row-manifest-action",
+      "to": "implementation/manifest-shortcuts/version-row-manifest-action",
       "kind": "proves",
       "at": "the path"
     },
